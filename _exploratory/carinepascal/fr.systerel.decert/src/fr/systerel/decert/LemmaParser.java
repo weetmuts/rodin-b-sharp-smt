@@ -212,7 +212,7 @@ public final class LemmaParser {
 
 		// Writes a temporary XML file
 		File tmp = File.createTempFile("lemmas_patched", ".xml");
-		//tmp.deleteOnExit();
+		tmp.deleteOnExit();
 
 		FileOutputStream outputStream = new FileOutputStream(tmp);
 		OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream,
