@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE lemmas SYSTEM "lemmas.dtd">
+
+<lemmas>
+
+<lemma>
+ <title>The lemma title</title>
+ <origin>ssf | rec3 | cbuf_write/inv1/INV</origin>
+ <comment>Some additional comments</comment>
+ <theories>
+   <theory name="nonlinear_arith"/>
+ </theories>
+ <typenv>
+   <variable name="n" type= "ℤ"/>
+   <variable name="x" type= "ℤ"/>
+   <variable name="y" type= "ℤ"/>
+ </typenv>
+ <hypothesis>n ∈ ℕ</hypothesis>
+ <hypothesis needed="true">x ∈ ℕ</hypothesis>
+ <hypothesis needed="true">y ∈ ℕ</hypothesis>
+ <hypothesis needed="true">¬ n=0</hypothesis>
+ <hypothesis needed="true">x = y mod n</hypothesis>
+ <goal>(x+1) mod n = (y+1) mod n</goal>
+</lemma>
+
+</lemmas>
+
