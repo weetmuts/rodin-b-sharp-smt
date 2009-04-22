@@ -32,9 +32,9 @@ public class ParseException extends Exception {
 	 * Throws an exception.
 	 * 
 	 * @param result
-	 *            the parsing result.
+	 *            the parsing result
 	 * @param message
-	 *            an additional useful message.
+	 *            an additional useful message
 	 * @throws ParseException
 	 */
 	public final static void throwIt(final IResult result, final String message)
@@ -49,7 +49,7 @@ public class ParseException extends Exception {
 	 * Throws an exception.
 	 * 
 	 * @param result
-	 *            the parsing result.
+	 *            the parsing result
 	 * @throws ParseException
 	 */
 	public final static void throwIt(IResult result) throws ParseException {

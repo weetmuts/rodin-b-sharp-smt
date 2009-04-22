@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * The tool resources.
+ * The resources.
  */
 public class Resources {
 	// ============================================================================
@@ -28,7 +28,7 @@ public class Resources {
 	/**
 	 * Returns the XML input file.
 	 * 
-	 * @return the <tt>File</tt> object associated to this file.
+	 * @return the <tt>File</tt> object associated to this file
 	 */
 	final static File getXMLFile() {
 		return XMLFile;
@@ -38,7 +38,7 @@ public class Resources {
 	 * Builds the XML input file.
 	 * 
 	 * @param path
-	 *            the path of the XML file to be built.
+	 *            the path of the XML file to be built
 	 */
 	private static final void setXMLFile(String path) throws ResourceException {
 		XMLFile = exists(path);
@@ -50,7 +50,7 @@ public class Resources {
 	/**
 	 * Returns the DTD input file.
 	 * 
-	 * @return the <tt>File</tt> object associated to this file.
+	 * @return the <tt>File</tt> object associated to this file
 	 */
 	final static File getDTDFile() {
 		return DTDFile;
@@ -60,7 +60,7 @@ public class Resources {
 	 * Builds the DTD input file.
 	 * 
 	 * @param path
-	 *            the path of the DTD file to be built.
+	 *            the path of the DTD file to be built
 	 */
 	private static void setDTDFile(String path) throws ResourceException {
 		DTDFile = exists(path);
@@ -75,13 +75,13 @@ public class Resources {
 	/** The maximum verbose level. */
 	private final static int VERBOSE_ALL = 10;
 
-	/** The verbose level */
+	/** The verbose level. */
 	private static int verboseLevel = VERBOSE_ALL;
 
 	/**
 	 * Returns the verbose level passed as option on the command line.
 	 * 
-	 * @return the verbose level.
+	 * @return the verbose level
 	 */
 	final static int getVerboseLevel() {
 		return verboseLevel;
@@ -96,9 +96,9 @@ public class Resources {
 	 * resources.
 	 * 
 	 * @param args
-	 *            the command line options.
+	 *            the command line options
 	 * @throw <tt>ResourceException</tt> exception if some required resources
-	 *        are missing.
+	 *        are missing
 	 */
 	static void parseOptions(String[] args) throws ResourceException {
 		if ((args == null) || (args.length == 0)) {
@@ -164,10 +164,10 @@ public class Resources {
 	 * Checks that the specified file or directory exists.
 	 * 
 	 * @param name
-	 *            the name of the file or directory.
+	 *            the name of the file or directory
 	 * @return the associated <tt>File</tt> object if the specified file or
-	 *         directory exists.
-	 * @throw <tt>FileNotFoundException</tt> exception otherwise.
+	 *         directory exists
+	 * @throw <tt>FileNotFoundException</tt> exception otherwise
 	 */
 	private static File exists(String name) throws ResourceException {
 		File f = new File(name);
@@ -183,9 +183,9 @@ public class Resources {
 	 * greater than the verbose level; otherwise, it is printed.
 	 * 
 	 * @param s
-	 *            the string to be printed.
+	 *            the string to be printed
 	 * @param level
-	 *            the verbose level.
+	 *            the verbose level
 	 */
 	static void log(String s, int level) {
 		if (verboseLevel >= level)

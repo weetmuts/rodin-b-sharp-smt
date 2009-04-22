@@ -130,7 +130,7 @@ public final class Lemma {
 	/**
 	 * Gets the mathematical theories related to this lemma.
 	 * 
-	 * @return a list of <tt>Theory</tt> objects
+	 * @return a list of theories
 	 */
 	public final List<Theory> getTheories() {
 		return theories;
@@ -139,7 +139,7 @@ public final class Lemma {
 	/**
 	 * Gets the type environment for this lemma.
 	 * 
-	 * @return the type environment
+	 * @return a type environment
 	 */
 	public final ITypeEnvironment getTypeEnvironment() {
 		return environment;
@@ -157,7 +157,7 @@ public final class Lemma {
 	/**
 	 * Gets the goal of this lemma.
 	 * 
-	 * @return the goal, as a <tt>Goal</tt> object
+	 * @return a goal
 	 */
 	public final LemmaPredicate getGoal() {
 		return goal;
@@ -208,21 +208,21 @@ public final class Lemma {
 	 * @return the list of problems encountered during the type
 	 *         checking
 	 */
-	public final List<ITypeCheckResult> typeCheck() {
-		List<ITypeCheckResult> problems = new ArrayList<ITypeCheckResult>();
+	public final List<Result> typeCheck() {
+		List<Result> problems = new ArrayList<Result>();
 		ITypeCheckResult result = null;
 		for (LemmaPredicate hypothesis : hypotheses) {
 			result = hypothesis.getContent().typeCheck(environment);
 			if (!result.hasProblem())
 				environment.addAll(result.getInferredEnvironment());
 			else
-				problems.add(result);
+				problems.add(new Result(hypothesis,result));
 		}
 		result = goal.getContent().typeCheck(environment);
 		if (!result.hasProblem())
 			environment.addAll(result.getInferredEnvironment());
 		else
-			problems.add(result);
+			problems.add(new Result(goal,result));
 		return problems;
 	}
 

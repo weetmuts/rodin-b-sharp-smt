@@ -98,7 +98,7 @@ public enum Theory {
 	/**
 	 * Gets the theory name.
 	 * 
-	 * @return the theory name.
+	 * @return the name
 	 */
 	public final String getName() {
 		return name;
@@ -108,8 +108,8 @@ public enum Theory {
 	 * Gets the theory with the specified name.
 	 * 
 	 * @param name
-	 *            the theory name.
-	 * @return the <tt>Theory</tt> object named <tt>name</tt>.
+	 *            the theory name
+	 * @return the theory whose name is <tt>name</tt>
 	 */
 	public final static Theory fromName(final String name) {
 		for (Theory t : Theory.values())

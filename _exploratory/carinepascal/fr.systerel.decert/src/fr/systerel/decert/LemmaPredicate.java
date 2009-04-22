@@ -37,14 +37,14 @@ public class LemmaPredicate {
 	 * Builds a lemma predicate.
 	 * 
 	 * @param ff
-	 *            the formula factory to be used to parse the content.
+	 *            the formula factory to be used to parse the content
 	 * @param content
-	 *            the content to be parsed.
+	 *            the content to be parsed
 	 * @param required
 	 *            shall be <tt>true</tt> iff this hypothesis is actually
-	 *            required.
+	 *            required
 	 * @throws ParseException
-	 *             if a problem occurred when parsing the content.
+	 *             if a problem occurred when parsing the content
 	 */
 	public LemmaPredicate(final FormulaFactory ff, final String content,
 			final boolean required) throws ParseException {
@@ -67,11 +67,11 @@ public class LemmaPredicate {
 	 * Builds a lemma predicate.
 	 * 
 	 * @param ff
-	 *            the formula factory to be used to parse the content.
+	 *            the formula factory to be used to parse the content
 	 * @param content
-	 *            the content to be parsed.
+	 *            the content to be parsed
 	 * @throws ParseException
-	 *             if a problem occurred when parsing the content.
+	 *             if a problem occurred when parsing the content
 	 */
 	public LemmaPredicate(final FormulaFactory ff, final String content)
 			throws ParseException {
@@ -85,7 +85,7 @@ public class LemmaPredicate {
 	/**
 	 * Gets the predicate content.
 	 * 
-	 * @return a <tt>Predicate</tt> object matching the predicate content.
+	 * @return a <tt>Predicate</tt> object matching the predicate content
 	 */
 	public final Predicate getContent() {
 		return content;
@@ -94,7 +94,7 @@ public class LemmaPredicate {
 	/**
 	 * Determines whether this predicate is required or not.
 	 * 
-	 * @return <tt>true</tt> iff this predicate is actually required.
+	 * @return <tt>true</tt> iff this predicate is actually required
 	 */
 	public final boolean isRequired() {
 		return required;
@@ -104,12 +104,6 @@ public class LemmaPredicate {
 	// Other useful methods
 	// =========================================================================
 
-	/**
-	 * Returns the string representation of this predicate.
-	 * 
-	 * @return the string representation of the predicate content.
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public final String toString() {
 		return content.toString();

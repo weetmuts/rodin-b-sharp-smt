@@ -16,8 +16,7 @@ import org.eventb.core.ast.LanguageVersion;
 import org.eventb.core.ast.Type;
 
 /**
- * Class Variable.
- * 
+ * This class represents a variable.
  */
 public final class Variable {
 
@@ -35,13 +34,13 @@ public final class Variable {
 	 * Builds a variable.
 	 * 
 	 * @param ff
-	 *            the formula factory to be used to parse the type.
+	 *            the formula factory to be used to parse the type
 	 * @param name
-	 *            the variable name.
+	 *            the variable name
 	 * @param type
-	 *            the variable type.
+	 *            the variable type
 	 * @throws ParseException
-	 *             if a problem occurred when parsing the type.
+	 *             if a problem occurred when parsing the type
 	 */
 	public Variable(FormulaFactory ff, String name, String type)
 			throws ParseException {
@@ -65,7 +64,7 @@ public final class Variable {
 	/**
 	 * Gets the variable name.
 	 * 
-	 * @return the variable name.
+	 * @return the name
 	 */
 	public final String getName() {
 		return name;
@@ -74,7 +73,7 @@ public final class Variable {
 	/**
 	 * Gets the variable type.
 	 * 
-	 * @return the variable type, as a <tt>Type</tt> object.
+	 * @return the type
 	 */
 	public final Type getType() {
 		return type;

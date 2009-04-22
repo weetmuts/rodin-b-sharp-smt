@@ -27,8 +27,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eventb.core.ast.ASTProblem;
-import org.eventb.core.ast.ITypeCheckResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -48,12 +46,12 @@ public final class LemmaParser {
 	 * Loads the specified XML file.
 	 * 
 	 * @param XMLFile
-	 *            the URL of the XML file.
+	 *            the URL of the XML file
 	 * @param DTDFile
-	 *            the URL of the associated DTD file.
-	 * @return a DOM structure.
+	 *            the URL of the associated DTD file
+	 * @return a DOM structure
 	 * @throws SAXException
-	 *             if a problem occurs when loading the file.
+	 *             if a problem occurs when loading the file
 	 */
 	public final static Document load(final URL XMLFile, final URL DTDFile)
 			throws SAXException {
@@ -107,10 +105,10 @@ public final class LemmaParser {
 	 * Parses the specified document.
 	 * 
 	 * @param document
-	 *            the DOM structure to be parsed.
-	 * @return the lemmas contained in the document.
+	 *            the DOM structure to be parsed
+	 * @return the lemmas contained in the document
 	 * @throws ParseException
-	 *             if a problem occurs when parsing the document.
+	 *             if a problem occurs when parsing the document
 	 */
 	public final static List<Lemma> parse(Document document)
 			throws ParseException {
@@ -187,14 +185,14 @@ public final class LemmaParser {
 	 * Patches the specified XML file.
 	 * 
 	 * @param XMLFile
-	 *            the XML file to be patched.
+	 *            the XML file to be patched
 	 * @param regex
-	 *            the regular expression to search for.
+	 *            the regular expression to search for
 	 * @param replacement
 	 *            the replacement string.
-	 * @return the URL of the patched XML file (the input file is not modified).
+	 * @return the URL of the patched XML file (the input file is not modified)
 	 * @throws IOException
-	 *             if a problem occurs when patching the XML file.
+	 *             if a problem occurs when patching the XML file
 	 */
 	public static URL patch(URL XMLFile, String regex, String replacement)
 			throws IOException {
@@ -224,12 +222,28 @@ public final class LemmaParser {
 
 		return tmp.toURL();
 	}
+	
+	/**
+	 * Sets the doctype in the specified XML file.
+	 * 
+	 * @param XMLFile
+	 *            the XML file to be patched
+	 * @param DTDFile 
+	 *            the DTD file to be referenced
+	 * @return the URL of the patched XML file (the input file is not modified)
+	 * @throws IOException
+	 *             if a problem occurs when patching the XML file
+	 */
+	public static URL setDoctype(URL XMLFile, URL DTDFile) throws IOException {
+		return patch(XMLFile, "(<?.*?>)",
+				"$1\n<!DOCTYPE lemmas SYSTEM \"" + DTDFile + "\">");
+	}
 
 	/**
 	 * The entry point method.
 	 * 
 	 * @param args
-	 *            the command line options.
+	 *            the command line options
 	 */
 	public static void main(String[] args) {
 		// Parses the command line options and loads resources
@@ -254,11 +268,19 @@ public final class LemmaParser {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		URL DTDFile = null;
+		try {
+			DTDFile = Resources.getDTDFile().toURL();
+		} catch (MalformedURLException e) {
+			System.err
+					.println("A problem occurred when trying to load the DTD file!");
+			e.printStackTrace();
+			System.exit(1);
+		}
 		Resources.log("Patching the following XML file: " + XMLFile.toString()
 				+ "...", 1);
 		try {
-			XMLFile = patch(XMLFile, "(<?.*?>)",
-					"$1\n<!DOCTYPE lemmas SYSTEM \"" + Resources.getDTDFile().toURL() + "\">");
+			XMLFile = setDoctype(XMLFile, DTDFile);
 			Resources.log("=> The following temporary XML file was created: "
 					+ XMLFile.toString(), 2);
 		} catch (IOException e) {
@@ -273,19 +295,14 @@ public final class LemmaParser {
 		Resources.log("Loading and parsing the XML file...", 1);
 		Document document = null;
 		try {
-			document = load(XMLFile, Resources.getDTDFile().toURL());
+			document = load(XMLFile, DTDFile);
 			Resources.log("=> XML file successfully parsed.", 1);
 		} catch (SAXException e) {
 			System.err
 					.println("A problem occurred when trying to parse the XML file!");
 			e.printStackTrace();
 			System.exit(1);
-		} catch (MalformedURLException e) {
-			System.err
-					.println("A problem occurred when trying to load the DTD file!");
-			e.printStackTrace();
-			System.exit(1);
-		}
+		} 
 
 		// Parses the DOM structure
 		Resources.log("Going through the DOM structure ...", 1);
@@ -303,11 +320,10 @@ public final class LemmaParser {
 		// Performs the type checking
 		Resources.log("Type-checking...", 1);
 		for (Lemma lemma : lemmas) {
-			Resources.log("Lemma " + (lemmas.indexOf(lemma) + 1), 1);
-			List<ITypeCheckResult> results = lemma.typeCheck();
-			for (ITypeCheckResult result : results)
-				for (ASTProblem problem : result.getProblems())
-					Resources.log(problem.toString(), 1);
+			Resources.log("Lemma " + lemma.getOrigin(), 1);
+			List<Result> results = lemma.typeCheck();
+			for (Result result : results)
+				Resources.log(result.toString(), 1);
 			if (results.isEmpty())
 				Resources.log("=> OK", 1);
 			else
