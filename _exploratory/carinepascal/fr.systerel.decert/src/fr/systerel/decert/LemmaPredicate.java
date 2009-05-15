@@ -21,13 +21,13 @@ import org.eventb.core.ast.Predicate;
 public class LemmaPredicate {
 
 	/**
-	 * Determines whether this hypothesis is required or not. This field is
-	 * <tt>true</tt> iff the hypothesis is actually required.
+	 * Determines whether this predicate is required or not. This field is
+	 * <tt>true</tt> iff the predicate is actually required.
 	 */
-	final boolean required;
+	private final boolean required;
 
-	/** The hypothesis content. */
-	final Predicate content;
+	/** The predicate content. */
+	private final Predicate content;
 
 	// =========================================================================
 	// Constructors
@@ -41,7 +41,7 @@ public class LemmaPredicate {
 	 * @param content
 	 *            the content to be parsed
 	 * @param required
-	 *            shall be <tt>true</tt> iff this hypothesis is actually
+	 *            shall be <tt>true</tt> iff this predicate is actually
 	 *            required
 	 * @throws ParseException
 	 *             if a problem occurred when parsing the content

@@ -23,14 +23,14 @@ public class Resources {
 
 	// Input Files
 	/** The XML input file. */
-	private static File XMLFile;
+	private File XMLFile;
 
 	/**
 	 * Returns the XML input file.
 	 * 
 	 * @return the <tt>File</tt> object associated to this file
 	 */
-	final static File getXMLFile() {
+	final File getXMLFile() {
 		return XMLFile;
 	}
 
@@ -40,19 +40,20 @@ public class Resources {
 	 * @param path
 	 *            the path of the XML file to be built
 	 */
-	private static final void setXMLFile(String path) throws ResourceException {
+	protected final void setXMLFile(String path)
+			throws ResourceException {
 		XMLFile = exists(path);
 	}
 
 	/** The DTD input file. */
-	private static File DTDFile;
+	private File DTDFile;
 
 	/**
 	 * Returns the DTD input file.
 	 * 
 	 * @return the <tt>File</tt> object associated to this file
 	 */
-	final static File getDTDFile() {
+	final File getDTDFile() {
 		return DTDFile;
 	}
 
@@ -62,7 +63,7 @@ public class Resources {
 	 * @param path
 	 *            the path of the DTD file to be built
 	 */
-	private static void setDTDFile(String path) throws ResourceException {
+	protected void setDTDFile(String path) throws ResourceException {
 		DTDFile = exists(path);
 	}
 
@@ -76,14 +77,14 @@ public class Resources {
 	private final static int VERBOSE_ALL = 10;
 
 	/** The verbose level. */
-	private static int verboseLevel = VERBOSE_ALL;
+	private int verboseLevel = VERBOSE_ALL;
 
 	/**
 	 * Returns the verbose level passed as option on the command line.
 	 * 
 	 * @return the verbose level
 	 */
-	final static int getVerboseLevel() {
+	final int getVerboseLevel() {
 		return verboseLevel;
 	}
 
@@ -100,7 +101,7 @@ public class Resources {
 	 * @throw <tt>ResourceException</tt> exception if some required resources
 	 *        are missing
 	 */
-	static void parseOptions(String[] args) throws ResourceException {
+	public void parseOptions(String[] args) throws ResourceException {
 		if ((args == null) || (args.length == 0)) {
 			usage();
 			System.exit(1);
@@ -134,22 +135,51 @@ public class Resources {
 				break;
 		}
 
+		parseInputFiles(args, optionIndex);
+	}
+
+	/**
+	 * Parses the input files specified on the command line.
+	 * 
+	 * @param args
+	 *            the command line parameters
+	 * @param index
+	 *            the starting index for the input files
+	 * @throw <tt>ResourceException</tt> exception if some required resources
+	 *        are missing
+	 */
+	protected void parseInputFiles(String[] args, int index)
+			throws ResourceException {
 		// Input Files
-		if ((optionIndex + 2) != args.length) {
+		if ((index + 2) != args.length) {
 			usage();
 			System.exit(1);
 		}
-		setXMLFile(args[optionIndex++]);
-		setDTDFile(args[optionIndex++]);
+		setXMLFile(args[index++]);
+		setDTDFile(args[index++]);
 	}
 
 	/**
 	 * Prints the help message.
 	 */
-	private static void usage() {
+	protected void usage() {
+		printCommand();
+        printOptions();
+	}
+	
+	/**
+	 * Prints the command line.
+	 */
+	protected void printCommand() {
 		System.out.println("TypeCheck [options] <XMLFile><DTDFile>");
 		System.out.println("where <XMLile> is the path of an XML input file "
 				+ " and <DTDFile> is the path of the associated DTD file.");
+	}
+
+	/**
+	 * Prints the options.
+	 */
+	private void printOptions() {
 		System.out
 				.println("*************************************************************************************");
 		System.out.println("Options are:");
@@ -169,7 +199,7 @@ public class Resources {
 	 *         directory exists
 	 * @throw <tt>FileNotFoundException</tt> exception otherwise
 	 */
-	private static File exists(String name) throws ResourceException {
+	private File exists(String name) throws ResourceException {
 		File f = new File(name);
 		if (!f.exists())
 			throw new ResourceException(new FileNotFoundException(f
@@ -187,7 +217,7 @@ public class Resources {
 	 * @param level
 	 *            the verbose level
 	 */
-	static void log(String s, int level) {
+	public void log(String s, int level) {
 		if (verboseLevel >= level)
 			System.out.println(s);
 	}

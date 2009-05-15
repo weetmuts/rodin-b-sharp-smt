@@ -73,8 +73,8 @@ public final class Lemma {
 	 *            the goal of this lemma     
 	 */
 	public Lemma(final String title, final String origin, final String comment, final LemmaPredicate goal) {
-		this.title = title;
 		this.origin = origin;
+		this.title = title;
 		this.comment = comment;
 		this.theories = new ArrayList<Theory>();
 		this.environment = ff.makeTypeEnvironment();

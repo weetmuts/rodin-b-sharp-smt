@@ -40,7 +40,32 @@ import org.xml.sax.SAXParseException;
  * This class allows to parse a XML file containing lemmas. A Document Object
  * Model (DOM) structure is built.
  */
-public final class LemmaParser {
+public class LemmaParser {
+
+	/** The built lemmas. */
+	private static List<Lemma> lemmas;
+
+	/**
+	 * Gets the built lemmas.
+	 * 
+	 * @return a list of lemmas.
+	 */
+	protected final static List<Lemma> getLemmas() {
+		return lemmas;
+	}
+
+	/** The resources. */
+	private static Resources resources;
+
+	/**
+	 * Sets the resources.
+	 * 
+	 * @param r
+	 *            the resources
+	 */
+	protected final static void setResources(final Resources r) {
+		resources = r;
+	}
 
 	/**
 	 * Loads the specified XML file.
@@ -112,7 +137,7 @@ public final class LemmaParser {
 	 */
 	public final static List<Lemma> parse(Document document)
 			throws ParseException {
-		List<Lemma> lemmas = new ArrayList<Lemma>();
+		List<Lemma> l = new ArrayList<Lemma>();
 		NodeList nodelist = document.getElementsByTagName("lemma");
 		for (int i = 0; i < nodelist.getLength(); i++) {
 			Element node = (Element) nodelist.item(i);
@@ -138,8 +163,8 @@ public final class LemmaParser {
 			LemmaPredicate goal = null;
 			if (elements.getLength() > 0) {
 				element = (Element) elements.item(0);
-				goal = new LemmaPredicate(Lemma.ff, element.getTextContent(), Boolean
-						.parseBoolean(element.getAttribute("needed")));
+				goal = new LemmaPredicate(Lemma.ff, element.getTextContent(),
+						Boolean.parseBoolean(element.getAttribute("needed")));
 			}
 
 			Lemma lemma = new Lemma(title, origin, comment, goal);
@@ -176,9 +201,9 @@ public final class LemmaParser {
 						.getAttribute("needed"))));
 			}
 
-			lemmas.add(lemma);
+			l.add(lemma);
 		}
-		return lemmas;
+		return l;
 	}
 
 	/**
@@ -222,21 +247,21 @@ public final class LemmaParser {
 
 		return tmp.toURL();
 	}
-	
+
 	/**
 	 * Sets the doctype in the specified XML file.
 	 * 
 	 * @param XMLFile
 	 *            the XML file to be patched
-	 * @param DTDFile 
+	 * @param DTDFile
 	 *            the DTD file to be referenced
 	 * @return the URL of the patched XML file (the input file is not modified)
 	 * @throws IOException
 	 *             if a problem occurs when patching the XML file
 	 */
 	public static URL setDoctype(URL XMLFile, URL DTDFile) throws IOException {
-		return patch(XMLFile, "(<?.*?>)",
-				"$1\n<!DOCTYPE lemmas SYSTEM \"" + DTDFile + "\">");
+		return patch(XMLFile, "(<?.*?>)", "$1\n<!DOCTYPE lemmas SYSTEM \""
+				+ DTDFile + "\">");
 	}
 
 	/**
@@ -246,11 +271,15 @@ public final class LemmaParser {
 	 *            the command line options
 	 */
 	public static void main(String[] args) {
+		lemmas = null;
+	    if (resources == null)
+	    	setResources(new Resources());
+
 		// Parses the command line options and loads resources
-		Resources.log("Parsing the command line...", 1);
+		resources.log("Parsing the command line...", 1);
 		try {
-			Resources.parseOptions(args);
-			Resources.log("=> Command line successfully parsed.", 1);
+			resources.parseOptions(args);
+			resources.log("=> Command line successfully parsed.", 1);
 		} catch (ResourceException e) {
 			System.err
 					.println("A problem occurred when trying to parse the command line options!");
@@ -261,7 +290,7 @@ public final class LemmaParser {
 		// Patches the XML file
 		URL XMLFile = null;
 		try {
-			XMLFile = Resources.getXMLFile().toURL();
+			XMLFile = resources.getXMLFile().toURL();
 		} catch (MalformedURLException e) {
 			System.err
 					.println("A problem occurred when trying to load the XML file!");
@@ -270,18 +299,18 @@ public final class LemmaParser {
 		}
 		URL DTDFile = null;
 		try {
-			DTDFile = Resources.getDTDFile().toURL();
+			DTDFile = resources.getDTDFile().toURL();
 		} catch (MalformedURLException e) {
 			System.err
 					.println("A problem occurred when trying to load the DTD file!");
 			e.printStackTrace();
 			System.exit(1);
 		}
-		Resources.log("Patching the following XML file: " + XMLFile.toString()
+		resources.log("Patching the following XML file: " + XMLFile.toString()
 				+ "...", 1);
 		try {
 			XMLFile = setDoctype(XMLFile, DTDFile);
-			Resources.log("=> The following temporary XML file was created: "
+			resources.log("=> The following temporary XML file was created: "
 					+ XMLFile.toString(), 2);
 		} catch (IOException e) {
 			System.err
@@ -292,24 +321,23 @@ public final class LemmaParser {
 
 		// Loads the XML file and validates its structure, according to the
 		// associated DTD file
-		Resources.log("Loading and parsing the XML file...", 1);
+		resources.log("Loading and parsing the XML file...", 1);
 		Document document = null;
 		try {
 			document = load(XMLFile, DTDFile);
-			Resources.log("=> XML file successfully parsed.", 1);
+			resources.log("=> XML file successfully parsed.", 1);
 		} catch (SAXException e) {
 			System.err
 					.println("A problem occurred when trying to parse the XML file!");
 			e.printStackTrace();
 			System.exit(1);
-		} 
+		}
 
 		// Parses the DOM structure
-		Resources.log("Going through the DOM structure ...", 1);
-		List<Lemma> lemmas = null;
+		resources.log("Going through the DOM structure ...", 1);
 		try {
 			lemmas = parse(document);
-			Resources.log("=> DOM structure successfully parsed.", 1);
+			resources.log("=> DOM structure successfully parsed.", 1);
 		} catch (ParseException e) {
 			System.err
 					.println("A problem occurred when trying to go through the DOM structure!");
@@ -318,16 +346,16 @@ public final class LemmaParser {
 		}
 
 		// Performs the type checking
-		Resources.log("Type-checking...", 1);
+		resources.log("Type-checking...", 1);
 		for (Lemma lemma : lemmas) {
-			Resources.log("Lemma " + lemma.getOrigin(), 1);
+			resources.log("Lemma " + lemma.getTitle(), 1);
 			List<Result> results = lemma.typeCheck();
 			for (Result result : results)
-				Resources.log(result.toString(), 1);
+				resources.log(result.toString(), 1);
 			if (results.isEmpty())
-				Resources.log("=> OK", 1);
+				resources.log("=> OK", 1);
 			else
-				Resources.log("=> KO", 1);
+				resources.log("=> KO", 1);
 		}
 	}
 }
