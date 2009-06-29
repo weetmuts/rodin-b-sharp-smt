@@ -213,16 +213,13 @@ public final class Lemma {
 		ITypeCheckResult result = null;
 		for (LemmaPredicate hypothesis : hypotheses) {
 			result = hypothesis.getContent().typeCheck(environment);
-			if (!result.hasProblem())
-				environment.addAll(result.getInferredEnvironment());
-			else
-				problems.add(new Result(hypothesis,result));
+			if (result.hasProblem()
+					|| !result.getInferredEnvironment().isEmpty())
+				problems.add(new Result(hypothesis, result));
 		}
 		result = goal.getContent().typeCheck(environment);
-		if (!result.hasProblem())
-			environment.addAll(result.getInferredEnvironment());
-		else
-			problems.add(new Result(goal,result));
+		if (result.hasProblem() || !result.getInferredEnvironment().isEmpty())
+			problems.add(new Result(goal, result));
 		return problems;
 	}
 
