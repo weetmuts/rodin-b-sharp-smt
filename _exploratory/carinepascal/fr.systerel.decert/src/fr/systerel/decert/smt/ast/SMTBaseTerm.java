@@ -19,7 +19,7 @@ public abstract class SMTBaseTerm extends SMTTerm {
 	final String identifier;
 
 	/**
-	 * Creates a new boolean.
+	 * Creates a new base term.
 	 * 
 	 * @param tag
 	 *            the tag

@@ -10,11 +10,9 @@
  *******************************************************************************/
 package fr.systerel.decert.smt;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,35 +52,34 @@ public final class BenchmarkWriter extends LemmaParser {
 	public final static void write(final Benchmark benchmark, final File SMTFile)
 			throws IOException {
 
-		FileOutputStream outputStream = new FileOutputStream(SMTFile);
-		OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
-		BufferedWriter output = new BufferedWriter(streamWriter);
-		output.write("(benchmark " + patch(benchmark.getName()) + ".smt\n");
-		output.write("          :status " + benchmark.getStatus().getName()
-				+ "\n");
-		output.write("          :logic " + benchmark.getLogic() + "\n");
-		for (Annotation annotation : benchmark.getAnnotations())
-			output.write("          :" + annotation.getAttribute() + " {"
-					+ annotation.getValue() + "}\n");
-		if (!benchmark.getFunctions().isEmpty()) {
-			output.write("          :extrafuns (");
-			for (BenchmarkFunction function : benchmark.getFunctions()) {
-				output.write(" (" + function.getName());
-				for (Sort sort : function.getSignature())
-					output.write(" " + sort.getName());
-				output.write(")");
-			}
-			output.write(" )\n");
+		final PrintWriter out = new PrintWriter(SMTFile);
+		out.println("(benchmark " + patch(benchmark.getName()) + ".smt");
+		out.println("          :status " + benchmark.getStatus().getName());
+		out.println("          :logic " + benchmark.getLogic());
+		for (Annotation annotation : benchmark.getAnnotations()) {
+			out.println("          :" + annotation.getAttribute() + " {"
+					+ annotation.getValue() + "}");
 		}
-		for (BenchmarkFormula formula : benchmark.getAssumptions())
-			output.write("          :assumption " + formula + "\n");
-		output.write("          :formula " + benchmark.getFormula() + "\n");
+		if (!benchmark.getFunctions().isEmpty()) {
+			out.print("          :extrafuns (");
+			for (BenchmarkFunction function : benchmark.getFunctions()) {
+				out.print(" (" + function.getName());
+				for (Sort sort : function.getSignature())
+					out.print(" " + sort.getName());
+				out.print(")");
+			}
+			out.println(" )");
+		}
+		for (BenchmarkFormula formula : benchmark.getAssumptions()) {
+			out.println("          :assumption " + formula);
+		}
+		out.println("          :formula " + benchmark.getFormula());
 		String notes = benchmark.getNotes();
-		if ((notes != null) && !notes.equals(""))
-			output.write("          :notes " + benchmark.getNotes() + "\n");
-		output.write(")");
-		output.flush();
-		output.close();
+		if (notes != null && notes.length() != 0) {
+			out.println("          :notes " + benchmark.getNotes());
+		}
+		out.println(")");
+		out.close();
 	}
 
 	/**

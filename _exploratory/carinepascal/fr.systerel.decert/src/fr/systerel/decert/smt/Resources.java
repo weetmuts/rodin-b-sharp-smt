@@ -81,7 +81,7 @@ public class Resources extends fr.systerel.decert.Resources {
 	@Override
 	protected void printCommand() {
 		System.out.println("SMTBench [options] <XMLFile><DTDFile><SMTFolder>");
-		System.out.println("where <XMLile> is the path of an XML input file "
+		System.out.println("where <XMLFile> is the path of an XML input file "
 				+ "<DTDFile> is the path of the associated DTD file "
 				+ "and <SMTFolder> is the output directory.");
 	}

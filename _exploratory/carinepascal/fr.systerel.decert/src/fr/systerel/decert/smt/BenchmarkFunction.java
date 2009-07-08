@@ -44,9 +44,9 @@ public final class BenchmarkFunction {
 	    this.name = name;
 		signature = new ArrayList<Sort>();
 		if (type instanceof IntegerType)
-			signature.add(Sort.fromName("Int"));
+			signature.add(Sort.INT);
 		else if (type instanceof BooleanType)
-			signature.add(Sort.fromName("Bool"));
+			signature.add(Sort.BOOL);
 		else
 			assert false; // not implemented yet
 	}

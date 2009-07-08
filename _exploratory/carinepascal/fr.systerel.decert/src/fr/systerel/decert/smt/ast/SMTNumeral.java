@@ -33,14 +33,16 @@ public final class SMTNumeral extends SMTBaseTerm {
 
 	@Override
 	protected void toString(StringBuilder builder) {
+		final String prefix, suffix;
 		if (value.signum() < 0) {
-			builder.append("(~ ");
-			builder.append(identifier, 1, identifier.length());
+			prefix = "(~ ";
+			suffix = ")";
 		} else {
-			builder.append(identifier);
+			prefix = "";
+			suffix = "";
 		}
-		if (value.signum() < 0) {
-			builder.append(')');
-		}
+		builder.append(prefix);
+		builder.append(value.abs());
+		builder.append(suffix);
 	}
 }
