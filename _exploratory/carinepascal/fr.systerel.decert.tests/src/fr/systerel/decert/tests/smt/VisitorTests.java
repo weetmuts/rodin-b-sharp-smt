@@ -32,7 +32,7 @@ public class VisitorTests extends AbstractSMTTests {
 	private final Expression zero = ff
 			.makeIntegerLiteral(BigInteger.ZERO, null);
 	private final Expression one = ff.makeIntegerLiteral(BigInteger.ONE, null);
-	private final Expression minusone = ff.makeIntegerLiteral(new BigInteger("-1"), null);
+	private final Expression minusone = ff.makeIntegerLiteral(BigInteger.valueOf(-1), null);
 
 	private <T extends Formula<?>> void assertVisit(T formula, String expected) {
 		final Visitor visitor = new Visitor();
