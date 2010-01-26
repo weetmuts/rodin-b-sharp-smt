@@ -9,4 +9,4 @@ Bundle-Localization: plugin
 Export-Package: fr.systerel.decert,
  fr.systerel.decert.smt,
  fr.systerel.decert.smt.ast
-Require-Bundle: org.eventb.core.ast;bundle-version="1.0.0"
+Require-Bundle: org.eventb.core.ast
