@@ -2,6 +2,7 @@ package fr.systerel.smt.provers.internal.core;
 
 import static org.eventb.core.seqprover.eventbExtensions.Lib.ff;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +42,11 @@ import org.eventb.core.ast.UnaryPredicate;
  * 
  * @author Y. Fages-Tafanelli
  */
-public class HypothesisAnalysis {
-
+public class HypothesisGoalAnalysis {
+	
+	// generator of smt variable generator
+	final SmtVarGenerator smtVarGen= new SmtVarGenerator();
+	
 	private static final Set<Integer> ARITHMETIC_TAG_LIST = new HashSet<Integer>(
 			Arrays.asList(Formula.BOUND_IDENT, Formula.DIV, Formula.EQUAL,
 					Formula.EXPN, Formula.FREE_IDENT, Formula.FUNIMAGE,
@@ -70,14 +74,15 @@ public class HypothesisAnalysis {
 
 	/**
 	 * Simplify Hypothesis
-	 * 
+	 * 	Parameter(s): List of predicates --> hypothesis to simplify
+	 * 	return a list of predicates for simplified hypothesis 
 	 * @author Y. Fages-Tafanelli
 	 * 
 	 */
-	public void SimplifyHypothesis (List<Predicate> hypList,List<Predicate> hypListSimp){
+	public List<Predicate> SimplifyHypothesis (List<Predicate> hypList){
 		
 		// Create a generator for smt variables 
-		final SmtVarGenerator smtVarGen= new SmtVarGenerator();
+		List<Predicate> hypListSimp = new ArrayList<Predicate>();
 		
 		for (Predicate hyp : hypList) {
 			IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
@@ -95,6 +100,32 @@ public class HypothesisAnalysis {
 			// Add the simplified hypothesis in the list 
 			hypListSimp.add(hyp.rewrite(rewriter));
 		}
+		return hypListSimp;
+	}
+	
+	/**
+	 * Simplify Goal:
+	 * 	Parameter(s): goal --> predicate to simplify
+	 * 	return a predicate --> goal simplified
+	 * 
+	 * @author Y. Fages-Tafanelli
+	 * 
+	 */
+	public Predicate SimplifyGoal (Predicate goal){
+
+			IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
+				public Expression rewrite(BinaryExpression expression) {
+					// Handle Function Image
+					if (expression.getTag()== Formula.FUNIMAGE){
+						Expression expr = ff.makeFreeIdentifier(smtVarGen.SmtVarName(expression),null,expression.getType());
+						return expr;
+					}
+					else {
+						return expression;	
+					}
+				}
+			};
+			return goal.rewrite(rewriter);
 	}
 	
 	/**

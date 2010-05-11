@@ -32,24 +32,25 @@ public class ExternalSmt extends XProverReasoner {
 	public XProverCall newProverCall(IReasonerInput input,
 			Iterable<Predicate> hypotheses, Predicate goal, IProofMonitor pm) {
 	
-		
-		
 		final List<Predicate> smtHyps=new ArrayList<Predicate>();
-		final List<Predicate> smtHypsSimp=new ArrayList<Predicate>();
-		final HypothesisAnalysis smtHypOps= new HypothesisAnalysis();
+		final List<Predicate> smtHypsSimp;
+		final Predicate goalSimp;
+		final HypothesisGoalAnalysis smtHypGoalOps= new HypothesisGoalAnalysis();
 		
 		// Hypothesis selection
 		for (Predicate hyp : hypotheses) {
-			if (smtHypOps.IsArithmetic(hyp)){
+			if (smtHypGoalOps.IsArithmetic(hyp)){
 				smtHyps.add(hyp);
 			}
 		}
 		
-		// Hypothesis simplification
-		smtHypOps.SimplifyHypothesis(smtHyps,smtHypsSimp);
+		// Hypothesis & Goal simplification
+		smtHypsSimp=smtHypGoalOps.SimplifyHypothesis(smtHyps);
+		goalSimp=smtHypGoalOps.SimplifyGoal(goal);
 		
-		System.out.println(smtHypsSimp.toString());
+		System.out.println("Hyps simplified " +smtHypsSimp.toString());
+		System.out.println("Goal simplified " +goalSimp.toString());
 		
-		return new SmtCall(smtHyps, goal, pm);
+		return new SmtCall(smtHyps, goalSimp, pm);
 	}
 }
