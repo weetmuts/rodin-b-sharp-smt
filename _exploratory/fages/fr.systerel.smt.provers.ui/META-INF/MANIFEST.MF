@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: fr.systerel.smt.provers.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ fr.systerel.smt.provers.core;bundle-version="1.0.0",
+ org.eventb.core.seqprover;bundle-version="1.3.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: %pluginProvider
+Import-Package: org.eventb.ui.prover

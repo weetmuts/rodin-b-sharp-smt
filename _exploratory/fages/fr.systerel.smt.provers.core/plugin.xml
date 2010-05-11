@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eventb.core.seqprover.reasoners">
+      <reasoner
+            class="fr.systerel.smt.provers.core.Reasoner1"
+            id="fr.systerel.smt.provers.core.reasoner1">
+      </reasoner>
+   </extension>
+   <extension
+         point="org.eventb.core.seqprover.autoTactics">
+      <autoTactic
+            class="fr.systerel.smt.provers.core.Tactic1"
+            id="fr.systerel.smt.provers.core.autoTactic1"
+            name="name">
+      </autoTactic>
+   </extension>
+   <extension
+         point="org.eventb.core.postTactics">
+      <tactic
+            id="fr.systerel.smt.provers.core.tactic1">
+      </tactic>
+   </extension>
+   <extension
+         point="org.eventb.core.pomTactics">
+      <tactic
+            id="fr.systerel.smt.provers.core.tactic1">
+      </tactic>
+   </extension>
+
+</plugin>
