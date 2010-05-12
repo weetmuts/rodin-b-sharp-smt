@@ -1,5 +1,6 @@
 package fr.systerel.smt.provers.internal.core;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -2,6 +2,7 @@ package fr.systerel.smt.provers.internal.core;
 
 import static org.eventb.core.seqprover.eventbExtensions.Lib.ff;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -43,10 +44,10 @@ import org.eventb.core.ast.UnaryPredicate;
  * @author Y. Fages-Tafanelli
  */
 public class HypothesisGoalAnalysis {
-	
+
 	// generator of smt variable generator
 	final SmtVarGenerator smtVarGen= new SmtVarGenerator();
-	
+
 	private static final Set<Integer> ARITHMETIC_TAG_LIST = new HashSet<Integer>(
 			Arrays.asList(Formula.BOUND_IDENT, Formula.DIV, Formula.EQUAL,
 					Formula.EXPN, Formula.FREE_IDENT, Formula.FUNIMAGE,
@@ -76,25 +77,50 @@ public class HypothesisGoalAnalysis {
 	 * Simplify Hypothesis
 	 * 	Parameter(s): List of predicates --> hypothesis to simplify
 	 * 	return a list of predicates for simplified hypothesis 
+	 * 
 	 * @author Y. Fages-Tafanelli
 	 * 
 	 */
 	public List<Predicate> SimplifyHypothesis (List<Predicate> hypList){
-		
+
 		// Create a generator for smt variables 
 		List<Predicate> hypListSimp = new ArrayList<Predicate>();
-		
+
 		for (Predicate hyp : hypList) {
 			IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
+				@Override
+				public Predicate rewrite(RelationalPredicate predicate) {
+					Predicate pred=predicate;
+					switch (predicate.getTag())
+					{
+					case Formula.IN:
+						// Handle IN 
+						if (predicate.getRight().getTag()== Formula.NATURAL){
+							// Natural
+							pred=ff.makeRelationalPredicate(Formula.LE,ff.makeIntegerLiteral(new BigInteger("0"), null),predicate.getLeft(), null);
+						}
+						else if (predicate.getRight().getTag()== Formula.NATURAL1){
+							// Natural 1
+							pred=ff.makeRelationalPredicate(Formula.LT,ff.makeIntegerLiteral(new BigInteger("0"), null),predicate.getLeft(), null);
+						}
+						break;
+					default:
+						break;
+					}
+					return pred;
+				};
 				public Expression rewrite(BinaryExpression expression) {
-					// Handle Function Image
-					if (expression.getTag()== Formula.FUNIMAGE){
-						Expression expr = ff.makeFreeIdentifier(smtVarGen.SmtVarName(expression),null,expression.getType());
-						return expr;
+					Expression expr=expression;
+					switch(expression.getTag())
+					{
+					case Formula.FUNIMAGE:
+						// Handle Function Image in rewriter
+						expr = ff.makeFreeIdentifier(smtVarGen.SmtVarName(expression),null,expression.getType());
+						break;
+					default:
+						break;
 					}
-					else {
-						return expression;	
-					}
+					return expr;
 				};
 			};
 			// Add the simplified hypothesis in the list 
@@ -102,7 +128,7 @@ public class HypothesisGoalAnalysis {
 		}
 		return hypListSimp;
 	}
-	
+
 	/**
 	 * Simplify Goal:
 	 * 	Parameter(s): goal --> predicate to simplify
@@ -113,21 +139,21 @@ public class HypothesisGoalAnalysis {
 	 */
 	public Predicate SimplifyGoal (Predicate goal){
 
-			IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
-				public Expression rewrite(BinaryExpression expression) {
-					// Handle Function Image
-					if (expression.getTag()== Formula.FUNIMAGE){
-						Expression expr = ff.makeFreeIdentifier(smtVarGen.SmtVarName(expression),null,expression.getType());
-						return expr;
-					}
-					else {
-						return expression;	
-					}
+		IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
+			public Expression rewrite(BinaryExpression expression) {
+				// Handle Function Image
+				if (expression.getTag()== Formula.FUNIMAGE){
+					Expression expr = ff.makeFreeIdentifier(smtVarGen.SmtVarName(expression),null,expression.getType());
+					return expr;
 				}
-			};
-			return goal.rewrite(rewriter);
+				else {
+					return expression;	
+				}
+			}
+		};
+		return goal.rewrite(rewriter);
 	}
-	
+
 	/**
 	 * Expression/operators ... tags are memorized to be analyzed later
 	 * 
