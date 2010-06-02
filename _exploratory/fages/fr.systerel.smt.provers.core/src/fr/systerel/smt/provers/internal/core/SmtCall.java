@@ -1,7 +1,6 @@
 package fr.systerel.smt.provers.internal.core;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;

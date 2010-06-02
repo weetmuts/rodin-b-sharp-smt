@@ -1,6 +1,5 @@
 package fr.systerel.smt.provers.internal.ui;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

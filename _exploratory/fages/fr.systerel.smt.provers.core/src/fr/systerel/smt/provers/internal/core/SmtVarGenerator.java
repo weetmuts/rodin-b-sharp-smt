@@ -1,12 +1,8 @@
 package fr.systerel.smt.provers.internal.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eventb.core.ast.Expression;
-import org.eventb.core.ast.Predicate;
 
 /**
  * Class Implementation to generate smt var names.

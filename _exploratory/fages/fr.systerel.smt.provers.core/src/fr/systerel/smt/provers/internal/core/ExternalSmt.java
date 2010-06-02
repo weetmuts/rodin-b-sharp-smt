@@ -1,14 +1,9 @@
 package fr.systerel.smt.provers.internal.core;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.core.ast.AssociativeExpression;
-import org.eventb.core.ast.DefaultVisitor;
-import org.eventb.core.ast.IVisitor;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.xprover.XProverCall;

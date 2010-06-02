@@ -1,12 +1,9 @@
 package fr.systerel.smt.provers.core;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.core.seqprover.eventbExtensions.Tactics;
 import org.eventb.core.seqprover.tactics.BasicTactics;
 import org.eventb.core.seqprover.xprover.XProverInput;
-import org.osgi.framework.BundleContext;
 
 import fr.systerel.smt.provers.internal.core.ExternalSmt;
 

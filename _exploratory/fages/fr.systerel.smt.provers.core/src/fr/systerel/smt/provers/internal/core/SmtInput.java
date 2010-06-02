@@ -2,8 +2,6 @@ package fr.systerel.smt.provers.internal.core;
 
 import org.eventb.core.seqprover.xprover.XProverInput;
 
-import fr.systerel.smt.provers.core.SmtProversCore;
-
 public class SmtInput extends XProverInput {
 
 
