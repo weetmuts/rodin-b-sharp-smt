@@ -27,6 +27,8 @@ import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.Expression;
+import org.eventb.core.ast.ExtendedExpression;
+import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ISimpleVisitor;
@@ -373,5 +375,13 @@ public class Visitor implements ISimpleVisitor {
 
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		assert false;
+	}
+	
+	public void visitExtendedExpression(ExtendedExpression expression) {
+		// Do nothing.
+	}
+	
+	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
+		// Do nothing.
 	}
 }
