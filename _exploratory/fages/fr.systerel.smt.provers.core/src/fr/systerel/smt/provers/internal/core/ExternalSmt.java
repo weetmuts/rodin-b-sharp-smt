@@ -31,7 +31,8 @@ public class ExternalSmt extends XProverReasoner {
 		final List<Predicate> smtHyps=new ArrayList<Predicate>();
 		final List<Predicate> smtHypsSimp;
 		final Predicate goalSimp;
-		final HypothesisGoalAnalysis smtHypGoalOps= new HypothesisGoalAnalysis();
+		
+		 final HypothesisGoalAnalysis smtHypGoalOps= new HypothesisGoalAnalysis();
 		
 		// Hypothesis selection
 		for (Predicate hyp : hypotheses) {
@@ -45,8 +46,8 @@ public class ExternalSmt extends XProverReasoner {
 		goalSimp=smtHypGoalOps.SimplifyGoal(goal);
 		
 		System.out.println("Hyps simplified " +smtHypsSimp.toString());
-		System.out.println("Goal simplified " +goalSimp.toString());
+		System.out.println("Goal simplified " +goalSimp.toString());		 
 		
-		return new SmtCall(smtHyps, goalSimp, pm);
+		return new SmtCall(smtHyps, goal, pm);
 	}
 }

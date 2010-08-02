@@ -1,7 +1,5 @@
 package fr.systerel.smt.provers.internal.core;
 
-import static org.eventb.core.seqprover.eventbExtensions.Lib.ff;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +20,10 @@ import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.DefaultRewriter;
 import org.eventb.core.ast.Expression;
+import org.eventb.core.ast.ExtendedExpression;
+import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.IVisitor;
@@ -87,6 +88,7 @@ public class HypothesisGoalAnalysis {
 		List<Predicate> hypListSimp = new ArrayList<Predicate>();
 
 		for (Predicate hyp : hypList) {
+			final FormulaFactory ff = FormulaFactory.getDefault();
 			IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
 				@Override
 				public Predicate rewrite(RelationalPredicate predicate) {
@@ -138,7 +140,7 @@ public class HypothesisGoalAnalysis {
 	 * 
 	 */
 	public Predicate SimplifyGoal (Predicate goal){
-
+		final FormulaFactory ff = FormulaFactory.getDefault();
 		IFormulaRewriter rewriter=new DefaultRewriter(true, ff){
 			public Expression rewrite(BinaryExpression expression) {
 				// Handle Function Image
@@ -1562,6 +1564,42 @@ public class HypothesisGoalAnalysis {
 		public boolean visitTRUE(AtomicExpression expr) {
 			addTag(expr);
 			return true;
+		}
+
+		@Override
+		public boolean continueExtendedExpression(ExtendedExpression expr) {
+			addTag(expr);
+			return false;
+		}
+
+		@Override
+		public boolean continueExtendedPredicate(ExtendedPredicate pred) {
+			addTag(pred);
+			return false;
+		}
+
+		@Override
+		public boolean enterExtendedExpression(ExtendedExpression expr) {
+			addTag(expr);
+			return false;
+		}
+
+		@Override
+		public boolean enterExtendedPredicate(ExtendedPredicate pred) {
+			addTag(pred);
+			return false;
+		}
+
+		@Override
+		public boolean exitExtendedExpression(ExtendedExpression expr) {
+			addTag(expr);
+			return false;
+		}
+
+		@Override
+		public boolean exitExtendedPredicate(ExtendedPredicate pred) {
+			addTag(pred);
+			return false;
 		}
 
 	}
