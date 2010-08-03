@@ -1,9 +1,6 @@
 package br.ufrn.smt.solver.preferences;
 
 import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import fr.systerel.smt.provers.core.SmtProversCore;

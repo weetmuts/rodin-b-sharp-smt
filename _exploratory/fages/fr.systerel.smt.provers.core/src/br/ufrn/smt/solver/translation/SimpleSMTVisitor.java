@@ -1,7 +1,6 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.eventb.core.ast.AssociativeExpression;
@@ -19,7 +18,6 @@ import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
-import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.IntegerLiteral;
