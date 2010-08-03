@@ -1,6 +1,6 @@
 package fr.systerel.smt.provers.core;
 
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.tactics.BasicTactics;
 import org.eventb.core.seqprover.xprover.XProverInput;
@@ -11,7 +11,7 @@ import fr.systerel.smt.provers.internal.core.ExternalSmt;
 /**
  * The main plugin class for the Smt provers.
  */
-public class SmtProversCore extends Plugin {
+public class SmtProversCore extends AbstractUIPlugin {
 	/**
 	 * The plug-in identifier 
 	 */

@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 
+import fr.systerel.smt.provers.core.SmtProversCore;
+
 public class SmtCall extends SmtProversCall {
 
 	public SmtCall(Iterable<Predicate> hypotheses, Predicate goal,
@@ -14,7 +16,8 @@ public class SmtCall extends SmtProversCall {
 
 	@Override
 	protected String[] proverCommand() {
-		return null;
+		String solverArgs = SmtProversCore.getDefault().getPreferenceStore().getString("solverarguments");
+		return solverArgs.split(" ");
 	}
 
 	@Override
@@ -24,12 +27,12 @@ public class SmtCall extends SmtProversCall {
 
 	@Override
 	public String displayMessage() {
-		return null;
+		return super.resultOfSolver;
 	}
 
 	@Override
 	protected String successString() {
-		return null;
+		return "is valid";	
 	}
 
 	@Override

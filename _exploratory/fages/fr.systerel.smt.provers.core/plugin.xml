@@ -28,5 +28,19 @@
             id="fr.systerel.smt.provers.core.tactic1">
       </tactic>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="br.ufrn.smt.solver.preferences.SMTPreferencePage"
+            id="br.ufrn.smt.solver.preferences.SMTPreferencePage"
+            name="SMT-Solver Plugin">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="br.ufrn.smt.solver.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
