@@ -50,7 +50,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	private StringBuffer smtFormula = new StringBuffer();
 	private boolean isNecessaryAllMacros = false;
-	private String notImplementedOperation;
+	private String notImplementedOperation = "";
 
 	public SimpleSMTVisitor(long minimalFiniteValue2,long minimalEnumValue2,long minimalElemvalue2,Hashtable<String, String> singleQuotVars,ArrayList<String> indexesOfboundIdentifiers) {
 		this.minimalFiniteValue = minimalFiniteValue2;
@@ -166,14 +166,17 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	private String createSet(FreeIdentifier fr, SetExtension se) {
 		StringBuffer sb = new StringBuffer();
 		Pair<String, Long> setEl = getValidName("elem", minimalElemvalue);
-		minimalElemvalue = setEl.getSecondElement();
-		sb.append("(forall (? " + setEl.getFirstElement() + " " + "(or");
+		minimalElemvalue = setEl.getValue();
+		sb.append("(forall (? " + setEl.getKey() + " " + "(or");
 		for (int i = 0; i < se.getMembers().length; i++) {
 			SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			se.getMembers()[i].accept(smv);
-			getDataFromVisitor(smv); 
+			if(!getDataFromVisitor(smv))
+			{
+				return "";
+			}
 			String setElement = smv.getSmtFormula();
-			sb.append("(= + ?" + setEl.getFirstElement() + " " + setElement
+			sb.append("(= + ?" + setEl.getKey() + " " + setElement
 					+ ")");
 		}
 		sb.append("))");
@@ -210,14 +213,22 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		for (int i = 0; i < identifiers.length; i++) {
 			SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			identifiers[i].accept(smv);
-			getDataFromVisitor(smv);
+			//getDataFromVisitor(smv);
+			if(!getDataFromVisitor(smv))
+			{
+				return;
+			}
 			// smtFormula = smtFormula + smv.getSmtFormula();
 			smtFormula.append(smv.getSmtFormula());
 		}
 		for (int i = 0; i < exp.size(); i++) {
 			SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			exp.get(i).accept(smv);
-			getDataFromVisitor(smv);
+			//getDataFromVisitor(smv);
+			if(!getDataFromVisitor(smv))
+			{
+				return;
+			}
 			// smtFormula = smtFormula + smv.getSmtFormula();
 			smtFormula.append(smv.getSmtFormula());
 		}
@@ -237,14 +248,22 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		for (int i = 0; i < identifiers.length; i++) {
 			SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			identifiers[i].accept(smv);
-			getDataFromVisitor(smv);
+			//getDataFromVisitor(smv);
+			if(!getDataFromVisitor(smv))
+			{
+				return;
+			}
 		//	smtFormula = smtFormula + smv.getSmtFormula();
 			smtFormula.append(smv.getSmtFormula());
 		}
 		Expression expression = assignment.getSet();
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		expression.accept(smv);
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		//smtFormula = smtFormula + smv.getSmtFormula();
 		//smtFormula = smtFormula + ")";
 		smtFormula.append(smv.getSmtFormula() + ")");
@@ -265,7 +284,11 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		}
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		assignment.getCondition().accept(smv);
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		//smtFormula += sb.toString() + smv.getSmtFormula();
 		smtFormula.append(sb.toString() + smv.getSmtFormula());
 
@@ -327,25 +350,38 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		} else if (operatorTag == Formula.MUL) {
 			operator = "*";
 		} else if (operatorTag == Formula.BCOMP) {
-			notImplementedOperation = "Backward Composition";
+			//notImplementedOperation = "Backward Composition";
+			notImplementedOperation = "Translation of Backward Composition like in " + expression.toString() + " is not implemented yet";
 		}
 
 		Expression[] expressions = expression.getChildren();
 
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		expressions[0].accept(smv);
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		//smtFormula += "(" + operator + smv.getSmtFormula();
 		smtFormula.append("(" + operator + smv.getSmtFormula());
 		smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		expressions[1].accept(smv);
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		//smtFormula += smv.getSmtFormula() + ")";
 		smtFormula.append(smv.getSmtFormula() + ")");
 		for (int i = 2; i < expressions.length; i++) {
 			smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			expressions[i].accept(smv);
-			getDataFromVisitor(smv);
+			//getDataFromVisitor(smv);
+			if(!getDataFromVisitor(smv))
+			{
+				return;
+			}
 		//	smtFormula = "(" + operator + smtFormula + smv.getSmtFormula() + ")";
 			StringBuffer temp = new StringBuffer("(" + operator + smtFormula.toString() + smv.getSmtFormula() + ")");
 			smtFormula = temp;
@@ -379,23 +415,23 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		} else if (vTag == Formula.KPRED) {
 			//smtFormula = smtFormula + " pred ";
 			smtFormula.append(" pred ");
-			notImplementedOperation = "KPRED";
+			notImplementedOperation = "Translation of pred like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.KSUCC) {
 			//smtFormula = smtFormula + " succ ";
 			smtFormula.append(" succ ");
-			notImplementedOperation = "KSUCC";
+			notImplementedOperation = "Translation of succ in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.KPRJ1_GEN) {
 			//smtFormula = smtFormula + " prj1 ";
 			smtFormula.append(" prj1 ");
-			notImplementedOperation = "KPRJ1_GEN";
+			notImplementedOperation = "Translation of prj1 in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.KPRJ2_GEN) {
 			//smtFormula = smtFormula + " prj2 ";
 			smtFormula.append(" prj2 ");
-			notImplementedOperation = "KPRJ2_GEN";
+			notImplementedOperation = "Translation of prj2 in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.KID_GEN) {
 			//smtFormula = smtFormula + " id ";
 			smtFormula.append(" id ");
-			notImplementedOperation = "KID_GEN";
+			notImplementedOperation = "Translation of id in " + expression.toString() + " is not implemented yet";
 		}
 
 	}
@@ -410,10 +446,13 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			this.isNecessaryAllMacros = true;
 		} else if (vTag == Formula.TREL) {
 			notImplementedOperation = "total relation";
+			notImplementedOperation = "Translation of Total Relation like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.SREL) {
 			notImplementedOperation = "surjective relation";
+			notImplementedOperation = "Translation of Surjective Relation like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.STREL) {
 			notImplementedOperation = "total surjective relation";
+			notImplementedOperation = "Translation of Total Surjective Relation like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.PFUN) {
 			operator = "pfun";
 			this.isNecessaryAllMacros = true;
@@ -437,14 +476,13 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			this.isNecessaryAllMacros = true;
 		} else if (vTag == Formula.SETMINUS) {
 			operator = "setminus";
-			
 		} else if (vTag == Formula.CPROD) {
 			operator = "cartesianproduct";
 		} else if (vTag == Formula.DPROD) {
-			notImplementedOperation = "direct product";
+			notImplementedOperation = "Translation of Direct Product like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.PPROD) {
 			notImplementedOperation = "parallel product";
-
+			notImplementedOperation = "Translation of Parallel Product like in " + expression.toString() + " is not implemented yet";			
 		} else if (vTag == Formula.DOMRES) {
 			operator = "domr";
 			this.isNecessaryAllMacros = true;
@@ -467,19 +505,30 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			operator = "mod";
 		} else if (vTag == Formula.EXPN) {
 			notImplementedOperation = "exponentiation";
+			notImplementedOperation = "Translation of Exponentiation like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.FUNIMAGE) {
 			notImplementedOperation = "FUNIMAGE: function application";
+			notImplementedOperation = "Translation of image of function like in " + expression.toString() + " is not implemented yet";
 		} else if (vTag == Formula.RELIMAGE) {
 			notImplementedOperation = "RELIMATION: relational image";
+			notImplementedOperation = "Translation of Relational Image like in " + expression.toString() + " is not implemented yet";
 		}
 		Expression exp = expression.getLeft();
 		SimpleSMTVisitor leftVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		exp.accept(leftVisitor);
-		getDataFromVisitor(leftVisitor);
+		//getDataFromVisitor(leftVisitor);
+		if(!getDataFromVisitor(leftVisitor))
+		{
+			return;
+		}
 		SimpleSMTVisitor rightVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		exp = expression.getRight();
 		exp.accept(rightVisitor);
-		getDataFromVisitor(rightVisitor);
+		//getDataFromVisitor(rightVisitor);
+		if(!getDataFromVisitor(rightVisitor))
+		{
+			return;
+		}
 
 		smtFormula.append("(" + operator + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")");
 		//smtFormula = smtFormula + "(" + operator + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")";
@@ -498,10 +547,11 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		if (expression.getTag() == Formula.QUNION) {
 			notImplementedOperation = "n-ary union";
+			notImplementedOperation = "Translation of N-Ary Union like in " + expression.toString() + " is not implemented yet";
 		} else if (expression.getTag() == Formula.QINTER) {
-			notImplementedOperation = "n-ary interseccion";
+			notImplementedOperation = "Translation of N-Ary Interseccion like in " + expression.toString() + " is not implemented yet";
 		} else if (expression.getTag() == Formula.CSET) {
-			notImplementedOperation = "comprehension set";
+			notImplementedOperation = "Translation of Comprehension Set like in " + expression.toString() + " is not implemented yet";
 		}
 	}
 
@@ -509,19 +559,19 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		StringBuffer setBuffer = new StringBuffer();
 		Pair<String, Long> p = getValidName("enum_", minimalEnumValue);
 
-		String nameOfSet = p.getFirstElement();
+		String nameOfSet = p.getKey();
 
-		minimalEnumValue = p.getSecondElement();
-		setBuffer.append("(" + p.getFirstElement() + "(lambda(?");
+		minimalEnumValue = p.getValue();
+		setBuffer.append("(" + p.getKey() + "(lambda(?");
 
 		p = getValidName("enum_", minimalElemvalue);
-		minimalElemvalue = p.getSecondElement();
+		minimalElemvalue = p.getValue();
 		Type setType = expression.getType();
 		if(expression.getType().getBaseType() != null)
 		{
 			if(expression.getType().getBaseType().getBaseType() != null)
 			{
-				notImplementedOperation = "Power Set of Power Set";
+				notImplementedOperation = "The Power Set of Power Set in" + expression.toString() + " is not implemented yet";
 			}
 			//TODO Implement Set Extension of sets of pairs.			
 			else
@@ -530,12 +580,12 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			}
 		}
 		
-		String name1 = p.getFirstElement();
+		String name1 = p.getKey();
 		String name2 = null;
 
 		if (setType.toString().contains("\u21a6")) // MAPSTO
 		{
-			setBuffer.append(p.getFirstElement()
+			setBuffer.append(p.getKey()
 					+ " "
 					+ RodinToSMTPredicateParser
 							.getSMTAtomicExpressionFormat(setType.getSource()
@@ -543,18 +593,18 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 			p = getValidName("enum_", minimalElemvalue);
 
-			minimalElemvalue = p.getSecondElement();
+			minimalElemvalue = p.getValue();
 
-			setBuffer.append(p.getFirstElement()
+			setBuffer.append(p.getKey()
 					+ " "
 					+ RodinToSMTPredicateParser
 							.getSMTAtomicExpressionFormat(setType.getTarget()
 									.toString()) + ") . (or");
 
-			name2 = p.getFirstElement();
+			name2 = p.getKey();
 
 		} else {
-			setBuffer.append(p.getFirstElement()
+			setBuffer.append(p.getKey()
 					+ " "
 					+ RodinToSMTPredicateParser
 							.getSMTAtomicExpressionFormat(setType.toString())
@@ -590,15 +640,15 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	public void visitUnaryExpression(UnaryExpression expression) {
 		String operator = "";
 		if (expression.getTag() == Formula.POW) {
-			notImplementedOperation = "set of all subsets (power set)";
+			notImplementedOperation = "The set of all subsets (power set) in " + expression.toString() + " is not implemented yet";
 		} else if (expression.getTag() == Formula.KCARD) {
 			operator = "card";
 		} else if (expression.getTag() == Formula.POW1) {
 			notImplementedOperation = "the set of all no-empty subsets";
 		} else if (expression.getTag() == Formula.KUNION) {
-			notImplementedOperation = "KUNION";
+			notImplementedOperation = "The translation of operator KUNION in " + expression.toString() + " is not implemented yet";
 		} else if (expression.getTag() == Formula.KINTER) {
-			notImplementedOperation = "KINTER";
+			notImplementedOperation = "The translation of operator KINTER in " + expression.toString() + " is not implemented yet";;
 		} else if (expression.getTag() == Formula.KDOM) {
 			operator = "domain";
 			//isNecessaryAllMacros = true;
@@ -612,18 +662,22 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			operator = "inv";
 			isNecessaryAllMacros = true;
 		} else if (expression.getTag() == Formula.UNMINUS) {
-			notImplementedOperation = "UNMINUS";
+			operator = "-";
 		}
 
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		expression.getChild().accept(smv);
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		//smtFormula = smtFormula + "(" + operator + smv.getSmtFormula() + ")";
 		smtFormula.append("(" + operator + smv.getSmtFormula() + ")");
 
 	}
 	
-	private void getDataFromVisitor(SimpleSMTVisitor smv)
+	private boolean getDataFromVisitor(SimpleSMTVisitor smv)
 	{
 		funs.putAll(smv.getFuns());
 		sorts.addAll(smv.getSorts());
@@ -634,10 +688,19 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		minimalEnumValue = smv.getMinimalEnumValue();
 		minimalFiniteValue = smv.getMinimalFiniteValue();
 		indexesOfboundIdentifiers = smv.getIndexesOfboundIdentifiers();
+		this.notImplementedOperation = smv.getNotImplementedOperation();
 		if(smv.isNecessaryAllMacros() == true)
 		{
 			isNecessaryAllMacros = true;
-		}		
+		}
+		if(!notImplementedOperation.isEmpty())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 
@@ -685,11 +748,19 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		predicate.getChildren()[1].accept(smv);
 		//smtFormula += smv.getSmtFormula() + ")";
 		smtFormula.append(smv.getSmtFormula() + ")");
-		getDataFromVisitor(smv);
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		for (int i = 2; i < predicate.getChildren().length; i++) {
 			smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			predicate.getChildren()[i].accept(smv);
-			getDataFromVisitor(smv);
+			//getDataFromVisitor(smv);
+			if(!getDataFromVisitor(smv))
+			{
+				return;
+			}
 			StringBuffer temp = new StringBuffer("(" + operator + smtFormula.toString() + smv.getSmtFormula() + ")");
 			//smtFormula = "(" + operator + smtFormula + smv.getSmtFormula() + ")";
 			smtFormula = temp;
@@ -710,10 +781,18 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		SimpleSMTVisitor rightVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		Predicate pred = predicate.getLeft();
 		pred.accept(leftVisitor);
-		getDataFromVisitor(leftVisitor);
+		//getDataFromVisitor(leftVisitor);
+		if(!getDataFromVisitor(leftVisitor))
+		{
+			return;
+		}
 		pred = predicate.getRight();
 		pred.accept(rightVisitor);
-		getDataFromVisitor(rightVisitor);
+		//getDataFromVisitor(rightVisitor);
+		if(!getDataFromVisitor(rightVisitor))
+		{
+			return;
+		}
 		//smtFormula = smtFormula + "(" + operator + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")";
 		smtFormula.append("(" + operator + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")");
 	}
@@ -729,7 +808,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	}
 
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		notImplementedOperation = "KPARTITION";
+		notImplementedOperation = "Translation of multiple predicates like " + predicate.toString() + " was not implemented yet";
 	}
 
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
@@ -748,24 +827,20 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		{
 			SimpleSMTVisitor boundDecl = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 			boundVars[i].accept(boundDecl);
-			getDataFromVisitor(boundDecl);
+			//getDataFromVisitor(boundDecl);
+			if(!getDataFromVisitor(boundDecl))
+			{
+				return;
+			}
 			sb.append(boundDecl.getSmtFormula());
 		}
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		predicate.getPredicate().accept(smv);
-		getDataFromVisitor(smv);
-		
-
-//		for (int i = 0; i < boundVars.length; i++) {
-//			sb.append("(?" + boundVars[i].getName() + " "
-//					+ boundVars[i].getType().toString() + ")");
-//			smtF.replaceAll(boundVars[i].getName(),
-//					"?" + boundVars[i].getName());
-//		}
-		
-
-		//smtFormula = smtFormula + sb.toString() + smtF + ")";
-		//smtFormula.append(sb.toString() + smtF + ")");
+		//getDataFromVisitor(smv);
+		if(!getDataFromVisitor(smv))
+		{
+			return;
+		}
 		smtFormula.append(sb.toString() + smv.getSmtFormula() +  ")");
 	}
 
@@ -807,21 +882,27 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		Expression exp = predicate.getLeft();
 		SimpleSMTVisitor leftVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		exp.accept(leftVisitor);
-		getDataFromVisitor(leftVisitor);
+		//getDataFromVisitor(leftVisitor);
+		if(!getDataFromVisitor(leftVisitor))
+		{
+			return;
+		}
 		exp = predicate.getRight();
 		SimpleSMTVisitor rightVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		exp.accept(rightVisitor);
-		getDataFromVisitor(rightVisitor);
+		//getDataFromVisitor(rightVisitor);
+		if(!getDataFromVisitor(rightVisitor))
+		{
+			return;
+		}
 //		if (operator.equals("in")
 //				&& predicate.getLeft().getType().getBaseType() != null
 //				&& predicate.getRight().getType().getBaseType() != null) {
 //			operator = "subseteq";
 //		}
 		if (needsNotClause) {
-			//smtFormula = smtFormula + "(not(" + operator + " " + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + "))";
 			smtFormula.append("(not(" + operator + " " + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + "))");
 		} else {
-			//smtFormula = smtFormula + "(" + operator + " " + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")";
 			smtFormula.append("(" + operator + " " + leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")");
 			
 		}
@@ -896,10 +977,10 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		}
 		try {
 			if (kVar == null) {
-				throw new Exception("Variavel kVar não foi inicializada");
+				throw new Exception("kVar was not initialized");
 			}
 			if (pVar == null) {
-				throw new Exception("Variavel pVar não foi inicializada");
+				throw new Exception("pVar was not initialized");
 			}
 			if (fVar == null) {
 				throw new Exception(
@@ -914,7 +995,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 				{
 					if(finiteType.getBaseType().getBaseType() != null)
 					{
-						this.notImplementedOperation = "Power Set of Power Set";
+						this.notImplementedOperation = "Translation of power set of power set like " + predicate.toString() + "is not implemented yet";
 					}
 					else
 					{
@@ -949,7 +1030,11 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 		SimpleSMTVisitor childvisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 		child.accept(childvisitor);
-		getDataFromVisitor(childvisitor);
+		//getDataFromVisitor(childvisitor);
+		if(!getDataFromVisitor(childvisitor))
+		{
+			return;
+		}
 		//smtFormula = smtFormula + "(not" + childvisitor.getSmtFormula() + ")";
 		smtFormula.append("(not" + childvisitor.getSmtFormula() + ")");
 

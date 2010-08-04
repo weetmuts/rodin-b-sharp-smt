@@ -54,11 +54,11 @@ public class RodinToSMTPredicateParser {
 		this.translatedFile = translatedFile;
 	}
 
-	public ArrayList<String> getNotImplementedOperation() {
+	public ArrayList<Pair<String, String>> getNotImplementedOperation() {
 		return notImplementedOperation;
 	}
 
-	public void setNotImplementedOperation(ArrayList<String> notImplementedOperation) {
+	public void setNotImplementedOperation(ArrayList<Pair<String, String>> notImplementedOperation) {
 		this.notImplementedOperation = notImplementedOperation;
 	}
 
@@ -78,10 +78,11 @@ public class RodinToSMTPredicateParser {
 		this.hypotheses = hypotheses;
 	}
 
-	ArrayList<String> notImplementedOperation = new ArrayList<String>();
+	ArrayList<Pair<String, String>> notImplementedOperation = new ArrayList<Pair<String,String>>();
+	//String notImplementedOperation = "";
 	private boolean isNecessaryAllMacros = false;
 	
-	private void getDataFromVisitor(SimpleSMTVisitor smv)
+	private boolean getDataFromVisitor(SimpleSMTVisitor smv)
 	{
 		//funs.putAll(smv.getFuns());
 		funs = smv.getFuns();
@@ -95,10 +96,20 @@ public class RodinToSMTPredicateParser {
 		minimalElemvalue = smv.getMinimalElemvalue();
 		minimalEnumValue = smv.getMinimalEnumValue();
 		minimalFiniteValue = smv.getMinimalFiniteValue();
+		
 		if(smv.isNecessaryAllMacros() == true)
 		{
 			isNecessaryAllMacros = true;
 		}		
+		if(!smv.getNotImplementedOperation().isEmpty())
+		{
+			this.notImplementedOperation.add(new Pair<String, String>(smv.toString(),smv.getNotImplementedOperation()));
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 	public long getMinimalFiniteValue() {
@@ -222,15 +233,19 @@ public class RodinToSMTPredicateParser {
 		this.smtGoal = smtGoal;
 	}
 
-	public RodinToSMTPredicateParser(
-			ArrayList<Predicate> hypotheses,
-			Predicate goal
-	) {
-		
+	public RodinToSMTPredicateParser (ArrayList<Predicate> hypotheses,Predicate goal) throws TranslationException {
 		this.hypotheses = hypotheses;
 		this.goal = goal;
 		getTypeEnvironment();
-		parsePredicates();
+		//try
+		//{
+			parsePredicates();
+		//}
+//		catch(TranslationException t)
+//		{
+//			throw t;
+//		}
+		
 	}
 	
 	private void getTypeEnvironment()
@@ -520,7 +535,7 @@ public class RodinToSMTPredicateParser {
 		}
 	}	
 	
-	void parsePredicates()
+	void parsePredicates() throws TranslationException
 	{
 		SimpleSMTVisitor smv1 = null;
 		if(!hypotheses.isEmpty())
@@ -532,19 +547,28 @@ public class RodinToSMTPredicateParser {
 			{
 				smv1 = new SimpleSMTVisitor(this);
 				hypotheses.get(i).accept(smv1);
-				assumptions.add(smv1.getSmtFormula());
-				this.getDataFromVisitor(smv1);
+				if(this.getDataFromVisitor(smv1))
+				{
+					assumptions.add(smv1.getSmtFormula());					
+				}			
 			}
 		}
 		smv1 = new SimpleSMTVisitor(this);
 		goal.accept(smv1);
-		this.getDataFromVisitor(smv1);
-		smtGoal = smv1.getSmtFormula();
-		if(smv1.isNecessaryAllMacros())
+		if(this.getDataFromVisitor(smv1))
 		{
-			this.isNecessaryAllMacros = true;
+			smtGoal = smv1.getSmtFormula();
+			if(smv1.isNecessaryAllMacros())
+			{
+				this.isNecessaryAllMacros = true;
+			}
+			printLemmaOnFile();
 		}
-		printLemmaOnFile();		
+		else
+		{
+			throw new TranslationException(notImplementedOperation);
+		}
+				
 	}
 	
 	public static void main(String[] args)

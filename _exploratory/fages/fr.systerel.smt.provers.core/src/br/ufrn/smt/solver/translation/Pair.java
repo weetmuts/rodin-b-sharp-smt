@@ -15,11 +15,11 @@ public class Pair<X,Y> {
 	/**
 	 * The first generic variable
 	 */
-	private X originalOp;
+	private X key;
 	/**
 	 * The second generic variable
 	 */
-	private Y smtOp;
+	private Y value;
 		
 	/**
 	 * This method only creates an object, do nothing more.
@@ -31,13 +31,13 @@ public class Pair<X,Y> {
 		
 	/**
 	 * It initializes an object with the generic variables set as user 
-	 * @param originalOp The first variable
-	 * @param smtOp The second variable
+	 * @param key The first variable
+	 * @param value The second variable
 	 */
-	public Pair(X originalOp, Y smtOp)
+	public Pair(X key, Y value)
 	{
-		this.originalOp = originalOp;
-		this.smtOp = smtOp;
+		this.key = key;
+		this.value = value;
 	}
 
 	/**
@@ -45,30 +45,30 @@ public class Pair<X,Y> {
 	 * 
 	 * @return The fist generic variable
 	 */
-	public X getFirstElement() {
-		return originalOp;
+	public X getKey() {
+		return key;
 	}
 	/**
 	 * Set the first generic variable
-	 * @param originalOp the value for the first generic variable
+	 * @param key the value for the first generic variable
 	 */
-	public void setFirstElement(X originalOp) {
-		this.originalOp = originalOp;
+	public void setKey(X key) {
+		this.key = key;
 	}
 	/**
 	 * Returns the second generic variable
 	 * @return The second generic variable
 	 */
-	public Y getSecondElement() {
-		return smtOp;
+	public Y getValue() {
+		return value;
 	}
 	
 	/**
 	 * Set the second generic variable
-	 * @param smtOp the value for the second generic variable
+	 * @param value the value for the second generic variable
 	 */
-	public void setSecondElement(Y smtOp) {
-		this.smtOp = smtOp;
+	public void setValue(Y value) {
+		this.value = value;
 	}
 	/**
 	 * It overhides the Object method toString. It returns the String in the following
@@ -83,7 +83,7 @@ public class Pair<X,Y> {
 	 */
 	public String toString()
 	{
-		return originalOp.toString() + " ->  " + smtOp.toString();
+		return key.toString() + " ->  " + value.toString();
 	}
 	/**
 	 * This method compares two objects of this class. It compares the first variable of 
@@ -95,7 +95,7 @@ public class Pair<X,Y> {
 	 */
 	public boolean equals(Pair<X,Y> o)
 	{
-		if(this.getFirstElement().equals(o.getFirstElement()) && this.getSecondElement().equals(o.getSecondElement()))
+		if(this.getKey().equals(o.getKey()) && this.getValue().equals(o.getValue()))
 		{
 			return true;
 		}

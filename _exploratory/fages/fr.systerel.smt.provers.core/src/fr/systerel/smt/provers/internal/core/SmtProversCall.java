@@ -16,6 +16,7 @@ import org.eventb.core.seqprover.xprover.XProverCall;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
+import br.ufrn.smt.solver.translation.TranslationException;
 
 import fr.systerel.smt.provers.core.SmtProversCore;
 
@@ -157,9 +158,13 @@ public abstract class SmtProversCall extends XProverCall {
 	
 	protected abstract String successString();
 	
-	protected static String preprocessSMTinVeriT(String smtFilePath)
+	protected static String preprocessSMTinVeriT(String smtFilePath) throws PreProcessingException
 	{
 		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("prepropath");
+		if(pathOfSolver.isEmpty())
+		{
+			throw new PreProcessingException("The path of the pre-processor is not defined");
+		}
 		String[] args = new String[3];
 		args[0] = pathOfSolver;
 		args[1] = "--print-simp-and-exit";		
@@ -217,49 +222,68 @@ public abstract class SmtProversCall extends XProverCall {
 		}		
 		try {
 			//Doing the translation:
-			RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(hypotheses, goal);
-			String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("solver_path");
-			String solverArgs = SmtProversCore.getDefault().getPreferenceStore().getString("solverarguments");
-
-			smtFile = rp.getTranslatedFile();
-
-			if(!smtFile.exists())
+			try
 			{
-				System.out.println("The translated file does not exist!!!!");
-			}
-			ArrayList<String> args = new ArrayList<String>(10);
-			args.add(pathOfSolver);
+				RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(hypotheses, goal);
+				String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("solver_path");
+				String solverArgs = SmtProversCore.getDefault().getPreferenceStore().getString("solverarguments");
 
-			args.add(smtFile.getPath());
-			if (!solverArgs.isEmpty())
-			{
-				args.add(solverArgs);
-			}
-					
-			
-			boolean preprocess = SmtProversCore.getDefault().getPreferenceStore().getBoolean("usingprepro");
-			String solver = SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver");
-			if(preprocess || !solver.equals("veriT"))
-			{
-				String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath());//result.getThirdElement().getPath());
-				File preprocessedFile = new File(/*result.getThirdElement().getParent()*/smtFile.getParent() + "/tempPreProcessed.smt");
-				if(!preprocessedFile.exists())
+				smtFile = rp.getTranslatedFile();
+
+				if(!smtFile.exists())
 				{
-					preprocessedFile.createNewFile();
+					System.out.println("The translated file does not exist!!!!");
 				}
-				FileWriter fw = new FileWriter(preprocessedFile);
-				fw.write(preprocessedSMT);
-				fw.close();
-				args.set(1, preprocessedFile.getPath());
-				this.firstTranslationFile = smtFile;
-				this.iFile = preprocessedFile;
-				this.smtFile = preprocessedFile;
+				ArrayList<String> args = new ArrayList<String>();
+				args.add(pathOfSolver);
+
+				args.add(smtFile.getPath());
+				if (!solverArgs.isEmpty())
+				{
+					args.add(solverArgs);
+				}
+						
+				
+				boolean preprocess = SmtProversCore.getDefault().getPreferenceStore().getBoolean("usingprepro");
+				String solver = SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver");
+				if(preprocess || !solver.equals("veriT"))
+				{
+					try
+					{
+						String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath());//result.getThirdElement().getPath());
+						File preprocessedFile = new File(/*result.getThirdElement().getParent()*/smtFile.getParent() + "/tempPreProcessed.smt");
+						if(!preprocessedFile.exists())
+						{
+							preprocessedFile.createNewFile();
+						}
+						FileWriter fw = new FileWriter(preprocessedFile);
+						fw.write(preprocessedSMT);
+						fw.close();
+						args.set(1, preprocessedFile.getPath());
+						this.firstTranslationFile = smtFile;
+						this.iFile = preprocessedFile;
+						this.smtFile = preprocessedFile;
+					}
+					catch(PreProcessingException p)
+					{
+						System.err.println(p.getMessage());
+						return;
+					}					
+					
+				}
+				iFile = smtFile;
+				callProver(args, "Success");	
 			}
-			iFile = smtFile;
-			callProver(args, "Success");	
+			catch(TranslationException t)
+			{
+				System.err.println(t.getMessage());
+				return;
+			}			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println(e.getMessage());
+			return;
 		}
 	}
 
