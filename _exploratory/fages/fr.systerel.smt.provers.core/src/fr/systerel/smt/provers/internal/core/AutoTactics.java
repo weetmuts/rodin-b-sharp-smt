@@ -26,7 +26,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversCore.externalSMT(true);
+			return SmtProversCore.ExternalSmtTac(true);
 		}
 	}
 	

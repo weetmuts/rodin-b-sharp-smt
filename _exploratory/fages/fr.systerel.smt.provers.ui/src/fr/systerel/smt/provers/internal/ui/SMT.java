@@ -16,7 +16,7 @@ public class SMT extends DefaultTacticProvider {
 	@Override
 	public ITactic getTactic(IProofTreeNode node, Predicate hyp,
 			IPosition position, String[] inputs, String globalInput) {
-		return SmtProversCore.externalSMT(true);
+		return SmtProversCore.ExternalSmtTac(true);
 	}
 
 	@Override

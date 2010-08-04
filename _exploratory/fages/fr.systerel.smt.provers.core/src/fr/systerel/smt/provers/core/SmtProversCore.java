@@ -39,7 +39,7 @@ public class SmtProversCore extends AbstractUIPlugin {
 	 * @return a tactic for running SMT with the given forces
 	 * @see #externalSMT(int, long)
 	 */
-	public static ITactic externalSMT(boolean restricted) {
+	public static ITactic ExternalSmtTac(boolean restricted) {
 		return BasicTactics.reasonerTac(
 				new ExternalSmt(),
 				new XProverInput(restricted,DEFAULT_DELAY));

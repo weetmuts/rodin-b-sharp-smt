@@ -2,19 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         id="ExternalSmtTac"
+         name="ExternalSmtTac"
          point="org.eventb.core.seqprover.reasoners">
-      <reasoner
-            class="fr.systerel.smt.provers.core.Reasoner1"
-            id="fr.systerel.smt.provers.core.reasoner1">
-      </reasoner>
    </extension>
    <extension
+         id="ExternalSMT"
+         name="ExternalSMT"
          point="org.eventb.core.seqprover.autoTactics">
-      <autoTactic
-            class="fr.systerel.smt.provers.core.Tactic1"
-            id="fr.systerel.smt.provers.core.autoTactic1"
-            name="name">
-      </autoTactic>
    </extension>
    <extension
          point="org.eventb.core.postTactics">
