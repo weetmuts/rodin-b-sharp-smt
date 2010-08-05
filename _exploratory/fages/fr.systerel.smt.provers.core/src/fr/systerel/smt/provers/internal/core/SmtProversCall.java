@@ -46,20 +46,20 @@ public abstract class SmtProversCall extends XProverCall {
 			throws IOException {
 		String seeFileOrProofCommand = SmtProversCore.getDefault()
 				.getPreferenceStore()
-				.getString(Messages.SmtProversCall_execute_Trans);
+				.getString("executeTrans"); //$NON-NLS-1$
 		if (seeFileOrProofCommand
-				.equals(Messages.SmtProversCall_proof_and_showfile)
+				.equals("proofandshowfile") //$NON-NLS-1$
 				|| seeFileOrProofCommand
-						.equals(Messages.SmtProversCall_proof_only)) {
+						.equals("proofonly")) { //$NON-NLS-1$
 			for (int i = 0; i < args.size(); i++) {
 				System.out.println(args.get(i));
 			}
 
 			if (SmtProversCore.getDefault().getPreferenceStore()
-					.getString(Messages.SmtProversCall_which_solver)
-					.equals(Messages.SmtProversCall_cvc3)) {
-				args.add(Messages.SmtProversCall_lang_option);
-				args.add(Messages.SmtProversCall_smt_option);
+					.getString("whichsolver") //$NON-NLS-1$
+					.equals("cvc3")) { //$NON-NLS-1$
+				args.add("-lang"); //$NON-NLS-1$
+				args.add("smt"); //$NON-NLS-1$
 			}
 
 			String[] terms = new String[args.size()];
@@ -68,13 +68,13 @@ public abstract class SmtProversCall extends XProverCall {
 			}
 
 			resultOfSolver = Exec.execProgram(terms);
-			System.out.println("\n********** Solver output:" + resultOfSolver
-					+ "\n********** End of Solver output\n");
+			System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
+					+ "\n********** End of Solver output\n"); //$NON-NLS-1$
 
 			// Check Solver Result
 			checkResult(resultOfSolver);
 
-			File resultFile = new File(iFile.getParent() + "/smTSolverString");
+			File resultFile = new File(iFile.getParent() + "/smTSolverString"); //$NON-NLS-1$
 			if (!resultFile.exists()) {
 				resultFile.createNewFile();
 			}
@@ -86,27 +86,27 @@ public abstract class SmtProversCall extends XProverCall {
 		}
 
 		if (seeFileOrProofCommand
-				.equals(Messages.SmtProversCall_proof_and_show_file)
+				.equals("proofandshowfile") //$NON-NLS-1$
 				|| seeFileOrProofCommand
-						.equals(Messages.SmtProversCall_show_file_only)) {
+						.equals("showfileonly")) { //$NON-NLS-1$
 			boolean preprocess = SmtProversCore.getDefault()
 					.getPreferenceStore()
-					.getBoolean(Messages.SmtProversCall_using_prepro);
+					.getBoolean("usingprepro"); //$NON-NLS-1$
 			String solver = SmtProversCore.getDefault().getPreferenceStore()
-					.getString(Messages.SmtProversCall_which_solver);
+					.getString("whichsolver"); //$NON-NLS-1$
 			String preprocessorOptions = SmtProversCore.getDefault()
 					.getPreferenceStore()
-					.getString(Messages.SmtProversCall_preprocessing_options);
-			if ((preprocess || !solver.equals(Messages.SmtProversCall_veriT))
+					.getString("preprocessingoptions"); //$NON-NLS-1$
+			if ((preprocess || !solver.equals("veriT")) //$NON-NLS-1$
 					&& (preprocessorOptions
-							.equals(Messages.SmtProversCall_after_smt) || preprocessorOptions
-							.equals(Messages.SmtProversCall_before_and_after))) {
+							.equals("aftersmt") || preprocessorOptions //$NON-NLS-1$
+							.equals("beforeandafter"))) { //$NON-NLS-1$
 				showFileInEditor(this.firstTranslationFile.getPath());
 			}
 
-			if (preprocessorOptions.equals(Messages.SmtProversCall_pre_smt)
+			if (preprocessorOptions.equals("presmt") //$NON-NLS-1$
 					|| preprocessorOptions
-							.equals(Messages.SmtProversCall_before_and_after)) {
+							.equals("beforeandafter")) { //$NON-NLS-1$
 				showFileInEditor(smtFile.getPath());
 			}
 		}
@@ -114,7 +114,7 @@ public abstract class SmtProversCall extends XProverCall {
 
 	private void showFileInEditor(String filePath) {
 		String editor = SmtProversCore.getDefault().getPreferenceStore()
-				.getString(Messages.SmtProversCall_smt_editor);
+				.getString("smteditor"); //$NON-NLS-1$
 		String[] args = { editor, filePath };
 		try {
 			Exec.execProgram(args);
@@ -126,24 +126,14 @@ public abstract class SmtProversCall extends XProverCall {
 
 	private boolean checkResult(String expected) throws IOException {
 		String typeOfSolver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString(Messages.SmtProversCall_which_solver);
-		if (expected.trim().endsWith(Messages.SmtProversCall_unsat)) {
+				.getString("whichsolver"); //$NON-NLS-1$
+		if (expected.trim().endsWith("unsat")) { //$NON-NLS-1$
 			valid = true;
 		} else {
 			valid = false;
 		}
 
 		return valid;
-	}
-
-	private synchronized FileReader getOutputFileReader() {
-		try {
-			return new FileReader(oFile);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	protected boolean callPK(String[] cmdArray) throws IOException {
@@ -180,51 +170,40 @@ public abstract class SmtProversCall extends XProverCall {
 	protected abstract String successString();
 
 	protected static String preprocessSMTinVeriT(String smtFilePath)
-			throws PreProcessingException {
+			throws PreProcessingException, IOException {
 		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString(Messages.SmtProversCall_prepro_path);
+				.getString("prepropath"); //$NON-NLS-1$
 		if (pathOfSolver.isEmpty()) {
 			throw new PreProcessingException(
 					Messages.SmtProversCall_preprocessor_path_not_defined);
 		}
 		String[] args = new String[3];
 		args[0] = pathOfSolver;
-		args[1] = Messages.SmtProversCall_print_simp_and_exit_option;
+		args[1] = "--print-simp-and-exit"; //$NON-NLS-1$
 		args[2] = smtFilePath;
-		try {
-			String resultOfPreProcessing = Exec.execProgram(args);
-			System.out
-					.println("\n*************** Preprocessing in VeriT output:"
-							+ resultOfPreProcessing
-							+ "\n*************** End of preprocessing in VeriT ouput\n");
-			int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10;
-			int i = 1;
-			StringBuffer sb = new StringBuffer();
-			sb.append("(benchmark");
-			while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
-				char c = resultOfPreProcessing.charAt(benchmarkIndex);
-				if (c == '(') {
-					++i;
-				} else if (c == ')') {
-					--i;
-				}
-				sb.append(c);
-				++benchmarkIndex;
+		String resultOfPreProcessing = Exec.execProgram(args);
+		System.out.println("\n*************** Preprocessing in VeriT output:" //$NON-NLS-1$
+				+ resultOfPreProcessing
+				+ "\n*************** End of preprocessing in VeriT ouput\n"); //$NON-NLS-1$
+		int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10; //$NON-NLS-1$
+		int i = 1;
+		StringBuffer sb = new StringBuffer();
+		sb.append("(benchmark"); //$NON-NLS-1$
+		while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
+			char c = resultOfPreProcessing.charAt(benchmarkIndex);
+			if (c == '(') {
+				++i;
+			} else if (c == ')') {
+				--i;
 			}
-			if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
-				throw new PreProcessingException();
-			}
-
-			return sb.toString();
-		} catch (IOException io) {
-			SmtProversCore.getDefault().getLog().log(null);
-			io.printStackTrace();
-		} catch (PreProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			sb.append(c);
+			++benchmarkIndex;
+		}
+		if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
+			throw new PreProcessingException();
 		}
 
-		return null;
+		return sb.toString();
 	}
 
 	@Override
@@ -232,78 +211,21 @@ public abstract class SmtProversCall extends XProverCall {
 		// Code by Vitor Alcantara de Almeida
 
 		String solverPath = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("solver_path");
+				.getString("solver_path"); //$NON-NLS-1$
 		if (solverPath.isEmpty()) {
 			// Message popup displayed when there is no defined solver path
 			UIUtils.showError(Messages.SmtProversCall_no_defined_solver_path);
 			return;
 		}
+
 		try {
 			// Doing the translation:
-			try {
-				RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
-						hypotheses, goal);
-				String pathOfSolver = SmtProversCore.getDefault()
-						.getPreferenceStore().getString("solver_path");
-				String solverArgs = SmtProversCore.getDefault()
-						.getPreferenceStore().getString("solverarguments");
-
-				smtFile = rp.getTranslatedFile();
-
-				if (!smtFile.exists()) {
-					System.out
-							.println(Messages.SmtProversCall_translated_file_not_exists);
-				}
-				ArrayList<String> args = new ArrayList<String>();
-				args.add(pathOfSolver);
-
-				args.add(smtFile.getPath());
-				if (!solverArgs.isEmpty()) {
-					args.add(solverArgs);
-				}
-
-				boolean preprocess = SmtProversCore.getDefault()
-						.getPreferenceStore()
-						.getBoolean(Messages.SmtProversCall_unsig_prepro);
-				String solver = SmtProversCore.getDefault()
-						.getPreferenceStore()
-						.getString(Messages.SmtProversCall_which_solver);
-				if (preprocess || !solver.equals(Messages.SmtProversCall_veriT)) {
-					try {
-						String preprocessedSMT = preprocessSMTinVeriT(smtFile
-								.getPath());// result.getThirdElement().getPath());
-						File preprocessedFile = new File(/*
-														 * result.getThirdElement
-														 * ().getParent()
-														 */smtFile.getParent()
-								+ "/tempPreProcessed.smt");
-						if (!preprocessedFile.exists()) {
-							preprocessedFile.createNewFile();
-						}
-						FileWriter fw = new FileWriter(preprocessedFile);
-						fw.write(preprocessedSMT);
-						fw.close();
-						args.set(1, preprocessedFile.getPath());
-						this.firstTranslationFile = smtFile;
-						this.iFile = preprocessedFile;
-						this.smtFile = preprocessedFile;
-					} catch (PreProcessingException p) {
-						// A popup message is displayed
-						UIUtils.showError(p.getMessage());
-						return;
-					}
-
-				}
-				iFile = smtFile;
-				callProver(args, Messages.SmtProversCall_success);
-			} catch (TranslationException t) {
-				UIUtils.showError(t.getMessage());
-				return;
-			}
+			smtTranslation();
+		} catch (TranslationException t) {
+			UIUtils.showError(t.getMessage());
+			return;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.err.println(e.getMessage());
+			UIUtils.showError(e.getMessage());
 			return;
 		}
 	}
@@ -312,51 +234,76 @@ public abstract class SmtProversCall extends XProverCall {
 		return valid;
 	}
 
-	protected synchronized void showInputFile() {
-		showFile(iFile);
-	}
+	/**
+	 * Performs Rodin PO to Smt translation
+	 * 
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 * @throws TranslationException
+	 */
+	private void smtTranslation() throws PreProcessingException, IOException,
+			TranslationException {
+		
+		// Parse Rodin PO to create Smt file
+		RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
+				hypotheses, goal);
 
-	protected synchronized void showOutputFile() {
-		showFile(oFile);
-	}
+		// Get back Rodin Smt solvers settings
+		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore()
+				.getString("solver_path"); //$NON-NLS-1$
+		String solverArgs = SmtProversCore.getDefault().getPreferenceStore()
+				.getString("solverarguments"); //$NON-NLS-1$
+		
+		// Get back translated smt file
+		smtFile = rp.getTranslatedFile();
 
-	private void showFile(File file) {
-		if (file == null) {
-			System.out.println("***File has been cleaned up***");
-			return;
+		if (!smtFile.exists()) {
+			System.out
+					.println(Messages.SmtProversCall_translated_file_not_exists);
 		}
-		try {
-			final BufferedReader rdr = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = rdr.readLine()) != null) {
-				System.out.println(line);
-			}
-		} catch (IOException e) {
-			System.out.println(Messages.SmtProversCall_19 + e.getMessage()
-					+ "***");
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(pathOfSolver);
+
+		args.add(smtFile.getPath());
+		if (!solverArgs.isEmpty()) {
+			args.add(solverArgs);
 		}
-	}
 
-	private void showProcessOutcome(ProcessMonitor monitor) {
-		showProcessOutput(monitor, false);
-		showProcessOutput(monitor, true);
-		System.out.println("Exit code is: " + monitor.exitCode());
-
-	}
-
-	private void showProcessOutput(ProcessMonitor monitor, boolean error) {
-		final String kind = error ? "error" : "output";
-		System.out.println("-- Begin dump of process " + kind + " --");
-		final byte[] bytes = error ? monitor.error() : monitor.output();
-		if (bytes.length != 0) {
-			final String output = new String(bytes);
-			if (output.endsWith("\n")) {
-				System.out.print(error);
-			} else {
-				System.out.println(error);
-			}
+		boolean preprocess = SmtProversCore.getDefault().getPreferenceStore()
+				.getBoolean("usingprepro"); //$NON-NLS-1$
+		String solver = SmtProversCore.getDefault().getPreferenceStore()
+				.getString("whichsolver"); //$NON-NLS-1$
+		if (preprocess || !solver.equals("veriT")) { //$NON-NLS-1$
+			smtTranslationPreprocessing(args);
 		}
-		System.out.println("-- End dump of process " + kind + " --");
+
+		iFile = smtFile;
+		callProver(args, "Success"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Performs Rodin PO to Smt translation preprocessing
+	 * 
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 */
+	private void smtTranslationPreprocessing(ArrayList<String> args)
+			throws PreProcessingException, IOException {
+		String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath());// result.getThirdElement().getPath());
+		File preprocessedFile = new File(smtFile.getParent()
+				+ "/tempPreProcessed.smt"); //$NON-NLS-1$
+
+		if (!preprocessedFile.exists()) {
+			preprocessedFile.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(preprocessedFile);
+		fw.write(preprocessedSMT);
+		fw.close();
+		args.set(1, preprocessedFile.getPath());
+
+		this.firstTranslationFile = smtFile;
+		this.iFile = preprocessedFile;
+		this.smtFile = preprocessedFile;
+	}
 }

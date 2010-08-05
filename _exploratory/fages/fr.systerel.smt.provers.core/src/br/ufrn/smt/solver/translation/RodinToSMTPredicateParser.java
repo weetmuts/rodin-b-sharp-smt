@@ -35,7 +35,7 @@ public class RodinToSMTPredicateParser {
 	
 	private String errorMessageString = "";
 	
-	File translatedFile;
+	private File translatedFile;
 	
 	
 	public String getErrorMessageString() {
@@ -237,14 +237,7 @@ public class RodinToSMTPredicateParser {
 		this.hypotheses = hypotheses;
 		this.goal = goal;
 		getTypeEnvironment();
-		//try
-		//{
-			parsePredicates();
-		//}
-//		catch(TranslationException t)
-//		{
-//			throw t;
-//		}
+		parsePredicates();
 		
 	}
 	
@@ -383,10 +376,7 @@ public class RodinToSMTPredicateParser {
 				funs.put(varName,  getSMTAtomicExpressionFormat(varType.toString()));
 			}				
 		}
-	}
-	
-	
-	
+	}	
 	
 	private void printLemmaOnFile()
 	{		
@@ -540,9 +530,6 @@ public class RodinToSMTPredicateParser {
 		SimpleSMTVisitor smv1 = null;
 		if(!hypotheses.isEmpty())
 		{
-//			smv1 = new SimpleSMTVisitor(this);
-//			hypotheses.get(0).accept(smv1);
-//			this.getDataFromVisitor(smv1);
 			for(int i = 0 ; i < hypotheses.size() ; i++ )
 			{
 				smv1 = new SimpleSMTVisitor(this);
@@ -553,6 +540,7 @@ public class RodinToSMTPredicateParser {
 				}			
 			}
 		}
+		
 		smv1 = new SimpleSMTVisitor(this);
 		goal.accept(smv1);
 		if(this.getDataFromVisitor(smv1))
@@ -562,19 +550,15 @@ public class RodinToSMTPredicateParser {
 			{
 				this.isNecessaryAllMacros = true;
 			}
+			
 			printLemmaOnFile();
 		}
 		else
 		{
 			throw new TranslationException(notImplementedOperation);
-		}
-				
+		}				
 	}
 	
-	public static void main(String[] args)
-	{
-		
-	}
 	
 	
 	
