@@ -22,109 +22,118 @@ import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 public abstract class SmtProversCall extends XProverCall {
-	
+
 	protected final String proverName;
 
 	private volatile boolean valid;
-	
+
 	// Access to these files must be synchronized
 	protected File iFile;
 	protected File oFile;
-	
-	//Variables created by Vitor
+
+	// Variables created by Vitor
 	String resultOfSolver;
 	File smtFile;
 	File firstTranslationFile;
-	
+
 	protected SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
 	}
-	
+
 	protected void callProver(ArrayList<String> args, String successMsg)
 			throws IOException {
-		String seeFileOrProofCommand = SmtProversCore.getDefault().getPreferenceStore().getString("executeTrans");
-		if(seeFileOrProofCommand.equals("proofandshowfile") || seeFileOrProofCommand.equals("proofonly"))
-		{
-			for(int i = 0 ; i < args.size(); i++)
-			{
+		String seeFileOrProofCommand = SmtProversCore.getDefault()
+				.getPreferenceStore()
+				.getString(Messages.SmtProversCall_execute_Trans);
+		if (seeFileOrProofCommand
+				.equals(Messages.SmtProversCall_proof_and_showfile)
+				|| seeFileOrProofCommand
+						.equals(Messages.SmtProversCall_proof_only)) {
+			for (int i = 0; i < args.size(); i++) {
 				System.out.println(args.get(i));
 			}
-			
-			if (SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver").equals("cvc3"))
-			{
-				args.add("-lang");
-				args.add("smt");
+
+			if (SmtProversCore.getDefault().getPreferenceStore()
+					.getString(Messages.SmtProversCall_which_solver)
+					.equals(Messages.SmtProversCall_cvc3)) {
+				args.add(Messages.SmtProversCall_lang_option);
+				args.add(Messages.SmtProversCall_smt_option);
 			}
-			
+
 			String[] terms = new String[args.size()];
-			for(int i = 0 ; i < terms.length ; i++)
-			{
+			for (int i = 0; i < terms.length; i++) {
 				terms[i] = args.get(i);
-			}	
-			
+			}
+
 			resultOfSolver = Exec.execProgram(terms);
-			System.out.println( "\n********** Solver output:"+ resultOfSolver + "\n********** End of Solver output\n");
-			
+			System.out.println("\n********** Solver output:" + resultOfSolver
+					+ "\n********** End of Solver output\n");
+
 			// Check Solver Result
 			checkResult(resultOfSolver);
-			
+
 			File resultFile = new File(iFile.getParent() + "/smTSolverString");
-			if(!resultFile.exists())
-			{
+			if (!resultFile.exists()) {
 				resultFile.createNewFile();
 			}
-			
+
 			FileWriter fileWriter = new FileWriter(resultFile);
 			fileWriter.write(resultOfSolver);
 			fileWriter.close();
 			oFile = resultFile;
 		}
-		
-		if(seeFileOrProofCommand.equals("proofandshowfile") || seeFileOrProofCommand.equals("showfileonly"))
-		{
-			boolean preprocess = SmtProversCore.getDefault().getPreferenceStore().getBoolean("usingprepro");
-			String solver = SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver");
-			String preprocessorOptions = SmtProversCore.getDefault().getPreferenceStore().getString("preprocessingoptions");
-			if((preprocess || !solver.equals("veriT")) && (preprocessorOptions.equals("aftersmt") || preprocessorOptions.equals("beforeandafter")) )
-			{
+
+		if (seeFileOrProofCommand
+				.equals(Messages.SmtProversCall_proof_and_show_file)
+				|| seeFileOrProofCommand
+						.equals(Messages.SmtProversCall_show_file_only)) {
+			boolean preprocess = SmtProversCore.getDefault()
+					.getPreferenceStore()
+					.getBoolean(Messages.SmtProversCall_using_prepro);
+			String solver = SmtProversCore.getDefault().getPreferenceStore()
+					.getString(Messages.SmtProversCall_which_solver);
+			String preprocessorOptions = SmtProversCore.getDefault()
+					.getPreferenceStore()
+					.getString(Messages.SmtProversCall_preprocessing_options);
+			if ((preprocess || !solver.equals(Messages.SmtProversCall_veriT))
+					&& (preprocessorOptions
+							.equals(Messages.SmtProversCall_after_smt) || preprocessorOptions
+							.equals(Messages.SmtProversCall_before_and_after))) {
 				showFileInEditor(this.firstTranslationFile.getPath());
 			}
-			
-			if(preprocessorOptions.equals("presmt") || preprocessorOptions.equals("beforeandafter"))
-			{
+
+			if (preprocessorOptions.equals(Messages.SmtProversCall_pre_smt)
+					|| preprocessorOptions
+							.equals(Messages.SmtProversCall_before_and_after)) {
 				showFileInEditor(smtFile.getPath());
-			}					
+			}
 		}
 	}
-	
-	private void showFileInEditor(String filePath)
-	{
-		String editor = SmtProversCore.getDefault().getPreferenceStore().getString("smteditor");
-		String[] args = {editor,filePath};
-		try 
-		{
+
+	private void showFileInEditor(String filePath) {
+		String editor = SmtProversCore.getDefault().getPreferenceStore()
+				.getString(Messages.SmtProversCall_smt_editor);
+		String[] args = { editor, filePath };
+		try {
 			Exec.execProgram(args);
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}	
+	}
 
 	private boolean checkResult(String expected) throws IOException {
-		String typeOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver");
-		if( expected.trim().endsWith("unsat"))
-		{
+		String typeOfSolver = SmtProversCore.getDefault().getPreferenceStore()
+				.getString(Messages.SmtProversCall_which_solver);
+		if (expected.trim().endsWith(Messages.SmtProversCall_unsat)) {
 			valid = true;
-		}
-		else
-		{
+		} else {
 			valid = false;
 		}
-		
-		return valid;		
+
+		return valid;
 	}
 
 	private synchronized FileReader getOutputFileReader() {
@@ -138,7 +147,7 @@ public abstract class SmtProversCall extends XProverCall {
 	}
 
 	protected boolean callPK(String[] cmdArray) throws IOException {
-		return valid;		
+		return valid;
 	}
 
 	@Override
@@ -163,111 +172,112 @@ public abstract class SmtProversCall extends XProverCall {
 	}
 
 	protected abstract void printInputFile() throws IOException;
-	
+
 	protected abstract String[] proverCommand();
-	
+
 	protected abstract String[] parserCommand();
-	
+
 	protected abstract String successString();
-	
-	protected static String preprocessSMTinVeriT(String smtFilePath) throws PreProcessingException
-	{
-		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("prepropath");
-		if(pathOfSolver.isEmpty())
-		{
-			throw new PreProcessingException("The path of the pre-processor is not defined");
+
+	protected static String preprocessSMTinVeriT(String smtFilePath)
+			throws PreProcessingException {
+		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore()
+				.getString(Messages.SmtProversCall_prepro_path);
+		if (pathOfSolver.isEmpty()) {
+			throw new PreProcessingException(
+					Messages.SmtProversCall_preprocessor_path_not_defined);
 		}
 		String[] args = new String[3];
 		args[0] = pathOfSolver;
-		args[1] = "--print-simp-and-exit";		
+		args[1] = Messages.SmtProversCall_print_simp_and_exit_option;
 		args[2] = smtFilePath;
-		try
-		{
+		try {
 			String resultOfPreProcessing = Exec.execProgram(args);
-			System.out.println("\n*************** Preprocessing in VeriT output:" + resultOfPreProcessing +"\n*************** End of preprocessing in VeriT ouput\n");
+			System.out
+					.println("\n*************** Preprocessing in VeriT output:"
+							+ resultOfPreProcessing
+							+ "\n*************** End of preprocessing in VeriT ouput\n");
 			int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10;
 			int i = 1;
 			StringBuffer sb = new StringBuffer();
 			sb.append("(benchmark");
-			while(i > 0 || benchmarkIndex >= resultOfPreProcessing.length())
-			{
+			while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
 				char c = resultOfPreProcessing.charAt(benchmarkIndex);
-				if(c == '(')
-				{
+				if (c == '(') {
 					++i;
-				}
-				else if(c == ')')
-				{
+				} else if (c == ')') {
 					--i;
 				}
 				sb.append(c);
 				++benchmarkIndex;
 			}
-			if(benchmarkIndex >= resultOfPreProcessing.length() && i != 0)
-			{
+			if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
 				throw new PreProcessingException();
 			}
-			
-			
-			return sb.toString();			
-		}
-		
-		catch(IOException io)
-		{
+
+			return sb.toString();
+		} catch (IOException io) {
+			SmtProversCore.getDefault().getLog().log(null);
 			io.printStackTrace();
 		} catch (PreProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return null;
 	}
-	
-	
+
 	@Override
 	public void run() {
-//Code by Vitor Alcantara de Almeida
-		
-		String solverPath = SmtProversCore.getDefault().getPreferenceStore().getString("solver_path");
-		if(solverPath.isEmpty())
-		{
-			System.err.println("There is no defined path for solver");
+		// Code by Vitor Alcantara de Almeida
+
+		String solverPath = SmtProversCore.getDefault().getPreferenceStore()
+				.getString("solver_path");
+		if (solverPath.isEmpty()) {
+			// Message popup displayed when there is no defined solver path
+			UIUtils.showError(Messages.SmtProversCall_no_defined_solver_path);
 			return;
-		}		
+		}
 		try {
-			//Doing the translation:
-			try
-			{
-				RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(hypotheses, goal);
-				String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore().getString("solver_path");
-				String solverArgs = SmtProversCore.getDefault().getPreferenceStore().getString("solverarguments");
+			// Doing the translation:
+			try {
+				RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
+						hypotheses, goal);
+				String pathOfSolver = SmtProversCore.getDefault()
+						.getPreferenceStore().getString("solver_path");
+				String solverArgs = SmtProversCore.getDefault()
+						.getPreferenceStore().getString("solverarguments");
 
 				smtFile = rp.getTranslatedFile();
 
-
-				if(!smtFile.exists())
-				{
-					System.out.println("The translated file does not exist!!!!");
+				if (!smtFile.exists()) {
+					System.out
+							.println(Messages.SmtProversCall_translated_file_not_exists);
 				}
 				ArrayList<String> args = new ArrayList<String>();
 				args.add(pathOfSolver);
 
 				args.add(smtFile.getPath());
-				if (!solverArgs.isEmpty())
-				{
+				if (!solverArgs.isEmpty()) {
 					args.add(solverArgs);
 				}
-						
-				
-				boolean preprocess = SmtProversCore.getDefault().getPreferenceStore().getBoolean("usingprepro");
-				String solver = SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver");
-				if(preprocess || !solver.equals("veriT"))
-				{
-					try
-					{
-						String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath());//result.getThirdElement().getPath());
-						File preprocessedFile = new File(/*result.getThirdElement().getParent()*/smtFile.getParent() + "/tempPreProcessed.smt");
-						if(!preprocessedFile.exists())
-						{
+
+				boolean preprocess = SmtProversCore.getDefault()
+						.getPreferenceStore()
+						.getBoolean(Messages.SmtProversCall_unsig_prepro);
+				String solver = SmtProversCore.getDefault()
+						.getPreferenceStore()
+						.getString(Messages.SmtProversCall_which_solver);
+				if (preprocess || !solver.equals(Messages.SmtProversCall_veriT)) {
+					try {
+						String preprocessedSMT = preprocessSMTinVeriT(smtFile
+								.getPath());// result.getThirdElement().getPath());
+						File preprocessedFile = new File(/*
+														 * result.getThirdElement
+														 * ().getParent()
+														 */smtFile.getParent()
+								+ "/tempPreProcessed.smt");
+						if (!preprocessedFile.exists()) {
 							preprocessedFile.createNewFile();
 						}
 						FileWriter fw = new FileWriter(preprocessedFile);
@@ -277,25 +287,22 @@ public abstract class SmtProversCall extends XProverCall {
 						this.firstTranslationFile = smtFile;
 						this.iFile = preprocessedFile;
 						this.smtFile = preprocessedFile;
-					}
-					catch(PreProcessingException p)
-					{
-						System.err.println(p.getMessage());
+					} catch (PreProcessingException p) {
+						// A popup message is displayed
+						UIUtils.showError(p.getMessage());
 						return;
-					}					
-					
+					}
+
 				}
 				iFile = smtFile;
-				callProver(args, "Success");	
-			}
-			catch(TranslationException t)
-			{
-				System.err.println(t.getMessage());
+				callProver(args, Messages.SmtProversCall_success);
+			} catch (TranslationException t) {
+				UIUtils.showError(t.getMessage());
 				return;
-			}			
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.err.println(e.getMessage());
 			return;
 		}
@@ -308,11 +315,11 @@ public abstract class SmtProversCall extends XProverCall {
 	protected synchronized void showInputFile() {
 		showFile(iFile);
 	}
-	
+
 	protected synchronized void showOutputFile() {
 		showFile(oFile);
 	}
-	
+
 	private void showFile(File file) {
 		if (file == null) {
 			System.out.println("***File has been cleaned up***");
@@ -325,8 +332,8 @@ public abstract class SmtProversCall extends XProverCall {
 				System.out.println(line);
 			}
 		} catch (IOException e) {
-			System.out.println("***Exception when reading file: "
-					+ e.getMessage() + "***");
+			System.out.println(Messages.SmtProversCall_19 + e.getMessage()
+					+ "***");
 		}
 	}
 
@@ -338,7 +345,7 @@ public abstract class SmtProversCall extends XProverCall {
 	}
 
 	private void showProcessOutput(ProcessMonitor monitor, boolean error) {
-		final String kind = error ? "error" : "output"; 
+		final String kind = error ? "error" : "output";
 		System.out.println("-- Begin dump of process " + kind + " --");
 		final byte[] bytes = error ? monitor.error() : monitor.output();
 		if (bytes.length != 0) {

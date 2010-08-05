@@ -49,7 +49,7 @@ public class SmtInput extends XProverInput {
 	@Override
 	public String getError() {
 		if (forces == null)
-			return "Invalid forces";
+			return Messages.force_error_invalid_forces;
 		return super.getError();
 	}
 	
