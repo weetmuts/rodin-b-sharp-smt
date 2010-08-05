@@ -1,5 +1,7 @@
 package fr.systerel.smt.provers.core;
 
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.tactics.BasicTactics;
@@ -64,6 +66,31 @@ public class SmtProversCore extends AbstractUIPlugin {
 	public SmtProversCore() {
 		super();
 		PLUGIN = this;
+	}
+	
+	/**
+	 * Getting the workbench shell
+	 * <p>
+	 * 
+	 * @return the shell associated with the active workbench window or null if
+	 *         there is no active workbench window
+	 */
+	public static Shell getActiveWorkbenchShell() {
+		IWorkbenchWindow window = getActiveWorkbenchWindow();
+		if (window != null) {
+			return window.getShell();
+		}
+		return null;
+	}
+	
+	/**
+	 * Return the active workbench window
+	 * <p>
+	 * 
+	 * @return the active workbench window
+	 */
+	public static IWorkbenchWindow getActiveWorkbenchWindow() {
+		return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 
 }
