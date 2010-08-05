@@ -1,6 +1,7 @@
 package fr.systerel.smt.provers.internal.core;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -50,30 +51,37 @@ public abstract class SmtProversCall extends XProverCall {
 			{
 				System.out.println(args.get(i));
 			}
+			
 			if (SmtProversCore.getDefault().getPreferenceStore().getString("whichsolver").equals("cvc3"))
 			{
 				args.add("-lang");
 				args.add("smt");
-			}			
+			}
+			
 			String[] terms = new String[args.size()];
 			for(int i = 0 ; i < terms.length ; i++)
 			{
 				terms[i] = args.get(i);
-			}		
-			resultOfSolver = Exec.execProgram(terms);
+			}	
 			
+			resultOfSolver = Exec.execProgram(terms);
+			System.out.println( "\n********** Solver output:"+ resultOfSolver + "\n********** End of Solver output\n");
+			
+			// Check Solver Result
 			checkResult(resultOfSolver);
+			
 			File resultFile = new File(iFile.getParent() + "/smTSolverString");
 			if(!resultFile.exists())
 			{
 				resultFile.createNewFile();
-			}			
+			}
+			
 			FileWriter fileWriter = new FileWriter(resultFile);
 			fileWriter.write(resultOfSolver);
 			fileWriter.close();
 			oFile = resultFile;
-			System.out.println(resultOfSolver);
-		}		
+		}
+		
 		if(seeFileOrProofCommand.equals("proofandshowfile") || seeFileOrProofCommand.equals("showfileonly"))
 		{
 			boolean preprocess = SmtProversCore.getDefault().getPreferenceStore().getBoolean("usingprepro");
@@ -83,6 +91,7 @@ public abstract class SmtProversCall extends XProverCall {
 			{
 				showFileInEditor(this.firstTranslationFile.getPath());
 			}
+			
 			if(preprocessorOptions.equals("presmt") || preprocessorOptions.equals("beforeandafter"))
 			{
 				showFileInEditor(smtFile.getPath());
@@ -94,9 +103,11 @@ public abstract class SmtProversCall extends XProverCall {
 	{
 		String editor = SmtProversCore.getDefault().getPreferenceStore().getString("smteditor");
 		String[] args = {editor,filePath};
-		try {
+		try 
+		{
 			Exec.execProgram(args);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -112,6 +123,7 @@ public abstract class SmtProversCall extends XProverCall {
 		{
 			valid = false;
 		}
+		
 		return valid;		
 	}
 
@@ -172,6 +184,7 @@ public abstract class SmtProversCall extends XProverCall {
 		try
 		{
 			String resultOfPreProcessing = Exec.execProgram(args);
+			System.out.println("\n*************** Preprocessing in VeriT output:" + resultOfPreProcessing +"\n*************** End of preprocessing in VeriT ouput\n");
 			int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10;
 			int i = 1;
 			StringBuffer sb = new StringBuffer();
@@ -229,6 +242,7 @@ public abstract class SmtProversCall extends XProverCall {
 				String solverArgs = SmtProversCore.getDefault().getPreferenceStore().getString("solverarguments");
 
 				smtFile = rp.getTranslatedFile();
+
 
 				if(!smtFile.exists())
 				{
