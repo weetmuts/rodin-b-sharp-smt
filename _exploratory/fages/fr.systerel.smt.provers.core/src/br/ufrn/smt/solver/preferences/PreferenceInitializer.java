@@ -1,5 +1,3 @@
-package br.ufrn.smt.solver.preferences;
-
 /*******************************************************************************
  * Copyright (c) 2010 Systerel and Vítor Alcântara de Almeida .
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,8 @@ package br.ufrn.smt.solver.preferences;
  * Contributors:
  *     Vítor Alcântara de Almeida - Creation
  *******************************************************************************/
+
+package br.ufrn.smt.solver.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -27,7 +27,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = SmtProversCore.getDefault().getPreferenceStore();
-		//store.setDefault("whichsolver", 1);
 		store.setDefault("solver_path", "");
 		store.setDefault("usingprepro", false);
 		store.setDefault("prepropath", "");
@@ -43,7 +42,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 			value = "/usr/bin/gedit";
 		}
 		store.setDefault("smteditor", value);
-		//store.setDefault("executeTrans",1);
 		
 	}
 
