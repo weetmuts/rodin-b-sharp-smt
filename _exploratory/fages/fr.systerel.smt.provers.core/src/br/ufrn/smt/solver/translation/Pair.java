@@ -82,7 +82,7 @@ public class Pair<X,Y> {
 		this.value = value;
 	}
 	/**
-	 * It overhides the Object method toString. It returns the String in the following
+	 * It overrides the Object method toString. It returns the String in the following
 	 * format:
 	 * (first Variable).toString + " -> " + (second Variable).toString.
 	 * 
