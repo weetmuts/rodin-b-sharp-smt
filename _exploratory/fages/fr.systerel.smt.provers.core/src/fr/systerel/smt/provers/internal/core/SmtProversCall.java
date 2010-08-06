@@ -13,18 +13,13 @@
 
 package fr.systerel.smt.provers.internal.core;
 
-import java.io.BufferedReader;
-import java.io.Console;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
-import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.translation.Exec;
@@ -45,9 +40,9 @@ public abstract class SmtProversCall extends XProverCall {
 	protected File oFile;
 
 	// Variables created by Vitor
-	String resultOfSolver;
-	File smtFile;
-	File firstTranslationFile;
+	private String resultOfSolver;
+	private File smtFile;
+	private File firstTranslationFile;
 
 	protected SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {

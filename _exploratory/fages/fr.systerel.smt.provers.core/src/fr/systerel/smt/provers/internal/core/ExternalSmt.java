@@ -12,9 +12,6 @@
 
 package fr.systerel.smt.provers.internal.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;

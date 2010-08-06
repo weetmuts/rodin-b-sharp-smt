@@ -35,7 +35,7 @@ public class SmtProversCore extends AbstractUIPlugin {
 	private static SmtProversCore PLUGIN;
 	
 	/**
-	 * Default delay for time-out of the Atelier B provers (value 30 seconds).
+	 * Default delay for time-out of the Smt provers (value 30 seconds).
 	 */
 	public static long DEFAULT_DELAY = 30 * 1000;
 

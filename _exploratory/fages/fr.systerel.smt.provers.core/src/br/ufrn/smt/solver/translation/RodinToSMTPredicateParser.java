@@ -392,7 +392,7 @@ public class RodinToSMTPredicateParser {
 	private void printLemmaOnFile()
 	{		
 		String benchmark = "(benchmark smtTesteComArvoreSintatica ";//nameOfThisLemma;
-		final String FINAL_PATH = translatedPath + File.separator + nameOfThisLemma + ".smt";		
+		
 		try
 		{
 			String s = "";

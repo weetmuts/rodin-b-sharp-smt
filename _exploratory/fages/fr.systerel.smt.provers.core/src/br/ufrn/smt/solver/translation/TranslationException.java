@@ -12,10 +12,11 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 public class TranslationException extends Exception {
 
+	private static final long serialVersionUID = -8016875587991618557L;
+	
 	private ArrayList<Pair<String,String>> causes;
 	
 	public TranslationException(ArrayList<Pair<String,String>> causes)
