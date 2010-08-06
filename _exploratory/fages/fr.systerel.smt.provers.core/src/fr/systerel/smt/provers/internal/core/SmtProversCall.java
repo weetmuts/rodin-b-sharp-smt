@@ -8,6 +8,7 @@
  * Contributors:
  * 	   Systerel (YFT) - Creation
  *     Vítor Alcântara de Almeida - First integration Smt solvers 
+ *     Systerel (YFT) - Code refactoring
  *******************************************************************************/
 
 package fr.systerel.smt.provers.internal.core;
@@ -53,8 +54,13 @@ public abstract class SmtProversCall extends XProverCall {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
 	}
-
-	protected void callProver(ArrayList<String> args, String successMsg)
+	
+	/**
+	 *	Method to call a Smt solver
+	 *	@param args Arguments to pass for the call
+	 *  @throws IOException 
+	 */
+	protected void callProver(ArrayList<String> args)
 			throws IOException {
 		String seeFileOrProofCommand = SmtProversCore.getDefault()
 				.getPreferenceStore()
@@ -73,13 +79,16 @@ public abstract class SmtProversCall extends XProverCall {
 				args.add("-lang"); //$NON-NLS-1$
 				args.add("smt"); //$NON-NLS-1$
 			}
-
+			
+			// Set up arguments for solver call
 			String[] terms = new String[args.size()];
 			for (int i = 0; i < terms.length; i++) {
 				terms[i] = args.get(i);
 			}
-
+			
+			// Get back solver result
 			resultOfSolver = Exec.execProgram(terms);
+			
 			System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
 					+ "\n********** End of Solver output\n"); //$NON-NLS-1$
 
@@ -123,23 +132,27 @@ public abstract class SmtProversCall extends XProverCall {
 			}
 		}
 	}
-
-	private void showFileInEditor(String filePath) {
+	
+	/**
+	 *	Show the pre-processed file in a file editor specified by the user in Preferences
+	 *	@param filePath The file path of the pre-processed file.
+	 *  @throws IOException 
+	 */
+	private void showFileInEditor(String filePath) throws IOException {
 		String editor = SmtProversCore.getDefault().getPreferenceStore()
 				.getString("smteditor"); //$NON-NLS-1$
 		String[] args = { editor, filePath };
-		try {
-			Exec.execProgram(args);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// Launch the editor
+		Exec.execProgram(args);
 	}
-
+	
+	/**
+	 *	Check the result provided by the solver (unsat is checked)
+	 *	@param expected The string result from the smt solvers.
+	 *  @throws IOException 
+	 */
 	private boolean checkResult(String expected) throws IOException {
-		String typeOfSolver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("whichsolver"); //$NON-NLS-1$
-		if (expected.trim().endsWith("unsat")) { //$NON-NLS-1$
+		if (expected.trim().contains("unsat")) { //$NON-NLS-1$
 			valid = true;
 		} else {
 			valid = false;
@@ -232,7 +245,7 @@ public abstract class SmtProversCall extends XProverCall {
 
 		try {
 			// Doing the translation:
-			smtTranslation();
+			smtTranslationSolverCall();
 		} catch (TranslationException t) {
 			UIUtils.showError(t.getMessage());
 			return;
@@ -253,7 +266,7 @@ public abstract class SmtProversCall extends XProverCall {
 	 * @throws IOException
 	 * @throws TranslationException
 	 */
-	private void smtTranslation() throws PreProcessingException, IOException,
+	private void smtTranslationSolverCall() throws PreProcessingException, IOException,
 			TranslationException {
 		
 		// Parse Rodin PO to create Smt file
@@ -291,7 +304,9 @@ public abstract class SmtProversCall extends XProverCall {
 		}
 
 		iFile = smtFile;
-		callProver(args, "Success"); //$NON-NLS-1$
+		
+		// prover with arguments
+		callProver(args);
 	}
 
 	/**

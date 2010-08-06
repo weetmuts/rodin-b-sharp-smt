@@ -39,7 +39,7 @@ public class SmtCall extends SmtProversCall {
 
 	@Override
 	public String displayMessage() {
-		return super.resultOfSolver;
+		return "SMT";
 	}
 
 	@Override
