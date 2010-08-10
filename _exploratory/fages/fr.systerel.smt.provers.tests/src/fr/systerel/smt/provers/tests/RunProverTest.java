@@ -155,7 +155,6 @@ public class RunProverTest {
 			@Override
 			protected void printInputFile() throws IOException {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -177,10 +176,10 @@ public class RunProverTest {
 		try {
 			smtProversCall.smtTranslationSolverCall();
 		} catch (TranslationException t) {
-			UIUtils.showError(t.getMessage());
+			System.out.println(t.getMessage());
 			return;
 		} catch (IOException e) {
-			UIUtils.showError(e.getMessage());
+			System.out.println(e.getMessage());
 			return;
 		}
 	}
@@ -188,7 +187,7 @@ public class RunProverTest {
 	@Test
 	public void testSolverCallWithCvc3() {
 		
-		// Set preferences to test with VeriT
+		// Set preferences to test with CVC3
 		setPreferencesForCvc3Test();
 		
 		// Create a Simple sequent
@@ -206,7 +205,6 @@ public class RunProverTest {
 			@Override
 			protected void printInputFile() throws IOException {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -228,10 +226,10 @@ public class RunProverTest {
 		try {
 			smtProversCall.smtTranslationSolverCall();
 		} catch (TranslationException t) {
-			UIUtils.showError(t.getMessage());
+			System.out.println(t.getMessage());
 			return;
 		} catch (IOException e) {
-			UIUtils.showError(e.getMessage());
+			System.out.println(e.getMessage());
 			return;
 		}
 	}
@@ -239,7 +237,7 @@ public class RunProverTest {
 	@Test
 	public void testSolverCallWithZ3() {
 		
-		// Set preferences to test with VeriT
+		// Set preferences to test with Z3
 		setPreferencesForZ3Test();
 		
 		// Create a Simple sequent
@@ -257,7 +255,6 @@ public class RunProverTest {
 			@Override
 			protected void printInputFile() throws IOException {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -279,10 +276,10 @@ public class RunProverTest {
 		try {
 			smtProversCall.smtTranslationSolverCall();
 		} catch (TranslationException t) {
-			UIUtils.showError(t.getMessage());
+			System.out.println(t.getMessage());
 			return;
 		} catch (IOException e) {
-			UIUtils.showError(e.getMessage());
+			System.out.println(e.getMessage());
 			return;
 		}
 	}
