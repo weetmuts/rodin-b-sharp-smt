@@ -9,6 +9,7 @@
  * 	   Systerel (YFT) - Creation
  *     Vítor Alcântara de Almeida - First integration Smt solvers 
  *     Systerel (YFT) - Code refactoring
+ *     Systerel (YFT) - Separate UI and Core as much as possible
  *******************************************************************************/
 
 package fr.systerel.smt.provers.internal.core;
@@ -44,46 +45,56 @@ public abstract class SmtProversCall extends XProverCall {
 	private File smtFile;
 	private File firstTranslationFile;
 
-	protected SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
+	// SMT UI preferences
+	private UIPreferences smtUiPreferences;	
+	
+	public SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
+
+		// Get back preferences
+		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
+				.getPreferenceStore().getString("solver_path"),//$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("solverarguments"), //$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getBoolean("usingprepro"), //$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("prepropath"),//$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("whichsolver"), //$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("preprocessingoptions"),//$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("executeTrans"),//$NON-NLS-1$
+				SmtProversCore.getDefault().getPreferenceStore()
+						.getString("smteditor"));//$NON-NLS-1$
 	}
-	
+
 	/**
-	 *	Method to call a Smt solver
-	 *	@param args Arguments to pass for the call
-	 *  @throws IOException 
+	 * Method to call a SMT solver.
+	 * 
+	 * @param args
+	 *            Arguments to pass for the call
+	 * @throws IOException
 	 */
-	protected void callProver(ArrayList<String> args)
-			throws IOException {
-		String seeFileOrProofCommand = SmtProversCore.getDefault()
-				.getPreferenceStore()
-				.getString("executeTrans"); //$NON-NLS-1$
-		if (seeFileOrProofCommand
-				.equals("proofandshowfile") //$NON-NLS-1$
-				|| seeFileOrProofCommand
-						.equals("proofonly")) { //$NON-NLS-1$
+	protected void callProver(ArrayList<String> args) throws IOException {
+		if (smtUiPreferences.executeTrans.equals("proofandshowfile") //$NON-NLS-1$
+				|| smtUiPreferences.executeTrans.equals("proofonly")) { //$NON-NLS-1$
 			for (int i = 0; i < args.size(); i++) {
 				System.out.println(args.get(i));
 			}
 
-			if (SmtProversCore.getDefault().getPreferenceStore()
-					.getString("whichsolver") //$NON-NLS-1$
-					.equals("cvc3")) { //$NON-NLS-1$
-				args.add("-lang"); //$NON-NLS-1$
-				args.add("smt"); //$NON-NLS-1$
-			}
-			
 			// Set up arguments for solver call
 			String[] terms = new String[args.size()];
 			for (int i = 0; i < terms.length; i++) {
 				terms[i] = args.get(i);
 			}
-			
+
 			// Get back solver result
 			resultOfSolver = Exec.execProgram(terms);
-			
+
 			System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
 					+ "\n********** End of Solver output\n"); //$NON-NLS-1$
 
@@ -101,50 +112,44 @@ public abstract class SmtProversCall extends XProverCall {
 			oFile = resultFile;
 		}
 
-		if (seeFileOrProofCommand
-				.equals("proofandshowfile") //$NON-NLS-1$
-				|| seeFileOrProofCommand
-						.equals("showfileonly")) { //$NON-NLS-1$
-			boolean preprocess = SmtProversCore.getDefault()
-					.getPreferenceStore()
-					.getBoolean("usingprepro"); //$NON-NLS-1$
-			String solver = SmtProversCore.getDefault().getPreferenceStore()
-					.getString("whichsolver"); //$NON-NLS-1$
-			String preprocessorOptions = SmtProversCore.getDefault()
-					.getPreferenceStore()
-					.getString("preprocessingoptions"); //$NON-NLS-1$
-			if ((preprocess || !solver.equals("veriT")) //$NON-NLS-1$
-					&& (preprocessorOptions
-							.equals("aftersmt") || preprocessorOptions //$NON-NLS-1$
+		if (smtUiPreferences.executeTrans.equals("proofandshowfile") //$NON-NLS-1$
+				|| smtUiPreferences.executeTrans.equals("showfileonly")) { //$NON-NLS-1$
+			if ((smtUiPreferences.usingPrepro || !smtUiPreferences.whichSolver
+					.equals("veriT")) //$NON-NLS-1$
+					&& (smtUiPreferences.preprocessingOptions
+							.equals("aftersmt") || smtUiPreferences.preprocessingOptions //$NON-NLS-1$
 							.equals("beforeandafter"))) { //$NON-NLS-1$
 				showFileInEditor(this.firstTranslationFile.getPath());
 			}
 
-			if (preprocessorOptions.equals("presmt") //$NON-NLS-1$
-					|| preprocessorOptions
+			if (smtUiPreferences.preprocessingOptions.equals("presmt") //$NON-NLS-1$
+					|| smtUiPreferences.preprocessingOptions
 							.equals("beforeandafter")) { //$NON-NLS-1$
 				showFileInEditor(smtFile.getPath());
 			}
 		}
 	}
-	
+
 	/**
-	 *	Show the pre-processed file in a file editor specified by the user in Preferences
-	 *	@param filePath The file path of the pre-processed file.
-	 *  @throws IOException 
+	 * Show the pre-processed file in a file editor specified by the user in
+	 * Preferences
+	 * 
+	 * @param filePath
+	 *            The file path of the pre-processed file.
+	 * @throws IOException
 	 */
 	private void showFileInEditor(String filePath) throws IOException {
-		String editor = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("smteditor"); //$NON-NLS-1$
-		String[] args = { editor, filePath };
+		String[] args = { smtUiPreferences.smtEditor, filePath };
 		// Launch the editor
 		Exec.execProgram(args);
 	}
-	
+
 	/**
-	 *	Check the result provided by the solver (unsat is checked)
-	 *	@param expected The string result from the smt solvers.
-	 *  @throws IOException 
+	 * Check the result provided by the solver (unsat is checked)
+	 * 
+	 * @param expected
+	 *            The string result from the smt solvers.
+	 * @throws IOException
 	 */
 	private boolean checkResult(String expected) throws IOException {
 		if (expected.trim().contains("unsat")) { //$NON-NLS-1$
@@ -189,10 +194,9 @@ public abstract class SmtProversCall extends XProverCall {
 
 	protected abstract String successString();
 
-	protected static String preprocessSMTinVeriT(String smtFilePath)
-			throws PreProcessingException, IOException {
-		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("prepropath"); //$NON-NLS-1$
+	protected static String preprocessSMTinVeriT(String smtFilePath,
+			String pathOfSolver) throws PreProcessingException, IOException {
+
 		if (pathOfSolver.isEmpty()) {
 			throw new PreProcessingException(
 					Messages.SmtProversCall_preprocessor_path_not_defined);
@@ -228,11 +232,8 @@ public abstract class SmtProversCall extends XProverCall {
 
 	@Override
 	public void run() {
-		// Code by Vitor Alcantara de Almeida
-
-		String solverPath = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("solver_path"); //$NON-NLS-1$
-		if (solverPath.isEmpty()) {
+		// test the SMT solver path
+		if (smtUiPreferences.solverPath.isEmpty()) {
 			// Message popup displayed when there is no defined solver path
 			UIUtils.showError(Messages.SmtProversCall_no_defined_solver_path);
 			return;
@@ -261,19 +262,13 @@ public abstract class SmtProversCall extends XProverCall {
 	 * @throws IOException
 	 * @throws TranslationException
 	 */
-	private void smtTranslationSolverCall() throws PreProcessingException, IOException,
-			TranslationException {
-		
+	public void smtTranslationSolverCall() throws PreProcessingException,
+			IOException, TranslationException {
+
 		// Parse Rodin PO to create Smt file
 		RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
 				hypotheses, goal);
 
-		// Get back Rodin Smt solvers settings
-		String pathOfSolver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("solver_path"); //$NON-NLS-1$
-		String solverArgs = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("solverarguments"); //$NON-NLS-1$
-		
 		// Get back translated smt file
 		smtFile = rp.getTranslatedFile();
 
@@ -282,24 +277,27 @@ public abstract class SmtProversCall extends XProverCall {
 					.println(Messages.SmtProversCall_translated_file_not_exists);
 		}
 		ArrayList<String> args = new ArrayList<String>();
-		args.add(pathOfSolver);
+		args.add(smtUiPreferences.solverPath);
 
 		args.add(smtFile.getPath());
-		if (!solverArgs.isEmpty()) {
-			args.add(solverArgs);
+
+		if (!smtUiPreferences.solverArguments.isEmpty()) {
+			// Split arguments and add them in the list
+			String[] argumentsString = smtUiPreferences.solverArguments
+					.split(" ");
+			for (String argString : argumentsString) {
+				args.add(argString);
+			}
 		}
 
-		boolean preprocess = SmtProversCore.getDefault().getPreferenceStore()
-				.getBoolean("usingprepro"); //$NON-NLS-1$
-		String solver = SmtProversCore.getDefault().getPreferenceStore()
-				.getString("whichsolver"); //$NON-NLS-1$
-		if (preprocess || !solver.equals("veriT")) { //$NON-NLS-1$
-			// Launch preprocessing 
+		if (smtUiPreferences.usingPrepro
+				|| !smtUiPreferences.whichSolver.equals("veriT")) { //$NON-NLS-1$
+			// Launch preprocessing
 			smtTranslationPreprocessing(args);
 		}
 
 		iFile = smtFile;
-		
+
 		// prover with arguments
 		callProver(args);
 	}
@@ -312,7 +310,8 @@ public abstract class SmtProversCall extends XProverCall {
 	 */
 	private void smtTranslationPreprocessing(ArrayList<String> args)
 			throws PreProcessingException, IOException {
-		String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath());// result.getThirdElement().getPath());
+		String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath(),
+				smtUiPreferences.preproPath);// result.getThirdElement().getPath());
 		File preprocessedFile = new File(smtFile.getParent()
 				+ "/tempPreProcessed.smt"); //$NON-NLS-1$
 
