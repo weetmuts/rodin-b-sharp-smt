@@ -14,11 +14,17 @@ package br.ufrn.smt.solver.preferences;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,7 +39,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
@@ -63,6 +68,10 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	public static final String V2_0 = "v2.0";
 	
 	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, V1_2, V2_0};
+	
+	public static final int[] BOUNDS = { 90, 200, 40, 40 };
+	
+	private static final String preferencesName = "solver preferences";
 
 	protected TableViewer fTable;
 
@@ -73,10 +82,12 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	/**
 	 * The name of the preference displayed in this preference page.
 	 */
-	private String preferenceName;
+	private String preferences =  new String();
 
 	public SMTPreferencePage2() {
 		setPreferenceStore(SmtProversCore.getDefault().getPreferenceStore());
+		preferences = getPreferenceStore().getString(preferencesName);
+		fModel = SmtPreferencesStore.CreateModel(preferences);
 		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
 	}
 
@@ -113,6 +124,8 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		comp.setLayout(layout);
+		
+		// Create the table viewer
 		fTable = createTableViewer(comp);
 		fTable.setInput(fModel);
 
@@ -140,151 +153,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		addButton.setText("Add..."); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-
-				final Shell shell = new Shell(compButtons.getShell());
-				shell.setLayout(new GridLayout(1, false));
-				shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				shell.setSize(400, 200);
-
-				final Composite compName = new Composite(shell, SWT.NONE);
-				final Composite compPath = new Composite(shell, SWT.NONE);
-				final Composite compArg = new Composite(shell, SWT.NONE);
-				final Composite compSmtVersion = new Composite(shell, SWT.NONE);
-				final Composite compOkCancel = new Composite(shell, SWT.NONE);
-
-				compName.setLayout(new GridLayout(2, false));
-				compPath.setLayout(new GridLayout(3, false));
-				compArg.setLayout(new GridLayout(2, false));
-				compSmtVersion.setLayout(new GridLayout(3, false));
-				compOkCancel.setLayout(new GridLayout(2, false));
-
-				compName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true));
-				compPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true));
-				compArg.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true));
-				compSmtVersion.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-						true, true));
-				compOkCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-						true, true));
-
-				final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
-				solverIdTextLabel.setText("Solver ID"); //$NON-NLS-1$
-
-				final Text solverIdText = new Text(compName, SWT.LEFT
-						| SWT.BORDER);
-				solverIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						true, true));
-
-				final Label solverPathTextLabel = new Label(compPath, SWT.LEFT);
-				solverPathTextLabel.setText("Solver Path"); //$NON-NLS-1$
-
-				final Text solverPathText = new Text(compPath, SWT.LEFT
-						| SWT.BORDER);
-				solverPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						true, true));
-				solverPathText.setEditable(false);
-
-				// Add button Browse
-				Button browseButton = new Button(compPath, SWT.PUSH);
-				browseButton.setText("Browse"); //$NON-NLS-1$
-				browseButton.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent event) {
-						File f = new File(solverPathText.getText());
-						if (!f.exists()) {
-							f = null;
-						}
-						File d = getFile(f);
-						solverPathText.setText(d.getPath());
-					}
-
-				});
-
-				final Label smtVersionLabel = new Label(compSmtVersion,
-						SWT.LEFT);
-				smtVersionLabel.setText("SMT-Lib"); //$NON-NLS-1$
-
-				final Button smt1_2_Button = new Button(compSmtVersion,
-						SWT.CHECK);
-				smt1_2_Button.setText("1.2"); //$NON-NLS-1$
-
-				final Button smt2_0_Button = new Button(compSmtVersion,
-						SWT.CHECK);
-				smt2_0_Button.setText("2.0"); //$NON-NLS-1$
-
-				// callbacks for the 2 buttons
-				smt1_2_Button.addSelectionListener(new SelectionListener() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						smt2_0_Button.setSelection(false);
-					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-
-				smt2_0_Button.addSelectionListener(new SelectionListener() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						smt1_2_Button.setSelection(false);
-					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-
-				// Add 2 buttons OK and Cancel
-				Button okButton = new Button(compOkCancel, SWT.PUSH);
-				okButton.setText("OK"); //$NON-NLS-1$
-				okButton.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent event) {
-						// Check mandatory fields
-						if (solverIdText.getText() == "" //$NON-NLS-1$
-								|| (!smt1_2_Button.getSelection() && !smt2_0_Button
-										.getSelection())
-								|| solverPathText.getText() == "") { //$NON-NLS-1$
-							// Message popup displayed when there is no defined
-							// solver path or smt lib chosen or smt Id
-							UIUtils.showError(br.ufrn.smt.solver.preferences.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails);
-						} else {
-							fModel.add(new SolverDetail(
-											solverIdText.getText(), 
-											solverPathText.getText(), 
-											smt1_2_Button.getSelection(), 
-											smt2_0_Button.getSelection()));
-
-							// Update table with solver details
-							fTable.refresh();
-
-							// Close the shell
-							shell.close();
-						}
-
-					}
-
-				});
-
-				Button cancelButton = new Button(compOkCancel, SWT.PUSH);
-				cancelButton.setText("Cancel"); //$NON-NLS-1$
-				cancelButton.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent event) {
-						// Close the shell
-						shell.close();
-					}
-
-				});
-
-				// Open the shell
-				shell.open();
+				createSolverDetailsPage(compButtons,false,"","",false,false);
 			}
 		});
 
@@ -292,6 +161,15 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		removeButton.setText("Remove"); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
+				StructuredSelection sel = (StructuredSelection) fTable.getSelection();
+				SolverDetail solverToRemove = (SolverDetail) sel.getFirstElement();
+				fModel.remove(solverToRemove);
+				
+				// Update table with solver details
+				fTable.refresh();
+				
+				// save preferences
+				preferences = SmtPreferencesStore.CreatePreferences(fModel);
 			}
 		});
 
@@ -299,6 +177,10 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		editButton.setText("Edit..."); //$NON-NLS-1$
 		editButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
+				StructuredSelection sel = (StructuredSelection) fTable.getSelection();
+				SolverDetail solverToEdit = (SolverDetail) sel.getFirstElement();
+				createSolverDetailsPage(compButtons,true,solverToEdit.getId(),solverToEdit.getPath(),solverToEdit.getsmtV1_2(),solverToEdit.getsmtV2_0());
+				
 			}
 		});
 
@@ -306,8 +188,8 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		fTable.refresh();
 
 		// pack everything
-		//fTable.getTable().pack();
-		//parent.pack();
+		fTable.getTable().pack();
+		parent.pack();
 
 		// return the new created composite
 		return comp;
@@ -325,40 +207,32 @@ public class SMTPreferencePage2 extends PreferencePage implements
 				"Solver ID", "Solver Path", "V1.2", "V2.0" }; //$NON-NLS-1$ //$NON-NLS-2$
 		final TableViewer tv = new TableViewer(parent, SWT.FULL_SELECTION);
 		
+		createColumns(tv);
 		tv.setColumnProperties(columnNames);
 		tv.setContentProvider(new SolversDetailsContentProvider());
-		tv.setLabelProvider(new SolversDetailsLabelProvider());
-		
-		Table table = tv.getTable();
-		TableColumn tc;
-		tc = new TableColumn(tv.getTable(), SWT.LEFT);
-		tc.setText(columnNames[0]);
-		tc.setWidth(90);
-		tc = new TableColumn(tv.getTable(), SWT.LEFT);
-		tc.setText(columnNames[1]);
-		tc.setWidth(200);
-		tc = new TableColumn(tv.getTable(), SWT.LEFT);
-		tc.setText(columnNames[2]);
-		tc.setWidth(40);
-		tc = new TableColumn(tv.getTable(), SWT.LEFT);
-		tc.setText(columnNames[3]);
-		tc.setWidth(40);
-
-	    
-	    CellEditor[] editors = new CellEditor[columnNames.length];
-		editors[0] = new TextCellEditor(table);
-		editors[1] = new TextCellEditor(table);
-		editors[2] = new CheckboxCellEditor(table);
-		editors[3] = new CheckboxCellEditor(table);
-		
-	    tv.setColumnProperties(PROPS);
-	    tv.setCellModifier(new SolversDetailsCellModifier(tv));
-	    tv.setCellEditors(editors);    
+		tv.setLabelProvider(new SolversDetailsLabelProvider());  
 		
 	    return tv;
 	}
 
+	
+	private void createColumns(TableViewer viewer) {	
 
+		for (int i = 0; i < PROPS.length; i++) {
+			TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
+			column.getColumn().setText(PROPS[i]);
+			column.getColumn().setWidth(BOUNDS[i]);
+			column.getColumn().setResizable(true);
+			column.getColumn().setMoveable(true);
+			// enable editing support
+			column.setEditingSupport(new SolverEditingSupport(viewer, i));
+		}
+		
+		Table table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+	}
+	
 	/*
 	 * Subclasses may override to specify a different style.
 	 */
@@ -391,5 +265,257 @@ public class SMTPreferencePage2 extends PreferencePage implements
 
 		return null;
 	}
+	
+	@Override
+	public boolean performOk() {
+		getPreferenceStore().putValue(preferencesName, preferences);
+		return super.performOk();
+	}
+	
+	private void createSolverDetailsPage(Composite parent, final boolean editMode, final String id, final String path, final boolean v1_2, final boolean v2_0){
+		final Shell shell = new Shell(parent.getShell());
+		shell.setLayout(new GridLayout(1, false));
+		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		shell.setSize(400, 200);
+
+		final Composite compName = new Composite(shell, SWT.NONE);
+		final Composite compPath = new Composite(shell, SWT.NONE);
+		final Composite compArg = new Composite(shell, SWT.NONE);
+		final Composite compSmtVersion = new Composite(shell, SWT.NONE);
+		final Composite compOkCancel = new Composite(shell, SWT.NONE);
+
+		compName.setLayout(new GridLayout(2, false));
+		compPath.setLayout(new GridLayout(3, false));
+		compArg.setLayout(new GridLayout(2, false));
+		compSmtVersion.setLayout(new GridLayout(3, false));
+		compOkCancel.setLayout(new GridLayout(2, false));
+
+		compName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+		compPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+		compArg.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+		compSmtVersion.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true));
+		compOkCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true));
+
+		final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
+		solverIdTextLabel.setText("Solver ID"); //$NON-NLS-1$
+
+		final Text solverIdText = new Text(compName, SWT.LEFT
+				| SWT.BORDER);
+		solverIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, true));
+		solverIdText.setText(id);
+
+		final Label solverPathTextLabel = new Label(compPath, SWT.LEFT);
+		solverPathTextLabel.setText("Solver Path"); //$NON-NLS-1$
+
+		final Text solverPathText = new Text(compPath, SWT.LEFT
+				| SWT.BORDER);
+		solverPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, true));
+		solverPathText.setEditable(false);
+		solverPathText.setText(path);
+
+		// Add button Browse
+		Button browseButton = new Button(compPath, SWT.PUSH);
+		browseButton.setText("Browse"); //$NON-NLS-1$
+		browseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				File f = new File(solverPathText.getText());
+				if (!f.exists()) {
+					f = null;
+				}
+				File d = getFile(f);
+				solverPathText.setText(d.getPath());
+			}
+
+		});
+
+		final Label smtVersionLabel = new Label(compSmtVersion,
+				SWT.LEFT);
+		smtVersionLabel.setText("SMT-Lib"); //$NON-NLS-1$
+
+		final Button smt1_2_Button = new Button(compSmtVersion,
+				SWT.CHECK);
+		smt1_2_Button.setText("1.2"); //$NON-NLS-1$
+		smt1_2_Button.setSelection(v1_2);
+
+		final Button smt2_0_Button = new Button(compSmtVersion,
+				SWT.CHECK);
+		smt2_0_Button.setText("2.0"); //$NON-NLS-1$
+		smt2_0_Button.setSelection(v2_0);
+
+		// callbacks for the 2 buttons
+		smt1_2_Button.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				smt2_0_Button.setSelection(false);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		smt2_0_Button.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				smt1_2_Button.setSelection(false);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		// Add 2 buttons OK and Cancel
+		Button okButton = new Button(compOkCancel, SWT.PUSH);
+		okButton.setText("OK"); //$NON-NLS-1$
+		okButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				// Check mandatory fields
+				if (solverIdText.getText() == "" //$NON-NLS-1$
+						|| (!smt1_2_Button.getSelection() && !smt2_0_Button
+								.getSelection())
+						|| solverPathText.getText() == "") { //$NON-NLS-1$
+					// Message popup displayed when there is no defined
+					// solver path or smt lib chosen or smt Id
+					UIUtils.showError(br.ufrn.smt.solver.preferences.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails);
+				} else {
+					if(editMode){
+						for (SolverDetail solver : fModel) {
+							if(solver.getId().equals(id) &&
+							   solver.getPath().equals(path)&&
+							   solver.getsmtV1_2() == v1_2&&
+							   solver.getsmtV2_0() == v2_0){
+								solver.setId(solverIdText.getText());
+								solver.setPath(solverPathText.getText());
+								solver.setSmtV1_2(smt1_2_Button.getSelection());
+								solver.setSmtV2_0(smt2_0_Button.getSelection());								
+							}							
+						}
+					}
+					else{
+						fModel.add(new SolverDetail(
+								solverIdText.getText(), 
+								solverPathText.getText(), 
+								smt1_2_Button.getSelection(), 
+								smt2_0_Button.getSelection()));
+					}					
+					
+					// save preferences
+					preferences = SmtPreferencesStore.CreatePreferences(fModel);
+					
+					// Update table with solver details
+					fTable.refresh();
+					
+					// Close the shell
+					shell.close();
+				}
+
+			}
+
+		});
+
+		Button cancelButton = new Button(compOkCancel, SWT.PUSH);
+		cancelButton.setText("Cancel"); //$NON-NLS-1$
+		cancelButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				// Close the shell
+				shell.close();
+			}
+
+		});
+
+		// Open the shell
+		shell.open();
+	}
+
+	public class SolverEditingSupport extends EditingSupport {
+		private CellEditor editor;
+		private int column;
+
+		public SolverEditingSupport(ColumnViewer viewer, int column) {
+			super(viewer);
+
+			// Create the correct editor based on the column index
+			switch (column) {
+			case 2:
+				editor = new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
+				break;
+			case 3:
+				editor = new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
+				break;
+			default:
+				editor = new TextCellEditor(((TableViewer) viewer).getTable());
+			}
+			this.column = column;
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return editor;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			SolverDetail solver = (SolverDetail) element;
+
+			switch (this.column) {
+			case 0:
+				return solver.getId();
+			case 1:
+				return solver.getPath();
+			case 2:
+				return solver.getsmtV1_2();
+			case 3:
+				return solver.getsmtV2_0();
+			default:
+				break;
+			}
+			return null;
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			SolverDetail solver = (SolverDetail) element;
+
+			switch (this.column) {
+			case 0:
+				solver.setId(String.valueOf(value));
+				break;
+			case 1:
+				solver.setPath(String.valueOf(value));
+				break;
+			case 2:
+				solver.setSmtV1_2((Boolean) value);
+				break;
+			case 3:
+				solver.setSmtV2_0((Boolean) value);
+				break;
+			default:
+				break;
+			}
+
+			getViewer().update(element, null);
+		}
+
+	}
+
 
 }
