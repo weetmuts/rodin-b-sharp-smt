@@ -14,17 +14,11 @@ package br.ufrn.smt.solver.preferences;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -76,6 +70,13 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	public static final int[] BOUNDS = { 90, 200, 40, 40 };
 	
 	private static final String preferencesName = "solver preferences";
+	
+	/*****************************************/
+	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
+	private static boolean prepro;
+	
+	private static String preproPath;
+	/*****************************************/
 
 	protected TableViewer fTable;
 
@@ -91,6 +92,11 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	public SMTPreferencePage2() {
 		setPreferenceStore(SmtProversCore.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(preferencesName);
+		/*****************************************/
+		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
+		prepro = getPreferenceStore().getBoolean("usingprepro");
+		preproPath = getPreferenceStore().getString("prepropath");
+		/*****************************************/
 		fModel = SmtPreferencesStore.CreateModel(preferences);
 		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
 	}
@@ -187,7 +193,68 @@ public class SMTPreferencePage2 extends PreferencePage implements
 				
 			}
 		});
+		
+		/*****************************************/
+		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
+		// Create a new Composite with 1 column to dispose prepro option
+		final Composite compPrepro = new Composite(comp, SWT.NONE);
+		
+		// Define 1 column for buttons
+		final GridLayout layoutPrepro = new GridLayout(3, false);
+		layoutButtons.marginHeight = 0;
+		layoutButtons.marginWidth = 0;
+		compPrepro.setLayout(layoutPrepro);
+		
+		// resize compButtons
+		compPrepro.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		final Button prepro_Button = new Button(compPrepro,
+				SWT.CHECK);
+		prepro_Button.setText("prepro"); //$NON-NLS-1$
+		prepro_Button.setSelection(prepro);
+		
+		// callbacks for the 2 buttons
+		prepro_Button.addSelectionListener(new SelectionListener() {
 
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				prepro = prepro_Button.getSelection();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		
+		final Label solverPreproPathTextLabel = new Label(compPrepro, SWT.LEFT);
+		solverPreproPathTextLabel.setText("prepro Path"); //$NON-NLS-1$
+
+		final Text solverPreproPathText = new Text(compPrepro, SWT.LEFT
+				| SWT.BORDER);
+		solverPreproPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, true));
+		solverPreproPathText.setEditable(false);
+		solverPreproPathText.setText(preproPath);	
+		
+		// Add button Browse
+		Button browseButton = new Button(compPrepro, SWT.PUSH);
+		browseButton.setText("Browse"); //$NON-NLS-1$
+		browseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				File f = new File(solverPreproPathText.getText());
+				if (!f.exists()) {
+					f = null;
+				}
+				File d = getFile(f);
+				solverPreproPathText.setText(d.getPath());
+				preproPath = solverPreproPathText.getText();
+			}
+
+		});
+		/*********************************************/
+		
 		// Update table with solver details
 		fTable.refresh();
 
@@ -270,7 +337,13 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	
 	@Override
 	public boolean performOk() {
+		// Set preferences
 		getPreferenceStore().putValue(preferencesName, preferences);
+		/*****************************************/
+		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
+		getPreferenceStore().setValue("usingprepro", prepro);
+		getPreferenceStore().putValue("prepropath", preproPath);
+		/*****************************************/
 		return super.performOk();
 	}
 	
