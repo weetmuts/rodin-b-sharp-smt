@@ -37,5 +37,13 @@
             class="br.ufrn.smt.solver.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
+            id="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
+            name="SMT-Solver Plugin YFT">
+      </page>
+   </extension>
 
 </plugin>
