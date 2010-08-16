@@ -20,8 +20,11 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -42,6 +45,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
+
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.UIUtils;
 
@@ -224,8 +228,6 @@ public class SMTPreferencePage2 extends PreferencePage implements
 			column.getColumn().setWidth(BOUNDS[i]);
 			column.getColumn().setResizable(true);
 			column.getColumn().setMoveable(true);
-			// enable editing support
-			column.setEditingSupport(new SolverEditingSupport(viewer, i));
 		}
 		
 		Table table = viewer.getTable();
