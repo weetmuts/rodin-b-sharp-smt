@@ -21,6 +21,8 @@ import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProversCall;
 import fr.systerel.smt.provers.internal.core.UIUtils;
+import br.ufrn.smt.solver.preferences.SolverDetail;
+import static br.ufrn.smt.solver.preferences.SmtPreferencesStore.*;
 
 public class RunProverTest {
 
@@ -98,40 +100,38 @@ public class RunProverTest {
 	private void setPreferencesForVeriTTest() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
-		store.setValue("solver_path", VERIT_PATH);
-		store.setValue("solverarguments", "");
+		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
+		solvers.add(new SolverDetail("veriT", VERIT_PATH, "", true, false));
+		String preferences = CreatePreferences(solvers);
+		store.setValue("solverpreferences",preferences);
+		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
 		store.setValue("prepropath", VERIT_PATH);
-		store.setValue("whichsolver", "veriT");
-		store.setValue("preprocessingoptions", "aftersmt");
-		store.setValue("executeTrans", "proofonly");
-		store.setValue("smteditor", "");
 	}
 
 	private void setPreferencesForCvc3Test() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
-		store.setValue("solver_path", CVC3_PATH);
-		store.setValue("solverarguments", "-lang smt");
+		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
+		solvers.add(new SolverDetail("cvc3", CVC3_PATH, "-lang smt", true, false));
+		String preferences = CreatePreferences(solvers);
+		store.setValue("solverpreferences",preferences);
+		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
 		store.setValue("prepropath", VERIT_PATH);
-		store.setValue("whichsolver", "cvc3");
-		store.setValue("preprocessingoptions", "aftersmt");
-		store.setValue("executeTrans", "proofonly");
-		store.setValue("smteditor", "");
 	}
 	
 	private void setPreferencesForZ3Test() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
-		store.setValue("solver_path", Z3_PATH);
-		store.setValue("solverarguments", "");
+		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
+		solvers.add(new SolverDetail("z3", Z3_PATH, "", true, false));
+		String preferences = CreatePreferences(solvers);
+		store.setValue("solverpreferences",preferences);
+		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
 		store.setValue("prepropath", VERIT_PATH);
-		store.setValue("whichsolver", "z3");
-		store.setValue("preprocessingoptions", "aftersmt");
-		store.setValue("executeTrans", "proofonly");
-		store.setValue("smteditor", "");
+		
 	}
 
 	@Test
