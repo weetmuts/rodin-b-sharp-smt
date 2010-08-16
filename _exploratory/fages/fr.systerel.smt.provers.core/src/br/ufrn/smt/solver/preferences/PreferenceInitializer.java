@@ -27,22 +27,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = SmtProversCore.getDefault().getPreferenceStore();
-		store.setDefault("solver_path", "");
+		store.setDefault("solverPreferences", "");
+		store.setDefault("solverindex", -1);
 		store.setDefault("usingprepro", false);
 		store.setDefault("prepropath", "");
-		store.setDefault("showtfile", false);
-		store.setDefault("solverarguments", "");
-		String value = "";
-		if(System.getProperty("os.name").contains("Windows"))
-		{
-			value = "notepad";
-		}
-		else if (System.getProperty("os.name").contains("Linux"))
-		{
-			value = "/usr/bin/gedit";
-		}
-		store.setDefault("smteditor", value);
-		
 	}
 
 }

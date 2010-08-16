@@ -18,7 +18,9 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -27,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,6 +39,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
@@ -69,7 +73,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	
 	public static final int[] BOUNDS = { 90, 200, 40, 40 };
 	
-	private static final String preferencesName = "solver preferences";
+	private static final String preferencesName = "solverpreferences";
 	
 	/*****************************************/
 	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
@@ -77,7 +81,9 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	
 	private static String preproPath;
 	/*****************************************/
-
+	
+	private int selectedSolverIndex;
+	
 	protected TableViewer fTable;
 
 	protected Control fTableControl;
@@ -90,17 +96,23 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	private String preferences =  new String();
 
 	public SMTPreferencePage2() {
+		initWithPreferences();
+	}
+	
+	private void initWithPreferences(){
 		setPreferenceStore(SmtProversCore.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(preferencesName);
 		/*****************************************/
 		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-		prepro = getPreferenceStore().getBoolean("usingprepro");
-		preproPath = getPreferenceStore().getString("prepropath");
+		prepro = getPreferenceStore().getBoolean("usingprepro");//$NON-NLS-1$
+		preproPath = getPreferenceStore().getString("prepropath");//$NON-NLS-1$
 		/*****************************************/
 		fModel = SmtPreferencesStore.CreateModel(preferences);
+		selectedSolverIndex = getPreferenceStore().getInt("solverindex");//$NON-NLS-1$
 		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
+		
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,6 +158,15 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		tableControl
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
+		// get back the selected row if exists
+		Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
+		Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+		if (selectedSolverIndex >= 0 ){
+			TableItem[] Item = fTable.getTable().getItems();
+			Item[selectedSolverIndex].setBackground(blue);
+			Item[selectedSolverIndex].setForeground(white);
+		}
+
 		// Create a new Composite with 1 column to dispose buttons
 		final Composite compButtons = new Composite(comp, SWT.NONE);
 
@@ -175,11 +196,18 @@ public class SMTPreferencePage2 extends PreferencePage implements
 				SolverDetail solverToRemove = (SolverDetail) sel.getFirstElement();
 				fModel.remove(solverToRemove);
 				
+				// Check if the selected is being to be removed
+				if (fTable.getTable().getSelectionIndex() == selectedSolverIndex){
+					// Clear selectedSolverIndex
+					selectedSolverIndex = -1;
+				}
+				
 				// Update table with solver details
 				fTable.refresh();
 				
 				// save preferences
 				preferences = SmtPreferencesStore.CreatePreferences(fModel);
+				
 			}
 		});
 
@@ -191,6 +219,32 @@ public class SMTPreferencePage2 extends PreferencePage implements
 				SolverDetail solverToEdit = (SolverDetail) sel.getFirstElement();
 				createSolverDetailsPage(compButtons,true,solverToEdit.getId(),solverToEdit.getPath(),solverToEdit.getsmtV1_2(),solverToEdit.getsmtV2_0());
 				
+			}
+		});
+		
+		final Button selectButton = new Button(compButtons, SWT.PUSH);
+		selectButton.setText("Select"); //$NON-NLS-1$
+		selectButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				// Change color of the selected row
+				Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
+				Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE); 
+				Color black = comp.getDisplay().getSystemColor(SWT.COLOR_BLACK); 
+				
+				// memorize the selected solver index
+				selectedSolverIndex = fTable.getTable().getSelectionIndex();
+				
+				TableItem[] items = fTable.getTable().getItems();
+				for (int i=0; i< items.length ; i++){
+					if (i == selectedSolverIndex){
+						items[i].setBackground(blue);
+						items[i].setForeground(white);
+					}	
+					else{
+						items[i].setBackground(white);
+						items[i].setForeground(black);
+					}						
+				}	
 			}
 		});
 		
@@ -339,6 +393,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	public boolean performOk() {
 		// Set preferences
 		getPreferenceStore().putValue(preferencesName, preferences);
+		getPreferenceStore().setValue("solverindex", selectedSolverIndex);
 		/*****************************************/
 		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
 		getPreferenceStore().setValue("usingprepro", prepro);
