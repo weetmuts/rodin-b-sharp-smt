@@ -9,6 +9,8 @@ public class SolverDetail {
 	
 	private String path;
 	
+	private String args;
+	
 	private boolean smtV1_2; 
 	
 	private boolean smtV2_0; 
@@ -19,6 +21,10 @@ public class SolverDetail {
 	
 	public String getPath() {
 		return path;
+	}
+	
+	public String getArgs() {
+		return args;
 	}
 	
 	public boolean getsmtV1_2() {
@@ -37,6 +43,10 @@ public class SolverDetail {
 		this.path = path;
 	}
 	
+	public void setArgs(String args) {
+		this.args = args;
+	}
+	
 	public void setSmtV1_2(boolean smtV1_2) {
 		this.smtV1_2 = smtV1_2;
 	}
@@ -45,9 +55,10 @@ public class SolverDetail {
 		this.smtV2_0 = smtV2_0;
 	}
 
-	public SolverDetail(String id, String path, boolean smtV1_2, boolean smtV2_0) {
+	public SolverDetail(String id, String path, String args, boolean smtV1_2, boolean smtV2_0) {
 		this.id = id;
 		this.path = path;
+		this.args = args;
 		this.smtV1_2 = smtV1_2;
 		this.smtV2_0 = smtV2_0;
 	}

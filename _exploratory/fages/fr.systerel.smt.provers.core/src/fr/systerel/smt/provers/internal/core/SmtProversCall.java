@@ -23,6 +23,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
+import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
@@ -46,8 +47,8 @@ public abstract class SmtProversCall extends XProverCall {
 	private File firstTranslationFile;
 
 	// SMT UI preferences
-	private UIPreferences smtUiPreferences;	
-	
+	private UIPreferences smtUiPreferences;
+
 	public SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {
 		super(hypotheses, goal, pm);
@@ -55,21 +56,13 @@ public abstract class SmtProversCall extends XProverCall {
 
 		// Get back preferences
 		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
-				.getPreferenceStore().getString("solver_path"),//$NON-NLS-1$
+				.getPreferenceStore().getString("solverpreferences"),//$NON-NLS-1$
 				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("solverarguments"), //$NON-NLS-1$
+						.getInt("solverindex"), //$NON-NLS-1$
 				SmtProversCore.getDefault().getPreferenceStore()
 						.getBoolean("usingprepro"), //$NON-NLS-1$
 				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("prepropath"),//$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("whichsolver"), //$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("preprocessingoptions"),//$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("executeTrans"),//$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("smteditor"));//$NON-NLS-1$
+						.getString("prepropath"));//$NON-NLS-1$
 	}
 
 	/**
@@ -80,68 +73,35 @@ public abstract class SmtProversCall extends XProverCall {
 	 * @throws IOException
 	 */
 	protected void callProver(ArrayList<String> args) throws IOException {
-		if (smtUiPreferences.executeTrans.equals("proofandshowfile") //$NON-NLS-1$
-				|| smtUiPreferences.executeTrans.equals("proofonly")) { //$NON-NLS-1$
-			for (int i = 0; i < args.size(); i++) {
-				System.out.println(args.get(i));
-			}
 
-			// Set up arguments for solver call
-			String[] terms = new String[args.size()];
-			for (int i = 0; i < terms.length; i++) {
-				terms[i] = args.get(i);
-			}
-
-			// Get back solver result
-			resultOfSolver = Exec.execProgram(terms);
-
-			System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
-					+ "\n********** End of Solver output\n"); //$NON-NLS-1$
-
-			// Check Solver Result
-			checkResult(resultOfSolver);
-
-			File resultFile = new File(iFile.getParent() + "/smTSolverString"); //$NON-NLS-1$
-			if (!resultFile.exists()) {
-				resultFile.createNewFile();
-			}
-
-			FileWriter fileWriter = new FileWriter(resultFile);
-			fileWriter.write(resultOfSolver);
-			fileWriter.close();
-			oFile = resultFile;
+		for (int i = 0; i < args.size(); i++) {
+			System.out.println(args.get(i));
 		}
 
-		if (smtUiPreferences.executeTrans.equals("proofandshowfile") //$NON-NLS-1$
-				|| smtUiPreferences.executeTrans.equals("showfileonly")) { //$NON-NLS-1$
-			if ((smtUiPreferences.usingPrepro || !smtUiPreferences.whichSolver
-					.equals("veriT")) //$NON-NLS-1$
-					&& (smtUiPreferences.preprocessingOptions
-							.equals("aftersmt") || smtUiPreferences.preprocessingOptions //$NON-NLS-1$
-							.equals("beforeandafter"))) { //$NON-NLS-1$
-				showFileInEditor(this.firstTranslationFile.getPath());
-			}
-
-			if (smtUiPreferences.preprocessingOptions.equals("presmt") //$NON-NLS-1$
-					|| smtUiPreferences.preprocessingOptions
-							.equals("beforeandafter")) { //$NON-NLS-1$
-				showFileInEditor(smtFile.getPath());
-			}
+		// Set up arguments for solver call
+		String[] terms = new String[args.size()];
+		for (int i = 0; i < terms.length; i++) {
+			terms[i] = args.get(i);
 		}
-	}
 
-	/**
-	 * Show the pre-processed file in a file editor specified by the user in
-	 * Preferences
-	 * 
-	 * @param filePath
-	 *            The file path of the pre-processed file.
-	 * @throws IOException
-	 */
-	private void showFileInEditor(String filePath) throws IOException {
-		String[] args = { smtUiPreferences.smtEditor, filePath };
-		// Launch the editor
-		Exec.execProgram(args);
+		// Get back solver result
+		resultOfSolver = Exec.execProgram(terms);
+
+		System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
+				+ "\n********** End of Solver output\n"); //$NON-NLS-1$
+
+		// Check Solver Result
+		checkResult(resultOfSolver);
+
+		File resultFile = new File(iFile.getParent() + "/smTSolverString"); //$NON-NLS-1$
+		if (!resultFile.exists()) {
+			resultFile.createNewFile();
+		}
+
+		FileWriter fileWriter = new FileWriter(resultFile);
+		fileWriter.write(resultOfSolver);
+		fileWriter.close();
+		oFile = resultFile;
 	}
 
 	/**
@@ -233,9 +193,9 @@ public abstract class SmtProversCall extends XProverCall {
 	@Override
 	public void run() {
 		// test the SMT solver path
-		if (smtUiPreferences.solverPath.isEmpty()) {
+		if (smtUiPreferences.getSolver() == null) {
 			// Message popup displayed when there is no defined solver path
-			UIUtils.showError(Messages.SmtProversCall_no_defined_solver_path);
+			UIUtils.showError("Check Smt preference page and Select the Prover you want to use");
 			return;
 		}
 
@@ -277,21 +237,22 @@ public abstract class SmtProversCall extends XProverCall {
 					.println(Messages.SmtProversCall_translated_file_not_exists);
 		}
 		ArrayList<String> args = new ArrayList<String>();
-		args.add(smtUiPreferences.solverPath);
+		args.add(smtUiPreferences.getSolver().getPath());
 
 		args.add(smtFile.getPath());
 
-		if (!smtUiPreferences.solverArguments.isEmpty()) {
+		String s = smtUiPreferences.getSolver().getArgs();
+		
+		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
 			// Split arguments and add them in the list
-			String[] argumentsString = smtUiPreferences.solverArguments
+			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
 					.split(" ");
 			for (String argString : argumentsString) {
 				args.add(argString);
 			}
 		}
 
-		if (smtUiPreferences.usingPrepro
-				|| !smtUiPreferences.whichSolver.equals("veriT")) { //$NON-NLS-1$
+		if (smtUiPreferences.getUsingPrepro()) {
 			// Launch preprocessing
 			smtTranslationPreprocessing(args);
 		}
@@ -311,7 +272,7 @@ public abstract class SmtProversCall extends XProverCall {
 	private void smtTranslationPreprocessing(ArrayList<String> args)
 			throws PreProcessingException, IOException {
 		String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath(),
-				smtUiPreferences.preproPath);// result.getThirdElement().getPath());
+				smtUiPreferences.getPreproPath());
 		File preprocessedFile = new File(smtFile.getParent()
 				+ "/tempPreProcessed.smt"); //$NON-NLS-1$
 

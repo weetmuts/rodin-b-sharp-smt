@@ -18,8 +18,10 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 		case 1:
 			return solver.getPath();
 		case 2:
-			return Boolean.toString(solver.getsmtV1_2());
+			return solver.getArgs();
 		case 3:
+			return Boolean.toString(solver.getsmtV1_2());
+		case 4:
 			return Boolean.toString(solver.getsmtV2_0());
 		}
 		return null;

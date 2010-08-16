@@ -64,42 +64,44 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	public static final String SOLVER_ID = "Solver ID";
 
 	public static final String SOLVER_PATH = "Solver path";
+	
+	public static final String SOLVER_ARGS= "Args";
 
 	public static final String V1_2 = "v1.2";
 
 	public static final String V2_0 = "v2.0";
-	
-	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, V1_2, V2_0};
-	
-	public static final int[] BOUNDS = { 90, 200, 40, 40 };
-	
+
+	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, SOLVER_ARGS, V1_2, V2_0 };
+
+	public static final int[] BOUNDS = { 70,190,50, 35, 35 };
+
 	private static final String preferencesName = "solverpreferences";
-	
+
 	/*****************************************/
 	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
 	private static boolean prepro;
-	
+
 	private static String preproPath;
 	/*****************************************/
-	
+
 	private int selectedSolverIndex;
-	
+
 	protected TableViewer fTable;
 
 	protected Control fTableControl;
-	
-	private List<SolverDetail> fModel= new ArrayList<SolverDetail>();
+
+	private List<SolverDetail> fModel = new ArrayList<SolverDetail>();
 
 	/**
 	 * The name of the preference displayed in this preference page.
 	 */
-	private String preferences =  new String();
+	private String preferences = new String();
 
 	public SMTPreferencePage2() {
 		initWithPreferences();
 	}
-	
-	private void initWithPreferences(){
+
+	private void initWithPreferences() {
 		setPreferenceStore(SmtProversCore.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(preferencesName);
 		/*****************************************/
@@ -110,9 +112,9 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		fModel = SmtPreferencesStore.CreateModel(preferences);
 		selectedSolverIndex = getPreferenceStore().getInt("solverindex");//$NON-NLS-1$
 		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
-		
+
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,7 +148,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		comp.setLayout(layout);
-		
+
 		// Create the table viewer
 		fTable = createTableViewer(comp);
 		fTable.setInput(fModel);
@@ -157,11 +159,11 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		tableControl.setLinesVisible(true);
 		tableControl
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		// get back the selected row if exists
 		Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
 		Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-		if (selectedSolverIndex >= 0 ){
+		if (selectedSolverIndex >= 0) {
 			TableItem[] Item = fTable.getTable().getItems();
 			Item[selectedSolverIndex].setBackground(blue);
 			Item[selectedSolverIndex].setForeground(white);
@@ -184,7 +186,8 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		addButton.setText("Add..."); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				createSolverDetailsPage(compButtons,false,"","",false,false);
+				createSolverDetailsPage(compButtons, false, "", "", "", false,
+						false);
 			}
 		});
 
@@ -192,22 +195,24 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		removeButton.setText("Remove"); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				StructuredSelection sel = (StructuredSelection) fTable.getSelection();
-				SolverDetail solverToRemove = (SolverDetail) sel.getFirstElement();
+				StructuredSelection sel = (StructuredSelection) fTable
+						.getSelection();
+				SolverDetail solverToRemove = (SolverDetail) sel
+						.getFirstElement();
 				fModel.remove(solverToRemove);
-				
+
 				// Check if the selected is being to be removed
-				if (fTable.getTable().getSelectionIndex() == selectedSolverIndex){
+				if (fTable.getTable().getSelectionIndex() == selectedSolverIndex) {
 					// Clear selectedSolverIndex
 					selectedSolverIndex = -1;
 				}
-				
+
 				// Update table with solver details
 				fTable.refresh();
-				
+
 				// save preferences
 				preferences = SmtPreferencesStore.CreatePreferences(fModel);
-				
+
 			}
 		});
 
@@ -215,58 +220,61 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		editButton.setText("Edit..."); //$NON-NLS-1$
 		editButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				StructuredSelection sel = (StructuredSelection) fTable.getSelection();
-				SolverDetail solverToEdit = (SolverDetail) sel.getFirstElement();
-				createSolverDetailsPage(compButtons,true,solverToEdit.getId(),solverToEdit.getPath(),solverToEdit.getsmtV1_2(),solverToEdit.getsmtV2_0());
-				
+				StructuredSelection sel = (StructuredSelection) fTable
+						.getSelection();
+				SolverDetail solverToEdit = (SolverDetail) sel
+						.getFirstElement();
+				createSolverDetailsPage(compButtons, true,
+						solverToEdit.getId(), solverToEdit.getPath(),
+						solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
+						solverToEdit.getsmtV2_0());
+
 			}
 		});
-		
+
 		final Button selectButton = new Button(compButtons, SWT.PUSH);
 		selectButton.setText("Select"); //$NON-NLS-1$
 		selectButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				// Change color of the selected row
 				Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
-				Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE); 
-				Color black = comp.getDisplay().getSystemColor(SWT.COLOR_BLACK); 
-				
+				Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+				Color black = comp.getDisplay().getSystemColor(SWT.COLOR_BLACK);
+
 				// memorize the selected solver index
 				selectedSolverIndex = fTable.getTable().getSelectionIndex();
-				
+
 				TableItem[] items = fTable.getTable().getItems();
-				for (int i=0; i< items.length ; i++){
-					if (i == selectedSolverIndex){
+				for (int i = 0; i < items.length; i++) {
+					if (i == selectedSolverIndex) {
 						items[i].setBackground(blue);
 						items[i].setForeground(white);
-					}	
-					else{
+					} else {
 						items[i].setBackground(white);
 						items[i].setForeground(black);
-					}						
-				}	
+					}
+				}
 			}
 		});
-		
+
 		/*****************************************/
 		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
 		// Create a new Composite with 1 column to dispose prepro option
 		final Composite compPrepro = new Composite(comp, SWT.NONE);
-		
+
 		// Define 1 column for buttons
 		final GridLayout layoutPrepro = new GridLayout(3, false);
 		layoutButtons.marginHeight = 0;
 		layoutButtons.marginWidth = 0;
 		compPrepro.setLayout(layoutPrepro);
-		
+
 		// resize compButtons
 		compPrepro.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		final Button prepro_Button = new Button(compPrepro,
-				SWT.CHECK);
+
+		final Button prepro_Button = new Button(compPrepro, SWT.CHECK);
 		prepro_Button.setText("prepro"); //$NON-NLS-1$
 		prepro_Button.setSelection(prepro);
-		
+
 		// callbacks for the 2 buttons
 		prepro_Button.addSelectionListener(new SelectionListener() {
 
@@ -281,7 +289,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 
 			}
 		});
-		
+
 		final Label solverPreproPathTextLabel = new Label(compPrepro, SWT.LEFT);
 		solverPreproPathTextLabel.setText("prepro Path"); //$NON-NLS-1$
 
@@ -290,8 +298,8 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		solverPreproPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, true));
 		solverPreproPathText.setEditable(false);
-		solverPreproPathText.setText(preproPath);	
-		
+		solverPreproPathText.setText(preproPath);
+
 		// Add button Browse
 		Button browseButton = new Button(compPrepro, SWT.PUSH);
 		browseButton.setText("Browse"); //$NON-NLS-1$
@@ -308,7 +316,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 
 		});
 		/*********************************************/
-		
+
 		// Update table with solver details
 		fTable.refresh();
 
@@ -328,20 +336,17 @@ public class SMTPreferencePage2 extends PreferencePage implements
 	 */
 	protected TableViewer createTableViewer(Composite parent) {
 
-		String[] columnNames = new String[] {
-				"Solver ID", "Solver Path", "V1.2", "V2.0" }; //$NON-NLS-1$ //$NON-NLS-2$
 		final TableViewer tv = new TableViewer(parent, SWT.FULL_SELECTION);
-		
+
 		createColumns(tv);
-		tv.setColumnProperties(columnNames);
+		tv.setColumnProperties(PROPS);
 		tv.setContentProvider(new SolversDetailsContentProvider());
-		tv.setLabelProvider(new SolversDetailsLabelProvider());  
-		
-	    return tv;
+		tv.setLabelProvider(new SolversDetailsLabelProvider());
+
+		return tv;
 	}
 
-	
-	private void createColumns(TableViewer viewer) {	
+	private void createColumns(TableViewer viewer) {
 
 		for (int i = 0; i < PROPS.length; i++) {
 			TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
@@ -350,12 +355,12 @@ public class SMTPreferencePage2 extends PreferencePage implements
 			column.getColumn().setResizable(true);
 			column.getColumn().setMoveable(true);
 		}
-		
+
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 	}
-	
+
 	/*
 	 * Subclasses may override to specify a different style.
 	 */
@@ -388,7 +393,7 @@ public class SMTPreferencePage2 extends PreferencePage implements
 
 		return null;
 	}
-	
+
 	@Override
 	public boolean performOk() {
 		// Set preferences
@@ -401,8 +406,10 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		/*****************************************/
 		return super.performOk();
 	}
-	
-	private void createSolverDetailsPage(Composite parent, final boolean editMode, final String id, final String path, final boolean v1_2, final boolean v2_0){
+
+	private void createSolverDetailsPage(Composite parent,
+			final boolean editMode, final String id, final String path,
+			final String args, final boolean v1_2, final boolean v2_0) {
 		final Shell shell = new Shell(parent.getShell());
 		shell.setLayout(new GridLayout(1, false));
 		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -420,33 +427,30 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		compSmtVersion.setLayout(new GridLayout(3, false));
 		compOkCancel.setLayout(new GridLayout(2, false));
 
-		compName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+		compName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		compPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		compArg.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		compSmtVersion.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		compPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		compArg.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		compSmtVersion.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true));
-		compOkCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true));
+		compOkCancel
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		// Solver Id
 		final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
 		solverIdTextLabel.setText("Solver ID"); //$NON-NLS-1$
 
-		final Text solverIdText = new Text(compName, SWT.LEFT
-				| SWT.BORDER);
-		solverIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, true));
+		final Text solverIdText = new Text(compName, SWT.LEFT | SWT.BORDER);
+		solverIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				true));
 		solverIdText.setText(id);
 
+		// Solver Path
 		final Label solverPathTextLabel = new Label(compPath, SWT.LEFT);
 		solverPathTextLabel.setText("Solver Path"); //$NON-NLS-1$
 
-		final Text solverPathText = new Text(compPath, SWT.LEFT
-				| SWT.BORDER);
-		solverPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, true));
+		final Text solverPathText = new Text(compPath, SWT.LEFT | SWT.BORDER);
+		solverPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				true));
 		solverPathText.setEditable(false);
 		solverPathText.setText(path);
 
@@ -465,17 +469,25 @@ public class SMTPreferencePage2 extends PreferencePage implements
 
 		});
 
-		final Label smtVersionLabel = new Label(compSmtVersion,
-				SWT.LEFT);
+		// arguments
+		final Label solverArgTextLabel = new Label(compArg, SWT.LEFT);
+		solverArgTextLabel.setText("Solver arguments"); //$NON-NLS-1$
+
+		final Text solverArgsText = new Text(compArg, SWT.LEFT | SWT.BORDER);
+		solverArgsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				true));
+		solverArgsText.setEditable(true);
+		solverArgsText.setText(args);
+
+		// smt version
+		final Label smtVersionLabel = new Label(compSmtVersion, SWT.LEFT);
 		smtVersionLabel.setText("SMT-Lib"); //$NON-NLS-1$
 
-		final Button smt1_2_Button = new Button(compSmtVersion,
-				SWT.CHECK);
+		final Button smt1_2_Button = new Button(compSmtVersion, SWT.CHECK);
 		smt1_2_Button.setText("1.2"); //$NON-NLS-1$
 		smt1_2_Button.setSelection(v1_2);
 
-		final Button smt2_0_Button = new Button(compSmtVersion,
-				SWT.CHECK);
+		final Button smt2_0_Button = new Button(compSmtVersion, SWT.CHECK);
 		smt2_0_Button.setText("2.0"); //$NON-NLS-1$
 		smt2_0_Button.setSelection(v2_0);
 
@@ -522,33 +534,33 @@ public class SMTPreferencePage2 extends PreferencePage implements
 					// solver path or smt lib chosen or smt Id
 					UIUtils.showError(br.ufrn.smt.solver.preferences.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails);
 				} else {
-					if(editMode){
-						for (SolverDetail solver : fModel) {
-							if(solver.getId().equals(id) &&
-							   solver.getPath().equals(path)&&
-							   solver.getsmtV1_2() == v1_2&&
-							   solver.getsmtV2_0() == v2_0){
-								solver.setId(solverIdText.getText());
-								solver.setPath(solverPathText.getText());
-								solver.setSmtV1_2(smt1_2_Button.getSelection());
-								solver.setSmtV2_0(smt2_0_Button.getSelection());								
-							}							
-						}
-					}
-					else{
+					if (editMode) {
+						int indexToEdit = fTable.getTable().getSelectionIndex();
+						fModel.get(indexToEdit).setId(
+								solverIdText.getText());
+						fModel.get(indexToEdit).setPath(
+								solverPathText.getText());
+						fModel.get(indexToEdit).setArgs(
+								solverArgsText.getText());
+						fModel.get(indexToEdit).setSmtV1_2(
+								smt1_2_Button.getSelection());
+						fModel.get(indexToEdit).setSmtV2_0(
+								smt2_0_Button.getSelection());
+					} else {
 						fModel.add(new SolverDetail(
-								solverIdText.getText(), 
+								solverIdText.getText(),
 								solverPathText.getText(), 
+								solverArgsText.getText(), 
 								smt1_2_Button.getSelection(), 
 								smt2_0_Button.getSelection()));
-					}					
-					
+					}
+
 					// save preferences
 					preferences = SmtPreferencesStore.CreatePreferences(fModel);
-					
+
 					// Update table with solver details
 					fTable.refresh();
-					
+
 					// Close the shell
 					shell.close();
 				}
@@ -646,6 +658,5 @@ public class SMTPreferencePage2 extends PreferencePage implements
 		}
 
 	}
-
 
 }

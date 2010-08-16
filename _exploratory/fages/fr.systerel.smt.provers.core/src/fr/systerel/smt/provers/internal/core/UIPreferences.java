@@ -15,11 +15,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
+import br.ufrn.smt.solver.preferences.SolverDetail;
+import static br.ufrn.smt.solver.preferences.SmtPreferencesStore.*;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
@@ -28,56 +31,40 @@ import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 public class UIPreferences {
+	
+	private SolverDetail solver;
+	
+	private boolean usingPrepro;
 
-	public String solverPath;
+	private String preproPath;
+	
+	public SolverDetail getSolver(){
+		return solver;
+	}
+	
+	public Boolean getUsingPrepro(){
+		return usingPrepro;
+	}
+	
+	public String getPreproPath(){
+		return preproPath;
+	}
 
-	public String solverArguments;
-
-	public boolean usingPrepro;
-
-	public String preproPath;
-
-	public String whichSolver;
-
-	public String proofAndShowFile;
-
-	public String preprocessingOptions;
-
-	public String executeTrans;
-
-	public String smtEditor;
-
-	/**
-	 * Creates a new instance of this class to Get back SMT UI preferences.
-	 * 
-	 * @param solverpath
-	 *          Path to solver executable
-	 * @param solverarguments
-	 *			Solver Arguments 
-	 * @param usingprepro 
-	 * 			Use of the preprocessing options
-	 * @param prepropath
-	 * 			Preprocessing solver path
-	 * @param whichsolver		
-	 * 			Chosen Solver 
-	 * @param preprocessingoptions
-	 * 			Preprocessing options			 
-	 * @param executeTrans 
-	 * @param smtEditor
-	 * 			Path to a text editor
-	 */
-	public UIPreferences(String solverpath, String solverarguments,
-			boolean usingprepro, String prepropath, String whichsolver,
-			String preprocessingoptions,
-			String executeTrans, String smtEditor) {
-		this.solverPath = solverpath;
-		this.solverArguments = solverarguments;
+	public UIPreferences(String solverSettingsPreferences, int selectedSolverIndex,
+			boolean usingprepro, String prepropath) {
+		List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
+		if (selectedSolverIndex == -1){
+			solver = null;
+		}
+		else if (selectedSolverIndex < solvers.size()){
+			solver = solvers.get(selectedSolverIndex);
+		}
+		else{
+			solver = null;
+		}
+			
 		this.usingPrepro = usingprepro;
 		this.preproPath = prepropath;
-		this.whichSolver = whichsolver;
-		this.preprocessingOptions = preprocessingoptions;
-		this.executeTrans = executeTrans;
-		this.smtEditor = smtEditor;
 	}
 
 }

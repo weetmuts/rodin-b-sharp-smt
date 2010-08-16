@@ -11,6 +11,7 @@ public class SmtPreferencesStore{
 		for (SolverDetail solverDetail : model) {
 			preferences = preferences + solverDetail.getId() + "¤";
 			preferences = preferences + solverDetail.getPath() + "¤";
+			preferences = preferences + solverDetail.getArgs() + "¤";
 			preferences = preferences + Boolean.toString(solverDetail.getsmtV1_2()) + "¤";
 			preferences = preferences + Boolean.toString(solverDetail.getsmtV2_0()) + ";";
 		}
@@ -25,11 +26,10 @@ public class SmtPreferencesStore{
 		for (String row : rows) {
 			if ( row.length() > 0) {
 				final String[] columns = row.split("¤");
-				model.add(new SolverDetail(columns[0], columns[1], Boolean.valueOf(columns[2]), Boolean.valueOf(columns[3])));
+				model.add(new SolverDetail(columns[0], columns[1], columns[2], Boolean.valueOf(columns[3]), Boolean.valueOf(columns[4])));
 			}
 		}
 		return model;
 	}
-	
 	
 }
