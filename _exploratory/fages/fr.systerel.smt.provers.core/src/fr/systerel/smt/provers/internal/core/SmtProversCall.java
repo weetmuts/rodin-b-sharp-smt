@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2010 Systerel and Vítor Alcântara de Almeida .
+ * Copyright (c) 2009 Systerel and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License  v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  * 	   Systerel (YFT) - Creation
- *     Vítor Alcântara de Almeida - First integration Smt solvers 
+ *     Vitor Alcantara de Almeida - First integration Smt solvers 
  *     Systerel (YFT) - Code refactoring
  *     Systerel (YFT) - Separate UI and Core as much as possible
  *******************************************************************************/
@@ -23,7 +23,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
-import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;

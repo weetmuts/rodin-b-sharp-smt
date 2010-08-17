@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2010 Systerel .
+ * Copyright (c) 2009 Systerel and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License  v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -11,24 +11,10 @@
 
 package fr.systerel.smt.provers.internal.core;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.eventb.core.ast.Predicate;
-import org.eventb.core.seqprover.IProofMonitor;
-import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import static br.ufrn.smt.solver.preferences.SmtPreferencesStore.*;
-import br.ufrn.smt.solver.translation.Exec;
-import br.ufrn.smt.solver.translation.PreProcessingException;
-import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
-import br.ufrn.smt.solver.translation.TranslationException;
-
-import fr.systerel.smt.provers.core.SmtProversCore;
 
 public class UIPreferences {
 	

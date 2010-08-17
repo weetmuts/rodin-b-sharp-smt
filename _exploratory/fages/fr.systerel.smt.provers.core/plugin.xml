@@ -32,7 +32,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
+            class="br.ufrn.smt.solver.preferences.SMTPreferencePage"
             id="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
             name="SMT-Solver Plugin">
       </page>

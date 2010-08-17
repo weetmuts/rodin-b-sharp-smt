@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License  v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Systerel (YFT): Creation
+ *******************************************************************************/
+
 package br.ufrn.smt.solver.preferences;
 
 import org.eclipse.jface.viewers.ICellModifier;
@@ -32,13 +43,13 @@ class SolversDetailsCellModifier implements ICellModifier {
 		if (element instanceof Item) element = ((Item) element).getData();
 
 	    SolverDetail p = (SolverDetail) element;
-	    if (SMTPreferencePage2.SOLVER_ID.equals(property))
+	    if (SMTPreferencePage.SOLVER_ID.equals(property))
 	      p.setId((String)value);
-	    else if (SMTPreferencePage2.SOLVER_PATH.equals(property))
+	    else if (SMTPreferencePage.SOLVER_PATH.equals(property))
 	      p.setPath((String)value);
-	    else if (SMTPreferencePage2.V1_2.equals(property))
+	    else if (SMTPreferencePage.V1_2.equals(property))
 	      p.setSmtV1_2(((Boolean) value).booleanValue());
-	    else if (SMTPreferencePage2.V2_0.equals(property))
+	    else if (SMTPreferencePage.V2_0.equals(property))
 	      p.setSmtV2_0(((Boolean) value).booleanValue());
 
 	    viewer.refresh();
