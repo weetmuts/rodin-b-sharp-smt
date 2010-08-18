@@ -14,6 +14,7 @@ Export-Package: br.ufrn.smt.solver.preferences,
  fr.systerel.smt.provers.core,
  fr.systerel.smt.provers.internal.core;x-friends:="fr.systerel.smt.provers.tests"
 Bundle-Vendor: %pluginProvider
-Import-Package: org.eventb.internal.ui,
+Import-Package: br.ufrn.smt.solver.preferences,
+ org.eventb.internal.ui,
  org.eventb.internal.ui.eventbeditor,
  org.eventb.internal.ui.preferences

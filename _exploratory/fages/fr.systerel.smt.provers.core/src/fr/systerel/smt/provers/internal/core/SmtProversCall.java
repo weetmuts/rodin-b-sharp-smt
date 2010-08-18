@@ -40,11 +40,9 @@ public abstract class SmtProversCall extends XProverCall {
 	protected File iFile;
 	protected File oFile;
 
-	// Variables created by Vitor
 	private String resultOfSolver;
 	private File smtFile;
-	private File firstTranslationFile;
-
+	
 	// SMT UI preferences
 	private UIPreferences smtUiPreferences;
 
@@ -53,7 +51,7 @@ public abstract class SmtProversCall extends XProverCall {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
 
-		// Get back preferences
+		// Get back preferences from UI
 		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
 				.getPreferenceStore().getString("solverpreferences"),//$NON-NLS-1$
 				SmtProversCore.getDefault().getPreferenceStore()
@@ -83,11 +81,8 @@ public abstract class SmtProversCall extends XProverCall {
 			terms[i] = args.get(i);
 		}
 
-		// Get back solver result
+		// Launch solver and get back solver result
 		resultOfSolver = Exec.execProgram(terms);
-
-		System.out.println("\n********** Solver output:" + resultOfSolver //$NON-NLS-1$
-				+ "\n********** End of Solver output\n"); //$NON-NLS-1$
 
 		// Check Solver Result
 		checkResult(resultOfSolver);
@@ -107,7 +102,7 @@ public abstract class SmtProversCall extends XProverCall {
 	 * Check the result provided by the solver (unsat is checked)
 	 * 
 	 * @param expected
-	 *            The string result from the smt solvers.
+	 *            The string result from the SMT solvers.
 	 * @throws IOException
 	 */
 	private boolean checkResult(String expected) throws IOException {
@@ -165,9 +160,6 @@ public abstract class SmtProversCall extends XProverCall {
 		args[1] = "--print-simp-and-exit"; //$NON-NLS-1$
 		args[2] = smtFilePath;
 		String resultOfPreProcessing = Exec.execProgram(args);
-		System.out.println("\n*************** Preprocessing in VeriT output:" //$NON-NLS-1$
-				+ resultOfPreProcessing
-				+ "\n*************** End of preprocessing in VeriT ouput\n"); //$NON-NLS-1$
 		int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10; //$NON-NLS-1$
 		int i = 1;
 		StringBuffer sb = new StringBuffer();
@@ -198,9 +190,16 @@ public abstract class SmtProversCall extends XProverCall {
 			return;
 		}
 
-		try {
-			// Doing the translation:
-			smtTranslationSolverCall();
+		try {			
+			// Translate and apply smt solver
+			if (smtUiPreferences.getSolver().getsmtV1_2()){
+				// SMT lib v1.2
+				smtTranslationSolverCall();
+			}
+			else if(smtUiPreferences.getSolver().getsmtV2_0()) {
+				// SMT lib v2.0
+				smtV2Call();
+			}				
 		} catch (TranslationException t) {
 			UIUtils.showError(t.getMessage());
 			return;
@@ -215,7 +214,7 @@ public abstract class SmtProversCall extends XProverCall {
 	}
 
 	/**
-	 * Performs Rodin PO to Smt translation
+	 * Performs Rodin PO to SMT translation
 	 * 
 	 * @throws PreProcessingException
 	 * @throws IOException
@@ -235,21 +234,9 @@ public abstract class SmtProversCall extends XProverCall {
 			System.out
 					.println(Messages.SmtProversCall_translated_file_not_exists);
 		}
-		ArrayList<String> args = new ArrayList<String>();
-		args.add(smtUiPreferences.getSolver().getPath());
-
-		args.add(smtFile.getPath());
-
-		String s = smtUiPreferences.getSolver().getArgs();
 		
-		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
-			// Split arguments and add them in the list
-			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
-					.split(" ");
-			for (String argString : argumentsString) {
-				args.add(argString);
-			}
-		}
+		// Set up arguments
+		ArrayList<String> args = setSolverArgs();
 
 		if (smtUiPreferences.getUsingPrepro()) {
 			// Launch preprocessing
@@ -261,9 +248,45 @@ public abstract class SmtProversCall extends XProverCall {
 		// prover with arguments
 		callProver(args);
 	}
-
+	
+	private ArrayList<String> setSolverArgs(){
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(smtUiPreferences.getSolver().getPath());
+	
+		args.add(smtFile.getPath());
+	
+		smtUiPreferences.getSolver().getArgs();
+		
+		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
+			// Split arguments and add them in the list
+			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
+					.split(" ");
+			for (String argString : argumentsString) {
+				args.add(argString);
+			}
+		}
+		
+		return args;
+	}
+	
 	/**
-	 * Performs Rodin PO to Smt translation preprocessing
+	 * Performs SMT-lib 2.0 translation + SMT solver solver call.
+	 * 
+	 */
+	private void smtV2Call(){
+		// Parse Rodin PO to create SMT v2.0 file
+		
+		// Get back translated SMT file
+		
+		// Set up arguments
+		ArrayList<String> args = setSolverArgs();
+		
+		// Call the prover
+		
+	}
+	
+	/**
+	 * Performs Rodin PO to SMT translation preprocessing
 	 * 
 	 * @throws PreProcessingException
 	 * @throws IOException
@@ -284,7 +307,6 @@ public abstract class SmtProversCall extends XProverCall {
 		fw.close();
 		args.set(1, preprocessedFile.getPath());
 
-		this.firstTranslationFile = smtFile;
 		this.iFile = preprocessedFile;
 		this.smtFile = preprocessedFile;
 	}

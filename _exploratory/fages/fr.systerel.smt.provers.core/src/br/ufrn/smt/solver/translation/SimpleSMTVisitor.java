@@ -73,12 +73,12 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	}
 
 	public SimpleSMTVisitor(RodinToSMTPredicateParser parser) {
-		funs = parser.getFuns();
-		sorts = parser.getSorts();
-		preds = parser.getPreds();
+		funs = parser.getTypeEnvironment().getFuns();
+		sorts = parser.getTypeEnvironment().getSorts();
+		preds = parser.getTypeEnvironment().getPreds();
 		assumptions = parser.getAssumptions();
 		macros = parser.getMacros();
-		singleQuotVars = parser.getSingleQuotVars();
+		singleQuotVars = parser.getTypeEnvironment().getSingleQuotVars();
 		minimalElemvalue = parser.getMinimalElemvalue();
 		minimalEnumValue = parser.getMinimalEnumValue();
 		minimalFiniteValue = parser.getMinimalFiniteValue();
@@ -289,7 +289,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			sb.append("(?"
 					+ assignedIdentifiers[i].getName()
 					+ " "
-					+ RodinToSMTPredicateParser
+					+ TypeEnvironment
 							.getSMTAtomicExpressionFormat(assignedIdentifiers[i]
 									.getType().toString()) + ")");
 		}
@@ -340,7 +340,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		subVar = "?" + subVar;
 		subVar = verifyBoundedQuotedVar(subVar);
 		indexesOfboundIdentifiers.add(subVar.trim());
-		smtFormula.append("(" + subVar + " " + RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(boundIdentDecl.getType().toString()) + ")");
+		smtFormula.append("(" + subVar + " " + TypeEnvironment.getSMTAtomicExpressionFormat(boundIdentDecl.getType().toString()) + ")");
 	}
 
 	public void visitAssociativeExpression(AssociativeExpression expression) {
@@ -598,7 +598,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		{
 			setBuffer.append(p.getKey()
 					+ " "
-					+ RodinToSMTPredicateParser
+					+ TypeEnvironment
 							.getSMTAtomicExpressionFormat(setType.getSource()
 									.toString()) + ")(?");
 
@@ -608,7 +608,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 			setBuffer.append(p.getKey()
 					+ " "
-					+ RodinToSMTPredicateParser
+					+ TypeEnvironment
 							.getSMTAtomicExpressionFormat(setType.getTarget()
 									.toString()) + ") . (or");
 
@@ -617,7 +617,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		} else {
 			setBuffer.append(p.getKey()
 					+ " "
-					+ RodinToSMTPredicateParser
+					+ TypeEnvironment
 							.getSMTAtomicExpressionFormat(setType.toString())
 					+ ") . (or");
 		}
@@ -1010,12 +1010,12 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 					}
 					else
 					{
-						originalType = RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(finiteType.getBaseType().toString());
+						originalType = TypeEnvironment.getSMTAtomicExpressionFormat(finiteType.getBaseType().toString());
 					}
 				}
 				else
 				{
-					originalType = RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(finiteType.toString());
+					originalType = TypeEnvironment.getSMTAtomicExpressionFormat(finiteType.toString());
 				}
 				SimpleSMTVisitor finiteVisitor = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue, minimalElemvalue,singleQuotVars,indexesOfboundIdentifiers);
 				finiteExp.accept(finiteVisitor);
