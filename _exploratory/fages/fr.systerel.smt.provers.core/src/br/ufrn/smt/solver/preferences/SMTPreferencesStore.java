@@ -14,7 +14,7 @@ package br.ufrn.smt.solver.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmtPreferencesStore{
+public class SMTPreferencesStore{
 	
 	public static String CreatePreferences(List<SolverDetail> model){
 		String preferences = new String();

@@ -107,7 +107,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		prepro = getPreferenceStore().getBoolean("usingprepro");//$NON-NLS-1$
 		preproPath = getPreferenceStore().getString("prepropath");//$NON-NLS-1$
 		/*****************************************/
-		fModel = SmtPreferencesStore.CreateModel(preferences);
+		fModel = SMTPreferencesStore.CreateModel(preferences);
 		selectedSolverIndex = getPreferenceStore().getInt("solverindex");//$NON-NLS-1$
 		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
 
@@ -209,7 +209,7 @@ public class SMTPreferencePage extends PreferencePage implements
 				fTable.refresh();
 
 				// save preferences
-				preferences = SmtPreferencesStore.CreatePreferences(fModel);
+				preferences = SMTPreferencesStore.CreatePreferences(fModel);
 
 			}
 		});
@@ -554,7 +554,7 @@ public class SMTPreferencePage extends PreferencePage implements
 					}
 
 					// save preferences
-					preferences = SmtPreferencesStore.CreatePreferences(fModel);
+					preferences = SMTPreferencesStore.CreatePreferences(fModel);
 
 					// Update table with solver details
 					fTable.refresh();
