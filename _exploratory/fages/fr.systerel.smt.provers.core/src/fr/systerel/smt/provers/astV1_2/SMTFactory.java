@@ -12,6 +12,9 @@ package fr.systerel.smt.provers.astV1_2;
 
 import java.math.BigInteger;
 
+import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.Predicate;
+
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -136,5 +139,22 @@ public final class SMTFactory {
 	 */
 	public SMTPropAtom makePropAtom(int tag) {
 		return new SMTPropAtom(tag);
+	}
+	
+	/**
+	 * Creates a new Lambda expression.
+	 * <p>
+	 * (lambda (?i Int) . (<= 0 ?i))
+	 * 
+	 * @param tag
+	 *            the tag of the lambda Expression
+	 * @param children
+	 *            left Hand side identifiers
+	 * @param predicate
+	 *            right Hand side predicate
+	 * @return the newly lambda expression
+	 */
+	public SMTLambda makeLambda(int tag, FreeIdentifier[] children, SMTTerm[] predicate) {
+		return new SMTLambda(tag, children, predicate);
 	}
 }

@@ -28,7 +28,23 @@ public class SMTArithmeticTerm extends SMTTerm {
 		"*",
 		"/",
 		"%",
-		"~"
+		"~",
+		"pair",
+		"rel",
+		"pfun",
+		"tfun",
+		"pinj",
+		"tinj",
+		"psur",
+		"tsur",
+		"bij",
+		"setminus",
+		"cartesianproduct",
+		"domr",
+		"doms",
+		"ranres",
+		"rans",
+		"range"
 	};
 	
 	// =========================================================================

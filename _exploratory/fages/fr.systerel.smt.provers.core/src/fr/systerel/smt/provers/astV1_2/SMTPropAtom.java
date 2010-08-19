@@ -19,7 +19,7 @@ public final class SMTPropAtom extends SMTFormula {
 	private static final int firstTag = FIRST_PROP_ATOM;
 
 	/** The tags. */
-	private static final String[] tags = { "true", "false" };
+	private static final String[] tags = { "true", "false", "Int", "Nat", "Nat1", "Bool", "emptyset", "pred", "succ", "prj1", "prj2", "id" };
 
 	/**
 	 * Creates a new propositional atom.

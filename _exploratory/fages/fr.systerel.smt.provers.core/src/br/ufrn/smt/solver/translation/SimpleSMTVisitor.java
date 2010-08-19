@@ -13,6 +13,8 @@ package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Stack;
 
 import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AssociativePredicate;
@@ -44,8 +46,66 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
-public class SimpleSMTVisitor implements ISimpleVisitor {
+import fr.systerel.smt.provers.astV1_2.SMTFactory;
+import fr.systerel.smt.provers.astV1_2.SMTFormula;
+import fr.systerel.smt.provers.astV1_2.SMTNode;
 
+public class SimpleSMTVisitor implements ISimpleVisitor {
+	
+	/** The built nodes. */
+	private Stack<SMTNode<?>> stack;
+
+	/** The SMT factory. */
+	private SMTFactory sf;
+
+	/**
+	 * Builds a new visitor.
+	 */
+	public SimpleSMTVisitor() {
+		stack = new Stack<SMTNode<?>>();
+		sf = SMTFactory.getDefault();
+	}
+	
+	/**
+	 * Gets the built formula in SMT-LIB format.
+	 * 
+	 * @return the string representation of the built formula
+	 */
+	public String getSMTNode() {
+		if (!stack.isEmpty())
+			return stack.pop().toString();
+		else
+			return "";
+	}
+
+	/**
+	 * Resets the visitor.
+	 */
+	public void reset() {
+		stack.clear();
+	}
+
+	/**
+	 * Converts Event-B formulas in SMT-LIB format.
+	 * 
+	 * @param formulas
+	 *            the formulas to be converted
+	 * @return the built SMT node
+	 */
+	private List<SMTNode<?>> convert(Formula<?>... formulas) {
+		for (int i = 0; i < formulas.length; i++)
+			formulas[i].accept(this);
+
+		List<SMTNode<?>> nodes = new ArrayList<SMTNode<?>>(formulas.length);
+		for (int i = 0; i < formulas.length; i++)
+			nodes.add(0, stack.pop());
+		return nodes;
+	}
+	
+	private SMTFormula[] toFormulaArray(List<SMTNode<?>> nodes) {
+		return nodes.toArray(new SMTFormula[nodes.size()]);
+	}
+	
 	long minimalFiniteValue = 0;
 	long minimalEnumValue = 0;
 	long minimalElemvalue = 0;
@@ -173,7 +233,8 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	public String getSmtFormula() {
 		return smtFormula.toString();
 	}
-
+	
+	
 	private String createSet(FreeIdentifier fr, SetExtension se) {
 		StringBuffer sb = new StringBuffer();
 		Pair<String, Long> setEl = getValidName("elem", minimalElemvalue);
@@ -193,7 +254,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		sb.append("))");
 		return sb.toString();
 	}
-
+	
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
 		FreeIdentifier[] identifiers = assignment.getAssignedIdentifiers();
 
@@ -713,7 +774,6 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			return true;
 		}
 	}
-	
 
 	public ArrayList<String> getIndexesOfboundIdentifiers() {
 		return indexesOfboundIdentifiers;
@@ -741,7 +801,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		//smtFormula = smtFormula + " " + subVar + " ";
 		smtFormula.append(" " + subVar + " ");
 	}
-
+	
 	public void visitAssociativePredicate(AssociativePredicate predicate) {
 		String operator = "";
 		if (predicate.getTag() == Formula.LAND) {

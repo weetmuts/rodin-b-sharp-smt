@@ -31,6 +31,20 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @see SMTITETerm
 	 */
 	public final static int ITE = 3;
+	
+	/**
+	 * <code>LAMBDA</code> represents an lambda term. 
+	 * 
+	 * @see SMTLambda
+	 */
+	public final static int LAMBDA = 4;
+	
+	/**
+	 * <code>BECOMES_FORMULA</code> represents a Becomes Formula 
+	 * 
+	 * @see SMTBecomesFormula
+	 */
+	public final static int BECOMES_FORMULA = 5;
 
 	/**
 	 * First tag for a propositional atom.
@@ -52,6 +66,76 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @see SMTPropAtom
 	 */
 	public final static int PFALSE = FIRST_PROP_ATOM + 1;
+	
+	/**
+	 * <code>PINT</code> represents the <tt>Int</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PINT = FIRST_PROP_ATOM + 2;
+	
+	/**
+	 * <code>PNAT</code> represents the <tt>Nat</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PNAT = FIRST_PROP_ATOM + 3;
+	
+	/**
+	 * <code>PNAT1</code> represents the <tt>Nat1</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PNAT1 = FIRST_PROP_ATOM + 4;
+	
+	/**
+	 * <code>PBOOL</code> represents the <tt>Bool</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PBOOL = FIRST_PROP_ATOM + 5;
+	
+	/**
+	 * <code>PEMPTYSET</code> represents the <tt>EmptySet</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PEMPTYSET = FIRST_PROP_ATOM + 6;
+	
+	/**
+	 * <code>PKPRED</code> represents the <tt>Kpred</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PKPRED = FIRST_PROP_ATOM + 7;
+	
+	/**
+	 * <code>PKSUCC</code> represents the <tt>KSucc</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PKSUCC = FIRST_PROP_ATOM + 8;
+	
+	/**
+	 * <code>PKPRJ1_GEN</code> represents the <tt>KPrj1_Gen</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PKPRJ1_GEN = FIRST_PROP_ATOM + 9;
+	
+	/**
+	 * <code>PKPRJ2_GEN</code> represents the <tt>Kprj2_Gen</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PKPRJ2_GEN = FIRST_PROP_ATOM + 10;
+	
+	/**
+	 * <code>PKID_GEN</code> represents the <tt>Kid_Gen</tt> propositional atom.
+	 * 
+	 * @see SMTPropAtom
+	 */
+	public final static int PKID_GEN = FIRST_PROP_ATOM + 11;
 	
 	/**
 	 * First tag for a connective formula.
@@ -200,6 +284,118 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 */
 	public final static int UNARY_MINUS = FIRST_ARITHMETIC_TERM + 5;
 	
+	/**
+	 * <code>MAPSTO</code> represents "pair".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int MAPSTO = FIRST_ARITHMETIC_TERM + 6;
+	
+	/**
+	 * <code>REL</code> represents "rel".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int REL = FIRST_ARITHMETIC_TERM + 7;
+	
+	/**
+	 * <code>PFUN</code> represents "pfun".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int PFUN = FIRST_ARITHMETIC_TERM + 8;
+	
+	/**
+	 * <code>TFUN</code> represents "tfun".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int TFUN = FIRST_ARITHMETIC_TERM + 9;
+	
+	/**
+	 * <code>PINJ</code> represents "pinj".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int PINJ = FIRST_ARITHMETIC_TERM + 10;
+	
+	/**
+	 * <code>TINJ</code> represents "tinj".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int TINJ = FIRST_ARITHMETIC_TERM + 11;
+	
+	/**
+	 * <code>PSUR</code> represents "psur".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int PSUR = FIRST_ARITHMETIC_TERM + 12;
+	
+	/**
+	 * <code>TSUR</code> represents "tsur".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int TSUR = FIRST_ARITHMETIC_TERM + 13;
+	
+	/**
+	 * <code>TBIJ</code> represents "bij".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int TBIJ = FIRST_ARITHMETIC_TERM + 14;
+	
+	/**
+	 * <code>SETMINUS</code> represents "setminus".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int SETMINUS = FIRST_ARITHMETIC_TERM + 15;
+	
+	/**
+	 * <code>CPROD</code> represents "cartesianproduct".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int CPROD = FIRST_ARITHMETIC_TERM + 16;
+	
+	/**
+	 * <code>DOMRES</code> represents "domr".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int DOMRES = FIRST_ARITHMETIC_TERM + 17;
+	
+	/**
+	 * <code>DOMSUB</code> represents "doms".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int DOMSUB = FIRST_ARITHMETIC_TERM + 18;
+	
+	/**
+	 * <code>RANRES</code> represents "ranres".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int RANRES = FIRST_ARITHMETIC_TERM + 19;
+	
+	/**
+	 * <code>RANSUB</code> represents "rans".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int RANSUB = FIRST_ARITHMETIC_TERM + 20;
+	
+	/**
+	 * <code>UPTO</code> represents "range".
+	 * 
+	 * @see SMTArithmeticTerm
+	 */
+	public final static int UPTO = FIRST_ARITHMETIC_TERM + 21;
+		
 	/**
 	 * First tag for a base term.
 	 * 
