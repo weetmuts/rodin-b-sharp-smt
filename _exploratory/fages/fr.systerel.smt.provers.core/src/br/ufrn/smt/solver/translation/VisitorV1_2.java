@@ -44,9 +44,9 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.astV1_2.SMTFactory;
-import fr.systerel.smt.provers.astV1_2.SMTTerm;
 import fr.systerel.smt.provers.astV1_2.SMTFormula;
 import fr.systerel.smt.provers.astV1_2.SMTNode;
+import fr.systerel.smt.provers.astV1_2.SMTTerm;
 
 /**
  * This class translate a formula expressed in Event-B syntax to a formula in
@@ -115,21 +115,6 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	public void visitAssociativeExpression(AssociativeExpression expression) {
 		SMTTerm[] children = toTermArray(convert(expression.getChildren()));
 		switch (expression.getTag()) {
-		case Formula.BUNION:
-			// TODO
-			break;
-		case Formula.BINTER:
-			// TODO	
-			break;
-		case Formula.BCOMP:
-			// TODO
-			break;
-		case Formula.FCOMP:
-			// TODO
-			break;
-		case Formula.OVR:
-			// TODO
-			break;
 		case Formula.PLUS:
 			stack.push(sf.makeArithmeticTerm(SMTNode.PLUS, children));
 			break;
@@ -166,38 +151,11 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeBoolean(SMTNode.FALSE));
 			break;
 		case Formula.INTEGER:
-			stack.push(sf.makePropAtom(SMTNode.PINT));
-			break;
 		case Formula.NATURAL:
-			stack.push(sf.makePropAtom(SMTNode.PNAT));
-			break;
 		case Formula.NATURAL1:
-			stack.push(sf.makePropAtom(SMTNode.PNAT1));
-			break;
 		case Formula.BOOL:
-			stack.push(sf.makePropAtom(SMTNode.PBOOL));
-			break;
 		case Formula.EMPTYSET:
-			stack.push(sf.makePropAtom(SMTNode.PEMPTYSET));
-			break;
-		case Formula.KPRED:
-			assert false;
-			break;
-		case Formula.KSUCC:
-			// TODO
-			assert false;
-			break;
-		case Formula.KPRJ1_GEN:
-			// TODO
-			assert false;
-			break;
-		case Formula.KPRJ2_GEN:
-			// TODO
-			assert false;
-			break;
-		case Formula.KID_GEN:
-			// TODO
-			assert false;
+			// do nothing
 			break;
 		default:
 			assert false;
@@ -214,7 +172,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	}
 
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
-		stack.push(sf.makeLambda(SMTNode.LAMBDA, assignment.getAssignedIdentifiers(), toTermArray(convert(assignment.getCondition()))));
+		assert false;
 	}
 
 	public void visitBinaryExpression(BinaryExpression expression) {
@@ -230,85 +188,8 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		case Formula.MOD:
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
-		case Formula.MAPSTO:
-			stack.push(sf.makeArithmeticTerm(SMTNode.MAPSTO, children));
-			break;
-		case Formula.REL:
-			stack.push(sf.makeArithmeticTerm(SMTNode.REL, children));
-			break;
-		case Formula.TREL:
-			//TODO
-			assert false;
-			break;
-		case Formula.SREL:
-			//TODO
-			assert false;
-			break;
-		case Formula.STREL:
-			// TODO
-			assert false;
-			break;
-		case Formula.PFUN:
-			stack.push(sf.makeArithmeticTerm(SMTNode.PFUN, children));
-			break;
-		case Formula.TFUN:
-			stack.push(sf.makeArithmeticTerm(SMTNode.TFUN, children));
-			break;
-		case Formula.PINJ:
-			stack.push(sf.makeArithmeticTerm(SMTNode.PINJ, children));
-			break;
-		case Formula.TINJ:
-			stack.push(sf.makeArithmeticTerm(SMTNode.TINJ, children));
-			break;
-		case Formula.PSUR:
-			stack.push(sf.makeArithmeticTerm(SMTNode.PSUR, children));
-			break;
-		case Formula.TSUR:
-			stack.push(sf.makeArithmeticTerm(SMTNode.TSUR, children));
-			break;
-		case Formula.TBIJ:
-			stack.push(sf.makeArithmeticTerm(SMTNode.TBIJ, children));
-			break;
-		case Formula.SETMINUS:
-			stack.push(sf.makeArithmeticTerm(SMTNode.SETMINUS, children));
-			break;
-		case Formula.CPROD:
-			stack.push(sf.makeArithmeticTerm(SMTNode.CPROD, children));
-			break;
-		case Formula.DPROD:
-			// TODO
-			assert false;
-			break;
-		case Formula.PPROD:
-			// TODO
-			assert false;
-			break;
-		case Formula.DOMRES:
-			stack.push(sf.makeArithmeticTerm(SMTNode.DOMRES, children));
-			break;
-		case Formula.DOMSUB:
-			stack.push(sf.makeArithmeticTerm(SMTNode.DOMSUB, children));
-			break;
-		case Formula.RANRES:
-			stack.push(sf.makeArithmeticTerm(SMTNode.RANRES, children));
-			break;
-		case Formula.RANSUB:
-			stack.push(sf.makeArithmeticTerm(SMTNode.RANSUB, children));
-			break;
 		case Formula.UPTO:
-			stack.push(sf.makeArithmeticTerm(SMTNode.UPTO, children));
-			break;
-		case Formula.EXPN:
-			// TODO
-			assert false;
-			break;
-		case Formula.FUNIMAGE:
-			// TODO
-			assert false;
-			break;
-		case Formula.RELIMAGE:
-			// TODO
-			assert false;
+			// do nothing
 			break;
 		default:
 			assert false;
@@ -391,8 +272,6 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			children = toTermArray(convert(predicate.getLeft()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
-			// TODO
-			break;
 		case Formula.EQUAL:
 			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
 			break;
@@ -453,21 +332,6 @@ public class VisitorV1_2 implements ISimpleVisitor {
 				assert false;
 				return;
 			}
-		case Formula.NOTIN:
-			// TODO
-			break;
-		case Formula.SUBSET:
-			// TODO
-			break;
-		case Formula.NOTSUBSET:
-			// TODO
-			break;
-		case Formula.SUBSETEQ:
-			// TODO
-			break;
-		case Formula.NOTSUBSETEQ:
-			// TODO
-			break;
 		default:
 			assert false;
 			return;
@@ -490,36 +354,6 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		case Formula.UNMINUS:
 			SMTTerm[] children = toTermArray(convert(expression.getChild()));
 			stack.push(sf.makeArithmeticTerm(SMTNode.UNARY_MINUS, children));
-			break;
-		case Formula.KCARD:
-			// TODO
-			break;
-		case Formula.POW:
-			// TODO
-			break;
-		case Formula.POW1:
-			// TODO
-			break;
-		case Formula.KUNION:
-			// TODO
-			break;
-		case Formula.KINTER:
-			// TODO
-			break;
-		case Formula.KDOM:
-			// TODO
-			break;
-		case Formula.KRAN:
-			// TODO
-			break;
-		case Formula.KMIN:
-			// TODO
-			break;
-		case Formula.KMAX:
-			// TODO
-			break;
-		case Formula.CONVERSE:
-			// TODO
 			break;
 		default:
 			assert false;
