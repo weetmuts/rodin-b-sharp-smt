@@ -121,6 +121,9 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		case Formula.MUL:
 			stack.push(sf.makeArithmeticTerm(SMTNode.MUL, children));
 			break;
+		case Formula.BUNION:
+			stack.push(sf.makeMacro(SMTNode.MACRO, "union", children, false));
+			break;
 		default:
 			assert false;
 			return;
@@ -151,11 +154,18 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeBoolean(SMTNode.FALSE));
 			break;
 		case Formula.INTEGER:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"Int", null, false));
+			break;
 		case Formula.NATURAL:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"Nat", null, false));
+			break;
 		case Formula.NATURAL1:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"Nat1", null, false));
+			break;
 		case Formula.BOOL:
+			break;
 		case Formula.EMPTYSET:
-			// do nothing
+			stack.push(sf.makeMacro(SMTNode.MACRO,"emptyset", null, false));
 			break;
 		default:
 			assert false;
@@ -266,12 +276,11 @@ public class VisitorV1_2 implements ISimpleVisitor {
 
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
 		SMTTerm[] children = null;
-		if (predicate.getTag() != Formula.IN)
-			children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
-		else
-			children = toTermArray(convert(predicate.getLeft()));
+		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
+			// 'Unary not' handles it (for example in PO we have ¬ x=3 for x is not equal to 3)
+			break;
 		case Formula.EQUAL:
 			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
 			break;
@@ -288,61 +297,31 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
 			break;
 		case Formula.IN:
-			switch (predicate.getRight().getTag()) {
-			case Formula.NATURAL:
-				stack.push(sf.makeArithmeticFormula(SMTNode.GE, new SMTTerm[] {
-						children[0], sf.makeNumeral(BigInteger.ZERO) }));
-				break;
-			case Formula.NATURAL1:
-				stack.push(sf.makeArithmeticFormula(SMTNode.GT, new SMTTerm[] {
-						children[0], sf.makeNumeral(BigInteger.ZERO) }));
-				break;
-			case Formula.EMPTYSET:
-				stack.push(sf.makePropAtom(SMTNode.PFALSE));
-				break;
-			case Formula.UPTO:
-				BinaryExpression expression = (BinaryExpression) predicate.getRight();
-				SMTTerm[] l = toTermArray(convert(expression.getLeft()));
-				SMTTerm[] r = toTermArray(convert(expression.getRight()));
-				stack.push(sf.makeConnectiveFormula(SMTNode.AND,
-						new SMTFormula[] {
-								sf.makeArithmeticFormula(SMTNode.GE,
-												new SMTTerm[] { children[0],
-														l[0] }),
-								sf.makeArithmeticFormula(SMTNode.LE,
-												new SMTTerm[] { children[0],
-														r[0] }) }));
-				break;
-			case Formula.SETEXT:
-				Expression[] expressions = ((SetExtension) predicate.getRight())
-						.getMembers();
-				SMTFormula[] formulas = new SMTFormula[expressions.length];
-				for (int i = 0; i < expressions.length; i++)
-					formulas[i] = sf.makeArithmeticFormula(SMTNode.EQUAL,
-							new SMTTerm[] {
-									children[0],
-									sf.makeIdentifier(expressions[i]
-													.toString()) });
-				if (expressions.length > 1)
-					stack.push(sf.makeConnectiveFormula(SMTNode.OR, formulas));
-				else
-					stack.push(formulas[0]);
-				break;
-			default:
-				assert false;
-				return;
-			}
+			stack.push(sf.makeMacro(SMTNode.MACRO,"in", children, false));
+			break;	
+		case Formula.NOTIN:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"in", children, true));
+			break;
+		case Formula.SUBSET:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"subset", children, false));
+			break;
+		case Formula.SUBSETEQ:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"subseteq", children, false));
+			break;		
+		case Formula.NOTSUBSET:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"subset", children, true));
+			break;	
+		case Formula.NOTSUBSETEQ:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"subseteq", children, true));
+			break;	
 		default:
 			assert false;
 			return;
 		}
-		if (predicate.getTag() == Formula.NOTEQUAL)
-			stack.push(sf.makeConnectiveFormula(SMTNode.NOT,
-					new SMTFormula[] { (SMTFormula) stack.pop() }));
 	}
 
 	public void visitSetExtension(SetExtension expression) {
-		// do nothing
+		// TODO
 	}
 
 	public void visitSimplePredicate(SimplePredicate predicate) {

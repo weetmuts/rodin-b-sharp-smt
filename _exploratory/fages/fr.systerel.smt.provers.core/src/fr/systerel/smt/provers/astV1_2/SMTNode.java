@@ -241,7 +241,14 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @see SMTBoolean
 	 */
 	public final static int FALSE = FIRST_BOOLEAN_TERM + 1;
-
+	
+	/**
+	 * Tag of Macro.
+	 * 
+	 * @see SMTMacro
+	 */
+	public final static int MACRO = 601;
+	
 	// =========================================================================
 	// Variables
 	// =========================================================================

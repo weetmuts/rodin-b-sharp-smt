@@ -384,5 +384,39 @@ public class RodinToSMTPredicateParser {
 		// Print SMT hyps & goal in a file
 		printLemmaOnFile();
 	}
+	
+	/*void parsePredicates() throws TranslationException
+	{
+		SimpleSMTVisitor smv1 = null;
+		if(!hypotheses.isEmpty())
+		{
+			for(int i = 0 ; i < hypotheses.size() ; i++ )
+			{
+				smv1 = new SimpleSMTVisitor(this);
+				hypotheses.get(i).accept(smv1);
+				if(this.getDataFromVisitor(smv1))
+				{
+					assumptions.add(smv1.getSmtFormula());					
+				}			
+			}
+		}
+		
+		smv1 = new SimpleSMTVisitor(this);
+		goal.accept(smv1);
+		if(this.getDataFromVisitor(smv1))
+		{
+			smtGoal = smv1.getSmtFormula();
+			if(smv1.isNecessaryAllMacros())
+			{
+				this.isNecessaryAllMacros = true;
+			}
+			
+			printLemmaOnFile();
+		}
+		else
+		{
+			throw new TranslationException(notImplementedOperation);
+		}				
+	}*/
 
 }

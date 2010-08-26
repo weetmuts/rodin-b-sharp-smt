@@ -137,4 +137,15 @@ public final class SMTFactory {
 	public SMTPropAtom makePropAtom(int tag) {
 		return new SMTPropAtom(tag);
 	}
+	
+	/**
+	 * Creates a macro.
+	 * 
+	 * @param tag
+	 *            the tag of the propositional atom
+	 * @return the newly created propositional atom
+	 */
+	public SMTMacro makeMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacro(tag, macroId,children,not);
+	}
 }

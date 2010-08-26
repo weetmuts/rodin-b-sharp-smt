@@ -164,20 +164,22 @@ public abstract class SmtProversCall extends XProverCall {
 		int i = 1;
 		StringBuffer sb = new StringBuffer();
 		sb.append("(benchmark"); //$NON-NLS-1$
-		while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
-			char c = resultOfPreProcessing.charAt(benchmarkIndex);
-			if (c == '(') {
-				++i;
-			} else if (c == ')') {
-				--i;
+		
+		if (benchmarkIndex != -1){
+			while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
+				char c = resultOfPreProcessing.charAt(benchmarkIndex);
+				if (c == '(') {
+					++i;
+				} else if (c == ')') {
+					--i;
+				}
+				sb.append(c);
+				++benchmarkIndex;
 			}
-			sb.append(c);
-			++benchmarkIndex;
+			if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
+				throw new PreProcessingException();
+			}
 		}
-		if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
-			throw new PreProcessingException();
-		}
-
 		return sb.toString();
 	}
 
@@ -186,7 +188,7 @@ public abstract class SmtProversCall extends XProverCall {
 		// test the SMT solver path
 		if (smtUiPreferences.getSolver() == null) {
 			// Message popup displayed when there is no defined solver path
-			UIUtils.showError("Check Smt preference page and Select the Prover you want to use");
+			UIUtils.showError(Messages.SmtProversCall_Check_Smt_Preferences);
 			return;
 		}
 
@@ -260,7 +262,7 @@ public abstract class SmtProversCall extends XProverCall {
 		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
 			// Split arguments and add them in the list
 			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
-					.split(" ");
+					.split(" "); //$NON-NLS-1$
 			for (String argString : argumentsString) {
 				args.add(argString);
 			}
