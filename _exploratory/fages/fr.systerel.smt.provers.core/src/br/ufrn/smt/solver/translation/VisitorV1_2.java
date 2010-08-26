@@ -124,6 +124,18 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		case Formula.BUNION:
 			stack.push(sf.makeMacro(SMTNode.MACRO, "union", children, false));
 			break;
+		case Formula.BINTER:
+			stack.push(sf.makeMacro(SMTNode.MACRO, "inter", children, false));
+			break;
+		case Formula.BCOMP:
+			// TODO
+			break;
+		case Formula.FCOMP:
+			// TODO
+			break;
+		case Formula.OVR:
+			// TODO
+			break;
 		default:
 			assert false;
 			return;
@@ -199,7 +211,22 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
 		case Formula.UPTO:
-			// do nothing
+			stack.push(sf.makeMacro(SMTNode.MACRO,"range", children, false));
+			break;
+		case Formula.RANSUB:
+			//TODO
+			break;
+		case Formula.RANRES:
+			//TODO
+			break;
+		case Formula.DOMSUB:
+			//TODO
+			break;
+		case Formula.DOMRES:
+			//TODO
+			break;
+		case Formula.SETMINUS:
+			stack.push(sf.makeMacro(SMTNode.MACRO,"setminus", children, false));
 			break;
 		default:
 			assert false;
@@ -279,7 +306,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
-			// 'Unary not' handles it (for example in PO we have ¬ x=3 for x is not equal to 3)
+			stack.push(sf.makeMacro(SMTNode.MACRO,"=", children, true));
 			break;
 		case Formula.EQUAL:
 			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
