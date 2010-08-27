@@ -1,44 +1,42 @@
 %% ------------------------------------------------------- %%
 %% Rodin
 %% ------------------------------------------------------- %%
-\section{Titre}
-Presenter ici succinctement Event-B et la plate-forme Rodin.
+\section{Event-B and the Rodin platform}
+Event-B is a formal method for system modeling. Key features of Event-B are the use of set theory as a modeling notation, the use of refinement to represent systems at different abstraction levels and the use of mathematical proof to verify consistency between refinement levels.
 
-Preciser que le code se trouve sous SourceForge et donner le chemin d'acces.
+The Rodin platform is an Eclipse\cite{ECLIPSE}-based IDE for Event-B that provides effective support for refinement and mathematical proof. The releases\cite{RODIN} of the Rodin platform as well as the source files\cite{SOURCES} are available from the SourceForge site. The tool documentation for users and developers is provided within the Event-B wiki\cite{WIKI}.
 
-\subsection{Titre}
-Contribution d'un plug-in SMT pour la plate-forme Rodin.
+\subsection{Contributing to the Rodin Platform}
+The Rodin platform is Open Source and is extendable with plug-ins and extension points.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.5]{Rodin.png}
-\caption{Contributing to the Rodin platform} 
+\includegraphics[scale=0.25]{Rodin.png}
+\caption{Plug-ins and extension points} 
 \label{Fig:Rodin Platform}
 \end{figure}
 
-La plate-forme Rodin est extensible.
+In particular, it is possible to add new reasoners, which will schematically run as follows:
 \begin{itemize}
-\item Plug-ins.
-\item Points d'extensions.
-\end{itemize}
-Plus precisément, il est possible d'ajouter de nouveaux raisonneurs.
-\begin{itemize}
-\item En entree : un sequent Hypotheses |- But.
-\item Branchement à un prouveur SMT.
-\item En sortie : une règle de preuve.
+\item Input: a sequent Hypotheses $\vdash$ Goal.
+\item Invocation of an SMT solver.
+\item Output: a proof rule.
 \end{itemize}
 
-\subsection{Titre}
-Branchement a un Prouveur SMT.
+\subsection{Integration of an SMT Solver into Rodin}
+\begin{itemize}
+\item A formula $A$ is \textit{valid} in a theory $T$ if $A$ evaluates to $true$ in every model $M$ of $T$.
+\item A formula $A$ is \textit{satisfiable} in a theory $T$ if there is a model $M$ for $T$ in which $A$ evaluates to $true$. Otherwise, $A$ is \textit{unsatisfiable}.
+\end{itemize}
+
+It can be deduced that if a formula is unsatisfiable, its negation is valid. In other words, if $A \land \lnot B$ is unsatisfiable, then $A \limp B$ is valid. As a consequence, an Event-B sequent is not passed as is to an SMT solver, but its negation is taken as input by the SMT solver.
+Conversely, if a formula is satisfiable, it means that a counter-example exists for its negation.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.5]{Branchement_SMT.png}
-\caption{Connecting an SMT solver} 
+\includegraphics[scale=0.5]{Integration_SMT.png}
+\caption{Integration of an SMT solver} 
 \label{Fig:SMT solver}
 \end{figure}
 
-Etant donne que l'on fait appel à un prouveur SMT, il est necessaire, afin de verifier la satisfaisabilite d'un lemme Event-B, de passer la negation de ce lemme au prouveur.
-Si la negation du lemme n'est pas satisfaisable, le lemme original est valide.
-
-Les etapes de traduction sont les etapes les plus delicates. Elles englobent plusieurs sous-taches qui vont permettre de selectionner les hypotheses, determiner quel format SMT-LIB generer (en fonction du prouveur appele, de la version SMT-LIB supportee, des theories supportees, etc), conserver un lien entre un jeu d'hypotheses au format Event-B et des hypotheses au format SMT-LIB.
+The main difficulties are all related to the translation steps. They cover several sub-tasks, such as selecting the hypotheses, choosing the SMT solver to be addressed, determining the format of the benchmark to be generated (SMT-LIB 1.2 or SMT-LIB 2.0), keeping a link between Event-B hypotheses and the associated hypotheses in SMT-LIB format...
