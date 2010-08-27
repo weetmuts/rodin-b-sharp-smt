@@ -10,7 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.commands;
 
-import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.astV1_2.SMTLogic;
 
 /**
  * The set-logic script command.
@@ -32,7 +32,7 @@ public class SMTSetLogicCommand extends SMTCommand {
 	 * @param logic
 	 *            a logic 
 	 */
-	SMTSetLogicCommand(SMTLogic logic) {
+	public SMTSetLogicCommand(SMTLogic logic) {
 		super(SET_LOGIC);
 		this.logic = logic;
 	}

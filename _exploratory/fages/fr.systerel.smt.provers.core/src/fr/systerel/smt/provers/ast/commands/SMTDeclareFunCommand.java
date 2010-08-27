@@ -10,8 +10,11 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.commands;
 
-import fr.systerel.smt.provers.ast.SMTIdentifier;
-import fr.systerel.smt.provers.ast.SMTSort;
+import org.eventb.core.ast.Type;
+
+import fr.systerel.smt.provers.astV1_2.SMTIdentifier;
+import br.ufrn.smt.solver.translation.TypeEnvironment;
+
 
 /**
  * The declare-fun script command.
@@ -24,10 +27,10 @@ public class SMTDeclareFunCommand extends SMTCommand {
 	private final SMTIdentifier identifier;
 
 	/** The function parameters. */
-	private final SMTSort[] parameters;
+	private final Type[] parameters;
 
 	/** The function return type. */
-	private final SMTSort returnType;
+	private final Type returnType;
 
 	// =========================================================================
 	// Constructor
@@ -43,8 +46,8 @@ public class SMTDeclareFunCommand extends SMTCommand {
 	 * @param returnType
 	 *            the function return type
 	 */
-	SMTDeclareFunCommand(SMTIdentifier identifier, SMTSort[] parameters,
-			SMTSort returnType) {
+	public SMTDeclareFunCommand(SMTIdentifier identifier, Type[] parameters,
+			Type returnType) {
 		super(DECLARE_FUN);
 		this.identifier = identifier;
 		this.parameters = parameters.clone();
@@ -61,12 +64,12 @@ public class SMTDeclareFunCommand extends SMTCommand {
 		builder.append(" ");
 		identifier.toString(builder);
 		builder.append(" (");
-		for (SMTSort child : parameters) {
-			builder.append(child.getName());
+		for (Type child : parameters) {
+			builder.append(TypeEnvironment.getSMTAtomicExpressionFormat(child.toString()));
 			builder.append(" ");
 		}
 		builder.append(") ");
-		builder.append(returnType.getName());
+		builder.append(TypeEnvironment.getSMTAtomicExpressionFormat(returnType.toString()));
 		builder.append(')');
 	}
 }

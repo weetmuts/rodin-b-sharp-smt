@@ -21,7 +21,7 @@ public final class SMTIdentifier extends SMTBaseTerm {
 	 * @param identifier
 	 *            the identifier
 	 */
-	SMTIdentifier(String identifier) {
+	public SMTIdentifier(String identifier) {
 		super(identifier, SMTNode.IDENTIFIER);
 	}
 }

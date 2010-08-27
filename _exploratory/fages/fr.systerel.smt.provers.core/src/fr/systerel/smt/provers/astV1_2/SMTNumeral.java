@@ -32,7 +32,7 @@ public final class SMTNumeral extends SMTBaseTerm {
 	}
 
 	@Override
-	protected void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		final String prefix, suffix;
 		if (value.signum() < 0) {
 			prefix = "(~ ";

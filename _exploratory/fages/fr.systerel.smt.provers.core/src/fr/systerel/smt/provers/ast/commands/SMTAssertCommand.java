@@ -10,7 +10,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.commands;
 
-import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.astV1_2.SMTFormula;
+import fr.systerel.smt.provers.astV1_2.SMTTerm;
 
 /**
  * An assert script command.
@@ -20,7 +21,7 @@ public class SMTAssertCommand extends SMTCommand {
 	// Variables
 	// =========================================================================
 	/** A well sorted closed term of sort Bool. */
-	private final SMTTerm term;
+	private final SMTFormula[] formulas;
 
 	// =========================================================================
 	// Constructor
@@ -32,9 +33,9 @@ public class SMTAssertCommand extends SMTCommand {
 	 * @param term
 	 *            a well sorted closed term of sort Bool
 	 */
-	SMTAssertCommand(SMTTerm term) {
+	public SMTAssertCommand(SMTFormula[] formulas) {
 		super(ASSERT);
-		this.term = term;
+		this.formulas = formulas;
 	}
 
 	// =========================================================================
@@ -45,7 +46,12 @@ public class SMTAssertCommand extends SMTCommand {
 		builder.append('(');
 		builder.append(tags[getTag() - firstTag]);
 		builder.append(" ");
-		term.toString(builder);
+		 String sep = "";
+		for (SMTFormula child: formulas) {
+			builder.append(sep);
+			sep = " ";
+			child.toString(builder);
+		}
 		builder.append(')');
 	}
 }

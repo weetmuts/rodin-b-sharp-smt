@@ -48,7 +48,7 @@ public final class SMTITETerm extends SMTTerm {
 	}
 
 	@Override
-	protected void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		final String sep = " ";
 		builder.append('(');
 		builder.append("ite");

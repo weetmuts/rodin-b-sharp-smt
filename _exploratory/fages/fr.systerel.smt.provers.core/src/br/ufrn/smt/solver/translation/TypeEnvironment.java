@@ -11,6 +11,9 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
+import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
+import fr.systerel.smt.provers.astV1_2.SMTIdentifier;
+
 public class TypeEnvironment {
 	
 	private ArrayList<Predicate> hypotheses;
@@ -29,6 +32,16 @@ public class TypeEnvironment {
 
 	private Hashtable<String, String> funs = new Hashtable<String, String>();
 	
+	private ArrayList<SMTDeclareFunCommand> declarefuns =  new ArrayList<SMTDeclareFunCommand>();
+	
+	public ArrayList<SMTDeclareFunCommand> getDeclarefuns() {
+		return declarefuns;
+	}
+
+	public void setDeclarefuns(ArrayList<SMTDeclareFunCommand> declarefuns) {
+		this.declarefuns = declarefuns;
+	}
+
 	public void setFuns(Hashtable<String, String> funs) {
 		this.funs = funs;
 	}
@@ -144,6 +157,7 @@ public class TypeEnvironment {
 			} else {
 				funs.put(varName,
 						getSMTAtomicExpressionFormat(varType.toString()));
+				declarefuns.add(new SMTDeclareFunCommand(new SMTIdentifier(varName), new Type[]{}, varType));
 			}
 		}
 	}
@@ -168,7 +182,7 @@ public class TypeEnvironment {
 		return name;
 	}
 	
-	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+	public static String getSMTAtomicExpressionFormat(String atomicExpression) {		
 		if (atomicExpression.equals("\u2124")) // INTEGER
 		{
 			return "Int";

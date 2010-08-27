@@ -44,7 +44,7 @@ public final class SMTMacro extends SMTTerm {
 	}
 
 	@Override
-	protected void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		// Add the not keyword if needed
 		if (notClause){
 			builder.append("(not");

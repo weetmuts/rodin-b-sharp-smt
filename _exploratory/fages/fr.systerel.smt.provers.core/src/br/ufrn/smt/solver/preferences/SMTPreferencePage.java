@@ -222,11 +222,12 @@ public class SMTPreferencePage extends PreferencePage implements
 						.getSelection();
 				SolverDetail solverToEdit = (SolverDetail) sel
 						.getFirstElement();
-				createSolverDetailsPage(compButtons, true,
-						solverToEdit.getId(), solverToEdit.getPath(),
-						solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
-						solverToEdit.getsmtV2_0());
-
+				if (solverToEdit!=null){
+					createSolverDetailsPage(compButtons, true,
+							solverToEdit.getId(), solverToEdit.getPath(),
+							solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
+							solverToEdit.getsmtV2_0());
+				}
 			}
 		});
 

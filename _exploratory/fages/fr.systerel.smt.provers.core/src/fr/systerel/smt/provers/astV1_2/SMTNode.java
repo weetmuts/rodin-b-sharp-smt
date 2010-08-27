@@ -10,6 +10,14 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.astV1_2;
 
+import fr.systerel.smt.provers.ast.responses.SMTCheckSatResponse;
+import fr.systerel.smt.provers.ast.responses.SMTCommandResponse;
+import fr.systerel.smt.provers.ast.responses.SMTStatus;
+import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTToken;
+import fr.systerel.smt.provers.ast.commands.SMTCommand;
+import fr.systerel.smt.provers.ast.commands.SMTCommandOption;
+
 /**
  * This is the base class for all nodes of an SMT-LIB AST (Abstract Syntax
  * Tree).
@@ -249,6 +257,43 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 */
 	public final static int MACRO = 601;
 	
+	
+	/**
+	 * First tag for a script command.
+	 * 
+	 * @see SMTCommand
+	 */
+	public final static int FIRST_COMMAND = 701;
+	
+	/**
+	 * First tag for a script response.
+	 * 
+	 * @see SMTResponse
+	 */
+	public final static int FIRST_RESPONSE = 801;
+	
+	/**
+	 * First tag for a script command option.
+	 * 
+	 * @see SMTCommandOption
+	 */
+	public final static int FIRST_COMMAND_OPTION = 901;
+	
+	/**
+	 * First tag for a token.
+	 * 
+	 * @see SMTToken
+	 */
+	public final static int FIRST_TOKEN = 1001;
+	
+	/**
+	 * First tag for a term.
+	 * 
+	 * @see SMTTerm
+	 */
+	public final static int FIRST_TERM = 1101;
+
+	
 	// =========================================================================
 	// Variables
 	// =========================================================================
@@ -265,7 +310,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @param tag
 	 *            the tag
 	 */
-	SMTNode(int tag) {
+	protected SMTNode(int tag) {
 		this.tag = tag;
 	}
 
@@ -305,5 +350,5 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
-	abstract void toString(StringBuilder builder);
+	public abstract void toString(StringBuilder builder);
 }

@@ -31,7 +31,7 @@ public abstract class SMTBaseTerm extends SMTTerm {
 	}
 
 	@Override
-	protected void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		builder.append(identifier);
 	}
 }

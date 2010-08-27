@@ -142,10 +142,22 @@ public final class SMTFactory {
 	 * Creates a macro.
 	 * 
 	 * @param tag
+	 *            the tag of the macro
+	 * @return the newly created macro
+	 */
+	public SMTMacro makeMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacro(tag, macroId,children,not);
+	}
+	
+	
+	/**
+	 * Creates a command (SMT lib v2.0).
+	 * 
+	 * @param tag
 	 *            the tag of the propositional atom
 	 * @return the newly created propositional atom
 	 */
-	public SMTMacro makeMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
+	public SMTMacro makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
 		return new SMTMacro(tag, macroId,children,not);
 	}
 }

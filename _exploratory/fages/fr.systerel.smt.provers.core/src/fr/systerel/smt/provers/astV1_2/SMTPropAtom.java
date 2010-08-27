@@ -33,7 +33,7 @@ public final class SMTPropAtom extends SMTFormula {
 	}
 
 	@Override
-	protected void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		builder.append(tags[getTag() - firstTag]);
 	}
 }

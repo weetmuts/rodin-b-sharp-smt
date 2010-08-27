@@ -14,9 +14,15 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import org.eventb.core.ast.Predicate;
@@ -26,8 +32,9 @@ import org.eventb.core.seqprover.xprover.XProverCall;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
+import br.ufrn.smt.solver.translation.RodinToSMTv2PredicateParser;
 import br.ufrn.smt.solver.translation.TranslationException;
-
+import fr.systerel.smt.provers.ast.commands.SMTCheckSatCommand;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 public abstract class SmtProversCall extends XProverCall {
@@ -96,6 +103,94 @@ public abstract class SmtProversCall extends XProverCall {
 		fileWriter.write(resultOfSolver);
 		fileWriter.close();
 		oFile = resultFile;
+	}
+	
+	/**
+	 * Method to call a SMT solver in interactive mode.
+	 * 
+	 * @param args
+	 *            Arguments to pass for the call
+	 * @throws IOException
+	 */
+	protected void callProverInteractive(ArrayList<String> args) throws IOException {
+		boolean solverRes = true;
+		
+		for (int i = 0; i < args.size(); i++) {
+			System.out.println(args.get(i));
+		}
+
+		// Set up arguments for solver call
+		String[] terms = new String[args.size()];
+		for (int i = 0; i < terms.length; i++) {
+			terms[i] = args.get(i);
+		}
+		
+		Process pr = Runtime.getRuntime().exec(terms);
+
+        BufferedWriter processInput = new BufferedWriter
+        (
+        		new OutputStreamWriter(
+        				pr.getOutputStream()
+        		)
+        );
+        
+        BufferedReader processOutput = new BufferedReader
+		(
+			new InputStreamReader(
+				pr.getInputStream()
+			)
+		);
+		BufferedReader processOutputError = new BufferedReader
+		(
+				new InputStreamReader(
+					pr.getErrorStream()
+				)
+		);
+		
+        try{
+		    // command line parameter
+		    FileInputStream fstream = new FileInputStream(smtFile);
+		    // Get the object of DataInputStream
+		    DataInputStream in = new DataInputStream(fstream);
+		    BufferedReader bufr = new BufferedReader(new InputStreamReader(in));
+		    String strLine;
+		    //Read File Line By Line
+		    while ((strLine = bufr.readLine()) != null)   {
+		    	// Send the content
+		    	processInput.write(strLine);
+		        processInput.flush();
+		        // Get answer
+		        String ans = processOutput.readLine();
+		        if(ans == null || !ans.equals("success")){
+		        	solverRes = false;
+		        	break;
+		        }
+		    }
+
+		    //Close the input stream
+		    in.close();
+		}catch (Exception e){//Catch exception if any
+		      System.err.println("Error: " + e.getMessage());
+		}
+		
+		// Check if all commands have been sent correctly
+		if(solverRes){
+			// Send Check Sat Command
+			SMTCheckSatCommand satCommand = new SMTCheckSatCommand();
+			processInput.write(satCommand.toString());
+			processInput.flush();
+			// Get answer
+	        String ans = processOutput.readLine();
+	        if(ans == null || !ans.equals("unsat")){
+	        	solverRes = false;
+	        }
+		}
+		
+		processInput.close();
+		processOutput.close();
+		processOutputError.close();
+		
+		valid = solverRes;
 	}
 
 	/**
@@ -254,9 +349,11 @@ public abstract class SmtProversCall extends XProverCall {
 	private ArrayList<String> setSolverArgs(){
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(smtUiPreferences.getSolver().getPath());
-	
-		args.add(smtFile.getPath());
-	
+		
+		if (smtUiPreferences.getSolver().getsmtV1_2()){
+			args.add(smtFile.getPath());
+		}
+		
 		smtUiPreferences.getSolver().getArgs();
 		
 		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
@@ -275,16 +372,20 @@ public abstract class SmtProversCall extends XProverCall {
 	 * Performs SMT-lib 2.0 translation + SMT solver solver call.
 	 * 
 	 */
-	private void smtV2Call(){
+	private void smtV2Call()throws PreProcessingException,
+	IOException, TranslationException {
 		// Parse Rodin PO to create SMT v2.0 file
+		RodinToSMTv2PredicateParser rp = new RodinToSMTv2PredicateParser(
+				hypotheses, goal);
 		
-		// Get back translated SMT file
+		// Get back translated SMT commands in a Stream
+		smtFile = rp.getTranslatedFile();
 		
 		// Set up arguments
 		ArrayList<String> args = setSolverArgs();
 		
 		// Call the prover
-		
+		callProverInteractive(args);
 	}
 	
 	/**

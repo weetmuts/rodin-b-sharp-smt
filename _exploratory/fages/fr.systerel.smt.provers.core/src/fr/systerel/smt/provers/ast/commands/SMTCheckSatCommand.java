@@ -23,7 +23,7 @@ public class SMTCheckSatCommand extends SMTCommand {
 	/**
 	 * Creates a check-sat command with the specified tag.
 	 */
-	SMTCheckSatCommand() {
+	public SMTCheckSatCommand() {
 		super(CHECK_SAT);
 	}
 
