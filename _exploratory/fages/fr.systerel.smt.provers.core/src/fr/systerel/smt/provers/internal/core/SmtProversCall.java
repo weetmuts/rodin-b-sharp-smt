@@ -24,10 +24,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
+import org.eventb.pp.IPPMonitor;
+import org.eventb.pp.PPProof;
 
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
@@ -57,7 +61,32 @@ public abstract class SmtProversCall extends XProverCall {
 			IProofMonitor pm, String proverName) {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
+		
+		/* ESSAI 
+		ArrayList<Predicate> Tab=new ArrayList<Predicate>();		
 
+		Iterator itr = hypotheses.iterator();
+
+		while(itr.hasNext()){
+			Tab.add((Predicate) itr.next());
+		}
+		Predicate [] PredicateArray = new Predicate[Tab.size()];
+
+		final PPProof prover = new PPProof(Tab.toArray(PredicateArray), goal, new IPPMonitor() {
+			
+			@Override
+			public boolean isCanceled() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+		prover.translate();
+		prover.load();
+		List<Predicate> pre = prover.getTranslatedHypotheses();
+		
+		
+		*********/
+		
 		// Get back preferences from UI
 		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
 				.getPreferenceStore().getString("solverpreferences"),//$NON-NLS-1$
@@ -159,8 +188,10 @@ public abstract class SmtProversCall extends XProverCall {
 		    	// Send the content
 		    	processInput.write(strLine);
 		        processInput.flush();
+		        System.out.println(strLine);
 		        // Get answer
 		        String ans = processOutput.readLine();
+		        System.out.println(ans);
 		        if(ans == null || !ans.equals("success")){
 		        	solverRes = false;
 		        	break;
@@ -179,8 +210,10 @@ public abstract class SmtProversCall extends XProverCall {
 			SMTCheckSatCommand satCommand = new SMTCheckSatCommand();
 			processInput.write(satCommand.toString());
 			processInput.flush();
+			System.out.println(satCommand.toString());
 			// Get answer
 	        String ans = processOutput.readLine();
+	        System.out.println(ans);
 	        if(ans == null || !ans.equals("unsat")){
 	        	solverRes = false;
 	        }

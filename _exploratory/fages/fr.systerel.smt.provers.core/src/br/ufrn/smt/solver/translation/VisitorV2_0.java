@@ -80,7 +80,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 	 */
 	public String getSMTNode() {
 		if (!stack.isEmpty())
-			return stack.pop().toString();
+			return sfc.makeAssertCommand(stack.pop()).toString();
 		else
 			return "";
 	}
@@ -269,16 +269,13 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
 			break;
 		case Formula.LT:
-			stack.push(sfc.makeAssertCommand(new SMTFormula[] {
-							sf.makeArithmeticFormula(SMTNode.LT, children)}));
+			stack.push(sf.makeArithmeticFormula(SMTNode.LT, children));
 			break;
 		case Formula.LE:
 			stack.push(sf.makeArithmeticFormula(SMTNode.LE, children));
 			break;
 		case Formula.GT:
-			SMTFormula[] f = new SMTFormula[] {
-					sf.makeArithmeticFormula(SMTNode.GT, children)};
-			stack.push(sfc.makeAssertCommand(f));
+			stack.push(sf.makeArithmeticFormula(SMTNode.GT, children));
 			break;
 		case Formula.GE:
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));

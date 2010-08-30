@@ -22,7 +22,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.DefaultRewriter;
+import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
@@ -143,9 +147,13 @@ public class RodinToSMTv2PredicateParser {
 
 		// Parse Goal
 		VisitorV2_0 visGoal = null;
+		// inverse the goal
+		FormulaFactory ff= FormulaFactory.getDefault();
+		Predicate inversedGoal = ff.makeUnaryPredicate(Formula.NOT, this.goal, null);
+		
 		if (this.goal != null) {
 			visGoal = new VisitorV2_0();
-			goal.accept(visGoal);
+			inversedGoal.accept(visGoal);
 			String translatedGoal = visGoal.getSMTNode();
 			if (!translatedGoal.equals("")) {
 				asserts.add(translatedGoal);
@@ -190,6 +198,5 @@ public class RodinToSMTv2PredicateParser {
 			e.printStackTrace();
 		}
 	}
-
 
 }

@@ -39,7 +39,7 @@ public final class SMTCommandsFactory {
 	 *            the children of the assert command
 	 * @return the newly created formula
 	 */
-	public SMTAssertCommand makeAssertCommand(SMTFormula[] children) {
+	public SMTAssertCommand makeAssertCommand(SMTNode<?> children) {
 		return new SMTAssertCommand(children);
 	}
 	
