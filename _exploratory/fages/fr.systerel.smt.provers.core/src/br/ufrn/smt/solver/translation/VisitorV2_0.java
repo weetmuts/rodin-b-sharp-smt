@@ -43,11 +43,11 @@ import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
-import fr.systerel.smt.provers.astV1_2.SMTCommandsFactory;
-import fr.systerel.smt.provers.astV1_2.SMTFactory;
-import fr.systerel.smt.provers.astV1_2.SMTFormula;
-import fr.systerel.smt.provers.astV1_2.SMTNode;
-import fr.systerel.smt.provers.astV1_2.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTCommandsFactory;
+import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.ast.SMTTerm;
 
 /**
  * This class translate a formula expressed in Event-B syntax to a formula in

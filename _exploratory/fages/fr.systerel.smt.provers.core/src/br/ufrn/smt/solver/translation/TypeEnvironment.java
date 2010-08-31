@@ -11,8 +11,8 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
+import fr.systerel.smt.provers.ast.SMTIdentifier;
 import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
-import fr.systerel.smt.provers.astV1_2.SMTIdentifier;
 
 public class TypeEnvironment {
 	

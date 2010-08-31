@@ -30,11 +30,11 @@ import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
-import fr.systerel.smt.provers.astV1_2.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTIdentifier;
+import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.commands.SMTAssertCommand;
 import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
 import fr.systerel.smt.provers.ast.commands.SMTSetLogicCommand;
-import fr.systerel.smt.provers.astV1_2.SMTIdentifier;
 
 public class RodinToSMTv2PredicateParser {
 
