@@ -10,9 +10,9 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.commands;
 
-import fr.systerel.smt.provers.astV1_2.SMTFormula;
-import fr.systerel.smt.provers.astV1_2.SMTNode;
-import fr.systerel.smt.provers.astV1_2.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.ast.SMTTerm;
 
 /**
  * An assert script command.

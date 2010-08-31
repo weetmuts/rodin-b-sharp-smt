@@ -11,24 +11,23 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * Common class for SMT-LIB terms built from arithmetic operators.
+ * Common class for SMT-LIB formulas built from arithmetic operators.
  */
-public class SMTArithmeticTerm extends SMTTerm {
+public class SMTArithmeticFormula extends SMTFormula {
 	
 	// =========================================================================
 	// Constants
 	// =========================================================================
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
-	private final static int firstTag = FIRST_ARITHMETIC_TERM;
+	private final static int firstTag = FIRST_ARITHMETIC_FORMULA;
 	
 	/** The tags. */
 	private final static String[] tags = {
-		"+",
-		"-",
-		"*",
-		"/",
-		"%",
-		"~"
+		"=", 
+		"<",
+		"<=",
+		">",
+		">=",
 	};
 	
 	// =========================================================================
@@ -42,11 +41,11 @@ public class SMTArithmeticTerm extends SMTTerm {
 	// =========================================================================
 
 	/**
-	 * Creates a new arithmetic term with the specified tag.
+	 * Creates a new arithmetic formula with the specified tag.
 	 * 
 	 * @param tag node tag of this term
 	 */
-	SMTArithmeticTerm(int tag, SMTTerm[] children) {
+	SMTArithmeticFormula(int tag, SMTTerm[] children) {
 		super(tag);
 		this.children = children.clone();
 		assert getTag() >= firstTag && getTag() < firstTag + tags.length;

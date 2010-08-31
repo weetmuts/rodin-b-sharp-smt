@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Systerel and others.
+ * Copyright (c) 2009 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package fr.systerel.smt.provers.ast;
 import java.math.BigInteger;
 
 /**
- * This class is the factory class for all the AST nodes.
+ * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
 public final class SMTFactory {
 
@@ -26,6 +26,22 @@ public final class SMTFactory {
 	 */
 	public static SMTFactory getDefault() {
 		return DEFAULT_INSTANCE;
+	}
+
+	/**
+	 * Creates a new arithmetic formula.
+	 * <p>
+	 * {EQUAL, LT, LE, GT, GE}
+	 * 
+	 * @param tag
+	 *            the tag of the arithmetic formula
+	 * @param children
+	 *            the children of the arithmetic formula
+	 * @return the newly created formula
+	 */
+	public SMTArithmeticFormula makeArithmeticFormula(int tag,
+			SMTTerm[] children) {
+		return new SMTArithmeticFormula(tag, children);
 	}
 	
 	/**
@@ -42,6 +58,22 @@ public final class SMTFactory {
 	public SMTArithmeticTerm makeArithmeticTerm(int tag,
 			SMTTerm[] children) {
 		return new SMTArithmeticTerm(tag, children);
+	}
+
+	/**
+	 * Creates a new connective formula.
+	 * <p>
+	 * {NOT, IMPLIES, IF_THEN_ELSE, AND, OR, XOR, IFF}
+	 * 
+	 * @param tag
+	 *            the tag of the connective formula
+	 * @param children
+	 *            the children of the connective formula
+	 * @return the newly created formula
+	 */
+	public SMTConnectiveFormula makeConnectiveFormula(int tag,
+			SMTFormula[] children) {
+		return new SMTConnectiveFormula(tag, children);
 	}
 
 	/**
@@ -75,5 +107,57 @@ public final class SMTFactory {
 	 */
 	public SMTIdentifier makeIdentifier(String identifier) {
 		return new SMTIdentifier(identifier);
+	}
+
+	/**
+	 * Creates a new ITE term.
+	 * 
+	 * @param formula
+	 *            a SMT formula
+	 * @param tTerm
+	 *            an SMT term
+	 * @param fTerm
+	 *            an SMT term
+	 * @return the newly created ITE term
+	 */
+	public SMTITETerm makeITETerm(SMTFormula formula, SMTTerm tTerm,
+			SMTTerm fTerm) {
+		return new SMTITETerm(SMTNode.ITE, formula, tTerm, fTerm);
+	}
+
+	/**
+	 * Creates a new propositional atom.
+	 * <p>
+	 * {FALSE, TRUE}
+	 * 
+	 * @param tag
+	 *            the tag of the propositional atom
+	 * @return the newly created propositional atom
+	 */
+	public SMTPropAtom makePropAtom(int tag) {
+		return new SMTPropAtom(tag);
+	}
+	
+	/**
+	 * Creates a macro.
+	 * 
+	 * @param tag
+	 *            the tag of the macro
+	 * @return the newly created macro
+	 */
+	public SMTMacro makeMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacro(tag, macroId,children,not);
+	}
+	
+	
+	/**
+	 * Creates a command (SMT lib v2.0).
+	 * 
+	 * @param tag
+	 *            the tag of the propositional atom
+	 * @return the newly created propositional atom
+	 */
+	public SMTMacro makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacro(tag, macroId,children,not);
 	}
 }

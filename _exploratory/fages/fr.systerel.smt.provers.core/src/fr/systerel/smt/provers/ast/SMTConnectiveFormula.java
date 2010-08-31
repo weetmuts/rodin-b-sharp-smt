@@ -11,42 +11,43 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * Common class for SMT-LIB terms built from arithmetic operators.
+ * Common class for SMT-LIB formulas built from connectives.
  */
-public class SMTArithmeticTerm extends SMTTerm {
+public class SMTConnectiveFormula extends SMTFormula {
 	
 	// =========================================================================
 	// Constants
 	// =========================================================================
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
-	private final static int firstTag = FIRST_ARITHMETIC_TERM;
+	private final static int firstTag = FIRST_CONNECTIVE_FORMULA;
 	
 	/** The tags. */
 	private final static String[] tags = {
-		"+",
-		"-",
-		"*",
-		"/",
-		"%",
-		"~"
+		"not", 
+		"implies",
+		"if_then_else",
+		"and",
+		"or",
+		"xor",
+		"iff"
 	};
 	
 	// =========================================================================
 	// Variables
 	// =========================================================================
 	/** The children. */
-	private final SMTTerm[] children;
+	private final SMTFormula[] children;
 	
 	// =========================================================================
 	// Constructor
 	// =========================================================================
 
 	/**
-	 * Creates a new arithmetic term with the specified tag.
+	 * Creates a new connective formula with the specified tag.
 	 * 
 	 * @param tag node tag of this term
 	 */
-	SMTArithmeticTerm(int tag, SMTTerm[] children) {
+	SMTConnectiveFormula(int tag, SMTFormula[] children) {
 		super(tag);
 		this.children = children.clone();
 		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
@@ -63,7 +64,7 @@ public class SMTArithmeticTerm extends SMTTerm {
 	 * 
 	 * @return a list of children
 	 */
-	public SMTTerm[] getChildren() {
+	public SMTFormula[] getChildren() {
 		return children.clone();
 	}
 	
@@ -75,7 +76,7 @@ public class SMTArithmeticTerm extends SMTTerm {
 	public void toString(StringBuilder builder) {
         builder.append('(');
         String sep = tags[getTag() - firstTag] + " ";
-		for (SMTTerm child: children) {
+		for (SMTFormula child: children) {
 			builder.append(sep);
 			sep = " ";
 			child.toString(builder);

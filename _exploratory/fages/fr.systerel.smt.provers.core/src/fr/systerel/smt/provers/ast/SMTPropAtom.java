@@ -11,27 +11,29 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * This class represents a boolean in SMT-LIB grammar.
+ * This class represents a propositional atom in SMT-LIB grammar.
  */
-public final class SMTBoolean extends SMTBaseTerm {
+public final class SMTPropAtom extends SMTFormula {
 
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
-	private static final int firstTag = FIRST_BOOLEAN_TERM;
-	
+	private static final int firstTag = FIRST_PROP_ATOM;
+
 	/** The tags. */
-	private static final String tags[] = {
-		"TRUE",    
-		"FALSE",   
-	};
+	private static final String[] tags = { "true", "false" };
 
 	/**
-	 * Creates a new boolean.
+	 * Creates a new propositional atom.
 	 * 
 	 * @param tag
 	 *            the tag
 	 */
-	SMTBoolean(int tag) {
-		super(tags[tag - firstTag], tag);
+	SMTPropAtom(int tag) {
+		super(tag);
 		assert tag >= firstTag && tag < firstTag + tags.length;
+	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(tags[getTag() - firstTag]);
 	}
 }

@@ -11,17 +11,17 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * This class represents an identifier in SMT-LIB grammar.
+ * Common class for SMT-LIB formulas.
  */
-public final class SMTIdentifier extends SMTBaseTerm {
+public abstract class SMTFormula extends SMTNode<SMTFormula> {
 
 	/**
-	 * Creates a new identifier.
+	 * Creates a new formula with the specified tag.
 	 * 
-	 * @param identifier
-	 *            the identifier
+	 * @param tag node tag of this term
 	 */
-	public SMTIdentifier(String identifier) {
-		super(identifier, SMTNode.IDENTIFIER);
+	SMTFormula(int tag) {
+		super(tag);
 	}
+
 }

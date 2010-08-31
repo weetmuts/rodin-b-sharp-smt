@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Systerel and others.
+ * Copyright (c) 2009 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.math.BigInteger;
 /**
  * This class represents a numeral in SMT-LIB grammar.
  */
-public final class SMTNumeral extends SMTToken {
+public final class SMTNumeral extends SMTBaseTerm {
 
 	/** The internal value. */
 	private final BigInteger value;
@@ -27,7 +27,7 @@ public final class SMTNumeral extends SMTToken {
 	 *            the value
 	 */
 	SMTNumeral(BigInteger value) {
-		super(value.toString(), NUMERAL);
+		super(value.toString(), SMTNode.NUMERAL);
 		this.value = value;
 	}
 

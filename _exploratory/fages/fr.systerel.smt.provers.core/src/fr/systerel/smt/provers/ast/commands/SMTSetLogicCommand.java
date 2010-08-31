@@ -10,7 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.commands;
 
-import fr.systerel.smt.provers.astV1_2.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic;
 
 /**
  * The set-logic script command.

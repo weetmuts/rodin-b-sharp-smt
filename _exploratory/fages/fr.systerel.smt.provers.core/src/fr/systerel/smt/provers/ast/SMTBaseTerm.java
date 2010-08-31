@@ -11,17 +11,27 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * This class represents an identifier in SMT-LIB grammar.
+ * This class represents a base term in SMT-LIB grammar.
  */
-public final class SMTIdentifier extends SMTBaseTerm {
+public abstract class SMTBaseTerm extends SMTTerm {
+
+	/** The identifier. */
+	final String identifier;
 
 	/**
-	 * Creates a new identifier.
+	 * Creates a new base term.
 	 * 
-	 * @param identifier
-	 *            the identifier
+	 * @param tag
+	 *            the tag
 	 */
-	public SMTIdentifier(String identifier) {
-		super(identifier, SMTNode.IDENTIFIER);
+	SMTBaseTerm(String identifier, int tag) {
+		super(tag);
+		this.identifier = identifier;
+		assert identifier != null;	
+	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(identifier);
 	}
 }
