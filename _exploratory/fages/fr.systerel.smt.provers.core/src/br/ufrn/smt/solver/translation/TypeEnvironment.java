@@ -20,7 +20,13 @@ public class TypeEnvironment {
 	
 	private Predicate goal;
 	
-	private ArrayList<String> sorts = new ArrayList<String>();
+	private ArrayList<String> sorts = new ArrayList<String>();	
+
+	private Hashtable<String, String> funs = new Hashtable<String, String>();
+	
+	private ArrayList<SMTDeclareFunCommand> declarefuns =  new ArrayList<SMTDeclareFunCommand>();
+	
+	private Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
 	
 	public ArrayList<String> getSorts() {
 		return sorts;
@@ -29,10 +35,6 @@ public class TypeEnvironment {
 	public void setSorts(ArrayList<String> sorts) {
 		this.sorts = sorts;
 	}
-
-	private Hashtable<String, String> funs = new Hashtable<String, String>();
-	
-	private ArrayList<SMTDeclareFunCommand> declarefuns =  new ArrayList<SMTDeclareFunCommand>();
 	
 	public ArrayList<SMTDeclareFunCommand> getDeclarefuns() {
 		return declarefuns;
@@ -60,8 +62,6 @@ public class TypeEnvironment {
 		return preds;
 	}
 
-	private Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
-	
 	public void setSingleQuotVars(Hashtable<String, String> singleQuotVars) {
 		this.singleQuotVars = singleQuotVars;
 	}
@@ -77,37 +77,33 @@ public class TypeEnvironment {
 	
 	public void getTypeEnvironment() {
 		Hashtable<String, Type> typEnv = new Hashtable<String, Type>();
-		FreeIdentifier[] freeVars = goal.getFreeIdentifiers(); // goalSimp.getFreeIdentifiers();
+		FreeIdentifier[] freeVars = goal.getFreeIdentifiers(); 
 		if (freeVars != null) {
 
 			for (int i = 0; i < freeVars.length; i++) {
 				String name = freeVars[i].getName();
 				Type type = freeVars[i].getType();
-				typEnv.put(name, type);// add(new Pair<String, String>(name,
-										// type));
+				typEnv.put(name, type);
 			}
 		}
 
-		BoundIdentifier[] boundVars = goal.getBoundIdentifiers(); // goalSimp.getBoundIdentifiers();
+		BoundIdentifier[] boundVars = goal.getBoundIdentifiers(); 
 		if (boundVars != null) {
 			for (int i = 0; i < boundVars.length; i++) {
 				String name = boundVars[i].toString();
 				Type type = boundVars[i].getType();
-				typEnv.put(name, type);// (new Pair<String, String>(name,
-										// type));
+				typEnv.put(name, type);
 			}
 		}
 
-		for (int j = 0; j < hypotheses.size(); j++) // smtHypsSimp.size() ; j++)
+		for (int j = 0; j < hypotheses.size(); j++) 
 		{
-			// hypothesis.add(hypotheses.get(j).toStringFullyParenthesized());
 			freeVars = hypotheses.get(j).getFreeIdentifiers();
 			if (freeVars != null) {
 				for (int i = 0; i < freeVars.length; i++) {
 					String name = freeVars[i].getName();
 					Type type = freeVars[i].getType();
-					typEnv.put(name, type);// (new Pair<String, String>(name,
-											// type));
+					typEnv.put(name, type);
 				}
 			}
 
@@ -116,8 +112,7 @@ public class TypeEnvironment {
 				for (int i = 0; i < boundVars.length; i++) {
 					String name = boundVars[i].toString();
 					Type type = boundVars[i].getType();
-					typEnv.put(name, type);// (new Pair<String, String>(name,
-											// type));
+					typEnv.put(name, type);
 				}
 			}
 		}
@@ -131,9 +126,7 @@ public class TypeEnvironment {
 
 			Entry<String, Type> el = iterator.next();
 			String varName = verifyQuotedVar(el.getKey(), typenvironment);
-			// String varName = el.getKey();
-			// //lemmaData.getTypenv().get(i).getFirstElement();//((Element)variables.item(i)).getAttribute("name").trim();
-			Type varType = el.getValue();// lemmaData.getTypenv().get(i).getSecondElement();//((Element)variables.item(i)).getAttribute("type").trim();
+			Type varType = el.getValue();
 			// Regra 4
 			if (varName.equals(varType.toString())) {
 				sorts.add(varType.toString());
@@ -166,8 +159,7 @@ public class TypeEnvironment {
 			Hashtable<String, Type> typenvironment) {
 		if (name.lastIndexOf('\'') > 0) {
 			int countofQuots = name.length() - name.lastIndexOf('\'');
-			// String alternativeName = name.substring(0,name.lastIndexOf('\''))
-			// + "_" + countofQuots;
+
 			String alternativeName = name.replaceAll("'", "_" + countofQuots
 					+ "_");
 			Type t = typenvironment.get(alternativeName);

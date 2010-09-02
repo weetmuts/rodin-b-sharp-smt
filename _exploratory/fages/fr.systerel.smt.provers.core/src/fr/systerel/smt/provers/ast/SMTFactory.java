@@ -11,6 +11,10 @@
 package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+
+import org.eventb.core.ast.BoundIdentDecl;
+import org.eventb.core.ast.Type;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
@@ -149,6 +153,36 @@ public final class SMTFactory {
 		return new SMTMacro(tag, macroId,children,not);
 	}
 	
+	/**
+	 * Creates a new quantified pred.
+	 * 
+	 * @param tag
+	 *            the tag of the bound identifier declaration
+	 * @param formulas
+	 *            the bound ident decls
+	 * @param pred
+	 *            Predicate associated with the nound ident decls	 
+	 * @return the newly quantified predicate
+	 */
+	public SMTQuantifiedPred makeQuantifiedPred(int tag, SMTTerm[] formulas, SMTFormula pred) {
+		return new SMTQuantifiedPred(tag, formulas, pred);
+	}
+	
+	/**
+	 * Creates a Bound identifier declaration.
+	 * 
+	 * @param tag
+	 * 			  the tag of the bound identifier
+	 * @param name
+	 *            the name of the bound identifier
+	 * @param type
+	 *            the Type of the bound identifier         
+	 * @return the newly bound identifier declaration
+	 */
+	public SMTBoundIdentifierDecl makeBoundIdentDecl(int tag, String name, Type type) {
+		return new SMTBoundIdentifierDecl(tag, name, type);
+	}
+
 	
 	/**
 	 * Creates a command (SMT lib v2.0).

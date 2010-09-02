@@ -10,9 +10,10 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.eventb.core.ast.AssociativeExpression;
@@ -26,10 +27,10 @@ import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.IntegerLiteral;
@@ -37,6 +38,7 @@ import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.eventb.core.ast.QuantifiedUtil;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
@@ -54,18 +56,31 @@ import fr.systerel.smt.provers.ast.SMTTerm;
  */
 public class VisitorV1_2 implements ISimpleVisitor {
 
+	/** The type environment .*/
+	private TypeEnvironment typeEnvironment;
+	
 	/** The built nodes. */
 	private Stack<SMTNode<?>> stack;
 
 	/** The SMT factory. */
 	private SMTFactory sf;
+	
+	/** The Bound identifier list. */
+	private ArrayList<String> bids;
+	
+	/** The list of names already used (Free identifiers + others) list. */
+	private ArrayList<String> fids;
 
 	/**
 	 * Builds a new visitor.
 	 */
-	public VisitorV1_2() {
+	public VisitorV1_2(TypeEnvironment typeEnvironment, ArrayList<String> fids) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
+		this.typeEnvironment = typeEnvironment;
+		this.bids = new ArrayList<String>();
+		this.fids = fids;
+		
 	}
 
 	/**
@@ -217,16 +232,19 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			//TODO
 			break;
 		case Formula.RANRES:
-			//TODO
+			stack.push(sf.makeMacro(SMTNode.MACRO,"ranr", children, false));
 			break;
 		case Formula.DOMSUB:
 			//TODO
 			break;
 		case Formula.DOMRES:
-			//TODO
+			stack.push(sf.makeMacro(SMTNode.MACRO,"domr", children, false));
 			break;
 		case Formula.SETMINUS:
 			stack.push(sf.makeMacro(SMTNode.MACRO,"setminus", children, false));
+			break;
+		case Formula.MAPSTO:
+			
 			break;
 		default:
 			assert false;
@@ -262,13 +280,29 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			return;
 		}
 	}
-
+	
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
-		assert false;
-	}
+		BoundIdentDecl[] tempIdentDeclTab = new BoundIdentDecl[1];
+		tempIdentDeclTab[0] = boundIdentDecl;
+		
+		// add bound idents identifier in the list, if exists in the list a new name is computed
+		Set<String> fidsSet = new HashSet<String>(fids);
+		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab, fidsSet);
+		
+		if (newNames.length != 1){
+			assert false;
+			return;
+		}
+		
+		fids.add(newNames[0]);
+		bids.add(newNames[0]);
 
+		stack.push(sf.makeBoundIdentDecl(SMTNode.BOUND_IDENTIFIER_DECL,newNames[0],boundIdentDecl.getType()));
+	}
+	
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		assert false;
+		String identifier=bids.get(bids.size() - expression.getBoundIndex() -1);
+		stack.push(sf.makeIdentifier(identifier));
 	}
 
 	public void visitFreeIdentifier(FreeIdentifier expression) {
@@ -298,7 +332,33 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	}
 
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
-		assert false;
+		
+		BoundIdentDecl[] tempIdentDeclTab = predicate.getBoundIdentDecls();
+		
+		// add bound idents identifier in the list, if exists in the list a new name is computed
+		Set<String> fidsSet = new HashSet<String>(fids);
+		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab, fidsSet);
+			
+		SMTTerm[] children1 = toTermArray(convert(predicate.getBoundIdentDecls()));
+		SMTFormula children2 = (SMTFormula) convert(predicate.getPredicate());
+
+		switch (predicate.getTag()) {
+		case Formula.FORALL:
+			stack.push(sf.makeQuantifiedPred(SMTNode.QUANTIFIED_PRED_FORALL_DECL, children1, children2));
+			break;
+		case Formula.EXISTS:
+			stack.push(sf.makeQuantifiedPred(SMTNode.QUANTIFIED_PRED_EXISTS_DECL, children1, children2));
+			break;
+		default:
+			assert false;
+			break;
+
+		}
+		
+		// remove added bound idents identifier of the list
+		for (int i=0; i<newNames.length; i++){
+			bids.remove(newNames[i]);		
+		}		
 	}
 
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
@@ -309,7 +369,15 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeMacro(SMTNode.MACRO,"=", children, true));
 			break;
 		case Formula.EQUAL:
-			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
+			FormulaFactory ff = FormulaFactory.getDefault();
+			
+			// Check Type of equality members
+			if (predicate.getLeft().getType().equals(ff.makeIntegerType()) ){
+				stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
+			}
+			else {
+				stack.push(sf.makeMacro(SMTNode.MACRO,"=", children, false));
+			}			
 			break;
 		case Formula.LT:
 			stack.push(sf.makeArithmeticFormula(SMTNode.LT, children));

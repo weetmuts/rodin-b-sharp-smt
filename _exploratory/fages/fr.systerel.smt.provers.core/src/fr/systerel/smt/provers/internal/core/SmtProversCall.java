@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eventb.pp.IPPMonitor;
+import org.eventb.pp.PPProof;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
@@ -52,37 +55,21 @@ public abstract class SmtProversCall extends XProverCall {
 	
 	// SMT UI preferences
 	private UIPreferences smtUiPreferences;
+	
+	// File Path where the temporary smt file will be stored
+	public final static String smtResultTempPath = "smTSolverString"; //$NON-NLS-1$
+	
+	// File Path where the temporary preprocessed smt file will be stored
+	public final static String smtPreprocessedTempPath = "tempPreProcessed.smt"; //$NON-NLS-1$
+	
+	// TEMPORARY VARIABLES 
+	public static final boolean pptransPreproc = false;
 
 	public SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {
 		super(hypotheses, goal, pm);
 		this.proverName = proverName;
-		
-		/* ESSAI 
-		ArrayList<Predicate> Tab=new ArrayList<Predicate>();		
-
-		Iterator itr = hypotheses.iterator();
-
-		while(itr.hasNext()){
-			Tab.add((Predicate) itr.next());
-		}
-		Predicate [] PredicateArray = new Predicate[Tab.size()];
-
-		final PPProof prover = new PPProof(Tab.toArray(PredicateArray), goal, new IPPMonitor() {
 			
-			@Override
-			public boolean isCanceled() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
-		prover.translate();
-		prover.load();
-		List<Predicate> pre = prover.getTranslatedHypotheses();
-		
-		
-		*********/
-		
 		// Get back preferences from UI
 		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
 				.getPreferenceStore().getString("solverpreferences"),//$NON-NLS-1$
@@ -118,8 +105,9 @@ public abstract class SmtProversCall extends XProverCall {
 
 		// Check Solver Result
 		checkResult(resultOfSolver);
-
-		File resultFile = new File(iFile.getParent() + "/smTSolverString"); //$NON-NLS-1$
+		
+		// Set up result file
+		File resultFile = new File(iFile.getParent() + '/' + smtResultTempPath); 
 		if (!resultFile.exists()) {
 			resultFile.createNewFile();
 		}
@@ -150,8 +138,10 @@ public abstract class SmtProversCall extends XProverCall {
 			terms[i] = args.get(i);
 		}
 		
+		// Create the new process
 		Process pr = Runtime.getRuntime().exec(terms);
-
+		
+		// Set up buffers to communicate with the process
         BufferedWriter processInput = new BufferedWriter
         (
         		new OutputStreamWriter(
@@ -172,6 +162,14 @@ public abstract class SmtProversCall extends XProverCall {
 				)
 		);
 		
+		// Set up result file 
+		File resultFile = new File(iFile.getParent() + '/' + smtResultTempPath); 
+		if (!resultFile.exists()) {
+			resultFile.createNewFile();
+		}
+
+		FileWriter fileWriter = new FileWriter(resultFile);
+		
         try{
 		    // command line parameter
 		    FileInputStream fstream = new FileInputStream(smtFile);
@@ -188,9 +186,13 @@ public abstract class SmtProversCall extends XProverCall {
 		        // Get answer
 		        String ans = processOutput.readLine();
 		        System.out.println(ans);
+		        
 		        if(ans == null || !ans.equals("success")){
 		        	solverRes = false;
 		        	break;
+		        }
+		        else{
+		        	fileWriter.write(ans);
 		        }
 		    }
 
@@ -213,13 +215,22 @@ public abstract class SmtProversCall extends XProverCall {
 	        if(ans == null || !ans.equals("unsat")){
 	        	solverRes = false;
 	        }
+	        else{
+	        	fileWriter.write(ans);
+	        }
 		}
 		
+		// Close input and output streams
 		processInput.close();
 		processOutput.close();
 		processOutputError.close();
 		
+		// Get back solver result 
 		valid = solverRes;
+		
+		// Close the output file
+		fileWriter.close();
+		oFile = resultFile;
 	}
 
 	/**
@@ -260,10 +271,6 @@ public abstract class SmtProversCall extends XProverCall {
 		return valid;
 	}
 
-	protected synchronized void makeTempFileNames() throws IOException {
-
-	}
-
 	protected abstract void printInputFile() throws IOException;
 
 	protected abstract String[] proverCommand();
@@ -284,27 +291,36 @@ public abstract class SmtProversCall extends XProverCall {
 		args[1] = "--print-simp-and-exit"; //$NON-NLS-1$
 		args[2] = smtFilePath;
 		String resultOfPreProcessing = Exec.execProgram(args);
-		int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10; //$NON-NLS-1$
-		int i = 1;
-		StringBuffer sb = new StringBuffer();
-		sb.append("(benchmark"); //$NON-NLS-1$
 		
-		if (benchmarkIndex != -1){
-			while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
-				char c = resultOfPreProcessing.charAt(benchmarkIndex);
-				if (c == '(') {
-					++i;
-				} else if (c == ')') {
-					--i;
+		// Check if VeriT has simplified smt File
+		if (resultOfPreProcessing.contains("(benchmark")){
+			int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10; //$NON-NLS-1$
+			int i = 1;
+			StringBuffer sb = new StringBuffer();
+			sb.append("(benchmark"); //$NON-NLS-1$
+			
+			if (benchmarkIndex != -1){
+				while (i > 0 || benchmarkIndex >= resultOfPreProcessing.length()) {
+					char c = resultOfPreProcessing.charAt(benchmarkIndex);
+					if (c == '(') {
+						++i;
+					} else if (c == ')') {
+						--i;
+					}
+					sb.append(c);
+					++benchmarkIndex;
 				}
-				sb.append(c);
-				++benchmarkIndex;
+				if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
+					throw new PreProcessingException();
+				}
 			}
-			if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
-				throw new PreProcessingException();
-			}
+			return sb.toString();
 		}
-		return sb.toString();
+		else{
+			return "";
+		}
+			
+		
 	}
 
 	@Override
@@ -348,43 +364,122 @@ public abstract class SmtProversCall extends XProverCall {
 	 */
 	public void smtTranslationSolverCall() throws PreProcessingException,
 			IOException, TranslationException {
-
-		// Parse Rodin PO to create Smt file
-		RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
-				hypotheses, goal);
-
-		// Get back translated smt file
-		smtFile = rp.getTranslatedFile();
-
-		if (!smtFile.exists()) {
-			System.out
-					.println(Messages.SmtProversCall_translated_file_not_exists);
-		}
 		
-		// Set up arguments
-		ArrayList<String> args = setSolverArgs();
+		/* ESSAI 
+		ArrayList<Predicate> Tab=new ArrayList<Predicate>();		
 
-		if (smtUiPreferences.getUsingPrepro()) {
-			// Launch preprocessing
-			smtTranslationPreprocessing(args);
+		Iterator itr = hypotheses.iterator();
+
+		while(itr.hasNext()){
+			Tab.add((Predicate) itr.next());
 		}
+		Predicate [] PredicateArray = new Predicate[Tab.size()];
 
-		iFile = smtFile;
+		final PPProof prover = new PPProof(Tab.toArray(PredicateArray), goal, new IPPMonitor() {
+			
+			@Override
+			public boolean isCanceled() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+		prover.translate();
+		prover.load();
+		List<Predicate> pre = prover.getTranslatedHypotheses();
+		
+		
+		*********/
+		ArrayList<Predicate> finalHyps = new ArrayList<Predicate>();
+		Predicate finalGoal;
+		
+		if (pptransPreproc){
+			Predicate [] temphypsTab = new Predicate[hypotheses.size()];
+			
+			for(int i = 0; i<hypotheses.size(); i++ ){
+				temphypsTab[i]=hypotheses.get(i);
+			}
+			final PPProof tempProver = new PPProof(temphypsTab,goal, new IPPMonitor() {
+				
+				@Override
+				public boolean isCanceled() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+			});
+			
+			tempProver.translate();
+			
+			for (Predicate hyp : tempProver.getTranslatedHypotheses()) {
+				finalHyps.add(hyp);
+			}
+			
+			finalGoal = tempProver.getTranslatedGoal();
+			
+			System.out.println(finalHyps.toString());
+			System.out.println(finalGoal.toString());
+			
+			// Parse Rodin PO to create Smt file
+			RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
+					finalHyps, finalGoal);
 
-		// prover with arguments
-		callProver(args);
+			// Get back translated smt file
+			smtFile = rp.getTranslatedFile();
+
+			if (!smtFile.exists()) {
+				System.out
+						.println(Messages.SmtProversCall_translated_file_not_exists);
+			}
+			
+			// Set up arguments
+			ArrayList<String> args = setSolverArgs();
+
+			iFile = smtFile;
+
+			// prover with arguments
+			callProver(args);
+		}
+		else{
+			// Parse Rodin PO to create Smt file
+			RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
+					hypotheses, goal);
+
+			// Get back translated smt file
+			smtFile = rp.getTranslatedFile();
+
+			if (!smtFile.exists()) {
+				System.out
+						.println(Messages.SmtProversCall_translated_file_not_exists);
+			}
+			
+			// Set up arguments
+			ArrayList<String> args = setSolverArgs();
+
+			if (smtUiPreferences.getUsingPrepro()) {
+				// Launch preprocessing
+				smtTranslationPreprocessing(args);
+			}
+			
+			iFile = smtFile;
+
+			// prover with arguments
+			callProver(args);
+		}				
 	}
 	
+	/**
+	 * Set up input arguments for solver.
+	 * 
+	 */
 	private ArrayList<String> setSolverArgs(){
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(smtUiPreferences.getSolver().getPath());
 		
+		// If solver is V1.2 the smt input is added in arguments
 		if (smtUiPreferences.getSolver().getsmtV1_2()){
 			args.add(smtFile.getPath());
 		}
 		
-		smtUiPreferences.getSolver().getArgs();
-		
+		// Get back solver arguments
 		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
 			// Split arguments and add them in the list
 			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
@@ -413,6 +508,9 @@ public abstract class SmtProversCall extends XProverCall {
 		// Set up arguments
 		ArrayList<String> args = setSolverArgs();
 		
+		// Set up input file
+		iFile = smtFile;
+		
 		// Call the prover
 		callProverInteractive(args);
 	}
@@ -428,7 +526,7 @@ public abstract class SmtProversCall extends XProverCall {
 		String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath(),
 				smtUiPreferences.getPreproPath());
 		File preprocessedFile = new File(smtFile.getParent()
-				+ "/tempPreProcessed.smt"); //$NON-NLS-1$
+				+ '/' + smtPreprocessedTempPath); //$NON-NLS-1$
 
 		if (!preprocessedFile.exists()) {
 			preprocessedFile.createNewFile();

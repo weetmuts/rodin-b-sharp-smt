@@ -16,23 +16,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.DefaultRewriter;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
-import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.Type;
 
-import fr.systerel.smt.provers.ast.SMTIdentifier;
 import fr.systerel.smt.provers.ast.SMTLogic;
-import fr.systerel.smt.provers.ast.commands.SMTAssertCommand;
 import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
 import fr.systerel.smt.provers.ast.commands.SMTSetLogicCommand;
 
@@ -46,6 +35,9 @@ public class RodinToSMTv2PredicateParser {
 	private ArrayList<String> asserts = new ArrayList<String>();
 	private File translatedFile;
 	private String translatedPath;
+	
+	// File Path where the temporary smt2 file will be stored
+	public final static String smtTempPath = "smtComArvV2.smt";
 	
 	public String getTranslatedPath() {
 		return translatedPath;
@@ -62,7 +54,6 @@ public class RodinToSMTv2PredicateParser {
 	public void setLogic(String logic) {
 		this.logic = logic;
 	}
-
 	
 	public ArrayList<String> getAsserts() {
 		return asserts;
@@ -121,7 +112,8 @@ public class RodinToSMTv2PredicateParser {
 		parsePredicates();
 
 	}
-
+	
+	// Parse Rodin predicates and translate into smt 
 	void parsePredicates() throws TranslationException {
 		// Set logic
 		SMTSetLogicCommand log = new SMTSetLogicCommand(SMTLogic.QF_LIA);
@@ -173,7 +165,7 @@ public class RodinToSMTv2PredicateParser {
 				s = System.getProperty("user.home");
 			}
 			
-			translatedFile = new File(s + "/smtComArvV2.smt");
+			translatedFile = new File(s + '/' + smtTempPath);
 			if (!translatedFile.exists()) {
 				translatedFile.createNewFile();
 			}

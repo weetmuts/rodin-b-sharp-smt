@@ -16,15 +16,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.Type;
 
 public class RodinToSMTPredicateParser {
 
@@ -35,11 +32,11 @@ public class RodinToSMTPredicateParser {
 	private Predicate goal;
 	private String translatedPath;
 	private String nameOfThisLemma;
-	private SimpleSMTVisitor visitor;
 	private ArrayList<String> macros = new ArrayList<String>();
 	private ArrayList<String> assumptions = new ArrayList<String>();
 	private TypeEnvironment typeEnvironment = null;
-	
+	private boolean hugo = true;
+
 	public TypeEnvironment getTypeEnvironment() {
 		return typeEnvironment;
 	}
@@ -99,32 +96,6 @@ public class RodinToSMTPredicateParser {
 	// String notImplementedOperation = "";
 	private boolean isNecessaryAllMacros = false;
 
-	private boolean getDataFromVisitor(SimpleSMTVisitor smv) {
-		// funs.putAll(smv.getFuns());
-		typeEnvironment.setFuns(smv.getFuns());
-		// sorts.addAll(smv.getSorts());
-		typeEnvironment.setSorts(smv.getSorts());
-		typeEnvironment.setPreds(smv.getPreds());
-		// assumptions.addAll(smv.getAssumptions());
-		assumptions = smv.getAssumptions();
-		// macros.addAll(smv.getMacros());
-		macros = smv.getMacros();
-		minimalElemvalue = smv.getMinimalElemvalue();
-		minimalEnumValue = smv.getMinimalEnumValue();
-		minimalFiniteValue = smv.getMinimalFiniteValue();
-
-		if (smv.isNecessaryAllMacros() == true) {
-			isNecessaryAllMacros = true;
-		}
-		if (!smv.getNotImplementedOperation().isEmpty()) {
-			this.notImplementedOperation.add(new Pair<String, String>(smv
-					.toString(), smv.getNotImplementedOperation()));
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	public long getMinimalFiniteValue() {
 		return minimalFiniteValue;
 	}
@@ -148,7 +119,6 @@ public class RodinToSMTPredicateParser {
 	public void setMinimalElemvalue(long minimalElemvalue) {
 		this.minimalElemvalue = minimalElemvalue;
 	}
-
 
 	public ArrayList<Predicate> getHypothesis() {
 		return hypotheses;
@@ -180,14 +150,6 @@ public class RodinToSMTPredicateParser {
 
 	public void setNameOfThisLemma(String nameOfThisLemma) {
 		this.nameOfThisLemma = nameOfThisLemma;
-	}
-
-	public SimpleSMTVisitor getVisitor() {
-		return visitor;
-	}
-
-	public void setVisitor(SimpleSMTVisitor visitor) {
-		this.visitor = visitor;
 	}
 
 	public ArrayList<String> getMacros() {
@@ -245,14 +207,16 @@ public class RodinToSMTPredicateParser {
 			if (!typeEnvironment.getSorts().isEmpty()) {
 				String extrasorts = ":extrasorts (";
 				for (int i = 0; i < typeEnvironment.getSorts().size(); i++) {
-					extrasorts = extrasorts + " " + typeEnvironment.getSorts().get(i);
+					extrasorts = extrasorts + " "
+							+ typeEnvironment.getSorts().get(i);
 				}
 				extrasorts = extrasorts + ")";
 				out.println(extrasorts);
 			}
 
 			if (!typeEnvironment.getPreds().isEmpty()) {
-				Set<Entry<String, String>> set = typeEnvironment.getPreds().entrySet();
+				Set<Entry<String, String>> set = typeEnvironment.getPreds()
+						.entrySet();
 				Iterator<Entry<String, String>> iterator = set.iterator();
 				String extrapreds = ":extrapreds (";
 				while (iterator.hasNext()) {
@@ -266,7 +230,8 @@ public class RodinToSMTPredicateParser {
 			}
 
 			if (!typeEnvironment.getFuns().isEmpty()) {
-				Set<Entry<String, String>> set = typeEnvironment.getFuns().entrySet();
+				Set<Entry<String, String>> set = typeEnvironment.getFuns()
+						.entrySet();
 				Iterator<Entry<String, String>> iterator = set.iterator();
 				String extrafuns = ":extrafuns (";
 				while (iterator.hasNext()) {
@@ -356,33 +321,99 @@ public class RodinToSMTPredicateParser {
 		}
 	}
 
+	private boolean getDataFromVisitor(SimpleSMTVisitor smv) {
+		// funs.putAll(smv.getFuns());
+		typeEnvironment.setFuns(smv.getFuns());
+		// sorts.addAll(smv.getSorts());
+		typeEnvironment.setSorts(smv.getSorts());
+		typeEnvironment.setPreds(smv.getPreds());
+		// assumptions.addAll(smv.getAssumptions());
+		assumptions = smv.getAssumptions();
+		// macros.addAll(smv.getMacros());
+		macros = smv.getMacros();
+		minimalElemvalue = smv.getMinimalElemvalue();
+		minimalEnumValue = smv.getMinimalEnumValue();
+		minimalFiniteValue = smv.getMinimalFiniteValue();
+
+		if (smv.isNecessaryAllMacros() == true) {
+			isNecessaryAllMacros = true;
+		}
+		if (!smv.getNotImplementedOperation().isEmpty()) {
+			this.notImplementedOperation.add(new Pair<String, String>(smv
+					.toString(), smv.getNotImplementedOperation()));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	void parsePredicates() throws TranslationException {
-		// Parse hypotheses
-		VisitorV1_2 visHyp = null;
-		if (!this.hypotheses.isEmpty()) {
-			for (Predicate hyp : hypotheses) {
-				visHyp = new VisitorV1_2();
-				hyp.accept(visHyp);
-				String translatedHyp = visHyp.getSMTNode();
-				if (!translatedHyp.equals("")) {
-					assumptions.add(translatedHyp);
+		if (hugo) {
+
+			SimpleSMTVisitor smv1 = null;
+			if (!hypotheses.isEmpty()) {
+				for (int i = 0; i < hypotheses.size(); i++) {
+					smv1 = new SimpleSMTVisitor(this);
+					hypotheses.get(i).accept(smv1);
+					if (this.getDataFromVisitor(smv1)) {
+						assumptions.add(smv1.getSmtFormula());
+					}
 				}
 			}
-		}
 
-		// Parse Goal
-		VisitorV1_2 visGoal = null;
-		if (this.goal != null) {
-			visGoal = new VisitorV1_2();
-			goal.accept(visGoal);
-			String translatedGoal = visGoal.getSMTNode();
-			if (!translatedGoal.equals("")) {
-				smtGoal = translatedGoal;
+			smv1 = new SimpleSMTVisitor(this);
+			goal.accept(smv1);
+			if (this.getDataFromVisitor(smv1)) {
+				smtGoal = smv1.getSmtFormula();
+				if (smv1.isNecessaryAllMacros()) {
+					this.isNecessaryAllMacros = true;
+				}
+
+				printLemmaOnFile();
+			} else {
+				throw new TranslationException(notImplementedOperation);
 			}
+		} else {
+			// Parse hypotheses
+			VisitorV1_2 visHyp = null;
+			if (!this.hypotheses.isEmpty()) {
+				for (Predicate hyp : hypotheses) {
+					// get free identifier of the hyp
+					FreeIdentifier[] tempTab = hyp.getFreeIdentifiers();
+					ArrayList<String> fids = new ArrayList<String>();
+					for (int i = 0; i < tempTab.length; i++) {
+						fids.add(tempTab[i].getName());
+					}
+
+					visHyp = new VisitorV1_2(this.typeEnvironment, fids);
+					hyp.accept(visHyp);
+					String translatedHyp = visHyp.getSMTNode();
+					if (!translatedHyp.equals("")) {
+						assumptions.add(translatedHyp);
+					}
+				}
+			}
+
+			// Parse Goal
+			VisitorV1_2 visGoal = null;
+			if (this.goal != null) {
+				// get free identifier of the goal
+				FreeIdentifier[] tempTab = goal.getFreeIdentifiers();
+				ArrayList<String> fids = new ArrayList<String>();
+				for (int i = 0; i < tempTab.length; i++) {
+					fids.add(tempTab[i].getName());
+				}
+				visGoal = new VisitorV1_2(this.typeEnvironment, fids);
+				goal.accept(visGoal);
+				String translatedGoal = visGoal.getSMTNode();
+				if (!translatedGoal.equals("")) {
+					smtGoal = translatedGoal;
+				}
+			}
+
+			// Print SMT hyps & goal in a file
+			printLemmaOnFile();
 		}
-		
-		// Print SMT hyps & goal in a file
-		printLemmaOnFile();
 	}
-	
+
 }

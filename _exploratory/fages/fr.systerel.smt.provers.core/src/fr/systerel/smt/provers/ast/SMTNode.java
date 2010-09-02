@@ -257,41 +257,75 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 */
 	public final static int MACRO = 601;
 	
+	/**
+	 * Tag of Bound Identifier.
+	 * 
+	 * @see SMTBoundIdentifier
+	 */
+	public final static int BOUND_IDENTIFIER = 701;
+	
+	/**
+	 * Tag of Bound Identifier Declaration.
+	 * 
+	 * @see SMTBoundIdentifierDecl
+	 */
+	public final static int BOUND_IDENTIFIER_DECL = BOUND_IDENTIFIER + 1;
+	
+	/**
+	 * Tag of Quantified Predicate Declaration.
+	 * 
+	 * @see SMTQuantifiedPred
+	 */
+	public final static int QUANTIFIED_PRED_DECL = BOUND_IDENTIFIER_DECL + 1;
+	
+	/**
+	 * Tag of Quantified Predicate Exists Declaration.
+	 * 
+	 * @see SMTQuantifiedPred
+	 */
+	public final static int QUANTIFIED_PRED_EXISTS_DECL = QUANTIFIED_PRED_DECL;
+	
+	/**
+	 * Tag of Quantified Predicate ForAll Declaration.
+	 * 
+	 * @see SMTQuantifiedPred
+	 */
+	public final static int QUANTIFIED_PRED_FORALL_DECL = QUANTIFIED_PRED_DECL + 1;
 	
 	/**
 	 * First tag for a script command.
 	 * 
 	 * @see SMTCommand
 	 */
-	public final static int FIRST_COMMAND = 701;
+	public final static int FIRST_COMMAND = 801;
 	
 	/**
 	 * First tag for a script response.
 	 * 
 	 * @see SMTResponse
 	 */
-	public final static int FIRST_RESPONSE = 801;
+	public final static int FIRST_RESPONSE = 901;
 	
 	/**
 	 * First tag for a script command option.
 	 * 
 	 * @see SMTCommandOption
 	 */
-	public final static int FIRST_COMMAND_OPTION = 901;
+	public final static int FIRST_COMMAND_OPTION = 1001;
 	
 	/**
 	 * First tag for a token.
 	 * 
 	 * @see SMTToken
 	 */
-	public final static int FIRST_TOKEN = 1001;
+	public final static int FIRST_TOKEN = 1101;
 	
 	/**
 	 * First tag for a term.
 	 * 
 	 * @see SMTTerm
 	 */
-	public final static int FIRST_TERM = 1101;
+	public final static int FIRST_TERM = 1201;
 
 	
 	// =========================================================================

@@ -1,0 +1,59 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Systerel - initial API and implementation
+ *******************************************************************************/
+package fr.systerel.smt.provers.ast;
+
+
+/**
+ * This class represents a bound identifier in SMT-LIB grammar.
+ */
+public final class SMTQuantifiedPred extends SMTFormula {
+	
+	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
+	private static final int firstTag = QUANTIFIED_PRED_DECL;
+
+	/** The tags. */
+	private static final String[] tags = { "exists", "forall" };
+
+	/** The members. */
+	private final SMTTerm[] boundIdents;
+	
+	private final SMTFormula pred;
+	
+	
+	/**
+	 * Creates a new Bound Identifier declaration.
+	 * 
+	 * @param tag
+	 *            the tag
+	 * @param identifier
+	 *            the identifier name
+	 * @param Type
+	 *            the type of the identifier
+	 */
+	SMTQuantifiedPred(int tag,SMTTerm[] boundIdents, SMTFormula pred) {
+		super(tag);			
+		this.boundIdents = boundIdents;
+		this.pred = pred;
+	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append("(");
+		String sep = tags[getTag() - firstTag] + " ";
+		for (SMTTerm child: boundIdents) {
+			builder.append(sep);
+			sep = " ";
+			child.toString(builder);
+		}
+		builder.append(")");
+	
+	}
+}

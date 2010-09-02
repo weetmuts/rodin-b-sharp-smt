@@ -17,4 +17,5 @@ Bundle-Vendor: %pluginProvider
 Import-Package: br.ufrn.smt.solver.preferences,
  org.eventb.internal.ui,
  org.eventb.internal.ui.eventbeditor,
- org.eventb.internal.ui.preferences
+ org.eventb.internal.ui.preferences,
+ org.eventb.pp
