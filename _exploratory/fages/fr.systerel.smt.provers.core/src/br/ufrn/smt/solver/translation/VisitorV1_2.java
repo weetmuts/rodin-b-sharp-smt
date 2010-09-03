@@ -229,7 +229,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeMacro(SMTNode.MACRO,"range", children, false));
 			break;
 		case Formula.RANSUB:
-			//TODO
+			stack.push(sf.makeMacro(SMTNode.MACRO,"rans", children, false));
 			break;
 		case Formula.RANRES:
 			stack.push(sf.makeMacro(SMTNode.MACRO,"ranr", children, false));

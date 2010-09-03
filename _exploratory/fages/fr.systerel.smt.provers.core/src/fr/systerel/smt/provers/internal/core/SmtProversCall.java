@@ -62,8 +62,9 @@ public abstract class SmtProversCall extends XProverCall {
 	// File Path where the temporary preprocessed smt file will be stored
 	public final static String smtPreprocessedTempPath = "tempPreProcessed.smt"; //$NON-NLS-1$
 	
-	// TEMPORARY VARIABLES 
+	/* DEBUG BOOLEAN */
 	public static final boolean pptransPreproc = false;
+	/*****************/
 
 	public SmtProversCall(Iterable<Predicate> hypotheses, Predicate goal,
 			IProofMonitor pm, String proverName) {

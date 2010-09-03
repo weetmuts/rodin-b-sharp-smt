@@ -35,8 +35,11 @@ public class RodinToSMTPredicateParser {
 	private ArrayList<String> macros = new ArrayList<String>();
 	private ArrayList<String> assumptions = new ArrayList<String>();
 	private TypeEnvironment typeEnvironment = null;
-	private boolean hugo = true;
-
+	
+	/* DEBUG BOOLEAN */
+	public static final boolean vitor = false;
+	/*****************/
+	
 	public TypeEnvironment getTypeEnvironment() {
 		return typeEnvironment;
 	}
@@ -346,73 +349,83 @@ public class RodinToSMTPredicateParser {
 			return true;
 		}
 	}
-
-	void parsePredicates() throws TranslationException {
-		if (hugo) {
-
-			SimpleSMTVisitor smv1 = null;
-			if (!hypotheses.isEmpty()) {
-				for (int i = 0; i < hypotheses.size(); i++) {
-					smv1 = new SimpleSMTVisitor(this);
-					hypotheses.get(i).accept(smv1);
-					if (this.getDataFromVisitor(smv1)) {
-						assumptions.add(smv1.getSmtFormula());
-					}
+	
+	/* Old version to parse predicates */
+	public void ParsePredOldVersionVitor() throws TranslationException{
+		SimpleSMTVisitor smv1 = null;
+		if (!hypotheses.isEmpty()) {
+			for (int i = 0; i < hypotheses.size(); i++) {
+				smv1 = new SimpleSMTVisitor(this);
+				hypotheses.get(i).accept(smv1);
+				if (this.getDataFromVisitor(smv1)) {
+					assumptions.add(smv1.getSmtFormula());
 				}
 			}
+		}
 
-			smv1 = new SimpleSMTVisitor(this);
-			goal.accept(smv1);
-			if (this.getDataFromVisitor(smv1)) {
-				smtGoal = smv1.getSmtFormula();
-				if (smv1.isNecessaryAllMacros()) {
-					this.isNecessaryAllMacros = true;
-				}
-
-				printLemmaOnFile();
-			} else {
-				throw new TranslationException(notImplementedOperation);
+		smv1 = new SimpleSMTVisitor(this);
+		goal.accept(smv1);
+		if (this.getDataFromVisitor(smv1)) {
+			smtGoal = smv1.getSmtFormula();
+			if (smv1.isNecessaryAllMacros()) {
+				this.isNecessaryAllMacros = true;
 			}
+
+			printLemmaOnFile();
 		} else {
-			// Parse hypotheses
-			VisitorV1_2 visHyp = null;
-			if (!this.hypotheses.isEmpty()) {
-				for (Predicate hyp : hypotheses) {
-					// get free identifier of the hyp
-					FreeIdentifier[] tempTab = hyp.getFreeIdentifiers();
-					ArrayList<String> fids = new ArrayList<String>();
-					for (int i = 0; i < tempTab.length; i++) {
-						fids.add(tempTab[i].getName());
-					}
-
-					visHyp = new VisitorV1_2(this.typeEnvironment, fids);
-					hyp.accept(visHyp);
-					String translatedHyp = visHyp.getSMTNode();
-					if (!translatedHyp.equals("")) {
-						assumptions.add(translatedHyp);
-					}
-				}
-			}
-
-			// Parse Goal
-			VisitorV1_2 visGoal = null;
-			if (this.goal != null) {
-				// get free identifier of the goal
-				FreeIdentifier[] tempTab = goal.getFreeIdentifiers();
+			throw new TranslationException(notImplementedOperation);
+		}
+	}
+	
+	/* New version to parse predicates */
+	public void ParsePredNewVersion(){
+		// Parse hypotheses
+		VisitorV1_2 visHyp = null;
+		if (!this.hypotheses.isEmpty()) {
+			for (Predicate hyp : hypotheses) {
+				// get free identifier of the hyp
+				FreeIdentifier[] tempTab = hyp.getFreeIdentifiers();
 				ArrayList<String> fids = new ArrayList<String>();
 				for (int i = 0; i < tempTab.length; i++) {
 					fids.add(tempTab[i].getName());
 				}
-				visGoal = new VisitorV1_2(this.typeEnvironment, fids);
-				goal.accept(visGoal);
-				String translatedGoal = visGoal.getSMTNode();
-				if (!translatedGoal.equals("")) {
-					smtGoal = translatedGoal;
+
+				visHyp = new VisitorV1_2(this.typeEnvironment, fids);
+				hyp.accept(visHyp);
+				String translatedHyp = visHyp.getSMTNode();
+				if (!translatedHyp.equals("")) {
+					assumptions.add(translatedHyp);
 				}
 			}
+		}
 
-			// Print SMT hyps & goal in a file
-			printLemmaOnFile();
+		// Parse Goal
+		VisitorV1_2 visGoal = null;
+		if (this.goal != null) {
+			// get free identifier of the goal
+			FreeIdentifier[] tempTab = goal.getFreeIdentifiers();
+			ArrayList<String> fids = new ArrayList<String>();
+			for (int i = 0; i < tempTab.length; i++) {
+				fids.add(tempTab[i].getName());
+			}
+			visGoal = new VisitorV1_2(this.typeEnvironment, fids);
+			goal.accept(visGoal);
+			String translatedGoal = visGoal.getSMTNode();
+			if (!translatedGoal.equals("")) {
+				smtGoal = translatedGoal;
+			}
+		}
+
+		// Print SMT hyps & goal in a file
+		printLemmaOnFile();
+	}
+	
+
+	void parsePredicates() throws TranslationException {
+		if (vitor) {
+			ParsePredOldVersionVitor();			
+		} else {
+			ParsePredNewVersion();
 		}
 	}
 
