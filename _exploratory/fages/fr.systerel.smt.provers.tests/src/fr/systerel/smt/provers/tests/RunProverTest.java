@@ -20,9 +20,8 @@ import org.junit.Test;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProversCall;
-import fr.systerel.smt.provers.internal.core.UIUtils;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import static br.ufrn.smt.solver.preferences.SmtPreferencesStore.*;
+import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.*;
 
 public class RunProverTest {
 
