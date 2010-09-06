@@ -25,7 +25,7 @@ public final class SMTQuantifiedPred extends SMTFormula {
 	/** The members. */
 	private final SMTTerm[] boundIdents;
 	
-	private final SMTFormula pred;
+	private final SMTFormula[] preds;
 	
 	
 	/**
@@ -38,10 +38,10 @@ public final class SMTQuantifiedPred extends SMTFormula {
 	 * @param Type
 	 *            the type of the identifier
 	 */
-	SMTQuantifiedPred(int tag,SMTTerm[] boundIdents, SMTFormula pred) {
+	SMTQuantifiedPred(int tag,SMTTerm[] boundIdents, SMTFormula[] preds) {
 		super(tag);			
 		this.boundIdents = boundIdents;
-		this.pred = pred;
+		this.preds = preds;
 	}
 
 	@Override
@@ -54,6 +54,9 @@ public final class SMTQuantifiedPred extends SMTFormula {
 			child.toString(builder);
 		}
 		builder.append(")");
+		for (SMTFormula pred : preds) {
+			pred.toString(builder);
+		}
 	
 	}
 }

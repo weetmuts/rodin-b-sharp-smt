@@ -164,7 +164,7 @@ public final class SMTFactory {
 	 *            Predicate associated with the nound ident decls	 
 	 * @return the newly quantified predicate
 	 */
-	public SMTQuantifiedPred makeQuantifiedPred(int tag, SMTTerm[] formulas, SMTFormula pred) {
+	public SMTQuantifiedPred makeQuantifiedPred(int tag, SMTTerm[] formulas, SMTFormula[] pred) {
 		return new SMTQuantifiedPred(tag, formulas, pred);
 	}
 	

@@ -340,7 +340,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab, fidsSet);
 			
 		SMTTerm[] children1 = toTermArray(convert(predicate.getBoundIdentDecls()));
-		SMTFormula children2 = (SMTFormula) convert(predicate.getPredicate());
+		SMTFormula[] children2 = toFormulaArray(convert(predicate.getPredicate()));
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:

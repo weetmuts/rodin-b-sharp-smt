@@ -15,7 +15,7 @@ import java.math.BigInteger;
 /**
  * This class represents a numeral in SMT-LIB grammar.
  */
-public final class SMTMacro extends SMTTerm {
+public final class SMTMacro extends SMTFormula {
 	
 	/** The children. */
 	private final SMTTerm[] children;
