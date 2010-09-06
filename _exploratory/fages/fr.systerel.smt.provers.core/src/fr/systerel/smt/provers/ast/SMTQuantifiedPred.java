@@ -53,10 +53,11 @@ public final class SMTQuantifiedPred extends SMTFormula {
 			sep = " ";
 			child.toString(builder);
 		}
-		builder.append(")");
+		
 		for (SMTFormula pred : preds) {
 			pred.toString(builder);
 		}
+		builder.append(")");
 	
 	}
 }

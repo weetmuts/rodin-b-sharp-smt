@@ -253,9 +253,23 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	/**
 	 * Tag of Macro.
 	 * 
-	 * @see SMTMacro
+	 * @see SMTMacroFormula & SMTMacroTerm
 	 */
 	public final static int MACRO = 601;
+	
+	/**
+	 * Tag of Macro for terms.
+	 * 
+	 * @see SMTMacroTerm
+	 */
+	public final static int MACRO_TERM = MACRO + 1;
+	
+	/**
+	 * Tag of Macro for formulas.
+	 * 
+	 * @see SMTMacroFormula
+	 */
+	public final static int MACRO_FORMULA = MACRO + 2;
 	
 	/**
 	 * Tag of Bound Identifier.

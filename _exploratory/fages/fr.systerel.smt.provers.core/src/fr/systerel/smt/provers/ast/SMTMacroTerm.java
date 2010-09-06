@@ -10,12 +10,11 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.math.BigInteger;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.
  */
-public final class SMTMacro extends SMTFormula {
+public final class SMTMacroTerm extends SMTTerm {
 	
 	/** The children. */
 	private final SMTTerm[] children;
@@ -30,7 +29,7 @@ public final class SMTMacro extends SMTFormula {
 	 * @param value
 	 *            the value
 	 */
-	SMTMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
+	SMTMacroTerm(int tag, String macroId, SMTTerm[] children, boolean not) {
 		super(tag);
 		if (children != null){
 			this.children = children.clone();

@@ -137,10 +137,10 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MUL, children));
 			break;
 		case Formula.BUNION:
-			stack.push(sf.makeMacro(SMTNode.MACRO, "union", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "union", children, false));
 			break;
 		case Formula.BINTER:
-			stack.push(sf.makeMacro(SMTNode.MACRO, "inter", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "inter", children, false));
 			break;
 		case Formula.BCOMP:
 			// TODO
@@ -181,18 +181,18 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeBoolean(SMTNode.FALSE));
 			break;
 		case Formula.INTEGER:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"Int", null, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Int", null, false));
 			break;
 		case Formula.NATURAL:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"Nat", null, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Nat", null, false));
 			break;
 		case Formula.NATURAL1:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"Nat1", null, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Nat1", null, false));
 			break;
 		case Formula.BOOL:
 			break;
 		case Formula.EMPTYSET:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"emptyset", null, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"emptyset", null, false));
 			break;
 		default:
 			assert false;
@@ -226,25 +226,26 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
 		case Formula.UPTO:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"range", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"range", children, false));
 			break;
 		case Formula.RANSUB:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"rans", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"rans", children, false));
 			break;
 		case Formula.RANRES:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"ranr", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"ranr", children, false));
 			break;
 		case Formula.DOMSUB:
 			//TODO
 			break;
 		case Formula.DOMRES:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"domr", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"domr", children, false));
 			break;
 		case Formula.SETMINUS:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"setminus", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"setminus", children, false));
 			break;
 		case Formula.MAPSTO:
-			
+			// TO CHANGE
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"maplet", children, false));
 			break;
 		default:
 			assert false;
@@ -366,7 +367,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"=", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"=", children, true));
 			break;
 		case Formula.EQUAL:
 			FormulaFactory ff = FormulaFactory.getDefault();
@@ -376,7 +377,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 				stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
 			}
 			else {
-				stack.push(sf.makeMacro(SMTNode.MACRO,"=", children, false));
+				stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"=", children, false));
 			}			
 			break;
 		case Formula.LT:
@@ -392,22 +393,22 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
 			break;
 		case Formula.IN:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"in", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"in", children, false));
 			break;	
 		case Formula.NOTIN:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"in", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"in", children, true));
 			break;
 		case Formula.SUBSET:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"subset", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subset", children, false));
 			break;
 		case Formula.SUBSETEQ:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"subseteq", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subseteq", children, false));
 			break;		
 		case Formula.NOTSUBSET:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"subset", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subset", children, true));
 			break;	
 		case Formula.NOTSUBSETEQ:
-			stack.push(sf.makeMacro(SMTNode.MACRO,"subseteq", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subseteq", children, true));
 			break;	
 		default:
 			assert false;

@@ -143,14 +143,25 @@ public final class SMTFactory {
 	}
 	
 	/**
-	 * Creates a macro.
+	 * Creates a macro formula.
 	 * 
 	 * @param tag
 	 *            the tag of the macro
 	 * @return the newly created macro
 	 */
-	public SMTMacro makeMacro(int tag, String macroId, SMTTerm[] children, boolean not) {
-		return new SMTMacro(tag, macroId,children,not);
+	public SMTMacroFormula makeMacroFormula(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacroFormula(tag, macroId,children,not);
+	}
+	
+	/**
+	 * Creates a macro term.
+	 * 
+	 * @param tag
+	 *            the tag of the macro term
+	 * @return the newly created macro
+	 */
+	public SMTMacroTerm makeMacroTerm(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacroTerm(tag, macroId,children,not);
 	}
 	
 	/**
@@ -191,7 +202,7 @@ public final class SMTFactory {
 	 *            the tag of the propositional atom
 	 * @return the newly created propositional atom
 	 */
-	public SMTMacro makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
-		return new SMTMacro(tag, macroId,children,not);
+	public SMTMacroFormula makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
+		return new SMTMacroFormula(tag, macroId,children,not);
 	}
 }
