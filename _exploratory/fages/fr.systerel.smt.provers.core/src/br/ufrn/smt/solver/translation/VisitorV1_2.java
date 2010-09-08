@@ -235,7 +235,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"ranr", children, false));
 			break;
 		case Formula.DOMSUB:
-			//TODO
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"doms", children, false));
 			break;
 		case Formula.DOMRES:
 			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"domr", children, false));
@@ -245,7 +245,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			break;
 		case Formula.MAPSTO:
 			// TO CHANGE
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"maplet", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"pair", children, false));
 			break;
 		default:
 			assert false;

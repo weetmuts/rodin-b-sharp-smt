@@ -5,23 +5,22 @@
          id="ExternalSmtTac"
          name="ExternalSmtTac"
          point="org.eventb.core.seqprover.reasoners">
+      <reasoner
+            class="fr.systerel.smt.provers.internal.core.ExternalSmt"
+            id="externalSMT"
+            name="External SMT Reasoner">
+      </reasoner>
    </extension>
    <extension
          id="ExternalSMT"
          name="ExternalSMT"
          point="org.eventb.core.seqprover.autoTactics">
-   </extension>
-   <extension
-         point="org.eventb.core.postTactics">
-      <tactic
-            id="fr.systerel.smt.provers.core.tactic1">
-      </tactic>
-   </extension>
-   <extension
-         point="org.eventb.core.pomTactics">
-      <tactic
-            id="fr.systerel.smt.provers.core.tactic1">
-      </tactic>
+      <autoTactic
+            class="fr.systerel.smt.provers.internal.core.AutoTactics$SMT"
+            description="The automatic smt prover tactic"
+            id="SmtProver"
+            name="Auto SMT Prover">
+      </autoTactic>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -36,6 +35,12 @@
             id="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
             name="SMT-Solver Plugin">
       </page>
+   </extension>
+   <extension
+         point="org.eventb.core.pomTactics">
+      <tactic
+            id="fr.systerel.smt.provers.core.SmtProver">
+      </tactic>
    </extension>
 
 </plugin>
