@@ -23,7 +23,7 @@ In particular, it is possible to add new reasoners, which will schematically run
 \item Output: a proof rule.
 \end{itemize}
 
-\subsection{Integration of an SMT Solver into Rodin}
+\subsection{Integration of a SMT Solver into Rodin}
 \begin{itemize}
 \item A formula $A$ is \textit{valid} in a theory $T$ if $A$ evaluates to $true$ in every model $M$ of $T$.
 \item A formula $A$ is \textit{satisfiable} in a theory $T$ if there is a model $M$ for $T$ in which $A$ evaluates to $true$. Otherwise, $A$ is \textit{unsatisfiable}.
@@ -39,6 +39,24 @@ Conversely, if a formula is satisfiable, it means that a counter-example exists 
 \label{Fig:SMT solver}
 \end{figure}
 
-The main difficulties are all related to the translation steps. They cover several sub-tasks, such as selecting the hypotheses, choosing the SMT solver to be addressed, determining the format of the benchmark to be generated (SMT-LIB 1.2 or SMT-LIB 2.0), keeping a link between Event-B hypotheses and the associated hypotheses in SMT-LIB format...
+The main difficulties are all related to the translation steps. They cover several sub-tasks, such as selecting the hypotheses, choosing the SMT solver to be addressed, determining the format of the benchmark to be generated (SMT-LIB 1.2 or SMT-LIB 2.0), keeping a link between Event-B hypotheses and the associated hypotheses in SMT-LIB format...\newline
 
-TODO. Donner ici le chemin des sources des plug-ins SMT et faire une description rapide des packages.
+
+SMT plugins can be found at the following address \url{https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/_exploratory/fages/}:
+\begin{itemize}
+\item fr.systerel.smt.provers.core divided in following packages:
+	\begin{itemize}
+	\item br.ufrn.smt.solver.preferences (Preference page creation in Rodin to handle solvers' configuration)
+	\item br.ufrn.smt.solver.translation (Event-B Proof Obligations to SMT translation)
+	\item fr.systerel.smt.provers.ast (Description of SMT language tree structure)
+	\item fr.systerel.smt.provers.ast.commands (Description of SMT commands tree structure)
+	\item fr.systerel.smt.provers.ast.responses (Description of SMT responses tree structure)
+	\item fr.systerel.smt.provers.core (Entry point to communicate with SMT solvers) 
+	\item fr.systerel.smt.provers.internal.core (The plugin core)
+	\end{itemize}
+\item fr.systerel.smt.provers.ui 
+	\begin{itemize}
+	\item fr.systerel.smt.provers.internal.ui (Entry point to communicate with Rodin platform User Interface)
+	\end{itemize}
+\item fr.systerel.smt.provers.tests (Tests for Event-B to SMT translation)
+\end{itemize}

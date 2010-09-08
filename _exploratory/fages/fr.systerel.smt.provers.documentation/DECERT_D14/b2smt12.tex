@@ -159,22 +159,13 @@ For example, if the goal for a sequent is $0 < n + 1$, under the hypothesis $n \
 \end{align*}
 
 \subsection{Targeted SMT Solvers}
-The following SMT solvers, which support the SMT-LIB 1.2 format, have been integrated in the Rodin platform: 
+The following SMT solvers, which support the SMT-LIB 1.2 format, have been used via the SMT plugin in the Rodin platform: 
 \begin{itemize}
-\item VeriT\cite{VERIT}.
-\item Alt-Ergo\cite{ALTERGO}.
-\item CVC3\cite{CVC3}.
-\item Z3\cite{Z3}.
+\item VeriT\cite{VERIT} (VeriT takes part of DECERT and provides the possibility to use an extended SMT-Lib format).
+\item Alt-Ergo\cite{ALTERGO} (Alt-Ergo takes part of DECERT and is known to have good results with arithmetics formulas).
+\item CVC3\cite{CVC3} (CVC3 si known to support many logics and is available easily for linux or windows platforms).
+\item Z3\cite{Z3} (Z3 is updated regularly and available on windows platforms).
 \end{itemize}
-
---- BEGIN TODO
-A COMPLETER. Dire pourquoi on cible ces prouveurs SMT.
-VeriT et Alt-Ergo "font partie" de DECERT.
-VeriT comprend le format SMT-LIB étendu.
-On peut espérer avoir de bons résultats avec l'arithmétique sur Alt-Ergo.
-Z3 évolue régulièrement, à tjs eu de bons résultats aux compétitions SMT, est facilement installable et utilisable sous un OS Windows.
-CVC3?
---- END TODO
 
 \paragraph{}
 To implement the transformation from Event-B sequents to SMT-LIB benchmarks, and in particular the SET to FOL translation, we have first used the extensions to the SMT-LIB library implemented in the veriT solver, namely macro definitions and lambda expressions (see \cite{BSMT10}). However, if the targeted solver is not veriT, it is necessary to convert the Event-B sequents from the extended SMT-LIB format to the standard SMT-LIB format (see \cite{RODINSMT10}), using the $-print-simp-and-exit$ option provided by veriT.
