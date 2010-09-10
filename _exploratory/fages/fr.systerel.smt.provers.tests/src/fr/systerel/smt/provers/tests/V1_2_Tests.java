@@ -621,8 +621,8 @@ public class V1_2_Tests extends AbstractTranslationTests {
 	
 	public void testFunc_3() {
 			
-			doTest( "{1} ◁ f≠f",
-					fct_ste);
+		doTest( "{1} ◁ f≠f",
+				fct_ste);
 	}
 	
 	public void testFunc_4() {
@@ -644,57 +644,51 @@ public class V1_2_Tests extends AbstractTranslationTests {
 	}
 	
 	public void testFunc_7() {
-		
-		doTest( "f ⩥ {1} ≠f",
-				fct_ste);
-	}
-	
-	public void testFunc_8() {
 		doTest( "f∈st", 
 				cr_ste);
 	}
 	
-	public void testFunc_9() {
+	public void testFunc_8() {
 		doTest( "f∈st", 
 				cr_ste);
 	}
 	
-	public void testFunc_10() {
+	public void testFunc_9() {
 		doTest( "f∈st", 
 				cr_ste);
 	}
 	
-	public void testFunc_11() {
+	public void testFunc_10() {
 		doTest( "f∈s↔t", 
 				cr_ste);
 	}
 	
-	public void testFunc_12() {
+	public void testFunc_11() {
 		doTest( "f∈s⤖t", 
 				cr_ste);
 	}
 	
-	public void testFunc_13() {
+	public void testFunc_12() {
 		doTest( "f∈s⇸t", 
 				cr_ste);
 	}
 	
-	public void testFunc_14() {
+	public void testFunc_13() {
 		doTest( "f∈s⤔t", 
 				cr_ste);
 	}
 	
-	public void testFunc_15() {
+	public void testFunc_14() {
 		doTest( "f∈s↣t", 
 				cr_ste);
 	}
 	
-	public void testFunc_16() {
+	public void testFunc_15() {
 		doTest( "f∈s⤀t", 
 				cr_ste);
 	}
 	
-	public void testFunc_17() {
+	public void testFunc_16() {
 		doTest( "f∈s↠t", 
 				cr_ste);
 	}
@@ -708,6 +702,13 @@ public class V1_2_Tests extends AbstractTranslationTests {
 		doTest("{1,4,3,8} ⊂ A",
 				mTypeEnvironment(mList("A"), mList(INT_SET)));
 	}
+	
+	public void testAdd_2() {
+		
+		doTest("{{1},{2}} ⊆ ℙ(ℕ1)");
+	}
+
+	
 	
 
 

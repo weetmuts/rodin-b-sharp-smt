@@ -37,7 +37,7 @@ public class RodinToSMTPredicateParser {
 	private TypeEnvironment typeEnvironment = null;
 	
 	/* DEBUG BOOLEAN */
-	public static final boolean vitor = false;
+	public static final boolean vitor = true;
 	/*****************/
 	
 	public TypeEnvironment getTypeEnvironment() {

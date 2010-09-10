@@ -27,7 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.pp.IPPMonitor;
+import org.eventb.pp.PPCore;
 import org.eventb.pp.PPProof;
+import org.eventb.pptrans.Translator;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
@@ -366,39 +369,18 @@ public abstract class SmtProversCall extends XProverCall {
 	public void smtTranslationSolverCall() throws PreProcessingException,
 			IOException, TranslationException {
 		
-		/* ESSAI 
-		ArrayList<Predicate> Tab=new ArrayList<Predicate>();		
-
-		Iterator itr = hypotheses.iterator();
-
-		while(itr.hasNext()){
-			Tab.add((Predicate) itr.next());
-		}
-		Predicate [] PredicateArray = new Predicate[Tab.size()];
-
-		final PPProof prover = new PPProof(Tab.toArray(PredicateArray), goal, new IPPMonitor() {
-			
-			@Override
-			public boolean isCanceled() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
-		prover.translate();
-		prover.load();
-		List<Predicate> pre = prover.getTranslatedHypotheses();
-		
-		
-		*********/
-		ArrayList<Predicate> finalHyps = new ArrayList<Predicate>();
-		Predicate finalGoal;
-		
+		// Use ppTrans to translate input Predicates in predicates easier to translate to SMT
 		if (pptransPreproc){
+			final ArrayList<Predicate> finalHyps = new ArrayList<Predicate>();
+			final Predicate finalGoal;
+			
 			Predicate [] temphypsTab = new Predicate[hypotheses.size()];
 			
 			for(int i = 0; i<hypotheses.size(); i++ ){
 				temphypsTab[i]=hypotheses.get(i);
 			}
+			
+			// Create new PPproof with hypotheses and goal
 			final PPProof tempProver = new PPProof(temphypsTab,goal, new IPPMonitor() {
 				
 				@Override
@@ -410,10 +392,12 @@ public abstract class SmtProversCall extends XProverCall {
 			
 			tempProver.translate();
 			
+			// Get back translated hypotheses
 			for (Predicate hyp : tempProver.getTranslatedHypotheses()) {
 				finalHyps.add(hyp);
 			}
 			
+			// Get back translated goal
 			finalGoal = tempProver.getTranslatedGoal();
 			
 			System.out.println(finalHyps.toString());
