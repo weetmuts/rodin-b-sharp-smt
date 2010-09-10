@@ -69,23 +69,22 @@ traces or certificates, as one purpose of such artefacts is to memorize this inf
 \section{Conclusion}
 
 \paragraph{Future work.} 
+The next steps planned are the following:
+\begin{itemize}
+\item Keep a link between hypotheses in Event-B format and those in SMT format. 
+Such improvement will give the possibility to memorize for example, hypotheses needed to carry through a Rodin proof obligation. If hypotheses changed, the proof obligation will not need to be done again, if hypotheses are not among the needed ones. 
+\item Get back counterexamples from SMT solvers (supporting SMT-LIB v2.0) to use them in 
+Rodin.
+\item Recommend an SMT solver to user in accordance to Proof Obligation type. Performances 
+between solvers differ from one to another depending on the considered logic. It would be interesting to 
+guide the user on a specific solver after a proof obligation analysis.  
+\item Introduce an additional step before the final translation from FOL to SMT-LIB, 
+which would be a simplification operation on FOL formulas. More precisely, there 
+is no doubt that the $(0 >= 0) \wedge (0 <= x)$ formula can be easily simplified as 
+$0 <= x$. Such simplifications are not considered in this document, and are only 
+introduced here as topic of interest for further revisions.
 
-TO BE DONE.
-Etablir un lien entre les hypothèses au format Event-B et les hypothèses au format SMT.
-Remonter les contre-exemples et preuves SMT dans Rodin.
-Conseiller l'emploi de tel solveur.
-+ Autre idée:
-As suggested in the previous examples, it seems
-pertinent to introduce an additional step before the final 
-translation from FOL to SMT-LIB, which would be a 
-simplification operation on FOL formulas. More precisely,
-there is no doubt that the $(0 >= 0) \wedge (0 <= x)$
-formula can be easily simplified as $0 <= x$.
-
-Such simplifications are not considered in this document, 
-and are only introduced here as topic of interest for 
-further revisions.
-
+\end{itemize}
 
 \paragraph{Acknowledgements.} 
 The author thanks David D\'eharbe and V\'itor Alc\^antara de Almeida (Universidade Federal do Rio Grande do Norte, Natal, RN, Brazil), whose work on integrating SMT solvers in Rodin \cite{RODINSMT10} has provided a solid basis and has largely contributed to the contents of this deliverable.

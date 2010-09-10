@@ -2,10 +2,16 @@
 %% SMT-LIB 2.0                                             
 %% ------------------------------------------------------- %%
 \section{SMT-LIB 2.0}
-\subsection{Titre}
-Presenter ici les nouveautes SMT 2.0
-Considere l'interaction entre les solveurs SMT et d'autres outils.
-Le chapitre V definit un langage de script (commandes, reponses) pour echanger des informations avec les solveurs SMT.
+\subsection{SMT-LIB 2.0 vs SMT-LIB 1.2}
+The steps engaged to set up Version 2.0 have consisted in setting up a concrete syntax simpler and leaner than that of the 1.2.
+The two major additions are the following:
+\begin{itemize}
+\item A mechanism that approximates parametric sorts and polymorphic function symbols in theory declarations.
+\item A command language to allow user to assert and retract formulas incrementally,
+to define new sort and function symbols, to check the satisfiability of the asserted
+formulas and query their found model, if any, or ask for an unsatisfiable core otherwise (TODO renvoi vers le paragraphe decrivant les commandes et réponses).
+\end{itemize}
+
 
 \begin{figure}
 \centering
