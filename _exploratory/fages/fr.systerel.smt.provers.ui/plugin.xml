@@ -15,7 +15,7 @@
             id="fr.systerel.smt.provers.ui.tactic2"
             interrupt="true"
             name="name"
-            priorty="fr.systerel.smt.provers.ui.tactic2"
+            priority="fr.systerel.smt.provers.ui.tactic2"
             skipPostTactic="false"
             tacticProvider="fr.systerel.smt.provers.internal.ui.SMT"
             target="global"
