@@ -106,6 +106,16 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		return nodes.toArray(new SMTFormula[nodes.size()]);
 	}
 
+	//TODO: New change made by Vitor
+	private String getBoundVarFromDeBrujinIndex(int index)
+	{
+		return (String)indexesOfboundIdentifiers.get(indexesOfboundIdentifiers.size() - (1 + index));
+	}
+	//END-TOJDO
+	
+	
+	
+	
 	long minimalFiniteValue = 0;
 	long minimalEnumValue = 0;
 	long minimalElemvalue = 0;
@@ -133,7 +143,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 		this.indexesOfboundIdentifiers = indexesOfboundIdentifiers;
 	}
-
+	
 	public SimpleSMTVisitor(RodinToSMTPredicateParser parser) {
 		funs = parser.getTypeEnvironment().getFuns();
 		sorts = parser.getTypeEnvironment().getSorts();
@@ -144,8 +154,8 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		minimalElemvalue = parser.getMinimalElemvalue();
 		minimalEnumValue = parser.getMinimalEnumValue();
 		minimalFiniteValue = parser.getMinimalFiniteValue();
-	}
-
+	}	
+	
 	public long getMinimalFiniteValue() {
 		return minimalFiniteValue;
 	}
@@ -218,9 +228,28 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		this.isNecessaryAllMacros = isNecessaryAllMacros;
 	}
 
-	public SimpleSMTVisitor(SimpleSMTVisitor visitor) {
-
-	}
+//	public SimpleSMTVisitor(SimpleSMTVisitor visitor) {
+//
+//	}
+	//TODO: Change made by Vitor
+	public SimpleSMTVisitor(SimpleSMTVisitor visitor)
+    {
+        minimalFiniteValue = 0L;
+        minimalEnumValue = 0L;
+        minimalElemvalue = 0L;
+        isNecessaryInterrogation = new ArrayList();
+        funs = new Hashtable();
+        preds = new Hashtable();
+        singleQuotVars = new Hashtable();
+        sorts = new ArrayList();
+        assumptions = new ArrayList();
+        macros = new ArrayList();
+        indexesOfboundIdentifiers = new ArrayList();
+        smtFormula = new StringBuffer();
+        isNecessaryAllMacros = false;
+        notImplementedOperation = "";
+    }
+	//END-TODO
 
 	public String getNotImplementedOperation() {
 		return notImplementedOperation;
@@ -310,9 +339,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	}
 
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		assignment.getAssignedIdentifiers();
-		assignment.getSet();
-
+		
 		FreeIdentifier[] identifiers = assignment.getAssignedIdentifiers();
 
 		// smtFormula = smtFormula + "(=";
@@ -487,11 +514,15 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			// smtFormula = smtFormula + " Bool ";
 			smtFormula.append(" Bool ");
 		} else if (vTag == Formula.TRUE) {
-			// smtFormula = smtFormula + " True ";
-			smtFormula.append(" True ");
+			//smtFormula.append(" True ");
+			//TODO Changes made by Vitor
+			smtFormula.append(" true ");
+			
 		} else if (vTag == Formula.FALSE) {
-			// smtFormula = smtFormula + " False ";
-			smtFormula.append(" False ");
+			//smtFormula.append(" False ");
+			//TODO Changes made by Vitor
+			smtFormula.append(" false ");
+			
 		} else if (vTag == Formula.EMPTYSET) {
 			// smtFormula = smtFormula + " emptyset ";
 			smtFormula.append(" emptyset ");
@@ -528,7 +559,9 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		String operator = "";
 		int vTag = expression.getTag();
 		if (vTag == Formula.MAPSTO) {
-			operator = "pair";
+			//operator = "pair";
+			//TODO: Changes made by Vitor
+			operator = "Pair";
 		} else if (vTag == Formula.REL) {
 			operator = "rel";
 			this.isNecessaryAllMacros = true;
@@ -711,23 +744,63 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		}
 		for (int i = 0; i < expression.getMembers().length; i++) {
 			if (expression.getMembers()[i].getTag() == Formula.MAPSTO) {
-				setBuffer.append("(= (pair "
+				
+				//TODO: Changes made by Vitor
+				String var1 = (String)singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[0].getName());
+                if(var1 == null)
+                    var1 = expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[0].getName();
+                String var2 = (String)singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[1].getName());
+                if(var2 == null)
+                    var2 = expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[1].getName();
+                //END-TODO
+							
+              //TODO:Changes made by Vitor
+                //setBuffer.append("(= (pair "
+                setBuffer.append("(= (Pair "
+                //END-TODO               
 						+ "?"
-						+ name1
+						+ name1						
 						+ " "
 						+ "?"
 						+ name2
-						+ ")(pair "
-						+ expression.getMembers()[i]
-								.getSyntacticallyFreeIdentifiers()[0].getName()
+						
+						//TODO: Changes made by Vitor
+						//+ ")(pair "
+						+ ")(Pair "
+						//END-TODO
+						
+						//TODO: Changes made by Vitor
+//						+ expression.getMembers()[i]
+//								.getSyntacticallyFreeIdentifiers()[0].getName()
+						+ var1
+						//END-TODO
 						+ " "
-						+ expression.getMembers()[i]
-								.getSyntacticallyFreeIdentifiers()[1].getName()
+						
+						//TODO: Changes made by Vitor
+//						+ expression.getMembers()[i]
+//								.getSyntacticallyFreeIdentifiers()[1].getName()
+						+ var2
+						//END-TODO
 						+ "))");
 				// + expression.getMembers()[i].toString() + ")");
 			} else {
-				setBuffer.append("(= ?" + name1 + " "
-						+ expression.getMembers()[i].toString() + ")");
+				
+				//TODO: Changes made by Vitor
+//				setBuffer.append("(= ?" + name1 + " "
+//						+ expression.getMembers()[i].toString() + ")");
+					String var1 = null;
+	                if(expression.getMembers()[i] instanceof BoundIdentifier)
+	                {
+	                    BoundIdentifier bi = (BoundIdentifier)expression.getMembers()[i];
+	                    var1 = getBoundVarFromDeBrujinIndex(bi.getBoundIndex());
+	                } else
+	                {
+	                    var1 = (String)singleQuotVars.get(expression.getMembers()[i].toString());
+	                    if(var1 == null)
+	                        var1 = expression.getMembers()[i].toString();
+	                }
+	                setBuffer.append((new StringBuilder("(= ?")).append(name1).append(" ").append(var1).append(")").toString());
+	           //END-TODO     
 			}
 		}
 		setBuffer.append(")))");
@@ -815,8 +888,11 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		// smtFormula = smtFormula + " " + identifierExpression.toString() +
 		// " ";
 		smtFormula.append(" "
-				+ indexesOfboundIdentifiers.get(identifierExpression
-						.getBoundIndex()) + " ");
+			//TODO Changes made by Vitor	
+			//	+ indexesOfboundIdentifiers.get(identifierExpression
+				+ getBoundVarFromDeBrujinIndex(identifierExpression.getBoundIndex())
+			//END-TODO			
+				+ " ");
 	}
 
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
@@ -845,8 +921,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		SimpleSMTVisitor smv = new SimpleSMTVisitor(minimalFiniteValue,
 				minimalEnumValue, minimalElemvalue, singleQuotVars,
 				indexesOfboundIdentifiers);
-		predicate.getChildren()[0].accept(smv);
-		// smtFormula += "(" + operator + smv.getSmtFormula();
+		predicate.getChildren()[0].accept(smv);	
 		smtFormula.append("(" + operator + smv.getSmtFormula());
 		smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue,
 				minimalElemvalue, singleQuotVars, indexesOfboundIdentifiers);
@@ -861,14 +936,11 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			smv = new SimpleSMTVisitor(minimalFiniteValue, minimalEnumValue,
 					minimalElemvalue, singleQuotVars, indexesOfboundIdentifiers);
 			predicate.getChildren()[i].accept(smv);
-			// getDataFromVisitor(smv);
 			if (!getDataFromVisitor(smv)) {
 				return;
 			}
 			StringBuffer temp = new StringBuffer("(" + operator
 					+ smtFormula.toString() + smv.getSmtFormula() + ")");
-			// smtFormula = "(" + operator + smtFormula + smv.getSmtFormula() +
-			// ")";
 			smtFormula = temp;
 
 		}
@@ -891,18 +963,14 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 				singleQuotVars, indexesOfboundIdentifiers);
 		Predicate pred = predicate.getLeft();
 		pred.accept(leftVisitor);
-		// getDataFromVisitor(leftVisitor);
 		if (!getDataFromVisitor(leftVisitor)) {
 			return;
 		}
 		pred = predicate.getRight();
 		pred.accept(rightVisitor);
-		// getDataFromVisitor(rightVisitor);
 		if (!getDataFromVisitor(rightVisitor)) {
 			return;
 		}
-		// smtFormula = smtFormula + "(" + operator +
-		// leftVisitor.getSmtFormula() + rightVisitor.getSmtFormula() + ")";
 		smtFormula.append("(" + operator + leftVisitor.getSmtFormula()
 				+ rightVisitor.getSmtFormula() + ")");
 	}
@@ -910,7 +978,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	public void visitLiteralPredicate(LiteralPredicate predicate) {
 		if (predicate.getTag() == Formula.BTRUE) {
 			// smtFormula = smtFormula + " True ";
-			smtFormula.append(" True ");
+				smtFormula.append(" True ");
 		} else {
 			// smtFormula = smtFormula + " False ";
 			smtFormula.append(" False ");
@@ -1008,12 +1076,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		// getDataFromVisitor(rightVisitor);
 		if (!getDataFromVisitor(rightVisitor)) {
 			return;
-		}
-		// if (operator.equals("in")
-		// && predicate.getLeft().getType().getBaseType() != null
-		// && predicate.getRight().getType().getBaseType() != null) {
-		// operator = "subseteq";
-		// }
+		}	
 		if (needsNotClause) {
 			smtFormula.append("(not(" + operator + " "
 					+ leftVisitor.getSmtFormula()

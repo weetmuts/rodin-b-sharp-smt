@@ -20,6 +20,22 @@ public class TypeEnvironment {
 	
 	private Predicate goal;
 	
+	public ArrayList<Predicate> getHypotheses() {
+		return hypotheses;
+	}
+
+	public void setHypotheses(ArrayList<Predicate> hypotheses) {
+		this.hypotheses = hypotheses;
+	}
+
+	public Predicate getGoal() {
+		return goal;
+	}
+
+	public void setGoal(Predicate goal) {
+		this.goal = goal;
+	}
+
 	private ArrayList<String> sorts = new ArrayList<String>();	
 
 	private Hashtable<String, String> funs = new Hashtable<String, String>();
@@ -188,13 +204,18 @@ public class TypeEnvironment {
 		} else if (atomicExpression.equals("BOOL")) {
 			return "Bool";
 		} else if (atomicExpression.equals("TRUE")) {
-			return "True";
+			return "true";
+			//return "True";
 		} else if (atomicExpression.equals("FALSE")) {
-			return "False";
+			//return "False";
+			return "false";
+			
 		} else if (atomicExpression.equals("\u2205")) {
 			return "emptyset";
 		}
 		return atomicExpression;
 	}
+
+	
 
 }

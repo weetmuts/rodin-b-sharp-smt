@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class RodinToSMTPredicateParser {
 	private long minimalEnumValue = 0;
 	private long minimalElemvalue = 0;
 	private ArrayList<Predicate> hypotheses;
-	private Predicate goal;
+	//private Predicate goal;
 	private String translatedPath;
 	private String nameOfThisLemma;
 	private ArrayList<String> macros = new ArrayList<String>();
@@ -98,6 +99,10 @@ public class RodinToSMTPredicateParser {
 	ArrayList<Pair<String, String>> notImplementedOperation = new ArrayList<Pair<String, String>>();
 	// String notImplementedOperation = "";
 	private boolean isNecessaryAllMacros = false;
+	//private Hashtable<String, String> funs;
+	//private Hashtable<String, String> preds;
+	//private ArrayList<String> sorts;
+//	private Hashtable<String, String> singleQuotVars;
 
 	public long getMinimalFiniteValue() {
 		return minimalFiniteValue;
@@ -129,14 +134,6 @@ public class RodinToSMTPredicateParser {
 
 	public void setHypothesis(ArrayList<Predicate> hypothesis) {
 		this.hypotheses = hypothesis;
-	}
-
-	public Predicate getGoal() {
-		return goal;
-	}
-
-	public void setGoal(Predicate goal) {
-		this.goal = goal;
 	}
 
 	public String getTranslatedPath() {
@@ -182,12 +179,29 @@ public class RodinToSMTPredicateParser {
 	public RodinToSMTPredicateParser(ArrayList<Predicate> hypotheses,
 			Predicate goal) throws TranslationException {
 		this.hypotheses = hypotheses;
-		this.goal = goal;
+		
+		//TODO Changes made by Vitor
+		//this.goal = goal;		
+		//this.typeEnvironment.setGoal(goal);
+		//END-TODO
+		
 		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
 		typeEnvironment.getTypeEnvironment();
 		parsePredicates();
 
 	}
+	
+	public RodinToSMTPredicateParser(ArrayList hypotheses, Predicate goal, String smtFileName)
+    throws TranslationException
+{
+    minimalFiniteValue = 0L;
+    minimalEnumValue = 0L;
+    minimalElemvalue = 0L;    
+    smtGoal = "";
+    isNecessaryAllMacros = false;
+    getTypeEnvironment();
+    parsePredicates();
+}
 
 	private void printLemmaOnFile() {
 		String benchmark = "(benchmark smtTesteComArvoreSintatica ";// nameOfThisLemma;
@@ -325,14 +339,10 @@ public class RodinToSMTPredicateParser {
 	}
 
 	private boolean getDataFromVisitor(SimpleSMTVisitor smv) {
-		// funs.putAll(smv.getFuns());
 		typeEnvironment.setFuns(smv.getFuns());
-		// sorts.addAll(smv.getSorts());
 		typeEnvironment.setSorts(smv.getSorts());
 		typeEnvironment.setPreds(smv.getPreds());
-		// assumptions.addAll(smv.getAssumptions());
 		assumptions = smv.getAssumptions();
-		// macros.addAll(smv.getMacros());
 		macros = smv.getMacros();
 		minimalElemvalue = smv.getMinimalElemvalue();
 		minimalEnumValue = smv.getMinimalEnumValue();
@@ -364,7 +374,12 @@ public class RodinToSMTPredicateParser {
 		}
 
 		smv1 = new SimpleSMTVisitor(this);
-		goal.accept(smv1);
+		
+		//TODO Changes to be made
+		//goal.accept(smv1);
+		typeEnvironment.getGoal().accept(smv1);
+		//END-TODO
+		
 		if (this.getDataFromVisitor(smv1)) {
 			smtGoal = smv1.getSmtFormula();
 			if (smv1.isNecessaryAllMacros()) {
@@ -401,15 +416,18 @@ public class RodinToSMTPredicateParser {
 
 		// Parse Goal
 		VisitorV1_2 visGoal = null;
-		if (this.goal != null) {
+		//if (this.goal != null) {
+		if (typeEnvironment.getGoal() != null) {	
+		
 			// get free identifier of the goal
-			FreeIdentifier[] tempTab = goal.getFreeIdentifiers();
+			FreeIdentifier[] tempTab = typeEnvironment.getGoal().getFreeIdentifiers();
 			ArrayList<String> fids = new ArrayList<String>();
 			for (int i = 0; i < tempTab.length; i++) {
 				fids.add(tempTab[i].getName());
 			}
 			visGoal = new VisitorV1_2(this.typeEnvironment, fids);
-			goal.accept(visGoal);
+			//goal.accept(visGoal);
+			typeEnvironment.getGoal().accept(visGoal);
 			String translatedGoal = visGoal.getSMTNode();
 			if (!translatedGoal.equals("")) {
 				smtGoal = translatedGoal;
