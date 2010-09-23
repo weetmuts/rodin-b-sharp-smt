@@ -245,7 +245,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			break;
 		case Formula.MAPSTO:
 			// TO CHANGE
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"pair", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"Pair", children, false));
 			break;
 		default:
 			assert false;

@@ -417,7 +417,12 @@ public abstract class SmtProversCall extends XProverCall {
 			
 			// Set up arguments
 			ArrayList<String> args = setSolverArgs();
-
+			
+			if (smtUiPreferences.getUsingPrepro()) {
+				// Launch preprocessing
+				smtTranslationPreprocessing(args);
+			}
+			
 			iFile = smtFile;
 
 			// prover with arguments

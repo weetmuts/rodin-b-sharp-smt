@@ -38,7 +38,7 @@ public class RodinToSMTPredicateParser {
 	private TypeEnvironment typeEnvironment = null;
 	
 	/* DEBUG BOOLEAN */
-	public static final boolean vitor = true;
+	public static final boolean vitor = false;
 	/*****************/
 	
 	public TypeEnvironment getTypeEnvironment() {
@@ -190,18 +190,6 @@ public class RodinToSMTPredicateParser {
 		parsePredicates();
 
 	}
-	
-	public RodinToSMTPredicateParser(ArrayList hypotheses, Predicate goal, String smtFileName)
-    throws TranslationException
-{
-    minimalFiniteValue = 0L;
-    minimalEnumValue = 0L;
-    minimalElemvalue = 0L;    
-    smtGoal = "";
-    isNecessaryAllMacros = false;
-    getTypeEnvironment();
-    parsePredicates();
-}
 
 	private void printLemmaOnFile() {
 		String benchmark = "(benchmark smtTesteComArvoreSintatica ";// nameOfThisLemma;
