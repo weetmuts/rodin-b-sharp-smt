@@ -1,0 +1,73 @@
+%% ------------------------------------------------------- %%
+%% Rodin SMT plugin example
+%% ------------------------------------------------------- %%
+\section{Rodin SMT plugin example}
+The RODIN plugin introduced in this document is still a prototype. For the moment, it can handle some basic arithmetic proof obligations but still needs to be improved to be much more efficient (TODO reference to Future Works). 
+Here is an overview of how the plugin works:
+
+\paragraph{Rodin preferences}
+To use the plugin, the user must set up SMT preferences by reaching the Windows/Preferences Menu of Rodin
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{preferences.PNG}
+\caption{Rodin preferences page} 
+\label{Fig: Rodin Preferences}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{preferences2.PNG}
+\caption{Rodin SMT preferences page} 
+\label{Fig: Rodin SMT Preferences}
+\end{figure}
+
+\paragraph{Solver preference}
+The user must provide info on solvers and additionnal ones such like if a preprocessing is used or not. Pushing the \textit{Create} button leads to the following window:
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{preferences3.PNG}
+\caption{Rodin SMT preferences page, new solver} 
+\label{Fig: New solver in SMT preferences}
+\end{figure}
+
+\paragraph{Solver preference creation}
+The user must provide following info:
+
+\begin{itemize}
+\item An Id,
+\item A path,
+\item Arguments used to call the solver,
+\item On which SMT-LIB version the solver will be used.   
+\end{itemize}
+
+\paragraph{Solver selection}
+The user must then select the solver that will be used:
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{preferences4.PNG}
+\caption{Rodin SMT preferences page, solver selection} 
+\label{Fig: Solver selection in SMT preferences}
+\end{figure}
+
+\paragraph{Solver launching}
+To launch the SMT solver on the selected Proof Obligation, the user must press the SMT button:
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{smt.PNG}
+\caption{Rodin SMT button} 
+\label{Fig: Launch SMT in Rodin}
+\end{figure}
+
+\paragraph{Solver result}
+If the SMT solver suceeded, the status will be updated in the proof tree:
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{smt2.PNG}
+\caption{Rodin SMT results} 
+\label{Fig: SMT results}
+\end{figure}
+
+
