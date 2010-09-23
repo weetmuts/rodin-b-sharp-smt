@@ -42,7 +42,7 @@ The objective of the task 7 is to integrate SMT solvers to the Rodin proving fra
 %% Introduction %%
 %% ----------------------------- %%
 \section{Introduction}
-The document will first...
+This document will first introduce RODIN and the Event-B platform in order to show how integration can be made with SMT solvers. Then we will expose the translation mechanism from an event-B expression to an SMT-Lib 1.2 and an SMT-Lib 2.0 expression. Benchmarks have been performed to compare solvers efficiency according to a sequent type, and a solver analysis will be introduced in this document.  
 
 \paragraph{}
 This integration raises several issues:
@@ -61,7 +61,7 @@ traces or certificates, as one purpose of such artefacts is to memorize this inf
 \include{rodin}
 \include{b2smt12}
 \include{b2smt20}
-\include{filtering}
+\include{pluginex}
 
 %% ----------------------------- %%
 %% Conclusion %%
@@ -72,7 +72,7 @@ traces or certificates, as one purpose of such artefacts is to memorize this inf
 The next steps planned are the following:
 \begin{itemize}
 \item Keep a link between hypotheses in Event-B format and those in SMT format. 
-Such improvement will give the possibility to memorize for example, hypotheses needed to carry through a Rodin proof obligation. If hypotheses changed, the proof obligation will not need to be done again, if hypotheses are not among the needed ones. 
+Such improvement will give the possibility to memorize for example, hypotheses needed to carry through a Rodin proof obligation. If an hypothesis changed, the proof obligation will not need to be done again, if the hypothesis is not among the needed ones. To achieve that, we will certainly have to use label on hypotheses introduced in SMT-Lib v2.0.
 \item Get back counterexamples from SMT solvers (supporting SMT-LIB v2.0) to use them in 
 Rodin.
 \item Recommend an SMT solver to user in accordance to Proof Obligation type. Performances 
@@ -83,6 +83,7 @@ which would be a simplification operation on FOL formulas. More precisely, there
 is no doubt that the $(0 >= 0) \wedge (0 <= x)$ formula can be easily simplified as 
 $0 <= x$. Such simplifications are not considered in this document, and are only 
 introduced here as topic of interest for further revisions.
+\item Perform benchmarks on solvers in order to classify solvers (supported theories, SMT-lib supported version, performance according to chosen theories,...)
 
 \end{itemize}
 

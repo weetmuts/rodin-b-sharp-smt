@@ -2,7 +2,7 @@
 %% SMT-LIB 1.2
 %% ------------------------------------------------------- %%
 \section{From Event-B to SMT-LIB 1.2}
-\subsection{From Event-B AST to SMT-LIB AST}
+\subsection{From Event-B AST to SMT-LIB v1.2 AST}
 The purpose of this section is to give the translation from the Event-B Abstract Syntax Tree (AST) to an SMT-LIB AST.
 The \texttt{org.eventb.core.ast} plug-in for the Rodin platform allows to manipulate Event-B mathematical formulas as trees of nodes. 
 
@@ -135,8 +135,6 @@ is used if $t$ is a function, and the latter if $t$ is a
 relation.
 \end{itemize}
 
-TODO. VERIFIER COMMENT C'EST IMPLEMENTE.
-
 \paragraph{Theories}
 The Ints theory, dedicated to integer numbers, and the Bools theory, dedicated to booleans, are the only applicable theories when considering mathematical  sequents based on the Event-B language. 
 
@@ -172,5 +170,4 @@ To implement the transformation from Event-B sequents to SMT-LIB benchmarks, and
 In order to simplify the processing sequence, we now rely on the translator provided by the Predicate Prover available in Rodin (see $trunk/RodinCore/org.eventb.pptrans$, among the sources\cite{SOURCES} of the Rodin platform). 
 Concerning arithmetics, we have continued from the prototype\cite{B2SMT09} implemented last year.
 
-TODO. Traitement des relations / fonctions. Voir ce qui était fait dans la doc commencée pour le proto l'annee derniere.
-
+NB: Relations and functions handling are not yet fully handled and will take part of the future work.
