@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="SMT Plug-in">
+  <topic label="Introduction" href="html/smt_plug_in.html#Introduction">
+  </topic>
+  <topic label="Usage" href="html/smt_plug_in.html#Usage">
+   <topic label="Solver preference creation" href="html/smt_plug_in.html#Solver_preference_creation">
+   </topic>
+   <topic label="Solver selection" href="html/smt_plug_in.html#Solver_selection">
+   </topic>
+   <topic label="Solver launching" href="html/smt_plug_in.html#Solver_launching">
+   </topic>
+   <topic label="Solver result" href="html/smt_plug_in.html#Solver_result">
+   </topic>
+  </topic>
+</toc>
