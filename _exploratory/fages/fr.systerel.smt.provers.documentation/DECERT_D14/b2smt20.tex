@@ -3,13 +3,16 @@
 %% ------------------------------------------------------- %%
 \section{SMT-LIB 2.0}
 \subsection{SMT-LIB 2.0 vs SMT-LIB 1.2}
-The steps engaged to set up Version 2.0 have consisted in setting up a concrete syntax simpler and leaner than that of the 1.2.
+The steps engaged to set up Version 2.0 have consisted in setting up a concrete syntax simpler and leaner than Version 1.2.
 The two major additions are the following:
 \begin{itemize}
 \item A mechanism that approximates parametric sorts and polymorphic function symbols in theory declarations.
-\item A command language to allow user to assert and retract formulas incrementally,
-to define new sort and function symbols, to check the satisfiability of the asserted
-formulas and query their found model, if any, or ask for an unsatisfiable core otherwise (TODO renvoi vers le paragraphe decrivant les commandes et réponses).
+\item A command language :
+\begin{itemize}
+\item to allow user to assert and retract formulas incrementally,
+\item to define new sort and function symbols
+\item to check the satisfiability of the asserted formulas and query their found model or unsatisfiable core.
+\end{itemize}
 \end{itemize}
 
 
@@ -29,7 +32,7 @@ The commands \textit{get-model} and \textit{get-proof} introduced in SMT-lib v2.
 The translation from the Event-B Abstract Syntax Tree (AST) to an SMT-LIB AST V2.0 is very similar to the one to SMT-LIB v1.2 and will not defined again(TODO refer to the previous AST 1.2).
 
 \subsection{From Event-B sequents to benchmarks}
-The SMT-LIB parser/checker version 3.0\cite{SMT-LIB} has been used to validate the format of the produced benchmarks.
+The SMT-LIB parser/checker version 3.0 (\url{http://www.cs.uiowa.edu/~astump/software/ocaml-smt2.zip}) has been used to validate the format of the produced benchmarks.
 
 \paragraph{Assertion}
 There is no longer \textbf{assumption} and \textbf{formula} to refer to hypotheses and goal of a sequent. Each hypothesis or goal can be mapped with a benchmark \textbf{assert}. 

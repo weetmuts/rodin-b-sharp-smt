@@ -159,8 +159,8 @@ For example, if the goal for a sequent is $0 < n + 1$, under the hypothesis $n \
 \subsection{Targeted SMT Solvers}
 The following SMT solvers, which support the SMT-LIB 1.2 format, have been used via the SMT plugin in the Rodin platform: 
 \begin{itemize}
-\item VeriT\cite{VERIT} (VeriT takes part of DECERT and provides the possibility to use an extended SMT-Lib format).
-\item Alt-Ergo\cite{ALTERGO} (Alt-Ergo takes part of DECERT and is known to have good results with arithmetics formulas).
+\item VeriT\cite{VERIT} (VeriT takes part of DECERT program and provides the possibility to use an extended SMT-Lib format).
+\item Alt-Ergo\cite{ALTERGO} (Alt-Ergo takes part of DECERT program and is known to have good results with arithmetics formulas).
 \item CVC3\cite{CVC3} (CVC3 si known to support many logics and is available easily for linux or windows platforms).
 \item Z3\cite{Z3} (Z3 is updated regularly and available on windows platforms).
 \end{itemize}
@@ -170,4 +170,4 @@ To implement the transformation from Event-B sequents to SMT-LIB benchmarks, and
 In order to simplify the processing sequence, we now rely on the translator provided by the Predicate Prover available in Rodin (see $trunk/RodinCore/org.eventb.pptrans$, among the sources\cite{SOURCES} of the Rodin platform). 
 Concerning arithmetics, we have continued from the prototype\cite{B2SMT09} implemented last year.
 
-NB: Relations and functions handling are not yet fully handled and will take part of the future work.
+NB: Relations and functions are not yet fully handled and will be considered in future works.
