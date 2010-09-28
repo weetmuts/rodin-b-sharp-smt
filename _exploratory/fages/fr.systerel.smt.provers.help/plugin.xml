@@ -5,12 +5,8 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="toc.xml">
-      </toc>
-      <toc
-            file="testToc.xml"
-            primary="true">
-      </toc>
+            file="html/smt_plug_in.xml"
+            primary="true"/>
    </extension>
 
 </plugin>
