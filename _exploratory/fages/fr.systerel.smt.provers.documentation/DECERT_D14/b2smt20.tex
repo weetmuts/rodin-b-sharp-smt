@@ -3,13 +3,13 @@
 %% ------------------------------------------------------- %%
 \section{SMT-LIB 2.0}
 \subsection{SMT-LIB 2.0 vs SMT-LIB 1.2}
-The steps engaged to set up Version 2.0 have consisted in setting up a concrete syntax simpler and leaner than Version 1.2.
+The steps engaged to set up Version 2.0 have consisted in setting up a concrete syntax which is simpler and leaner than Version 1.2.
 The two major additions are the following:
 \begin{itemize}
 \item A mechanism that approximates parametric sorts and polymorphic function symbols in theory declarations.
 \item A command language :
 \begin{itemize}
-\item to allow user to assert and retract formulas incrementally,
+\item to allow user asserting and retracting formulas incrementally,
 \item to define new sort and function symbols
 \item to check the satisfiability of the asserted formulas and query their found model or unsatisfiable core.
 \end{itemize}
@@ -29,7 +29,7 @@ The commands \textit{get-model} and \textit{get-proof} introduced in SMT-lib v2.
 \section{From Event-B to SMT-LIB 2.0}
 
 \subsection{From Event-B AST to SMT-LIB v2.0 AST}
-The translation from the Event-B Abstract Syntax Tree (AST) to an SMT-LIB AST V2.0 is very similar to the one to SMT-LIB v1.2 and will not defined again(TODO refer to the previous AST 1.2).
+The translation from the Event-B Abstract Syntax Tree (AST) to an SMT-LIB AST V2.0 is very similar to the one to SMT-LIB v1.2 and will not defined again.
 
 \subsection{From Event-B sequents to benchmarks}
 The SMT-LIB parser/checker version 3.0 (\url{http://www.cs.uiowa.edu/~astump/software/ocaml-smt2.zip}) has been used to validate the format of the produced benchmarks.
@@ -75,8 +75,8 @@ For example, if the goal for a sequent is $0 < n + 1$, under the hypothesis $n \
 \begin{align*}           
 &(set-logic~QF\_LIA)                     \\
 &(declare-fun~n~()~Int)                 \\
-&(assert~(>~n~0))						\\
-&(assert~(>~(+~n~1)~0))					\\
+&(assert~(>=~n~0))						\\
+&(assert~(not (< 0~(+~n~1))))			\\
 &(check-sat)
 \end{align*}
 
@@ -97,4 +97,4 @@ For the moment, not every SMT solver supports SMT-Lib 2.0. During the SMT-COMP 2
 
 \end{itemize}
 
-Those solvers parse SMT-Lib 2.0 but not do not support in general unsat core or model generation yet. Only Z3 offers an unsatisfiable core generation via the smt command \textit{(get-unsat-core)}.
+These solvers parse SMT-Lib 2.0 but not do not support in general unsat core or model generation yet. Only Z3 offers an unsatisfiable core generation via the smt command \textit{(get-unsat-core)}.

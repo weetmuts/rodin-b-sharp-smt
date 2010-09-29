@@ -30,9 +30,9 @@
 %% ----------------------------- %%
 \begin{abstract}
 
-The Rodin platform \cite{RODIN} mainly supports two kind of activities: modeling with the event-B notation and discharging the sequents generated from the models. 
-Some sequents are typical mathematical lemmas, which are often encountered in practice, but are not yet well supported by proving tools such as those embedded in the Rodin platform.
-The objective of the task 7 is to integrate SMT solvers to the Rodin proving framework to enhance its proving capability, especially in the field of arithmetics.
+The Rodin platform \cite{RODIN} mainly supports two kinds of activities: modeling with the event-B notation and discharging the proof obligations generated from the models. 
+Some proof obligations are typical mathematical lemmas, which are often encountered in practice, but are not yet well supported by proving tools such as those embedded in the Rodin platform.
+The objective of task 7 is to integrate SMT solvers to the Rodin proving framework to enhance its proving capability, especially in the field of arithmetics.
 
 \end{abstract}
 
@@ -69,26 +69,18 @@ traces or certificates, as one purpose of such artefacts is to memorize this inf
 \section{Conclusion}
 
 \paragraph{Future work.} 
-The next steps planned are the following:
+The next planned steps are the following:
 \begin{itemize}
-\item Keep a link between hypotheses in Event-B format and those in SMT format. 
-Such improvement will give the possibility to memorize for example, hypotheses needed to carry through a Rodin proof obligation. If an hypothesis changed, the proof obligation will not need to be done again, if the hypothesis is not among the needed ones. To achieve that, we will certainly have to use label on hypotheses introduced in SMT-Lib v2.0.
-\item Get back counterexamples from SMT solvers (supporting SMT-LIB v2.0) to use them in 
-Rodin.
+\item Keep a link between hypotheses in Event-B format and those in SMT format, they will be used to retrofit unsat core into Rodin (only with solvers supporting SMT-LIB v2.0). If an hypothesis changed, the proof obligation will not need to be done again, if the hypothesis is not among the needed ones. To achieve that, we will certainly have to use label on hypotheses introduced in SMT-Lib v2.0.
 \item Recommend an SMT solver to user in accordance to Proof Obligation type. Performances 
 between solvers differ from one to another depending on the considered logic. It would be interesting to 
 guide the user on a specific solver after a proof obligation analysis.  
-\item Introduce an additional step before the final translation from FOL to SMT-LIB, 
-which would be a simplification operation on FOL formulas. More precisely, there 
-is no doubt that the $(0 >= 0) \wedge (0 <= x)$ formula can be easily simplified as 
-$0 <= x$. Such simplifications are not considered in this document, and are only 
-introduced here as topic of interest for further revisions.
 \item Perform benchmarks on solvers in order to classify solvers (supported theories, SMT-lib supported version, performance according to chosen theories,...)
 
 \end{itemize}
 
 \paragraph{Acknowledgements.} 
-The author thanks David D\'eharbe and V\'itor Alc\^antara de Almeida (Universidade Federal do Rio Grande do Norte, Natal, RN, Brazil), whose work on integrating SMT solvers in Rodin \cite{RODINSMT10} has provided a solid basis and has largely contributed to the contents of this deliverable.
+The author thanks David D\'eharbe and V\'itor Alc\^antara de Almeida (Universidade Federal do Rio Grande do Norte, Natal, RN, Brazil), who has contributed to the contents of this deliverable.
 
 %% ----------------------------- %%
 %% Index and references

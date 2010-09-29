@@ -22,22 +22,22 @@ The translation from a SET formula to a FOL formula is defined in Table \ref{SET
  \hline
  $x \in E$ & $E_x$ \\ 
  $x \notin E$ & $\neg E_x$ \\
- $E \subseteq F$ & $\forall{x}.(E_x \rightarrow F_x)$ \\ 
+ $E \subseteq F$ & $\forall{x}.(E_x \Rightarrow F_x)$ \\ 
  $E \nsubseteq F$ & $\exists{x}.(E_x \wedge \neg F_x)$ \\ 
- $E \subset F$ & $\forall{x}.(E_x \rightarrow F_x) \wedge \exists{x}.(\neg E_x \wedge F_x)$ \\ 
- $E \not\subset F$ & $\forall{x}.(F_x \rightarrow E_x) \wedge \exists{x}.(\neg F_x \wedge E_x)$ \\ 
- $E = F$ & $\forall{x}.(E_x \leftrightarrow F_x)$ \\ 
+ $E \subset F$ & $\forall{x}.(E_x \Rightarrow F_x) \wedge \exists{x}.(\neg E_x \wedge F_x)$ \\ 
+ $E \not\subset F$ & $\forall{x}.(F_x \Rightarrow E_x) \wedge \exists{x}.(\neg F_x \wedge E_x)$ \\ 
+ $E = F$ & $\forall{x}.(E_x \Longleftrightarrow F_x)$ \\ 
  $E \neq F$ & $\exists{x}.(E_x \wedge \neg F_x) \vee \exists{x}.(F_x \wedge \neg E_x)$ \\ 
- $x \in E \wedge F$ & $E_x \wedge F_x$ \\ 
- $x \in E \vee F$ & $E_x \vee F_x$ \\ 
- $x \in E \setminus F$ & $E_x \wedge \not F_x$ \\
+ $x \in E \cap F$ & $E_x \wedge F_x$ \\ 
+ $x \in E \cup F$ & $E_x \vee F_x$ \\ 
+ $x \in E \setminus F$ & $E_x \wedge \neg F_x$ \\
  $x \in \{x_1, ..., x_n\}$ & $x = x_1 \vee ... \vee x = x_n$ \\
  $x \in \varnothing$ & $\perp$ \\
  $x \in x_1 .. x_n$ & $(x \geqslant x_1) \wedge (x \leqslant x_n)$ \\
  $x \in \nat$ & $x \geqslant 0$ \\
  $x \in \natn$ & $x > 0$ \\
- $x = \min(E)$ & $\forall{y}.(E_y \rightarrow (y \geqslant x))$ \\
- $x = \max(E)$ & $\forall{y}.(E_y \rightarrow (y \leqslant x))$ \\
+ $x = \min(E)$ & $ E_x \wedge \forall{y}.(E_y \Rightarrow (y \geqslant x))$ \\
+ $x = \max(E)$ & $ E_x \wedge \forall{y}.(E_y \Rightarrow (y \leqslant x))$ \\
  \hline
 \end{tabular} 
 \end{center}
@@ -54,11 +54,11 @@ It is possible to derivate a translation from Event-B predicates to SMT-LIB form
 \begin{center}
 \begin{tabular}{ccc}
  \textbf{Event-B predicate} & \textbf{$\rightsquigarrow$} & \textbf{SMT-LIB formula} \\ 
- $\True$ & & $\True$ \\
- $\False$ & & $\False$ \\
+ $\top$ & & $\True$ \\
+ $\bot$ & & $\False$ \\
  $P \land Q$ & & $(and~P~Q)$ \\
  $P \lor Q$ & & $(or~P~Q)$ \\
- $\lnot(P)$ & & $(not~P)$ \\
+ $\lnot P$ & & $(not~P)$ \\
  $bool(P)$ & & $(ite~P~\True~\False)$ \\
  $P \limp Q$ & & $(implies~P~Q)$ \\
  $P \leqv Q$ & & $(iff~P~Q)$ \\
@@ -77,7 +77,6 @@ It is possible to derivate a translation from Event-B predicates to SMT-LIB form
 \end{table}
 
 In the same manner, the Event-B expressions can be transformed in SMT-LIB format (see Table \ref{BEXPR2SMTLIB}).
-Let $F$ be a formula in Event-B language and $\breve{F}$ be the corresponding SMT-LIB formula.
 
 \begin{table}[htbp]
 \begin{center}
@@ -87,7 +86,7 @@ Let $F$ be a formula in Event-B language and $\breve{F}$ be the corresponding SM
  $x - y$ & & $(-~x~y)$ \\
  $-x$ & & $\sim x$ \\
  $x * y$ & & $(*~x~y)$ \\
- $x / y$ & & $(/~x~y)$ \\
+ $x \div y$ & & $(/~x~y)$ \\
  $x \bmod y$ & & $(\%~x~y)$ \\
 \end{tabular} 
 \end{center}
@@ -96,10 +95,10 @@ Let $F$ be a formula in Event-B language and $\breve{F}$ be the corresponding SM
 \end{table}
 
 \paragraph{Example}
-How to translate the following formula $0 \in 0 .. x$, where $x$ is a natural number (i.e.\ $x >= 0$)? 
+How to translate the following formula $a \in b .. c$? 
 The first step is to translate it as a FOL formula: 
-$(0 >= 0) \wedge (0 <= x)$. 
-In Ints theory, where $0$ is defined as being an integer and $>=$ and $<=$ are defined as predicates of arity 2 on integers, it is possible to write the corresponding SMT-LIB formula: $(and~(>=~0~0)~(<=~0~x))$. 
+$(a >= b) \wedge (a <= c)$. 
+In Ints theory, where $a$ is defined as being an integer and $>=$ and $<=$ are defined as predicates of arity 2 on integers, it is possible to write the corresponding SMT-LIB formula: $(and~(>=~a~b)~(<=~a~c))$. 
 
 \subsection{From Event-B sequents to benchmarks}
 The SMT-LIB parser/checker version 3.0\cite{SMT-LIB} has been used to validate the format of the produced benchmarks.
@@ -115,7 +114,7 @@ mathematical language, the typing environment is represented
 with the  $:extrafuns~((t~Int))$ SMT-LIB declaration.
 \item If $T$ is the $\Bool$ predefined type, it is
 represented with the $:extrafuns~((t~Bool))$ declaration.
-\item If $T$ is a user-defined basic type, it is represented
+\item If $T$ is a carrier set, it is represented
 with the $:extrafuns~((t~T))$ declaration.
 \item If $T$ is a cartesian product of two basic types, i.e.\
 $T = T_1~\cprod~T_2$, where $T_1$ and $T_2$ are basic types,
@@ -141,7 +140,7 @@ The Ints theory, dedicated to integer numbers, and the Bools theory, dedicated t
 \paragraph{Logics}
 Some sublogics of the main SMT-LIB logic (first-order logic with equality) are listed on the dedicated web page\cite{SMTLIB}.
 
-Thus, QF\_LIA is for example the logic for unquantified integer linear arithmetic (i.e.\ boolean combinations of inequations between linear polynomials over integer variables). It refers to the Ints theory.
+Thus, QF\_LIA is for example the logic for quantifier-free linear integer arithmetic (i.e.\ boolean combinations of inequations between linear polynomials over integer variables). It refers to the Ints theory.
 
 The linear\_order\_int and linear\_arith theories described in the taxonomy\cite{TAXO09} are to be matched to this logic. 
 
@@ -170,4 +169,4 @@ To implement the transformation from Event-B sequents to SMT-LIB benchmarks, and
 In order to simplify the processing sequence, we now rely on the translator provided by the Predicate Prover available in Rodin (see $trunk/RodinCore/org.eventb.pptrans$, among the sources\cite{SOURCES} of the Rodin platform). 
 Concerning arithmetics, we have continued from the prototype\cite{B2SMT09} implemented last year.
 
-NB: Relations and functions are not yet fully handled and will be considered in future works.
+NB: Relations and functions are not yet fully handled and will be tackled in year 3.
