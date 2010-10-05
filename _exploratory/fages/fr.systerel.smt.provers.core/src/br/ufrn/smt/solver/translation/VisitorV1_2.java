@@ -181,18 +181,18 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeBoolean(SMTNode.FALSE));
 			break;
 		case Formula.INTEGER:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Int", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Int", null, false));
 			break;
 		case Formula.NATURAL:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Nat", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Nat", null, false));
 			break;
 		case Formula.NATURAL1:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"Nat1", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Nat1", null, false));
 			break;
 		case Formula.BOOL:
 			break;
 		case Formula.EMPTYSET:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO,"emptyset", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"emptyset", null, false));
 			break;
 		default:
 			assert false;
