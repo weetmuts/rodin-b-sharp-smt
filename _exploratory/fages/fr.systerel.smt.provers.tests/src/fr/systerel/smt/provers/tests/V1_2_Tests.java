@@ -67,6 +67,10 @@ public class V1_2_Tests extends AbstractTranslationTests {
 	static ITypeEnvironment br_te = mTypeEnvironment(
 			mList("s", "t", "v", "w", "p", "q", "e1", "e2", "e3"), 
 			mList(POW(S), POW(S), POW(S), POW(S), REL(S, T), REL(S, T), S, S, S));
+
+	public void testTest() {
+		doTest("");
+	}
 	
 	/**
 	 *  Tests for BR1
