@@ -16,7 +16,7 @@ import br.ufrn.smt.solver.translation.VisitorV1_2;
 import br.ufrn.smt.solver.translation.TypeEnvironment;
 
 
-public class V1_2_Tests extends AbstractTranslationTests {
+public class V1_2_Tests extends AbstractTranslationTests { 
 
 	protected static final Type S = ff.makeGivenType("S");
 	protected static final Type T = ff.makeGivenType("T");
@@ -67,10 +67,6 @@ public class V1_2_Tests extends AbstractTranslationTests {
 	static ITypeEnvironment br_te = mTypeEnvironment(
 			mList("s", "t", "v", "w", "p", "q", "e1", "e2", "e3"), 
 			mList(POW(S), POW(S), POW(S), POW(S), REL(S, T), REL(S, T), S, S, S));
-
-	public void testTest() {
-		doTest("");
-	}
 	
 	/**
 	 *  Tests for BR1
