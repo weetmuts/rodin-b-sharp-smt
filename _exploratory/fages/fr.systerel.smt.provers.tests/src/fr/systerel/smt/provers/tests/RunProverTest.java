@@ -1,29 +1,111 @@
 package fr.systerel.smt.provers.tests;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
+import static org.eventb.core.ast.tests.FastFactory.mList;
+import static org.eventb.core.ast.tests.FastFactory.mTypeEnvironment;
+
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eventb.core.ast.AssociativeExpression;
-import org.eventb.core.ast.Expression;
-import org.eventb.core.ast.Formula;
-import org.eventb.core.ast.FormulaFactory;
-import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.IParseResult;
-import org.eventb.core.ast.LanguageVersion;
+import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.junit.Test;
 
+import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProversCall;
-import br.ufrn.smt.solver.preferences.SolverDetail;
-import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.*;
 
-public class RunProverTest {
+
+public class RunProverTest extends AbstractTranslationTests{
+	
+	protected static final Type S = ff.makeGivenType("S");
+	protected static final Type T = ff.makeGivenType("T");
+	protected static final Type U = ff.makeGivenType("U");
+	protected static final Type V = ff.makeGivenType("V");
+	protected static final Type X = ff.makeGivenType("X");
+	protected static final Type Y = ff.makeGivenType("Y");
+	protected static final ITypeEnvironment defaultTe;
+	static {
+		defaultTe = ff.makeTypeEnvironment();
+		defaultTe.addGivenSet("S");
+		defaultTe.addGivenSet("T");
+		defaultTe.addGivenSet("U");
+		defaultTe.addGivenSet("V");
+	}
+	
+	static ITypeEnvironment arith_te = mTypeEnvironment(
+			mList("x", "y", "z", "n" ), 
+			mList(INT, INT, INT, INT));
+	
+	/*private static void doTest(String input) {
+		doTest(input, defaultTe);
+	}*/
+
+	private static void doTest(List<String> inputHyps, String inputGoal,  ITypeEnvironment te) {	
+		List<Predicate> hypotheses = new ArrayList<Predicate>();
+		
+		for (String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, te));
+		}
+		
+		Predicate goal = parse(inputGoal, te);
+		
+		doTest(hypotheses,goal);
+	}
+	
+	private static void doTest(List<Predicate> hyp, Predicate goal) {
+		// Type check goal and hypotheses
+		assertTypeChecked(goal);
+		for (Predicate predicate : hyp) {
+			assertTypeChecked(predicate);
+		}
+		
+		// Create an instance of SmtProversCall
+		SmtProversCall smtProversCall = new SmtProversCall(hyp, goal,
+				new NullProofMonitor(), "SMT") {
+
+			@Override
+			public String displayMessage() {
+				return "SMT";
+			}
+
+			@Override
+			protected void printInputFile() throws IOException {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			protected String[] proverCommand() {
+				return null;
+			}
+
+			@Override
+			protected String[] parserCommand() {
+				return null;
+			}
+
+			@Override
+			protected String successString() {
+				return "is valid";
+			}
+		};
+
+		try {
+			smtProversCall.smtTranslationSolverCall();
+		} catch (TranslationException t) {
+			System.out.println(t.getMessage());
+			return;
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return;
+		}
+	}
+	
 
 	private static class NullProofMonitor implements IProofMonitor {
 
@@ -41,25 +123,6 @@ public class RunProverTest {
 
 	}
 
-	private class SequentTest {
-
-		List<Predicate> hypotheses;
-
-		Predicate goal;
-
-		IProofMonitor pm;
-
-		public SequentTest(List<Predicate> hypotheses, Predicate goal,
-				IProofMonitor pm) {
-			this.hypotheses = hypotheses;
-			this.goal = goal;
-			this.pm = pm;
-		}
-	}
-
-	private static <T> T[] list(T... objs) {
-		return objs;
-	}
 
 	public static final String VERIT_PATH = "C:\\Utilisateurs\\fages\\Projets\\C444_Decert\\solver\\exe\\veriT_200907.exe";
 
@@ -67,35 +130,7 @@ public class RunProverTest {
 
 	public static final String Z3_PATH = "C:\\Program Files\\Microsoft Research\\Z3-2.10\\bin\\z3.exe";
 
-	private SequentTest CreateSimpleSequent() {
-
-		// Set up hypotheses and goal
-		FormulaFactory ff = FormulaFactory.getDefault();
-		IParseResult result = ff.parseType("Int", LanguageVersion.V2);
-		final FreeIdentifier n = ff.makeFreeIdentifier("n", null,
-				result.getParsedType());
-		final Expression one = ff.makeIntegerLiteral(BigInteger.ONE, null);
-
-		List<Predicate> hypotheses = new ArrayList<Predicate>();
-		AssociativeExpression exp = ff.makeAssociativeExpression(Formula.PLUS,
-				list(n, one), null);
-
-		// Predicate n in NATURAL1
-		Predicate pred1 = ff.makeRelationalPredicate(Predicate.IN, n,
-				ff.makeAtomicExpression(Formula.NATURAL1, null), null);
-		// Predicate n+1 in NATURAL1
-		Predicate goal = ff.makeRelationalPredicate(Predicate.IN, exp,
-				ff.makeAtomicExpression(Formula.NATURAL1, null), null);
-
-		hypotheses.add(pred1);
-
-		IProofMonitor pm = new NullProofMonitor();
-
-		SequentTest seq = new SequentTest(hypotheses, goal, pm);
-
-		return seq;
-	}
-
+	
 	private void setPreferencesForVeriTTest() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
@@ -139,147 +174,43 @@ public class RunProverTest {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
 		
-		// Create a Simple sequent
-		SequentTest seq = CreateSimpleSequent();
+		List<String> hyps = new ArrayList<String>();
+		hyps.add("x < y");
+		hyps.add("y < z");
 		
-		// Create an instance of SmtProversCall
-		SmtProversCall smtProversCall = new SmtProversCall(seq.hypotheses, seq.goal,
-				seq.pm, "SMT") {
-
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-
-			@Override
-			protected void printInputFile() throws IOException {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			protected String[] proverCommand() {
-				return null;
-			}
-
-			@Override
-			protected String[] parserCommand() {
-				return null;
-			}
-
-			@Override
-			protected String successString() {
-				return "is valid";
-			}
-		};
-
-		try {
-			smtProversCall.smtTranslationSolverCall();
-		} catch (TranslationException t) {
-			System.out.println(t.getMessage());
-			return;
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
+		// perform test
+		doTest(hyps, "x < z",arith_te);
+		
 	}
 	
 	@Test
 	public void testSolverCallWithCvc3() {
 		
-		// Set preferences to test with CVC3
+		// Set preferences to test with VeriT
 		setPreferencesForCvc3Test();
 		
-		// Create a Simple sequent
-		SequentTest seq = CreateSimpleSequent();
+		List<String> hyps = new ArrayList<String>();
+		hyps.add("x < y");
+		hyps.add("y < z");
 		
-		// Create an instance of SmtProversCall
-		SmtProversCall smtProversCall = new SmtProversCall(seq.hypotheses, seq.goal,
-				seq.pm, "SMT") {
-
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-
-			@Override
-			protected void printInputFile() throws IOException {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			protected String[] proverCommand() {
-				return null;
-			}
-
-			@Override
-			protected String[] parserCommand() {
-				return null;
-			}
-
-			@Override
-			protected String successString() {
-				return "is valid";
-			}
-		};
-
-		try {
-			smtProversCall.smtTranslationSolverCall();
-		} catch (TranslationException t) {
-			System.out.println(t.getMessage());
-			return;
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
+		// perform test
+		doTest(hyps, "x < z",arith_te);
+		
 	}
-
+	
 	@Test
 	public void testSolverCallWithZ3() {
 		
-		// Set preferences to test with Z3
+		// Set preferences to test with VeriT
 		setPreferencesForZ3Test();
 		
-		// Create a Simple sequent
-		SequentTest seq = CreateSimpleSequent();
+		List<String> hyps = new ArrayList<String>();
+		hyps.add("x < y");
+		hyps.add("y < z");
 		
-		// Create an instance of SmtProversCall
-		SmtProversCall smtProversCall = new SmtProversCall(seq.hypotheses, seq.goal,
-				seq.pm, "SMT") {
-
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-
-			@Override
-			protected void printInputFile() throws IOException {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			protected String[] proverCommand() {
-				return null;
-			}
-
-			@Override
-			protected String[] parserCommand() {
-				return null;
-			}
-
-			@Override
-			protected String successString() {
-				return "is valid";
-			}
-		};
-
-		try {
-			smtProversCall.smtTranslationSolverCall();
-		} catch (TranslationException t) {
-			System.out.println(t.getMessage());
-			return;
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
+		// perform test
+		doTest(hyps, "x < z",arith_te);
+		
 	}
+	
 }
