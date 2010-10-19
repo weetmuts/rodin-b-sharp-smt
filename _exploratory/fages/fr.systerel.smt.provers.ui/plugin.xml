@@ -4,22 +4,22 @@
    <extension
          point="org.eventb.ui.proofTactics">
       <dropdown
-            id="fr.systerel.smt.provers.ui.dropdown1"
-            name="name"
-            priority="fr.systerel.smt.provers.ui.dropdown1"
+            id="fr.systerel.smt.provers.ui.dropdown"
+            name="%dropdown.name"
+            priority="fr.systerel.smt.provers.ui.dropdown"
             toolbar="org.eventb.ui.sequentToolbar">
       </dropdown>
       <tactic
-            dropdown="fr.systerel.smt.provers.ui.dropdown1"
+            dropdown="fr.systerel.smt.provers.ui.dropdown"
             icon="icons/SMT.GIF"
-            id="fr.systerel.smt.provers.ui.tactic2"
+            id="fr.systerel.smt.provers.ui.tactic"
             interrupt="true"
-            name="name"
-            priority="fr.systerel.smt.provers.ui.tactic2"
+            name="%tactic.name"
+            priority="fr.systerel.smt.provers.ui.tactic"
             skipPostTactic="false"
             tacticProvider="fr.systerel.smt.provers.internal.ui.SMT"
             target="global"
-            tooltip="SMT">
+            tooltip="%tactic.tooltip">
       </tactic>
    </extension>
 

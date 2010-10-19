@@ -36,6 +36,7 @@ public class SMT implements ITacticProvider {
 		
 	} 
 	
+	@Override
 	public List<ITacticApplication> getPossibleApplications(
 			IProofTreeNode node, Predicate hyp, String globalInput) {
 		if (node != null && node.isOpen()) {
