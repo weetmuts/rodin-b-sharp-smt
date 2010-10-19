@@ -10,7 +10,6 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -26,7 +25,6 @@ import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
@@ -117,6 +115,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		return nodes.toArray(new SMTFormula[nodes.size()]);
 	}
 
+	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
 		SMTTerm[] children = toTermArray(convert(expression.getChildren()));
 		switch (expression.getTag()) {
@@ -132,6 +131,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitAssociativePredicate(AssociativePredicate predicate) {
 		SMTFormula[] children = toFormulaArray(convert(predicate.getChildren()));
 		switch (predicate.getTag()) {
@@ -147,6 +147,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
@@ -163,18 +164,22 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBinaryExpression(BinaryExpression expression) {
 		SMTTerm[] children = toTermArray(convert(expression.getLeft(),
 				expression.getRight()));
@@ -194,6 +199,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		SMTFormula[] children = toFormulaArray(convert(predicate.getLeft(),
 				predicate.getRight()));
@@ -210,6 +216,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBoolExpression(BoolExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
@@ -223,22 +230,27 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		assert false;
 	}
 
+	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
 		assert false;
 	}
 
+	@Override
 	public void visitFreeIdentifier(FreeIdentifier expression) {
 		stack.push(sf.makeIdentifier(expression.getName()));
 	}
 
+	@Override
 	public void visitIntegerLiteral(IntegerLiteral expression) {
 		stack.push(sf.makeNumeral(expression.getValue()));
 	}
 
+	@Override
 	public void visitLiteralPredicate(LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
@@ -253,14 +265,17 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		assert false;
 	}
 
+	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		assert false;
 	}
 
+	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
 		SMTTerm[] children = null;
 		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
@@ -286,14 +301,17 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitSetExtension(SetExtension expression) {
 		// TODO
 	}
 
+	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
 		assert false;
 	}
 
+	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
@@ -306,6 +324,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitUnaryPredicate(UnaryPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.NOT:
@@ -318,14 +337,17 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		assert false;
 	}
 	
+	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		// Do nothing.
 	}
 	
+	@Override
 	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
 		// Do nothing.
 	}

@@ -109,7 +109,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	//TODO: New change made by Vitor
 	private String getBoundVarFromDeBrujinIndex(int index)
 	{
-		return (String)indexesOfboundIdentifiers.get(indexesOfboundIdentifiers.size() - (1 + index));
+		return indexesOfboundIdentifiers.get(indexesOfboundIdentifiers.size() - (1 + index));
 	}
 	//END-TOJDO
 	
@@ -237,14 +237,14 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
         minimalFiniteValue = 0L;
         minimalEnumValue = 0L;
         minimalElemvalue = 0L;
-        isNecessaryInterrogation = new ArrayList();
-        funs = new Hashtable();
-        preds = new Hashtable();
-        singleQuotVars = new Hashtable();
-        sorts = new ArrayList();
-        assumptions = new ArrayList();
-        macros = new ArrayList();
-        indexesOfboundIdentifiers = new ArrayList();
+        isNecessaryInterrogation = new ArrayList<String>();
+        funs = new Hashtable<String, String>();
+        preds = new Hashtable<String, String>();
+        singleQuotVars = new Hashtable<String, String>();
+        sorts = new ArrayList<String>();
+        assumptions = new ArrayList<String>();
+        macros = new ArrayList<String>();
+        indexesOfboundIdentifiers = new ArrayList<String>();
         smtFormula = new StringBuffer();
         isNecessaryAllMacros = false;
         notImplementedOperation = "";
@@ -283,6 +283,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		return sb.toString();
 	}
 
+	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
 		FreeIdentifier[] identifiers = assignment.getAssignedIdentifiers();
 
@@ -338,6 +339,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(")");
 	}
 
+	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
 		
 		FreeIdentifier[] identifiers = assignment.getAssignedIdentifiers();
@@ -371,6 +373,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(smv.getSmtFormula() + ")");
 	}
 
+	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(lambda");
@@ -421,6 +424,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		return name;
 	}
 
+	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		String subVar = this.singleQuotVars
 				.get(boundIdentDecl.getName().trim());
@@ -438,6 +442,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 						.getType().toString()) + ")");
 	}
 
+	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
 		int operatorTag = expression.getTag();
 		String operator = "";
@@ -499,6 +504,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	}
 
+	@Override
 	public void visitAtomicExpression(AtomicExpression expression) {
 		int vTag = expression.getTag();
 		if (vTag == Formula.INTEGER) {
@@ -555,6 +561,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	}
 
+	@Override
 	public void visitBinaryExpression(BinaryExpression expression) {
 		String operator = "";
 		int vTag = expression.getTag();
@@ -668,16 +675,19 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	}
 
+	@Override
 	public void visitBoolExpression(BoolExpression expression) {
 		// smtFormula = smtFormula + " Bool ";
 		smtFormula.append(" Bool ");
 	}
 
+	@Override
 	public void visitIntegerLiteral(IntegerLiteral expression) {
 		// smtFormula = smtFormula + " " + expression.getValue() + " ";
 		smtFormula.append(" " + expression.getValue() + " ");
 	}
 
+	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		if (expression.getTag() == Formula.QUNION) {
 			notImplementedOperation = "n-ary union";
@@ -692,6 +702,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitSetExtension(SetExtension expression) {
 		StringBuffer setBuffer = new StringBuffer();
 		Pair<String, Long> p = getValidName("enum_", minimalEnumValue);
@@ -746,10 +757,10 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 			if (expression.getMembers()[i].getTag() == Formula.MAPSTO) {
 				
 				//TODO: Changes made by Vitor
-				String var1 = (String)singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[0].getName());
+				String var1 = singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[0].getName());
                 if(var1 == null)
                     var1 = expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[0].getName();
-                String var2 = (String)singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[1].getName());
+                String var2 = singleQuotVars.get(expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[1].getName());
                 if(var2 == null)
                     var2 = expression.getMembers()[i].getSyntacticallyFreeIdentifiers()[1].getName();
                 //END-TODO
@@ -795,7 +806,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 	                    var1 = getBoundVarFromDeBrujinIndex(bi.getBoundIndex());
 	                } else
 	                {
-	                    var1 = (String)singleQuotVars.get(expression.getMembers()[i].toString());
+	                    var1 = singleQuotVars.get(expression.getMembers()[i].toString());
 	                    if(var1 == null)
 	                        var1 = expression.getMembers()[i].toString();
 	                }
@@ -809,6 +820,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(" " + nameOfSet + " ");
 	}
 
+	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
 		String operator = "";
 		if (expression.getTag() == Formula.POW) {
@@ -824,7 +836,6 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		} else if (expression.getTag() == Formula.KINTER) {
 			notImplementedOperation = "The translation of operator KINTER in "
 					+ expression.toString() + " is not implemented yet";
-			;
 		} else if (expression.getTag() == Formula.KDOM) {
 			operator = "domain";
 			// isNecessaryAllMacros = true;
@@ -884,6 +895,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		this.indexesOfboundIdentifiers = indexesOfboundIdentifiers;
 	}
 
+	@Override
 	public void visitBoundIdentifier(BoundIdentifier identifierExpression) {
 		// smtFormula = smtFormula + " " + identifierExpression.toString() +
 		// " ";
@@ -895,6 +907,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 				+ " ");
 	}
 
+	@Override
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
 		String subVar = this.singleQuotVars.get(identifierExpression.getName()
 				.trim());
@@ -909,6 +922,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(" " + subVar + " ");
 	}
 
+	@Override
 	public void visitAssociativePredicate(AssociativePredicate predicate) {
 		String operator = "";
 		if (predicate.getTag() == Formula.LAND) {
@@ -948,6 +962,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(sb.toString());
 	}
 
+	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		String operator = "";
 		if (predicate.getTag() == Formula.LEQV) {
@@ -975,6 +990,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 				+ rightVisitor.getSmtFormula() + ")");
 	}
 
+	@Override
 	public void visitLiteralPredicate(LiteralPredicate predicate) {
 		if (predicate.getTag() == Formula.BTRUE) {
 			// smtFormula = smtFormula + " True ";
@@ -985,11 +1001,13 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		notImplementedOperation = "Translation of multiple predicates like "
 				+ predicate.toString() + " was not implemented yet";
 	}
 
+	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		String operator = "";
 		if (predicate.getTag() == Formula.EXISTS) {
@@ -1024,6 +1042,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		smtFormula.append(sb.toString() + smv.getSmtFormula() + ")");
 	}
 
+	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
 		String operator = "";
 		boolean needsNotClause = false;
@@ -1111,6 +1130,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	}
 
+	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
 		String pVar = null;
 		String kVar = null;
@@ -1198,6 +1218,7 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 
 	}
 
+	@Override
 	public void visitUnaryPredicate(UnaryPredicate predicate) {
 		Predicate child = predicate.getChild();
 
@@ -1219,11 +1240,13 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		return macros;
 	}
 
+	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		// TODO I don't know how to implement this method
 
 	}
 
+	@Override
 	public void visitExtendedPredicate(ExtendedPredicate predicate) {
 		// TODO I don't know how to implement this method
 

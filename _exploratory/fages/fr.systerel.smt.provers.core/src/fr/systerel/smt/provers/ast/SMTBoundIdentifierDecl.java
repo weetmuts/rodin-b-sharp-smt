@@ -10,8 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.util.ArrayList;
-
 import org.eventb.core.ast.Type;
 
 import br.ufrn.smt.solver.translation.TypeEnvironment;

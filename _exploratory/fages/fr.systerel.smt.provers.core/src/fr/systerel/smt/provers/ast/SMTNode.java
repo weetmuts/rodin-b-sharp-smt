@@ -10,11 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import fr.systerel.smt.provers.ast.SMTTerm;
-import fr.systerel.smt.provers.ast.SMTToken;
-import fr.systerel.smt.provers.ast.responses.SMTCheckSatResponse;
-import fr.systerel.smt.provers.ast.responses.SMTCommandResponse;
-import fr.systerel.smt.provers.ast.responses.SMTStatus;
 import fr.systerel.smt.provers.ast.commands.SMTCommand;
 import fr.systerel.smt.provers.ast.commands.SMTCommandOption;
 

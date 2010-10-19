@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.math.BigInteger;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.

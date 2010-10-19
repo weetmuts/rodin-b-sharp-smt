@@ -12,8 +12,8 @@ package fr.systerel.smt.provers.ast.commands;
 
 import org.eventb.core.ast.Type;
 
-import fr.systerel.smt.provers.ast.SMTIdentifier;
 import br.ufrn.smt.solver.translation.TypeEnvironment;
+import fr.systerel.smt.provers.ast.SMTIdentifier;
 
 
 /**

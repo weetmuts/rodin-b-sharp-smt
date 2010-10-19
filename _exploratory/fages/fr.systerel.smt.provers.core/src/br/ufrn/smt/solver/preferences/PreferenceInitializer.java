@@ -13,6 +13,7 @@ package br.ufrn.smt.solver.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**
@@ -20,11 +21,7 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
+	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = SmtProversCore.getDefault().getPreferenceStore();
 		store.setDefault("solverPreferences", "");

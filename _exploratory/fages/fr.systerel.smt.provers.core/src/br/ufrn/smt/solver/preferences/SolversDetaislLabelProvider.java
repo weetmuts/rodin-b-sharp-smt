@@ -17,10 +17,13 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 class SolversDetailsLabelProvider implements ITableLabelProvider {
+
+	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		return null;
 	}
 
+	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		SolverDetail solver = (SolverDetail) element;
 		switch (columnIndex) {
@@ -38,9 +41,11 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 		return null;
 	}
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}

@@ -3,8 +3,8 @@ package br.ufrn.smt.solver.translation;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.FreeIdentifier;

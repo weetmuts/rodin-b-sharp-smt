@@ -11,9 +11,7 @@
 package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
-import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.Type;
 
 /**

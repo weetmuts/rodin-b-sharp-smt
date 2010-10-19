@@ -10,8 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.math.BigInteger;
-
 import fr.systerel.smt.provers.ast.commands.SMTAssertCommand;
 
 /**

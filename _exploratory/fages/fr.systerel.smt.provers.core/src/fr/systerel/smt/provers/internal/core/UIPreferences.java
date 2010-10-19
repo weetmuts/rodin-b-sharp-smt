@@ -11,10 +11,11 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreateModel;
+
 import java.util.List;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.*;
 
 /**
  * The UI preferences class

@@ -92,6 +92,7 @@ public class Pair<X,Y> {
 	 *  
 	 * @return A String which shows the variable in the format above.
 	 */
+	@Override
 	public String toString()
 	{
 		return key.toString() + " ->  " + value.toString();

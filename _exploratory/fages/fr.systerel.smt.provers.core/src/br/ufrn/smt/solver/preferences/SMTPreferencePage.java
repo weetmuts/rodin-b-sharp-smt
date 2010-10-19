@@ -14,7 +14,8 @@ package br.ufrn.smt.solver.preferences;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.jface.preference.*;
+
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -39,8 +40,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.UIUtils;
@@ -113,12 +114,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 
@@ -183,6 +179,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		final Button addButton = new Button(compButtons, SWT.PUSH);
 		addButton.setText("Add..."); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				createSolverDetailsPage(compButtons, false, "", "", "", false,
 						false);
@@ -192,6 +189,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		final Button removeButton = new Button(compButtons, SWT.PUSH);
 		removeButton.setText("Remove"); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				StructuredSelection sel = (StructuredSelection) fTable
 						.getSelection();
@@ -217,6 +215,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		final Button editButton = new Button(compButtons, SWT.PUSH);
 		editButton.setText("Edit..."); //$NON-NLS-1$
 		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				StructuredSelection sel = (StructuredSelection) fTable
 						.getSelection();
@@ -234,6 +233,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		final Button selectButton = new Button(compButtons, SWT.PUSH);
 		selectButton.setText("Select"); //$NON-NLS-1$
 		selectButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Change color of the selected row
 				Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
@@ -303,6 +303,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		Button browseButton = new Button(compPrepro, SWT.PUSH);
 		browseButton.setText("Browse"); //$NON-NLS-1$
 		browseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				File f = new File(solverPreproPathText.getText());
 				if (!f.exists()) {
@@ -457,6 +458,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		Button browseButton = new Button(compPath, SWT.PUSH);
 		browseButton.setText("Browse"); //$NON-NLS-1$
 		browseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				File f = new File(solverPathText.getText());
 				if (!f.exists()) {
@@ -523,6 +525,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		Button okButton = new Button(compOkCancel, SWT.PUSH);
 		okButton.setText("OK"); //$NON-NLS-1$
 		okButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Check mandatory fields
 				if (solverIdText.getText() == "" //$NON-NLS-1$
@@ -571,6 +574,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		Button cancelButton = new Button(compOkCancel, SWT.PUSH);
 		cancelButton.setText("Cancel"); //$NON-NLS-1$
 		cancelButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Close the shell
 				shell.close();
