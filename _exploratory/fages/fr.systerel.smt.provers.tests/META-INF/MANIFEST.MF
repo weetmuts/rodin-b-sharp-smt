@@ -1,15 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests
+Bundle-Name: %pluginName
 Bundle-SymbolicName: fr.systerel.smt.provers.tests
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.junit4;bundle-version="4.8.1",
- fr.systerel.smt.provers.core;bundle-version="1.0.0",
- org.eventb.core.ast;bundle-version="2.0.0",
- org.eventb.core.ast.tests;bundle-version="1.2.0"
+ org.junit4,
+ fr.systerel.smt.provers.core,
+ org.eventb.core.ast,
+ org.eventb.core.ast.tests
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eventb.core.seqprover,
  org.eventb.pptrans
+Bundle-Vendor: %providerName
