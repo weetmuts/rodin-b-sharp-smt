@@ -10,10 +10,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.pptrans.Translator;
 
-import fr.systerel.smt.provers.tests.AbstractTranslationTests;
-import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
-import br.ufrn.smt.solver.translation.VisitorV1_2;
 import br.ufrn.smt.solver.translation.TypeEnvironment;
+import br.ufrn.smt.solver.translation.VisitorV1_2;
 
 
 public class V1_2_Tests extends AbstractTranslationTests { 

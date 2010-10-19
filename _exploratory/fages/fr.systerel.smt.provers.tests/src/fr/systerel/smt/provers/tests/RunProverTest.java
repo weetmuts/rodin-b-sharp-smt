@@ -66,8 +66,8 @@ public class RunProverTest extends AbstractTranslationTests{
 		}
 		
 		// Create an instance of SmtProversCall
-		SmtProversCall smtProversCall = new SmtProversCall(hyp, goal,
-				new NullProofMonitor(), "SMT") {
+		SmtProversCall smtProversCall = new SmtProversCall(hyp, goal, MONITOR,
+				"SMT") {
 
 			@Override
 			public String displayMessage() {
@@ -109,20 +109,28 @@ public class RunProverTest extends AbstractTranslationTests{
 
 	private static class NullProofMonitor implements IProofMonitor {
 
+		public NullProofMonitor() {
+			// Nothing do to
+		}
+
+		@Override
 		public boolean isCanceled() {
 			return false;
 		}
 
+		@Override
 		public void setCanceled(boolean value) {
 			// nothing to do
 		}
 
+		@Override
 		public void setTask(String name) {
 			// nothing to do
 		}
 
 	}
 
+	private static final NullProofMonitor MONITOR = new NullProofMonitor();
 
 	public static final String VERIT_PATH = "C:\\Utilisateurs\\fages\\Projets\\C444_Decert\\solver\\exe\\veriT_200907.exe";
 
