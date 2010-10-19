@@ -12,7 +12,9 @@
 package fr.systerel.smt.provers.tests;
 
 import static org.eventb.core.ast.LanguageVersion.V2;
-import junit.framework.TestCase;
+import static org.eventb.core.ast.tests.AbstractTests.parseType;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
@@ -22,29 +24,19 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
-public abstract class AbstractTranslationTests extends TestCase {
-	
+public abstract class AbstractTests {
+
 	protected static final FormulaFactory ff = FormulaFactory.getDefault();
-	
-	protected static final Type INT = ff.makeIntegerType();
-	protected static final Type BOOL = ff.makeBooleanType();
-	protected static final Type INT_SET = POW(INT);
-	protected static final Type ty_S = ff.makeGivenType("S");
 
-	protected static Type POW(Type base) {
-		return ff.makePowerSetType(base);
-	}
-
-	protected static Type CPROD(Type left, Type right) {
-		return ff.makeProductType(left, right);
-	}
-
-	protected static Type REL(Type left, Type right) {
-		return ff.makeRelationalType(left, right);
-	}
-
-	protected static Type mGivenSet(String name) {
-		return ff.makeGivenType(name);
+	protected static ITypeEnvironment mTypeEnvironment(String... strs) {
+		assert (strs.length & 1) == 0;
+		ITypeEnvironment te = ff.makeTypeEnvironment();
+		for (int i = 0; i < strs.length; i += 2) {
+			final String name = strs[i];
+			final Type type = parseType(strs[i + 1]);
+			te.addName(name, type);
+		}
+		return te;
 	}
 
 	public static Predicate parse(String string, ITypeEnvironment te) {

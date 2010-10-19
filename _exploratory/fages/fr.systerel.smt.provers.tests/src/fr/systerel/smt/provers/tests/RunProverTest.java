@@ -1,8 +1,6 @@
 package fr.systerel.smt.provers.tests;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
-import static org.eventb.core.ast.tests.FastFactory.mList;
-import static org.eventb.core.ast.tests.FastFactory.mTypeEnvironment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.junit.Test;
 
@@ -21,31 +18,11 @@ import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProversCall;
 
 
-public class RunProverTest extends AbstractTranslationTests{
+public class RunProverTest extends AbstractTests{
 	
-	protected static final Type S = ff.makeGivenType("S");
-	protected static final Type T = ff.makeGivenType("T");
-	protected static final Type U = ff.makeGivenType("U");
-	protected static final Type V = ff.makeGivenType("V");
-	protected static final Type X = ff.makeGivenType("X");
-	protected static final Type Y = ff.makeGivenType("Y");
-	protected static final ITypeEnvironment defaultTe;
-	static {
-		defaultTe = ff.makeTypeEnvironment();
-		defaultTe.addGivenSet("S");
-		defaultTe.addGivenSet("T");
-		defaultTe.addGivenSet("U");
-		defaultTe.addGivenSet("V");
-	}
+	static ITypeEnvironment arith_te = mTypeEnvironment(//
+			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	
-	static ITypeEnvironment arith_te = mTypeEnvironment(
-			mList("x", "y", "z", "n" ), 
-			mList(INT, INT, INT, INT));
-	
-	/*private static void doTest(String input) {
-		doTest(input, defaultTe);
-	}*/
-
 	private static void doTest(List<String> inputHyps, String inputGoal,  ITypeEnvironment te) {	
 		List<Predicate> hypotheses = new ArrayList<Predicate>();
 		
