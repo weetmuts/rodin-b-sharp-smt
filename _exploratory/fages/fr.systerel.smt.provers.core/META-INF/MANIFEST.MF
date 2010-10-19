@@ -8,17 +8,12 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eventb.core.seqprover,
- org.eclipse.ui,
- org.eventb.core,
- org.eventb.pptrans
+ org.eventb.pptrans,
+ org.eventb.pp,
+ org.eclipse.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: br.ufrn.smt.solver.preferences,
  br.ufrn.smt.solver.translation,
  fr.systerel.smt.provers.core,
  fr.systerel.smt.provers.internal.core;x-friends:="fr.systerel.smt.provers.tests"
-Import-Package: br.ufrn.smt.solver.preferences,
- org.eventb.internal.ui,
- org.eventb.internal.ui.eventbeditor,
- org.eventb.internal.ui.preferences,
- org.eventb.pp
