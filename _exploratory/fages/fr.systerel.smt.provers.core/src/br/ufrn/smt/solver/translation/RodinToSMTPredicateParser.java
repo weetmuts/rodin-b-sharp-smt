@@ -20,174 +20,88 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
 
+/**
+ * This class is used to parse Event-B predicates, translates them into SMT-LIB
+ * syntax with macros, and write them in an SMT-LIB file.
+ */
 public class RodinToSMTPredicateParser {
-
 	private long minimalFiniteValue = 0;
 	private long minimalEnumValue = 0;
 	private long minimalElemvalue = 0;
-	private ArrayList<Predicate> hypotheses;
-	//private Predicate goal;
 	private String translatedPath;
-	private String nameOfThisLemma;
 	private ArrayList<String> macros = new ArrayList<String>();
 	private ArrayList<String> assumptions = new ArrayList<String>();
-	private TypeEnvironment typeEnvironment = null;
-	
-	/* DEBUG BOOLEAN */
-	public static final boolean vitor = false;
-	/*****************/
-	
+	private TypeEnvironment typeEnvironment;
+	private String smtGoal = "";
+	private File translatedFile;
+	private boolean isNecessaryAllMacros = false;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param hypotheses
+	 * @param goal
+	 */
+	public RodinToSMTPredicateParser(ArrayList<Predicate> hypotheses,
+			Predicate goal) {
+		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
+		parsePredicates();
+		printLemmaOnFile();
+	}
+
+	/**
+	 * Getters
+	 */
 	public TypeEnvironment getTypeEnvironment() {
 		return typeEnvironment;
-	}
-
-	public void setTypeEnvironment(TypeEnvironment typeEnvironment) {
-		this.typeEnvironment = typeEnvironment;
-	}
-
-	private String smtGoal = "";
-
-	private String errorMessageString = "";
-
-	private File translatedFile;
-
-	public String getErrorMessageString() {
-		return errorMessageString;
-	}
-
-	public void setErrorMessageString(String errorMessageString) {
-		this.errorMessageString = errorMessageString;
 	}
 
 	public File getTranslatedFile() {
 		return translatedFile;
 	}
 
-	public void setTranslatedFile(File translatedFile) {
-		this.translatedFile = translatedFile;
-	}
-
-	public ArrayList<Pair<String, String>> getNotImplementedOperation() {
-		return notImplementedOperation;
-	}
-
-	public void setNotImplementedOperation(
-			ArrayList<Pair<String, String>> notImplementedOperation) {
-		this.notImplementedOperation = notImplementedOperation;
-	}
-
-	public boolean isNecessaryAllMacros() {
-		return isNecessaryAllMacros;
-	}
-
-	public void setNecessaryAllMacros(boolean isNecessaryAllMacros) {
-		this.isNecessaryAllMacros = isNecessaryAllMacros;
-	}
-
-	public ArrayList<Predicate> getHypotheses() {
-		return hypotheses;
-	}
-
-	public void setHypotheses(ArrayList<Predicate> hypotheses) {
-		this.hypotheses = hypotheses;
-	}
-
-	ArrayList<Pair<String, String>> notImplementedOperation = new ArrayList<Pair<String, String>>();
-	// String notImplementedOperation = "";
-	private boolean isNecessaryAllMacros = false;
-	//private Hashtable<String, String> funs;
-	//private Hashtable<String, String> preds;
-	//private ArrayList<String> sorts;
-//	private Hashtable<String, String> singleQuotVars;
-
 	public long getMinimalFiniteValue() {
 		return minimalFiniteValue;
-	}
-
-	public void setMinimalFiniteValue(long minimalFiniteValue) {
-		this.minimalFiniteValue = minimalFiniteValue;
 	}
 
 	public long getMinimalEnumValue() {
 		return minimalEnumValue;
 	}
 
-	public void setMinimalEnumValue(long minimalEnumValue) {
-		this.minimalEnumValue = minimalEnumValue;
-	}
-
 	public long getMinimalElemvalue() {
 		return minimalElemvalue;
-	}
-
-	public void setMinimalElemvalue(long minimalElemvalue) {
-		this.minimalElemvalue = minimalElemvalue;
-	}
-
-	public ArrayList<Predicate> getHypothesis() {
-		return hypotheses;
-	}
-
-	public void setHypothesis(ArrayList<Predicate> hypothesis) {
-		this.hypotheses = hypothesis;
-	}
-
-	public String getTranslatedPath() {
-		return translatedPath;
-	}
-
-	public void setTranslatedPath(String translatedPath) {
-		this.translatedPath = translatedPath;
-	}
-
-	public String getNameOfThisLemma() {
-		return nameOfThisLemma;
-	}
-
-	public void setNameOfThisLemma(String nameOfThisLemma) {
-		this.nameOfThisLemma = nameOfThisLemma;
 	}
 
 	public ArrayList<String> getMacros() {
 		return macros;
 	}
 
-	public void setMacros(ArrayList<String> macros) {
-		this.macros = macros;
-	}
-
 	public ArrayList<String> getAssumptions() {
 		return assumptions;
 	}
 
-	public void setAssumptions(ArrayList<String> assumptions) {
-		this.assumptions = assumptions;
-	}
+	/**
+	 * This method parses hypothesis and goal predicates and translates them
+	 * into SMT nodes
+	 */
+	public void parsePredicates() {
+		for (Predicate hyp : typeEnvironment.getHypotheses()) {
+			final String translatedHyp = VisitorV1_2.translateToSMTNode(
+					typeEnvironment, hyp).toString();
+			if (!translatedHyp.isEmpty()) {
+				assumptions.add(translatedHyp);
+			}
+		}
 
-	public String getSmtGoal() {
-		return smtGoal;
-	}
-
-	public void setSmtGoal(String smtGoal) {
-		this.smtGoal = smtGoal;
-	}
-
-	public RodinToSMTPredicateParser(ArrayList<Predicate> hypotheses,
-			Predicate goal) throws TranslationException {
-		this.hypotheses = hypotheses;
-		
-		//TODO Changes made by Vitor
-		//this.goal = goal;		
-		//this.typeEnvironment.setGoal(goal);
-		//END-TODO
-		
-		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
-		typeEnvironment.getTypeEnvironment();
-		parsePredicates();
-
+		if (typeEnvironment.getGoal() != null) {
+			final String translatedGoal = VisitorV1_2.translateToSMTNode(
+					typeEnvironment, typeEnvironment.getGoal()).toString();
+			if (!translatedGoal.isEmpty()) {
+				smtGoal = translatedGoal;
+			}
+		}
 	}
 
 	private void printLemmaOnFile() {
@@ -324,114 +238,4 @@ public class RodinToSMTPredicateParser {
 			e.printStackTrace();
 		}
 	}
-
-	private boolean getDataFromVisitor(SimpleSMTVisitor smv) {
-		typeEnvironment.setFuns(smv.getFuns());
-		typeEnvironment.setSorts(smv.getSorts());
-		typeEnvironment.setPreds(smv.getPreds());
-		assumptions = smv.getAssumptions();
-		macros = smv.getMacros();
-		minimalElemvalue = smv.getMinimalElemvalue();
-		minimalEnumValue = smv.getMinimalEnumValue();
-		minimalFiniteValue = smv.getMinimalFiniteValue();
-
-		if (smv.isNecessaryAllMacros() == true) {
-			isNecessaryAllMacros = true;
-		}
-		if (!smv.getNotImplementedOperation().isEmpty()) {
-			this.notImplementedOperation.add(new Pair<String, String>(smv
-					.toString(), smv.getNotImplementedOperation()));
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	/* Old version to parse predicates */
-	public void ParsePredOldVersionVitor() throws TranslationException{
-		SimpleSMTVisitor smv1 = null;
-		if (!hypotheses.isEmpty()) {
-			for (int i = 0; i < hypotheses.size(); i++) {
-				smv1 = new SimpleSMTVisitor(this);
-				hypotheses.get(i).accept(smv1);
-				if (this.getDataFromVisitor(smv1)) {
-					assumptions.add(smv1.getSmtFormula());
-				}
-			}
-		}
-
-		smv1 = new SimpleSMTVisitor(this);
-		
-		//TODO Changes to be made
-		//goal.accept(smv1);
-		typeEnvironment.getGoal().accept(smv1);
-		//END-TODO
-		
-		if (this.getDataFromVisitor(smv1)) {
-			smtGoal = smv1.getSmtFormula();
-			if (smv1.isNecessaryAllMacros()) {
-				this.isNecessaryAllMacros = true;
-			}
-
-			printLemmaOnFile();
-		} else {
-			throw new TranslationException(notImplementedOperation);
-		}
-	}
-	
-	/* New version to parse predicates */
-	public void ParsePredNewVersion(){
-		// Parse hypotheses
-		VisitorV1_2 visHyp = null;
-		if (!this.hypotheses.isEmpty()) {
-			for (Predicate hyp : hypotheses) {
-				// get free identifier of the hyp
-				FreeIdentifier[] tempTab = hyp.getFreeIdentifiers();
-				ArrayList<String> fids = new ArrayList<String>();
-				for (int i = 0; i < tempTab.length; i++) {
-					fids.add(tempTab[i].getName());
-				}
-
-				visHyp = new VisitorV1_2(this.typeEnvironment, fids);
-				hyp.accept(visHyp);
-				String translatedHyp = visHyp.getSMTNode();
-				if (!translatedHyp.equals("")) {
-					assumptions.add(translatedHyp);
-				}
-			}
-		}
-
-		// Parse Goal
-		VisitorV1_2 visGoal = null;
-		//if (this.goal != null) {
-		if (typeEnvironment.getGoal() != null) {	
-		
-			// get free identifier of the goal
-			FreeIdentifier[] tempTab = typeEnvironment.getGoal().getFreeIdentifiers();
-			ArrayList<String> fids = new ArrayList<String>();
-			for (int i = 0; i < tempTab.length; i++) {
-				fids.add(tempTab[i].getName());
-			}
-			visGoal = new VisitorV1_2(this.typeEnvironment, fids);
-			//goal.accept(visGoal);
-			typeEnvironment.getGoal().accept(visGoal);
-			String translatedGoal = visGoal.getSMTNode();
-			if (!translatedGoal.equals("")) {
-				smtGoal = translatedGoal;
-			}
-		}
-
-		// Print SMT hyps & goal in a file
-		printLemmaOnFile();
-	}
-	
-
-	void parsePredicates() throws TranslationException {
-		if (vitor) {
-			ParsePredOldVersionVitor();			
-		} else {
-			ParsePredNewVersion();
-		}
-	}
-
 }

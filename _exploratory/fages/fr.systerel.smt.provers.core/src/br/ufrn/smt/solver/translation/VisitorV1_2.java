@@ -36,6 +36,7 @@ import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
+import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.QuantifiedUtil;
@@ -45,6 +46,7 @@ import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
+import fr.systerel.smt.provers.ast.SMTEmpty;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTNode;
@@ -56,18 +58,18 @@ import fr.systerel.smt.provers.ast.SMTTerm;
  */
 public class VisitorV1_2 implements ISimpleVisitor {
 
-	/** The type environment .*/
+	/** The type environment . */
 	private TypeEnvironment typeEnvironment;
-	
+
 	/** The built nodes. */
 	private Stack<SMTNode<?>> stack;
 
 	/** The SMT factory. */
 	private SMTFactory sf;
-	
+
 	/** The Bound identifier list. */
 	private ArrayList<String> bids;
-	
+
 	/** The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> fids;
 
@@ -80,7 +82,41 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		this.typeEnvironment = typeEnvironment;
 		this.bids = new ArrayList<String>();
 		this.fids = fids;
-		
+	}
+
+	/**
+	 * This constructor extracts free identifiers from the given predicate
+	 */
+	public VisitorV1_2(TypeEnvironment typeEnvironment, Predicate predicate) {
+		stack = new Stack<SMTNode<?>>();
+		sf = SMTFactory.getDefault();
+		this.typeEnvironment = typeEnvironment;
+		this.bids = new ArrayList<String>();
+		this.fids = new ArrayList<String>();
+		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
+			this.fids.add(ident.getName());
+		}
+	}
+
+	/**
+	 * This method translates the given predicate into an SMT Node.
+	 */
+	public static SMTNode<?> translateToSMTNode(
+			TypeEnvironment typeEnvironment, Predicate predicate) {
+		final VisitorV1_2 pVis = new VisitorV1_2(typeEnvironment, predicate);
+		predicate.accept(pVis);
+		return pVis.getSMTNode();
+	}
+
+	/**
+	 * Returns the SMT Node on the top of the stack
+	 */
+	private SMTNode<?> getSMTNode() {
+		if (!stack.isEmpty()) {
+			return stack.pop();
+		} else {
+			return new SMTEmpty();
+		}
 	}
 
 	/**
@@ -88,12 +124,10 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	 * 
 	 * @return the string representation of the built formula
 	 */
-	public String getSMTNode() {
-		if (!stack.isEmpty())
-			return stack.pop().toString();
-		else
-			return "";
-	}
+	/*
+	 * public String getSMTNode() { if (!stack.isEmpty()) return
+	 * stack.pop().toString(); else return ""; }
+	 */
 
 	/**
 	 * Resets the visitor.
@@ -138,10 +172,12 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MUL, children));
 			break;
 		case Formula.BUNION:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "union", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "union", children,
+					false));
 			break;
 		case Formula.BINTER:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "inter", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO, "inter", children,
+					false));
 			break;
 		case Formula.BCOMP:
 			// TODO
@@ -184,18 +220,18 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeBoolean(SMTNode.FALSE));
 			break;
 		case Formula.INTEGER:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Int", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO, "Int", null, false));
 			break;
 		case Formula.NATURAL:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Nat", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO, "Nat", null, false));
 			break;
 		case Formula.NATURAL1:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"Nat1", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO, "Nat1", null, false));
 			break;
 		case Formula.BOOL:
 			break;
 		case Formula.EMPTYSET:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO,"emptyset", null, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO, "emptyset", null, false));
 			break;
 		default:
 			assert false;
@@ -233,26 +269,33 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
 		case Formula.UPTO:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"range", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "range", children,
+					false));
 			break;
 		case Formula.RANSUB:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"rans", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "rans", children,
+					false));
 			break;
 		case Formula.RANRES:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"ranr", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "ranr", children,
+					false));
 			break;
 		case Formula.DOMSUB:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"doms", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "doms", children,
+					false));
 			break;
 		case Formula.DOMRES:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"domr", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "domr", children,
+					false));
 			break;
 		case Formula.SETMINUS:
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"setminus", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "setminus",
+					children, false));
 			break;
 		case Formula.MAPSTO:
 			// TO CHANGE
-			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM,"Pair", children, false));
+			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "Pair", children,
+					false));
 			break;
 		default:
 			assert false;
@@ -282,38 +325,42 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
 			expression.getPredicate().accept(this);
-			stack.push(sf.makeITETerm((SMTFormula) stack.pop(), sf
-					.makeBoolean(SMTNode.TRUE), sf.makeBoolean(SMTNode.FALSE)));
+			stack.push(sf.makeITETerm((SMTFormula) stack.pop(),
+					sf.makeBoolean(SMTNode.TRUE), sf.makeBoolean(SMTNode.FALSE)));
 			break;
 		default:
 			assert false;
 			return;
 		}
 	}
-	
+
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		BoundIdentDecl[] tempIdentDeclTab = new BoundIdentDecl[1];
 		tempIdentDeclTab[0] = boundIdentDecl;
-		
-		// add bound idents identifier in the list, if exists in the list a new name is computed
+
+		// add bound idents identifier in the list, if exists in the list a new
+		// name is computed
 		Set<String> fidsSet = new HashSet<String>(fids);
-		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab, fidsSet);
-		
-		if (newNames.length != 1){
+		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab,
+				fidsSet);
+
+		if (newNames.length != 1) {
 			assert false;
 			return;
 		}
-		
+
 		fids.add(newNames[0]);
 		bids.add(newNames[0]);
 
-		stack.push(sf.makeBoundIdentDecl(SMTNode.BOUND_IDENTIFIER_DECL,newNames[0],boundIdentDecl.getType()));
+		stack.push(sf.makeBoundIdentDecl(SMTNode.BOUND_IDENTIFIER_DECL,
+				newNames[0], boundIdentDecl.getType()));
 	}
-	
+
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		String identifier=bids.get(bids.size() - expression.getBoundIndex() -1);
+		String identifier = bids.get(bids.size() - expression.getBoundIndex()
+				- 1);
 		stack.push(sf.makeIdentifier(identifier));
 	}
 
@@ -349,53 +396,61 @@ public class VisitorV1_2 implements ISimpleVisitor {
 
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
-		
+
 		BoundIdentDecl[] tempIdentDeclTab = predicate.getBoundIdentDecls();
-		
-		// add bound idents identifier in the list, if exists in the list a new name is computed
+
+		// add bound idents identifier in the list, if exists in the list a new
+		// name is computed
 		Set<String> fidsSet = new HashSet<String>(fids);
-		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab, fidsSet);
-			
-		SMTTerm[] children1 = toTermArray(convert(predicate.getBoundIdentDecls()));
-		SMTFormula[] children2 = toFormulaArray(convert(predicate.getPredicate()));
+		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab,
+				fidsSet);
+
+		SMTTerm[] children1 = toTermArray(convert(predicate
+				.getBoundIdentDecls()));
+		SMTFormula[] children2 = toFormulaArray(convert(predicate
+				.getPredicate()));
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			stack.push(sf.makeQuantifiedPred(SMTNode.QUANTIFIED_PRED_FORALL_DECL, children1, children2));
+			stack.push(sf.makeQuantifiedPred(
+					SMTNode.QUANTIFIED_PRED_FORALL_DECL, children1, children2));
 			break;
 		case Formula.EXISTS:
-			stack.push(sf.makeQuantifiedPred(SMTNode.QUANTIFIED_PRED_EXISTS_DECL, children1, children2));
+			stack.push(sf.makeQuantifiedPred(
+					SMTNode.QUANTIFIED_PRED_EXISTS_DECL, children1, children2));
 			break;
 		default:
 			assert false;
 			break;
 
 		}
-		
+
 		// remove added bound idents identifier of the list
-		for (int i=0; i<newNames.length; i++){
-			bids.remove(newNames[i]);		
-		}		
+		for (int i = 0; i < newNames.length; i++) {
+			bids.remove(newNames[i]);
+		}
 	}
 
 	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
 		SMTTerm[] children = null;
-		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
+		children = toTermArray(convert(predicate.getLeft(),
+				predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"=", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
+					children, true));
 			break;
 		case Formula.EQUAL:
 			FormulaFactory ff = FormulaFactory.getDefault();
-			
+
 			// Check Type of equality members
-			if (predicate.getLeft().getType().equals(ff.makeIntegerType()) ){
+			if (predicate.getLeft().getType().equals(ff.makeIntegerType())) {
 				stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
+			} else {
+				stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
+						children, false));
 			}
-			else {
-				stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"=", children, false));
-			}			
 			break;
 		case Formula.LT:
 			stack.push(sf.makeArithmeticFormula(SMTNode.LT, children));
@@ -410,23 +465,29 @@ public class VisitorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
 			break;
 		case Formula.IN:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"in", children, false));
-			break;	
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "in",
+					children, false));
+			break;
 		case Formula.NOTIN:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"in", children, true));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "in",
+					children, true));
 			break;
 		case Formula.SUBSET:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subset", children, false));
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
+					children, false));
 			break;
 		case Formula.SUBSETEQ:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subseteq", children, false));
-			break;		
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subseteq",
+					children, false));
+			break;
 		case Formula.NOTSUBSET:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subset", children, true));
-			break;	
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
+					children, true));
+			break;
 		case Formula.NOTSUBSETEQ:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA,"subseteq", children, true));
-			break;	
+			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subseteq",
+					children, true));
+			break;
 		default:
 			assert false;
 			return;
@@ -473,12 +534,12 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		assert false;
 	}
-	
+
 	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		// Do nothing.
 	}
-	
+
 	@Override
 	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
 		// Do nothing.

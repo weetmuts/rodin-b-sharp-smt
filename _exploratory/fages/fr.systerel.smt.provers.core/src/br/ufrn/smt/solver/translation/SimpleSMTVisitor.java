@@ -106,28 +106,23 @@ public class SimpleSMTVisitor implements ISimpleVisitor {
 		return nodes.toArray(new SMTFormula[nodes.size()]);
 	}
 
-	//TODO: New change made by Vitor
 	private String getBoundVarFromDeBrujinIndex(int index)
 	{
 		return indexesOfboundIdentifiers.get(indexesOfboundIdentifiers.size() - (1 + index));
 	}
-	//END-TOJDO
-	
-	
-	
-	
-	long minimalFiniteValue = 0;
-	long minimalEnumValue = 0;
-	long minimalElemvalue = 0;
 
-	ArrayList<String> isNecessaryInterrogation = new ArrayList<String>();
-	Hashtable<String, String> funs = new Hashtable<String, String>();
-	Hashtable<String, String> preds = new Hashtable<String, String>();
-	Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
-	ArrayList<String> sorts = new ArrayList<String>();
-	ArrayList<String> assumptions = new ArrayList<String>();
-	ArrayList<String> macros = new ArrayList<String>();
-	ArrayList<String> indexesOfboundIdentifiers = new ArrayList<String>();
+	private long minimalFiniteValue = 0;
+	private long minimalEnumValue = 0;
+	private long minimalElemvalue = 0;
+
+	private ArrayList<String> isNecessaryInterrogation = new ArrayList<String>();
+	private Hashtable<String, String> funs = new Hashtable<String, String>();
+	private Hashtable<String, String> preds = new Hashtable<String, String>();
+	private Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
+	private ArrayList<String> sorts = new ArrayList<String>();
+	private ArrayList<String> assumptions = new ArrayList<String>();
+	private ArrayList<String> macros = new ArrayList<String>();
+	private ArrayList<String> indexesOfboundIdentifiers = new ArrayList<String>();
 
 	private StringBuffer smtFormula = new StringBuffer();
 	private boolean isNecessaryAllMacros = false;
