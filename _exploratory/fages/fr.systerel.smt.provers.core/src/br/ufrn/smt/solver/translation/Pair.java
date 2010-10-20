@@ -16,7 +16,7 @@ package br.ufrn.smt.solver.translation;
  * original rodinXML operator (or operand) and it's SMT format.
  * 
  * 
- * @author Vitor Alc‚ntara de Almeida
+ * @author Vitor Alc√¢ntara de Almeida
  *
  * @param <X> The first generic variable
  * @param <Y> The second generic variable
