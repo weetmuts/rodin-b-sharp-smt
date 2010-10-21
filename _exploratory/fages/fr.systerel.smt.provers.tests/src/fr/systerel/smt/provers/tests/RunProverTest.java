@@ -15,7 +15,7 @@ import org.junit.Test;
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
-import fr.systerel.smt.provers.internal.core.SmtProversCall;
+import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 
 public class RunProverTest extends AbstractTests{
@@ -43,37 +43,17 @@ public class RunProverTest extends AbstractTests{
 		}
 		
 		// Create an instance of SmtProversCall
-		SmtProversCall smtProversCall = new SmtProversCall(hyp, goal, MONITOR,
+		SmtProverCall smtProverCall = new SmtProverCall(hyp, goal, MONITOR,
 				"SMT") {
 
 			@Override
 			public String displayMessage() {
 				return "SMT";
 			}
-
-			@Override
-			protected void printInputFile() throws IOException {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			protected String[] proverCommand() {
-				return null;
-			}
-
-			@Override
-			protected String[] parserCommand() {
-				return null;
-			}
-
-			@Override
-			protected String successString() {
-				return "is valid";
-			}
 		};
 
 		try {
-			smtProversCall.smtTranslationSolverCall();
+			smtProverCall.smtTranslation();
 		} catch (TranslationException t) {
 			System.out.println(t.getMessage());
 			return;
@@ -114,42 +94,46 @@ public class RunProverTest extends AbstractTests{
 	public static final String CVC3_PATH = "C:\\Utilisateurs\\fages\\Projets\\C444_Decert\\solver\\exe\\cvc3-2.2-win32-opt.exe";
 
 	public static final String Z3_PATH = "C:\\Program Files\\Microsoft Research\\Z3-2.10\\bin\\z3.exe";
+	
+	public static final String VERIT_PATH_LIN = "/home/guyot/bin/verit";
+	public static final String CVC3_PATH_LIN = "/usr/bin/cvc3";
+	public static final String Z3_PATH_LIN = "/home/guyot/bin/z3";
 
 	
 	private void setPreferencesForVeriTTest() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
 		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("veriT", VERIT_PATH, "", true, false));
+		solvers.add(new SolverDetail("veriT", VERIT_PATH_LIN, "", true, false));
 		String preferences = CreatePreferences(solvers);
 		store.setValue("solverpreferences",preferences);
 		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH);
+		store.setValue("prepropath", VERIT_PATH_LIN);
 	}
 
 	private void setPreferencesForCvc3Test() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
 		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("cvc3", CVC3_PATH, "-lang smt", true, false));
+		solvers.add(new SolverDetail("cvc3", CVC3_PATH_LIN, "-lang smt", true, false));
 		String preferences = CreatePreferences(solvers);
 		store.setValue("solverpreferences",preferences);
 		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH);
+		store.setValue("prepropath", VERIT_PATH_LIN);
 	}
 	
 	private void setPreferencesForZ3Test() {
 		SmtProversCore core = SmtProversCore.getDefault();
 		IPreferenceStore store = core.getPreferenceStore();
 		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("z3", Z3_PATH, "", true, false));
+		solvers.add(new SolverDetail("z3", Z3_PATH_LIN, "", true, false));
 		String preferences = CreatePreferences(solvers);
 		store.setValue("solverpreferences",preferences);
 		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH);
+		store.setValue("prepropath", VERIT_PATH_LIN);
 		
 	}
 

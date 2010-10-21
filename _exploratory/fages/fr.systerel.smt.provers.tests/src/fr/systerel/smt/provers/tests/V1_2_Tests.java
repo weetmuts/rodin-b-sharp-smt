@@ -35,13 +35,9 @@ public class V1_2_Tests extends AbstractTests {
 		
 		// Create a Type environment and a fids list to use Visitor1_2
 		TypeEnvironment type = new TypeEnvironment(null, null);
-		ArrayList<String> fids = new ArrayList<String>();
-		
-		VisitorV1_2 visHyp = new VisitorV1_2(type, fids);
-		actual.accept(visHyp);
 		
 		// Get smt translation via channel 2
-		String translatedHyp = visHyp.getSMTNode();
+		String translatedHyp = VisitorV1_2.translateToSMTNode(type, actual).toString();
 
 		assertTypeChecked(actual);
 		assertTrue("Result not in goal: " + actual, Translator.isInGoal(actual));

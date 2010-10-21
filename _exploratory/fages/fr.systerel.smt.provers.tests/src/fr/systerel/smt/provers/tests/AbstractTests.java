@@ -28,6 +28,9 @@ public abstract class AbstractTests {
 
 	protected static final FormulaFactory ff = FormulaFactory.getDefault();
 
+	/**
+	 * Builds a type environment with given combined symbols
+	 */
 	protected static ITypeEnvironment mTypeEnvironment(String... strs) {
 		assert (strs.length & 1) == 0;
 		ITypeEnvironment te = ff.makeTypeEnvironment();
@@ -39,6 +42,9 @@ public abstract class AbstractTests {
 		return te;
 	}
 
+	/**
+	 * Parses an Event-B predicate string representation to build a Predicate instance
+	 */
 	public static Predicate parse(String string, ITypeEnvironment te) {
 		IParseResult parseResult = ff.parsePredicate(string, V2, null);
 		assertFalse("Parse error for: " + string +
