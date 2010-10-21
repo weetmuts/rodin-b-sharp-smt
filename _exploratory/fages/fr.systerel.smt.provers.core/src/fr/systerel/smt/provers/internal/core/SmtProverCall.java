@@ -146,7 +146,8 @@ public class SmtProverCall extends XProverCall {
 				/**
 				 * SMT lib v1.2
 				 */
-				callProver(smtTranslation());
+				final List<String> translatedPOs = smtTranslation();
+				callProver(translatedPOs);
 			} else if (smtUiPreferences.getSolver().getsmtV2_0()) {
 				/**
 				 * SMT lib v2.0
@@ -199,12 +200,12 @@ public class SmtProverCall extends XProverCall {
 	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
 	 * So is set and returned "valid" attribut.
 	 * 
-	 * @param resultOfSolver
+	 * @param solverResult
 	 *            The string result from the SMT solver.
 	 * @throws IOException
 	 */
-	private boolean checkResult(String resultOfSolver) throws IOException {
-		if (resultOfSolver.trim().contains("unsat")) { //$NON-NLS-1$
+	private boolean checkResult(String solverResult) throws IOException {
+		if (solverResult.trim().contains("unsat")) { //$NON-NLS-1$
 			valid = true;
 		} else {
 			valid = false;
@@ -262,9 +263,9 @@ public class SmtProverCall extends XProverCall {
 	 * @throws IOException
 	 * @throws TranslationException
 	 */
-	public List<String> smtTranslation() throws PreProcessingException, IOException,
-			TranslationException {
-		final ArrayList<Predicate> ppTranslatedHypotheses;
+	public List<String> smtTranslation() throws PreProcessingException,
+			IOException, TranslationException {
+		final List<Predicate> ppTranslatedHypotheses;
 		final Predicate ppTranslatedGoal;
 
 		/**
@@ -287,8 +288,7 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Get back translated hypotheses and goal
 		 */
-		ppTranslatedHypotheses = new ArrayList<Predicate>(
-				ppProof.getTranslatedHypotheses());
+		ppTranslatedHypotheses = ppProof.getTranslatedHypotheses();
 		ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		/**
@@ -319,7 +319,7 @@ public class SmtProverCall extends XProverCall {
 		}
 
 		this.iFile = smtFile;
-		
+
 		return args;
 	}
 
@@ -360,11 +360,12 @@ public class SmtProverCall extends XProverCall {
 	 *            path of VeriT
 	 * @return A string containing the sequent expressed in pure SMT-LIB
 	 *         language or the string "" if VeriT execution was wrong
-	 * @throws PreProcessingException 
+	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
 	private static String preprocessSMTinVeriT(final String smtFilePath,
-			final String pathOfVeriT) throws PreProcessingException, IOException {
+			final String pathOfVeriT) throws PreProcessingException,
+			IOException {
 		if (pathOfVeriT.isEmpty()) {
 			throw new PreProcessingException(
 					Messages.SmtProversCall_preprocessor_path_not_defined);

@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class RodinToSMTPredicateParser {
 	 * @param hypotheses
 	 * @param goal
 	 */
-	public RodinToSMTPredicateParser(ArrayList<Predicate> hypotheses,
+	public RodinToSMTPredicateParser(List<Predicate> hypotheses,
 			Predicate goal) {
 		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
 		parsePredicates();

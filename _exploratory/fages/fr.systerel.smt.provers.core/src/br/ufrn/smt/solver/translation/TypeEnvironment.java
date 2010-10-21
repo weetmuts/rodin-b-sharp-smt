@@ -3,6 +3,7 @@ package br.ufrn.smt.solver.translation;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,85 +16,63 @@ import fr.systerel.smt.provers.ast.SMTIdentifier;
 import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
 
 public class TypeEnvironment {
-	
+
 	private ArrayList<Predicate> hypotheses;
-	
+
 	private Predicate goal;
-	
+
+	private ArrayList<String> sorts = new ArrayList<String>();
+
+	private Hashtable<String, String> funs = new Hashtable<String, String>();
+
+	private ArrayList<SMTDeclareFunCommand> declarefuns = new ArrayList<SMTDeclareFunCommand>();
+
+	private Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
+
+	private Hashtable<String, String> preds = new Hashtable<String, String>();
+
+	/**
+	 * Getters
+	 */
 	public ArrayList<Predicate> getHypotheses() {
 		return hypotheses;
-	}
-
-	public void setHypotheses(ArrayList<Predicate> hypotheses) {
-		this.hypotheses = hypotheses;
 	}
 
 	public Predicate getGoal() {
 		return goal;
 	}
 
-	public void setGoal(Predicate goal) {
-		this.goal = goal;
-	}
-
-	private ArrayList<String> sorts = new ArrayList<String>();	
-
-	private Hashtable<String, String> funs = new Hashtable<String, String>();
-	
-	private ArrayList<SMTDeclareFunCommand> declarefuns =  new ArrayList<SMTDeclareFunCommand>();
-	
-	private Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
-	
 	public ArrayList<String> getSorts() {
 		return sorts;
 	}
 
-	public void setSorts(ArrayList<String> sorts) {
-		this.sorts = sorts;
-	}
-	
 	public ArrayList<SMTDeclareFunCommand> getDeclarefuns() {
 		return declarefuns;
-	}
-
-	public void setDeclarefuns(ArrayList<SMTDeclareFunCommand> declarefuns) {
-		this.declarefuns = declarefuns;
-	}
-
-	public void setFuns(Hashtable<String, String> funs) {
-		this.funs = funs;
 	}
 
 	public Hashtable<String, String> getFuns() {
 		return funs;
 	}
 
-	private Hashtable<String, String> preds = new Hashtable<String, String>();
-	
-	public void setPreds(Hashtable<String, String> preds) {
-		this.preds = preds;
-	}
-
 	public Hashtable<String, String> getPreds() {
 		return preds;
-	}
-
-	public void setSingleQuotVars(Hashtable<String, String> singleQuotVars) {
-		this.singleQuotVars = singleQuotVars;
 	}
 
 	public Hashtable<String, String> getSingleQuotVars() {
 		return singleQuotVars;
 	}
 
-	public TypeEnvironment(ArrayList<Predicate> hypotheses, Predicate goal) {
-		this.hypotheses = hypotheses;
+	/**
+	 * Constructor
+	 */
+	public TypeEnvironment(List<Predicate> hypotheses, Predicate goal) {
+		this.hypotheses = new ArrayList<Predicate>(hypotheses);
 		this.goal = goal;
 	}
-	
+
 	public void getTypeEnvironment() {
 		Hashtable<String, Type> typEnv = new Hashtable<String, Type>();
-		FreeIdentifier[] freeVars = goal.getFreeIdentifiers(); 
+		FreeIdentifier[] freeVars = goal.getFreeIdentifiers();
 		if (freeVars != null) {
 
 			for (int i = 0; i < freeVars.length; i++) {
@@ -103,7 +82,7 @@ public class TypeEnvironment {
 			}
 		}
 
-		BoundIdentifier[] boundVars = goal.getBoundIdentifiers(); 
+		BoundIdentifier[] boundVars = goal.getBoundIdentifiers();
 		if (boundVars != null) {
 			for (int i = 0; i < boundVars.length; i++) {
 				String name = boundVars[i].toString();
@@ -112,8 +91,7 @@ public class TypeEnvironment {
 			}
 		}
 
-		for (int j = 0; j < hypotheses.size(); j++) 
-		{
+		for (int j = 0; j < hypotheses.size(); j++) {
 			freeVars = hypotheses.get(j).getFreeIdentifiers();
 			if (freeVars != null) {
 				for (int i = 0; i < freeVars.length; i++) {
@@ -134,7 +112,7 @@ public class TypeEnvironment {
 		}
 		parseTypeEnv(typEnv);
 	}
-	
+
 	private void parseTypeEnv(Hashtable<String, Type> typenvironment) {
 		Set<Entry<String, Type>> typeVars = typenvironment.entrySet();
 		Iterator<Entry<String, Type>> iterator = typeVars.iterator();
@@ -166,11 +144,12 @@ public class TypeEnvironment {
 			} else {
 				funs.put(varName,
 						getSMTAtomicExpressionFormat(varType.toString()));
-				declarefuns.add(new SMTDeclareFunCommand(new SMTIdentifier(varName), new Type[]{}, varType));
+				declarefuns.add(new SMTDeclareFunCommand(new SMTIdentifier(
+						varName), new Type[] {}, varType));
 			}
 		}
 	}
-	
+
 	private String verifyQuotedVar(String name,
 			Hashtable<String, Type> typenvironment) {
 		if (name.lastIndexOf('\'') > 0) {
@@ -189,13 +168,11 @@ public class TypeEnvironment {
 		}
 		return name;
 	}
-	
-	public static String getSMTAtomicExpressionFormat(String atomicExpression) {		
-		if (atomicExpression.equals("\u2124")) // INTEGER
-		{
+
+	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+		if (atomicExpression.equals("\u2124")) { // INTEGER
 			return "Int";
-		} else if (atomicExpression.equals("\u2115")) // NATURAL
-		{
+		} else if (atomicExpression.equals("\u2115")) { // NATURAL
 			return "Nat";
 		} else if (atomicExpression.equals("\u2124" + 1)) {
 			return "Int1";
@@ -205,17 +182,11 @@ public class TypeEnvironment {
 			return "Bool";
 		} else if (atomicExpression.equals("TRUE")) {
 			return "true";
-			//return "True";
 		} else if (atomicExpression.equals("FALSE")) {
-			//return "False";
 			return "false";
-			
 		} else if (atomicExpression.equals("\u2205")) {
 			return "emptyset";
 		}
 		return atomicExpression;
 	}
-
-	
-
 }

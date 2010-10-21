@@ -144,12 +144,13 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	 * @return the built SMT node
 	 */
 	private List<SMTNode<?>> convert(Formula<?>... formulas) {
-		for (int i = 0; i < formulas.length; i++)
-			formulas[i].accept(this);
-
+		for (Formula<?> formula : formulas)
+			formula.accept(this);
+		
 		List<SMTNode<?>> nodes = new ArrayList<SMTNode<?>>(formulas.length);
 		for (int i = 0; i < formulas.length; i++)
 			nodes.add(0, stack.pop());
+		
 		return nodes;
 	}
 
@@ -433,8 +434,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 
 	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
-		SMTTerm[] children = null;
-		children = toTermArray(convert(predicate.getLeft(),
+		final SMTTerm[] children = toTermArray(convert(predicate.getLeft(),
 				predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
