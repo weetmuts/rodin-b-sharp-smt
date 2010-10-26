@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SMTPreferencesStore{
 	
-	private static final String SEPARATOR = "¤";
+	private static final String SEPARATOR = ",,";
 
 	public static String CreatePreferences(List<SolverDetail> model){
 		String preferences = new String();
