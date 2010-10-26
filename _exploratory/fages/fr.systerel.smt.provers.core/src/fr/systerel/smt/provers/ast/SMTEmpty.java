@@ -5,9 +5,9 @@ package fr.systerel.smt.provers.ast;
 
 /**
  * @author guyot
- *
+ * 
  */
-public class SMTEmpty extends SMTNode<SMTEmpty> {
+public class SMTEmpty extends SMTFormula {
 
 	public SMTEmpty() {
 		super(SMTNode.NO_TAG);

@@ -21,7 +21,7 @@ public class TypeEnvironment {
 
 	private Predicate goal;
 
-	private ArrayList<String> sorts = new ArrayList<String>();
+	private List<String> sorts = new ArrayList<String>();
 
 	private Hashtable<String, String> funs = new Hashtable<String, String>();
 
@@ -42,7 +42,7 @@ public class TypeEnvironment {
 		return goal;
 	}
 
-	public ArrayList<String> getSorts() {
+	public List<String> getSorts() {
 		return sorts;
 	}
 

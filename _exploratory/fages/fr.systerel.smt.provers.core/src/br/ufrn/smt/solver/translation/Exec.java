@@ -17,34 +17,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Exec {
-	
-	public static String execProgram(String [] args) throws IOException
-	{
+
+	public static String execProgram(String[] args) throws IOException {
 		String ln;
-		Process p = Runtime.getRuntime().exec(args);
-		BufferedReader br = new BufferedReader
-		(
-			new InputStreamReader
-			(
-				p.getInputStream()
-			)
-		);
-		BufferedReader bre = new BufferedReader
-		(
-				new InputStreamReader
-				(
-					p.getErrorStream()
-				)
-		); 
-		
-		
+		final Process p = Runtime.getRuntime().exec(args);
+		final BufferedReader br = new BufferedReader(new InputStreamReader(
+				p.getInputStream()));
+		BufferedReader bre = new BufferedReader(new InputStreamReader(
+				p.getErrorStream()));
+
 		String bufferedOut = "";
-		while((ln = br.readLine()) != null) 
-		{
+		while ((ln = br.readLine()) != null) {
 			bufferedOut = bufferedOut + "\n" + ln;
 		}
-		while((ln = bre.readLine()) != null) 
-		{
+		while ((ln = bre.readLine()) != null) {
 			bufferedOut = bufferedOut + "\n" + ln;
 		}
 

@@ -56,7 +56,7 @@ import fr.systerel.smt.provers.ast.SMTTerm;
  * This class translate a formula expressed in Event-B syntax to a formula in
  * SMT-LIB syntax.
  */
-public class VisitorV1_2 implements ISimpleVisitor {
+public class TranslatorV1_2 implements ISimpleVisitor {
 
 	/** The type environment . */
 	private TypeEnvironment typeEnvironment;
@@ -74,9 +74,22 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	private ArrayList<String> fids;
 
 	/**
+	 * This method translates the given predicate into an SMT Node.
+	 */
+	//TODO remplacer SMTNode<?> par SMTNode<Formula>
+	public static SMTNode<?> translate(TypeEnvironment typeEnvironment,
+			Predicate predicate) { // TODO remplacer Predicate par Formula?
+		final TranslatorV1_2 translator = new TranslatorV1_2(typeEnvironment,
+				predicate);
+		predicate.accept(translator);
+		return translator.getSMTNode();
+	}
+
+	/**
 	 * Builds a new visitor.
 	 */
-	public VisitorV1_2(TypeEnvironment typeEnvironment, ArrayList<String> fids) {
+	private TranslatorV1_2(TypeEnvironment typeEnvironment,
+			ArrayList<String> fids) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
 		this.typeEnvironment = typeEnvironment;
@@ -87,7 +100,7 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	/**
 	 * This constructor extracts free identifiers from the given predicate
 	 */
-	public VisitorV1_2(TypeEnvironment typeEnvironment, Predicate predicate) {
+	private TranslatorV1_2(TypeEnvironment typeEnvironment, Predicate predicate) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
 		this.typeEnvironment = typeEnvironment;
@@ -99,41 +112,14 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	}
 
 	/**
-	 * This method translates the given predicate into an SMT Node.
-	 */
-	public static SMTNode<?> translateToSMTNode(
-			TypeEnvironment typeEnvironment, Predicate predicate) {
-		final VisitorV1_2 pVis = new VisitorV1_2(typeEnvironment, predicate);
-		predicate.accept(pVis);
-		return pVis.getSMTNode();
-	}
-
-	/**
 	 * Returns the SMT Node on the top of the stack
 	 */
 	private SMTNode<?> getSMTNode() {
-		if (!stack.isEmpty()) {
+		if (stack.size() == 1) {
 			return stack.pop();
 		} else {
 			return new SMTEmpty();
 		}
-	}
-
-	/**
-	 * Gets the built formula in SMT-LIB format.
-	 * 
-	 * @return the string representation of the built formula
-	 */
-	/*
-	 * public String getSMTNode() { if (!stack.isEmpty()) return
-	 * stack.pop().toString(); else return ""; }
-	 */
-
-	/**
-	 * Resets the visitor.
-	 */
-	public void reset() {
-		stack.clear();
 	}
 
 	/**
@@ -146,11 +132,11 @@ public class VisitorV1_2 implements ISimpleVisitor {
 	private List<SMTNode<?>> convert(Formula<?>... formulas) {
 		for (Formula<?> formula : formulas)
 			formula.accept(this);
-		
+
 		List<SMTNode<?>> nodes = new ArrayList<SMTNode<?>>(formulas.length);
 		for (int i = 0; i < formulas.length; i++)
 			nodes.add(0, stack.pop());
-		
+
 		return nodes;
 	}
 
@@ -269,6 +255,8 @@ public class VisitorV1_2 implements ISimpleVisitor {
 		case Formula.MOD:
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
+		case Formula.EXPN:
+			throw new IllegalArgumentException("The operation \'exponential\' is not supported yet");
 		case Formula.UPTO:
 			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "range", children,
 					false));

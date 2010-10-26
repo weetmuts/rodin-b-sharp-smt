@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -28,16 +29,17 @@ import org.eventb.core.ast.Predicate;
  * syntax with macros, and write them in an SMT-LIB file.
  */
 public class RodinToSMTPredicateParser {
+	private final String lemmaName;
 	private long minimalFiniteValue = 0;
 	private long minimalEnumValue = 0;
 	private long minimalElemvalue = 0;
 	private String translatedPath;
-	private ArrayList<String> macros = new ArrayList<String>();
-	private ArrayList<String> assumptions = new ArrayList<String>();
+	private List<String> macros = new ArrayList<String>();
+	private List<String> assumptions = new ArrayList<String>();
 	private TypeEnvironment typeEnvironment;
 	private String smtGoal = "";
 	private File translatedFile;
-	private boolean isNecessaryAllMacros = false;
+	private boolean areNecessaryAllMacros = false;
 
 	/**
 	 * Constructor
@@ -45,8 +47,8 @@ public class RodinToSMTPredicateParser {
 	 * @param hypotheses
 	 * @param goal
 	 */
-	public RodinToSMTPredicateParser(List<Predicate> hypotheses,
-			Predicate goal) {
+	public RodinToSMTPredicateParser(List<Predicate> hypotheses, Predicate goal) {
+		lemmaName = "lemma";
 		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
 		parsePredicates();
 		printLemmaOnFile();
@@ -75,11 +77,11 @@ public class RodinToSMTPredicateParser {
 		return minimalElemvalue;
 	}
 
-	public ArrayList<String> getMacros() {
+	public List<String> getMacros() {
 		return macros;
 	}
 
-	public ArrayList<String> getAssumptions() {
+	public List<String> getAssumptions() {
 		return assumptions;
 	}
 
@@ -89,7 +91,7 @@ public class RodinToSMTPredicateParser {
 	 */
 	public void parsePredicates() {
 		for (Predicate hyp : typeEnvironment.getHypotheses()) {
-			final String translatedHyp = VisitorV1_2.translateToSMTNode(
+			final String translatedHyp = TranslatorV1_2.translate(
 					typeEnvironment, hyp).toString();
 			if (!translatedHyp.isEmpty()) {
 				assumptions.add(translatedHyp);
@@ -97,7 +99,7 @@ public class RodinToSMTPredicateParser {
 		}
 
 		if (typeEnvironment.getGoal() != null) {
-			final String translatedGoal = VisitorV1_2.translateToSMTNode(
+			final String translatedGoal = TranslatorV1_2.translate(
 					typeEnvironment, typeEnvironment.getGoal()).toString();
 			if (!translatedGoal.isEmpty()) {
 				smtGoal = translatedGoal;
@@ -106,62 +108,34 @@ public class RodinToSMTPredicateParser {
 	}
 
 	private void printLemmaOnFile() {
-		String benchmark = "(benchmark smtTesteComArvoreSintatica ";// nameOfThisLemma;
+		final String benchmark = "(benchmark " + this.lemmaName + " ";
 
 		try {
-			String s = "";
+			final String s;
 			if (translatedPath != null) {
 				s = translatedPath;
 			} else {
 				s = System.getProperty("user.home");
 			}
-			translatedFile = new File(s + "/smtComArv.smt");
+			translatedFile = new File(s + "/smtInputFile.smt");
 			if (!translatedFile.exists()) {
 				translatedFile.createNewFile();
 			}
-			PrintWriter out = new PrintWriter(new BufferedWriter(
+			final PrintWriter out = new PrintWriter(new BufferedWriter(
 					new FileWriter(translatedFile)));
 			out.println(benchmark);
 			out.println(":logic UNKNOWN");
 			if (!typeEnvironment.getSorts().isEmpty()) {
 				String extrasorts = ":extrasorts (";
-				for (int i = 0; i < typeEnvironment.getSorts().size(); i++) {
-					extrasorts = extrasorts + " "
-							+ typeEnvironment.getSorts().get(i);
+				for (final String sort : typeEnvironment.getSorts()) {
+					extrasorts = extrasorts + " " + sort;
 				}
 				extrasorts = extrasorts + ")";
 				out.println(extrasorts);
 			}
 
-			if (!typeEnvironment.getPreds().isEmpty()) {
-				Set<Entry<String, String>> set = typeEnvironment.getPreds()
-						.entrySet();
-				Iterator<Entry<String, String>> iterator = set.iterator();
-				String extrapreds = ":extrapreds (";
-				while (iterator.hasNext()) {
-					Entry<String, String> el = iterator.next();
-					extrapreds = extrapreds + "(" + el.getKey() // preds.eget(i).getFirstElement()
-							+ " " + el.getValue() + ")"; // preds.get(i).getSecondElement()
-															// + ")";
-				}
-				extrapreds = extrapreds + ")";
-				out.println(extrapreds);
-			}
-
-			if (!typeEnvironment.getFuns().isEmpty()) {
-				Set<Entry<String, String>> set = typeEnvironment.getFuns()
-						.entrySet();
-				Iterator<Entry<String, String>> iterator = set.iterator();
-				String extrafuns = ":extrafuns (";
-				while (iterator.hasNext()) {
-					Entry<String, String> el = iterator.next();
-					extrafuns = extrafuns + "(" + el.getKey() // preds.eget(i).getFirstElement()
-							+ " " + el.getValue() + ")"; // preds.get(i).getSecondElement()
-															// + ")";
-				}
-				extrafuns = extrafuns + ")";
-				out.println(extrafuns);
-			}
+			printHashtable(out, typeEnvironment.getPreds(), "extrapreds");
+			printHashtable(out, typeEnvironment.getFuns(), "extrafuns");
 
 			out.println(":extramacros(");
 
@@ -186,7 +160,7 @@ public class RodinToSMTPredicateParser {
 			out.println("(finite (lambda (?tb ('s boolean)) (?pe boolean) (?f ('s Int)) (?k Int).(iff ?pe (and (forall (?xa 's).(implies (in ?xa ?tb)(in (?f ?xa)(range 1 ?k))))(forall (?xa 's)(?ya 's).(implies (and (in ?xa ?tb)(in ?ya ?tb)(not (= ?xa ?ya)))(not (= (?f ?xa)(?f ?ya)))))))))");
 			out.println("(domain (lambda (?r ((Pair 't1 't2) boolean)) . (lambda (?x1 't1) . (exists (?x2 't2) . (?r (Pair ?x1 ?x2))))))");
 			// Domain
-			if (isNecessaryAllMacros) {
+			if (areNecessaryAllMacros) {
 				// range and relational image
 
 				out.println("(ran (lambda (?r ((Pair 's 't) boolean) (lambda (?y 't)(exists (?x 's)(r (pair ?x ?y)))))))");
@@ -225,18 +199,34 @@ public class RodinToSMTPredicateParser {
 				out.println("(bij  (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((tsur ?X ?Y) ?R)((tinj ?X ?Y) ?R)))))");
 			}
 
-			for (int i = 0; i < macros.size(); i++) {
-				out.println(macros.get(i));
+			for (final String macro : macros) {
+				out.println(macro);
 			}
 			out.println(")");
-			for (int i = 0; i < assumptions.size(); i++) {
-				out.println(":assumption " + assumptions.get(i));
+			for (final String assumption : assumptions) {
+				out.println(":assumption" + assumption);
 			}
 			out.println(":formula (not" + smtGoal + ")");
 			out.println(")");
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void printHashtable(final PrintWriter out, final Hashtable<String, String> table, final String sectionName) {
+		if (!table.isEmpty()) {
+			final Set<Entry<String, String>> set = table.entrySet();
+			final Iterator<Entry<String, String>> iterator = set.iterator();
+			String extrapreds = ":" + sectionName + " (";
+			while (iterator.hasNext()) {
+				Entry<String, String> el = iterator.next();
+				extrapreds = extrapreds + "(" + el.getKey() // preds.eget(i).getFirstElement()
+						+ " " + el.getValue() + ")"; // preds.get(i).getSecondElement()
+														// + ")";
+			}
+			extrapreds = extrapreds + ")";
+			out.println(extrapreds);
 		}
 	}
 }

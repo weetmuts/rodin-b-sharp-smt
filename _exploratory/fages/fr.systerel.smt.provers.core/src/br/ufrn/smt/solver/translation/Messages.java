@@ -11,5 +11,6 @@ public class Messages extends NLS {
 	}
 
 	private Messages() {
+		//Do not instantiate
 	}
 }
