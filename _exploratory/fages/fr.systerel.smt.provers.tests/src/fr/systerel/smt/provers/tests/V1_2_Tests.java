@@ -10,9 +10,9 @@ import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.TypeEnvironment;
-import br.ufrn.smt.solver.translation.VisitorV1_2;
+import br.ufrn.smt.solver.translation.TranslatorV1_2;
 
-
+//FIXME to be removed when ready
 public class V1_2_Tests extends AbstractTests { 
 
 	protected static final ITypeEnvironment defaultTe = mTypeEnvironment(//
@@ -34,10 +34,10 @@ public class V1_2_Tests extends AbstractTests {
 		Predicate actual = Translator.reduceToPredicateCalulus(input, ff);
 		
 		// Create a Type environment and a fids list to use Visitor1_2
-		TypeEnvironment type = new TypeEnvironment(null, null);
+		TypeEnvironment type = new TypeEnvironment(new ArrayList<Predicate>(), actual);
 		
 		// Get smt translation via channel 2
-		String translatedHyp = VisitorV1_2.translateToSMTNode(type, actual).toString();
+		String translatedHyp = TranslatorV1_2.translate(type, actual).toString();
 
 		assertTypeChecked(actual);
 		assertTrue("Result not in goal: " + actual, Translator.isInGoal(actual));

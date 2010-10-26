@@ -9,10 +9,12 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.pptrans.Translator;
+import org.junit.Assert;
 import org.junit.Test;
 
+import br.ufrn.smt.solver.translation.TranslatorV1_2;
 import br.ufrn.smt.solver.translation.TypeEnvironment;
-import br.ufrn.smt.solver.translation.VisitorV1_2;
 
 /**
  * Ensure that translation from Event-B to SMT-LIB is correct.
@@ -24,13 +26,14 @@ public class TranslationTests extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
 	protected static final String defaultFailMessage = " ≠ ";
 	static {
-		defaultTe = mTypeEnvironment("s", "ℙ(S)", "t", "ℙ(T)", "a", "ℤ", "b",
-				"ℤ");
+		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
+				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
+				"v", "BOOL");
 	}
 
-	private static void testVisitorV1_2Default(final String ppPredStr,
+	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
-		testVisitorV1_2(defaultTe, ppPredStr, expectedSMTNode,
+		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
 				defaultFailMessage);
 	}
 
@@ -47,15 +50,19 @@ public class TranslationTests extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testVisitorV1_2(final ITypeEnvironment iTypeEnv,
+	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
 			final String ppPredStr, final String expectedSMTNode,
-			final String failMessage) {
+			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+		// TODO adapter et serialiser le message d'erreur sur le predicat
+		// d'entrée
+		Assert.assertTrue("\'" + ppPredStr + "\' n'est pas une entrée valide.",
+				Translator.isInGoal(ppPred));
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
 		final TypeEnvironment typeEnv = new TypeEnvironment(hypothesis, ppPred);
 
-		testVisitorV1_2(typeEnv, ppPred, expectedSMTNode, failMessage);
+		testTranslationV1_2(typeEnv, ppPred, expectedSMTNode, failMessage);
 	}
 
 	/**
@@ -70,12 +77,12 @@ public class TranslationTests extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testVisitorV1_2(final TypeEnvironment typeEnv,
+	private static void testTranslationV1_2(final TypeEnvironment typeEnv,
 			final Predicate ppPred, final String expectedSMTNode,
 			final String failMessage) {
 
-		final String actualSMTNode = VisitorV1_2.translateToSMTNode(typeEnv,
-				ppPred).toString();
+		final String actualSMTNode = TranslatorV1_2.translate(typeEnv, ppPred)
+				.toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
 		if (!actualSMTNode.equals(expectedSMTNode)) {
@@ -91,61 +98,230 @@ public class TranslationTests extends AbstractTests {
 	}
 
 	/**
-	 * Arithmetic symbols tests
+	 * "pred-bin" in ppTrans abstract syntax
 	 */
 	@Test
-	public void testArithEqual() {
-		testVisitorV1_2Default("s = s", "(= s s)");
-	}
-
-	@Test
-	public void testArithSuperior() {
-		testVisitorV1_2Default("a > b", "(> a b)");
-	}
-
-	@Test
-	public void testArithAnd() {
-		testVisitorV1_2Default("a & b", "(& a b)");
-	}
-
-	@Test
-	public void testArith() {
-		testVisitorV1_2Default("a # b", "(# a b)");
+	public void testPredBinop() {
+		/**
+		 * limp
+		 */
+		testTranslationV1_2Default("(a < b ∧ b < c) ⇒ a < c",
+				"(implies (and (< a b) (< b c)) (< a c))");
+		/**
+		 * leqv
+		 */
+		testTranslationV1_2Default("(a ≤ b ∧ b ≤ a) ⇔ a = b",
+				"(iff (and (<= a b) (<= b a)) (= a b))");
 	}
 
 	/**
-	 * Quantifier symbols tests
+	 * "pred-ass"
 	 */
-	@Test(expected = AssertionError.class)
-	public void testForallErr() {
-		testVisitorV1_2Default("∀x·x", "");
-	}
-
 	@Test
-	public void testForallIn() {
-		testVisitorV1_2Default("∀x·x∈s", "(forall (?x S)(in x s))");
-	}
-
-	@Test
-	public void testExistsIn() {
-		testVisitorV1_2Default("∃x.x∈s", "(exists (?x S)(in x s))");
+	public void testPredAssop() {
+		/**
+		 * land
+		 */
+		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
+		/**
+		 * land (multiple predicates)
+		 */
+		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
+				"(and (= a b) (= u v) (= r s))");
+		/**
+		 * lor
+		 */
+		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
+		/**
+		 * lor (multiple predicates)
+		 */
+		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
+				"(or (= a b) (= u v) (= r s))");
 	}
 
 	/**
-	 * Connective tests
+	 * "pred-una"
 	 */
 	@Test
-	public void testImplies() {
-		testVisitorV1_2Default("∀s,t.s⇒t", "(forall (?s S)(?t T)(implies s t)");
+	public void testPredUna() {
+		testTranslationV1_2Default("¬ ((a ≤ b ∧ b ≤ c) ⇒ a < c)",
+				"(not (implies (and (<= a b) (<= b c)) (< a c)))");
 	}
 
 	/**
-	 * BoundIdentDeclaration
+	 * "pred-quant"
 	 */
 	@Test
-	public void testBoundIdentDeclaration() {
-		testVisitorV1_2Default(
-				"∀x,y·x ∈ ℕ ∧ y ∈ ℕ ⇒ x + y ∈ ℕ",
-				"(forall (?x Nat)(?y Nat)(implies (and (in x Nat) (in y Nat))(in (+ x y) Nat)))");
+	public void testForall() {
+		/**
+		 * forall
+		 */
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(in x s))");
+		/**
+		 * forall (multiple identifiers)
+		 */
+		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
+				"(forall (?x R) (?y R)(and (in x s) (in y s)))");
+	}
+
+	@Test
+	public void testExists() {
+		/**
+		 * exists
+		 */
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(in x s))");
+		/**
+		 * exists (multiple identifiers)
+		 */
+		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
+				"(exists (?x R) (?y R)(and (in x s) (in y s)))");
+	}
+
+	/**
+	 * "pred-lit"
+	 */
+	@Test
+	public void testPredLit() {
+		/**
+		 * btrue
+		 */
+		testTranslationV1_2Default("⊤", "true");
+		/**
+		 * bfalse
+		 */
+		testTranslationV1_2Default("⊥", "false");
+	}
+
+	/**
+	 * "pred-rel"
+	 */
+	@Test
+	public void testPredRelop() {
+		/**
+		 * equal (identifiers of type ℤ)
+		 */
+		testTranslationV1_2Default("a = b", "(= a b)");
+		/**
+		 * equal (integer numbers)
+		 */
+		testTranslationV1_2Default("42 = 42", "(= 42 42)");
+		/**
+		 * notequal
+		 */
+		testTranslationV1_2Default("a ≠ b", "(not(= a b))");
+		/**
+		 * lt
+		 */
+		testTranslationV1_2Default("a < b", "(< a b)");
+		/**
+		 * le
+		 */
+		testTranslationV1_2Default("a ≤ b", "(<= a b)");
+		/**
+		 * gt
+		 */
+		testTranslationV1_2Default("a > b", "(> a b)");
+		/**
+		 * ge
+		 */
+		testTranslationV1_2Default("a ≥ b", "(>= a b)");
+	}
+
+	/**
+	 * Arithmetic expressions binary operations: cf. "a-expr-bin"
+	 */
+	@Test
+	public void testArithExprBinop() {
+		/**
+		 * minus
+		 */
+		testTranslationV1_2Default("a − b = c", "(= (- a b) c)");
+		/**
+		 * equal (a-expr-bin)
+		 */
+		testTranslationV1_2Default("a − b = a − c", "(= (- a b) (- a c))");
+		/**
+		 * div
+		 */
+		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		/**
+		 * mod
+		 */
+		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
+	}
+
+	@Test
+	// (expected = IllegalArgumentException.class)
+	public void testArithExprBinopUnsupported() { // TODO Add exponential binop
+		/**
+		 * expn
+		 */
+		testTranslationV1_2Default("a ^ b = c", "(= (^ a b) c)");
+	}
+
+	/**
+	 * Arithmetic expressions associative operations: cf. "a-expr-ass"
+	 */
+	@Test
+	public void testArithExprAssnop() {
+		/**
+		 * plus
+		 */
+		testTranslationV1_2Default("a + c + b = a + b + c",
+				"(= (+ a c b) (+ a b c))");
+		/**
+		 * mul
+		 */
+		testTranslationV1_2Default("a ∗ b ∗ c = a ∗ c ∗ b",
+				"(= (* a b c) (* a c b))");
+	}
+
+	/**
+	 * Arithmetic expressions unary operations: cf. "a-expr-una"
+	 */
+	@Test
+	public void testArithExprUnop() {
+		/**
+		 * uminus (right child)
+		 */
+		testTranslationV1_2Default("a = −b", "(= a (~ b))");
+		/**
+		 * uminus (left child)
+		 */
+		testTranslationV1_2Default("−a = b", "(= (~ a) b)");
+	}
+
+	/**
+	 * "pred-in"
+	 */
+	@Test
+	public void testPredIn() {
+		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "");
+	}
+
+	/**
+	 * "pred-setequ"
+	 */
+	@Test
+	public void testPredSetEqu() {
+		testTranslationV1_2Default("r = s", "(= r s)");
+	}
+
+	/**
+	 * "pred-boolequ"
+	 */
+	@Test
+	public void testPredBoolEqu() {
+		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
+		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
+		testTranslationV1_2Default("u = v", "(= u v)");
+	}
+
+	/**
+	 * "pred-identequ"
+	 */
+	@Test
+	public void testPredIdentEqu() {
+		testTranslationV1_2Default("p = q", "(= p q)");
 	}
 }
