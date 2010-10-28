@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.TranslatorV1_2;
-import br.ufrn.smt.solver.translation.TypeEnvironment;
 
 /**
  * Ensure that translation from Event-B to SMT-LIB is correct.
@@ -60,16 +59,13 @@ public class TranslationTests extends AbstractTests {
 				Translator.isInGoal(ppPred));
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
-		final TypeEnvironment typeEnv = new TypeEnvironment(hypothesis, ppPred);
 
-		testTranslationV1_2(typeEnv, ppPred, expectedSMTNode, failMessage);
+		testTranslationV1_2(ppPred, expectedSMTNode, failMessage);
 	}
 
 	/**
 	 * Tests the SMT-LIB translation with the given Predicate Calculus formula
 	 * 
-	 * @param typeEnv
-	 *            Type environment, hypotheses and goal
 	 * @param ppPred
 	 *            Input Predicate Calculus formula
 	 * @param expectedSMTNode
@@ -77,11 +73,10 @@ public class TranslationTests extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2(final TypeEnvironment typeEnv,
-			final Predicate ppPred, final String expectedSMTNode,
-			final String failMessage) {
+	private static void testTranslationV1_2(final Predicate ppPred,
+			final String expectedSMTNode, final String failMessage) {
 
-		final String actualSMTNode = TranslatorV1_2.translate(typeEnv, ppPred)
+		final String actualSMTNode = TranslatorV1_2.translate(ppPred)
 				.toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));

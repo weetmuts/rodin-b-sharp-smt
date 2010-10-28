@@ -296,14 +296,15 @@ public class SmtProverCall extends XProverCall {
 		 */
 		final RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
 				ppTranslatedHypotheses, ppTranslatedGoal);
+		rp.writeSMTFile();
 
 		/**
 		 * Get back translated smt file
 		 */
-		smtFile = rp.getTranslatedFile();
-		if (!smtFile.exists()) {
+		this.smtFile = rp.getSMTFile();
+		if (!this.smtFile.exists()) {
 			System.out
-					.println(Messages.SmtProversCall_translated_file_not_exists);
+					.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 
 		/**
@@ -425,7 +426,7 @@ public class SmtProverCall extends XProverCall {
 	 *            Arguments list needed by the prover to be called
 	 * @throws IOException
 	 */
-	protected void callProver(final List<String> args) throws IOException {
+	public void callProver(final List<String> args) throws IOException {
 		/**
 		 * Launch solver and get back solver result
 		 */

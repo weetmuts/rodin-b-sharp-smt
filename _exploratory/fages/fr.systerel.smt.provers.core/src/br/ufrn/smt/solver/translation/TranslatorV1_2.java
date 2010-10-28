@@ -58,9 +58,6 @@ import fr.systerel.smt.provers.ast.SMTTerm;
  */
 public class TranslatorV1_2 implements ISimpleVisitor {
 
-	/** The type environment . */
-	private TypeEnvironment typeEnvironment;
-
 	/** The built nodes. */
 	private Stack<SMTNode<?>> stack;
 
@@ -76,11 +73,13 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	/**
 	 * This method translates the given predicate into an SMT Node.
 	 */
-	//TODO remplacer SMTNode<?> par SMTNode<Formula>
-	public static SMTNode<?> translate(TypeEnvironment typeEnvironment,
-			Predicate predicate) { // TODO remplacer Predicate par Formula?
-		final TranslatorV1_2 translator = new TranslatorV1_2(typeEnvironment,
-				predicate);
+	// TODO remplacer SMTNode<?> par SMTNode<Formula>
+	public static SMTNode<?> translate(Predicate predicate) { // TODO
+																// remplacer
+																// Predicate
+																// par
+																// Formula?
+		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
 		return translator.getSMTNode();
 	}
@@ -88,11 +87,9 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	/**
 	 * Builds a new visitor.
 	 */
-	private TranslatorV1_2(TypeEnvironment typeEnvironment,
-			ArrayList<String> fids) {
+	private TranslatorV1_2(ArrayList<String> fids) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
-		this.typeEnvironment = typeEnvironment;
 		this.bids = new ArrayList<String>();
 		this.fids = fids;
 	}
@@ -100,10 +97,9 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	/**
 	 * This constructor extracts free identifiers from the given predicate
 	 */
-	private TranslatorV1_2(TypeEnvironment typeEnvironment, Predicate predicate) {
+	private TranslatorV1_2(Predicate predicate) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
-		this.typeEnvironment = typeEnvironment;
 		this.bids = new ArrayList<String>();
 		this.fids = new ArrayList<String>();
 		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
@@ -256,7 +252,8 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
 		case Formula.EXPN:
-			throw new IllegalArgumentException("The operation \'exponential\' is not supported yet");
+			throw new IllegalArgumentException(
+					"The operation \'exponential\' is not supported yet");
 		case Formula.UPTO:
 			stack.push(sf.makeMacroTerm(SMTNode.MACRO_TERM, "range", children,
 					false));

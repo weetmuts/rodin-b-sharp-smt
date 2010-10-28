@@ -12,7 +12,8 @@ package fr.systerel.smt.provers.ast;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.TypeEnvironment;
+import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
+import br.ufrn.smt.solver.translation.Signature;
 
 /**
  * This class represents a bound identifier in SMT-LIB grammar.
@@ -46,8 +47,8 @@ public final class SMTBoundIdentifierDecl extends SMTTerm {
 		builder.append("(?");
 		builder.append(name);
 		builder.append(" ");
-		builder.append(TypeEnvironment.getSMTAtomicExpressionFormat(type
-				.toString()));
+		builder.append(RodinToSMTPredicateParser
+				.getSMTAtomicExpressionFormat(type.toString()));
 		builder.append(")");
 
 	}

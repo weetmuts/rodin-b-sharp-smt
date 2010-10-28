@@ -12,7 +12,8 @@ package fr.systerel.smt.provers.ast.commands;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.TypeEnvironment;
+import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
+import br.ufrn.smt.solver.translation.Signature;
 import fr.systerel.smt.provers.ast.SMTIdentifier;
 
 
@@ -65,11 +66,11 @@ public class SMTDeclareFunCommand extends SMTCommand {
 		identifier.toString(builder);
 		builder.append(" (");
 		for (Type child : parameters) {
-			builder.append(TypeEnvironment.getSMTAtomicExpressionFormat(child.toString()));
+			builder.append(RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(child.toString()));
 			builder.append(" ");
 		}
 		builder.append(") ");
-		builder.append(TypeEnvironment.getSMTAtomicExpressionFormat(returnType.toString()));
+		builder.append(RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(returnType.toString()));
 		builder.append(')');
 	}
 }
