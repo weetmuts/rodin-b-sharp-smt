@@ -16,16 +16,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * This class executes the given command with arguments and returns a String
+ * containing both input and error streams produced content
+ */
 public class Exec {
 
 	public static String execProgram(String[] args) throws IOException {
 		String ln;
+		/**
+		 * Executes the command with args in a new process
+		 */
 		final Process p = Runtime.getRuntime().exec(args);
+
 		final BufferedReader br = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
-		BufferedReader bre = new BufferedReader(new InputStreamReader(
+		final BufferedReader bre = new BufferedReader(new InputStreamReader(
 				p.getErrorStream()));
 
+		/**
+		 * Reads input and error streams and writes content into the buffer to be
+		 * returned
+		 */
 		String bufferedOut = "";
 		while ((ln = br.readLine()) != null) {
 			bufferedOut = bufferedOut + "\n" + ln;
