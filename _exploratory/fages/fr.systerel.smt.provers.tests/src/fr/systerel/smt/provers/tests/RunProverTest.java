@@ -9,7 +9,10 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
+import org.eventb.core.ast.tests.FastFactory;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.junit.Assert;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -19,9 +22,51 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 
 public class RunProverTest extends AbstractTests{
+
+	///////////// TO BE DELETED
+	protected static final Type INT = ff.makeIntegerType();
+	protected static final Type BOOL = ff.makeBooleanType();
+	protected static final Type INT_SET = POW(INT);
+	protected static final Type ty_S = ff.makeGivenType("S");
+
+	protected static Type POW(Type base) {
+		return ff.makePowerSetType(base);
+	}
+
+	protected static Type CPROD(Type left, Type right) {
+		return ff.makeProductType(left, right);
+	}
+
+	protected static Type REL(Type left, Type right) {
+		return ff.makeRelationalType(left, right);
+	}
+
+	protected static Type mGivenSet(String name) {
+		return ff.makeGivenType(name);
+	}
 	
-	static ITypeEnvironment arith_te = mTypeEnvironment(//
-			"x", "ℤ", "y", "ℤ", "z", "ℤ");
+	protected static final Type S = ff.makeGivenType("S");
+	protected static final Type T = ff.makeGivenType("T");
+	protected static final Type U = ff.makeGivenType("U");
+	protected static final Type V = ff.makeGivenType("V");
+	protected static final Type X = ff.makeGivenType("X");
+	protected static final Type Y = ff.makeGivenType("Y");
+	protected static final ITypeEnvironment defaultTe;
+	static {
+		defaultTe = ff.makeTypeEnvironment();
+		defaultTe.addGivenSet("S");
+		defaultTe.addGivenSet("T");
+		defaultTe.addGivenSet("U");
+		defaultTe.addGivenSet("V");
+	}
+	
+	static ITypeEnvironment arith_te = FastFactory.mTypeEnvironment(
+			FastFactory.mList("x", "y", "z", "n" ), 
+			FastFactory.mList(INT, INT, INT, INT));
+	//////////// TO BE DELETED
+	
+	/*static ITypeEnvironment arith_te = mTypeEnvironment(//
+			"x", "ℤ", "y", "ℤ", "z", "ℤ");*/
 	
 	private static void doTest(List<String> inputHyps, String inputGoal,  ITypeEnvironment te) {	
 		List<Predicate> hypotheses = new ArrayList<Predicate>();
@@ -53,7 +98,8 @@ public class RunProverTest extends AbstractTests{
 		};
 
 		try {
-			smtProverCall.smtTranslation();
+			smtProverCall.callProver(smtProverCall.smtTranslation());
+			Assert.assertTrue("L'appel du prover n'a pas abouti.", smtProverCall.isValid());
 		} catch (TranslationException t) {
 			System.out.println(t.getMessage());
 			return;

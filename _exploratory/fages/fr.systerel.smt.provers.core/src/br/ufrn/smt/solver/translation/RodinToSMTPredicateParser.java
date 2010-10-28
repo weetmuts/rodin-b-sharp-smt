@@ -14,219 +14,314 @@ package br.ufrn.smt.solver.translation;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
+
+import fr.systerel.smt.provers.ast.SMTIdentifier;
+import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
 
 /**
  * This class is used to parse Event-B predicates, translates them into SMT-LIB
  * syntax with macros, and write them in an SMT-LIB file.
  */
 public class RodinToSMTPredicateParser {
+	private String translationPath;
+	private String smtFilePath;
+	private File smtFile;
 	private final String lemmaName;
-	private long minimalFiniteValue = 0;
-	private long minimalEnumValue = 0;
-	private long minimalElemvalue = 0;
-	private String translatedPath;
+	private final Signature signature;
+	private final Sequent sequent;
 	private List<String> macros = new ArrayList<String>();
-	private List<String> assumptions = new ArrayList<String>();
-	private TypeEnvironment typeEnvironment;
-	private String smtGoal = "";
-	private File translatedFile;
-	private boolean areNecessaryAllMacros = false;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param hypotheses
-	 * @param goal
+	 * Constructors
 	 */
-	public RodinToSMTPredicateParser(List<Predicate> hypotheses, Predicate goal) {
-		lemmaName = "lemma";
-		this.typeEnvironment = new TypeEnvironment(hypotheses, goal);
-		parsePredicates();
-		printLemmaOnFile();
+	public RodinToSMTPredicateParser(final String lemmaName,
+			final List<Predicate> assumptions, final Predicate goal) {
+		this.translationPath = System.getProperty("user.home");
+		this.lemmaName = lemmaName;
+		this.smtFilePath = this.translationPath + "/" + this.lemmaName + ".smt";
+		this.signature = parseSignature(assumptions, goal);
+		this.sequent = parseSequent(assumptions, goal);
 	}
 
-	/**
-	 * Getters
-	 */
-	public TypeEnvironment getTypeEnvironment() {
-		return typeEnvironment;
-	}
-
-	public File getTranslatedFile() {
-		return translatedFile;
-	}
-
-	public long getMinimalFiniteValue() {
-		return minimalFiniteValue;
-	}
-
-	public long getMinimalEnumValue() {
-		return minimalEnumValue;
-	}
-
-	public long getMinimalElemvalue() {
-		return minimalElemvalue;
-	}
-
-	public List<String> getMacros() {
-		return macros;
-	}
-
-	public List<String> getAssumptions() {
-		return assumptions;
+	public RodinToSMTPredicateParser(final List<Predicate> assumptions,
+			final Predicate goal) {
+		this("lemma", assumptions, goal);
 	}
 
 	/**
 	 * This method parses hypothesis and goal predicates and translates them
 	 * into SMT nodes
 	 */
-	public void parsePredicates() {
-		for (Predicate hyp : typeEnvironment.getHypotheses()) {
-			final String translatedHyp = TranslatorV1_2.translate(
-					typeEnvironment, hyp).toString();
-			if (!translatedHyp.isEmpty()) {
-				assumptions.add(translatedHyp);
-			}
-		}
+	private static Sequent parseSequent(final List<Predicate> assumptions,
+			final Predicate goal) {
+		final List<SMTNode<?>> translatedAssumptions = new ArrayList<SMTNode<?>>();
 
-		if (typeEnvironment.getGoal() != null) {
-			final String translatedGoal = TranslatorV1_2.translate(
-					typeEnvironment, typeEnvironment.getGoal()).toString();
-			if (!translatedGoal.isEmpty()) {
-				smtGoal = translatedGoal;
-			}
+		for (Predicate assumption : assumptions) {
+			translatedAssumptions.add(TranslatorV1_2.translate(assumption));
 		}
+		final SMTNode<?> translatedGoal = TranslatorV1_2.translate(goal);
+
+		return new Sequent(translatedAssumptions, translatedGoal);
 	}
 
-	private void printLemmaOnFile() {
-		final String benchmark = "(benchmark " + this.lemmaName + " ";
+	private static Signature parseSignature(final List<Predicate> assumptions,
+			final Predicate goal) {
+		final List<String> sorts = new ArrayList<String>();
+		final Hashtable<String, String> funs = new Hashtable<String, String>();
+		final List<SMTDeclareFunCommand> declarefuns = new ArrayList<SMTDeclareFunCommand>();
+		final Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
+		final Hashtable<String, String> preds = new Hashtable<String, String>();
 
-		try {
-			final String s;
-			if (translatedPath != null) {
-				s = translatedPath;
-			} else {
-				s = System.getProperty("user.home");
+		final Hashtable<String, Type> typeEnvironment = extractTypeEnvironment(
+				assumptions, goal);
+		final Iterator<Entry<String, Type>> typeEnvIterator = typeEnvironment
+				.entrySet().iterator();
+
+		while (typeEnvIterator.hasNext()) {
+			final Entry<String, Type> var = typeEnvIterator.next();
+			final String varName = var.getKey();
+			if (varName.contains("\'")) {
+				final String alternativeName = renameQuotVar(varName,
+						typeEnvironment);
+				singleQuotVars.put(varName, alternativeName);
 			}
-			translatedFile = new File(s + "/smtInputFile.smt");
-			if (!translatedFile.exists()) {
-				translatedFile.createNewFile();
+			final Type varType = var.getValue();
+			// Regra 4
+			if (varName.equals(varType.toString())) {
+				sorts.add(varType.toString());
 			}
-			final PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(translatedFile)));
-			out.println(benchmark);
-			out.println(":logic UNKNOWN");
-			if (!typeEnvironment.getSorts().isEmpty()) {
-				String extrasorts = ":extrasorts (";
-				for (final String sort : typeEnvironment.getSorts()) {
-					extrasorts = extrasorts + " " + sort;
+			// Regra 6
+			else if (varType.getSource() != null) {
+				String pair = "(Pair "
+						+ getSMTAtomicExpressionFormat(varType.getSource()
+								.toString())
+						+ " "
+						+ getSMTAtomicExpressionFormat(varType.getTarget()
+								.toString() + ")");
+				preds.put(varName, pair);
+			} else if (varType.getBaseType() != null) {
+				if (varName.equals(varType.getBaseType().toString())) {
+					sorts.add(varName);
+				} else {
+					preds.put(varName, getSMTAtomicExpressionFormat(varType
+							.getBaseType().toString()));
 				}
-				extrasorts = extrasorts + ")";
-				out.println(extrasorts);
+			} else {
+				funs.put(varName,
+						getSMTAtomicExpressionFormat(varType.toString()));
+				declarefuns.add(new SMTDeclareFunCommand(new SMTIdentifier(
+						varName), new Type[] {}, varType));
 			}
+		}
 
-			printHashtable(out, typeEnvironment.getPreds(), "extrapreds");
-			printHashtable(out, typeEnvironment.getFuns(), "extrafuns");
+		return new Signature(sorts, funs, declarefuns, singleQuotVars, preds);
+	}
 
-			out.println(":extramacros(");
+	private static Hashtable<String, Type> extractTypeEnvironment(
+			final List<Predicate> assumptions, final Predicate goal) {
+		Hashtable<String, Type> typeEnvironment = new Hashtable<String, Type>();
 
-			out.println("(union (lambda (?p1 ('t boolean)) (?q1 ('t boolean)) . (lambda (?x6 't) . (or (?p1 ?x6) (?q1 ?x6)))))");
-			out.println("(emptyset (lambda (?x5 't). false))");
-			out.println("(inter (lambda (?pd ('sd boolean))(?qd ('sd boolean)) . (lambda (?x7d 'sd) . (and (?pd ?x7d) (?qd ?x7d)))))");
-			out.println("(setminus (lambda (?p2 ('t boolean)) (?q2 ('t boolean)) . (lambda (?x8 't) . (and (?p2 ?x8) (not (?q2 ?x8))))))");
-			out.println("(in (lambda (?x9 't) (?p3 ('t boolean)) . (?p3 ?x9)))");
-			out.println("(subseteq (lambda (?s ('t boolean)) (?h ('t boolean)) . (forall (?t 't). (implies (?s ?t) (?h ?t)))))");
-			out.println("(subset (lambda (?p4 ('t boolean)) (?q3 ('t boolean)) . (and (subseteq ?p4 ?q3) 	(not (= ?p4 ?q3	)))))");
-			out.println("(Nat (lambda (?i Int) . (<= 0 ?i)))");
-			out.println("(ismax (lambda (?m Int) (?pi (Int boolean)) . (and (?pi ?m)(forall (?i1 Int) . (implies (?pi ?i1) (<= ?i1 ?m))))))");
-			out.println("(ismin (lambda (?m2 Int) (?ta (Int boolean)) . (and(in ?m2 ?ta)(forall (?xb Int) . (implies (in ?xb ?ta)(<=?m2 ?xb))))))");
-			out.println("(Nat1 (lambda (?i Int) . (<= 1 ?i)))");
-			out.println("(cartesianproduct (lambda (?p12 ('t1 boolean)) (?q12 ('t2 boolean)) . (lambda (?x1 't1) (?x2 't2) . (and (?p12 ?x1) (?q12 ?x2)))))");
-			out.println("(range (lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2)))))");
-			out.println("(subseteq2 (lambda (?p11 ('t1 't2 boolean)) (?q ('t1 't2 boolean)) . (forall (?x1 't1) (?x2 't2) . (implies (?p11 ?x1 ?x2) (?q ?x1 ?x2)))))");
-			out.println("(union2 (lambda (?p2c ('t1c 't2c boolean)) (?q2c ('t1c 't2c boolean)) . (lambda (?x1c 't1c) (?x2c 't2c) . (or (?p2c ?x1c ?x2c) (?q2c ?x1c ?x2c)))))");
-			out.println("(emptyset2 (lambda (?x 't1) (?y 't2). false))");
-			out.println("(inter2 (lambda (?p ('t1 't2 boolean)) (?q ('t1 't2 boolean)) . (lambda (?x 't1) (?y 't2) . (and (?p ?x ?y) (?q ?x ?y)))))");
-			out.println("(Pair (lambda (?e1 't) (?e2 't) . (lambda (?f1 't) (?f2 't) . (and (= ?f1 ?e1) (= ?f2 ?e2)))))");
-			out.println("(finite (lambda (?tb ('s boolean)) (?pe boolean) (?f ('s Int)) (?k Int).(iff ?pe (and (forall (?xa 's).(implies (in ?xa ?tb)(in (?f ?xa)(range 1 ?k))))(forall (?xa 's)(?ya 's).(implies (and (in ?xa ?tb)(in ?ya ?tb)(not (= ?xa ?ya)))(not (= (?f ?xa)(?f ?ya)))))))))");
-			out.println("(domain (lambda (?r ((Pair 't1 't2) boolean)) . (lambda (?x1 't1) . (exists (?x2 't2) . (?r (Pair ?x1 ?x2))))))");
-			// Domain
-			if (areNecessaryAllMacros) {
-				// range and relational image
+		extractFreeVarsTypes(typeEnvironment, goal);
+		extractBoundVarsTypes(typeEnvironment, goal);
 
-				out.println("(ran (lambda (?r ((Pair 's 't) boolean) (lambda (?y 't)(exists (?x 's)(r (pair ?x ?y)))))))");
-				out.println("(img (lambda (?r ((Pair 's 't) boolean)(?p ('s boolean) (lambda (?y 't) (exists (?x 's) (and (?p ?x)(r (pair ?x ?y)))))))))");
+		for (final Predicate assumption : assumptions) {
+			extractFreeVarsTypes(typeEnvironment, assumption);
+			extractBoundVarsTypes(typeEnvironment, assumption);
+		}
 
-				// Todas essas macros estão feitas sem os pontos, inclusive a
-				// macro img acima
-				// Domain restriction and subtraction, range restriction and
-				// subtraction
-				out.println("(domr (lambda (?r ((Pair 's 't) boolean)(?s ('s boolean)) (lambda (?p (Pair 's 't)(and (?r ?p)(?s (fst ?p)))))))) ");
-				out.println("(doms (lambda (?r ((Pair 's 't) boolean)(?s ('s boolean)) (lambda (?p (Pair 's 't)(and (?r ?p)(not (?s (fst ?p)))))))))");
-				out.println("(ranr (lambda (?r ((Pair 's 't) boolean)(?s ('t boolean)) (lambda (?p (Pair 's 't)(and (?r ?p)(?s (snd ?p))))))))");
-				out.println("(rans (lambda (?r ((Pair 's 't) boolean)(?s ('t boolean)) (lambda (?p (Pair 's 't)(and (?r ?p)(not (?s (snd ?p)))))))))");
+		return typeEnvironment;
+	}
 
-				// Inverse, composition, overwrite and identidy
-				out.println("(inv (lambda (?r ((Pair 's 't) boolean) (lambda (?p (Pair 's 't)(?r(pair (snd ?p)(fst ?p))))))))");
-				out.println("(comp (lambda (?r1 ((Pair 's 't) boolean)(?r2 ((Pair 't 'u) boolean) (lambda (?p (Pair 's 'u)) (exists (?x 't)(and (?r1 (pair (fst ?p) ?x)) (?r2 (pair ?x (snd ?p))))))))))");
-				out.println("(ovr (lambda (?r1 ((Pair 's 't) boolean)(?r2 ((Pair 's 't) boolean) (lambda (?p (Pair 's 'u))(or (?r2 ?p)(and (?r1 ?p)(not(exists(?q (Pair 's 't)) (and (?r2 ?q) (= (fst ?q)(fst ?p)))))))))))) ");
-				out.println("(id (lambda (?s ('t boolean)) (lambda ?p (Pair 't 't)) (and (?s (fst ?p)) (= (fst ?p)(snd ?p)))))");
-
-				// Auxiliary properties on relations
-				out.println("(funp (lambda (?R ((Pair 's 't) boolean)) (forall (?p (Pair 's 't))(?p1 (Pair 's 't)) (implies (and (?R ?p)(?R ?p1))(implies (= (fst ?p)(fst ?p1))(= (snd ?p)(snd ?p1)))))))");
-				out.println("(injp (lambda (?R ((Pair 's 't) boolean))(funp (inv ?R))))");
-				out.println("(totp (lambda (?X ('s boolean))(?R((Pair 's 't) boolean)) (forall (?p (Pair 's 't)) (= (?R ?p)(?X (fst ?p))))))");
-				out.println("(surp (lambda (?Y ('t boolean))(?R ((Pair 's 't) boolean)) (forall (?p (Pair 's 't)) (= (?R ?p)(?Y (snd ?p))))))");
-
-				// Sets of relations, functions (partial/total,
-				// injective/surjective/bijective);
-				out.println("(rel  (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean)) (forall (?p (Pair 's 't)) (implies (?R ?p)(and (?X (fst ?p))(?Y (snd ?p))))))))");
-				out.println("(pfun (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((rel ?X ?Y)  ?R) (funp ?R)))))");
-				out.println("(tfun (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((pfun ?X ?Y) ?R)(totp ?X ?R)))))");
-				out.println("(pinj (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((pfun ?X ?Y) ?R)(injp ?R)))))");
-				out.println("(tinj (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((pinj ?X ?Y) ?R)(totp ?X ?R)))))");
-				out.println("(psur (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((pfun ?X ?Y) ?R)(surp ?Y ?R)))))");
-				out.println("(tsur (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((psur ?X ?Y) ?R)(totp ?X ?R)))))");
-				out.println("(bij  (lambda (?X ('s boolean))(?Y ('s boolean)) (lambda (?R ((Pair 's 't) boolean))(and ((tsur ?X ?Y) ?R)((tinj ?X ?Y) ?R)))))");
+	private static void extractFreeVarsTypes(
+			final Hashtable<String, Type> typeEnvironment,
+			final Predicate predicate) {
+		FreeIdentifier[] freeVars = predicate.getFreeIdentifiers();
+		if (freeVars != null) {
+			for (int i = 0; i < freeVars.length; i++) {
+				String name = freeVars[i].getName();
+				Type type = freeVars[i].getType();
+				typeEnvironment.put(name, type);
 			}
-
-			for (final String macro : macros) {
-				out.println(macro);
-			}
-			out.println(")");
-			for (final String assumption : assumptions) {
-				out.println(":assumption" + assumption);
-			}
-			out.println(":formula (not" + smtGoal + ")");
-			out.println(")");
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
-	private void printHashtable(final PrintWriter out, final Hashtable<String, String> table, final String sectionName) {
-		if (!table.isEmpty()) {
-			final Set<Entry<String, String>> set = table.entrySet();
-			final Iterator<Entry<String, String>> iterator = set.iterator();
-			String extrapreds = ":" + sectionName + " (";
-			while (iterator.hasNext()) {
-				Entry<String, String> el = iterator.next();
-				extrapreds = extrapreds + "(" + el.getKey() // preds.eget(i).getFirstElement()
-						+ " " + el.getValue() + ")"; // preds.get(i).getSecondElement()
-														// + ")";
+	private static void extractBoundVarsTypes(
+			final Hashtable<String, Type> typeEnvironment,
+			final Predicate predicate) {
+		BoundIdentifier[] boundVars = predicate.getBoundIdentifiers();
+		if (boundVars != null) {
+			for (int i = 0; i < boundVars.length; i++) {
+				String name = boundVars[i].toString();
+				Type type = boundVars[i].getType();
+				typeEnvironment.put(name, type);
 			}
-			extrapreds = extrapreds + ")";
-			out.println(extrapreds);
 		}
+	}
+
+	/**
+	 * ??? replaces all occurrences of character "\'" in the given string and
+	 * add it into the given type environment
+	 */
+	private static String renameQuotVar(final String name,
+			final Hashtable<String, Type> typeEnv) {
+		int countofQuots = name.length() - name.lastIndexOf('\'');
+
+		String alternativeName = name.replaceAll("'", "_" + countofQuots + "_");
+		Type t = typeEnv.get(alternativeName);
+		while (t != null) {
+			countofQuots = countofQuots + 1;
+			alternativeName = name + "_" + countofQuots;
+			t = typeEnv.get(alternativeName);
+		}
+		return alternativeName;
+	}
+
+	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+		if (atomicExpression.equals("\u2124")) { // INTEGER
+			return "Int";
+		} else if (atomicExpression.equals("\u2115")) { // NATURAL
+			return "Nat";
+		} else if (atomicExpression.equals("\u2124" + 1)) {
+			return "Int1";
+		} else if (atomicExpression.equals("\u2115" + 1)) {
+			return "Nat1";
+		} else if (atomicExpression.equals("BOOL")) {
+			return "Bool";
+		} else if (atomicExpression.equals("TRUE")) {
+			return "true";
+		} else if (atomicExpression.equals("FALSE")) {
+			return "false";
+		} else if (atomicExpression.equals("\u2205")) {
+			return "emptyset";
+		}
+		return atomicExpression;
+	}
+
+	private PrintWriter openSMTFileWriter() {
+		try {
+			this.smtFile = new File(this.smtFilePath);
+			if (!this.smtFile.exists()) {
+				this.smtFile.createNewFile();
+			}
+
+			final PrintWriter smtFileWriter = new PrintWriter(
+					new BufferedWriter(new FileWriter(this.smtFile)));
+
+			return smtFileWriter;
+
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			ioe.getMessage();
+			return null;
+		}
+	}
+
+	private static void closeSMTFileWriter(PrintWriter smtFileWriter) {
+		smtFileWriter.close();
+	}
+
+	private static String extraHashtableSection(
+			final Hashtable<String, String> extraTable, final String sectionName) {
+		String extraSection = ":" + sectionName + "(";
+		for (final Entry<String, String> extraElt : extraTable.entrySet()) {
+			extraSection = extraSection + "(" + extraElt.getKey() + " "
+					+ extraElt.getValue() + ")";
+		}
+		extraSection = extraSection + ")";
+		return extraSection;
+	}
+
+	private static String benchmarkCmdClosing() {
+		return ")";
+	}
+
+	private String benchmarkCmdOpening() {
+		return "(benchmark " + this.lemmaName + " ";
+	}
+
+	private String logicSection() {
+		return ":logic " + this.signature.getLogic();
+	}
+
+	private String extrasortsSection() {
+		String extrasorts = ":extrasorts (";
+		for (final String sort : this.signature.getSorts()) {
+			extrasorts = extrasorts + " " + sort;
+		}
+		extrasorts = extrasorts + ")";
+		return extrasorts;
+	}
+
+	private String extrapredsSection() {
+		return extraHashtableSection(this.signature.getPreds(), "extrapreds");
+	}
+
+	private String extrafunsSection() {
+		return extraHashtableSection(this.signature.getFuns(), "extrafuns");
+	}
+
+	private String extramacrosSection() {
+		String extramacros = ":extramacros (";
+		for (final String macro : this.macros) {
+			extramacros = extramacros + "\n" + macro;
+		}
+		extramacros = extramacros + ")";
+		return extramacros;
+	}
+
+	private String assumptionsSection() {
+		String assumptionsSection = "";
+		for (final SMTNode<?> assumption : this.sequent.getAssumptions()) {
+			assumptionsSection = assumptionsSection + ":assumption"
+					+ assumption.toString() + "\n";
+		}
+		return assumptionsSection;
+	}
+
+	private String formulaSection() {
+		return ":formula (not" + this.sequent.getGoal().toString() + ")";
+	}
+
+	public void printLemma(final PrintWriter pw) {
+		pw.println(this.benchmarkCmdOpening());
+		pw.println(this.logicSection());
+		if (!this.signature.getSorts().isEmpty()) {
+			pw.println(this.extrasortsSection());
+		}
+		if (!this.signature.getPreds().isEmpty()) {
+			pw.println(this.extrapredsSection());
+		}
+		if (!this.signature.getFuns().isEmpty()) {
+			pw.println(this.extrafunsSection());
+		}
+		if (!this.macros.isEmpty()) {
+			pw.println(this.extramacrosSection());
+		}
+		pw.println(this.assumptionsSection());
+		pw.println(this.formulaSection());
+		pw.println(benchmarkCmdClosing());
+	}
+
+	public File getSMTFile() {
+		return smtFile;
+	}
+
+	public void writeSMTFile() {
+		final PrintWriter smtFileWriter = this.openSMTFileWriter();
+		this.printLemma(smtFileWriter);
+		closeSMTFileWriter(smtFileWriter);
 	}
 }
