@@ -16,14 +16,15 @@ import org.junit.Test;
 import br.ufrn.smt.solver.translation.TranslatorV1_2;
 
 /**
- * Ensure that translation from Event-B to SMT-LIB is correct.
+ * Ensure that translation from ppTrans produced predicates to SMT-LIB
+ * predicates is correct.
  * 
  * @author Yoann Guyot
  * 
  */
 public class TranslationTests extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
-	protected static final String defaultFailMessage = " ≠ ";
+	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
@@ -80,10 +81,7 @@ public class TranslationTests extends AbstractTests {
 				.toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
-		if (!actualSMTNode.equals(expectedSMTNode)) {
-			throw new IllegalArgumentException("\n" + actualSMTNode + "\n"
-					+ failMessage + expectedSMTNode);
-		}
+		Assert.assertEquals(failMessage, expectedSMTNode, actualSMTNode);
 	}
 
 	private static final String translationMessage(final Predicate ppPred,
@@ -151,12 +149,12 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(in x s))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(s x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R)(and (in x s) (in y s)))");
+				"(forall (?x R) (?y R)(and (s x) (s y)))");
 	}
 
 	@Test
@@ -164,12 +162,12 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(in x s))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(s x))");
 		/**
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R)(and (in x s) (in y s)))");
+				"(exists (?x R) (?y R)(and (s x) (s y)))");
 	}
 
 	/**

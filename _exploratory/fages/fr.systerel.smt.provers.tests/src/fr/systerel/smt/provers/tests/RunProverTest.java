@@ -9,8 +9,6 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.Type;
-import org.eventb.core.ast.tests.FastFactory;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,77 +18,83 @@ import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
+/**
+ * This class contains acceptance tests of the plugin.
+ * 
+ * @author Yoann Guyot
+ * 
+ */
+public class RunProverTest extends AbstractTests {
+	/**
+	 * In linux: '/home/username/bin/'
+	 */
+	private static final String BIN_PATH = System.getProperty("user.home")
+			+ System.getProperty("file.separator") + "bin"
+			+ System.getProperty("file.separator");
 
-public class RunProverTest extends AbstractTests{
+	/**
+	 * Possible solver call results
+	 */
+	private static boolean VALID = true;
+	private static boolean NOT_VALID = false;
 
-	///////////// TO BE DELETED
-	protected static final Type INT = ff.makeIntegerType();
-	protected static final Type BOOL = ff.makeBooleanType();
-	protected static final Type INT_SET = POW(INT);
-	protected static final Type ty_S = ff.makeGivenType("S");
+	private static final NullProofMonitor MONITOR = new NullProofMonitor();
 
-	protected static Type POW(Type base) {
-		return ff.makePowerSetType(base);
-	}
+	static ITypeEnvironment arith_te = mTypeEnvironment(//
+			"x", "ℤ", "y", "ℤ", "z", "ℤ");
+	static ITypeEnvironment pow_te = mTypeEnvironment(//
+			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	protected static Type CPROD(Type left, Type right) {
-		return ff.makeProductType(left, right);
-	}
+	/**
+	 * Parses the given sequent in the given type environment and launch the
+	 * test with the such produced 'Predicate' instances
+	 * 
+	 * @param inputHyps
+	 *            list of the sequent hypothesis written in Event-B syntax
+	 * @param inputGoal
+	 *            the sequent goal written in Event-B syntax
+	 * @param te
+	 *            the given type environment
+	 * @param expectedSolverResult
+	 *            the result expected to be produced by the solver call
+	 */
+	private static void doTest(final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
-	protected static Type REL(Type left, Type right) {
-		return ff.makeRelationalType(left, right);
-	}
-
-	protected static Type mGivenSet(String name) {
-		return ff.makeGivenType(name);
-	}
-	
-	protected static final Type S = ff.makeGivenType("S");
-	protected static final Type T = ff.makeGivenType("T");
-	protected static final Type U = ff.makeGivenType("U");
-	protected static final Type V = ff.makeGivenType("V");
-	protected static final Type X = ff.makeGivenType("X");
-	protected static final Type Y = ff.makeGivenType("Y");
-	protected static final ITypeEnvironment defaultTe;
-	static {
-		defaultTe = ff.makeTypeEnvironment();
-		defaultTe.addGivenSet("S");
-		defaultTe.addGivenSet("T");
-		defaultTe.addGivenSet("U");
-		defaultTe.addGivenSet("V");
-	}
-	
-	static ITypeEnvironment arith_te = FastFactory.mTypeEnvironment(
-			FastFactory.mList("x", "y", "z", "n" ), 
-			FastFactory.mList(INT, INT, INT, INT));
-	//////////// TO BE DELETED
-	
-	/*static ITypeEnvironment arith_te = mTypeEnvironment(//
-			"x", "ℤ", "y", "ℤ", "z", "ℤ");*/
-	
-	private static void doTest(List<String> inputHyps, String inputGoal,  ITypeEnvironment te) {	
-		List<Predicate> hypotheses = new ArrayList<Predicate>();
-		
 		for (String hyp : inputHyps) {
 			hypotheses.add(parse(hyp, te));
 		}
-		
-		Predicate goal = parse(inputGoal, te);
-		
-		doTest(hypotheses,goal);
+
+		final Predicate goal = parse(inputGoal, te);
+
+		doTest(hypotheses, goal, expectedSolverResult);
 	}
-	
-	private static void doTest(List<Predicate> hyp, Predicate goal) {
+
+	/**
+	 * First, calls the translation of the given sequent (hypothesis and goal
+	 * 'Predicate' instances) into SMT-LIB syntax, and then calls the SMT
+	 * prover. The test is successful if the solver returns the expected result.
+	 * 
+	 * @param parsedHypothesis
+	 *            list of the sequent hypothesis (Predicate instances)
+	 * @param parsedGoal
+	 *            sequent goal (Predicate instance)
+	 * @param expectedSolverResult
+	 *            the result expected to be produced by the solver call
+	 */
+	private static void doTest(final List<Predicate> parsedHypothesis,
+			final Predicate parsedGoal, final boolean expectedSolverResult) {
 		// Type check goal and hypotheses
-		assertTypeChecked(goal);
-		for (Predicate predicate : hyp) {
+		assertTypeChecked(parsedGoal);
+		for (Predicate predicate : parsedHypothesis) {
 			assertTypeChecked(predicate);
 		}
-		
-		// Create an instance of SmtProversCall
-		SmtProverCall smtProverCall = new SmtProverCall(hyp, goal, MONITOR,
-				"SMT") {
 
+		// Create an instance of SmtProversCall
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+				parsedGoal, MONITOR, "SMT") {
 			@Override
 			public String displayMessage() {
 				return "SMT";
@@ -98,20 +102,24 @@ public class RunProverTest extends AbstractTests{
 		};
 
 		try {
-			smtProverCall.callProver(smtProverCall.smtTranslation());
-			Assert.assertTrue("L'appel du prover n'a pas abouti.", smtProverCall.isValid());
+			final List<String> smtArgs = new ArrayList<String>(
+					smtProverCall.smtTranslation());
+			smtProverCall.callProver(smtArgs);
+			Assert.assertEquals(
+					"The result of the SMT prover wasn't the expected one.",
+					expectedSolverResult, smtProverCall.isValid());
 		} catch (TranslationException t) {
 			System.out.println(t.getMessage());
-			return;
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
-			return;
 		}
 	}
-	
 
+	/**
+	 * A ProofMonitor is necessary for SmtProverCall instances creation.
+	 * Instances from this ProofMonitor do nothing.
+	 */
 	private static class NullProofMonitor implements IProofMonitor {
-
 		public NullProofMonitor() {
 			// Nothing do to
 		}
@@ -130,102 +138,92 @@ public class RunProverTest extends AbstractTests{
 		public void setTask(String name) {
 			// nothing to do
 		}
-
 	}
 
-	private static final NullProofMonitor MONITOR = new NullProofMonitor();
-
-	public static final String VERIT_PATH = "C:\\Utilisateurs\\fages\\Projets\\C444_Decert\\solver\\exe\\veriT_200907.exe";
-
-	public static final String CVC3_PATH = "C:\\Utilisateurs\\fages\\Projets\\C444_Decert\\solver\\exe\\cvc3-2.2-win32-opt.exe";
-
-	public static final String Z3_PATH = "C:\\Program Files\\Microsoft Research\\Z3-2.10\\bin\\z3.exe";
-	
-	public static final String VERIT_PATH_LIN = "/home/guyot/bin/verit";
-	public static final String CVC3_PATH_LIN = "/usr/bin/cvc3";
-	public static final String Z3_PATH_LIN = "/home/guyot/bin/z3";
-
-	
-	private void setPreferencesForVeriTTest() {
-		SmtProversCore core = SmtProversCore.getDefault();
-		IPreferenceStore store = core.getPreferenceStore();
-		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("veriT", VERIT_PATH_LIN, "", true, false));
-		String preferences = CreatePreferences(solvers);
-		store.setValue("solverpreferences",preferences);
+	/**
+	 * Sets plugin preferences with the given solver preferences
+	 * 
+	 * @param solverBinaryName
+	 * @param solverArgs
+	 * @param isSMTV1_2Compatible
+	 * @param isSMTV2_0Compatible
+	 */
+	private static void setSolverPreferences(final String solverBinaryName,
+			final String solverArgs, final boolean isSMTV1_2Compatible,
+			final boolean isSMTV2_0Compatible) {
+		final SmtProversCore core = SmtProversCore.getDefault();
+		final IPreferenceStore store = core.getPreferenceStore();
+		final String solverPath = BIN_PATH + solverBinaryName;
+		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
+		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
+				isSMTV1_2Compatible, isSMTV2_0Compatible));
+		final String preferences = CreatePreferences(solvers);
+		store.setValue("solverpreferences", preferences);
 		store.setValue("solverindex", 0);
 		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH_LIN);
+		store.setValue("prepropath", BIN_PATH + "verit");
 	}
 
-	private void setPreferencesForCvc3Test() {
-		SmtProversCore core = SmtProversCore.getDefault();
-		IPreferenceStore store = core.getPreferenceStore();
-		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("cvc3", CVC3_PATH_LIN, "-lang smt", true, false));
-		String preferences = CreatePreferences(solvers);
-		store.setValue("solverpreferences",preferences);
-		store.setValue("solverindex", 0);
-		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH_LIN);
+	private static void setPreferencesForVeriTTest() {
+		setSolverPreferences("verit", "", true, false);
 	}
-	
-	private void setPreferencesForZ3Test() {
-		SmtProversCore core = SmtProversCore.getDefault();
-		IPreferenceStore store = core.getPreferenceStore();
-		List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail("z3", Z3_PATH_LIN, "", true, false));
-		String preferences = CreatePreferences(solvers);
-		store.setValue("solverpreferences",preferences);
-		store.setValue("solverindex", 0);
-		store.setValue("usingprepro", true);
-		store.setValue("prepropath", VERIT_PATH_LIN);
-		
+
+	private static void setPreferencesForCvc3Test() {
+		setSolverPreferences("cvc3", "-lang smt", true, false);
+	}
+
+	private static void setPreferencesForZ3Test() {
+		setSolverPreferences("z3", "", true, false);
+	}
+
+	@Test
+	public void testSolverCallBelong() {
+		// Set preferences to test with VeriT
+		setPreferencesForVeriTTest();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("g ∈ e");
+
+		// perform test
+		doTest(hyps, "g ∈ f", pow_te, NOT_VALID);
 	}
 
 	@Test
 	public void testSolverCallWithVeriT() {
-		
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
-		
-		List<String> hyps = new ArrayList<String>();
+
+		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
-		
+
 		// perform test
-		doTest(hyps, "x < z",arith_te);
-		
+		doTest(hyps, "x < z", arith_te, VALID);
 	}
-	
+
 	@Test
 	public void testSolverCallWithCvc3() {
-		
 		// Set preferences to test with VeriT
 		setPreferencesForCvc3Test();
-		
-		List<String> hyps = new ArrayList<String>();
+
+		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
-		
+
 		// perform test
-		doTest(hyps, "x < z",arith_te);
-		
+		doTest(hyps, "x < z", arith_te, VALID);
 	}
-	
+
 	@Test
 	public void testSolverCallWithZ3() {
-		
 		// Set preferences to test with VeriT
 		setPreferencesForZ3Test();
-		
-		List<String> hyps = new ArrayList<String>();
+
+		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
-		
+
 		// perform test
-		doTest(hyps, "x < z",arith_te);
-		
+		doTest(hyps, "x < z", arith_te, VALID);
 	}
-	
 }

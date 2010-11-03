@@ -33,7 +33,7 @@ public abstract class AbstractTests {
 	 */
 	protected static ITypeEnvironment mTypeEnvironment(String... strs) {
 		assert (strs.length & 1) == 0;
-		ITypeEnvironment te = ff.makeTypeEnvironment();
+		final ITypeEnvironment te = ff.makeTypeEnvironment();
 		for (int i = 0; i < strs.length; i += 2) {
 			final String name = strs[i];
 			final Type type = parseType(strs[i + 1]);
@@ -43,27 +43,32 @@ public abstract class AbstractTests {
 	}
 
 	/**
-	 * Parses an Event-B predicate string representation to build a Predicate instance
+	 * Parses an Event-B predicate string representation to build a 'Predicate'
+	 * instance
 	 */
-	public static Predicate parse(String string, ITypeEnvironment te) {
-		IParseResult parseResult = ff.parsePredicate(string, V2, null);
-		assertFalse("Parse error for: " + string +
-				"\nProblems: " + parseResult.getProblems(),
-				parseResult.hasProblem());
-		Predicate pred = parseResult.getParsedPredicate();
-		ITypeCheckResult tcResult = pred.typeCheck(te);
-		assertTrue(string + " is not typed. Problems: " + tcResult.getProblems(),
-				pred.isTypeChecked());
+	public static Predicate parse(final String predicate,
+			final ITypeEnvironment te) {
+		final IParseResult parseResult = ff.parsePredicate(predicate, V2, null);
+		assertFalse("Parse error for: " + predicate + "\nProblems: "
+				+ parseResult.getProblems(), parseResult.hasProblem());
+		final Predicate parsedPredicate = parseResult.getParsedPredicate();
+		final ITypeCheckResult tcResult = parsedPredicate.typeCheck(te);
+		assertTrue(
+				predicate + " is not typed. Problems: "
+						+ tcResult.getProblems(),
+				parsedPredicate.isTypeChecked());
 		te.addAll(tcResult.getInferredEnvironment());
-		return pred;
+		return parsedPredicate;
 	}
 
-	public static Predicate parse(String string) {
-		return parse(string, ff.makeTypeEnvironment());
+	public static Predicate parse(final String predicate) {
+		return parse(predicate, ff.makeTypeEnvironment());
 	}
 
-	public static void assertTypeChecked(Formula<?> formula) {
+	/**
+	 * Asserts that the given formula is typed.
+	 */
+	public static void assertTypeChecked(final Formula<?> formula) {
 		assertTrue("Formula is not typed: " + formula, formula.isTypeChecked());
 	}
-
 }
