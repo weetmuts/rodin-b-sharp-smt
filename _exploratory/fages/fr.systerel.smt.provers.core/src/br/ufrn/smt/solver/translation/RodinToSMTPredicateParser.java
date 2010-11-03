@@ -17,8 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -27,6 +26,7 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
+import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTIdentifier;
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.commands.SMTDeclareFunCommand;
@@ -42,7 +42,7 @@ public class RodinToSMTPredicateParser {
 	private final String lemmaName;
 	private final Signature signature;
 	private final Sequent sequent;
-	private List<String> macros = new ArrayList<String>();
+	private final List<String> macros;
 
 	/**
 	 * Constructors
@@ -54,6 +54,9 @@ public class RodinToSMTPredicateParser {
 		this.smtFilePath = this.translationPath + "/" + this.lemmaName + ".smt";
 		this.signature = parseSignature(assumptions, goal);
 		this.sequent = parseSequent(assumptions, goal);
+		this.macros = new ArrayList<String>();
+		this.macros
+				.add("(Pair (lambda (?e1 't) (?e2 't) . (lambda (?f1 't) (?f2 't) . (and (= ?f1 ?e1) (= ?f2 ?e2)))))");
 	}
 
 	public RodinToSMTPredicateParser(final List<Predicate> assumptions,
@@ -67,12 +70,12 @@ public class RodinToSMTPredicateParser {
 	 */
 	private static Sequent parseSequent(final List<Predicate> assumptions,
 			final Predicate goal) {
-		final List<SMTNode<?>> translatedAssumptions = new ArrayList<SMTNode<?>>();
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
 		for (Predicate assumption : assumptions) {
 			translatedAssumptions.add(TranslatorV1_2.translate(assumption));
 		}
-		final SMTNode<?> translatedGoal = TranslatorV1_2.translate(goal);
+		final SMTFormula translatedGoal = TranslatorV1_2.translate(goal);
 
 		return new Sequent(translatedAssumptions, translatedGoal);
 	}
@@ -80,21 +83,17 @@ public class RodinToSMTPredicateParser {
 	private static Signature parseSignature(final List<Predicate> assumptions,
 			final Predicate goal) {
 		final List<String> sorts = new ArrayList<String>();
-		final Hashtable<String, String> funs = new Hashtable<String, String>();
+		final HashMap<String, String> funs = new HashMap<String, String>();
 		final List<SMTDeclareFunCommand> declarefuns = new ArrayList<SMTDeclareFunCommand>();
-		final Hashtable<String, String> singleQuotVars = new Hashtable<String, String>();
-		final Hashtable<String, String> preds = new Hashtable<String, String>();
+		final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
+		final HashMap<String, String> preds = new HashMap<String, String>();
 
-		final Hashtable<String, Type> typeEnvironment = extractTypeEnvironment(
+		final HashMap<String, Type> typeEnvironment = extractTypeEnvironment(
 				assumptions, goal);
-		final Iterator<Entry<String, Type>> typeEnvIterator = typeEnvironment
-				.entrySet().iterator();
-
-		while (typeEnvIterator.hasNext()) {
-			final Entry<String, Type> var = typeEnvIterator.next();
+		for (final Entry<String, Type> var : typeEnvironment.entrySet()) {
 			final String varName = var.getKey();
 			if (varName.contains("\'")) {
-				final String alternativeName = renameQuotVar(varName,
+				final String alternativeName = renamePrimeVar(varName,
 						typeEnvironment);
 				singleQuotVars.put(varName, alternativeName);
 			}
@@ -130,9 +129,9 @@ public class RodinToSMTPredicateParser {
 		return new Signature(sorts, funs, declarefuns, singleQuotVars, preds);
 	}
 
-	private static Hashtable<String, Type> extractTypeEnvironment(
+	private static HashMap<String, Type> extractTypeEnvironment(
 			final List<Predicate> assumptions, final Predicate goal) {
-		Hashtable<String, Type> typeEnvironment = new Hashtable<String, Type>();
+		HashMap<String, Type> typeEnvironment = new HashMap<String, Type>();
 
 		extractFreeVarsTypes(typeEnvironment, goal);
 		extractBoundVarsTypes(typeEnvironment, goal);
@@ -146,7 +145,7 @@ public class RodinToSMTPredicateParser {
 	}
 
 	private static void extractFreeVarsTypes(
-			final Hashtable<String, Type> typeEnvironment,
+			final HashMap<String, Type> typeEnvironment,
 			final Predicate predicate) {
 		FreeIdentifier[] freeVars = predicate.getFreeIdentifiers();
 		if (freeVars != null) {
@@ -159,7 +158,7 @@ public class RodinToSMTPredicateParser {
 	}
 
 	private static void extractBoundVarsTypes(
-			final Hashtable<String, Type> typeEnvironment,
+			final HashMap<String, Type> typeEnvironment,
 			final Predicate predicate) {
 		BoundIdentifier[] boundVars = predicate.getBoundIdentifiers();
 		if (boundVars != null) {
@@ -175,8 +174,8 @@ public class RodinToSMTPredicateParser {
 	 * ??? replaces all occurrences of character "\'" in the given string and
 	 * add it into the given type environment
 	 */
-	private static String renameQuotVar(final String name,
-			final Hashtable<String, Type> typeEnv) {
+	private static String renamePrimeVar(final String name,
+			final HashMap<String, Type> typeEnv) {
 		int countofQuots = name.length() - name.lastIndexOf('\'');
 
 		String alternativeName = name.replaceAll("'", "_" + countofQuots + "_");
@@ -233,15 +232,24 @@ public class RodinToSMTPredicateParser {
 		smtFileWriter.close();
 	}
 
-	private static String extraHashtableSection(
-			final Hashtable<String, String> extraTable, final String sectionName) {
+	private static String extraHashMapSection(
+			final HashMap<String, String> extraMap, final String sectionName) {
 		String extraSection = ":" + sectionName + "(";
-		for (final Entry<String, String> extraElt : extraTable.entrySet()) {
+		for (final Entry<String, String> extraElt : extraMap.entrySet()) {
 			extraSection = extraSection + "(" + extraElt.getKey() + " "
 					+ extraElt.getValue() + ")";
 		}
 		extraSection = extraSection + ")";
 		return extraSection;
+	}
+
+	private static String formatAssumption(String assumptions,
+			final String assumption) {
+		return assumptions + ":assumption " + assumption + "\n";
+	}
+
+	private static String formatExtraMacros(String macros, final String macro) {
+		return macros + "\n" + macro;
 	}
 
 	private static String benchmarkCmdClosing() {
@@ -266,18 +274,19 @@ public class RodinToSMTPredicateParser {
 	}
 
 	private String extrapredsSection() {
-		return extraHashtableSection(this.signature.getPreds(), "extrapreds");
+		return extraHashMapSection(this.signature.getPreds(), "extrapreds");
 	}
 
 	private String extrafunsSection() {
-		return extraHashtableSection(this.signature.getFuns(), "extrafuns");
+		return extraHashMapSection(this.signature.getFuns(), "extrafuns");
 	}
 
 	private String extramacrosSection() {
 		String extramacros = ":extramacros (";
 		for (final String macro : this.macros) {
-			extramacros = extramacros + "\n" + macro;
+			extramacros = formatExtraMacros(extramacros, macro);
 		}
+
 		extramacros = extramacros + ")";
 		return extramacros;
 	}
@@ -285,14 +294,14 @@ public class RodinToSMTPredicateParser {
 	private String assumptionsSection() {
 		String assumptionsSection = "";
 		for (final SMTNode<?> assumption : this.sequent.getAssumptions()) {
-			assumptionsSection = assumptionsSection + ":assumption"
-					+ assumption.toString() + "\n";
+			assumptionsSection = formatAssumption(assumptionsSection,
+					assumption.toString());
 		}
 		return assumptionsSection;
 	}
 
 	private String formulaSection() {
-		return ":formula (not" + this.sequent.getGoal().toString() + ")";
+		return ":formula (not " + this.sequent.getGoal().toString() + ")";
 	}
 
 	public void printLemma(final PrintWriter pw) {

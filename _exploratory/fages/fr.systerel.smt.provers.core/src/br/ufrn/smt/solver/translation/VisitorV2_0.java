@@ -46,6 +46,7 @@ import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * This class translate a formula expressed in Event-B syntax to a formula in
@@ -126,8 +127,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MUL, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -142,8 +142,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.OR, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -159,24 +158,26 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		case Formula.BOOL:
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
 	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -194,8 +195,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -211,8 +211,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.IFF, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -225,19 +224,18 @@ public class VisitorV2_0 implements ISimpleVisitor {
 					.makeBoolean(SMTNode.TRUE), sf.makeBoolean(SMTNode.FALSE)));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
 	@Override
-	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
-		assert false;
+	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {//FIXME Why is that?
+		throw new IllegalArgumentException();
 	}
 
 	@Override
-	public void visitBoundIdentifier(BoundIdentifier expression) {
-		assert false;
+	public void visitBoundIdentifier(BoundIdentifier expression) {//FIXME Why is that?
+		throw new IllegalArgumentException();
 	}
 
 	@Override
@@ -260,19 +258,20 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makePropAtom(SMTNode.PFALSE));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
 	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'Quantified predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -296,8 +295,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -308,7 +306,8 @@ public class VisitorV2_0 implements ISimpleVisitor {
 
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -319,8 +318,7 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.UNARY_MINUS, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -332,23 +330,23 @@ public class VisitorV2_0 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.NOT, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		assert false;
+		throw new IllegalArgumentException(
+		"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 	
 	@Override
-	public void visitExtendedExpression(ExtendedExpression expression) {
+	public void visitExtendedExpression(ExtendedExpression expression) {//FIXME Why is that?
 		// Do nothing.
 	}
 	
 	@Override
-	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
+	public void visitExtendedPredicate(ExtendedPredicate perdicate) {//FIXME Why is that?
 		// Do nothing.
 	}
 }

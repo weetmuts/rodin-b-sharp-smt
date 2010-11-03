@@ -45,12 +45,11 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
-
-import fr.systerel.smt.provers.ast.SMTEmpty;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * This class translate a formula expressed in Event-B syntax to a formula in
@@ -65,33 +64,28 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	private SMTFactory sf;
 
 	/** The Bound identifier list. */
-	private ArrayList<String> bids;
+	private ArrayList<String> boundIdentifers;
 
 	/** The list of names already used (Free identifiers + others) list. */
-	private ArrayList<String> fids;
+	private ArrayList<String> freeIdentifiers;
 
 	/**
 	 * This method translates the given predicate into an SMT Node.
 	 */
-	// TODO remplacer SMTNode<?> par SMTNode<Formula>
-	public static SMTNode<?> translate(Predicate predicate) { // TODO
-																// remplacer
-																// Predicate
-																// par
-																// Formula?
+	public static SMTFormula translate(Predicate predicate) {
 		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
-		return translator.getSMTNode();
+		return translator.getSMTFormula();
 	}
 
 	/**
 	 * Builds a new visitor.
 	 */
-	private TranslatorV1_2(ArrayList<String> fids) {
+	private TranslatorV1_2(ArrayList<String> freeIdentifiers) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
-		this.bids = new ArrayList<String>();
-		this.fids = fids;
+		this.boundIdentifers = new ArrayList<String>();
+		this.freeIdentifiers = freeIdentifiers;
 	}
 
 	/**
@@ -100,21 +94,26 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	private TranslatorV1_2(Predicate predicate) {
 		stack = new Stack<SMTNode<?>>();
 		sf = SMTFactory.getDefault();
-		this.bids = new ArrayList<String>();
-		this.fids = new ArrayList<String>();
+		this.boundIdentifers = new ArrayList<String>();
+		this.freeIdentifiers = new ArrayList<String>();
 		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
-			this.fids.add(ident.getName());
+			this.freeIdentifiers.add(ident.getName());
 		}
 	}
 
 	/**
 	 * Returns the SMT Node on the top of the stack
 	 */
-	private SMTNode<?> getSMTNode() {
+	private SMTFormula getSMTFormula() {
 		if (stack.size() == 1) {
-			return stack.pop();
+			final SMTNode<?> node = stack.pop();
+			if (node instanceof SMTFormula) {
+				return (SMTFormula)node;
+			} else {
+				throw new IllegalArgumentException(Messages.TranslatorV1_2_translation_error);
+			}
 		} else {
-			return new SMTEmpty();
+			throw new IllegalStateException(Messages.TranslatorV1_2_stack_error);
 		}
 	}
 
@@ -172,8 +171,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			// TODO
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -188,8 +186,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.OR, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -217,24 +214,26 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeMacroTerm(SMTNode.MACRO, "emptyset", null, false));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
 	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -284,8 +283,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 					false));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -301,8 +299,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.IFF, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -315,38 +312,36 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 					sf.makeBoolean(SMTNode.TRUE), sf.makeBoolean(SMTNode.FALSE)));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
 	@Override
-	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
-		BoundIdentDecl[] tempIdentDeclTab = new BoundIdentDecl[1];
+	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
+		final BoundIdentDecl[] tempIdentDeclTab = new BoundIdentDecl[1];
 		tempIdentDeclTab[0] = boundIdentDecl;
 
 		// add bound idents identifier in the list, if exists in the list a new
 		// name is computed
-		Set<String> fidsSet = new HashSet<String>(fids);
-		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab,
-				fidsSet);
+		final Set<String> fidsSet = new HashSet<String>(this.freeIdentifiers);
+		final String[] newNames = QuantifiedUtil.resolveIdents(
+				tempIdentDeclTab, fidsSet);
 
-		if (newNames.length != 1) {
-			assert false;
-			return;
+		if (newNames.length != 1) { // FIXME Why is that?
+			throw new IllegalStateException();
 		}
 
-		fids.add(newNames[0]);
-		bids.add(newNames[0]);
+		this.freeIdentifiers.add(newNames[0]);
+		this.boundIdentifers.add(newNames[0]);
 
-		stack.push(sf.makeBoundIdentDecl(SMTNode.BOUND_IDENTIFIER_DECL,
+		stack.push(sf.makeQuantifiedVariable(SMTNode.QUANTIFIED_VARIABLE,
 				newNames[0], boundIdentDecl.getType()));
 	}
 
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		String identifier = bids.get(bids.size() - expression.getBoundIndex()
-				- 1);
+		String identifier = boundIdentifers.get(boundIdentifers.size()
+				- expression.getBoundIndex() - 1);
 		stack.push(sf.makeIdentifier(identifier));
 	}
 
@@ -370,14 +365,14 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makePropAtom(SMTNode.PFALSE));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
 	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -387,7 +382,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 
 		// add bound idents identifier in the list, if exists in the list a new
 		// name is computed
-		Set<String> fidsSet = new HashSet<String>(fids);
+		Set<String> fidsSet = new HashSet<String>(freeIdentifiers);
 		String[] newNames = QuantifiedUtil.resolveIdents(tempIdentDeclTab,
 				fidsSet);
 
@@ -398,35 +393,36 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			stack.push(sf.makeQuantifiedPred(
-					SMTNode.QUANTIFIED_PRED_FORALL_DECL, children1, children2));
+			stack.push(sf.makeQuantifiedPred(SMTNode.FORALL, children1,
+					children2));
 			break;
 		case Formula.EXISTS:
-			stack.push(sf.makeQuantifiedPred(
-					SMTNode.QUANTIFIED_PRED_EXISTS_DECL, children1, children2));
+			stack.push(sf.makeQuantifiedPred(SMTNode.EXISTS, children1,
+					children2));
 			break;
 		default:
-			assert false;
-			break;
-
+			throw new IllegalTagException(predicate.getTag());
 		}
 
 		// remove added bound idents identifier of the list
 		for (int i = 0; i < newNames.length; i++) {
-			bids.remove(newNames[i]);
+			boundIdentifers.remove(newNames[i]);
 		}
 	}
 
 	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
-		final SMTTerm[] children = toTermArray(convert(predicate.getLeft(),
-				predicate.getRight()));
+		final SMTTerm[] children;
 		switch (predicate.getTag()) {
 		case Formula.NOTEQUAL:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
 					children, true));
 			break;
 		case Formula.EQUAL:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			FormulaFactory ff = FormulaFactory.getDefault();
 
 			// Check Type of equality members
@@ -438,44 +434,61 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			}
 			break;
 		case Formula.LT:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeArithmeticFormula(SMTNode.LT, children));
 			break;
 		case Formula.LE:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeArithmeticFormula(SMTNode.LE, children));
 			break;
 		case Formula.GT:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeArithmeticFormula(SMTNode.GT, children));
 			break;
 		case Formula.GE:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
 			break;
 		case Formula.IN:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "in",
-					children, false));
+			children = toTermArray(convert(predicate.getRight(),
+					predicate.getLeft()));
+			stack.push(sf.makeMacroFormula(SMTNode.IN, "", children, false));
 			break;
 		case Formula.NOTIN:
-			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "in",
-					children, true));
+			children = toTermArray(convert(predicate.getRight(),
+					predicate.getLeft()));
+			stack.push(sf.makeMacroFormula(SMTNode.IN, "", children, true));
 			break;
 		case Formula.SUBSET:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
 					children, false));
 			break;
 		case Formula.SUBSETEQ:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subseteq",
 					children, false));
 			break;
 		case Formula.NOTSUBSET:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
 					children, true));
 			break;
 		case Formula.NOTSUBSETEQ:
+			children = toTermArray(convert(predicate.getLeft(),
+					predicate.getRight()));
 			stack.push(sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subseteq",
 					children, true));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
@@ -486,7 +499,8 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
@@ -497,8 +511,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeArithmeticTerm(SMTNode.UNARY_MINUS, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
@@ -510,23 +523,25 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			stack.push(sf.makeConnectiveFormula(SMTNode.NOT, children));
 			break;
 		default:
-			assert false;
-			return;
+			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		assert false;
+		throw new IllegalArgumentException(
+				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
-		// Do nothing.
+		throw new IllegalArgumentException(
+				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
 	@Override
 	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
-		// Do nothing.
+		throw new IllegalArgumentException(
+				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 }
