@@ -267,39 +267,43 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	public final static int MACRO_FORMULA = MACRO + 2;
 	
 	/**
-	 * Tag of Bound Identifier.
-	 * 
-	 * @see SMTBoundIdentifier
+	 * <code>in</code> represents "in" relationnal operator
+	 * TODO must be deleted from MACRO section
 	 */
-	public final static int BOUND_IDENTIFIER = 701;
+	public final static int IN = MACRO + 3;
 	
 	/**
-	 * Tag of Bound Identifier Declaration.
-	 * 
-	 * @see SMTBoundIdentifierDecl
+	 * Tag of Quantified Formulas.
 	 */
-	public final static int BOUND_IDENTIFIER_DECL = BOUND_IDENTIFIER + 1;
+	protected final static int QUANTIFIED_FORMULA = 701;
+	
+	/**
+	 * Tag of Quantified Variables.
+	 * 
+	 * @see SMTQuantifiedVariable
+	 */
+	public final static int QUANTIFIED_VARIABLE = QUANTIFIED_FORMULA + 0;
 	
 	/**
 	 * Tag of Quantified Predicate Declaration.
 	 * 
 	 * @see SMTQuantifiedPred
 	 */
-	public final static int QUANTIFIED_PRED_DECL = BOUND_IDENTIFIER_DECL + 1;
+	public final static int QUANTIFIER_SYMBOL = QUANTIFIED_FORMULA + 1;
 	
 	/**
 	 * Tag of Quantified Predicate Exists Declaration.
 	 * 
 	 * @see SMTQuantifiedPred
 	 */
-	public final static int QUANTIFIED_PRED_EXISTS_DECL = QUANTIFIED_PRED_DECL;
+	public final static int EXISTS = QUANTIFIER_SYMBOL + 0;
 	
 	/**
 	 * Tag of Quantified Predicate ForAll Declaration.
 	 * 
 	 * @see SMTQuantifiedPred
 	 */
-	public final static int QUANTIFIED_PRED_FORALL_DECL = QUANTIFIED_PRED_DECL + 1;
+	public final static int FORALL = QUANTIFIER_SYMBOL + 1;
 	
 	/**
 	 * First tag for a script command.

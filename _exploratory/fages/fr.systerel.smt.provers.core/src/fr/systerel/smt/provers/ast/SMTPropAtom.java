@@ -10,9 +10,12 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
+
 /**
  * This class represents a propositional atom in SMT-LIB grammar.
  */
+// FIXME SMT-LIB syntax says: A propositional atom can be either <code>true</code>, <code>false</code>, an 'fvar' or an 'identifier'. Are the two last ones treated?
 public final class SMTPropAtom extends SMTFormula {
 
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
@@ -29,7 +32,9 @@ public final class SMTPropAtom extends SMTFormula {
 	 */
 	SMTPropAtom(int tag) {
 		super(tag);
-		assert tag >= firstTag && tag < firstTag + tags.length;
+		if (tag < firstTag || tag >= firstTag + tags.length) {
+			throw new IllegalTagException(tag);
+		}
 	}
 
 	@Override

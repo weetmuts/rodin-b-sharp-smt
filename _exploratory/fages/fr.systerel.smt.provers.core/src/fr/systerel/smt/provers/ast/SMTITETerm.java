@@ -41,10 +41,15 @@ public final class SMTITETerm extends SMTTerm {
 		this.formula = formula;
 		this.tTerm = tTerm;
 		this.fTerm = fTerm;
-		assert tag == SMTNode.ITE;
-		assert formula != null;
-		assert tTerm != null;
-		assert fTerm != null;
+		if (tag != SMTNode.ITE) {
+			throw new IllegalArgumentException("'SMTNode.ITE' expected here, actual: " + tag + ".");
+		} else if (formula == null) { //FIXME Are these tests useful or needed?
+			throw new NullPointerException();
+		} else if (tTerm == null) {
+			throw new NullPointerException();
+		} else if (fTerm == null) {
+			throw new NullPointerException();
+		}
 	}
 
 	@Override

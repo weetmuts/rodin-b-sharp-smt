@@ -26,8 +26,10 @@ public abstract class SMTBaseTerm extends SMTTerm {
 	 */
 	SMTBaseTerm(String identifier, int tag) {
 		super(tag);
+		if (identifier == null) { //FIXME is this test useful or needed?
+			throw new NullPointerException();
+		}
 		this.identifier = identifier;
-		assert identifier != null;	
 	}
 
 	@Override

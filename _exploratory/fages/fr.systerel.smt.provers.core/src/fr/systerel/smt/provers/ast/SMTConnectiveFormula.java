@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
+
 /**
  * Common class for SMT-LIB formulas built from connectives.
  */
@@ -50,9 +52,11 @@ public class SMTConnectiveFormula extends SMTFormula {
 	SMTConnectiveFormula(int tag, SMTFormula[] children) {
 		super(tag);
 		this.children = children.clone();
-		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
-		assert children != null;
-		assert children.length >= 1;
+		if(this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
+			throw new IllegalTagException(this.getTag());
+		} else if (children.length < 1) {
+			throw new IllegalArgumentException("The given children was 'null'.");
+		}
 	}
 	
 	// =========================================================================

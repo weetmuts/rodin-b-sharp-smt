@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast.commands;
 
 import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * A SMT command.
@@ -177,7 +178,9 @@ public abstract class SMTCommand extends SMTNode<SMTCommand> {
 	 */
 	SMTCommand(int tag) {
 		super(tag);
-		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
+		if (getTag() < firstTag || getTag() >= firstTag + tags.length) {
+			throw new IllegalTagException(tag);
+		}
 	}
 
 	// =========================================================================

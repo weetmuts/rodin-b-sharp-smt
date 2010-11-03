@@ -22,6 +22,7 @@ public class Messages extends NLS {
 	public static String SmtProversCall_preprocessor_path_not_defined;
 	public static String SmtProversCall_SMT_file_does_not_exist;
 	public static String SmtProversCall_file_could_not_be_deleted;
+	public static String SmtNode_This_node_expected_some_child;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

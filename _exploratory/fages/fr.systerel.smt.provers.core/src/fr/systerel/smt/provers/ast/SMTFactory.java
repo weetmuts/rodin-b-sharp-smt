@@ -188,8 +188,8 @@ public final class SMTFactory {
 	 *            the Type of the bound identifier         
 	 * @return the newly bound identifier declaration
 	 */
-	public SMTBoundIdentifierDecl makeBoundIdentDecl(int tag, String name, Type type) {
-		return new SMTBoundIdentifierDecl(tag, name, type);
+	public SMTQuantifiedVariable makeQuantifiedVariable(int tag, String name, Type type) {
+		return new SMTQuantifiedVariable(tag, name, type);
 	}
 
 	

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
+import fr.systerel.smt.provers.internal.core.Messages;
+
 /**
  * Common class for SMT-LIB terms built from arithmetic operators.
  */
@@ -49,9 +52,11 @@ public class SMTArithmeticTerm extends SMTTerm {
 	SMTArithmeticTerm(int tag, SMTTerm[] children) {
 		super(tag);
 		this.children = children.clone();
-		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
-		assert children != null;
-		assert children.length >= 1;
+		if (this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
+			throw new IllegalTagException(this.getTag());
+		} else if (children.length < 1) {
+			throw new IllegalArgumentException(Messages.SmtNode_This_node_expected_some_child);
+		}
 	}
 	
 	// =========================================================================

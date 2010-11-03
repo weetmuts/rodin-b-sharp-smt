@@ -12,6 +12,7 @@ package fr.systerel.smt.provers.ast.commands;
 
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTToken;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * A SMT command option.
@@ -131,7 +132,9 @@ public class SMTCommandOption extends SMTNode<SMTCommandOption> {
 	 */
 	SMTCommandOption(SMTToken value, int tag) {
 		super(tag);
-		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
+		if (this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
+			throw new IllegalTagException(tag);
+		}
 		this.value = value;
 	}
 

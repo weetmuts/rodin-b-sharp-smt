@@ -18,10 +18,10 @@ import br.ufrn.smt.solver.translation.Signature;
 /**
  * This class represents a bound identifier in SMT-LIB grammar.
  */
-public final class SMTBoundIdentifierDecl extends SMTTerm {
+public final class SMTQuantifiedVariable extends SMTTerm {
 
 	/** The members. */
-	private final String name;
+	private final String identifier;
 
 	private final Type type;
 
@@ -31,13 +31,13 @@ public final class SMTBoundIdentifierDecl extends SMTTerm {
 	 * @param tag
 	 *            the tag
 	 * @param identifier
-	 *            the identifier name
+	 *            the variable identifier
 	 * @param Type
 	 *            the type of the identifier
 	 */
-	SMTBoundIdentifierDecl(int tag, String name, Type type) {
+	SMTQuantifiedVariable(final int tag, final String identifier, final Type type) {
 		super(tag);
-		this.name = name;
+		this.identifier = identifier;
 		this.type = type;
 	}
 
@@ -45,7 +45,7 @@ public final class SMTBoundIdentifierDecl extends SMTTerm {
 	public void toString(StringBuilder builder) {
 
 		builder.append("(?");
-		builder.append(name);
+		builder.append(identifier);
 		builder.append(" ");
 		builder.append(RodinToSMTPredicateParser
 				.getSMTAtomicExpressionFormat(type.toString()));

@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast.responses;
 
 import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * A SMT command response.
@@ -84,8 +85,10 @@ public abstract class SMTCommandResponse extends SMTNode<SMTCommandResponse> {
 	 * @param tag
 	 *            node tag of this term
 	 */
-	SMTCommandResponse(int tag) {
+	public SMTCommandResponse(int tag) {
 		super(tag);
-		assert getTag() >= firstTag && getTag() < firstTag + tags.length;
+		if (this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
+			throw new IllegalTagException(this.getTag());
+		}
 	}
 }

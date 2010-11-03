@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast.responses;
 
 import fr.systerel.smt.provers.ast.SMTToken;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * The status of an SMT script response.
@@ -61,6 +62,8 @@ public final class SMTStatus extends SMTToken {
 	 */
 	SMTStatus(int tag) {
 		super(tags[tag - firstTag], tag);
-		assert tag >= firstTag && tag < firstTag + tags.length;
+		if(tag < firstTag || tag >= firstTag + tags.length) {
+			throw new IllegalTagException(tag);
+		}
 	}
 }

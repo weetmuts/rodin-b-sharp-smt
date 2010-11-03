@@ -17,7 +17,7 @@ package fr.systerel.smt.provers.ast;
 public final class SMTQuantifiedPred extends SMTFormula {
 	
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
-	private static final int firstTag = QUANTIFIED_PRED_DECL;
+	private static final int firstTag = QUANTIFIER_SYMBOL;
 
 	/** The tags. */
 	private static final String[] tags = { "exists", "forall" };

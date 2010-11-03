@@ -52,12 +52,22 @@ public final class SMTMacroFormula extends SMTFormula {
 		if (children == null){
 			builder.append(macroId);			
 		}
-		else{				
-	        String sep = "(" + macroId + " " ;
-			for (SMTTerm child: children) {
-				builder.append(sep);
-				sep = " ";
-				child.toString(builder);
+		else{
+			final String sep = " ";
+			builder.append("(" + macroId);
+			//TODO to be changed so that this case won't have to be treated as a special one
+			if (macroId.equals("")) {
+				for (int i = 0; i < children.length; i++) {
+					if (i > 0) {
+						builder.append(sep);
+					}
+					children[i].toString(builder);
+				}
+			} else {
+				for (SMTTerm child: children) {
+					builder.append(sep);
+					child.toString(builder);
+				}
 			}
 			builder.append(")");
 		}

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
+
 /**
  * This class represents a boolean in SMT-LIB grammar.
  */
@@ -32,6 +34,8 @@ public final class SMTBoolean extends SMTBaseTerm {
 	 */
 	SMTBoolean(int tag) {
 		super(tags[tag - firstTag], tag);
-		assert tag >= firstTag && tag < firstTag + tags.length;
+		if(tag < firstTag || tag >= firstTag + tags.length) {
+			throw new IllegalTagException(tag);
+		}
 	}
 }

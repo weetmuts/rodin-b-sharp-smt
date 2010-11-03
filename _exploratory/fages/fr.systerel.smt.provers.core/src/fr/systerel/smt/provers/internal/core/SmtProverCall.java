@@ -35,7 +35,6 @@ import org.eventb.pp.PPProof;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
-import br.ufrn.smt.solver.translation.RodinToSMTv2PredicateParser;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.ast.commands.SMTCheckSatCommand;
 import fr.systerel.smt.provers.core.SmtProversCore;
@@ -84,7 +83,7 @@ public class SmtProverCall extends XProverCall {
 	/**
 	 * File Path where the temporary smt file will be stored
 	 */
-	private final static String smtResultTempPath = "smTSolverString"; //$NON-NLS-1$
+	private final static String smtResultTempPath = "smtSolverString"; //$NON-NLS-1$
 
 	/**
 	 * File Path where the temporary preprocessed smt file will be stored
@@ -152,7 +151,6 @@ public class SmtProverCall extends XProverCall {
 				/**
 				 * SMT lib v2.0
 				 */
-				smtV2Call();
 			}
 		} catch (TranslationException t) {
 			UIUtils.showError(t.getMessage());
@@ -303,8 +301,7 @@ public class SmtProverCall extends XProverCall {
 		 */
 		this.smtFile = rp.getSMTFile();
 		if (!this.smtFile.exists()) {
-			System.out
-					.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 
 		/**
@@ -449,29 +446,6 @@ public class SmtProverCall extends XProverCall {
 		fileWriter.write(resultOfSolver);
 		fileWriter.close();
 		oFile = resultFile;
-	}
-
-	/**
-	 * Performs SMT-lib 2.0 translation + SMT solver solver call.
-	 * 
-	 */
-	private void smtV2Call() throws PreProcessingException, IOException,
-			TranslationException {
-		// Parse Rodin PO to create SMT v2.0 file
-		RodinToSMTv2PredicateParser rp = new RodinToSMTv2PredicateParser(
-				hypotheses, goal);
-
-		// Get back translated SMT commands in a Stream
-		smtFile = rp.getTranslatedFile();
-
-		// Set up arguments
-		List<String> args = setSolverArgs();
-
-		// Set up input file
-		iFile = smtFile;
-
-		// Call the prover
-		callProverInteractive(args);
 	}
 
 	/**
