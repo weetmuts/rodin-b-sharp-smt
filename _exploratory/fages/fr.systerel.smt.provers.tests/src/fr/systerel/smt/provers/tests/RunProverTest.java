@@ -176,6 +176,10 @@ public class RunProverTest extends AbstractTests {
 		setSolverPreferences("z3", "", true, false);
 	}
 
+	private static void setPreferencesForAltErgoTest() {
+		setSolverPreferences("alt-ergo", "", true, false);
+	}
+
 	@Test
 	public void testSolverCallBelong() {
 		// Set preferences to test with VeriT
@@ -203,7 +207,7 @@ public class RunProverTest extends AbstractTests {
 
 	@Test
 	public void testSolverCallWithCvc3() {
-		// Set preferences to test with VeriT
+		// Set preferences to test with Cvc3
 		setPreferencesForCvc3Test();
 
 		final List<String> hyps = new ArrayList<String>();
@@ -216,8 +220,21 @@ public class RunProverTest extends AbstractTests {
 
 	@Test
 	public void testSolverCallWithZ3() {
-		// Set preferences to test with VeriT
+		// Set preferences to test with Z3
 		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("x < y");
+		hyps.add("y < z");
+
+		// perform test
+		doTest(hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	public void testSolverCallWithAltErgo() {
+		// Set preferences to test with Alt-Ergo
+		setPreferencesForAltErgoTest();
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
