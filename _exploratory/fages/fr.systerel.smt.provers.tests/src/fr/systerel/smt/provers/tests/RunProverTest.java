@@ -151,9 +151,22 @@ public class RunProverTest extends AbstractTests {
 	private static void setSolverPreferences(final String solverBinaryName,
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
+		final String OS = System.getProperty("os.name");
 		final SmtProversCore core = SmtProversCore.getDefault();
 		final IPreferenceStore store = core.getPreferenceStore();
-		final String solverPath = BIN_PATH + solverBinaryName;
+		final String solverPath;
+		
+		if(OS.startsWith("Windows"))
+		{
+			solverPath = BIN_PATH + solverBinaryName + ".exe";
+		}
+		else
+		{
+			solverPath = BIN_PATH + solverBinaryName;
+		}
+		
+		System.out.println(solverPath);
+		
 		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
 		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
@@ -169,11 +182,24 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	private static void setPreferencesForCvc3Test() {
-		setSolverPreferences("cvc3", "-lang smt", true, false);
+		setSolverPreferences("cvc3", "-lang smt", true, false);		
+		
 	}
 
 	private static void setPreferencesForZ3Test() {
-		setSolverPreferences("z3", "", true, false);
+		String solver = "z3";
+		if(System.getProperty("os.name").startsWith("Windows"))
+		{
+			solver = 	"bin" + 
+						System.getProperty("file.separator") + 
+						solver + 
+						System.getProperty("file.separator") +
+						"bin" +
+						System.getProperty("file.separator") +
+						"z3";					
+		}		
+		
+		setSolverPreferences(solver, "", true, false);
 	}
 
 	private static void setPreferencesForAltErgoTest() {

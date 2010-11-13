@@ -115,21 +115,21 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * land
 		 */
-		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (iff u v))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (= u v) (= r s))");
+				"(and (= a b) (iff u v) (= r s))");
 		/**
 		 * lor
 		 */
-		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (iff u v))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (= u v) (= r s))");
+				"(or (= a b) (iff u v) (= r s))");
 	}
 
 	/**
@@ -149,12 +149,12 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(s x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(s ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R)(and (s x) (s y)))");
+				"(forall (?x R) (?y R)(and (s ?x) (s ?y)))");
 	}
 
 	@Test
@@ -162,12 +162,12 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(s x))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(s ?x))");
 		/**
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R)(and (s x) (s y)))");
+				"(exists (?x R) (?y R)(and (s ?x) (s ?y)))");
 	}
 
 	/**
@@ -305,9 +305,9 @@ public class TranslationTests extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
-		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
-		testTranslationV1_2Default("u = v", "(= u v)");
+		testTranslationV1_2Default("u = TRUE", "(iff u true)");
+		testTranslationV1_2Default("TRUE = u", "(iff true u)");
+		testTranslationV1_2Default("u = v", "(iff u v)");
 	}
 
 	/**
