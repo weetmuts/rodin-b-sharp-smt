@@ -22,8 +22,8 @@ public final class SMTBoolean extends SMTBaseTerm {
 	
 	/** The tags. */
 	private static final String tags[] = {
-		"TRUE",    
-		"FALSE",   
+		"true",    
+		"false",   
 	};
 
 	/**

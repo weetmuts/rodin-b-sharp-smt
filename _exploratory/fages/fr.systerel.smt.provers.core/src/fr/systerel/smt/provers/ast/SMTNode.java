@@ -155,6 +155,13 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	public final static int GE = FIRST_ARITHMETIC_FORMULA + 4;
 	
 	/**
+	 * <code>GE</code> represents iff with booleans.
+	 * 
+	 * @see SMTArithmeticFormula
+	 */
+	public static final int IFF_ARITH = FIRST_ARITHMETIC_FORMULA + 5;
+	
+	/**
 	 * First tag for an arithmetic term.
 	 * 
 	 * @see SMTArithmeticTerm
@@ -339,6 +346,8 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @see SMTTerm
 	 */
 	public final static int FIRST_TERM = 1201;
+
+	
 
 	
 	// =========================================================================

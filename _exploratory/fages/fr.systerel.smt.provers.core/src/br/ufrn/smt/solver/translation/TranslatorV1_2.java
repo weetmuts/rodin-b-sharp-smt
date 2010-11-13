@@ -23,6 +23,7 @@ import org.eventb.core.ast.BecomesSuchThat;
 import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
+import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.ExtendedExpression;
@@ -66,6 +67,31 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	private ArrayList<String> freeIdentifiers;
 
 	private SMTNode<?> smtNode;
+	
+	public ArrayList<String> getBoundIdentifers() {
+		return boundIdentifers;
+	}
+
+
+
+
+	public void setBoundIdentifers(ArrayList<String> boundIdentifers) {
+		this.boundIdentifers = boundIdentifers;
+	}
+
+
+
+
+	public ArrayList<String> getFreeIdentifiers() {
+		return freeIdentifiers;
+	}
+
+
+
+
+	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
+		this.freeIdentifiers = freeIdentifiers;
+	}
 
 	/**
 	 * This method translates the given predicate into an SMT Node.
@@ -92,6 +118,15 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 		this.sf = SMTFactory.getDefault();
 		this.boundIdentifers = new ArrayList<String>();
 		this.freeIdentifiers = new ArrayList<String>();
+		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
+			this.freeIdentifiers.add(ident.getName());
+		}
+	}
+	
+	TranslatorV1_2(Predicate predicate,ArrayList<String> boundIdentifiers, ArrayList<String> freeIdentifiers) {
+		this.sf = SMTFactory.getDefault();
+		this.boundIdentifers = boundIdentifiers;
+		this.freeIdentifiers = freeIdentifiers;
 		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
 			this.freeIdentifiers.add(ident.getName());
 		}
@@ -352,7 +387,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	public void visitBoundIdentifier(final BoundIdentifier expression) {
 		final String identifier = boundIdentifers.get(boundIdentifers.size()
 				- expression.getBoundIndex() - 1);
-		this.smtNode = sf.makeIdentifier(identifier);
+		this.smtNode = sf.makeIdentifier("?" + identifier);
 	}
 
 	@Override
@@ -439,7 +474,13 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			if (predicate.getLeft().getType().equals(ff.makeIntegerType())) {
 				this.smtNode = sf
 						.makeArithmeticFormula(SMTNode.EQUAL, children);
-			} else {
+			}
+			else if(predicate.getRight().getType() instanceof BooleanType || predicate.getLeft().getType() instanceof BooleanType)
+			{
+				this.smtNode = sf.makeArithmeticFormula(SMTNode.IFF_ARITH, children);
+			}
+			
+			else {
 				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
 						children, false);
 			}

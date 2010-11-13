@@ -31,6 +31,7 @@ public class SMTArithmeticFormula extends SMTFormula {
 		"<=",
 		">",
 		">=",
+		"iff"
 	};
 	
 	// =========================================================================
