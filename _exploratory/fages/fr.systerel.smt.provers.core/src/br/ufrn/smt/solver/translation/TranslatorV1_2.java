@@ -29,10 +29,10 @@ import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
-import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.IntegerLiteral;
+import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
@@ -42,6 +42,7 @@ import org.eventb.core.ast.QuantifiedUtil;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
+import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
@@ -72,22 +73,13 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 		return boundIdentifers;
 	}
 
-
-
-
 	public void setBoundIdentifers(ArrayList<String> boundIdentifers) {
 		this.boundIdentifers = boundIdentifers;
 	}
 
-
-
-
 	public ArrayList<String> getFreeIdentifiers() {
 		return freeIdentifiers;
 	}
-
-
-
 
 	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
 		this.freeIdentifiers = freeIdentifiers;
@@ -100,15 +92,6 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
-	}
-
-	/**
-	 * Builds a new visitor.
-	 */
-	private TranslatorV1_2(ArrayList<String> freeIdentifiers) {
-		this.sf = SMTFactory.getDefault();
-		this.boundIdentifers = new ArrayList<String>();
-		this.freeIdentifiers = freeIdentifiers;
 	}
 
 	/**
@@ -468,19 +451,15 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 					children, true);
 			break;
 		case Formula.EQUAL:
-			FormulaFactory ff = FormulaFactory.getDefault();
-
 			// Check Type of equality members
-			if (predicate.getLeft().getType().equals(ff.makeIntegerType())) {
+			final Type type = predicate.getLeft().getType();
+			if (type instanceof IntegerType) {
 				this.smtNode = sf
 						.makeArithmeticFormula(SMTNode.EQUAL, children);
-			}
-			else if(predicate.getRight().getType() instanceof BooleanType || predicate.getLeft().getType() instanceof BooleanType)
-			{
-				this.smtNode = sf.makeArithmeticFormula(SMTNode.IFF_ARITH, children);
-			}
-			
-			else {
+			} else if (type instanceof BooleanType) {
+				this.smtNode = sf.makeArithmeticFormula(SMTNode.IFF_ARITH,
+						children);
+			} else {
 				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
 						children, false);
 			}
