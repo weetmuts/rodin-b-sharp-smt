@@ -56,7 +56,7 @@ public class TranslationTests extends AbstractTests {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
-		Assert.assertTrue("\'" + ppPredStr + "\' n'est pas une entrée valide.",
+		Assert.assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(ppPred));
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
