@@ -43,7 +43,9 @@ public class RodinToSMTPredicateParser {
 	private final Signature signature;
 	private final Sequent sequent;
 	private final List<String> macros;
-
+	public static int counter = 0;
+	
+	
 	/**
 	 * Constructors
 	 */
@@ -51,14 +53,12 @@ public class RodinToSMTPredicateParser {
 			final List<Predicate> assumptions, final Predicate goal) {
 		this.translationPath = System.getProperty("user.home");
 		this.lemmaName = lemmaName;
-		this.smtFilePath = this.translationPath + "/" + this.lemmaName + ".smt";
+		this.smtFilePath = this.translationPath + "/" + this.lemmaName + counter++ + ".smt";
 		this.signature = parseSignature(assumptions, goal);
 		this.sequent = parseSequent(assumptions, goal);
-		this.macros = new ArrayList<String>();
-		this.macros
-				.add("(Pair (lambda (?e1 't) (?e2 't) . (lambda (?f1 't) (?f2 't) . (and (= ?f1 ?e1) (= ?f2 ?e2)))))");
+		this.macros = new ArrayList<String>();			
 	}
-
+	
 	public RodinToSMTPredicateParser(final List<Predicate> assumptions,
 			final Predicate goal) {
 		this("lemma", assumptions, goal);
@@ -71,13 +71,18 @@ public class RodinToSMTPredicateParser {
 	private static Sequent parseSequent(final List<Predicate> assumptions,
 			final Predicate goal) {
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+		ArrayList<String> boundIdentifiers = new ArrayList<String>();
+		ArrayList<String> freeIdentifiers = new ArrayList<String>();
 
 		for (Predicate assumption : assumptions) {
-			translatedAssumptions.add(TranslatorV1_2.translate(assumption));
+			
+			IdentifiersAndSMTStorage iSMT = TranslatorV1_2.translate1(assumption,boundIdentifiers,freeIdentifiers);
+			boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
+			freeIdentifiers.addAll(iSMT.getFreeIdentifiers());			
+			translatedAssumptions.add(iSMT.getSmtFormula());			
 		}
-		final SMTFormula translatedGoal = TranslatorV1_2.translate(goal);
-
-		return new Sequent(translatedAssumptions, translatedGoal);
+		SMTFormula smtFormula = TranslatorV1_2.translate(goal,boundIdentifiers,freeIdentifiers);		
+		return new Sequent(translatedAssumptions, smtFormula);
 	}
 
 	private static Signature parseSignature(final List<Predicate> assumptions,
@@ -88,6 +93,8 @@ public class RodinToSMTPredicateParser {
 		final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
 		final HashMap<String, String> preds = new HashMap<String, String>();
 
+		boolean insertPairDecl = false;
+		
 		final HashMap<String, Type> typeEnvironment = extractTypeEnvironment(
 				assumptions, goal);
 		for (final Entry<String, Type> var : typeEnvironment.entrySet()) {
@@ -104,13 +111,26 @@ public class RodinToSMTPredicateParser {
 			}
 			// Regra 6
 			else if (varType.getSource() != null) {
+				
+				String type1 = getSMTAtomicExpressionFormat(varType.getSource()
+									.toString());
+				String type2 = getSMTAtomicExpressionFormat(varType.getTarget()
+									.toString());				
 				String pair = "(Pair "
-						+ getSMTAtomicExpressionFormat(varType.getSource()
-								.toString())
+						+ type1
 						+ " "
-						+ getSMTAtomicExpressionFormat(varType.getTarget()
-								.toString() + ")");
+						+ type2 
+						+ ")";
 				preds.put(varName, pair);
+				sorts.add("((Pair 's 't) "
+						+ type1
+						+ " "
+						+ type2
+						+ ")"
+						);
+				
+				insertPairDecl = true;
+				
 			} else if (varType.getBaseType() != null) {
 				if (varName.equals(varType.getBaseType().toString())) {
 					sorts.add(varName);
@@ -125,7 +145,11 @@ public class RodinToSMTPredicateParser {
 						varName), new Type[] {}, varType));
 			}
 		}
-
+		
+		if(insertPairDecl)
+		{
+			funs.put("pair 's 't", " (Pair 's 't)");
+		}
 		return new Signature(sorts, funs, declarefuns, singleQuotVars, preds);
 	}
 

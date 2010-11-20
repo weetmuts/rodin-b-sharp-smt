@@ -115,51 +115,44 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	/**
 	 * First tag for an arithmetic formula.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int FIRST_ARITHMETIC_FORMULA = 301;
 	
 	/**
 	 * <code>EQUAL</code> represents =.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int EQUAL = FIRST_ARITHMETIC_FORMULA + 0;
 	
 	/**
 	 * <code>LT</code> represents <.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int LT = FIRST_ARITHMETIC_FORMULA + 1;
 	
 	/**
 	 * <code>LE</code> represents <=.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int LE = FIRST_ARITHMETIC_FORMULA + 2;
 	
 	/**
 	 * <code>GT</code> represents >.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int GT = FIRST_ARITHMETIC_FORMULA + 3;
 	
 	/**
 	 * <code>GE</code> represents =.
 	 * 
-	 * @see SMTArithmeticFormula
+	 * @see SMTAtomicFormula
 	 */
 	public final static int GE = FIRST_ARITHMETIC_FORMULA + 4;
-	
-	/**
-	 * <code>IFF_ARITH</code> represents iff with booleans.
-	 * 
-	 * @see SMTArithmeticFormula
-	 */
-	public static final int IFF_ARITH = FIRST_ARITHMETIC_FORMULA + 5;
 	
 	/**
 	 * First tag for an arithmetic term.

@@ -88,19 +88,35 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	/**
 	 * This method translates the given predicate into an SMT Node.
 	 */
+	public static IdentifiersAndSMTStorage translate1(Predicate predicate,ArrayList<String> boundIdentifiers,ArrayList<String> freeIdentifiers) {
+		final TranslatorV1_2 translator = new TranslatorV1_2(predicate,boundIdentifiers,freeIdentifiers);
+		predicate.accept(translator);
+		IdentifiersAndSMTStorage iSMT = new IdentifiersAndSMTStorage(translator.getSMTFormula(),translator.getBoundIdentifers(), translator.getFreeIdentifiers());
+		return iSMT;		
+	}
+	
+	/**
+	 * This method translates the given predicate into an SMT Node.
+	 */
+	public static SMTFormula translate(Predicate predicate,ArrayList<String> boundIdentifiers,ArrayList<String> freeIdentifiers) {
+		final TranslatorV1_2 translator = new TranslatorV1_2(predicate,boundIdentifiers,freeIdentifiers);
+		predicate.accept(translator);
+		return translator.getSMTFormula();		
+	}
+	
 	public static SMTFormula translate(Predicate predicate) {
 		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
-		return translator.getSMTFormula();
+		return translator.getSMTFormula();		
 	}
 
 	/**
 	 * This constructor extracts free identifiers from the given predicate
 	 */
 	private TranslatorV1_2(Predicate predicate) {
+		freeIdentifiers = new ArrayList<String>();
+		boundIdentifers = new ArrayList<String>();
 		this.sf = SMTFactory.getDefault();
-		this.boundIdentifers = new ArrayList<String>();
-		this.freeIdentifiers = new ArrayList<String>();
 		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
 			this.freeIdentifiers.add(ident.getName());
 		}
@@ -307,7 +323,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 			break;
 		case Formula.MAPSTO:
 			// TO CHANGE
-			this.smtNode = sf.makeMacroTerm(SMTNode.MACRO_TERM, "Pair",
+			this.smtNode = sf.makeMacroTerm(SMTNode.MACRO_TERM, "pair",
 					children, false);
 			break;
 		default:
@@ -336,9 +352,7 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 		final SMTFormula predicate = smtFormula(expression.getPredicate());
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
-			this.smtNode = sf
-					.makeITETerm(predicate, sf.makeBoolean(SMTNode.TRUE),
-							sf.makeBoolean(SMTNode.FALSE));
+			this.smtNode = predicate;
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
@@ -375,7 +389,11 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		this.smtNode = sf.makeIdentifier(expression.getName());
+		if (expression.getType() instanceof BooleanType) {
+			this.smtNode = sf.makeAtomicFormula(sf.makeIdentifier(expression.getName()));
+		}	else {
+			this.smtNode = sf.makeIdentifier(expression.getName());
+		}
 	}
 
 	@Override
@@ -438,68 +456,69 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		final int tag = predicate.getTag();
-
-		final SMTTerm[] children;
-		if (tag == Formula.IN || tag == Formula.NOTIN) {
-			children = smtTerms(predicate.getRight(), predicate.getLeft());
+		if (tag == Formula.EQUAL && predicate.getRight().getType() instanceof BooleanType) {
+			final SMTFormula[] children = smtFormulas(predicate.getLeft(), predicate.getRight());
+			this.smtNode = sf.makeConnectiveFormula(SMTNode.IFF, children);
 		} else {
-			children = smtTerms(predicate.getLeft(), predicate.getRight());
-		}
-		switch (predicate.getTag()) {
-		case Formula.NOTEQUAL:
-			this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
-					children, true);
-			break;
-		case Formula.EQUAL:
-			// Check Type of equality members
-			final Type type = predicate.getLeft().getType();
-			if (type instanceof IntegerType) {
-				this.smtNode = sf
-						.makeArithmeticFormula(SMTNode.EQUAL, children);
-			} else if (type instanceof BooleanType) {
-				this.smtNode = sf.makeArithmeticFormula(SMTNode.IFF_ARITH,
-						children);
+			final SMTTerm[] children;
+			if (tag == Formula.IN || tag == Formula.NOTIN) {
+				children = smtTerms(predicate.getRight(), predicate.getLeft());
 			} else {
-				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
-						children, false);
+				children = smtTerms(predicate.getLeft(), predicate.getRight());
 			}
-			break;
-		case Formula.LT:
-			this.smtNode = sf.makeArithmeticFormula(SMTNode.LT, children);
-			break;
-		case Formula.LE:
-			this.smtNode = sf.makeArithmeticFormula(SMTNode.LE, children);
-			break;
-		case Formula.GT:
-			this.smtNode = sf.makeArithmeticFormula(SMTNode.GT, children);
-			break;
-		case Formula.GE:
-			this.smtNode = sf.makeArithmeticFormula(SMTNode.GE, children);
-			break;
-		case Formula.IN:
-			this.smtNode = sf.makeMacroFormula(SMTNode.IN, "", children, false);
-			break;
-		case Formula.NOTIN:
-			this.smtNode = sf.makeMacroFormula(SMTNode.IN, "", children, true);
-			break;
-		case Formula.SUBSET:
-			this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
-					children, false);
-			break;
-		case Formula.SUBSETEQ:
-			this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
-					"subseteq", children, false);
-			break;
-		case Formula.NOTSUBSET:
-			this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
-					children, true);
-			break;
-		case Formula.NOTSUBSETEQ:
-			this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
-					"subseteq", children, true);
-			break;
-		default:
-			throw new IllegalTagException(predicate.getTag());
+			switch (predicate.getTag()) {
+			case Formula.NOTEQUAL:
+				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
+						children, true);
+				break;
+			case Formula.EQUAL:
+				// Check Type of equality members
+				final Type type = predicate.getLeft().getType();
+				if (type instanceof IntegerType) {
+					this.smtNode = sf
+					.makeAtomicFormula(SMTNode.EQUAL, children);
+				} else { // FIXME document this... should be as above in all cases
+					this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "=",
+							children, false);
+				}
+				break;
+			case Formula.LT:
+				this.smtNode = sf.makeAtomicFormula(SMTNode.LT, children);
+				break;
+			case Formula.LE:
+				this.smtNode = sf.makeAtomicFormula(SMTNode.LE, children);
+				break;
+			case Formula.GT:
+				this.smtNode = sf.makeAtomicFormula(SMTNode.GT, children);
+				break;
+			case Formula.GE:
+				this.smtNode = sf.makeAtomicFormula(SMTNode.GE, children);
+				break;
+			case Formula.IN:
+				this.smtNode = sf.makeMacroFormula(SMTNode.IN, "", children, false);
+				break;
+			case Formula.NOTIN:
+				this.smtNode = sf.makeMacroFormula(SMTNode.IN, "", children, true);
+				break;
+			case Formula.SUBSET:
+				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
+						children, false);
+				break;
+			case Formula.SUBSETEQ:
+				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
+						"subseteq", children, false);
+				break;
+			case Formula.NOTSUBSET:
+				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA, "subset",
+						children, true);
+				break;
+			case Formula.NOTSUBSETEQ:
+				this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
+						"subseteq", children, true);
+				break;
+			default:
+				throw new IllegalTagException(predicate.getTag());
+			}
 		}
 	}
 

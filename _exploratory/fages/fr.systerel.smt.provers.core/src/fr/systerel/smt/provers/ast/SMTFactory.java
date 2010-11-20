@@ -31,7 +31,7 @@ public final class SMTFactory {
 	}
 
 	/**
-	 * Creates a new arithmetic formula.
+	 * Creates a new atomic formula from a relation expression.
 	 * <p>
 	 * {EQUAL, LT, LE, GT, GE}
 	 * 
@@ -41,11 +41,21 @@ public final class SMTFactory {
 	 *            the children of the arithmetic formula
 	 * @return the newly created formula
 	 */
-	public SMTArithmeticFormula makeArithmeticFormula(int tag,
+	public SMTAtomicFormula makeAtomicFormula(int tag,
 			SMTTerm[] children) {
-		return new SMTArithmeticFormula(tag, children);
+		return new SMTAtomicFormula(tag, children);
 	}
 	
+	/**
+	 * Creates a new atomic formula from a boolean identifier.
+	 * @param id
+	 *            the identifier
+	 * @return the newly created formula
+	 */
+	public SMTFormula makeAtomicFormula(SMTIdentifier id) {
+		return new SMTAtomicFormula(id);
+	}
+
 	/**
 	 * Creates a new arithmetic term.
 	 * <p>
@@ -203,4 +213,5 @@ public final class SMTFactory {
 	public SMTMacroFormula makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
 		return new SMTMacroFormula(tag, macroId,children,not);
 	}
+
 }

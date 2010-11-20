@@ -15,7 +15,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
 /**
  * This class represents a boolean in SMT-LIB grammar.
  */
-public final class SMTBoolean extends SMTBaseTerm {
+public final class SMTBoolean extends SMTFormula  {
 
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
 	private static final int firstTag = FIRST_BOOLEAN_TERM;
@@ -33,9 +33,18 @@ public final class SMTBoolean extends SMTBaseTerm {
 	 *            the tag
 	 */
 	SMTBoolean(int tag) {
-		super(tags[tag - firstTag], tag);
+		//super(tags[tag - firstTag], tag);
+		super(tag);
 		if(tag < firstTag || tag >= firstTag + tags.length) {
 			throw new IllegalTagException(tag);
 		}
 	}
+	
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(tags[super.getTag() - firstTag]);
+		
+	}
+	
+	
 }

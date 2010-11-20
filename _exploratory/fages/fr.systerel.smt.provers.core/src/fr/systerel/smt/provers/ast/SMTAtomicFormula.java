@@ -16,22 +16,21 @@ import fr.systerel.smt.provers.internal.core.Messages;
 /**
  * Common class for SMT-LIB formulas built from arithmetic operators.
  */
-public class SMTArithmeticFormula extends SMTFormula {
+public class SMTAtomicFormula extends SMTFormula {
 	
 	// =========================================================================
 	// Constants
 	// =========================================================================
 	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
 	private final static int firstTag = FIRST_ARITHMETIC_FORMULA;
-	
+		
 	/** The tags. */
 	private final static String[] tags = {
 		"=", 
 		"<",
 		"<=",
 		">",
-		">=",
-		"iff"
+		">="
 	};
 	
 	// =========================================================================
@@ -45,11 +44,11 @@ public class SMTArithmeticFormula extends SMTFormula {
 	// =========================================================================
 
 	/**
-	 * Creates a new arithmetic formula with the specified tag.
+	 * Creates a new atomic formula with the specified tag.
 	 * 
 	 * @param tag node tag of this term
 	 */
-	SMTArithmeticFormula(int tag, SMTTerm[] children) {
+	SMTAtomicFormula(int tag, SMTTerm[] children) {
 		super(tag);
 		this.children = children.clone();
 		if (this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
@@ -57,6 +56,15 @@ public class SMTArithmeticFormula extends SMTFormula {
 		} else if (children.length < 1) {
 			throw new IllegalArgumentException(Messages.SmtNode_This_node_expected_some_child);
 		}
+	}
+	
+	/**
+	 * Creates a new atomic formula with the specified tag.
+	 */
+	SMTAtomicFormula(SMTIdentifier id) {
+		super(SMTNode.IDENTIFIER);
+		this.children = new SMTTerm [1];
+		this.children[0] = id;
 	}
 	
 	// =========================================================================
@@ -78,14 +86,18 @@ public class SMTArithmeticFormula extends SMTFormula {
 	
 	@Override
 	public void toString(StringBuilder builder) {
-        builder.append('(');
-        String sep = tags[getTag() - firstTag] + " ";
-		for (SMTTerm child: children) {
-			builder.append(sep);
-			sep = " ";
-			child.toString(builder);
+		if (super.getTag() == SMTNode.IDENTIFIER) {
+			builder.append(children[0].toString());
+		} else {
+			builder.append('(');
+			String sep = tags[getTag() - firstTag] + " ";
+			for (SMTTerm child: children) {
+				builder.append(sep);
+				sep = " ";
+				child.toString(builder);
+			}
+			builder.append(')');
 		}
-		builder.append(')');
 	}
 
 }

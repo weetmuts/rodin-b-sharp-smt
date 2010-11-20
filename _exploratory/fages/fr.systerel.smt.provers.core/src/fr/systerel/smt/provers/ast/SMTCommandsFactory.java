@@ -31,8 +31,6 @@ public final class SMTCommandsFactory {
 	/**
 	 * Creates a new assert command.
 	 * 
-	 * @param tag
-	 *            the tag of the Assert Command
 	 * @param children
 	 *            the children of the assert command
 	 * @return the newly created formula

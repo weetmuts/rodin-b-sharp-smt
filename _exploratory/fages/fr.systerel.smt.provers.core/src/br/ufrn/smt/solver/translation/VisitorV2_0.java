@@ -220,8 +220,6 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
 			expression.getPredicate().accept(this);
-			stack.push(sf.makeITETerm((SMTFormula) stack.pop(), sf
-					.makeBoolean(SMTNode.TRUE), sf.makeBoolean(SMTNode.FALSE)));
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
@@ -280,19 +278,19 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		children = toTermArray(convert(predicate.getLeft(), predicate.getRight()));
 		switch (predicate.getTag()) {
 		case Formula.EQUAL:
-			stack.push(sf.makeArithmeticFormula(SMTNode.EQUAL, children));
+			stack.push(sf.makeAtomicFormula(SMTNode.EQUAL, children));
 			break;
 		case Formula.LT:
-			stack.push(sf.makeArithmeticFormula(SMTNode.LT, children));
+			stack.push(sf.makeAtomicFormula(SMTNode.LT, children));
 			break;
 		case Formula.LE:
-			stack.push(sf.makeArithmeticFormula(SMTNode.LE, children));
+			stack.push(sf.makeAtomicFormula(SMTNode.LE, children));
 			break;
 		case Formula.GT:
-			stack.push(sf.makeArithmeticFormula(SMTNode.GT, children));
+			stack.push(sf.makeAtomicFormula(SMTNode.GT, children));
 			break;
 		case Formula.GE:
-			stack.push(sf.makeArithmeticFormula(SMTNode.GE, children));
+			stack.push(sf.makeAtomicFormula(SMTNode.GE, children));
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
