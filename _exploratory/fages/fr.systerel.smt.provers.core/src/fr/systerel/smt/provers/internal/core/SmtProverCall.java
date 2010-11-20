@@ -395,7 +395,7 @@ public class SmtProverCall extends XProverCall {
 
 			if (benchmarkIndex != -1) {
 				while (i > 0
-						|| benchmarkIndex >= resultOfPreProcessing.length()) {
+						&& benchmarkIndex <= resultOfPreProcessing.length()) {
 					char c = resultOfPreProcessing.charAt(benchmarkIndex);
 					if (c == '(') {
 						++i;
