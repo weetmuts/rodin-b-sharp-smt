@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -53,7 +54,7 @@ public class RodinToSMTPredicateParser {
 			final List<Predicate> assumptions, final Predicate goal) {
 		this.translationPath = System.getProperty("user.home");
 		this.lemmaName = lemmaName;
-		this.smtFilePath = this.translationPath + "/" + this.lemmaName + counter++ + ".smt";
+		this.smtFilePath = this.translationPath + "/" + this.lemmaName + /*counter++ +*/ ".smt";
 		this.signature = parseSignature(assumptions, goal);
 		this.sequent = parseSequent(assumptions, goal);
 		this.macros = new ArrayList<String>();			
@@ -71,17 +72,25 @@ public class RodinToSMTPredicateParser {
 	private static Sequent parseSequent(final List<Predicate> assumptions,
 			final Predicate goal) {
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-		ArrayList<String> boundIdentifiers = new ArrayList<String>();
-		ArrayList<String> freeIdentifiers = new ArrayList<String>();
-
-		for (Predicate assumption : assumptions) {
+		
+		HashSet<String> boundIdentifiers = new HashSet<String>();
+		HashSet<String> freeIdentifiers = new HashSet<String>();
+		
+		ArrayList<String> a = new ArrayList<String>();
+		ArrayList<String> b = new ArrayList<String>();
+		
+		for (Predicate assumption : assumptions) {						
+			IdentifiersAndSMTStorage iSMT = TranslatorV1_2.translate1(assumption,a,b);
 			
-			IdentifiersAndSMTStorage iSMT = TranslatorV1_2.translate1(assumption,boundIdentifiers,freeIdentifiers);
 			boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
 			freeIdentifiers.addAll(iSMT.getFreeIdentifiers());			
-			translatedAssumptions.add(iSMT.getSmtFormula());			
+			translatedAssumptions.add(iSMT.getSmtFormula());
+			
+			a = new ArrayList<String>(boundIdentifiers);
+			b = new ArrayList<String>(freeIdentifiers);
 		}
-		SMTFormula smtFormula = TranslatorV1_2.translate(goal,boundIdentifiers,freeIdentifiers);		
+			
+		SMTFormula smtFormula = TranslatorV1_2.translate(goal,a,b);		
 		return new Sequent(translatedAssumptions, smtFormula);
 	}
 
@@ -111,6 +120,11 @@ public class RodinToSMTPredicateParser {
 			}
 			// Regra 6
 			else if (varType.getSource() != null) {
+				
+				if(varType.getSource().getSource() != null || varType.getSource().getBaseType() != null)
+				{
+					//TODO: Insert an Error message and abort, cartesian product of cartesian product || cartesian product of power type is not implemeted yet
+				}			
 				
 				String type1 = getSMTAtomicExpressionFormat(varType.getSource()
 									.toString());
@@ -144,8 +158,7 @@ public class RodinToSMTPredicateParser {
 				declarefuns.add(new SMTDeclareFunCommand(new SMTIdentifier(
 						varName), new Type[] {}, varType));
 			}
-		}
-		
+		}		
 		if(insertPairDecl)
 		{
 			funs.put("pair 's 't", " (Pair 's 't)");
