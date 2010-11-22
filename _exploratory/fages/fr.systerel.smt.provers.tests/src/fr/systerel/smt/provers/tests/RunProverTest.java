@@ -155,18 +155,15 @@ public class RunProverTest extends AbstractTests {
 		final SmtProversCore core = SmtProversCore.getDefault();
 		final IPreferenceStore store = core.getPreferenceStore();
 		final String solverPath;
-		
-		if(OS.startsWith("Windows"))
-		{
+
+		if (OS.startsWith("Windows")) {
 			solverPath = BIN_PATH + solverBinaryName + ".exe";
-		}
-		else
-		{
+		} else {
 			solverPath = BIN_PATH + solverBinaryName;
 		}
-		
+
 		System.out.println(solverPath);
-		
+
 		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
 		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
@@ -182,23 +179,18 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	private static void setPreferencesForCvc3Test() {
-		setSolverPreferences("cvc3", "-lang smt", true, false);		
-		
+		setSolverPreferences("cvc3", "-lang smt", true, false);
+
 	}
 
 	private static void setPreferencesForZ3Test() {
 		String solver = "z3";
-		if(System.getProperty("os.name").startsWith("Windows"))
-		{
-			solver = 	"bin" + 
-						System.getProperty("file.separator") + 
-						solver + 
-						System.getProperty("file.separator") +
-						"bin" +
-						System.getProperty("file.separator") +
-						"z3";					
-		}		
-		
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			solver = "bin" + System.getProperty("file.separator") + solver
+					+ System.getProperty("file.separator") + "bin"
+					+ System.getProperty("file.separator") + "z3";
+		}
+
 		setSolverPreferences(solver, "", true, false);
 	}
 
@@ -207,7 +199,7 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	@Test
-	public void testSolverCallBelong() {
+	public void testSolverCallBelong1() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
 
@@ -216,6 +208,25 @@ public class RunProverTest extends AbstractTests {
 
 		// perform test
 		doTest(hyps, "g ∈ f", pow_te, NOT_VALID);
+	}
+
+	@Test
+	public void testSolverCallBelong2() {
+		// Set preferences to test with VeriT
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(
+				//
+				"a", "S", "b", "T", "d", "U", "A", "ℙ(S)", "r", "S ↔ T", "s",
+				"(S × T) ↔ U");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("a ∈ A");
+		hyps.add("a↦b ∈ r");
+		hyps.add("a↦b↦d ∈ s");
+
+		// perform test
+		doTest(hyps, "⊤", te, NOT_VALID);
 	}
 
 	@Test
@@ -271,7 +282,8 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	/**
-	 * ch8_circ_arbiter.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'integer' theory
+	 * ch8_circ_arbiter.1 from task 1 (Requirement Analysis) 's Rodin benchmarks
+	 * on 'integer' theory
 	 */
 	@Test
 	public void testCh8CircArbiter1() {
@@ -291,7 +303,8 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	/**
-	 * quick_sort.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'linear_arith' theory
+	 * quick_sort.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'linear_arith' theory
 	 */
 	@Test
 	public void testQuickSort1() {
@@ -312,7 +325,8 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	/**
-	 * bosch_switch.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'linear_order_int' theory
+	 * bosch_switch.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'linear_order_int' theory
 	 */
 	@Test
 	public void testBoschSwitch1() {
@@ -330,5 +344,79 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("(i ≥ t0) ∧ (i ≤ t)");
 
 		doTest(hyps, "i ≥ 0", te, VALID);
+	}
+
+	/**
+	 * bepi_colombo.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'basic_set' theory
+	 */
+	@Test
+	public void testBepiColombo1() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("¬ a=b");
+		hyps.add("¬ b=c");
+		hyps.add("¬ c=a");
+		hyps.add("S={a,b,c}");
+
+		doTest(hyps, "{a,b,c} = {c,a,b}", te, VALID);
+	}
+
+	/**
+	 * ch915_bin.10 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'nonlinear_arith' theory
+	 */
+	@Test
+	public void testCh915Bin10() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+
+		doTest(hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
+	}
+
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 */
+	@Test
+	public void testCh7Conc29() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+
+		doTest(hyps,
+				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+
+	/**
+	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'basic_relation' theory
+	 */
+	@Test
+	public void testBepiColombo3() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}");
+		hyps.add("TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
+
+		doTest(hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 }

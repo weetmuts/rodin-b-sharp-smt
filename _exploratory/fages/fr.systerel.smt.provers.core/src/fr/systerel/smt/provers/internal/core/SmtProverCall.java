@@ -252,23 +252,7 @@ public class SmtProverCall extends XProverCall {
 		}
 	}
 
-	/**
-	 * Performs Rodin PO to SMT translation: First, translate to predicate
-	 * calculus, then translate to SMT with macros, eventually pre-processing
-	 * macros.
-	 * 
-	 * @throws PreProcessingException
-	 * @throws IOException
-	 * @throws TranslationException
-	 */
-	public List<String> smtTranslation() throws PreProcessingException,
-			IOException, TranslationException {
-		final List<Predicate> ppTranslatedHypotheses;
-		final Predicate ppTranslatedGoal;
-
-		/**
-		 * Create new PPproof with hypotheses and goal
-		 */
+	private static PPProof ppTranslation(final List<Predicate> hypotheses, final Predicate goal) {
 		final PPProof ppProof = new PPProof(hypotheses, goal, new IPPMonitor() {
 
 			@Override
@@ -282,12 +266,24 @@ public class SmtProverCall extends XProverCall {
 		 * Translates the original hypotheses and goal to predicate calculus
 		 */
 		ppProof.translate();
+		
+		return ppProof;
+	}
 
-		/**
-		 * Get back translated hypotheses and goal
-		 */
-		ppTranslatedHypotheses = ppProof.getTranslatedHypotheses();
-		ppTranslatedGoal = ppProof.getTranslatedGoal();
+	/**
+	 * Performs Rodin PO to SMT translation: First, translate to predicate
+	 * calculus, then translate to SMT with macros, eventually pre-processing
+	 * macros.
+	 * 
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 * @throws TranslationException
+	 */
+	public List<String> smtTranslation() throws PreProcessingException,
+			IOException, TranslationException {
+		final PPProof ppProof = ppTranslation(this.hypotheses, this.goal);
+		final List<Predicate> ppTranslatedHypotheses = ppProof.getTranslatedHypotheses();
+		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		/**
 		 * Parse Rodin PO to create Smt file
@@ -313,7 +309,7 @@ public class SmtProverCall extends XProverCall {
 			/**
 			 * Launch preprocessing
 			 */
-			smtTranslationPreprocessing(args);
+//			smtTranslationPreprocessing(args);
 		}
 
 		this.iFile = smtFile;
