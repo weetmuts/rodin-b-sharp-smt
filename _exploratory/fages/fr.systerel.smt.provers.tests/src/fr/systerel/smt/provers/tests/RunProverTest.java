@@ -269,4 +269,66 @@ public class RunProverTest extends AbstractTests {
 		// perform test
 		doTest(hyps, "x < z", arith_te, VALID);
 	}
+
+	/**
+	 * ch8_circ_arbiter.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'integer' theory
+	 */
+	@Test
+	public void testCh8CircArbiter1() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"a1", "ℤ", "r1", "ℤ");
+
+		// QF_LIA
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("a1 ≤ r1");
+		hyps.add("r1 ≤ a1 + 1");
+		hyps.add("r1 ≠ a1");
+
+		doTest(hyps, "r1 = a1 + 1", te, VALID);
+	}
+
+	/**
+	 * quick_sort.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'linear_arith' theory
+	 */
+	@Test
+	public void testQuickSort1() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"k", "ℤ", "n", "ℤ", "x", "ℤ");
+
+		// QF_LIA
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(k ≥ 1) ∧ (k ≤ n)");
+		hyps.add("(x ≥ 1) ∧ (x ≤ n − 1)");
+		hyps.add("¬ ((x ≥ 1) ∧ (x ≤ k − 1))");
+		hyps.add("¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
+
+		doTest(hyps, "x = k", te, VALID);
+	}
+
+	/**
+	 * bosch_switch.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on 'linear_order_int' theory
+	 */
+	@Test
+	public void testBoschSwitch1() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
+
+		// QF_LIA
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("t ≥ 0");
+		hyps.add("t0 ≥ 0");
+		hyps.add("t0 < t");
+		hyps.add("(i ≥ t0) ∧ (i ≤ t)");
+
+		doTest(hyps, "i ≥ 0", te, VALID);
+	}
 }
