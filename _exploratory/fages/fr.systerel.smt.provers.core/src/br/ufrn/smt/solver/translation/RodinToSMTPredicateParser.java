@@ -124,25 +124,33 @@ public class RodinToSMTPredicateParser {
 				if(varType.getSource().getSource() != null || varType.getSource().getBaseType() != null)
 				{
 					//TODO: Insert an Error message and abort, cartesian product of cartesian product || cartesian product of power type is not implemeted yet
+					System.err.println("Cartesian product of cartesian product || Cartesian product of power type is not implemented yet");
 				}			
 				
 				String type1 = getSMTAtomicExpressionFormat(varType.getSource()
 									.toString());
 				String type2 = getSMTAtomicExpressionFormat(varType.getTarget()
 									.toString());				
+				
 				String pair = "(Pair "
 						+ type1
 						+ " "
 						+ type2 
 						+ ")";
 				preds.put(varName, pair);
-				sorts.add("((Pair 's 't) "
-						+ type1
-						+ " "
-						+ type2
-						+ ")"
-						);
 				
+				if(!insertPairDecl)
+				{
+					sorts.add("(Pair 's 't)");
+				}				
+				if(!sorts.contains(type1))
+				{
+					sorts.add(type1);
+				}
+				if(!sorts.contains(type2))
+				{
+					sorts.add(type2);
+				}				
 				insertPairDecl = true;
 				
 			} else if (varType.getBaseType() != null) {
