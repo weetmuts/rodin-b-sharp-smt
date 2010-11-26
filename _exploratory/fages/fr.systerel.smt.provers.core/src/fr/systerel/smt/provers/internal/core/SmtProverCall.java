@@ -203,12 +203,7 @@ public class SmtProverCall extends XProverCall {
 	 * @throws IOException
 	 */
 	private boolean checkResult(String solverResult) throws IOException {
-		if (solverResult.trim().contains("unsat")) { //$NON-NLS-1$
-			valid = true;
-		} else {
-			valid = false;
-		}
-
+		valid = solverResult.contains("unsat"); //$NON-NLS-1$
 		return valid;
 	}
 
@@ -315,101 +310,6 @@ public class SmtProverCall extends XProverCall {
 		this.iFile = smtFile;
 
 		return args;
-	}
-
-	/**
-	 * Calls preprocessing procedure and writes results in files.
-	 * 
-	 * @throws PreProcessingException
-	 * @throws IOException
-	 */
-	private void smtTranslationPreprocessing(List<String> args)
-			throws PreProcessingException, IOException {
-		final String preprocessedSMT = preprocessSMTinVeriT(smtFile.getPath(),
-				smtUiPreferences.getPreproPath());
-		File preprocessedFile = new File(smtFile.getParent() + '/'
-				+ smtPreprocessedTempPath); //$NON-NLS-1$
-
-		if (!preprocessedFile.exists()) {
-			preprocessedFile.createNewFile();
-		}
-
-		FileWriter fw = new FileWriter(preprocessedFile);
-		fw.write(preprocessedSMT);
-		fw.close();
-		args.set(1, preprocessedFile.getPath());
-
-		this.iFile = preprocessedFile;
-		this.smtFile = preprocessedFile;
-	}
-
-	/**
-	 * Executes VeriT in order to preprocess SMT file given as argument.
-	 * Preprocessing consists in translating macros to SMT-LIB language.
-	 * 
-	 * @param smtFilePath
-	 *            the path of the file containing the sequent expressed in
-	 *            SMT-LIB with macros
-	 * @param pathOfVeriT
-	 *            path of VeriT
-	 * @return A string containing the sequent expressed in pure SMT-LIB
-	 *         language or the string "" if VeriT execution was wrong
-	 * @throws PreProcessingException
-	 * @throws IOException
-	 */
-	private static String preprocessSMTinVeriT(final String smtFilePath,
-			final String pathOfVeriT) throws PreProcessingException,
-			IOException {
-		if (pathOfVeriT.isEmpty()) {
-			throw new PreProcessingException(
-					Messages.SmtProversCall_preprocessor_path_not_defined);
-		}
-
-		/**
-		 * Execution of external prover VeriT in order to translate macros.
-		 */
-		String[] args = new String[3];
-		args[0] = pathOfVeriT;
-		args[1] = "--print-simp-and-exit"; //$NON-NLS-1$
-		args[2] = smtFilePath;
-		final String resultOfPreProcessing = Exec.execProgram(args);
-
-		/**
-		 * Check if VeriT has simplified smt File. The execution of VeriT with
-		 * given args returns on standard output. This code filters this results
-		 * to get the SMT part only. The SMT part begins with the "(benchmark"
-		 * string and ends with the corresponding closing parenthesis. This code
-		 * checks that the string "(benchmark" is present, that there is no
-		 * error in parenthesis usage, and returns the SMT content. The string
-		 * "" is returned if the string "(benchmark" is not found.
-		 */
-		if (resultOfPreProcessing.contains("(benchmark")) {
-			int benchmarkIndex = resultOfPreProcessing.indexOf("(benchmark") + 10; //$NON-NLS-1$
-			int i = 1;
-			StringBuffer sb = new StringBuffer();
-			sb.append("(benchmark"); //$NON-NLS-1$
-
-			if (benchmarkIndex != -1) {
-				while (i > 0
-						&& benchmarkIndex <= resultOfPreProcessing.length()) {
-					char c = resultOfPreProcessing.charAt(benchmarkIndex);
-					if (c == '(') {
-						++i;
-					} else if (c == ')') {
-						--i;
-					}
-					sb.append(c);
-					++benchmarkIndex;
-				}
-				if (benchmarkIndex >= resultOfPreProcessing.length() && i != 0) {
-					throw new PreProcessingException();
-				}
-			}
-			return sb.toString();
-		} else {
-			return "";
-		}
-
 	}
 
 	/**
