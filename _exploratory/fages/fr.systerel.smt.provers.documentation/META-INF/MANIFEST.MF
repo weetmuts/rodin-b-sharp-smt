@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Documentation
-Bundle-SymbolicName: fr.systerel.smt.provers.documentation
-Bundle-Version: 1.0.0.qualifier
