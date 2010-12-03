@@ -22,8 +22,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.GivenType;
+import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
@@ -104,16 +107,18 @@ public class RodinToSMTPredicateParser {
 
 		boolean insertPairDecl = false;
 		
-		final HashMap<String, Type> typeEnvironment = extractTypeEnvironment(
+		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				assumptions, goal);
-		for (final Entry<String, Type> var : typeEnvironment.entrySet()) {
-			final String varName = var.getKey();
+		final IIterator iter = typeEnvironment.getIterator();
+		while (iter.hasNext()) {
+			iter.advance();
+			final String varName = iter.getName();
 			if (varName.contains("\'")) {
 				final String alternativeName = renamePrimeVar(varName,
 						typeEnvironment);
 				singleQuotVars.put(varName, alternativeName);
 			}
-			final Type varType = var.getValue();
+			final Type varType = iter.getType();
 			// Regra 4
 			if (varName.equals(varType.toString())) {
 				sorts.add(varType.toString());
@@ -174,44 +179,24 @@ public class RodinToSMTPredicateParser {
 		return new Signature(sorts, funs, declarefuns, singleQuotVars, preds);
 	}
 
-	private static HashMap<String, Type> extractTypeEnvironment(
+	private static ITypeEnvironment extractTypeEnvironment(
 			final List<Predicate> assumptions, final Predicate goal) {
-		HashMap<String, Type> typeEnvironment = new HashMap<String, Type>();
-
-		extractFreeVarsTypes(typeEnvironment, goal);
-		extractBoundVarsTypes(typeEnvironment, goal);
-
+		final FormulaFactory ff = FormulaFactory.getDefault();  // FIXME use real one
+		final ITypeEnvironment typeEnvironment = ff.makeTypeEnvironment();
 		for (final Predicate assumption : assumptions) {
-			extractFreeVarsTypes(typeEnvironment, assumption);
-			extractBoundVarsTypes(typeEnvironment, assumption);
+			extractPredicateTypenv(typeEnvironment, assumption);
 		}
-
+		extractPredicateTypenv(typeEnvironment, goal);
 		return typeEnvironment;
 	}
 
-	private static void extractFreeVarsTypes(
-			final HashMap<String, Type> typeEnvironment,
-			final Predicate predicate) {
-		FreeIdentifier[] freeVars = predicate.getFreeIdentifiers();
-		if (freeVars != null) {
-			for (int i = 0; i < freeVars.length; i++) {
-				String name = freeVars[i].getName();
-				Type type = freeVars[i].getType();
-				typeEnvironment.put(name, type);
-			}
+	private static void extractPredicateTypenv(
+			final ITypeEnvironment typeEnvironment, final Predicate predicate) {
+		for (FreeIdentifier id : predicate.getFreeIdentifiers()) {
+			typeEnvironment.add(id);
 		}
-	}
-
-	private static void extractBoundVarsTypes(
-			final HashMap<String, Type> typeEnvironment,
-			final Predicate predicate) {
-		BoundIdentifier[] boundVars = predicate.getBoundIdentifiers();
-		if (boundVars != null) {
-			for (int i = 0; i < boundVars.length; i++) {
-				String name = boundVars[i].toString();
-				Type type = boundVars[i].getType();
-				typeEnvironment.put(name, type);
-			}
+		for (GivenType type : predicate.getGivenTypes()) {
+			typeEnvironment.addGivenSet(type.getName());
 		}
 	}
 
@@ -220,15 +205,15 @@ public class RodinToSMTPredicateParser {
 	 * add it into the given type environment
 	 */
 	private static String renamePrimeVar(final String name,
-			final HashMap<String, Type> typeEnv) {
-		int countofQuots = name.length() - name.lastIndexOf('\'');
+			final ITypeEnvironment typeEnv) {
+		int countofQuots = name.length() - name.indexOf('\'');
 
 		String alternativeName = name.replaceAll("'", "_" + countofQuots + "_");
-		Type t = typeEnv.get(alternativeName);
+		Type t = typeEnv.getType(alternativeName);
 		while (t != null) {
 			countofQuots = countofQuots + 1;
 			alternativeName = name + "_" + countofQuots;
-			t = typeEnv.get(alternativeName);
+			t = typeEnv.getType(alternativeName);
 		}
 		return alternativeName;
 	}
