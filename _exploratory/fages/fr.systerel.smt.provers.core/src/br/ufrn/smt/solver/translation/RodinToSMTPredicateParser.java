@@ -55,17 +55,12 @@ public class RodinToSMTPredicateParser {
 	 */
 	public RodinToSMTPredicateParser(final String lemmaName,
 			final List<Predicate> assumptions, final Predicate goal) {
-		this.translationPath = System.getProperty("user.home");
+		this.translationPath = System.getProperty("user.home") + File.separatorChar + "rodin_smtlib_tmp_files";
 		this.lemmaName = lemmaName;
-		this.smtFilePath = this.translationPath + "/" + this.lemmaName + /*counter++ +*/ ".smt";
+		this.smtFilePath = this.translationPath + File.separatorChar + this.lemmaName + /*counter++ +*/ ".smt";
 		this.signature = parseSignature(assumptions, goal);
 		this.sequent = parseSequent(assumptions, goal);
 		this.macros = new ArrayList<String>();			
-	}
-	
-	public RodinToSMTPredicateParser(final List<Predicate> assumptions,
-			final Predicate goal) {
-		this("lemma", assumptions, goal);
 	}
 
 	/**
@@ -241,6 +236,7 @@ public class RodinToSMTPredicateParser {
 
 	private PrintWriter openSMTFileWriter() {
 		try {
+			new File(this.translationPath).mkdir();
 			this.smtFile = new File(this.smtFilePath);
 			if (!this.smtFile.exists()) {
 				this.smtFile.createNewFile();
@@ -254,6 +250,10 @@ public class RodinToSMTPredicateParser {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			ioe.getMessage();
+			return null;
+		} catch (SecurityException se) {
+			se.printStackTrace();
+			se.getMessage();
 			return null;
 		}
 	}

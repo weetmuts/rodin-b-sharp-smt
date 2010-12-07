@@ -37,6 +37,6 @@ public class ExternalSmt extends XProverReasoner {
 	@Override
 	public XProverCall newProverCall(IReasonerInput input,
 			Iterable<Predicate> hypotheses, Predicate goal, IProofMonitor pm) {		
-		return new SmtProverCall(hypotheses, goal, pm, "SMT");
+		return new SmtProverCall(hypotheses, goal, pm, "rodin_sequent"); //TODO replace "rodin_sequent" with the name of the theorem being proved in Rodin
 	}
 }

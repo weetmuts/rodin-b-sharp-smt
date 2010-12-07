@@ -52,6 +52,11 @@ public class SmtProverCall extends XProverCall {
 	protected final String proverName;
 
 	/**
+	 * Name of the lemma to prove
+	 */
+	private final String lemmaName;
+
+	/**
 	 * Tells whether the given sequent was discharged (valid = true) or not
 	 * (valid = false)
 	 */
@@ -81,16 +86,6 @@ public class SmtProverCall extends XProverCall {
 	private UIPreferences smtUiPreferences;
 
 	/**
-	 * File Path where the temporary smt file will be stored
-	 */
-	private final static String smtResultTempPath = "smtSolverString"; //$NON-NLS-1$
-
-	/**
-	 * File Path where the temporary preprocessed smt file will be stored
-	 */
-	private final static String smtPreprocessedTempPath = "tempPreProcessed.smt"; //$NON-NLS-1$
-
-	/**
 	 * Creates an instance of this class. Additional computations are: prover
 	 * name and preferences settings.
 	 * 
@@ -100,13 +95,10 @@ public class SmtProverCall extends XProverCall {
 	 *            goal of the sequent to discharge
 	 * @param pm
 	 *            proof monitor used for cancellation
-	 * @param proverName
-	 *            name of the external prover to call
 	 */
 	public SmtProverCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, String proverName) {
+			IProofMonitor pm, String lemmaName) {
 		super(hypotheses, goal, pm);
-		this.proverName = proverName;
 
 		/**
 		 * Get back preferences from UI
@@ -119,6 +111,9 @@ public class SmtProverCall extends XProverCall {
 						.getBoolean("usingprepro"), //$NON-NLS-1$
 				SmtProversCore.getDefault().getPreferenceStore()
 						.getString("prepropath"));//$NON-NLS-1$
+
+		this.proverName = smtUiPreferences.getSolver().getId();
+		this.lemmaName = lemmaName;
 	}
 
 	/**
@@ -157,6 +152,9 @@ public class SmtProverCall extends XProverCall {
 			return;
 		} catch (IOException e) {
 			UIUtils.showError(e.getMessage());
+			return;
+		} catch (IllegalArgumentException iae) {
+			UIUtils.showError(iae.getMessage());
 			return;
 		}
 	}
@@ -200,10 +198,23 @@ public class SmtProverCall extends XProverCall {
 	 * 
 	 * @param solverResult
 	 *            The string result from the SMT solver.
-	 * @throws IOException
 	 */
-	private boolean checkResult(String solverResult) throws IOException {
-		valid = solverResult.contains("unsat"); //$NON-NLS-1$
+	private boolean checkResult(String solverResult) {
+		if (solverResult.contains("syntax error")
+				|| solverResult.contains("parse error")
+				|| solverResult.contains("Lexical_error")) {
+			throw new IllegalArgumentException(this.proverName
+					+ " could not parse " + this.lemmaName + ".smt. See "
+					+ this.lemmaName + ".res for more details.");
+		} else if (solverResult.contains("unsat")) {
+			valid = true;
+		} else if (solverResult.contains("sat")) {
+			valid = false;
+		} else {
+			throw new IllegalArgumentException("Unexpected response of "
+					+ this.proverName + ". See " + this.lemmaName
+					+ ".res for more details.");
+		}
 		return valid;
 	}
 
@@ -229,7 +240,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	@Override
 	public synchronized void cleanup() {
-		if (iFile != null) {
+	/*	if (iFile != null) {
 			if (iFile.delete()) {
 				iFile = null;
 			} else {
@@ -244,10 +255,11 @@ public class SmtProverCall extends XProverCall {
 				System.out
 						.println(Messages.SmtProversCall_file_could_not_be_deleted);
 			}
-		}
+		}*/
 	}
 
-	private static PPProof ppTranslation(final List<Predicate> hypotheses, final Predicate goal) {
+	private static PPProof ppTranslation(final List<Predicate> hypotheses,
+			final Predicate goal) {
 		final PPProof ppProof = new PPProof(hypotheses, goal, new IPPMonitor() {
 
 			@Override
@@ -261,7 +273,7 @@ public class SmtProverCall extends XProverCall {
 		 * Translates the original hypotheses and goal to predicate calculus
 		 */
 		ppProof.translate();
-		
+
 		return ppProof;
 	}
 
@@ -277,14 +289,15 @@ public class SmtProverCall extends XProverCall {
 	public List<String> smtTranslation() throws PreProcessingException,
 			IOException, TranslationException {
 		final PPProof ppProof = ppTranslation(this.hypotheses, this.goal);
-		final List<Predicate> ppTranslatedHypotheses = ppProof.getTranslatedHypotheses();
+		final List<Predicate> ppTranslatedHypotheses = ppProof
+				.getTranslatedHypotheses();
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		/**
 		 * Parse Rodin PO to create Smt file
 		 */
 		final RodinToSMTPredicateParser rp = new RodinToSMTPredicateParser(
-				ppTranslatedHypotheses, ppTranslatedGoal);
+				this.lemmaName, ppTranslatedHypotheses, ppTranslatedGoal);
 		rp.writeSMTFile();
 
 		/**
@@ -300,14 +313,14 @@ public class SmtProverCall extends XProverCall {
 		 */
 		final List<String> args = setSolverArgs();
 
-		if (smtUiPreferences.getUsingPrepro()) {
+		if (this.smtUiPreferences.getUsingPrepro()) {
 			/**
 			 * Launch preprocessing
 			 */
-//			smtTranslationPreprocessing(args);
+			// smtTranslationPreprocessing(args);
 		}
 
-		this.iFile = smtFile;
+		this.iFile = this.smtFile;
 
 		return args;
 	}
@@ -318,30 +331,36 @@ public class SmtProverCall extends XProverCall {
 	 * @param args
 	 *            Arguments list needed by the prover to be called
 	 * @throws IOException
+	 * 
+	 *             FIXME must be refactored: this method should not do anything
+	 *             else than calling the prover. No file manipulation should be
+	 *             visible at this level.
 	 */
-	public void callProver(final List<String> args) throws IOException {
+	public void callProver(final List<String> args) throws IOException,
+			IllegalArgumentException {
 		/**
 		 * Launch solver and get back solver result
 		 */
-		resultOfSolver = Exec
-				.execProgram(args.toArray(new String[args.size()]));
-
-		/**
-		 * Check Solver Result
-		 */
-		checkResult(resultOfSolver);
+		this.resultOfSolver = Exec.execProgram(args.toArray(new String[args
+				.size()]));
 
 		/**
 		 * Set up result file
 		 */
-		File resultFile = new File(iFile.getParent() + '/' + smtResultTempPath);
+		File resultFile = new File(iFile.getParent() + File.separatorChar
+				+ this.lemmaName + ".res");
 		if (!resultFile.exists()) {
 			resultFile.createNewFile();
 		}
 		FileWriter fileWriter = new FileWriter(resultFile);
-		fileWriter.write(resultOfSolver);
+		fileWriter.write(this.resultOfSolver);
 		fileWriter.close();
 		oFile = resultFile;
+
+		/**
+		 * Check Solver Result
+		 */
+		checkResult(this.resultOfSolver);
 	}
 
 	/**
@@ -370,7 +389,8 @@ public class SmtProverCall extends XProverCall {
 				new InputStreamReader(pr.getErrorStream()));
 
 		// Set up result file
-		File resultFile = new File(iFile.getParent() + '/' + smtResultTempPath);
+		File resultFile = new File(iFile.getParent() + File.separatorChar
+				+ "res_" + this.lemmaName);
 		if (!resultFile.exists()) {
 			resultFile.createNewFile();
 		}
