@@ -14,35 +14,43 @@ package br.ufrn.smt.solver.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SMTPreferencesStore{
-	
-	private static final String SEPARATOR = ",,";
+public class SMTPreferencesStore {
 
-	public static String CreatePreferences(List<SolverDetail> model){
-		String preferences = new String();
+	private static final String SEPARATOR1 = ",,";
+	private static final String SEPARATOR2 = ";";
+
+	public static String CreatePreferences(List<SolverDetail> model) {
+		final StringBuilder sb = new StringBuilder();
 
 		for (SolverDetail solverDetail : model) {
-			preferences = preferences + solverDetail.getId() + SEPARATOR;
-			preferences = preferences + solverDetail.getPath() + SEPARATOR;
-			preferences = preferences + solverDetail.getArgs() + SEPARATOR;
-			preferences = preferences + Boolean.toString(solverDetail.getsmtV1_2()) + SEPARATOR;
-			preferences = preferences + Boolean.toString(solverDetail.getsmtV2_0()) + ";";
+			sb.append(solverDetail.getId());
+			sb.append(SEPARATOR1);
+			sb.append(solverDetail.getPath());
+			sb.append(SEPARATOR1);
+			sb.append(solverDetail.getArgs());
+			sb.append(SEPARATOR1);
+			sb.append(Boolean.toString(solverDetail.getsmtV1_2()));
+			sb.append(SEPARATOR1);
+			sb.append(Boolean.toString(solverDetail.getsmtV2_0()));
+			sb.append(SEPARATOR2);
 		}
-		
-		return preferences;
+
+		return sb.toString();
 	}
-	
-	public static List<SolverDetail> CreateModel(String preferences){
+
+	public static List<SolverDetail> CreateModel(String preferences) {
 		List<SolverDetail> model = new ArrayList<SolverDetail>();
-		
-		final String[] rows = preferences.split(";");
+
+		final String[] rows = preferences.split(SEPARATOR2);
 		for (String row : rows) {
-			if ( row.length() > 0) {
-				final String[] columns = row.split(SEPARATOR);
-				model.add(new SolverDetail(columns[0], columns[1], columns[2], Boolean.valueOf(columns[3]), Boolean.valueOf(columns[4])));
+			if (row.length() > 0) {
+				final String[] columns = row.split(SEPARATOR1);
+				model.add(new SolverDetail(columns[0], columns[1], columns[2],
+						Boolean.valueOf(columns[3]), Boolean
+								.valueOf(columns[4])));
 			}
 		}
 		return model;
 	}
-	
+
 }
