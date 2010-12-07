@@ -58,7 +58,7 @@ public class RunProverTest extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final List<String> inputHyps,
+	private static void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
@@ -69,7 +69,7 @@ public class RunProverTest extends AbstractTests {
 
 		final Predicate goal = parse(inputGoal, te);
 
-		doTest(hypotheses, goal, expectedSolverResult);
+		doTest(lemmaName, hypotheses, goal, expectedSolverResult);
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class RunProverTest extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final List<Predicate> parsedHypothesis,
-			final Predicate parsedGoal, final boolean expectedSolverResult) {
+	private static void doTest(final String lemmaName, final List<Predicate> parsedHypothesis,
+			final Predicate parsedGoal, final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (Predicate predicate : parsedHypothesis) {
@@ -94,7 +94,7 @@ public class RunProverTest extends AbstractTests {
 
 		// Create an instance of SmtProversCall
 		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
-				parsedGoal, MONITOR, "SMT") {
+				parsedGoal, MONITOR, lemmaName) {
 			@Override
 			public String displayMessage() {
 				return "SMT";
@@ -109,9 +109,11 @@ public class RunProverTest extends AbstractTests {
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
 		} catch (TranslationException t) {
-			System.out.println(t.getMessage());
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			Assert.fail(t.getMessage());
+		} catch (IOException ioe) {
+			Assert.fail(ioe.getMessage());
+		} catch (IllegalArgumentException iae) {
+			Assert.fail(iae.getMessage());
 		}
 	}
 
@@ -207,7 +209,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("g ∈ e");
 
 		// perform test
-		doTest(hyps, "g ∈ f", pow_te, NOT_VALID);
+		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
 	}
 
 	@Test
@@ -226,7 +228,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("a↦b↦d ∈ s");
 
 		// perform test
-		doTest(hyps, "⊤", te, NOT_VALID);
+		doTest("belong_2", hyps, "⊤", te, NOT_VALID);
 	}
 
 	@Test
@@ -239,7 +241,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("y < z");
 
 		// perform test
-		doTest(hyps, "x < z", arith_te, VALID);
+		doTest("with_verit", hyps, "x < z", arith_te, VALID);
 	}
 
 	@Test
@@ -252,7 +254,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("y < z");
 
 		// perform test
-		doTest(hyps, "x < z", arith_te, VALID);
+		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
 	}
 
 	@Test
@@ -265,7 +267,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("y < z");
 
 		// perform test
-		doTest(hyps, "x < z", arith_te, VALID);
+		doTest("with_z3", hyps, "x < z", arith_te, VALID);
 	}
 
 	@Test
@@ -278,7 +280,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("y < z");
 
 		// perform test
-		doTest(hyps, "x < z", arith_te, VALID);
+		doTest("with_altergo", hyps, "x < z", arith_te, VALID);
 	}
 
 	/**
@@ -299,7 +301,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("r1 ≤ a1 + 1");
 		hyps.add("r1 ≠ a1");
 
-		doTest(hyps, "r1 = a1 + 1", te, VALID);
+		doTest("ch8_circ_arbiter1", hyps, "r1 = a1 + 1", te, VALID);
 	}
 
 	/**
@@ -321,7 +323,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("¬ ((x ≥ 1) ∧ (x ≤ k − 1))");
 		hyps.add("¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
 
-		doTest(hyps, "x = k", te, VALID);
+		doTest("quick_sort1", hyps, "x = k", te, VALID);
 	}
 
 	/**
@@ -343,7 +345,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("t0 < t");
 		hyps.add("(i ≥ t0) ∧ (i ≤ t)");
 
-		doTest(hyps, "i ≥ 0", te, VALID);
+		doTest("bosch_switch1", hyps, "i ≥ 0", te, VALID);
 	}
 
 	/**
@@ -363,7 +365,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("¬ c=a");
 		hyps.add("S={a,b,c}");
 
-		doTest(hyps, "{a,b,c} = {c,a,b}", te, VALID);
+		doTest("bepi_colombo1", hyps, "{a,b,c} = {c,a,b}", te, VALID);
 	}
 
 	/**
@@ -380,7 +382,7 @@ public class RunProverTest extends AbstractTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("n ≥ 1");
 
-		doTest(hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
+		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
 	}
 
 	/**
@@ -397,7 +399,7 @@ public class RunProverTest extends AbstractTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("n ≥ 1");
 
-		doTest(hyps,
+		doTest("ch7_conc29", hyps,
 				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
@@ -417,6 +419,6 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}");
 		hyps.add("TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
 
-		doTest(hyps, "TC ∩ TM = ∅", te, VALID);
+		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 }
