@@ -45,7 +45,7 @@ public class SMTSetLogicCommand extends SMTCommand {
 		builder.append('(');
 		builder.append(tags[getTag() - firstTag]);
 		builder.append(" ");
-		builder.append(logic.getName());
+		builder.append(logic.toString());
 		builder.append(')');
 	}
 }

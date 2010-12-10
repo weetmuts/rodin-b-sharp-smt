@@ -45,13 +45,6 @@ public class SmtInput extends XProverInput {
 		return null;
 
 	}
-
-	private static void addForce(StringBuilder builder, int force, char image, int forces) {
-		if ((forces & force) != 0) {
-			if (builder.length() != 0) builder.append(';');
-			builder.append(image);
-		}			
-	}
 	
 	@Override
 	public boolean hasError() {

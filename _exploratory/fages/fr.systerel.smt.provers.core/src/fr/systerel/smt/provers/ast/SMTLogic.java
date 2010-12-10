@@ -13,57 +13,17 @@ package fr.systerel.smt.provers.ast;
 /**
  * The SMT logics.
  */
-public enum SMTLogic {
-
-	// =========================================================================
-	// Constants
-	// =========================================================================
-
-	/**
-	 * Constant QF_LIA
-	 */
-	QF_LIA("QF_LIA"), ;
-
-	// =========================================================================
-	// Variables
-	// =========================================================================
+public class SMTLogic {
+	public static String QF_LIA = "QF_LIA";
 
 	/** The logic name. */
 	private final String name;
 
-	// =========================================================================
-	// Constructors
-	// =========================================================================
-
-	private SMTLogic(final String name) {
+	public SMTLogic(final String name) {
 		this.name = name;
 	}
 
-	// =========================================================================
-	// Getters
-	// =========================================================================
-
-	/**
-	 * Gets the logic name.
-	 * 
-	 * @return the name
-	 */
-	public final String getName() {
-		return name;
+	public String toString() {
+		return this.name;
 	}
-
-	/**
-	 * Gets the logic with the specified name.
-	 * 
-	 * @param name
-	 *            the logic name
-	 * @return the logic whose name is <tt>name</tt>
-	 */
-	public final static SMTLogic fromName(final String name) {
-		for (SMTLogic l : SMTLogic.values())
-			if (l.name.equals(name))
-				return l;
-		throw new IllegalArgumentException(name);
-	}
-
 }

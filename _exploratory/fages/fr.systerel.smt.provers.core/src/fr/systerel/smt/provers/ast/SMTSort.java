@@ -13,64 +13,24 @@ package fr.systerel.smt.provers.ast;
 /**
  * The SMT sorts.
  */
-public enum SMTSort {
+public class SMTSort {
 
-	// =========================================================================
-	// Constants
-	// =========================================================================
-
-	/**
-	 * Constant INT
-	 */
-	INT("Int"),
-
-	/**
-	 * Constant BOOL
-	 */
-	BOOL("Bool"),
-	
-	;
-
-	// =========================================================================
-	// Variables
-	// =========================================================================
+	private final String INT = "Int";
+	private final String BOOL = "Bool";
 
 	/** The sort name. */
 	private final String name;
 
-	// =========================================================================
-	// Constructors
-	// =========================================================================
-
-	private SMTSort(final String name) {
+	public SMTSort(final String name) {
 		this.name = name;
 	}
 
-	// =========================================================================
-	// Getters
-	// =========================================================================
-
-	/**
-	 * Gets the sort name.
-	 * 
-	 * @return the name
-	 */
-	public final String getName() {
-		return name;
+	public void toString(final StringBuilder buffer) {
+		buffer.append(this.name);
 	}
-
-	/**
-	 * Gets the sort with the specified name.
-	 * 
-	 * @param name
-	 *            the sort name
-	 * @return the sort whose name is <tt>name</tt>
-	 */
-	public final static SMTSort fromName(final String name) {
-		for (SMTSort t : SMTSort.values())
-			if (t.name.equals(name))
-				return t;
-		throw new IllegalArgumentException(name);
+	
+	@Override
+	public String toString() {
+		return this.name;
 	}
-
 }

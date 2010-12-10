@@ -12,6 +12,7 @@ package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.AssociativeExpression;
@@ -56,7 +57,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * This class translate a formula expressed in Event-B syntax to a formula in
  * SMT-LIB syntax.
  */
-public class TranslatorV1_2 implements ISimpleVisitor {
+public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 
 	/** The SMT factory. */
 	private SMTFactory sf;
@@ -68,6 +69,13 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 	private ArrayList<String> freeIdentifiers;
 
 	private SMTNode<?> smtNode;
+
+	public static Benchmark translate(final String lemmaName,
+			final List<Predicate> hypotheses, final Predicate goal) {
+		final Signature signature = Signature.translate(hypotheses, goal);
+		final Sequent sequent = Sequent.translate(signature, hypotheses, goal);
+		return new Benchmark(lemmaName, signature, sequent);
+	}
 
 	public ArrayList<String> getBoundIdentifers() {
 		return boundIdentifers;
@@ -505,7 +513,8 @@ public class TranslatorV1_2 implements ISimpleVisitor {
 				break;
 			default:
 				/**
-				 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be produced by ppTrans.
+				 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
+				 * produced by ppTrans.
 				 */
 				throw new IllegalTagException(tag);
 			}

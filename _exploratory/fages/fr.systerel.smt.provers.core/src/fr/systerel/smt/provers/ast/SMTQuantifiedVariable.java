@@ -12,8 +12,9 @@ package fr.systerel.smt.provers.ast;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
+import br.ufrn.smt.solver.translation.Benchmark;
 import br.ufrn.smt.solver.translation.Signature;
+import br.ufrn.smt.solver.translation.TranslatorV1_2;
 
 /**
  * This class represents a bound identifier in SMT-LIB grammar.
@@ -35,7 +36,8 @@ public final class SMTQuantifiedVariable extends SMTTerm {
 	 * @param Type
 	 *            the type of the identifier
 	 */
-	SMTQuantifiedVariable(final int tag, final String identifier, final Type type) {
+	SMTQuantifiedVariable(final int tag, final String identifier,
+			final Type type) {
 		super(tag);
 		this.identifier = identifier;
 		this.type = type;
@@ -47,8 +49,7 @@ public final class SMTQuantifiedVariable extends SMTTerm {
 		builder.append("(?");
 		builder.append(identifier);
 		builder.append(" ");
-		builder.append(RodinToSMTPredicateParser
-				.getSMTAtomicExpressionFormat(type.toString()));
+		builder.append(Signature.getSMTAtomicExpressionFormat(type.toString()));
 		builder.append(")");
 
 	}

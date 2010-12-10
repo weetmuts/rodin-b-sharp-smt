@@ -12,10 +12,8 @@ package fr.systerel.smt.provers.ast.commands;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.RodinToSMTPredicateParser;
 import br.ufrn.smt.solver.translation.Signature;
 import fr.systerel.smt.provers.ast.SMTIdentifier;
-
 
 /**
  * The declare-fun script command.
@@ -66,11 +64,13 @@ public class SMTDeclareFunCommand extends SMTCommand {
 		identifier.toString(builder);
 		builder.append(" (");
 		for (Type child : parameters) {
-			builder.append(RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(child.toString()));
+			builder.append(Signature.getSMTAtomicExpressionFormat(child
+					.toString()));
 			builder.append(" ");
 		}
 		builder.append(") ");
-		builder.append(RodinToSMTPredicateParser.getSMTAtomicExpressionFormat(returnType.toString()));
+		builder.append(Signature.getSMTAtomicExpressionFormat(returnType
+				.toString()));
 		builder.append(')');
 	}
 }
