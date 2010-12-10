@@ -12,8 +12,6 @@ package fr.systerel.smt.provers.ast;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.Benchmark;
-import br.ufrn.smt.solver.translation.Signature;
 import br.ufrn.smt.solver.translation.TranslatorV1_2;
 
 /**
@@ -49,7 +47,7 @@ public final class SMTQuantifiedVariable extends SMTTerm {
 		builder.append("(?");
 		builder.append(identifier);
 		builder.append(" ");
-		builder.append(Signature.getSMTAtomicExpressionFormat(type.toString()));
+		builder.append(TranslatorV1_2.getSMTAtomicExpressionFormat(type.toString()));
 		builder.append(")");
 
 	}

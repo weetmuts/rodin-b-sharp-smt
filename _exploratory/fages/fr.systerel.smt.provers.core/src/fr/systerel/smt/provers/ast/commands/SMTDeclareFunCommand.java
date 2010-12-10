@@ -12,7 +12,7 @@ package fr.systerel.smt.provers.ast.commands;
 
 import org.eventb.core.ast.Type;
 
-import br.ufrn.smt.solver.translation.Signature;
+import br.ufrn.smt.solver.translation.TranslatorV1_2;
 import fr.systerel.smt.provers.ast.SMTIdentifier;
 
 /**
@@ -64,12 +64,12 @@ public class SMTDeclareFunCommand extends SMTCommand {
 		identifier.toString(builder);
 		builder.append(" (");
 		for (Type child : parameters) {
-			builder.append(Signature.getSMTAtomicExpressionFormat(child
+			builder.append(TranslatorV1_2.getSMTAtomicExpressionFormat(child
 					.toString()));
 			builder.append(" ");
 		}
 		builder.append(") ");
-		builder.append(Signature.getSMTAtomicExpressionFormat(returnType
+		builder.append(TranslatorV1_2.getSMTAtomicExpressionFormat(returnType
 				.toString()));
 		builder.append(')');
 	}

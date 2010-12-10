@@ -11,6 +11,7 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,8 @@ import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ISimpleVisitor;
+import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.LiteralPredicate;
@@ -49,7 +52,10 @@ import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunDecl;
 import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.ast.SMTPredDecl;
+import fr.systerel.smt.provers.ast.SMTSort;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
@@ -72,8 +78,8 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 
 	public static Benchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		final Signature signature = Signature.translate(hypotheses, goal);
-		final Sequent sequent = Sequent.translate(signature, hypotheses, goal);
+		final Signature signature = translateSignature(hypotheses, goal);
+		final Sequent sequent = translateSequent(signature, hypotheses, goal);
 		return new Benchmark(lemmaName, signature, sequent);
 	}
 
@@ -91,6 +97,120 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 
 	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
 		this.freeIdentifiers = freeIdentifiers;
+	}
+
+	public static Signature translateSignature(
+			final List<Predicate> hypotheses, final Predicate goal) {
+		return translateSignature("UNKNOWN", hypotheses, goal);
+	}
+
+	public static Signature translateSignature(final String logicName,
+			final List<Predicate> hypotheses, final Predicate goal) {
+		final List<SMTSort> sorts = new ArrayList<SMTSort>();
+		final List<SMTPredDecl> preds = new ArrayList<SMTPredDecl>();
+		final List<SMTFunDecl> funs = new ArrayList<SMTFunDecl>();
+		final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
+		boolean insertPairDecl = false;
+
+		final ITypeEnvironment typeEnvironment = Signature
+				.extractTypeEnvironment(hypotheses, goal);
+
+		final IIterator iter = typeEnvironment.getIterator();
+		while (iter.hasNext()) {
+			iter.advance();
+			final String varName = iter.getName();
+			final Type varType = iter.getType();
+
+			if (varName.contains("\'")) {
+				final String freshName = Signature.giveFreshVar(varName,
+						typeEnvironment);
+				singleQuotVars.put(varName, freshName);
+			}
+
+			if (varName.equals(varType.toString())) {
+				sorts.add(new SMTSort(varType.toString()));
+			}
+
+			// Regra 6
+			else if (varType.getSource() != null) {
+
+				if (varType.getSource().getSource() != null
+						|| varType.getSource().getBaseType() != null) {
+					// TODO: Insert an Error message and abort, cartesian
+					// product of cartesian product || cartesian product of
+					// power type is not implemeted yet
+					System.err
+							.println("Cartesian product of cartesian product || Cartesian product of power type is not implemented yet");
+				}
+
+				final SMTSort sort1 = new SMTSort(
+						getSMTAtomicExpressionFormat(varType.getSource()
+								.toString()));
+				final SMTSort sort2 = new SMTSort(
+						getSMTAtomicExpressionFormat(varType.getTarget()
+								.toString()));
+				final SMTSort pair = new SMTSort("(Pair " + sort1.toString()
+						+ " " + sort2.toString() + ")");
+				preds.add(new SMTPredDecl(varName, pair));
+
+				if (!insertPairDecl) {
+					sorts.add(new SMTSort("(Pair 's 't)"));
+				}
+				if (!sorts.contains(sort1)) {
+					sorts.add(sort1);
+				}
+				if (!sorts.contains(sort2)) {
+					sorts.add(sort2);
+				}
+				insertPairDecl = true;
+
+			} else if (varType.getBaseType() != null) {
+				if (varName.equals(varType.getBaseType().toString())) {
+					sorts.add(new SMTSort(varName));
+				} else {
+					preds.add(new SMTPredDecl(varName, new SMTSort(
+							getSMTAtomicExpressionFormat(varType.getBaseType()
+									.toString()))));
+				}
+			} else {
+				funs.add(new SMTFunDecl(varName, new SMTSort(
+						getSMTAtomicExpressionFormat(varType.toString()))));
+			}
+		}
+		if (insertPairDecl) {
+			funs.add(new SMTFunDecl("pair 's 't", new SMTSort("(Pair 's 't)")));
+		}
+
+		return new Signature(logicName, sorts, preds, funs);
+	}
+
+	/**
+	 * This method parses hypothesis and goal predicates and translates them
+	 * into SMT nodes
+	 */
+	public static Sequent translateSequent(final Signature signature,
+			final List<Predicate> hypotheses, final Predicate goal) {
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+
+		HashSet<String> boundIdentifiers = new HashSet<String>();
+		HashSet<String> freeIdentifiers = new HashSet<String>();
+
+		ArrayList<String> a = new ArrayList<String>();
+		ArrayList<String> b = new ArrayList<String>();
+
+		for (Predicate assumption : hypotheses) {
+			IdentifiersAndSMTStorage iSMT = translate1(assumption, a, b);
+
+			boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
+			freeIdentifiers.addAll(iSMT.getFreeIdentifiers());
+			translatedAssumptions.add(iSMT.getSmtFormula());
+
+			a = new ArrayList<String>(boundIdentifiers);
+			b = new ArrayList<String>(freeIdentifiers);
+		}
+
+		final SMTFormula smtFormula = translate(goal, a, b);
+		return new Sequent(signature, translatedAssumptions, smtFormula);
 	}
 
 	/**
@@ -124,6 +244,28 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
+	}
+
+	// TODO to be moved into the Translator used by veriT approach
+	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+		if (atomicExpression.equals("\u2124")) { // INTEGER
+			return "Int";
+		} else if (atomicExpression.equals("\u2115")) { // NATURAL
+			return "Nat";
+		} else if (atomicExpression.equals("\u2124" + 1)) {
+			return "Int1";
+		} else if (atomicExpression.equals("\u2115" + 1)) {
+			return "Nat1";
+		} else if (atomicExpression.equals("BOOL")) {
+			return "Bool";
+		} else if (atomicExpression.equals("TRUE")) {
+			return "true";
+		} else if (atomicExpression.equals("FALSE")) {
+			return "false";
+		} else if (atomicExpression.equals("\u2205")) {
+			return "emptyset";
+		}
+		return atomicExpression;
 	}
 
 	/**
