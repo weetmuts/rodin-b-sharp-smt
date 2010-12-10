@@ -436,11 +436,11 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 			this.smtNode = sf.makeArithmeticTerm(SMTNode.MINUS, children);
 			break;
 		case Formula.DIV:
-			this.smtNode = sf.makeArithmeticTerm(SMTNode.DIV, children);
-			break;
+			throw new IllegalArgumentException(
+					"The operation \'divise\' is not supported yet");
 		case Formula.MOD:
-			this.smtNode = sf.makeArithmeticTerm(SMTNode.MODULO, children);
-			break;
+			throw new IllegalArgumentException(
+					"The operation \'modulo\' is not supported yet");
 		case Formula.EXPN:
 			throw new IllegalArgumentException(
 					"The operation \'exponential\' is not supported yet");

@@ -29,8 +29,6 @@ public class SMTArithmeticTerm extends SMTTerm {
 		"+",
 		"-",
 		"*",
-		"/",
-		"%",
 		"~"
 	};
 	

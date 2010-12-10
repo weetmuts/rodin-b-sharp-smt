@@ -188,12 +188,6 @@ public class VisitorV2_0 implements ISimpleVisitor {
 		case Formula.MINUS:
 			stack.push(sf.makeArithmeticTerm(SMTNode.MINUS, children));
 			break;
-		case Formula.DIV:
-			stack.push(sf.makeArithmeticTerm(SMTNode.DIV, children));
-			break;
-		case Formula.MOD:
-			stack.push(sf.makeArithmeticTerm(SMTNode.MODULO, children));
-			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}

@@ -183,25 +183,11 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	public final static int MUL = FIRST_ARITHMETIC_TERM + 2;
 	
 	/**
-	 * <code>DIV</code> represents /.
-	 * 
-	 * @see SMTArithmeticTerm
-	 */
-	public final static int DIV = FIRST_ARITHMETIC_TERM + 3;
-	
-	/**
-	 * <code>MODULO</code> represents %.
-	 * 
-	 * @see SMTArithmeticTerm
-	 */
-	public final static int MODULO = FIRST_ARITHMETIC_TERM + 4;
-	
-	/**
 	 * <code>UNARY_MINUS</code> represents ~.
 	 * 
 	 * @see SMTArithmeticTerm
 	 */
-	public final static int UNARY_MINUS = FIRST_ARITHMETIC_TERM + 5;
+	public final static int UNARY_MINUS = FIRST_ARITHMETIC_TERM + 3;
 	
 	/**
 	 * First tag for a base term.

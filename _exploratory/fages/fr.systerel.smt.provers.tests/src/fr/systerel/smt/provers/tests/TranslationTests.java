@@ -233,14 +233,6 @@ public class TranslationTests extends AbstractTests {
 		 * equal (a-expr-bin)
 		 */
 		testTranslationV1_2Default("a − b = a − c", "(= (- a b) (- a c))");
-		/**
-		 * div
-		 */
-		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
-		/**
-		 * mod
-		 */
-		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
 	}
 
 	@Test
@@ -250,6 +242,14 @@ public class TranslationTests extends AbstractTests {
 		 * expn
 		 */
 		testTranslationV1_2Default("a ^ b = c", "(= (^ a b) c)");
+		/**
+		 * div
+		 */
+		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		/**
+		 * mod
+		 */
+		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
 	}
 
 	/**
