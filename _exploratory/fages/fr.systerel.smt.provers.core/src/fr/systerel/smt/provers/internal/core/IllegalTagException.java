@@ -23,6 +23,10 @@ public class IllegalTagException extends IllegalArgumentException {
 
 	@Override
 	public String getMessage() {
-		return "The given tag \'" + this.cause + "\' isn't a valid tag";
+		final StringBuilder sb = new StringBuilder();
+		sb.append("The given tag \'");
+		sb.append(this.cause);
+		sb.append("\' isn't a valid tag");
+		return sb.toString();
 	}
 }

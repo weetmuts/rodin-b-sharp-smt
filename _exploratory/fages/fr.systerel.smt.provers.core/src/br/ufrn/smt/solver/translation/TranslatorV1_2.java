@@ -149,8 +149,13 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 				final SMTSort sort2 = new SMTSort(
 						getSMTAtomicExpressionFormat(varType.getTarget()
 								.toString()));
-				final SMTSort pair = new SMTSort("(Pair " + sort1.toString()
-						+ " " + sort2.toString() + ")");
+				final StringBuilder strSort = new StringBuilder();
+				strSort.append("(Pair ");
+				strSort.append(sort1.toString());
+				strSort.append(" ");
+				strSort.append(sort2.toString());
+				strSort.append(")");
+				final SMTSort pair = new SMTSort(strSort.toString());
 				preds.add(new SMTPredDecl(varName, pair));
 
 				if (!insertPairDecl) {

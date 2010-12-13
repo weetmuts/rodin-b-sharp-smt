@@ -80,7 +80,11 @@ public class Pair<X, Y> {
 	 */
 	@Override
 	public String toString() {
-		return key.toString() + " ->  " + value.toString();
+		final StringBuilder sb = new StringBuilder();
+		sb.append(key.toString());
+		sb.append(" ->  ");
+		sb.append(value.toString());
+		return sb.toString();
 	}
 
 	/**

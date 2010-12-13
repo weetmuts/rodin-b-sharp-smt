@@ -38,14 +38,16 @@ public class Exec {
 		 * Reads input and error streams and writes content into the buffer to be
 		 * returned
 		 */
-		String bufferedOut = "";
+		final StringBuilder outputBuilder = new StringBuilder();
 		while ((ln = br.readLine()) != null) {
-			bufferedOut = bufferedOut + "\n" + ln;
+			outputBuilder.append("\n");
+			outputBuilder.append(ln);
 		}
 		while ((ln = bre.readLine()) != null) {
-			bufferedOut = bufferedOut + "\n" + ln;
+			outputBuilder.append("\n");
+			outputBuilder.append(ln);
 		}
 
-		return bufferedOut;
+		return outputBuilder.toString();
 	}
 }

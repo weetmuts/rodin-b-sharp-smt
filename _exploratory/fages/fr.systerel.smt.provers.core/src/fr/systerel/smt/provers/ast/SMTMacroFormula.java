@@ -54,7 +54,8 @@ public final class SMTMacroFormula extends SMTFormula {
 		}
 		else{
 			final String sep = " ";
-			builder.append("(" + macroId);
+			builder.append("(");
+			builder.append(macroId);
 			//TODO to be changed so that this case won't have to be treated as a special one
 			if (macroId.equals("")) {
 				for (int i = 0; i < children.length; i++) {

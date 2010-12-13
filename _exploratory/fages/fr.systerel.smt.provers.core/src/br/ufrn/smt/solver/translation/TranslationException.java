@@ -26,11 +26,13 @@ public class TranslationException extends Exception {
 
 	@Override
 	public String getMessage() {
-		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < causes.size(); i++) {
-			sb.append("Formula: " + causes.get(i).getKey() + ",Reason: "
-					+ causes.get(i).getValue() + "\n");
+			sb.append("Formula: ");
+			sb.append(causes.get(i).getKey());
+			sb.append(", Reason: ");
+			sb.append(causes.get(i).getValue());
+			sb.append("\n");
 		}
 		return sb.toString();
 	}

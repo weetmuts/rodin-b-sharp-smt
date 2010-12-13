@@ -144,7 +144,9 @@ public class SMTCommandOption extends SMTNode<SMTCommandOption> {
 	@Override
 	public void toString(StringBuilder builder) {
 		builder.append('(');
-		builder.append(":" + tags[getTag() - firstTag] + " ");
+		builder.append(":");
+		builder.append(tags[getTag() - firstTag]);
+		builder.append(" ");
 		value.toString(builder);
 		builder.append(')');
 	}

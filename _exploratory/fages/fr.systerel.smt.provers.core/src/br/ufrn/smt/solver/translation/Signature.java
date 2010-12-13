@@ -1,14 +1,12 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
@@ -91,24 +89,32 @@ public class Signature {
 
 	private static void extrasortsSection(final StringBuilder sb,
 			final List<SMTSort> sorts) {
-		extraSection(sb, sorts, "extrasorts", "", " ");
+		if (!sorts.isEmpty()) {
+			extraSection(sb, sorts, "extrasorts", "", " ");
+		}
 	}
 
 	private static void extrapredsSection(final StringBuilder sb,
 			final List<SMTPredDecl> preds) {
-		extraSection(sb, preds, "extrapreds", "", "\n              ");
+		if (!preds.isEmpty()) {
+			extraSection(sb, preds, "extrapreds", "", "\n              ");
+		}
 	}
 
 	private static void extrafunsSection(final StringBuilder sb,
 			final List<SMTFunDecl> funs) {
-		extraSection(sb, funs, "extrafuns", "", "\n             ");
+		if (!funs.isEmpty()) {
+			extraSection(sb, funs, "extrafuns", "", "\n             ");
+		}
 	}
 
 	// TODO put this into a Signature extending class that will be used by veriT
 	// approach
 	public static void extramacrosSection(final StringBuilder sb,
 			final List<String> macros) {
-		extraSection(sb, macros, "extramacros", "", "\n               ");
+		if (!macros.isEmpty()) {
+			extraSection(sb, macros, "extramacros", "", "\n               ");
+		}
 	}
 
 	/**
@@ -131,17 +137,9 @@ public class Signature {
 
 	public void toString(StringBuilder sb) {
 		logicSection(sb, this.logic.toString());
-		if (!this.sorts.isEmpty()) {
-			extrasortsSection(sb, this.sorts);
-		}
-		if (!this.preds.isEmpty()) {
-			extrapredsSection(sb, this.preds);
-		}
-		if (!this.funs.isEmpty()) {
-			extrafunsSection(sb, this.funs);
-		}
-		if (!this.macros.isEmpty()) {
-			extramacrosSection(sb, this.macros);
-		}
+		extrasortsSection(sb, this.sorts);
+		extrapredsSection(sb, this.preds);
+		extrafunsSection(sb, this.funs);
+		extramacrosSection(sb, this.macros);
 	}
 }

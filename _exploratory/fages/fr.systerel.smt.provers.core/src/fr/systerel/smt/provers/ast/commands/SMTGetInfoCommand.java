@@ -44,7 +44,8 @@ public class SMTGetInfoCommand extends SMTCommand {
 		builder.append('(');
 		builder.append(tags[getTag() - firstTag]);
 		builder.append(" ");
-		builder.append(":" + flag.getName());
+		builder.append(":");
+		builder.append(flag.getName());
 		builder.append(')');
 	}
 }

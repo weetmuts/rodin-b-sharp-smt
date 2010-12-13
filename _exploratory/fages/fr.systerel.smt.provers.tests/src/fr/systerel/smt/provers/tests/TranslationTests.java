@@ -86,8 +86,13 @@ public class TranslationTests extends AbstractTests {
 
 	private static final String translationMessage(final Predicate ppPred,
 			final String smtNode) {
-		return "\'" + ppPred.toString() + "\' was translated in \'" + smtNode
-				+ "\'";
+		final StringBuilder sb = new StringBuilder();
+		sb.append("\'");
+		sb.append(ppPred.toString());
+		sb.append("\' was translated in \'");
+		sb.append(smtNode);
+		sb.append("\'");
+		return sb.toString();
 	}
 
 	/**
