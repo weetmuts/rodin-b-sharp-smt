@@ -30,13 +30,6 @@ public final class SMTQuantifiedPred extends SMTFormula {
 	
 	/**
 	 * Creates a new Bound Identifier declaration.
-	 * 
-	 * @param tag
-	 *            the tag
-	 * @param identifier
-	 *            the identifier name
-	 * @param Type
-	 *            the type of the identifier
 	 */
 	SMTQuantifiedPred(int tag,SMTTerm[] boundIdents, SMTFormula[] preds) {
 		super(tag);			

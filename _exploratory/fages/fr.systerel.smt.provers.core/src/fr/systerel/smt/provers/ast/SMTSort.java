@@ -14,10 +14,6 @@ package fr.systerel.smt.provers.ast;
  * The SMT sorts.
  */
 public class SMTSort {
-
-	private final String INT = "Int";
-	private final String BOOL = "Bool";
-
 	/** The sort name. */
 	private final String name;
 

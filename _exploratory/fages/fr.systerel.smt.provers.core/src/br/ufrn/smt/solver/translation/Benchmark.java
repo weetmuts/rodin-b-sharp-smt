@@ -12,9 +12,6 @@
 package br.ufrn.smt.solver.translation;
 
 import java.io.PrintWriter;
-import java.util.List;
-
-import org.eventb.core.ast.Predicate;
 
 /**
  * This class builds an SMT-LIB Benchmark

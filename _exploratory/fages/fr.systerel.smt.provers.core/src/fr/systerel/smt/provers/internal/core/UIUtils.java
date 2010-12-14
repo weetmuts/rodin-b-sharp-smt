@@ -28,10 +28,6 @@ public class UIUtils {
 
 	/**
 	 * Opens an error dialog to the user displaying the given message.
-	 * 
-	 * @param message
-	 *            The dialog message displayed
-	 * @param title
 	 */
 	public static void showError(final String message) {
 		final String title = "SMT error";

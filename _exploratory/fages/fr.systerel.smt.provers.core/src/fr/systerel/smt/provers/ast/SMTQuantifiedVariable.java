@@ -26,13 +26,6 @@ public final class SMTQuantifiedVariable extends SMTTerm {
 
 	/**
 	 * Creates a new Bound Identifier declaration.
-	 * 
-	 * @param tag
-	 *            the tag
-	 * @param identifier
-	 *            the variable identifier
-	 * @param Type
-	 *            the type of the identifier
 	 */
 	SMTQuantifiedVariable(final int tag, final String identifier,
 			final Type type) {

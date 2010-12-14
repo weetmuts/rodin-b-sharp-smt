@@ -48,10 +48,7 @@ public class SmtProversCore extends AbstractUIPlugin {
 	 * </pre>
 	 * </p>
 	 * 
-	 * @param forces
-	 *            a mask formed by the bitwise or of SMT forces to use
 	 * @return a tactic for running SMT with the given forces
-	 * @see #externalSMT(int, long)
 	 */
 	public static ITactic ExternalSmtTac(boolean restricted) {
 		return BasicTactics.reasonerTac(

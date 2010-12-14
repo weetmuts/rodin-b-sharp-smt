@@ -25,15 +25,12 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
-import org.eventb.pp.IPPMonitor;
-import org.eventb.pp.PPProof;
 
 import br.ufrn.smt.solver.translation.Benchmark;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SmtThroughPp;
 import br.ufrn.smt.solver.translation.TranslationException;
-import br.ufrn.smt.solver.translation.TranslatorV1_2;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**

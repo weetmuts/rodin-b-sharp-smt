@@ -28,9 +28,6 @@ public class SMTAssertCommand extends SMTCommand {
 
 	/**
 	 * Creates a command with the specified tag.
-	 * 
-	 * @param term
-	 *            a well sorted closed term of sort Bool
 	 */
 	public SMTAssertCommand(SMTNode<?> node) {
 		super(ASSERT);

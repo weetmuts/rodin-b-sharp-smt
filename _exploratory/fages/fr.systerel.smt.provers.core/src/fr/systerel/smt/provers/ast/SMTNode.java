@@ -301,7 +301,6 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	/**
 	 * First tag for a script response.
 	 * 
-	 * @see SMTResponse
 	 */
 	public final static int FIRST_RESPONSE = 901;
 	

@@ -31,13 +31,10 @@ public class SMTFunDecl {
 		buffer.append(")");
 	}
 
+	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
-		buffer.append("(");
-		this.fun.toString(buffer);
-		buffer.append(" ");
-		this.sort.toString(buffer);
-		buffer.append(")");
+		this.toString(buffer);
 		return buffer.toString();
 	}
 }

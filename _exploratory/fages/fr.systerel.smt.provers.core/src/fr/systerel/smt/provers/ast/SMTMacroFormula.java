@@ -26,8 +26,6 @@ public final class SMTMacroFormula extends SMTFormula {
 	/**
 	 * Creates a new macro.
 	 * 
-	 * @param value
-	 *            the value
 	 */
 	SMTMacroFormula(int tag, String macroId, SMTTerm[] children, boolean not) {
 		super(tag);

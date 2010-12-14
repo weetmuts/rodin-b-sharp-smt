@@ -26,8 +26,6 @@ public final class SMTMacroTerm extends SMTTerm {
 	/**
 	 * Creates a new macro.
 	 * 
-	 * @param value
-	 *            the value
 	 */
 	SMTMacroTerm(int tag, String macroId, SMTTerm[] children, boolean not) {
 		super(tag);
