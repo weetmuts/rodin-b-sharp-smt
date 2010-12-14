@@ -87,10 +87,13 @@ public class Signature {
 		sb.append("\n");
 	}
 
+	/**
+	 * One sort per line. May add a comment beside.
+	 */
 	private static void extrasortsSection(final StringBuilder sb,
 			final List<SMTSort> sorts) {
 		if (!sorts.isEmpty()) {
-			extraSection(sb, sorts, "extrasorts", "", " ");
+			extraSection(sb, sorts, "extrasorts", "", "\n              ");
 		}
 	}
 

@@ -32,7 +32,6 @@ import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
@@ -63,10 +62,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * This class translate a formula expressed in Event-B syntax to a formula in
  * SMT-LIB syntax.
  */
-public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
-
-	/** The SMT factory. */
-	private SMTFactory sf;
+public class TranslatorV1_2 extends Translator {
 
 	/** The Bound identifier list. */
 	private ArrayList<String> boundIdentifers;
@@ -74,12 +70,32 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 	/** The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	private SMTNode<?> smtNode;
+	public TranslatorV1_2() {
+		super();
+	}
 
-	public static Benchmark translate(final String lemmaName,
+	private TranslatorV1_2(Predicate predicate) {
+		freeIdentifiers = new ArrayList<String>();
+		boundIdentifers = new ArrayList<String>();
+		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
+			this.freeIdentifiers.add(ident.getName());
+		}
+	}
+
+	private TranslatorV1_2(Predicate predicate, ArrayList<String> boundIdentifiers,
+			ArrayList<String> freeIdentifiers) {
+		this.boundIdentifers = boundIdentifiers;
+		this.freeIdentifiers = freeIdentifiers;
+		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
+			this.freeIdentifiers.add(ident.getName());
+		}
+	}
+
+	@Override
+	public Benchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final Signature signature = translateSignature(hypotheses, goal);
-		final Sequent sequent = translateSequent(signature, hypotheses, goal);
+		final Sequent sequent = translate(signature, hypotheses, goal);
 		return new Benchmark(lemmaName, signature, sequent);
 	}
 
@@ -99,9 +115,16 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		this.freeIdentifiers = freeIdentifiers;
 	}
 
-	public static Signature translateSignature(
-			final List<Predicate> hypotheses, final Predicate goal) {
+	@Override
+	public Signature translateSignature(final List<Predicate> hypotheses,
+			final Predicate goal) {
 		return translateSignature("UNKNOWN", hypotheses, goal);
+	}
+
+	@Override
+	public Sequent translateSequent(final Signature signature,
+			final List<Predicate> hypotheses, final Predicate goal) {
+		return translate(signature, hypotheses, goal);
 	}
 
 	public static Signature translateSignature(final String logicName,
@@ -193,7 +216,7 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 	 * This method parses hypothesis and goal predicates and translates them
 	 * into SMT nodes
 	 */
-	public static Sequent translateSequent(final Signature signature,
+	public static Sequent translate(final Signature signature,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
@@ -273,38 +296,7 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		return atomicExpression;
 	}
 
-	/**
-	 * This constructor extracts free identifiers from the given predicate
-	 */
-	private TranslatorV1_2(Predicate predicate) {
-		freeIdentifiers = new ArrayList<String>();
-		boundIdentifers = new ArrayList<String>();
-		this.sf = SMTFactory.getDefault();
-		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
-			this.freeIdentifiers.add(ident.getName());
-		}
-	}
-
-	TranslatorV1_2(Predicate predicate, ArrayList<String> boundIdentifiers,
-			ArrayList<String> freeIdentifiers) {
-		this.sf = SMTFactory.getDefault();
-		this.boundIdentifers = boundIdentifiers;
-		this.freeIdentifiers = freeIdentifiers;
-		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
-			this.freeIdentifiers.add(ident.getName());
-		}
-	}
-
-	private SMTFormula getSMTFormula() {
-		if (this.smtNode instanceof SMTFormula) {
-			return (SMTFormula) this.smtNode;
-		} else {
-			throw new IllegalArgumentException(
-					Messages.TranslatorV1_2_translation_error);
-		}
-	}
-
-	private SMTTerm smtTerm(Formula<?> formula) {
+	protected SMTTerm smtTerm(Formula<?> formula) {
 		formula.accept(this);
 		if (this.smtNode instanceof SMTTerm) {
 			return (SMTTerm) this.smtNode;
@@ -314,7 +306,7 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		}
 	}
 
-	private SMTFormula smtFormula(Formula<?> formula) {
+	protected SMTFormula smtFormula(Formula<?> formula) {
 		formula.accept(this);
 		if (this.smtNode instanceof SMTFormula) {
 			return (SMTFormula) this.smtNode;
@@ -324,15 +316,15 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		}
 	}
 
-	private SMTTerm[] smtTerms(Formula<?> left, Formula<?> right) {
+	protected SMTTerm[] smtTerms(Formula<?> left, Formula<?> right) {
 		return new SMTTerm[] { smtTerm(left), smtTerm(right) };
 	}
 
-	private SMTFormula[] smtFormulas(Formula<?> left, Formula<?> right) {
+	protected SMTFormula[] smtFormulas(Formula<?> left, Formula<?> right) {
 		return new SMTFormula[] { smtFormula(left), smtFormula(right) };
 	}
 
-	private SMTTerm[] smtTerms(Formula<?>... formulas) {
+	protected SMTTerm[] smtTerms(Formula<?>... formulas) {
 		final int length = formulas.length;
 		final SMTTerm[] smtTerms = new SMTTerm[length];
 		for (int i = 0; i < length; i++) {
@@ -341,7 +333,7 @@ public class TranslatorV1_2 extends Translator implements ISimpleVisitor {
 		return smtTerms;
 	}
 
-	private SMTFormula[] smtFormulas(Formula<?>... formulas) {
+	protected SMTFormula[] smtFormulas(Formula<?>... formulas) {
 		final int length = formulas.length;
 		final SMTFormula[] smtFormulas = new SMTFormula[length];
 		for (int i = 0; i < length; i++) {

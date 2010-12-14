@@ -31,6 +31,7 @@ import org.eventb.pp.PPProof;
 import br.ufrn.smt.solver.translation.Benchmark;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
+import br.ufrn.smt.solver.translation.SmtThroughPp;
 import br.ufrn.smt.solver.translation.TranslationException;
 import br.ufrn.smt.solver.translation.TranslatorV1_2;
 import fr.systerel.smt.provers.core.SmtProversCore;
@@ -128,25 +129,6 @@ public class SmtProverCall extends XProverCall {
 		return smtFile;
 	}
 
-	private static PPProof ppTranslation(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final PPProof ppProof = new PPProof(hypotheses, goal, new IPPMonitor() {
-
-			@Override
-			public boolean isCanceled() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
-
-		/**
-		 * Translates the original hypotheses and goal to predicate calculus
-		 */
-		ppProof.translate();
-
-		return ppProof;
-	}
-
 	/**
 	 * Creates an instance of this class. Additional computations are: prover
 	 * name and preferences settings.
@@ -205,9 +187,6 @@ public class SmtProverCall extends XProverCall {
 				final List<String> translatedPOs = smtTranslation();
 				callProver(translatedPOs);
 
-				// final Benchmark benchmark =
-				// TranslatorV1_2.translate(hypotheses, goal);
-
 			} else if (smtUiPreferences.getSolver().getsmtV2_0()) {
 				/**
 				 * SMT lib v2.0
@@ -236,35 +215,24 @@ public class SmtProverCall extends XProverCall {
 	 */
 	public List<String> smtTranslation() throws PreProcessingException,
 			IOException, TranslationException {
-		final PPProof ppProof = ppTranslation(this.hypotheses, this.goal);
-		final List<Predicate> ppTranslatedHypotheses = ppProof
-				.getTranslatedHypotheses();
-		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		/**
 		 * Parse Rodin PO to create Smt file
 		 */
-		final Benchmark benchmark = TranslatorV1_2.translate(lemmaName,
-				ppTranslatedHypotheses, ppTranslatedGoal);
+		final Benchmark benchmark = SmtThroughPp.translateToSmtLibBenchmark(
+				this.lemmaName, this.hypotheses, this.goal);
 		this.iFile = writeSMTFile(benchmark);
-
-		/**
-		 * Get back translated smt file
-		 */
-		if (!this.iFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
 
 		/**
 		 * Set up arguments
 		 */
 		final List<String> args = setSolverArgs(benchmark.getName());
 
-		if (this.smtUiPreferences.getUsingPrepro()) {
-			/**
-			 * Launch preprocessing
-			 */
-			// smtTranslationPreprocessing(args);
+		/**
+		 * Get back translated smt file
+		 */
+		if (!this.iFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 
 		return args;
