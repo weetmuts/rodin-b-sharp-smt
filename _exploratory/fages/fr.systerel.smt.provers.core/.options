@@ -1,0 +1,2 @@
+fr.systerel.smt.provers.core/debug = true
+fr.systerel.smt.provers.core/debug/translator = false

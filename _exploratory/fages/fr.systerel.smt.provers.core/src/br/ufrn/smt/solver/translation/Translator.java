@@ -23,6 +23,9 @@ import fr.systerel.smt.provers.ast.SMTNode;
  * 
  */
 public abstract class Translator implements ISimpleVisitor {
+
+	public static boolean DEBUG = false;
+
 	protected final SMTFactory sf;
 	protected SMTNode<?> smtNode;
 
