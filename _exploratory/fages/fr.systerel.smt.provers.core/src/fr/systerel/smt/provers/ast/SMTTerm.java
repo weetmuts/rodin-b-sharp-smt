@@ -13,15 +13,16 @@ package fr.systerel.smt.provers.ast;
 /**
  * Common class for SMT-LIB terms.
  */
-public abstract class SMTTerm extends SMTNode<SMTTerm> {
+public abstract class SMTTerm implements SMTNode<SMTTerm> {
+	//TODO add the sort field
 
-	/**
-	 * Creates a new term with the specified tag.
-	 * 
-	 * @param tag node tag of this term
-	 */
-	SMTTerm(int tag) {
-		super(tag);
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		this.toString(builder);
+		return builder.toString();
 	}
 
+	@Override
+	public abstract void toString(StringBuilder builder);
 }

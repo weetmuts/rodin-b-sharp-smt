@@ -10,82 +10,43 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import fr.systerel.smt.provers.internal.core.IllegalTagException;
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
  * Common class for SMT-LIB formulas built from connectives.
  */
 public class SMTConnectiveFormula extends SMTFormula {
-	
-	// =========================================================================
-	// Constants
-	// =========================================================================
-	/** Offset of the corresponding tag-interval in the <tt>SMTNode</tt> class. */
-	private final static int firstTag = FIRST_CONNECTIVE_FORMULA;
-	
-	/** The tags. */
-	private final static String[] tags = {
-		"not", 
-		"implies",
-		"if_then_else",
-		"and",
-		"or",
-		"xor",
-		"iff"
-	};
-	
-	// =========================================================================
-	// Variables
-	// =========================================================================
-	/** The children. */
-	private final SMTFormula[] children;
-	
-	// =========================================================================
-	// Constructor
-	// =========================================================================
+	private final SMTConnective connective;
+	private final SMTFormula[] formulas;
 
 	/**
-	 * Creates a new connective formula with the specified tag.
-	 * 
-	 * @param tag node tag of this term
+	 * Creates a new connective formula with the specified connective.
 	 */
-	SMTConnectiveFormula(int tag, SMTFormula[] children) {
-		super(tag);
-		this.children = children.clone();
-		if(this.getTag() < firstTag || this.getTag() >= firstTag + tags.length) {
-			throw new IllegalTagException(this.getTag());
-		} else if (children.length < 1) {
-			throw new IllegalArgumentException("The given children was 'null'.");
-		}
+	SMTConnectiveFormula(final SMTConnective connective,
+			final SMTFormula... formulas) {
+		this.connective = connective;
+		this.formulas = formulas;
 	}
-	
-	// =========================================================================
-	// Getters
-	// =========================================================================
-	
+
 	/**
 	 * Returns the children of this node.
 	 * 
 	 * @return a list of children
 	 */
-	public SMTFormula[] getChildren() {
-		return children.clone();
-	}
-	
-	// =========================================================================
-	// Other useful methods
-	// =========================================================================
-	
-	@Override
-	public void toString(StringBuilder builder) {
-        builder.append('(');
-        String sep = tags[getTag() - firstTag] + " ";
-		for (SMTFormula child: children) {
-			builder.append(sep);
-			sep = " ";
-			child.toString(builder);
-		}
-		builder.append(')');
+	public SMTFormula[] getFormulas() {
+		return this.formulas.clone();
 	}
 
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(OPAR);
+		builder.append(this.connective);
+		for (final SMTFormula formula : this.formulas) {
+			builder.append(SPACE);
+			builder.append(formula);
+		}
+		builder.append(CPAR);
+	}
 }

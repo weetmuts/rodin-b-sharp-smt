@@ -21,6 +21,62 @@ public final class SMTFactory {
 
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
+	public final static SMTSort INT = new SMTSort("Int");
+
+	public final static String OPAR = "(";
+	public final static String CPAR = ")";
+	public final static String SPACE = " ";
+	public final static String QVAR = "?";
+
+	public final static String ITE_TERM = "ite";
+
+	/**
+	 * Arithmetic symbols
+	 */
+	public final static SMTFunctionSymbol PLUS = new SMTFunctionSymbol("+",
+			INT, INT, INT);
+	public final static SMTFunctionSymbol MINUS = new SMTFunctionSymbol("-",
+			INT, INT, INT);
+	public final static SMTFunctionSymbol MUL = new SMTFunctionSymbol("*", INT,
+			INT, INT);
+	public final static SMTFunctionSymbol UMINUS = new SMTFunctionSymbol("~",
+			INT, INT);
+	public final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol("=",
+			INT, INT, INT);
+	public final static SMTPredicateSymbol LT = new SMTPredicateSymbol("<",
+			INT, INT, INT);
+	public final static SMTPredicateSymbol LE = new SMTPredicateSymbol("<=",
+			INT, INT, INT);
+	public final static SMTPredicateSymbol GT = new SMTPredicateSymbol(">",
+			INT, INT, INT);
+	public final static SMTPredicateSymbol GE = new SMTPredicateSymbol(">=",
+			INT, INT, INT);
+
+	/**
+	 * Connective symbols
+	 */
+	public final static SMTConnective NOT = SMTConnective.NOT;
+	public final static SMTConnective IMPLIES = SMTConnective.IMPLIES;
+	public final static SMTConnective ITE_FORMULA = SMTConnective.ITE;
+	public final static SMTConnective AND = SMTConnective.AND;
+	public final static SMTConnective OR = SMTConnective.OR;
+	public final static SMTConnective XOR = SMTConnective.XOR;
+	public final static SMTConnective IFF = SMTConnective.IFF;
+
+	/**
+	 * Propositionnal atoms
+	 */
+	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
+			"true");
+	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
+			"false");
+
+	/**
+	 * Quantifier symbols
+	 */
+	public final static SMTQuantifierSymbol EXISTS = SMTQuantifierSymbol.EXISTS;
+	public final static SMTQuantifierSymbol FORALL = SMTQuantifierSymbol.FORALL;
+
 	/**
 	 * Returns the default instance of the factory.
 	 * 
@@ -31,61 +87,83 @@ public final class SMTFactory {
 	}
 
 	/**
-	 * Creates a new atomic formula from a relation expression.
-	 * <p>
-	 * {EQUAL, LT, LE, GT, GE}
-	 * 
-	 * @param tag
-	 *            the tag of the arithmetic formula
-	 * @param children
-	 *            the children of the arithmetic formula
-	 * @return the newly created formula
+	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
+	 * GT, GE}
 	 */
-	public SMTAtomicFormula makeAtomicFormula(int tag,
-			SMTTerm[] children) {
-		return new SMTAtomicFormula(tag, children);
+	public SMTFormula makeEqual(SMTTerm[] args) {
+		return new SMTAtom(EQUAL, args);
 	}
-	
-	/**
-	 * Creates a new atomic formula from a boolean identifier.
-	 * @param id
-	 *            the identifier
-	 * @return the newly created formula
-	 */
-	public SMTFormula makeAtomicFormula(SMTIdentifier id) {
-		return new SMTAtomicFormula(id);
+
+	public SMTFormula makeNotEqual(SMTTerm[] args) {
+		final SMTFormula[] tabEqual = { makeEqual(args) };
+		return makeNot(tabEqual);
+	}
+
+	public SMTFormula makeLesserThan(SMTTerm[] args) {
+		return new SMTAtom(LT, args);
+	}
+
+	public SMTFormula makeLesserEqual(SMTTerm[] args) {
+		return new SMTAtom(LE, args);
+	}
+
+	public SMTFormula makeGreaterThan(SMTTerm[] args) {
+		return new SMTAtom(GT, args);
+	}
+
+	public SMTFormula makeGreaterEqual(SMTTerm[] args) {
+		return new SMTAtom(GE, args);
 	}
 
 	/**
-	 * Creates a new arithmetic term.
-	 * <p>
-	 * {PLUS, MINUS, MUL, DIV, MODULO, UNARY_MINUS}
-	 * 
-	 * @param tag
-	 *            the tag of the arithmetic term
-	 * @param children
-	 *            the children of the arithmetic term
-	 * @return the newly created term
+	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
 	 */
-	public SMTArithmeticTerm makeArithmeticTerm(int tag,
-			SMTTerm[] children) {
-		return new SMTArithmeticTerm(tag, children);
+	public SMTTerm makePlus(SMTTerm[] args) {
+		return new SMTFunction(PLUS, args);
+	}
+
+	public SMTTerm makeMinus(SMTTerm[] args) {
+		return new SMTFunction(MINUS, args);
+	}
+
+	public SMTTerm makeMul(SMTTerm[] args) {
+		return new SMTFunction(MUL, args);
+	}
+
+	public SMTTerm makeUMinus(SMTTerm[] arg) {
+		return new SMTFunction(UMINUS, arg);
 	}
 
 	/**
-	 * Creates a new connective formula.
-	 * <p>
-	 * {NOT, IMPLIES, IF_THEN_ELSE, AND, OR, XOR, IFF}
-	 * 
-	 * @param tag
-	 *            the tag of the connective formula
-	 * @param children
-	 *            the children of the connective formula
-	 * @return the newly created formula
+	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
+	 * XOR, IFF}
 	 */
-	public SMTConnectiveFormula makeConnectiveFormula(int tag,
-			SMTFormula[] children) {
-		return new SMTConnectiveFormula(tag, children);
+	public SMTFormula makeNot(SMTFormula[] formula) {
+		return new SMTConnectiveFormula(NOT, formula);
+	}
+
+	public SMTFormula makeImplies(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(IMPLIES, formulas);
+	}
+
+	public SMTFormula makeIfThenElse(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(ITE_FORMULA, formulas);
+	}
+
+	public SMTFormula makeAnd(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(AND, formulas);
+	}
+
+	public SMTFormula makeOr(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(OR, formulas);
+	}
+
+	public SMTFormula makeXor(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(XOR, formulas);
+	}
+
+	public SMTFormula makeIff(SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(IFF, formulas);
 	}
 
 	/**
@@ -101,28 +179,14 @@ public final class SMTFactory {
 
 	/**
 	 * Creates a new boolean.
-	 * 
-	 * @param tag
-	 *            the tag of the boolean
-	 * @return the newly created boolean
 	 */
-	public SMTBoolean makeBoolean(int tag) {
-		return new SMTBoolean(tag);
-	}
+	// TODO When BOOL theory implemented
+	/*
+	 * public SMTBoolean makeBoolean() { return new SMTBoolean(); }
+	 */
 
 	/**
-	 * Creates a new identifier.
-	 * 
-	 * @param identifier
-	 *            the identifier
-	 * @return the newly created identifier
-	 */
-	public SMTIdentifier makeIdentifier(String identifier) {
-		return new SMTIdentifier(identifier);
-	}
-
-	/**
-	 * Creates a new ITE term.
+	 * Creates a new ITE_FORMULA term.
 	 * 
 	 * @param formula
 	 *            a SMT formula
@@ -130,88 +194,65 @@ public final class SMTFactory {
 	 *            an SMT term
 	 * @param fTerm
 	 *            an SMT term
-	 * @return the newly created ITE term
+	 * @return the newly created ITE_FORMULA term
 	 */
 	public SMTITETerm makeITETerm(SMTFormula formula, SMTTerm tTerm,
 			SMTTerm fTerm) {
-		return new SMTITETerm(SMTNode.ITE, formula, tTerm, fTerm);
+		return new SMTITETerm(formula, tTerm, fTerm);
 	}
 
 	/**
-	 * Creates a new propositional atom.
-	 * <p>
-	 * {FALSE, TRUE}
-	 * 
-	 * @param tag
-	 *            the tag of the propositional atom
-	 * @return the newly created propositional atom
+	 * Creates a new propositional atom. {FALSE, TRUE}
 	 */
-	public SMTPropAtom makePropAtom(int tag) {
-		return new SMTPropAtom(tag);
+	public SMTFormula makePTrue() {
+		return new SMTAtom(PTRUE);
 	}
-	
-	/**
-	 * Creates a macro formula.
-	 * 
-	 * @param tag
-	 *            the tag of the macro
-	 * @return the newly created macro
-	 */
-	public SMTMacroFormula makeMacroFormula(int tag, String macroId, SMTTerm[] children, boolean not) {
-		return new SMTMacroFormula(tag, macroId,children,not);
+
+	public SMTFormula makePFalse() {
+		return new SMTAtom(PFALSE);
 	}
-	
-	/**
-	 * Creates a macro term.
-	 * 
-	 * @param tag
-	 *            the tag of the macro term
-	 * @return the newly created macro
-	 */
-	public SMTMacroTerm makeMacroTerm(int tag, String macroId, SMTTerm[] children, boolean not) {
-		return new SMTMacroTerm(tag, macroId,children,not);
+
+	public SMTTerm makeVar(final String identifier, final Type type) {
+		// FIXME this is not correct
+		return new SMTVar(new SMTVarSymbol(identifier, new SMTSort(
+				type.toString())));
 	}
-	
+
 	/**
 	 * Creates a new quantified pred.
-	 * 
-	 * @param tag
-	 *            the tag of the bound identifier declaration
-	 * @param formulas
-	 *            the bound ident decls
-	 * @param pred
-	 *            Predicate associated with the nound ident decls	 
-	 * @return the newly quantified predicate
 	 */
-	public SMTQuantifiedPred makeQuantifiedPred(int tag, SMTTerm[] formulas, SMTFormula[] pred) {
-		return new SMTQuantifiedPred(tag, formulas, pred);
-	}
-	
-	/**
-	 * Creates a Bound identifier declaration.
-	 * 
-	 * @param tag
-	 * 			  the tag of the bound identifier
-	 * @param name
-	 *            the name of the bound identifier
-	 * @param type
-	 *            the Type of the bound identifier         
-	 * @return the newly bound identifier declaration
-	 */
-	public SMTQuantifiedVariable makeQuantifiedVariable(int tag, String name, Type type) {
-		return new SMTQuantifiedVariable(tag, name, type);
+	public SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
+		return new SMTQuantifiedFormula(FORALL, null, formula);
 	}
 
-	
-	/**
-	 * Creates a command (SMT lib v2.0).
-	 * 
-	 * @param tag
-	 *            the tag of the propositional atom
-	 * @return the newly created propositional atom
-	 */
-	public SMTMacroFormula makeCommand(int tag, String macroId, SMTTerm[] children, boolean not) {
-		return new SMTMacroFormula(tag, macroId,children,not);
+	public SMTFormula makeExists(final SMTTerm[] terms, final SMTFormula formula) {
+		return new SMTQuantifiedFormula(EXISTS, null, formula);
 	}
 
+	// TODO
+	public SMTTerm makeFun(String identifier) {
+		return null;
+	}
+
+	// TODO
+	public SMTFormula makePred(String identifier) {
+		return null;
+	}
+
+	/**
+	 * Creates a new identifier.
+	 */
+	public SMTTerm makeConstantIdentifier(final String identifier) {
+		// FIXME this method must get the right SMTFunctionSymbol as parameter
+		// (the Translator must call a method of Signature that will give it if
+		// it exists, or create it)
+		return new SMTFunction(null, null);
+	}
+
+	public SMTFormula makePropAtomIdentifier(final String identifier) {
+		// FIXME this method must get the right SMTPredicateSymbol as parameter
+		// (the Translator must call a method of Signature that will give it if
+		// it exists, or create it)
+		return new SMTAtom(null, null);
+	}
 }

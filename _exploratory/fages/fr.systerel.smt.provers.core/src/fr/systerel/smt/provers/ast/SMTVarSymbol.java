@@ -10,31 +10,37 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.QVAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+
 /**
  * @author guyot
- * 
+ *
  */
-public class SMTFunDecl {
-	private SMTIdentifier fun;
-	private SMTSort sort;
+public class SMTVarSymbol implements SMTSymbol {
+	final private String symbol;
+	final private SMTSort sort;
 
-	public SMTFunDecl(String varName, SMTSort sort) {
-		this.fun = new SMTIdentifier(varName);
+	public SMTVarSymbol(final String symbol, final SMTSort sort) {
+		this.symbol = symbol;
 		this.sort = sort;
 	}
 
-	public void toString(final StringBuilder buffer) {
-		buffer.append("(");
-		this.fun.toString(buffer);
-		buffer.append(" ");
-		this.sort.toString(buffer);
-		buffer.append(")");
+	public String getSymbol() {
+		return this.symbol;
 	}
 
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
-		this.toString(buffer);
+		buffer.append(OPAR);
+		buffer.append(QVAR);
+		buffer.append(this.symbol);
+		buffer.append(SPACE);
+		buffer.append(this.sort);
+		buffer.append(CPAR);
 		return buffer.toString();
 	}
 }

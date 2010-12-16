@@ -16,7 +16,7 @@ package fr.systerel.smt.provers.ast;
 public class SMTLogic {
 	public static String QF_LIA = "QF_LIA";
 
-	/** The logic name. */
+	/** The logic identifier. */
 	private final String name;
 
 	public SMTLogic(final String name) {

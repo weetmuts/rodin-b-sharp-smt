@@ -10,9 +10,9 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
-import fr.systerel.smt.provers.ast.SMTFunDecl;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
-import fr.systerel.smt.provers.ast.SMTPredDecl;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSort;
 
 public class Signature {
@@ -20,9 +20,9 @@ public class Signature {
 
 	private final List<SMTSort> sorts;
 
-	private final List<SMTPredDecl> preds;
+	private final List<SMTPredicateSymbol> preds;
 
-	private final List<SMTFunDecl> funs;
+	private final List<SMTFunctionSymbol> funs;
 
 	// TODO put this into a Signature extending class that will be used by veriT
 	// approach
@@ -58,7 +58,8 @@ public class Signature {
 	}
 
 	public Signature(final String logic, final List<SMTSort> sorts,
-			final List<SMTPredDecl> preds, final List<SMTFunDecl> funs) {
+			final List<SMTPredicateSymbol> preds,
+			final List<SMTFunctionSymbol> funs) {
 		this.logic = new SMTLogic(logic);
 		this.sorts = sorts;
 		this.preds = preds;
@@ -66,63 +67,69 @@ public class Signature {
 		this.macros = new ArrayList<String>();
 	}
 
+	private static String sectionIndentation(final String sectionName) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		for (int i = 0; i < sectionName.length(); i++) {
+			sb.append(" ");
+		}
+		sb.append("    ");
+		return sb.toString();
+	}
+
 	private static <T> void extraSection(final StringBuilder sb,
-			final List<T> elements, final String sectionName,
-			final String sep1, final String sep2) {
-		String separator = sep1;
+			final List<T> elements, final String sectionName) {
+		final String eltSep = sectionIndentation(sectionName);
+		String separator = "";
 		sb.append(" :");
 		sb.append(sectionName);
 		sb.append(" (");
 		for (final T element : elements) {
 			sb.append(separator);
-			sb.append(element.toString());
-			separator = sep2;
+			sb.append(element);
+			separator = eltSep;
 		}
 		sb.append(")\n");
 	}
 
-	private static void logicSection(final StringBuilder sb, final String logic) {
+	private void logicSection(final StringBuilder sb) {
 		sb.append(" :logic ");
-		sb.append(logic);
+		sb.append(this.logic);
 		sb.append("\n");
 	}
 
 	/**
 	 * One sort per line. May add a comment beside.
 	 */
-	private static void extrasortsSection(final StringBuilder sb,
-			final List<SMTSort> sorts) {
-		if (!sorts.isEmpty()) {
-			extraSection(sb, sorts, "extrasorts", "", "\n              ");
+	private void extrasortsSection(final StringBuilder sb) {
+		if (!this.sorts.isEmpty()) {
+			extraSection(sb, this.sorts, "extrasorts");
 		}
 	}
 
-	private static void extrapredsSection(final StringBuilder sb,
-			final List<SMTPredDecl> preds) {
+	private void extrapredsSection(final StringBuilder sb) {
 		if (!preds.isEmpty()) {
-			extraSection(sb, preds, "extrapreds", "", "\n              ");
+			extraSection(sb, this.preds, "extrapreds");
 		}
 	}
 
-	private static void extrafunsSection(final StringBuilder sb,
-			final List<SMTFunDecl> funs) {
+	private void extrafunsSection(final StringBuilder sb) {
 		if (!funs.isEmpty()) {
-			extraSection(sb, funs, "extrafuns", "", "\n             ");
+			extraSection(sb, this.funs, "extrafuns");
 		}
 	}
 
 	// TODO put this into a Signature extending class that will be used by veriT
 	// approach
-	public static void extramacrosSection(final StringBuilder sb,
-			final List<String> macros) {
+	public void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
-			extraSection(sb, macros, "extramacros", "", "\n               ");
+			extraSection(sb, this.macros, "extramacros");
 		}
 	}
 
 	/**
-	 * Gives a fresh name to a variable of which name contains the character
-	 * '\''.
+	 * Gives a fresh identifier to a variable of which identifier contains the
+	 * character '\''.
 	 */
 	public static String giveFreshVar(final String name,
 			final ITypeEnvironment typeEnv) {
@@ -139,10 +146,10 @@ public class Signature {
 	}
 
 	public void toString(StringBuilder sb) {
-		logicSection(sb, this.logic.toString());
-		extrasortsSection(sb, this.sorts);
-		extrapredsSection(sb, this.preds);
-		extrafunsSection(sb, this.funs);
-		extramacrosSection(sb, this.macros);
+		this.logicSection(sb);
+		this.extrasortsSection(sb);
+		this.extrapredsSection(sb);
+		this.extrafunsSection(sb);
+		this.extramacrosSection(sb);
 	}
 }

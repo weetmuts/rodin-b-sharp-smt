@@ -10,12 +10,17 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import static fr.systerel.smt.provers.ast.SMTFactory.UMINUS;
+
 import java.math.BigInteger;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.
  */
-public final class SMTNumeral extends SMTBaseTerm {
+public final class SMTNumeral extends SMTTerm {
 
 	/** The internal value. */
 	private final BigInteger value;
@@ -27,22 +32,19 @@ public final class SMTNumeral extends SMTBaseTerm {
 	 *            the value
 	 */
 	SMTNumeral(BigInteger value) {
-		super(value.toString(), SMTNode.NUMERAL);
 		this.value = value;
 	}
 
 	@Override
 	public void toString(StringBuilder builder) {
-		final String prefix, suffix;
 		if (value.signum() < 0) {
-			prefix = "(~ ";
-			suffix = ")";
+			builder.append(OPAR);
+			builder.append(UMINUS);
+			builder.append(SPACE);
+			builder.append(value.abs());
+			builder.append(CPAR);
 		} else {
-			prefix = "";
-			suffix = "";
+			builder.append(value.abs());
 		}
-		builder.append(prefix);
-		builder.append(value.abs());
-		builder.append(suffix);
 	}
 }

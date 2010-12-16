@@ -13,15 +13,14 @@ package fr.systerel.smt.provers.ast;
 /**
  * Common class for SMT-LIB formulas.
  */
-public abstract class SMTFormula extends SMTNode<SMTFormula> {
-
-	/**
-	 * Creates a new formula with the specified tag.
-	 * 
-	 * @param tag node tag of this term
-	 */
-	SMTFormula(int tag) {
-		super(tag);
+public abstract class SMTFormula implements SMTNode<SMTFormula> {
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		this.toString(builder);
+		return builder.toString();
 	}
 
+	@Override
+	public abstract void toString(StringBuilder builder);
 }
