@@ -10,7 +10,8 @@ import java.util.List;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
-import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.TranslatorV1_2;
@@ -56,7 +57,7 @@ public class TranslationTests extends AbstractTests {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
-		Assert.assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
+		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(ppPred));
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
@@ -81,7 +82,7 @@ public class TranslationTests extends AbstractTests {
 				.toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
-		Assert.assertEquals(failMessage, expectedSMTNode, actualSMTNode);
+		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
 	}
 
 	private static final String translationMessage(final Predicate ppPred,

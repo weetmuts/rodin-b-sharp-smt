@@ -10,7 +10,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
-import org.junit.Assert;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -105,15 +106,15 @@ public class RunProverTest extends AbstractTests {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslation());
 			smtProverCall.callProver(smtArgs);
-			Assert.assertEquals(
+			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
 		} catch (TranslationException t) {
-			Assert.fail(t.getMessage());
+			fail(t.getMessage());
 		} catch (IOException ioe) {
-			Assert.fail(ioe.getMessage());
+			fail(ioe.getMessage());
 		} catch (IllegalArgumentException iae) {
-			Assert.fail(iae.getMessage());
+			fail(iae.getMessage());
 		}
 	}
 
