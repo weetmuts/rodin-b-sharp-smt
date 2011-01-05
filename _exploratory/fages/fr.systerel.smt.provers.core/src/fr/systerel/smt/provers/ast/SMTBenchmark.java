@@ -9,20 +9,22 @@
  *     Vitor Alcantara de Almeida - Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.translation;
+package fr.systerel.smt.provers.ast;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
- * This class builds an SMT-LIB Benchmark
+ * This class builds an SMT-LIB SMTBenchmark
  * 
  * @author guyot
  * 
  */
-public class Benchmark {
-	private String name;
-	private Signature signature;
-	private Sequent sequent;
+public class SMTBenchmark {
+	private final String name;
+	private final SMTSignature signature;
+	private final List<SMTFormula> assumptions;
+	private final SMTFormula goal;
 
 	/**
 	 * Adds the closing format of a benchmark command to the given string
@@ -36,17 +38,32 @@ public class Benchmark {
 	 * Adds the opening format of a benchmark command to the given string
 	 * builder.
 	 */
-	private static void benchmarkCmdOpening(final StringBuilder sb,
-			final String name) {
+	private void benchmarkCmdOpening(final StringBuilder sb) {
 		sb.append("(benchmark ");
 		sb.append(name);
 		sb.append("\n");
 	}
 
-	public Benchmark(final String lemmaName, final Signature signature, final Sequent sequent) {
+	private void assumptionsSection(final StringBuilder sb) {
+		for (final SMTFormula assumption : this.assumptions) {
+			sb.append(" :assumption ");
+			assumption.toString(sb);
+			sb.append("\n");
+		}
+	}
+
+	private void formulaSection(StringBuilder sb) {
+		sb.append(" :formula (not ");
+		this.goal.toString(sb);
+		sb.append(")\n");
+	}
+
+	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
+			final List<SMTFormula> assumptions, final SMTFormula goal) {
 		this.name = lemmaName;
 		this.signature = signature;
-		this.sequent = sequent;
+		this.assumptions = assumptions;
+		this.goal = goal;
 	}
 
 	public String getName() {
@@ -58,10 +75,11 @@ public class Benchmark {
 	 */
 	public void print(final PrintWriter pw) {
 		final StringBuilder sb = new StringBuilder();
-		benchmarkCmdOpening(sb, this.name);
+		this.benchmarkCmdOpening(sb);
 		this.signature.toString(sb);
 		sb.append("\n");
-		this.sequent.toString(sb);
+		this.assumptionsSection(sb);
+		this.formulaSection(sb);
 		benchmarkCmdClosing(sb);
 		pw.println(sb.toString());
 	}

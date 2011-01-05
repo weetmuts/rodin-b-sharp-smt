@@ -24,7 +24,7 @@ public class SMTFunctionSymbol implements SMTSymbol {
 	 */
 	final private String symbol;
 	/**
-	 * The rank (as defined in SMT-LIB Signature definition). It was chosen to
+	 * The rank (as defined in SMT-LIB SMTSignature definition). It was chosen to
 	 * distinguish between the result sort and the argument sorts by putting
 	 * them in two distinct fields. Consequently, argSorts can be null whereas
 	 * resultSort cannot.
@@ -32,8 +32,7 @@ public class SMTFunctionSymbol implements SMTSymbol {
 	final private SMTSort[] argSorts;
 	final private SMTSort resultSort;
 
-	public SMTFunctionSymbol(final String symbol, final SMTSort resultSort,
-			final SMTSort... argSorts) {
+	SMTFunctionSymbol(final String symbol, final SMTSort argSorts[], final SMTSort resultSort) {
 		this.symbol = symbol;
 		this.argSorts = argSorts;
 		// Must not be null
@@ -44,7 +43,7 @@ public class SMTFunctionSymbol implements SMTSymbol {
 	 * If argSorts is null, then this symbol is a base term: function constant.
 	 */
 	public boolean isConstant() {
-		return this.argSorts == null;
+		return this.argSorts.length != 0;
 	}
 
 	public String getSymbol() {
@@ -56,12 +55,12 @@ public class SMTFunctionSymbol implements SMTSymbol {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
 		buffer.append(this.symbol);
-		buffer.append(SPACE);
-		buffer.append(this.resultSort);
 		for (SMTSort sort: this.argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}
+		buffer.append(SPACE);
+		buffer.append(this.resultSort);
 		buffer.append(CPAR);
 		return buffer.toString();
 	}

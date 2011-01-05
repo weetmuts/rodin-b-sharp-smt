@@ -26,11 +26,11 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
-import br.ufrn.smt.solver.translation.Benchmark;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SmtThroughPp;
 import br.ufrn.smt.solver.translation.TranslationException;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**
@@ -109,7 +109,7 @@ public class SmtProverCall extends XProverCall {
 		smtFileWriter.close();
 	}
 
-	private static File writeSMTFile(final Benchmark benchmark) {
+	private static File writeSMTFile(final SMTBenchmark benchmark) {
 		mkTranslationDir();
 		File smtFile = new File(smtFilePath(benchmark.getName()));
 		try {
@@ -216,7 +216,7 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Parse Rodin PO to create Smt file
 		 */
-		final Benchmark benchmark = SmtThroughPp.translateToSmtLibBenchmark(
+		final SMTBenchmark benchmark = SmtThroughPp.translateToSmtLibBenchmark(
 				this.lemmaName, this.hypotheses, this.goal);
 		this.iFile = writeSMTFile(benchmark);
 

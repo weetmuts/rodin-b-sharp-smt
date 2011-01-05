@@ -14,10 +14,14 @@ import java.util.List;
 
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
 
+import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTNode;
+import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSymbol;
 
 /**
  * 
@@ -37,21 +41,19 @@ public abstract class Translator implements ISimpleVisitor {
 		this.sf = sf;
 	}
 
-	public abstract Benchmark translate(final String lemmaName,
+	public abstract SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal);
 
-	protected abstract Signature translateSignature(
-			final List<Predicate> hypotheses, final Predicate goal);
+	protected abstract SMTSymbol translateTypeName(final Type type);
 
-	protected abstract Sequent translateSequent(final Signature signature,
+	protected abstract SMTSignature translateSignature(
 			final List<Predicate> hypotheses, final Predicate goal);
 
 	protected SMTFormula getSMTFormula() {
 		if (this.smtNode instanceof SMTFormula) {
 			return (SMTFormula) this.smtNode;
 		} else {
-			throw new IllegalArgumentException(
-					Messages.Translation_error);
+			throw new IllegalArgumentException(Messages.Translation_error);
 		}
 	}
 }

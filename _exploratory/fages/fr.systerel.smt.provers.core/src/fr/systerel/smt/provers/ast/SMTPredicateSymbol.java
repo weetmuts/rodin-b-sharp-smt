@@ -24,7 +24,7 @@ public class SMTPredicateSymbol implements SMTSymbol {
 	 */
 	final private String symbol;
 	/**
-	 * The rank (as defined in SMT-LIB Signature definition). Remind that it is
+	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it is
 	 * possible to associate a predicate predicate to the empty sequence rank,
 	 * denoting that the predicate is a propositional predicate.
 	 */

@@ -9,28 +9,31 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
+import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTSignature;
+
 /**
  * @author guyot
  * 
  */
 public class SmtThroughPp extends TranslatorV1_2 {
 
-	public static Benchmark translateToSmtLibBenchmark(final String lemmaName,
+	public static SMTBenchmark translateToSmtLibBenchmark(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		return new SmtThroughPp().translate(lemmaName, hypotheses, goal);
 	}
 
 	@Override
-	public Benchmark translate(final String lemmaName,
+	public SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final PPProof ppProof = ppTranslation(hypotheses, goal);
 		final List<Predicate> ppTranslatedHypotheses = ppProof
 				.getTranslatedHypotheses();
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
-		final Signature signature = translateSignature(ppTranslatedHypotheses, ppTranslatedGoal);
-		final Sequent sequent = translate(signature, ppTranslatedHypotheses, ppTranslatedGoal);
-		return new Benchmark(lemmaName, signature, sequent);
+		final SMTSignature signature = translateSignature(ppTranslatedHypotheses, ppTranslatedGoal);
+		final SMTBenchmark benchmark = translate(lemmaName, signature, ppTranslatedHypotheses, ppTranslatedGoal);
+		return benchmark;
 	}
 
 	private static PPProof ppTranslation(final List<Predicate> hypotheses,

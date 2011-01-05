@@ -22,6 +22,8 @@ public final class SMTFactory {
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
 	public final static SMTSort INT = new SMTSort("Int");
+	public final static SMTSort[] INT_TAB = { INT };
+	public final static SMTSort[] INT_INT_TAB = { INT, INT };
 
 	public final static String OPAR = "(";
 	public final static String CPAR = ")";
@@ -34,13 +36,13 @@ public final class SMTFactory {
 	 * Arithmetic symbols
 	 */
 	public final static SMTFunctionSymbol PLUS = new SMTFunctionSymbol("+",
-			INT, INT, INT);
+			INT_INT_TAB, INT);
 	public final static SMTFunctionSymbol MINUS = new SMTFunctionSymbol("-",
-			INT, INT, INT);
-	public final static SMTFunctionSymbol MUL = new SMTFunctionSymbol("*", INT,
-			INT, INT);
+			INT_INT_TAB, INT);
+	public final static SMTFunctionSymbol MUL = new SMTFunctionSymbol("*",
+			INT_INT_TAB, INT);
 	public final static SMTFunctionSymbol UMINUS = new SMTFunctionSymbol("~",
-			INT, INT);
+			INT_TAB, INT);
 	public final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol("=",
 			INT, INT, INT);
 	public final static SMTPredicateSymbol LT = new SMTPredicateSymbol("<",
@@ -244,14 +246,14 @@ public final class SMTFactory {
 	 */
 	public SMTTerm makeConstantIdentifier(final String identifier) {
 		// FIXME this method must get the right SMTFunctionSymbol as parameter
-		// (the Translator must call a method of Signature that will give it if
+		// (the Translator must call a method of SMTSignature that will give it if
 		// it exists, or create it)
 		return new SMTFunction(null, null);
 	}
 
 	public SMTFormula makePropAtomIdentifier(final String identifier) {
 		// FIXME this method must get the right SMTPredicateSymbol as parameter
-		// (the Translator must call a method of Signature that will give it if
+		// (the Translator must call a method of SMTSignature that will give it if
 		// it exists, or create it)
 		return new SMTAtom(null, null);
 	}

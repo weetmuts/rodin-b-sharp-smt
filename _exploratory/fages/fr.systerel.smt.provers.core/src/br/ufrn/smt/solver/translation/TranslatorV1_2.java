@@ -31,13 +31,19 @@ import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
+import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
+import org.eventb.core.ast.ParametricType;
+import org.eventb.core.ast.PowerSetType;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.QuantifiedUtil;
@@ -48,11 +54,14 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
+import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
-import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
+import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSort;
+import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
@@ -62,6 +71,12 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  */
 public class TranslatorV1_2 extends Translator {
 
+	private HashMap<Type, SMTSort> typeSmtSortMap = new HashMap<Type, SMTSort>();
+
+	// TODO these two lists must be replaced with the hashset created in
+	// SMTSignature (the naming mechanism must not be handle in SMTSignature,
+	// not
+	// here)
 	/** The Bound identifier list. */
 	private ArrayList<String> boundIdentifers;
 
@@ -80,7 +95,7 @@ public class TranslatorV1_2 extends Translator {
 		}
 	}
 
-	private TranslatorV1_2(Predicate predicate,
+	protected TranslatorV1_2(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
 		this.boundIdentifers = boundIdentifiers;
@@ -91,11 +106,13 @@ public class TranslatorV1_2 extends Translator {
 	}
 
 	@Override
-	public Benchmark translate(final String lemmaName,
+	public SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		final Signature signature = translateSignature(hypotheses, goal);
-		final Sequent sequent = translate(signature, hypotheses, goal);
-		return new Benchmark(lemmaName, signature, sequent);
+		final SMTSignature signature = this
+				.translateSignature(hypotheses, goal);
+		final SMTBenchmark benchmark = this.translate(lemmaName, signature,
+				hypotheses, goal);
+		return benchmark;
 	}
 
 	public ArrayList<String> getBoundIdentifers() {
@@ -115,109 +132,276 @@ public class TranslatorV1_2 extends Translator {
 	}
 
 	@Override
-	public Signature translateSignature(final List<Predicate> hypotheses,
+	public SMTSignature translateSignature(final List<Predicate> hypotheses,
 			final Predicate goal) {
 		return translateSignature("UNKNOWN", hypotheses, goal);
 	}
 
-	@Override
-	public Sequent translateSequent(final Signature signature,
+	public static SMTSignature translateSignature(final String logicName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		return translate(signature, hypotheses, goal);
-	}
+		// TODO this method must only memorize in the hashset of this class, the
+		// association between types contained in the Event-B sequent and sorts
+		// put in the smt signature
+		final SMTSignature signature = new SMTSignature(logicName);/*
+																	 * final
+																	 * HashMap
+																	 * <String,
+																	 * String>
+																	 * singleQuotVars
+																	 * = new
+																	 * HashMap
+																	 * <String,
+																	 * String
+																	 * >();
+																	 * boolean
+																	 * insertPairDecl
+																	 * = false;
+																	 * 
+																	 * final
+																	 * ITypeEnvironment
+																	 * typeEnvironment
+																	 * =
+																	 * SMTSignature
+																	 * .
+																	 * extractTypeEnvironment
+																	 * (
+																	 * hypotheses
+																	 * , goal);
+																	 * 
+																	 * final
+																	 * IIterator
+																	 * iter =
+																	 * typeEnvironment
+																	 * .
+																	 * getIterator
+																	 * (); while
+																	 * (
+																	 * iter.hasNext
+																	 * ()) {
+																	 * iter
+																	 * .advance
+																	 * (); final
+																	 * String
+																	 * varName =
+																	 * iter
+																	 * .getName
+																	 * (); final
+																	 * Type
+																	 * varType =
+																	 * iter
+																	 * .getType
+																	 * ();
+																	 * 
+																	 * final
+																	 * String
+																	 * freshName
+																	 * =
+																	 * signature
+																	 * .
+																	 * giveFreshVar
+																	 * (
+																	 * varName);
+																	 * if
+																	 * (varType
+																	 * .
+																	 * getSource
+																	 * () !=
+																	 * null) {
+																	 * 
+																	 * if
+																	 * (varType
+																	 * .
+																	 * getSource
+																	 * (
+																	 * ).getSource
+																	 * () !=
+																	 * null ||
+																	 * varType
+																	 * .getSource
+																	 * (
+																	 * ).getBaseType
+																	 * () !=
+																	 * null) {
+																	 * // TODO:
+																	 * Insert an
+																	 * Error
+																	 * message
+																	 * and
+																	 * abort,
+																	 * cartesian
+																	 * //
+																	 * product
+																	 * of
+																	 * cartesian
+																	 * product
+																	 * ||
+																	 * cartesian
+																	 * product
+																	 * of //
+																	 * power
+																	 * type is
+																	 * not
+																	 * implemeted
+																	 * yet
+																	 * System
+																	 * .err
+																	 * .println(
+																	 * "Cartesian product of cartesian product || Cartesian product of power type is not implemented yet"
+																	 * ); }
+																	 * 
+																	 * final
+																	 * SMTSort
+																	 * sort1 =
+																	 * new
+																	 * SMTSort(
+																	 * getSMTAtomicExpressionFormat
+																	 * (
+																	 * varType.
+																	 * getSource
+																	 * ()
+																	 * .toString
+																	 * ()));
+																	 * final
+																	 * SMTSort
+																	 * sort2 =
+																	 * new
+																	 * SMTSort(
+																	 * getSMTAtomicExpressionFormat
+																	 * (
+																	 * varType.
+																	 * getTarget
+																	 * ()
+																	 * .toString
+																	 * ()));
+																	 * final
+																	 * StringBuilder
+																	 * strSort =
+																	 * new
+																	 * StringBuilder
+																	 * ();
+																	 * strSort
+																	 * .append
+																	 * ("(Pair "
+																	 * );
+																	 * strSort
+																	 * .append(
+																	 * sort1
+																	 * .toString
+																	 * ());
+																	 * strSort
+																	 * .append
+																	 * (" ");
+																	 * strSort
+																	 * .append
+																	 * (sort2
+																	 * .toString
+																	 * ());
+																	 * strSort
+																	 * .append
+																	 * (")");
+																	 * signature
+																	 * .
+																	 * addPredicateSymbol
+																	 * (varName,
+																	 * strSort.
+																	 * toString
+																	 * ());
+																	 * 
+																	 * if (!
+																	 * insertPairDecl
+																	 * ) {
+																	 * signature
+																	 * .addSort
+																	 * (new
+																	 * SMTSort(
+																	 * "(Pair 's 't)"
+																	 * )); } if
+																	 * (!sorts.
+																	 * contains
+																	 * (sort1))
+																	 * {
+																	 * sorts.add
+																	 * (sort1);
+																	 * } if
+																	 * (!sorts
+																	 * .contains
+																	 * (sort2))
+																	 * {
+																	 * sorts.add
+																	 * (sort2);
+																	 * }
+																	 * insertPairDecl
+																	 * = true;
+																	 * 
+																	 * } else if
+																	 * (varType
+																	 * .
+																	 * getBaseType
+																	 * () !=
+																	 * null) {
+																	 * if
+																	 * (varName
+																	 * .equals(
+																	 * varType
+																	 * .getBaseType
+																	 * (
+																	 * ).toString
+																	 * ())) {
+																	 * sorts
+																	 * .add(new
+																	 * SMTSort
+																	 * (varName
+																	 * )); }
+																	 * else {
+																	 * preds
+																	 * .add(new
+																	 * SMTPredicateSymbol
+																	 * (varName,
+																	 * new
+																	 * SMTSort(
+																	 * getSMTAtomicExpressionFormat
+																	 * (
+																	 * varType.
+																	 * getBaseType
+																	 * ()
+																	 * .toString
+																	 * ())))); }
+																	 * } else {
+																	 * funs
+																	 * .add(new
+																	 * SMTFunctionSymbol
+																	 * (varName,
+																	 * new
+																	 * SMTSort(
+																	 * getSMTAtomicExpressionFormat
+																	 * (
+																	 * varType.
+																	 * toString(
+																	 * ))))); }
+																	 * } if (
+																	 * insertPairDecl
+																	 * ) {
+																	 * funs.add
+																	 * (new
+																	 * SMTFunctionSymbol
+																	 * (
+																	 * "pair 's 't"
+																	 * , new
+																	 * SMTSort(
+																	 * "(Pair 's 't)"
+																	 * ))); }
+																	 */
 
-	public static Signature translateSignature(final String logicName,
-			final List<Predicate> hypotheses, final Predicate goal) {
-		final List<SMTSort> sorts = new ArrayList<SMTSort>();
-		final List<SMTPredicateSymbol> preds = new ArrayList<SMTPredicateSymbol>();
-		final List<SMTFunctionSymbol> funs = new ArrayList<SMTFunctionSymbol>();
-		final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
-		boolean insertPairDecl = false;
-
-		final ITypeEnvironment typeEnvironment = Signature
-				.extractTypeEnvironment(hypotheses, goal);
-
-		final IIterator iter = typeEnvironment.getIterator();
-		while (iter.hasNext()) {
-			iter.advance();
-			final String varName = iter.getName();
-			final Type varType = iter.getType();
-
-			if (varName.contains("\'")) {
-				final String freshName = Signature.giveFreshVar(varName,
-						typeEnvironment);
-				singleQuotVars.put(varName, freshName);
-			}
-
-			if (varName.equals(varType.toString())) {
-				sorts.add(new SMTSort(varType.toString()));
-			}
-
-			// Regra 6
-			else if (varType.getSource() != null) {
-
-				if (varType.getSource().getSource() != null
-						|| varType.getSource().getBaseType() != null) {
-					// TODO: Insert an Error message and abort, cartesian
-					// product of cartesian product || cartesian product of
-					// power type is not implemeted yet
-					System.err
-							.println("Cartesian product of cartesian product || Cartesian product of power type is not implemented yet");
-				}
-
-				final SMTSort sort1 = new SMTSort(
-						getSMTAtomicExpressionFormat(varType.getSource()
-								.toString()));
-				final SMTSort sort2 = new SMTSort(
-						getSMTAtomicExpressionFormat(varType.getTarget()
-								.toString()));
-				final StringBuilder strSort = new StringBuilder();
-				strSort.append("(Pair ");
-				strSort.append(sort1.toString());
-				strSort.append(" ");
-				strSort.append(sort2.toString());
-				strSort.append(")");
-				final SMTSort pair = new SMTSort(strSort.toString());
-				preds.add(new SMTPredicateSymbol(varName, pair));
-
-				if (!insertPairDecl) {
-					sorts.add(new SMTSort("(Pair 's 't)"));
-				}
-				if (!sorts.contains(sort1)) {
-					sorts.add(sort1);
-				}
-				if (!sorts.contains(sort2)) {
-					sorts.add(sort2);
-				}
-				insertPairDecl = true;
-
-			} else if (varType.getBaseType() != null) {
-				if (varName.equals(varType.getBaseType().toString())) {
-					sorts.add(new SMTSort(varName));
-				} else {
-					preds.add(new SMTPredicateSymbol(varName, new SMTSort(
-							getSMTAtomicExpressionFormat(varType.getBaseType()
-									.toString()))));
-				}
-			} else {
-				funs.add(new SMTFunctionSymbol(varName, new SMTSort(
-						getSMTAtomicExpressionFormat(varType.toString()))));
-			}
-		}
-		if (insertPairDecl) {
-			funs.add(new SMTFunctionSymbol("pair 's 't", new SMTSort(
-					"(Pair 's 't)")));
-		}
-
-		return new Signature(logicName, sorts, preds, funs);
+		return signature;
 	}
 
 	/**
 	 * This method parses hypothesis and goal predicates and translates them
 	 * into SMT nodes
 	 */
-	public static Sequent translate(final Signature signature,
-			final List<Predicate> hypotheses, final Predicate goal) {
+	public static SMTBenchmark translate(final String lemmaName,
+			final SMTSignature signature, final List<Predicate> hypotheses,
+			final Predicate goal) {
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
 		HashSet<String> boundIdentifiers = new HashSet<String>();
@@ -225,35 +409,21 @@ public class TranslatorV1_2 extends Translator {
 
 		ArrayList<String> a = new ArrayList<String>();
 		ArrayList<String> b = new ArrayList<String>();
-
-		for (Predicate assumption : hypotheses) {
-			IdentifiersAndSMTStorage iSMT = translate1(assumption, a, b);
-
-			boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
-			freeIdentifiers.addAll(iSMT.getFreeIdentifiers());
-			translatedAssumptions.add(iSMT.getSmtFormula());
-
-			a = new ArrayList<String>(boundIdentifiers);
-			b = new ArrayList<String>(freeIdentifiers);
-		}
+		// TODO put this in down classes
+		/*
+		 * for (Predicate assumption : hypotheses) { IdentifiersAndSMTStorage
+		 * iSMT = translate1(assumption, a, b);
+		 * 
+		 * boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
+		 * freeIdentifiers.addAll(iSMT.getFreeIdentifiers());
+		 * translatedAssumptions.add(iSMT.getSmtFormula());
+		 * 
+		 * a = new ArrayList<String>(boundIdentifiers); b = new
+		 * ArrayList<String>(freeIdentifiers); }
+		 */
 
 		final SMTFormula smtFormula = translate(goal, a, b);
-		return new Sequent(signature, translatedAssumptions, smtFormula);
-	}
-
-	/**
-	 * This method translates the given predicate into an SMT Node.
-	 */
-	public static IdentifiersAndSMTStorage translate1(Predicate predicate,
-			ArrayList<String> boundIdentifiers,
-			ArrayList<String> freeIdentifiers) {
-		final TranslatorV1_2 translator = new TranslatorV1_2(predicate,
-				boundIdentifiers, freeIdentifiers);
-		predicate.accept(translator);
-		IdentifiersAndSMTStorage iSMT = new IdentifiersAndSMTStorage(
-				translator.getSMTFormula(), translator.getBoundIdentifers(),
-				translator.getFreeIdentifiers());
-		return iSMT;
+		return new SMTBenchmark(lemmaName, signature, translatedAssumptions, smtFormula);
 	}
 
 	/**
@@ -272,6 +442,50 @@ public class TranslatorV1_2 extends Translator {
 		final TranslatorV1_2 translator = new TranslatorV1_2(predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
+	}
+
+	/**
+	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
+	 * benchmark's signature, that is, free identifiers and given types.
+	 */
+	private static void extractPredicateTypenv(
+			final ITypeEnvironment typeEnvironment, final Predicate predicate) {
+		for (FreeIdentifier id : predicate.getFreeIdentifiers()) {
+			typeEnvironment.add(id);
+		}
+		for (GivenType type : predicate.getGivenTypes()) {
+			typeEnvironment.addGivenSet(type.getName());
+		}
+	}
+
+	/**
+	 * Extracts the type environment of a Event-B sequent
+	 */
+	public static ITypeEnvironment extractTypeEnvironment(
+			final List<Predicate> hypotheses, final Predicate goal) {
+		final FormulaFactory ff = FormulaFactory.getDefault(); // FIXME use real
+																// one
+		final ITypeEnvironment typeEnvironment = ff.makeTypeEnvironment();
+		for (final Predicate hypothesis : hypotheses) {
+			extractPredicateTypenv(typeEnvironment, hypothesis);
+		}
+		extractPredicateTypenv(typeEnvironment, goal);
+		return typeEnvironment;
+	}
+
+	@Override
+	protected SMTSymbol translateTypeName(Type type) {
+		/*
+		 * if (type instanceof BooleanType) { return translateBooleanType(type);
+		 * } else if (type instanceof GivenType) { return
+		 * translateGivenType(type); } else if (type instanceof IntegerType) {
+		 * return translateIntegerType(type); } else if (type instanceof
+		 * ParametricType) { return translateParametricType(type); } else if
+		 * (type instanceof PowerSetType) { return translatePowerSetType(type);
+		 * } else if (type instanceof ProductType) { return
+		 * translateProductType(type); } else { return null; }
+		 */
+		return null;
 	}
 
 	// TODO to be moved into the Translator used by veriT approach
@@ -387,7 +601,7 @@ public class TranslatorV1_2 extends Translator {
 		case Formula.FALSE:
 			this.smtNode = sf.makePFalse();
 			break;
-		// FIXME Must be put in the Signature
+		// FIXME Must be put in the SMTSignature
 		/*
 		 * case Formula.INTEGER: this.smtNode = sf.makeMacroTerm(SMTNode.MACRO,
 		 * "Int", null, false); break; case Formula.NATURAL: this.smtNode =
@@ -504,9 +718,9 @@ public class TranslatorV1_2 extends Translator {
 		this.freeIdentifiers.add(newNames[0]);
 		this.boundIdentifers.add(newNames[0]);
 
-		//FIXME must create a new SMTVarSymbol
-		//this.smtNode = sf.makeQuantifiedVariable(newNames[0],
-		//		boundIdentDecl.getType());
+		// FIXME must create a new SMTVarSymbol
+		// this.smtNode = sf.makeQuantifiedVariable(newNames[0],
+		// boundIdentDecl.getType());
 	}
 
 	@Override
