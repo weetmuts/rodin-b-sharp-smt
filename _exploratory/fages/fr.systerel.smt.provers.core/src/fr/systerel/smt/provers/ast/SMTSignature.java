@@ -4,30 +4,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eventb.core.ast.FormulaFactory;
-import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.GivenType;
-import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.Predicate;
-
-
 public class SMTSignature {
 	private final SMTLogic logic;
 
-	private final HashSet<String> symbols = new HashSet<String>(); // TODO must
-																	// implement
-																	// SMT-LIB
-																	// rules
+	protected final HashSet<String> symbols = new HashSet<String>(); // TODO
+																		// must
+																		// implement
+																		// SMT-LIB
+																		// rules
 
-	private final List<SMTSort> sorts = new ArrayList<SMTSort>();
+	protected final List<SMTSort> sorts = new ArrayList<SMTSort>();
 
-	private final List<SMTPredicateSymbol> preds = new ArrayList<SMTPredicateSymbol>();
+	protected final List<SMTPredicateSymbol> preds = new ArrayList<SMTPredicateSymbol>();
 
-	private final List<SMTFunctionSymbol> funs = new ArrayList<SMTFunctionSymbol>();
-
-	// TODO put this into a SMTSignature extending class that will be used by veriT
-	// approach
-	private final List<String> macros = new ArrayList<String>();
+	protected final List<SMTFunctionSymbol> funs = new ArrayList<SMTFunctionSymbol>();
 
 	public SMTSignature(final String logicName) {
 		this.logic = new SMTLogic(logicName);
@@ -43,7 +33,7 @@ public class SMTSignature {
 		return sb.toString();
 	}
 
-	private static <T> void extraSection(final StringBuilder sb,
+	protected static <T> void extraSection(final StringBuilder sb,
 			final List<T> elements, final String sectionName) {
 		final String eltSep = sectionIndentation(sectionName);
 		String separator = "";
@@ -102,14 +92,6 @@ public class SMTSignature {
 		}
 	}
 
-	// TODO put this into a SMTSignature extending class that will be used by veriT
-	// approach
-	private void extramacrosSection(final StringBuilder sb) {
-		if (!macros.isEmpty()) {
-			extraSection(sb, this.macros, "extramacros");
-		}
-	}
-
 	public void addFunctionSymbol() {
 		// TODO must verify the given argument, and give a fresh name if needed
 	}
@@ -127,6 +109,5 @@ public class SMTSignature {
 		this.extrasortsSection(sb);
 		this.extrapredsSection(sb);
 		this.extrafunsSection(sb);
-		this.extramacrosSection(sb);
 	}
 }
