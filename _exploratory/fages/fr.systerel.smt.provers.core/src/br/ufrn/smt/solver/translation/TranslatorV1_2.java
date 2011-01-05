@@ -35,15 +35,10 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
-import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
-import org.eventb.core.ast.ParametricType;
-import org.eventb.core.ast.PowerSetType;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.QuantifiedUtil;
@@ -55,10 +50,7 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
-import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
-import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSort;
 import fr.systerel.smt.provers.ast.SMTSymbol;
@@ -66,11 +58,15 @@ import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
- * This class translate a formula expressed in Event-B syntax to a formula in
- * SMT-LIB syntax.
+ * This class is a translator from Event-B syntax into SMT-LIB syntax.
  */
 public class TranslatorV1_2 extends Translator {
 
+	/**
+	 * typeSmtSortMap is a map between Event-B types encountered during the translation
+	 * process and SMT-LIB sorts assigned to them. This map is built using an
+	 * SMT-LIB Signature that provides fresh type names.
+	 */
 	private HashMap<Type, SMTSort> typeSmtSortMap = new HashMap<Type, SMTSort>();
 
 	// TODO these two lists must be replaced with the hashset created in
@@ -110,7 +106,7 @@ public class TranslatorV1_2 extends Translator {
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final SMTSignature signature = this
 				.translateSignature(hypotheses, goal);
-		final SMTBenchmark benchmark = this.translate(lemmaName, signature,
+		final SMTBenchmark benchmark = translate(lemmaName, signature,
 				hypotheses, goal);
 		return benchmark;
 	}
@@ -423,7 +419,8 @@ public class TranslatorV1_2 extends Translator {
 		 */
 
 		final SMTFormula smtFormula = translate(goal, a, b);
-		return new SMTBenchmark(lemmaName, signature, translatedAssumptions, smtFormula);
+		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
+				smtFormula);
 	}
 
 	/**
