@@ -18,22 +18,18 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * @author guyot
  * 
  */
-public class SMTFunctionSymbol implements SMTSymbol {
-	/**
-	 * The function
-	 */
-	final private String symbol;
+public class SMTFunctionSymbol extends SMTSymbol {
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). It was chosen to
 	 * distinguish between the result sort and the argument sorts by putting
 	 * them in two distinct fields. Consequently, argSorts can be null whereas
 	 * resultSort cannot.
 	 */
-	final private SMTSort[] argSorts;
-	final private SMTSort resultSort;
+	final private SMTSortSymbol[] argSorts;
+	final private SMTSortSymbol resultSort;
 
-	SMTFunctionSymbol(final String symbol, final SMTSort argSorts[], final SMTSort resultSort) {
-		this.symbol = symbol;
+	SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[], final SMTSortSymbol resultSort) {
+		super(symbolName);
 		this.argSorts = argSorts;
 		// Must not be null
 		this.resultSort = resultSort;
@@ -46,16 +42,12 @@ public class SMTFunctionSymbol implements SMTSymbol {
 		return this.argSorts.length != 0;
 	}
 
-	public String getSymbol() {
-		return this.symbol;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
-		buffer.append(this.symbol);
-		for (SMTSort sort: this.argSorts) {
+		buffer.append(this.name);
+		for (SMTSortSymbol sort: this.argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}

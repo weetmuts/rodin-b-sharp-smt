@@ -21,9 +21,9 @@ public final class SMTFactory {
 
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
-	public final static SMTSort INT = new SMTSort("Int");
-	public final static SMTSort[] INT_TAB = { INT };
-	public final static SMTSort[] INT_INT_TAB = { INT, INT };
+	public final static SMTSortSymbol INT = new SMTSortSymbol("Int");
+	public final static SMTSortSymbol[] INT_TAB = { INT };
+	public final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
 	public final static String OPAR = "(";
 	public final static String CPAR = ")";
@@ -121,19 +121,19 @@ public final class SMTFactory {
 	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
 	 */
 	public SMTTerm makePlus(SMTTerm[] args) {
-		return new SMTFunction(PLUS, args);
+		return new SMTFunApplication(PLUS, args);
 	}
 
 	public SMTTerm makeMinus(SMTTerm[] args) {
-		return new SMTFunction(MINUS, args);
+		return new SMTFunApplication(MINUS, args);
 	}
 
 	public SMTTerm makeMul(SMTTerm[] args) {
-		return new SMTFunction(MUL, args);
+		return new SMTFunApplication(MUL, args);
 	}
 
 	public SMTTerm makeUMinus(SMTTerm[] arg) {
-		return new SMTFunction(UMINUS, arg);
+		return new SMTFunApplication(UMINUS, arg);
 	}
 
 	/**
@@ -216,7 +216,7 @@ public final class SMTFactory {
 
 	public SMTTerm makeVar(final String identifier, final Type type) {
 		// FIXME this is not correct
-		return new SMTVar(new SMTVarSymbol(identifier, new SMTSort(
+		return new SMTVar(new SMTVarSymbol(identifier, new SMTSortSymbol(
 				type.toString())));
 	}
 
@@ -248,7 +248,7 @@ public final class SMTFactory {
 		// FIXME this method must get the right SMTFunctionSymbol as parameter
 		// (the Translator must call a method of SMTSignature that will give it if
 		// it exists, or create it)
-		return new SMTFunction(null, null);
+		return new SMTFunApplication(null, null);
 	}
 
 	public SMTFormula makePropAtomIdentifier(final String identifier) {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import java.util.HashMap;
+
 public class SMTSignature {
 	private final SMTLogic logic;
 
@@ -13,11 +15,13 @@ public class SMTSignature {
 																		// SMT-LIB
 																		// rules
 
-	protected final List<SMTSort> sorts = new ArrayList<SMTSort>();
+	protected final List<SMTSortSymbol> sorts = new ArrayList<SMTSortSymbol>();
 
 	protected final List<SMTPredicateSymbol> preds = new ArrayList<SMTPredicateSymbol>();
 
 	protected final List<SMTFunctionSymbol> funs = new ArrayList<SMTFunctionSymbol>();
+
+	protected final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
 
 	public SMTSignature(final String logicName) {
 		this.logic = new SMTLogic(logicName);
@@ -100,7 +104,7 @@ public class SMTSignature {
 		// TODO must verify the given argument, and give a fresh name if needed
 	}
 
-	public void addSort(final String sort) {
+	public void addSortSymbol(final String sort) {
 		// TODO must verify the given argument, and give a fresh name if needed
 	}
 

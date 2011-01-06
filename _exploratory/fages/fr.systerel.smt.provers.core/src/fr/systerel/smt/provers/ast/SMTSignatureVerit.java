@@ -18,6 +18,7 @@ import java.util.List;
  * veriT.
  * 
  */
+//FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
 	private final List<String> macros = new ArrayList<String>();
@@ -58,5 +59,48 @@ public class SMTSignatureVerit extends SMTSignature {
 	public void toString(StringBuilder sb) {
 		super.toString(sb);
 		this.extramacrosSection(sb);
+	}
+
+	public void putSingleQuoteVar(final String varName, final String freshName) {
+		this.singleQuotVars.put(varName, freshName);
+	}
+
+	public void addSort(final String sortName) {
+		final SMTSortSymbol sort = new SMTSortSymbol(sortName);
+		if (!this.sorts.contains(sort)) {
+			this.sorts.add(sort);
+		}
+	}
+
+	public void addPred(final String predName, final String... argSorts) {
+		this.preds.add(new SMTPredicateSymbol(predName));
+	}
+
+	public void addPairPred(final String predName, final String sortSymb1,
+			final String sortSymb2) {
+		final SMTSortSymbol sort1 = new SMTSortSymbol(sortSymb1);
+		final SMTSortSymbol sort2 = new SMTSortSymbol(sortSymb2);
+		final StringBuilder strSort = new StringBuilder();
+		strSort.append("(Pair ");
+		strSort.append(sort1.toString());
+		strSort.append(" ");
+		strSort.append(sort2.toString());
+		strSort.append(")");
+		final SMTSortSymbol pair = new SMTSortSymbol(strSort.toString());
+		this.preds.add(new SMTPredicateSymbol(predName, pair));
+	}
+
+	public void addFun(final String funName, final String argSorts[],
+			final String resultSort) {
+		final List<SMTSortSymbol> args = new ArrayList<SMTSortSymbol>();
+		for (final String arg : argSorts) {
+			args.add(new SMTSortSymbol(arg));
+		}
+		this.funs.add(new SMTFunctionSymbol(funName, (SMTSortSymbol[]) args
+				.toArray(), new SMTSortSymbol(resultSort)));
+	}
+
+	public List<SMTSortSymbol> getSorts() {
+		return this.sorts;
 	}
 }

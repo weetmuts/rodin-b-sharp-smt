@@ -19,17 +19,12 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * @author guyot
  *
  */
-public class SMTVarSymbol implements SMTSymbol {
-	final private String symbol;
-	final private SMTSort sort;
+public class SMTVarSymbol extends SMTSymbol {
+	final private SMTSortSymbol sort;
 
-	public SMTVarSymbol(final String symbol, final SMTSort sort) {
-		this.symbol = symbol;
+	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort) {
+		super(symbolName);
 		this.sort = sort;
-	}
-
-	public String getSymbol() {
-		return this.symbol;
 	}
 
 	@Override
@@ -37,7 +32,7 @@ public class SMTVarSymbol implements SMTSymbol {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
 		buffer.append(QVAR);
-		buffer.append(this.symbol);
+		buffer.append(this.name);
 		buffer.append(SPACE);
 		buffer.append(this.sort);
 		buffer.append(CPAR);

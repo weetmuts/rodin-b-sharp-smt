@@ -14,7 +14,23 @@ package fr.systerel.smt.provers.ast;
  * @author guyot
  *
  */
-public interface SMTSymbol {
+public abstract class SMTSymbol {
+	final protected String name;
+
+	SMTSymbol(final String symbolName) {
+		this.name = symbolName;
+	}
+
+	public String getSymbol() {
+		return this.name;
+	}
+
 	@Override
-	public String toString();
+	public String toString() {
+		return this.name;
+	}
+
+	public void toString(final StringBuilder buffer) {
+		buffer.append(toString());
+	}
 }

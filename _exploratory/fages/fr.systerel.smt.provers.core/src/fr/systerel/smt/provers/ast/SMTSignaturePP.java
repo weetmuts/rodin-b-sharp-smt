@@ -10,6 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+
 /**
  * This is the SMTSignature to be used by the SMT translation process through PP. 
  *

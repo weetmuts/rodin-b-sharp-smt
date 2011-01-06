@@ -4,17 +4,18 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.TranslatorV1_2;
+import br.ufrn.smt.solver.translation.SmtThroughPp;
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB
@@ -78,8 +79,7 @@ public class TranslationTests extends AbstractTests {
 	private static void testTranslationV1_2(final Predicate ppPred,
 			final String expectedSMTNode, final String failMessage) {
 
-		final String actualSMTNode = TranslatorV1_2.translate(ppPred)
-				.toString();
+		final String actualSMTNode = SmtThroughPp.translate(ppPred).toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
@@ -121,7 +121,8 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * land
 		 */
-		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (iff u v))");
+		testTranslationV1_2Default("(a = b) ∧ (u = v)",
+				"(and (= a b) (iff u v))");
 		/**
 		 * land (multiple predicates)
 		 */
@@ -130,7 +131,8 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * lor
 		 */
-		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (iff u v))");
+		testTranslationV1_2Default("(a = b) ∨ (u = v)",
+				"(or (= a b) (iff u v))");
 		/**
 		 * lor (multiple predicates)
 		 */

@@ -13,20 +13,8 @@ package fr.systerel.smt.provers.ast;
 /**
  * The SMT sorts.
  */
-public class SMTSort {
-	/** The sort identifier. */
-	private final String name;
-
-	public SMTSort(final String name) {
-		this.name = name;
-	}
-
-	public void toString(final StringBuilder buffer) {
-		buffer.append(this.name);
-	}
-	
-	@Override
-	public String toString() {
-		return this.name;
+public class SMTSortSymbol extends SMTSymbol {
+	SMTSortSymbol(String symbolName) {
+		super(symbolName);
 	}
 }

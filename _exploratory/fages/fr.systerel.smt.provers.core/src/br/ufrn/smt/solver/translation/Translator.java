@@ -24,7 +24,7 @@ import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 
 /**
- * 
+ * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
 
@@ -41,14 +41,28 @@ public abstract class Translator implements ISimpleVisitor {
 		this.sf = sf;
 	}
 
-	public abstract SMTBenchmark translate(final String lemmaName,
+	/**
+	 * This is the translation method. An Event-B sequent is given to this
+	 * method as hypotheses and goal. Must be called by a public static method.
+	 */
+	protected abstract SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal);
 
+	/**
+	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
+	 */
 	protected abstract SMTSymbol translateTypeName(final Type type);
 
+	/**
+	 * This method extracts the type environment from the Event-B sequent and
+	 * builds the SMT-LIB signature to use.
+	 */
 	protected abstract SMTSignature translateSignature(
 			final List<Predicate> hypotheses, final Predicate goal);
 
+	/**
+	 * This method returns the current SMT node.
+	 */
 	protected SMTFormula getSMTFormula() {
 		if (this.smtNode instanceof SMTFormula) {
 			return (SMTFormula) this.smtNode;

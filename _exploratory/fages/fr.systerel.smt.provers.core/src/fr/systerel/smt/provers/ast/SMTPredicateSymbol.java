@@ -18,20 +18,16 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * @author guyot
  * 
  */
-public class SMTPredicateSymbol implements SMTSymbol {
-	/**
-	 * The predicate predicate
-	 */
-	final private String symbol;
+public class SMTPredicateSymbol extends SMTSymbol {
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it is
 	 * possible to associate a predicate predicate to the empty sequence rank,
 	 * denoting that the predicate is a propositional predicate.
 	 */
-	final private SMTSort[] argSorts;
+	final private SMTSortSymbol[] argSorts;
 
-	public SMTPredicateSymbol(final String symbol, final SMTSort... argSorts) {
-		this.symbol = symbol;
+	public SMTPredicateSymbol(final String symbolName, final SMTSortSymbol... argSorts) {
+		super(symbolName);
 		this.argSorts = argSorts;
 	}
 
@@ -39,16 +35,12 @@ public class SMTPredicateSymbol implements SMTSymbol {
 		return this.argSorts == null;
 	}
 
-	public String getSymbol() {
-		return this.symbol;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
-		buffer.append(this.symbol);
-		for (SMTSort sort : this.argSorts) {
+		buffer.append(this.name);
+		for (SMTSortSymbol sort : this.argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}

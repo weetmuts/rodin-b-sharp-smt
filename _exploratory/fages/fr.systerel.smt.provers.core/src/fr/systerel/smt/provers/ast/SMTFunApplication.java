@@ -18,14 +18,14 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * @author guyot
  * 
  */
-public class SMTFunction extends SMTTerm {
+public class SMTFunApplication extends SMTTerm {
 	final SMTFunctionSymbol symbol;
 	final SMTTerm[] args;
 
 	// TODO Assert that terms are as many as specified in function symbol rank
 	// and that their sorts are the same (a method to put in SMTSignature and to be
 	// called by the makeFun method of the factory)
-	public SMTFunction(final SMTFunctionSymbol symbol, final SMTTerm... terms) {
+	public SMTFunApplication(final SMTFunctionSymbol symbol, final SMTTerm... terms) {
 		this.symbol = symbol;
 		this.args = terms;
 	}
