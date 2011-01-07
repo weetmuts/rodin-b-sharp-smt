@@ -11,15 +11,16 @@
 
 package br.ufrn.smt.solver.translation;
 
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class TranslationException extends Exception {
 
 	private static final long serialVersionUID = -8016875587991618557L;
 
-	private ArrayList<Pair<String, String>> causes;
+	private Map<String, String> causes;
 
-	public TranslationException(ArrayList<Pair<String, String>> causes) {
+	public TranslationException(Map<String, String> causes) {
 		super();
 		this.causes = causes;
 	}
@@ -27,14 +28,13 @@ public class TranslationException extends Exception {
 	@Override
 	public String getMessage() {
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < causes.size(); i++) {
+		for (final Entry<String, String> cause : this.causes.entrySet()) {
 			sb.append("Formula: ");
-			sb.append(causes.get(i).getKey());
+			sb.append(cause.getKey());
 			sb.append(", Reason: ");
-			sb.append(causes.get(i).getValue());
+			sb.append(cause.getValue());
 			sb.append("\n");
 		}
 		return sb.toString();
 	}
-
 }

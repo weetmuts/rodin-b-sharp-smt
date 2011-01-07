@@ -51,7 +51,7 @@ public abstract class Translator implements ISimpleVisitor {
 	/**
 	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
 	 */
-	protected abstract SMTSymbol translateTypeName(final Type type);
+	protected abstract SMTSymbol translateTypeName(final SMTSignature signature, final Type type);
 
 	/**
 	 * This method extracts the type environment from the Event-B sequent and

@@ -11,7 +11,11 @@
 package fr.systerel.smt.provers.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This is the SMTSignature to be used by the SMT translation process through
@@ -21,7 +25,9 @@ import java.util.List;
 //FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
-	private final List<String> macros = new ArrayList<String>();
+	private final Set<String> macros = new HashSet<String>();
+
+	private final Map<String, String> singleQuotVars = new HashMap<String, String>();
 
 	/**
 	 * @param logicName
@@ -100,7 +106,7 @@ public class SMTSignatureVerit extends SMTSignature {
 				.toArray(), new SMTSortSymbol(resultSort)));
 	}
 
-	public List<SMTSortSymbol> getSorts() {
+	public Set<SMTSortSymbol> getSorts() {
 		return this.sorts;
 	}
 }

@@ -1,27 +1,23 @@
 package fr.systerel.smt.provers.ast;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.HashMap;
-
-public class SMTSignature {
+public abstract class SMTSignature {
 	private final SMTLogic logic;
 
-	protected final HashSet<String> symbols = new HashSet<String>(); // TODO
-																		// must
-																		// implement
-																		// SMT-LIB
-																		// rules
+	protected final Set<String> symbols = new HashSet<String>(); // TODO
+																	// must
+																	// implement
+																	// SMT-LIB
+																	// rules
 
-	protected final List<SMTSortSymbol> sorts = new ArrayList<SMTSortSymbol>();
+	protected final Set<SMTSortSymbol> sorts = new HashSet<SMTSortSymbol>();
 
-	protected final List<SMTPredicateSymbol> preds = new ArrayList<SMTPredicateSymbol>();
+	protected final Set<SMTPredicateSymbol> preds = new HashSet<SMTPredicateSymbol>();
 
-	protected final List<SMTFunctionSymbol> funs = new ArrayList<SMTFunctionSymbol>();
-
-	protected final HashMap<String, String> singleQuotVars = new HashMap<String, String>();
+	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
 	public SMTSignature(final String logicName) {
 		this.logic = new SMTLogic(logicName);
@@ -38,7 +34,7 @@ public class SMTSignature {
 	}
 
 	protected static <T> void extraSection(final StringBuilder sb,
-			final List<T> elements, final String sectionName) {
+			final Set<T> elements, final String sectionName) {
 		final String eltSep = sectionIndentation(sectionName);
 		String separator = "";
 		sb.append(" :");
@@ -67,6 +63,47 @@ public class SMTSignature {
 			}
 		}
 		return freshVar;
+	}
+
+	/**
+	 * Gives a fresh sort
+	 * 
+	 * @param name
+	 */
+	public SMTSortSymbol freshSort(final String name) {
+		int i = 0;
+		final StringBuilder buffer = new StringBuilder(name);
+
+		/**
+		 * Tries to put the symbol in symbols set.
+		 */
+		boolean successfullyAdded = this.symbols.add(name);
+		/**
+		 * If the set already contains this symbol
+		 */
+		while (!successfullyAdded) {
+			/**
+			 * Sets the buffer to contain name + "_" + i.
+			 */
+			buffer.setLength(name.length());
+			buffer.append("_").append(i);
+
+			/**
+			 * Tries to put the symbol
+			 */
+			successfullyAdded = this.symbols.add(buffer.toString());
+
+			i = i + 1;
+		}
+
+		final SMTSortSymbol freshSort = new SMTSortSymbol(buffer.toString());
+
+		/**
+		 * Tries to put the sort in sorts set.
+		 */
+		this.sorts.add(freshSort);
+
+		return freshSort;
 	}
 
 	private void logicSection(final StringBuilder sb) {
@@ -101,10 +138,6 @@ public class SMTSignature {
 	}
 
 	public void addPredicateSymbol(final String name, final String type) {
-		// TODO must verify the given argument, and give a fresh name if needed
-	}
-
-	public void addSortSymbol(final String sort) {
 		// TODO must verify the given argument, and give a fresh name if needed
 	}
 

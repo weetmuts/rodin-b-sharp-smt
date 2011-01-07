@@ -11,6 +11,7 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -199,7 +200,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	protected SMTSymbol translateTypeName(Type type) {
+	protected SMTSymbol translateTypeName(SMTSignature signature, Type type) {
 		// TODO Auto-generated method stub
 		return null;
 	}

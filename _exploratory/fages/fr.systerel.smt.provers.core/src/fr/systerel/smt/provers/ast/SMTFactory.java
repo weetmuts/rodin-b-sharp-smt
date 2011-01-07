@@ -22,6 +22,7 @@ public final class SMTFactory {
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
 	public final static SMTSortSymbol INT = new SMTSortSymbol("Int");
+	public final static SMTSortSymbol[] EMPTY_TAB = {};
 	public final static SMTSortSymbol[] INT_TAB = { INT };
 	public final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 

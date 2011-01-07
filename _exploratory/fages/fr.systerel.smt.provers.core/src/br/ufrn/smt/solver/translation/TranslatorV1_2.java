@@ -10,6 +10,7 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.eventb.core.ast.Formula;
@@ -18,14 +19,23 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 
 /**
  * This class is a translator from Event-B syntax into SMT-LIB syntax.
  */
 public abstract class TranslatorV1_2 extends Translator {
+	/**
+	 * typeSmtSortMap is a map between Event-B types encountered during the
+	 * translation process and SMT-LIB sorts assigned to them. This map is built
+	 * using an SMT-LIB Signature that provides fresh type names.
+	 */
+	protected HashMap<Type, SMTSymbol> typeSmtSortMap = new HashMap<Type, SMTSymbol>();
+
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
 	 * benchmark's signature, that is, free identifiers and given types.

@@ -30,6 +30,9 @@ import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.PowerSetType;
+import org.eventb.core.ast.ProductType;
+import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
@@ -48,6 +51,7 @@ import org.eventb.pp.PPProof;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
@@ -58,6 +62,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * is done.
  */
 public class SmtThroughPp extends TranslatorV1_2 {
+
 	/**
 	 * This is the public translation method
 	 * 
@@ -128,9 +133,6 @@ public class SmtThroughPp extends TranslatorV1_2 {
 			final Predicate goal) {
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
-		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
-				hypotheses, goal);
-
 		final SMTFormula smtFormula = translate(goal);
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
@@ -145,12 +147,33 @@ public class SmtThroughPp extends TranslatorV1_2 {
 		return translator.getSMTFormula();
 	}
 
-	private static SMTSignature translateSignature(final String logicName,
+	/**
+	 * This methods builds the SMT-LIB signature of a sequent given as its set of
+	 * hypotheses and its goal. The method also fill the variable typeSmtSortMap.
+	 * 
+	 * @param logicName the SMT-LIB logic 
+	 * @param hypotheses the set of hypotheses of the sequent
+	 * @param goal the goal of the sequent
+	 * @return the SMT-LIB signature of the sequent
+	 */
+	private SMTSignature translateSignature(final String logicName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		// TODO this method must only memorize in the hashset of this class, the
-		// association between types contained in the Event-B sequent and sorts
-		// put in the smt signature
-		final SMTSignature signature = new SMTSignature(logicName);
+		final SMTSignature signature = new SMTSignaturePP(logicName);
+		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
+				hypotheses, goal);
+
+		final IIterator iter = typeEnvironment.getIterator();
+		while (iter.hasNext()) {
+			iter.advance();
+			final String varName = iter.getName();
+			final Type varType = iter.getType();
+
+			if (!typeSmtSortMap.containsKey(varType)) {
+				final SMTSymbol typeSymbol = this.translateTypeName(signature, varType);
+				this.typeSmtSortMap.put(varType, typeSymbol);
+			}
+		}
+
 		return signature;
 	}
 
@@ -161,18 +184,8 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	}
 
 	@Override
-	protected SMTSymbol translateTypeName(Type type) {
-		/*
-		 * if (type instanceof BooleanType) { return translateBooleanType(type);
-		 * } else if (type instanceof GivenType) { return
-		 * translateGivenType(type); } else if (type instanceof IntegerType) {
-		 * return translateIntegerType(type); } else if (type instanceof
-		 * ParametricType) { return translateParametricType(type); } else if
-		 * (type instanceof PowerSetType) { return translatePowerSetType(type);
-		 * } else if (type instanceof ProductType) { return
-		 * translateProductType(type); } else { return null; }
-		 */
-		return null;
+	protected SMTSymbol translateTypeName(SMTSignature signature, Type type) {
+		return signature.freshSort("MS");
 	}
 
 	@Override
