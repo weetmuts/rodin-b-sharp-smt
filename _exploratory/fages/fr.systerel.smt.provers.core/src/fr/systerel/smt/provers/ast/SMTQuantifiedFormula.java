@@ -25,7 +25,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier, final SMTVarSymbol[] qVars, final SMTFormula formula) {
 		this.quantifier = quantifier;
-		this.qVars = qVars;
+		this.qVars = qVars.clone();
 		this.formula = formula;
 	}
 

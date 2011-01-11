@@ -14,12 +14,17 @@ package fr.systerel.smt.provers.ast;
  * This is the base class for all nodes of an SMT-LIB AST (Abstract Syntax
  * Tree).
  */
-public interface SMTNode<T extends SMTNode<T>> {
+public abstract class SMTNode<T extends SMTNode<T>> {
+
 	@Override
-	public String toString();
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		this.toString(builder);
+		return builder.toString();
+	}
 
 	/**
 	 * Builds the string representation of the SMT node.
 	 */
-	public void toString(StringBuilder builder);
+	public abstract void toString(StringBuilder builder);
 }

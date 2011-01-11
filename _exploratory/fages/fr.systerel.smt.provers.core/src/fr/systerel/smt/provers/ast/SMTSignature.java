@@ -1,17 +1,12 @@
 package fr.systerel.smt.provers.ast;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public abstract class SMTSignature {
 	private final SMTLogic logic;
 
-	protected final Set<String> symbols = new HashSet<String>(); // TODO
-																	// must
-																	// implement
-																	// SMT-LIB
-																	// rules
+	protected final Set<String> symbols = new HashSet<String>();
 
 	protected final Set<SMTSortSymbol> sorts = new HashSet<SMTSortSymbol>();
 
@@ -49,20 +44,64 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * Gives a fresh identifier to a variable of which identifier contains the
-	 * character '\''.
+	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
+	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
+	 * number , incremented as much as needed. If the symbol name already exists
+	 * in the symbols set, a new name is created, that is: original_name + "_" +
+	 * i, where i is incremented as much as needed.
 	 */
-	public String giveFreshVar(final String name) {
-		String freshVar = name;
+	public String freshVar(String name) {
+		int i = 0;
+		final StringBuilder freshName = new StringBuilder(name);
+
 		if (name.contains("\'")) {
+			final StringBuilder patch = new StringBuilder();
+			/**
+			 * Arbitrary chosen initial number
+			 */
 			int discrNumber = name.length() - name.indexOf('\'');
-			freshVar = name.replaceAll("'", "_" + discrNumber + "_");
-			while (this.symbols.contains(freshVar)) {
+
+			patch.append("_").append(discrNumber).append("_");
+
+			freshName.setLength(0);
+			freshName.append(name.replaceAll("'", patch.toString()));
+
+			while (this.symbols.contains(freshName.toString())) {
 				discrNumber = discrNumber + 1;
-				freshVar = name.replaceAll("'", "_" + discrNumber + "_");
+
+				patch.setLength(1);
+				patch.append(discrNumber).append("_");
+
+				freshName.setLength(0);
+				freshName.append(name.replaceAll("'", patch.toString()));
 			}
 		}
-		return freshVar;
+		
+		final String intermediateName = freshName.toString();
+
+		/**
+		 * Tries to put the symbol in symbols set.
+		 */
+		boolean successfullyAdded = this.symbols.add(intermediateName);
+		/**
+		 * If the set already contains this symbol
+		 */
+		while (!successfullyAdded) {
+			/**
+			 * Sets the buffer content to: name + "_" + i.
+			 */
+			freshName.setLength(intermediateName.length());
+			freshName.append("_").append(i);
+
+			/**
+			 * Tries to put the symbol in symbols set.
+			 */
+			successfullyAdded = this.symbols.add(freshName.toString());
+
+			i = i + 1;
+		}
+
+		return freshName.toString();
 	}
 
 	/**
@@ -71,32 +110,8 @@ public abstract class SMTSignature {
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		int i = 0;
-		final StringBuilder buffer = new StringBuilder(name);
-
-		/**
-		 * Tries to put the symbol in symbols set.
-		 */
-		boolean successfullyAdded = this.symbols.add(name);
-		/**
-		 * If the set already contains this symbol
-		 */
-		while (!successfullyAdded) {
-			/**
-			 * Sets the buffer to contain name + "_" + i.
-			 */
-			buffer.setLength(name.length());
-			buffer.append("_").append(i);
-
-			/**
-			 * Tries to put the symbol
-			 */
-			successfullyAdded = this.symbols.add(buffer.toString());
-
-			i = i + 1;
-		}
-
-		final SMTSortSymbol freshSort = new SMTSortSymbol(buffer.toString());
+		final String freshName = this.freshVar(name);
+		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName);
 
 		/**
 		 * Tries to put the sort in sorts set.
@@ -133,8 +148,8 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public void addFunctionSymbol() {
-		// TODO must verify the given argument, and give a fresh name if needed
+	public void addConstant(final String name, final SMTSortSymbol sort) {
+		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_TAB, sort));
 	}
 
 	public void addPredicateSymbol(final String name, final String type) {

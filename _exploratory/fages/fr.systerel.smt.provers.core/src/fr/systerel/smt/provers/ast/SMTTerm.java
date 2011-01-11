@@ -13,15 +13,8 @@ package fr.systerel.smt.provers.ast;
 /**
  * Common class for SMT-LIB terms.
  */
-public abstract class SMTTerm implements SMTNode<SMTTerm> {
-	//TODO add the sort field
-
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		this.toString(builder);
-		return builder.toString();
-	}
+public abstract class SMTTerm extends SMTNode<SMTTerm> {
+	protected SMTSortSymbol sort;
 
 	@Override
 	public abstract void toString(StringBuilder builder);

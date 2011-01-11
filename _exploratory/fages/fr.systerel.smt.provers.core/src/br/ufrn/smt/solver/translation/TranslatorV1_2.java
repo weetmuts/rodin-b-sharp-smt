@@ -22,7 +22,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
-import fr.systerel.smt.provers.ast.SMTSymbol;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 
 /**
@@ -30,11 +30,12 @@ import fr.systerel.smt.provers.ast.SMTTerm;
  */
 public abstract class TranslatorV1_2 extends Translator {
 	/**
-	 * typeSmtSortMap is a map between Event-B types encountered during the
-	 * translation process and SMT-LIB sorts assigned to them. This map is built
-	 * using an SMT-LIB Signature that provides fresh type names.
+	 * typeMap is a map between Event-B types encountered during the translation
+	 * process and SMT-LIB sorts assigned to them. This map is built using an
+	 * SMT-LIB Signature that provides fresh type names.
 	 */
-	protected HashMap<Type, SMTSymbol> typeSmtSortMap = new HashMap<Type, SMTSymbol>();
+	protected HashMap<Type, SMTSortSymbol> typeMap = new HashMap<Type, SMTSortSymbol>();
+	protected HashMap<String, String> varMap = new HashMap<String, String>();
 
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB

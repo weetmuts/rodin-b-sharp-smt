@@ -27,7 +27,7 @@ public class SMTConnectiveFormula extends SMTFormula {
 	SMTConnectiveFormula(final SMTConnective connective,
 			final SMTFormula... formulas) {
 		this.connective = connective;
-		this.formulas = formulas;
+		this.formulas = formulas.clone();
 	}
 
 	/**

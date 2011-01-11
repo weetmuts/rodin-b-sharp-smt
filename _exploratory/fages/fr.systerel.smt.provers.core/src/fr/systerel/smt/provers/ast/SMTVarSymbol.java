@@ -16,8 +16,9 @@ import static fr.systerel.smt.provers.ast.SMTFactory.QVAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
- * @author guyot
- *
+ * Represents quantified var symbols (constants are represented with
+ * SMTFunctionSymbol)
+ * 
  */
 public class SMTVarSymbol extends SMTSymbol {
 	final private SMTSortSymbol sort;

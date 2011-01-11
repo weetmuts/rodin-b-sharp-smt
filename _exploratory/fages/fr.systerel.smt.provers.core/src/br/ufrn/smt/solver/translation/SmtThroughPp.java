@@ -11,7 +11,9 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AssociativePredicate;
@@ -30,8 +32,6 @@ import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.PowerSetType;
-import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
@@ -52,7 +52,7 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
-import fr.systerel.smt.provers.ast.SMTSymbol;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
@@ -148,33 +148,148 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This methods builds the SMT-LIB signature of a sequent given as its set of
-	 * hypotheses and its goal. The method also fill the variable typeSmtSortMap.
+	 * This methods builds the SMT-LIB signature of a sequent given as its set
+	 * of hypotheses and its goal. The method also fill the variables typeMap
+	 * and varMap.
 	 * 
-	 * @param logicName the SMT-LIB logic 
-	 * @param hypotheses the set of hypotheses of the sequent
-	 * @param goal the goal of the sequent
+	 * @param logicName
+	 *            the SMT-LIB logic
+	 * @param hypotheses
+	 *            the set of hypotheses of the sequent
+	 * @param goal
+	 *            the goal of the sequent
 	 * @return the SMT-LIB signature of the sequent
 	 */
+	// FIXME Use the given logic, notably to take account of the sorts defined
+	// by this logic
 	private SMTSignature translateSignature(final String logicName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final SMTSignature signature = new SMTSignaturePP(logicName);
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
+		/**
+		 * For each membership of the type environment,
+		 */
 		final IIterator iter = typeEnvironment.getIterator();
 		while (iter.hasNext()) {
 			iter.advance();
 			final String varName = iter.getName();
 			final Type varType = iter.getType();
 
-			if (!typeSmtSortMap.containsKey(varType)) {
-				final SMTSymbol typeSymbol = this.translateTypeName(signature, varType);
-				this.typeSmtSortMap.put(varType, typeSymbol);
+			/**
+			 * gets a fresh name for the variable to be typed, adds it to the
+			 * variable names mapping (and adds it to the signature symbols set)
+			 */
+			final String smtVarName;
+			if (!varMap.containsKey(varName)) {
+				smtVarName = signature.freshVar(varName);
+				this.varMap.put(varName, smtVarName);
+			} else {
+				smtVarName = this.varMap.get(varName);
 			}
+
+			/**
+			 * translates the type into an SMT-LIB sort, adds it to the types
+			 * mapping (and adds it to the signature sort symbols set)
+			 */
+			final SMTSortSymbol smtSortSymbol;
+			if (!typeMap.containsKey(varType)) {
+				smtSortSymbol = this.translateTypeName(signature, varType);
+				this.typeMap.put(varType, smtSortSymbol);
+			} else {
+				smtSortSymbol = this.typeMap.get(varType);
+			}
+
+			/**
+			 * do the same for each base type used to define this type into an
+			 * SMT-LIB sort
+			 */
+			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
+					varType);
+			for (final Type baseType : baseTypes) {
+				if (!typeMap.containsKey(baseType)) {
+					final SMTSortSymbol baseSort = this.translateTypeName(
+							signature, baseType);
+					this.typeMap.put(baseType, baseSort);
+					signature.addConstant(smtVarName, baseSort);
+				}
+			}
+
+			/**
+			 * adds the typing item (<code>x ⦂ S</code>) to the signature as a
+			 * constant (<code>extrafuns</code> SMT-LIB section, with a sort but
+			 * no argument: <code>(x S)</code>).
+			 */
+			signature.addConstant(smtVarName, smtSortSymbol);
 		}
 
 		return signature;
+	}
+
+	private static Set<Type> getBaseTypes(Set<Type> baseTypes, final Type type) {
+		/**
+		 * Base case: the type is a base type. Adds it to the list and returns
+		 * the list.
+		 */
+		if (type.getSource() == null && type.getTarget() == null
+				&& type.getBaseType() == null) {
+			baseTypes.add(type);
+			return baseTypes;
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha × beta)</code>. Adds any base type
+		 * among source and target types, and calls recursively
+		 * <code>getBaseType</code> on types that are not base types.
+		 */
+		else if (type.getSource() != null) {
+			final Type sourceType = type.getSource();
+			final Type targetType = type.getTarget();
+
+			/**
+			 * Neither the source type nor the target type are base types.
+			 */
+			if (sourceType.getBaseType() != null
+					&& targetType.getBaseType() != null) {
+				return getBaseTypes(
+						getBaseTypes(baseTypes, sourceType.getBaseType()),
+						targetType.getBaseType());
+			}
+			/**
+			 * The target type is a base type.
+			 */
+			else if (sourceType.getBaseType() != null) {
+				baseTypes.add(targetType);
+				return getBaseTypes(baseTypes, sourceType.getBaseType());
+			}
+			/**
+			 * The source type is a base type.
+			 */
+			else {
+				baseTypes.add(sourceType);
+				return getBaseTypes(baseTypes, targetType.getBaseType());
+			}
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha)</code>. Calls recursively
+		 * <code>getBaseType</code> on alpha.
+		 */
+		else if (type.getBaseType() != null) {
+			return getBaseTypes(baseTypes, type.getBaseType());
+		}
+
+		/**
+		 * This case should not be reached because Event-B types given as
+		 * arguments are well-formed.
+		 */
+		else {
+			// FIXME Check that this case really should not be reached, if it is
+			// right, delete this case, otherwise, add an exception or implement
+			// this case.
+			return null;
+		}
 	}
 
 	@Override
@@ -184,7 +299,7 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	}
 
 	@Override
-	protected SMTSymbol translateTypeName(SMTSignature signature, Type type) {
+	protected SMTSortSymbol translateTypeName(SMTSignature signature, Type type) {
 		return signature.freshSort("MS");
 	}
 

@@ -15,7 +15,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
- * @author guyot
  * 
  */
 public class SMTFunctionSymbol extends SMTSymbol {

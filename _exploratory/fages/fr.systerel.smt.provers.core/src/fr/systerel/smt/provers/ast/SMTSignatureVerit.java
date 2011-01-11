@@ -37,24 +37,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Gives a fresh identifier to a variable of which identifier contains the
-	 * character '\''.
-	 */
-	@Override
-	public String giveFreshVar(final String name) {
-		String freshVar = name;
-		if (name.contains("\'")) {
-			int discrNumber = name.length() - name.indexOf('\'');
-			freshVar = name.replaceAll("'", "_" + discrNumber + "_");
-			while (this.symbols.contains(freshVar)) {
-				discrNumber = discrNumber + 1;
-				freshVar = name.replaceAll("'", "_" + discrNumber + "_");
-			}
-		}
-		return freshVar;
-	}
-
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			extraSection(sb, this.macros, "extramacros");

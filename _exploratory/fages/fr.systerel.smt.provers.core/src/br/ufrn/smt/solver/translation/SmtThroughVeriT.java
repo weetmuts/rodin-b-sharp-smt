@@ -11,7 +11,6 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -139,7 +138,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			if (varName.contains("\'")) {
-				final String freshName = signature.giveFreshVar(varName);
+				final String freshName = signature.freshVar(varName);
 				signature.putSingleQuoteVar(varName, freshName);
 			}
 

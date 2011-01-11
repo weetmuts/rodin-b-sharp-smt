@@ -13,13 +13,7 @@ package fr.systerel.smt.provers.ast;
 /**
  * Common class for SMT-LIB formulas.
  */
-public abstract class SMTFormula implements SMTNode<SMTFormula> {
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		this.toString(builder);
-		return builder.toString();
-	}
+public abstract class SMTFormula extends SMTNode<SMTFormula> {
 
 	@Override
 	public abstract void toString(StringBuilder builder);

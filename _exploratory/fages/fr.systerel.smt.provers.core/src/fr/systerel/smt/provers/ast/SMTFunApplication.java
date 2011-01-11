@@ -27,7 +27,7 @@ public class SMTFunApplication extends SMTTerm {
 	// called by the makeFun method of the factory)
 	public SMTFunApplication(final SMTFunctionSymbol symbol, final SMTTerm... terms) {
 		this.symbol = symbol;
-		this.args = terms;
+		this.args = terms.clone();
 	}
 
 	@Override

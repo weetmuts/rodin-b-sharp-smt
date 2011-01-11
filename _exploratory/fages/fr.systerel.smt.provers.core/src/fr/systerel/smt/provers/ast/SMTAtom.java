@@ -24,7 +24,7 @@ public class SMTAtom extends SMTFormula {
 
 	public SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm... terms) {
 		this.predicate = symbol;
-		this.terms = terms;
+		this.terms = terms.clone();
 	}
 
 	@Override
