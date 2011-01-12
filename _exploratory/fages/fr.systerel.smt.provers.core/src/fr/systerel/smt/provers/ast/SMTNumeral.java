@@ -36,6 +36,11 @@ public final class SMTNumeral extends SMTTerm {
 	}
 
 	@Override
+	public SMTSortSymbol getSort() {
+		return SMTFactory.INT;
+	}
+
+	@Override
 	public void toString(StringBuilder builder) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);

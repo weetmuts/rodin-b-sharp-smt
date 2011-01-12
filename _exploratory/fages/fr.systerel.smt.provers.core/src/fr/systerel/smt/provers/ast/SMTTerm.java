@@ -18,4 +18,8 @@ public abstract class SMTTerm extends SMTNode<SMTTerm> {
 
 	@Override
 	public abstract void toString(StringBuilder builder);
+
+	public SMTSortSymbol getSort() {
+		return this.sort;
+	}
 }

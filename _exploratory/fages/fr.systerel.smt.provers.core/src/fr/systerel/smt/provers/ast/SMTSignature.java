@@ -39,6 +39,7 @@ public abstract class SMTSignature {
 
 	private final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
+	private final static String MEMBERSHIP_PRED_NAME = "MS";
 
 	protected final static String reservedSymbols[] = { "=", "and",
 			"benchmark", "distinct", "exists", "false", "flet", "forall",
@@ -154,8 +155,39 @@ public abstract class SMTSignature {
 		return freshName.toString();
 	}
 
+	public SMTFunctionSymbol getFunctionSymbol(final String name,
+			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
+		for (SMTFunctionSymbol fun : this.funs) {
+			if (fun.name.equals(name) && fun.hasRank(argSorts, resultSort)) {
+				return fun;
+			}
+		}
+		return null;
+	}
+
+	public SMTPredicateSymbol getPredicateSymbol(final String name,
+			final SMTSortSymbol[] argSorts) {
+		for (SMTPredicateSymbol pred : this.preds) {
+			if (pred.name.equals(name) && pred.hasRank(argSorts)) {
+				return pred;
+			}
+		}
+		return null;
+	}
+
+	public SMTPredicateSymbol getMembershipPredicateSymbol(
+			final SMTSortSymbol[] argSorts) {
+		for (SMTPredicateSymbol pred : this.preds) {
+			if (pred.isAMembershipPredicate() && pred.hasRank(argSorts)) {
+				return pred;
+			}
+		}
+		return null;
+	}
+
 	public String freshCstName(final String name) {
-		if (Arrays.asList(reservedSymbols).contains(name) || this.attributeSymbols.contains(name)) {
+		if (Arrays.asList(reservedSymbols).contains(name)
+				|| this.attributeSymbols.contains(name)) {
 			return freshName(getSymbolNames(this.funs), NEW_SYMBOL_NAME);
 		} else {
 			return freshName(getSymbolNames(this.funs), name);
@@ -211,11 +243,17 @@ public abstract class SMTSignature {
 	}
 
 	public void addConstant(final String name, final SMTSortSymbol sort) {
-		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_TAB, sort));
+		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort));
 	}
 
-	public void addPredicateSymbol(final String name, final String type) {
-		// TODO must verify the given argument, and give a fresh name if needed
+	public void addPredicateSymbol(final boolean isAMembershipPredicate,
+			final String name, final SMTSortSymbol[] argSorts) {
+		this.preds.add(new SMTPredicateSymbol(isAMembershipPredicate, name,
+				argSorts));
+	}
+
+	public void addMembershipPredicateSymbol(final SMTSortSymbol[] argSorts) {
+		this.addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
 	}
 
 	public void toString(StringBuilder sb) {

@@ -14,6 +14,8 @@ import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
+import java.util.Arrays;
+
 /**
  * @author guyot
  * 
@@ -26,13 +28,28 @@ public class SMTPredicateSymbol extends SMTSymbol {
 	 */
 	final private SMTSortSymbol[] argSorts;
 
-	public SMTPredicateSymbol(final String symbolName, final SMTSortSymbol... argSorts) {
+	private boolean isAMembershipPredicate = false;
+
+	public SMTPredicateSymbol(final boolean isAMembershipPredicate, final String symbolName, final SMTSortSymbol... argSorts) {
 		super(symbolName);
-		this.argSorts = argSorts;
+		this.isAMembershipPredicate = isAMembershipPredicate;
+		this.argSorts = argSorts.clone();
+	}
+
+	public SMTPredicateSymbol(final String symbolName, final SMTSortSymbol... argSorts) {
+		this(false, symbolName, argSorts);
 	}
 
 	public boolean isPropositional() {
 		return this.argSorts == null;
+	}
+
+	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
+		return Arrays.equals(this.argSorts, argSorts2);
+	}
+
+	public boolean isAMembershipPredicate() {
+		return this.isAMembershipPredicate;
 	}
 
 	@Override

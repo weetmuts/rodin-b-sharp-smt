@@ -45,6 +45,11 @@ public final class SMTITETerm extends SMTTerm {
 	}
 
 	@Override
+	public SMTSortSymbol getSort() {
+		return this.tTerm.getSort();
+	}
+
+	@Override
 	public void toString(StringBuilder builder) {
 		builder.append(OPAR);
 		builder.append(ITE_TERM);

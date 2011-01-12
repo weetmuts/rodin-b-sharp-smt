@@ -31,6 +31,11 @@ public class SMTFunApplication extends SMTTerm {
 	}
 
 	@Override
+	public SMTSortSymbol getSort() {
+		return this.symbol.getResultSort();
+	}
+
+	@Override
 	public void toString(StringBuilder builder) {
 		if (this.symbol.isConstant()) {
 			builder.append(this.symbol);

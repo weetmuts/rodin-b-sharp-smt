@@ -22,6 +22,11 @@ public class SMTVar extends SMTTerm {
 	}
 
 	@Override
+	public SMTSortSymbol getSort() {
+		return this.symbol.getSort();
+	}
+
+	@Override
 	public void toString(StringBuilder builder) {
 		builder.append(SMTFactory.QVAR);
 		builder.append(this.symbol.getName());

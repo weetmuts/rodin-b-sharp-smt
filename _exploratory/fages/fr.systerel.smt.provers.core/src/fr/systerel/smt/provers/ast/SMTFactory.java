@@ -21,8 +21,10 @@ public final class SMTFactory {
 
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
+	public final static SMTTerm[] EMPTY_TERM = {};
+
 	public final static SMTSortSymbol INT = new SMTSortSymbol("Int");
-	public final static SMTSortSymbol[] EMPTY_TAB = {};
+	public final static SMTSortSymbol[] EMPTY_SORT = {};
 	public final static SMTSortSymbol[] INT_TAB = { INT };
 	public final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
@@ -232,30 +234,20 @@ public final class SMTFactory {
 		return new SMTQuantifiedFormula(EXISTS, null, formula);
 	}
 
-	// TODO
-	public SMTTerm makeFun(String identifier) {
-		return null;
+	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol, final SMTTerm[] args) {
+		return new SMTFunApplication(functionSymbol, args);
 	}
 
-	// TODO
-	public SMTFormula makePred(String identifier) {
-		return null;
+	public SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol, final SMTTerm[] args) {
+		return new SMTAtom(predicateSymbol, args);
 	}
 
-	/**
-	 * Creates a new identifier.
-	 */
-	public SMTTerm makeConstantIdentifier(final String identifier) {
-		// FIXME this method must get the right SMTFunctionSymbol as parameter
-		// (the Translator must call a method of SMTSignature that will give it if
-		// it exists, or create it)
-		return new SMTFunApplication(null, null);
+	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol) {
+		return makeFunApplication(functionSymbol, EMPTY_TERM);
 	}
 
-	public SMTFormula makePropAtomIdentifier(final String identifier) {
-		// FIXME this method must get the right SMTPredicateSymbol as parameter
-		// (the Translator must call a method of SMTSignature that will give it if
-		// it exists, or create it)
-		return new SMTAtom(null, null);
+	public SMTFormula makePropAtom(
+			final SMTPredicateSymbol predicateSymbol) {
+		return makeAtom(predicateSymbol, EMPTY_TERM);
 	}
 }

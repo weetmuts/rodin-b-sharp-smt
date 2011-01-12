@@ -28,6 +28,10 @@ public class SMTVarSymbol extends SMTSymbol {
 		this.sort = sort;
 	}
 
+	public SMTSortSymbol getSort() {
+		return this.sort;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();

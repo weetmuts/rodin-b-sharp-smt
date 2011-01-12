@@ -49,8 +49,11 @@ import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
@@ -470,10 +473,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
+		final String smtName = this.varMap.get(expression.getName());
 		if (expression.getType() instanceof BooleanType) {
-			this.smtNode = sf.makePropAtomIdentifier(expression.getName());
+			final SMTPredicateSymbol predSymbol = this.signature
+					.getPredicateSymbol(smtName, SMTFactory.EMPTY_SORT);
+			this.smtNode = sf.makePropAtom(predSymbol);
 		} else {
-			this.smtNode = sf.makeConstantIdentifier(expression.getName());
+			final SMTFunctionSymbol funSymbol = this.signature
+					.getFunctionSymbol(smtName, SMTFactory.EMPTY_SORT,
+							this.typeMap.get(expression.getType()));
+			this.smtNode = sf.makeConstant(funSymbol);
 		}
 	}
 
@@ -511,29 +520,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					predicate.getRight());
 			this.smtNode = sf.makeIff(children);
 		} else {
-			final SMTTerm[] children;
-			// TODO When membership translation implemented
-			// if (tag == Formula.IN || tag == Formula.NOTIN) {
-			// children = smtTerms(predicate.getRight(), predicate.getLeft());
-			// } else {
-			children = smtTerms(predicate.getLeft(), predicate.getRight());
-			// }
-			switch (predicate.getTag()) {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			switch (tag) {
 			case Formula.NOTEQUAL:
 				this.smtNode = sf.makeNotEqual(children);
 				break;
 			case Formula.EQUAL:
-				// Check Type of equality members
-				// final Type type = predicate.getLeft().getType();
-
-				// FIXME is this correct? why was this done?
-				// if (type instanceof IntegerType) {
 				this.smtNode = sf.makeEqual(children);
-				// } else { // FIXME document this... should be as above in all
-				// cases
-				// this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
-				// "=", children, false);
-				// }
 				break;
 			case Formula.LT:
 				this.smtNode = sf.makeLesserThan(children);
@@ -547,10 +541,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			case Formula.GE:
 				this.smtNode = sf.makeGreaterEqual(children);
 				break;
-			// TODO when membership translation implemented
-			/*
-			 * case Formula.IN: break; case Formula.NOTIN: break;
-			 */
+			case Formula.IN:
+				final SMTSortSymbol[] argSorts = { children[0].getSort(),
+						children[1].getSort() }; // FIXME will it be right for
+													// the following example
+													// <code>a→b→d ∈ s</code>?
+				SMTPredicateSymbol predSymbol = this.signature
+						.getMembershipPredicateSymbol(argSorts);
+				if (predSymbol == null) {
+					this.signature.addMembershipPredicateSymbol(argSorts);
+				}
+				predSymbol = this.signature
+						.getMembershipPredicateSymbol(argSorts);
+				this.smtNode = sf.makeAtom(predSymbol, children);
+				break;
+			case Formula.NOTIN:
+				break;
 			default:
 				/**
 				 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
