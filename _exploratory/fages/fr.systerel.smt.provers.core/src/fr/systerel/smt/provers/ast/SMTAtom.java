@@ -33,7 +33,7 @@ public class SMTAtom extends SMTFormula {
 			builder.append(this.predicate);
 		} else {
 			builder.append(OPAR);
-			builder.append(this.predicate.getSymbol());
+			builder.append(this.predicate.getName());
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				builder.append(term);

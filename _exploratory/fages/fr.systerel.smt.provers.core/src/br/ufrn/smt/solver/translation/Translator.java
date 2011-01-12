@@ -10,6 +10,7 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.eventb.core.ast.ISimpleVisitor;
@@ -20,13 +21,25 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTNode;
-import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 
 /**
  * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
+	/**
+	 * typeMap is a map between Event-B types encountered during the translation
+	 * process and SMT-LIB sorts assigned to them. This map is built using an
+	 * SMT-LIB Signature that provides fresh type names.
+	 */
+	protected HashMap<Type, SMTSortSymbol> typeMap = new HashMap<Type, SMTSortSymbol>();
+	/**
+	 * varMap is a map between Event-B variable names encountered during the
+	 * translation process and SMT-LIB symbol names assigned to them. This map
+	 * is built using an SMT-LIB Signature that provides fresh type names.
+	 */
+	protected HashMap<String, String> varMap = new HashMap<String, String>();
 
 	public static boolean DEBUG = false;
 
@@ -51,13 +64,13 @@ public abstract class Translator implements ISimpleVisitor {
 	/**
 	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
 	 */
-	protected abstract SMTSymbol translateTypeName(final SMTSignature signature, final Type type);
+	protected abstract SMTSymbol translateTypeName(final Type type);
 
 	/**
 	 * This method extracts the type environment from the Event-B sequent and
 	 * builds the SMT-LIB signature to use.
 	 */
-	protected abstract SMTSignature translateSignature(
+	protected abstract void translateSignature(
 			final List<Predicate> hypotheses, final Predicate goal);
 
 	/**
@@ -69,5 +82,9 @@ public abstract class Translator implements ISimpleVisitor {
 		} else {
 			throw new IllegalArgumentException(Messages.Translation_error);
 		}
+	}
+
+	protected void clearFormula() {
+		this.smtNode = null;
 	}
 }

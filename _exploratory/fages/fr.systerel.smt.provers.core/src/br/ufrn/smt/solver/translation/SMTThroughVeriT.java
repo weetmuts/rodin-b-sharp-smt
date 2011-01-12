@@ -49,6 +49,7 @@ import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSymbol;
@@ -58,7 +59,12 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
 /**
  * 
  */
-public class SmtThroughVeriT extends TranslatorV1_2 {
+public class SMTThroughVeriT extends TranslatorV1_2 {
+	/**
+	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
+	 * that is completed during the translation process.
+	 */
+	protected SMTSignatureVerit signature;
 
 	// TODO the veriT translation preprocessing must be done in this class
 	// if (this.smtUiPreferences.getUsingPrepro()) {
@@ -74,7 +80,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	/* The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	private SmtThroughVeriT(Predicate predicate) {
+	private SMTThroughVeriT(Predicate predicate) {
 		freeIdentifiers = new ArrayList<String>();
 		boundIdentifers = new ArrayList<String>();
 		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
@@ -82,7 +88,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 		}
 	}
 
-	protected SmtThroughVeriT(Predicate predicate,
+	protected SMTThroughVeriT(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
 		this.boundIdentifers = boundIdentifiers;
@@ -95,7 +101,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	public static SMTFormula translate(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
-		final SmtThroughVeriT translator = new SmtThroughVeriT(predicate,
+		final SMTThroughVeriT translator = new SMTThroughVeriT(predicate,
 				boundIdentifiers, freeIdentifiers);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
@@ -107,7 +113,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	public static IdentifiersAndSMTStorage translate1(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
-		final SmtThroughVeriT translator = new SmtThroughVeriT(predicate,
+		final SMTThroughVeriT translator = new SMTThroughVeriT(predicate,
 				boundIdentifiers, freeIdentifiers);
 		predicate.accept(translator);
 		IdentifiersAndSMTStorage iSMT = new IdentifiersAndSMTStorage(
@@ -117,14 +123,14 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	public SMTSignature translateSignature(final List<Predicate> hypotheses,
+	public void translateSignature(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		return translateSignature("UNKNOWN", hypotheses, goal);
+		this.translateSignature(SMTLogic.UNKNOWN, hypotheses, goal);
 	}
 
-	private SMTSignature translateSignature(final String logicName,
+	private void translateSignature(final String logicName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		final SMTSignatureVerit signature = new SMTSignatureVerit(logicName);
+		this.signature = new SMTSignatureVerit(logicName);
 
 		boolean insertPairDecl = false;
 
@@ -138,12 +144,12 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			if (varName.contains("\'")) {
-				final String freshName = signature.freshVar(varName);
-				signature.putSingleQuoteVar(varName, freshName);
+				final String freshName = this.signature.freshCstName(varName);
+				this.signature.putSingleQuoteVar(varName, freshName);
 			}
 
 			if (varName.equals(varType.toString())) {
-				signature.addSort(varType.toString());
+				this.signature.addSort(varType.toString());
 			}
 
 			// Regra 6
@@ -162,33 +168,31 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 						.getSource().toString());
 				final String sortSymb2 = getSMTAtomicExpressionFormat(varType
 						.getTarget().toString());
-				signature.addPairPred(varName, sortSymb1, sortSymb2);
+				this.signature.addPairPred(varName, sortSymb1, sortSymb2);
 
 				if (!insertPairDecl) {
-					signature.addSort("(Pair 's 't)");
+					this.signature.addSort("(Pair 's 't)");
 				}
-				signature.addSort(sortSymb1);
-				signature.addSort(sortSymb2);
+				this.signature.addSort(sortSymb1);
+				this.signature.addSort(sortSymb2);
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
 				if (varName.equals(varType.getBaseType().toString())) {
-					signature.addSort(varName);
+					this.signature.addSort(varName);
 				} else {
-					signature.addPred(varName,
+					this.signature.addPred(varName,
 							getSMTAtomicExpressionFormat(varType.getBaseType()
 									.toString()));
 				}
 			} else {
-				signature.addFun(varName, null,
+				this.signature.addFun(varName, null,
 						getSMTAtomicExpressionFormat(varType.toString()));
 			}
 		}
 		if (insertPairDecl) {
-			signature.addFun("pair 's 't", null, "(Pair 's 't)");
+			this.signature.addFun("pair 's 't", null, "(Pair 's 't)");
 		}
-
-		return signature;
 	}
 
 	@Override
@@ -199,7 +203,7 @@ public class SmtThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	protected SMTSymbol translateTypeName(SMTSignature signature, Type type) {
+	protected SMTSymbol translateTypeName(Type type) {
 		// TODO Auto-generated method stub
 		return null;
 	}

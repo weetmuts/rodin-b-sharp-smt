@@ -50,7 +50,7 @@ import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
-import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
@@ -61,7 +61,20 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * to reduce an Event-B sequent to Predicate Calculus. Then the SMT translation
  * is done.
  */
-public class SmtThroughPp extends TranslatorV1_2 {
+public class SMTThroughPP extends TranslatorV1_2 {
+	/**
+	 * An instance of <code>SMTThroughPP</code> is associated to a signature
+	 * that is completed during the translation process.
+	 */
+	protected SMTSignaturePP signature;
+
+	public SMTThroughPP() {
+		super();
+	}
+
+	public SMTThroughPP(final SMTSignaturePP signature) {
+		this.signature = signature;
+	}
 
 	/**
 	 * This is the public translation method
@@ -78,7 +91,7 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
 			final Predicate goal) {
-		return new SmtThroughPp().translate(lemmaName, hypotheses, goal);
+		return new SMTThroughPP().translate(lemmaName, hypotheses, goal);
 	}
 
 	@Override
@@ -88,19 +101,33 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	protected SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 
-		// pp translation
+		/**
+		 * PP translation
+		 */
 		final PPProof ppProof = ppTranslation(hypotheses, goal);
 		final List<Predicate> ppTranslatedHypotheses = ppProof
 				.getTranslatedHypotheses();
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
-		// smt translation
-		final SMTSignature signature = translateSignature(
-				ppTranslatedHypotheses, ppTranslatedGoal);
-		final SMTBenchmark benchmark = translate(lemmaName, signature,
-				ppTranslatedHypotheses, ppTranslatedGoal);
+		/**
+		 * SMT translation
+		 */
+		// translates the signature
+		this.translateSignature(ppTranslatedHypotheses, ppTranslatedGoal);
 
-		return benchmark;
+		// translates each hypothesis
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+		for (Predicate hypothesis : hypotheses) {
+			this.clearFormula();
+			translatedAssumptions.add(this.translate(hypothesis));
+		}
+
+		// translates the goal
+		this.clearFormula();
+		final SMTFormula smtFormula = this.translate(goal);
+
+		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
+				smtFormula);
 	}
 
 	/**
@@ -125,32 +152,25 @@ public class SmtThroughPp extends TranslatorV1_2 {
 		return ppProof;
 	}
 
-	/**
-	 * This translating method
-	 */
-	protected static SMTBenchmark translate(final String lemmaName,
-			final SMTSignature signature, final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-
-		final SMTFormula smtFormula = translate(goal);
-		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
-				smtFormula);
-	}
-
-	/**
-	 * This method translates the given predicate into an SMT Formula.
-	 */
-	public static SMTFormula translate(Predicate predicate) {
-		final TranslatorV1_2 translator = new SmtThroughPp();
+	public static SMTFormula translate(final SMTSignaturePP signature,
+			final Predicate predicate) {
+		final SMTThroughPP translator = new SMTThroughPP(signature);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
 	}
 
 	/**
-	 * This methods builds the SMT-LIB signature of a sequent given as its set
-	 * of hypotheses and its goal. The method also fill the variables typeMap
-	 * and varMap.
+	 * This method translates the given predicate into an SMT Formula.
+	 */
+	private SMTFormula translate(final Predicate predicate) {
+		predicate.accept(this);
+		return this.getSMTFormula();
+	}
+
+	/**
+	 * This method builds the SMT-LIB signature of a sequent given as its set of
+	 * hypotheses and its goal. The method also fill the variables typeMap and
+	 * varMap.
 	 * 
 	 * @param logicName
 	 *            the SMT-LIB logic
@@ -158,13 +178,12 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	 *            the set of hypotheses of the sequent
 	 * @param goal
 	 *            the goal of the sequent
-	 * @return the SMT-LIB signature of the sequent
 	 */
-	// FIXME Use the given logic, notably to take account of the sorts defined
+	// FIXME Use the given logic, notably to take account of the symbols defined
 	// by this logic
-	private SMTSignature translateSignature(final String logicName,
+	private void translateSignature(final String logicName,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		final SMTSignature signature = new SMTSignaturePP(logicName);
+		this.signature = new SMTSignaturePP(logicName);
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
@@ -178,27 +197,27 @@ public class SmtThroughPp extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			/**
-			 * gets a fresh name for the variable to be typed, adds it to the
-			 * variable names mapping (and adds it to the signature symbols set)
-			 */
-			final String smtVarName;
-			if (!varMap.containsKey(varName)) {
-				smtVarName = signature.freshVar(varName);
-				this.varMap.put(varName, smtVarName);
-			} else {
-				smtVarName = this.varMap.get(varName);
-			}
-
-			/**
 			 * translates the type into an SMT-LIB sort, adds it to the types
 			 * mapping (and adds it to the signature sort symbols set)
 			 */
 			final SMTSortSymbol smtSortSymbol;
 			if (!typeMap.containsKey(varType)) {
-				smtSortSymbol = this.translateTypeName(signature, varType);
+				smtSortSymbol = this.translateTypeName(varType);
 				this.typeMap.put(varType, smtSortSymbol);
 			} else {
 				smtSortSymbol = this.typeMap.get(varType);
+			}
+
+			/**
+			 * gets a fresh name for the variable to be typed, adds it to the
+			 * variable names mapping (and adds it to the signature symbols set)
+			 */
+			final String smtVarName;
+			if (!varMap.containsKey(varName)) {
+				smtVarName = this.signature.freshCstName(varName);
+				this.varMap.put(varName, smtVarName);
+			} else {
+				smtVarName = this.varMap.get(varName);
 			}
 
 			/**
@@ -209,10 +228,9 @@ public class SmtThroughPp extends TranslatorV1_2 {
 					varType);
 			for (final Type baseType : baseTypes) {
 				if (!typeMap.containsKey(baseType)) {
-					final SMTSortSymbol baseSort = this.translateTypeName(
-							signature, baseType);
+					final SMTSortSymbol baseSort = this
+							.translateTypeName(baseType);
 					this.typeMap.put(baseType, baseSort);
-					signature.addConstant(smtVarName, baseSort);
 				}
 			}
 
@@ -221,10 +239,8 @@ public class SmtThroughPp extends TranslatorV1_2 {
 			 * constant (<code>extrafuns</code> SMT-LIB section, with a sort but
 			 * no argument: <code>(x S)</code>).
 			 */
-			signature.addConstant(smtVarName, smtSortSymbol);
+			this.signature.addConstant(smtVarName, smtSortSymbol);
 		}
-
-		return signature;
 	}
 
 	private static Set<Type> getBaseTypes(Set<Type> baseTypes, final Type type) {
@@ -293,14 +309,18 @@ public class SmtThroughPp extends TranslatorV1_2 {
 	}
 
 	@Override
-	public SMTSignature translateSignature(final List<Predicate> hypotheses,
+	public void translateSignature(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		return translateSignature("UNKNOWN", hypotheses, goal);
+		this.translateSignature(SMTLogic.UNKNOWN, hypotheses, goal);
 	}
 
 	@Override
-	protected SMTSortSymbol translateTypeName(SMTSignature signature, Type type) {
-		return signature.freshSort("MS");
+	protected SMTSortSymbol translateTypeName(Type type) {
+		if (type.getSource() == null && type.getTarget() == null
+				&& type.getBaseType() == null) {
+			return this.signature.freshSort(type.toString());
+		}
+		return this.signature.freshSort();
 	}
 
 	@Override

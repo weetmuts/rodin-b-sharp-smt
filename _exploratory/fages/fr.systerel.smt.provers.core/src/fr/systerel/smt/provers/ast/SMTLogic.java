@@ -14,6 +14,7 @@ package fr.systerel.smt.provers.ast;
  * The SMT logics.
  */
 public class SMTLogic {
+	public static String UNKNOWN = "UNKNOWN";
 	public static String QF_LIA = "QF_LIA";
 
 	/** The logic identifier. */

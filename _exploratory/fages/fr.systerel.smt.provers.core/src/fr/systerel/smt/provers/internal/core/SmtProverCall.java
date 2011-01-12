@@ -28,7 +28,7 @@ import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
-import br.ufrn.smt.solver.translation.SmtThroughPp;
+import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.core.SmtProversCore;
@@ -216,7 +216,7 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Parse Rodin PO to create Smt file
 		 */
-		final SMTBenchmark benchmark = SmtThroughPp.translateToSmtLibBenchmark(
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				this.lemmaName, this.hypotheses, this.goal);
 		this.iFile = writeSMTFile(benchmark);
 

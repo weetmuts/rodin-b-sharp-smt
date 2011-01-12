@@ -21,7 +21,7 @@ public abstract class SMTSymbol {
 		this.name = symbolName;
 	}
 
-	public String getSymbol() {
+	public String getName() {
 		return this.name;
 	}
 

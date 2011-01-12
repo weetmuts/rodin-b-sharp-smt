@@ -15,7 +15,9 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.SmtThroughPp;
+import fr.systerel.smt.provers.ast.SMTSignaturePP;
+
+import br.ufrn.smt.solver.translation.SMTThroughPP;
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB
@@ -26,11 +28,13 @@ import br.ufrn.smt.solver.translation.SmtThroughPp;
  */
 public class TranslationTests extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
+	protected static final SMTSignaturePP defaultSig;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
 				"v", "BOOL");
+		defaultSig = null; //TODO
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -78,8 +82,7 @@ public class TranslationTests extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final Predicate ppPred,
 			final String expectedSMTNode, final String failMessage) {
-
-		final String actualSMTNode = SmtThroughPp.translate(ppPred).toString();
+		final String actualSMTNode = SMTThroughPP.translate(defaultSig, ppPred).toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
