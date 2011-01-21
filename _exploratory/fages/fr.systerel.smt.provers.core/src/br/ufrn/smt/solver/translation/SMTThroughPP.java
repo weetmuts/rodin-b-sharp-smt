@@ -37,6 +37,7 @@ import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.RelationalPredicate;
@@ -247,53 +248,39 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	private static Set<Type> getBaseTypes(Set<Type> baseTypes, final Type type) {
+		final boolean isAProductType = type instanceof ProductType;
 		/**
 		 * Base case: the type is a base type. Adds it to the list and returns
 		 * the list.
 		 */
 		if (type.getSource() == null && type.getTarget() == null
-				&& type.getBaseType() == null) {
+				&& type.getBaseType() == null && !isAProductType) {
 			baseTypes.add(type);
 			return baseTypes;
 		}
 
 		/**
-		 * The type looks like <code>ℙ(alpha × beta)</code>. Adds any base type
-		 * among source and target types, and calls recursively
-		 * <code>getBaseType</code> on types that are not base types.
+		 * The type looks like <code>alpha × beta</code>. Calls recursively
+		 * <code>getBaseTypes</code> on alpha and beta.
+		 */
+		else if (isAProductType) {
+			ProductType product = (ProductType) type;
+			return getBaseTypes(getBaseTypes(baseTypes, product.getLeft()),
+					product.getRight());
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha × beta)</code>. Calls recursively
+		 * <code>getBaseTypes</code> on alpha and beta.
 		 */
 		else if (type.getSource() != null) {
-			final Type sourceType = type.getSource();
-			final Type targetType = type.getTarget();
-
-			/**
-			 * Neither the source type nor the target type are base types.
-			 */
-			if (sourceType.getBaseType() != null
-					&& targetType.getBaseType() != null) {
-				return getBaseTypes(
-						getBaseTypes(baseTypes, sourceType.getBaseType()),
-						targetType.getBaseType());
-			}
-			/**
-			 * The target type is a base type.
-			 */
-			else if (sourceType.getBaseType() != null) {
-				baseTypes.add(targetType);
-				return getBaseTypes(baseTypes, sourceType.getBaseType());
-			}
-			/**
-			 * The source type is a base type.
-			 */
-			else {
-				baseTypes.add(sourceType);
-				return getBaseTypes(baseTypes, targetType.getBaseType());
-			}
+			return getBaseTypes(getBaseTypes(baseTypes, type.getSource()),
+					type.getTarget());
 		}
 
 		/**
 		 * The type looks like <code>ℙ(alpha)</code>. Calls recursively
-		 * <code>getBaseType</code> on alpha.
+		 * <code>getBaseTypes</code> on alpha.
 		 */
 		else if (type.getBaseType() != null) {
 			return getBaseTypes(baseTypes, type.getBaseType());
@@ -556,6 +543,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				this.smtNode = sf.makeAtom(predSymbol, children);
 				break;
 			case Formula.NOTIN:
+				break;
+			case Formula.MAPSTO:
+				//TODO case a ↦ b.
 				break;
 			default:
 				/**

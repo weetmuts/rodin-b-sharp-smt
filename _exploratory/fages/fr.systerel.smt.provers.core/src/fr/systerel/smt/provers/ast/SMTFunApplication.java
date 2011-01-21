@@ -28,6 +28,7 @@ public class SMTFunApplication extends SMTTerm {
 	public SMTFunApplication(final SMTFunctionSymbol symbol, final SMTTerm... terms) {
 		this.symbol = symbol;
 		this.args = terms.clone();
+		this.sort = symbol.getResultSort();
 	}
 
 	@Override
@@ -38,10 +39,10 @@ public class SMTFunApplication extends SMTTerm {
 	@Override
 	public void toString(StringBuilder builder) {
 		if (this.symbol.isConstant()) {
-			builder.append(this.symbol);
+			builder.append(this.symbol.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(this.symbol);
+			builder.append(this.symbol.name);
 			for (SMTTerm arg: this.args) {
 				builder.append(SPACE);
 				builder.append(arg);

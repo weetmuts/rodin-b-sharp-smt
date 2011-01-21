@@ -38,10 +38,10 @@ public class SMTFunctionSymbol extends SMTSymbol {
 	}
 
 	/**
-	 * If argSorts is null, then this symbol is a base term: function constant.
+	 * If argSorts.equals(EMPTY_SORT), then this symbol is a base term: function constant.
 	 */
 	public boolean isConstant() {
-		return this.argSorts.length != 0;
+		return this.argSorts.equals(SMTFactory.EMPTY_SORT);
 	}
 
 	public SMTSortSymbol getResultSort() {

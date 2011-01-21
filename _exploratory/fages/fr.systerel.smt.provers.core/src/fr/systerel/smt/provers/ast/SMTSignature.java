@@ -142,7 +142,7 @@ public abstract class SMTSignature {
 		/**
 		 * If the set already contains this symbol
 		 */
-		while (symbols.contains(freshName)) {
+		while (symbols.contains(freshName.toString())) {
 			/**
 			 * Sets the buffer content to: name + "_" + i.
 			 */
