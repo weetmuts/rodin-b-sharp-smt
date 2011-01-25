@@ -22,26 +22,28 @@ import java.util.Arrays;
  */
 public class SMTPredicateSymbol extends SMTSymbol {
 	/**
-	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it is
-	 * possible to associate a predicate predicate to the empty sequence rank,
-	 * denoting that the predicate is a propositional predicate.
+	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
+	 * is possible to associate a predicate predicate to the empty sequence
+	 * rank, denoting that the predicate is a propositional predicate.
 	 */
 	final private SMTSortSymbol[] argSorts;
 
 	private boolean isAMembershipPredicate = false;
 
-	public SMTPredicateSymbol(final boolean isAMembershipPredicate, final String symbolName, final SMTSortSymbol... argSorts) {
+	public SMTPredicateSymbol(final boolean isAMembershipPredicate,
+			final String symbolName, final SMTSortSymbol argSorts[]) {
 		super(symbolName);
 		this.isAMembershipPredicate = isAMembershipPredicate;
 		this.argSorts = argSorts.clone();
 	}
 
-	public SMTPredicateSymbol(final String symbolName, final SMTSortSymbol... argSorts) {
+	public SMTPredicateSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[]) {
 		this(false, symbolName, argSorts);
 	}
 
 	public boolean isPropositional() {
-		return this.argSorts == null;
+		return Arrays.equals(this.argSorts, SMTFactory.EMPTY_SORT);
 	}
 
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {

@@ -27,9 +27,11 @@ import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
@@ -71,6 +73,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignaturePP signature;
+	protected List<SMTTerm> memberShipPredicateStack = new ArrayList<SMTTerm>();
 
 	public SMTThroughPP() {
 		super();
@@ -247,6 +250,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method recursively traverses the type tree to list all base types
+	 * used to define it. That is, those which can be extracted from powerset
+	 * types and product types.
+	 * 
+	 * @param baseTypes
+	 *            the actual list of extracted base types
+	 * @param type
+	 *            the type from which base types must be extracted
+	 * @return the list of base types extracted from this type
+	 */
 	private static Set<Type> getBaseTypes(Set<Type> baseTypes, final Type type) {
 		final boolean isAProductType = type instanceof ProductType;
 		/**
@@ -393,11 +407,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitBinaryExpression(BinaryExpression expression) {
-		final SMTTerm[] children = smtTerms(expression.getLeft(),
-				expression.getRight());
+		final Expression left = expression.getLeft();
+		final Expression right = expression.getRight();
+		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
 			this.smtNode = sf.makeMinus(children);
+			break;
+		case Formula.MAPSTO:
+			if (left.getTag() != Formula.MAPSTO) {
+				this.memberShipPredicateStack.add(0, children[0]);
+			}
+
+			if (right.getTag() != Formula.MAPSTO) {
+				this.memberShipPredicateStack.add(children[1]);
+			}
 			break;
 		case Formula.DIV:
 			throw new IllegalArgumentException(
@@ -408,24 +432,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.EXPN:
 			throw new IllegalArgumentException(
 					"The operation \'exponential\' is not supported yet");
-			/*
-			 * case Formula.UPTO: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "range", children, false);
-			 * break; case Formula.RANSUB: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "rans", children, false);
-			 * break; case Formula.RANRES: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "ranr", children, false);
-			 * break; case Formula.DOMSUB: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "doms", children, false);
-			 * break; case Formula.DOMRES: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "domr", children, false);
-			 * break; case Formula.SETMINUS: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "setminus", children,
-			 * false); break; case Formula.MAPSTO: // TO CHANGE this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "pair", children, false);
-			 * break;
-			 */
 		default:
+			/**
+			 * REL, TREL, SREL, STREL, PFUN, TFUN, PINJ, TINJ, PSUR, TSUR, TBIJ,
+			 * SETMINUS, CPROD, DPROD, PPROD, DOMRES, DOMSUB, RANRES, RANSUB,
+			 * UPTO, FUNIMAGE, RELIMAGE
+			 */
 			throw new IllegalTagException(expression.getTag());
 		}
 	}
@@ -501,59 +513,85 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		final int tag = predicate.getTag();
-		if (tag == Formula.EQUAL
-				&& predicate.getRight().getType() instanceof BooleanType) {
-			final SMTFormula[] children = smtFormulas(predicate.getLeft(),
-					predicate.getRight());
-			this.smtNode = sf.makeIff(children);
-		} else {
+		switch (tag) {
+		case Formula.EQUAL:
+			// FIXME must use SMT-LIB BOOL theory
+			if (predicate.getRight().getType() instanceof BooleanType) {
+				final SMTFormula[] children = smtFormulas(predicate.getLeft(),
+						predicate.getRight());
+				this.smtNode = sf.makeIff(children);
+			} else {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				this.smtNode = sf.makeEqual(children);
+			}
+			break;
+		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			switch (tag) {
-			case Formula.NOTEQUAL:
-				this.smtNode = sf.makeNotEqual(children);
-				break;
-			case Formula.EQUAL:
-				this.smtNode = sf.makeEqual(children);
-				break;
-			case Formula.LT:
-				this.smtNode = sf.makeLesserThan(children);
-				break;
-			case Formula.LE:
-				this.smtNode = sf.makeLesserEqual(children);
-				break;
-			case Formula.GT:
-				this.smtNode = sf.makeGreaterThan(children);
-				break;
-			case Formula.GE:
-				this.smtNode = sf.makeGreaterEqual(children);
-				break;
-			case Formula.IN:
-				final SMTSortSymbol[] argSorts = { children[0].getSort(),
-						children[1].getSort() }; // FIXME will it be right for
-													// the following example
-													// <code>a→b→d ∈ s</code>?
-				SMTPredicateSymbol predSymbol = this.signature
-						.getMembershipPredicateSymbol(argSorts);
-				if (predSymbol == null) {
-					this.signature.addMembershipPredicateSymbol(argSorts);
-				}
-				predSymbol = this.signature
-						.getMembershipPredicateSymbol(argSorts);
-				this.smtNode = sf.makeAtom(predSymbol, children);
-				break;
-			case Formula.NOTIN:
-				break;
-			case Formula.MAPSTO:
-				//TODO case a ↦ b.
-				break;
-			default:
-				/**
-				 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
-				 * produced by ppTrans.
-				 */
-				throw new IllegalTagException(tag);
+			this.smtNode = sf.makeNotEqual(children);
+		}
+			break;
+		case Formula.LT: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			this.smtNode = sf.makeLesserThan(children);
+		}
+			break;
+		case Formula.LE: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			this.smtNode = sf.makeLesserEqual(children);
+		}
+			break;
+		case Formula.GT: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			this.smtNode = sf.makeGreaterThan(children);
+		}
+			break;
+		case Formula.GE: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			this.smtNode = sf.makeGreaterEqual(children);
+		}
+			break;
+		case Formula.IN:
+			final Expression left = predicate.getLeft();
+			final Expression right = predicate.getRight();
+			final SMTTerm[] children = smtTerms(left, right);
+
+			if (left.getTag() != Formula.MAPSTO) {
+				this.memberShipPredicateStack.add(0, children[0]);
 			}
+			this.memberShipPredicateStack.add(children[1]);
+
+			final int numberOfArguments = this.memberShipPredicateStack.size();
+			final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
+			for (int i = 0; i < numberOfArguments; i++) {
+				argSorts[i] = this.memberShipPredicateStack.get(i).getSort();
+			}
+
+			SMTPredicateSymbol predSymbol = this.signature
+					.getMembershipPredicateSymbol(argSorts);
+			if (predSymbol == null) {
+				this.signature.addMembershipPredicateSymbol(argSorts);
+			}
+			predSymbol = this.signature.getMembershipPredicateSymbol(argSorts);
+
+			final SMTTerm[] args = this.memberShipPredicateStack.toArray(new SMTTerm[numberOfArguments]); 
+
+			this.smtNode = sf.makeAtom(predSymbol, args);
+			this.memberShipPredicateStack.clear();
+			break;
+		case Formula.NOTIN:
+			break;
+		default:
+			/**
+			 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be produced by
+			 * ppTrans.
+			 */
+			throw new IllegalTagException(tag);
 		}
 	}
 

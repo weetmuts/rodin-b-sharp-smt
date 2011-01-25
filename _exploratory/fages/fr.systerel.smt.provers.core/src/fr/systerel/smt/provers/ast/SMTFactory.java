@@ -47,15 +47,15 @@ public final class SMTFactory {
 	public final static SMTFunctionSymbol UMINUS = new SMTFunctionSymbol("~",
 			INT_TAB, INT);
 	public final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol("=",
-			INT, INT, INT);
+			INT_INT_TAB);
 	public final static SMTPredicateSymbol LT = new SMTPredicateSymbol("<",
-			INT, INT, INT);
+			INT_INT_TAB);
 	public final static SMTPredicateSymbol LE = new SMTPredicateSymbol("<=",
-			INT, INT, INT);
+			INT_INT_TAB);
 	public final static SMTPredicateSymbol GT = new SMTPredicateSymbol(">",
-			INT, INT, INT);
+			INT_INT_TAB);
 	public final static SMTPredicateSymbol GE = new SMTPredicateSymbol(">=",
-			INT, INT, INT);
+			INT_INT_TAB);
 
 	/**
 	 * Connective symbols
@@ -72,9 +72,9 @@ public final class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true");
+			"true", EMPTY_SORT);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false");
+			"false", EMPTY_SORT);
 
 	/**
 	 * Quantifier symbols
@@ -210,11 +210,11 @@ public final class SMTFactory {
 	 * Creates a new propositional atom. {FALSE, TRUE}
 	 */
 	public SMTFormula makePTrue() {
-		return new SMTAtom(PTRUE);
+		return this.makePropAtom(PTRUE);
 	}
 
 	public SMTFormula makePFalse() {
-		return new SMTAtom(PFALSE);
+		return this.makePropAtom(PFALSE);
 	}
 
 	public SMTTerm makeVar(final String identifier, final Type type) {
@@ -234,11 +234,13 @@ public final class SMTFactory {
 		return new SMTQuantifiedFormula(EXISTS, null, formula);
 	}
 
-	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol, final SMTTerm[] args) {
+	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
+			final SMTTerm[] args) {
 		return new SMTFunApplication(functionSymbol, args);
 	}
 
-	public SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol, final SMTTerm[] args) {
+	public SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol,
+			final SMTTerm[] args) {
 		return new SMTAtom(predicateSymbol, args);
 	}
 
@@ -246,8 +248,7 @@ public final class SMTFactory {
 		return makeFunApplication(functionSymbol, EMPTY_TERM);
 	}
 
-	public SMTFormula makePropAtom(
-			final SMTPredicateSymbol predicateSymbol) {
+	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol) {
 		return makeAtom(predicateSymbol, EMPTY_TERM);
 	}
 }

@@ -23,17 +23,14 @@ public class SMTFunApplication extends SMTTerm {
 	final SMTTerm[] args;
 
 	// TODO Assert that terms are as many as specified in function symbol rank
-	// and that their sorts are the same (a method to put in SMTSignature and to be
+	// and that their sorts are the same (a method to put in SMTSignature and to
+	// be
 	// called by the makeFun method of the factory)
-	public SMTFunApplication(final SMTFunctionSymbol symbol, final SMTTerm... terms) {
+	public SMTFunApplication(final SMTFunctionSymbol symbol,
+			final SMTTerm terms[]) {
 		this.symbol = symbol;
 		this.args = terms.clone();
 		this.sort = symbol.getResultSort();
-	}
-
-	@Override
-	public SMTSortSymbol getSort() {
-		return this.symbol.getResultSort();
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public class SMTFunApplication extends SMTTerm {
 		} else {
 			builder.append(OPAR);
 			builder.append(this.symbol.name);
-			for (SMTTerm arg: this.args) {
+			for (SMTTerm arg : this.args) {
 				builder.append(SPACE);
 				builder.append(arg);
 			}

@@ -181,9 +181,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				if (varName.equals(varType.getBaseType().toString())) {
 					this.signature.addSort(varName);
 				} else {
-					this.signature.addPred(varName,
-							getSMTAtomicExpressionFormat(varType.getBaseType()
-									.toString()));
+					final String[] argSorts = { getSMTAtomicExpressionFormat(varType
+							.getBaseType().toString()) };
+					this.signature.addPred(varName, argSorts);
 				}
 			} else {
 				this.signature.addFun(varName, null,

@@ -22,7 +22,7 @@ public class SMTAtom extends SMTFormula {
 	final SMTPredicateSymbol predicate;
 	final SMTTerm[] terms;
 
-	public SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm... terms) {
+	public SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
 		this.predicate = symbol;
 		this.terms = terms.clone();
 	}
@@ -30,11 +30,11 @@ public class SMTAtom extends SMTFormula {
 	@Override
 	public void toString(StringBuilder builder) {
 		if (this.predicate.isPropositional()) {
-			builder.append(this.predicate);
+			builder.append(this.predicate.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(this.predicate.getName());
-			for (final SMTTerm term : terms) {
+			builder.append(this.predicate.name);
+			for (final SMTTerm term : this.terms) {
 				builder.append(SPACE);
 				builder.append(term);
 			}

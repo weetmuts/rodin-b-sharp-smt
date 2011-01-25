@@ -60,8 +60,12 @@ public class SMTSignatureVerit extends SMTSignature {
 		}
 	}
 
-	public void addPred(final String predName, final String... argSorts) {
-		this.preds.add(new SMTPredicateSymbol(predName));
+	public void addPred(final String predName, final String argSortStrings[]) {
+		final SMTSortSymbol[] argSorts = new SMTSortSymbol[argSortStrings.length];
+		for (int i = 0; i < argSortStrings.length; i++) {
+			argSorts[i] = new SMTSortSymbol(argSortStrings[i]);
+		}
+		this.preds.add(new SMTPredicateSymbol(predName, argSorts));
 	}
 
 	public void addPairPred(final String predName, final String sortSymb1,
@@ -74,7 +78,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		strSort.append(" ");
 		strSort.append(sort2.toString());
 		strSort.append(")");
-		final SMTSortSymbol pair = new SMTSortSymbol(strSort.toString());
+		final SMTSortSymbol[] pair = { new SMTSortSymbol(strSort.toString()) };
 		this.preds.add(new SMTPredicateSymbol(predName, pair));
 	}
 

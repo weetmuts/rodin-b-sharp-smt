@@ -32,16 +32,16 @@ public class SMTFunctionSymbol extends SMTSymbol {
 	SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
 			final SMTSortSymbol resultSort) {
 		super(symbolName);
-		this.argSorts = argSorts;
+		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;
 	}
 
 	/**
-	 * If argSorts.equals(EMPTY_SORT), then this symbol is a base term: function constant.
+	 * If Arrays.equals(argSorts, EMPTY_SORT), then this symbol is a base term: function constant.
 	 */
 	public boolean isConstant() {
-		return this.argSorts.equals(SMTFactory.EMPTY_SORT);
+		return Arrays.equals(this.argSorts, SMTFactory.EMPTY_SORT);
 	}
 
 	public SMTSortSymbol getResultSort() {

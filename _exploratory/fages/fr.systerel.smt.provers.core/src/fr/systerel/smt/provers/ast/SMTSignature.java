@@ -253,6 +253,10 @@ public abstract class SMTSignature {
 	}
 
 	public void addMembershipPredicateSymbol(final SMTSortSymbol[] argSorts) {
+		// FIXME this is a test for verit
+//		this.addPredicateSymbol(true,
+//				freshName(getSymbolNames(this.preds), MEMBERSHIP_PRED_NAME),
+//				argSorts);
 		this.addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
 	}
 

@@ -36,7 +36,13 @@ public class RunProverTest extends AbstractTests {
 	/**
 	 * Possible solver call results
 	 */
+	/**
+	 * H |- ¬ G  is UNSAT, so H |- G is VALID
+	 */
 	private static boolean VALID = true;
+	/**
+	 * H |- ¬ G  is SAT, so H |- G is NOT VALID
+	 */
 	private static boolean NOT_VALID = false;
 
 	private static final NullProofMonitor MONITOR = new NullProofMonitor();
@@ -229,7 +235,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("a↦b↦d ∈ s");
 
 		// perform test
-		doTest("belong_2", hyps, "⊤", te, NOT_VALID);
+		doTest("belong_2", hyps, "⊤", te, VALID);
 	}
 
 	@Test
