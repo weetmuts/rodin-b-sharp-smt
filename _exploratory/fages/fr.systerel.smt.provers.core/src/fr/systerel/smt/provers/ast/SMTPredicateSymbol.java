@@ -43,7 +43,7 @@ public class SMTPredicateSymbol extends SMTSymbol {
 	}
 
 	public boolean isPropositional() {
-		return Arrays.equals(this.argSorts, SMTFactory.EMPTY_SORT);
+		return argSorts.length == 0;
 	}
 
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
