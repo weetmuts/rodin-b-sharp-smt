@@ -10,19 +10,13 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-
 /**
- * This is the SMTSignature to be used by the SMT translation process through PP. 
- *
+ * This is the SMTSignature to be used by the SMT translation process through
+ * PP.
+ * 
  */
 public class SMTSignaturePP extends SMTSignature {
-
-	/**
-	 * @param logicName
-	 */
-	public SMTSignaturePP(String logicName) {
-		super(logicName);
-		// TODO Auto-generated constructor stub
+	public SMTSignaturePP(final SMTLogic logic) {
+		super(logic);
 	}
-
 }

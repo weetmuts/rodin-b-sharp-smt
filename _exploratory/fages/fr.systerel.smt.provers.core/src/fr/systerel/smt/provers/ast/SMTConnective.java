@@ -10,6 +10,9 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author guyot
  * 
@@ -32,5 +35,15 @@ public enum SMTConnective {
 	@Override
 	public String toString() {
 		return this.symbol;
+	}
+
+	public static final List<String> getConnectiveSymbols() {
+		final SMTConnective[] smtConnectives = SMTConnective.values();
+		final List<String> connectives = new ArrayList<String>(
+				smtConnectives.length);
+		for (final SMTConnective connective : smtConnectives) {
+			connectives.add(connective.toString());
+		}
+		return connectives;
 	}
 }

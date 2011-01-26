@@ -20,6 +20,7 @@ import org.eventb.core.ast.Type;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
@@ -67,10 +68,19 @@ public abstract class Translator implements ISimpleVisitor {
 	protected abstract SMTSymbol translateTypeName(final Type type);
 
 	/**
+	 * Determines and returns the SMT-LIB logic to use in order to discharge the
+	 * current sequent.
+	 */
+	protected SMTLogic determineLogic() {
+		// TODO implement this method instead of returning the default UFNIA logic
+		return SMTLogic.IntsTheory.getInstance();
+	}
+
+	/**
 	 * This method extracts the type environment from the Event-B sequent and
 	 * builds the SMT-LIB signature to use.
 	 */
-	protected abstract void translateSignature(
+	protected abstract void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal);
 
 	/**

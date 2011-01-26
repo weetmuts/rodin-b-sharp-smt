@@ -28,20 +28,26 @@ public class SMTFunctionSymbol extends SMTSymbol {
 	 */
 	final private SMTSortSymbol[] argSorts;
 	final private SMTSortSymbol resultSort;
+	final private boolean associative;
+
+	public static final boolean ASSOCIATIVE = true;
 
 	SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
-			final SMTSortSymbol resultSort) {
-		super(symbolName);
+			final SMTSortSymbol resultSort, final boolean associative,
+			final boolean predefined) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;
+		this.associative = associative;
 	}
 
 	/**
-	 * If Arrays.equals(argSorts, EMPTY_SORT), then this symbol is a base term: function constant.
+	 * If the argSorts tab is empty, then this symbol is a base term: function
+	 * constant.
 	 */
 	public boolean isConstant() {
-		return Arrays.equals(this.argSorts, SMTFactory.EMPTY_SORT);
+		return argSorts.length == 0;
 	}
 
 	public SMTSortSymbol getResultSort() {

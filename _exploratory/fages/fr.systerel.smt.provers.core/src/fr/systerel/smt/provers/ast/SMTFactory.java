@@ -18,15 +18,11 @@ import org.eventb.core.ast.Type;
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
 public final class SMTFactory {
-
 	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
 
 	public final static SMTTerm[] EMPTY_TERM = {};
-
-	public final static SMTSortSymbol INT = new SMTSortSymbol("Int");
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
-	public final static SMTSortSymbol[] INT_TAB = { INT };
-	public final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
+	public final static SMTPredicateSymbol[] EMPTY_PREDICATE = {};
 
 	public final static String OPAR = "(";
 	public final static String CPAR = ")";
@@ -34,28 +30,6 @@ public final class SMTFactory {
 	public final static String QVAR = "?";
 
 	public final static String ITE_TERM = "ite";
-
-	/**
-	 * Arithmetic symbols
-	 */
-	public final static SMTFunctionSymbol PLUS = new SMTFunctionSymbol("+",
-			INT_INT_TAB, INT);
-	public final static SMTFunctionSymbol MINUS = new SMTFunctionSymbol("-",
-			INT_INT_TAB, INT);
-	public final static SMTFunctionSymbol MUL = new SMTFunctionSymbol("*",
-			INT_INT_TAB, INT);
-	public final static SMTFunctionSymbol UMINUS = new SMTFunctionSymbol("~",
-			INT_TAB, INT);
-	public final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol("=",
-			INT_INT_TAB);
-	public final static SMTPredicateSymbol LT = new SMTPredicateSymbol("<",
-			INT_INT_TAB);
-	public final static SMTPredicateSymbol LE = new SMTPredicateSymbol("<=",
-			INT_INT_TAB);
-	public final static SMTPredicateSymbol GT = new SMTPredicateSymbol(">",
-			INT_INT_TAB);
-	public final static SMTPredicateSymbol GE = new SMTPredicateSymbol(">=",
-			INT_INT_TAB);
 
 	/**
 	 * Connective symbols
@@ -72,9 +46,9 @@ public final class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", EMPTY_SORT);
+			"true", EMPTY_SORT, SMTSymbol.PREDEFINED);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", EMPTY_SORT);
+			"false", EMPTY_SORT, SMTSymbol.PREDEFINED);
 
 	/**
 	 * Quantifier symbols
@@ -95,48 +69,48 @@ public final class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public SMTFormula makeEqual(SMTTerm[] args) {
-		return new SMTAtom(EQUAL, args);
+	public SMTFormula makeEqual(final SMTPredicateSymbol equal, final SMTTerm[] args) {
+		return new SMTAtom(equal, args);
 	}
 
-	public SMTFormula makeNotEqual(SMTTerm[] args) {
-		final SMTFormula[] tabEqual = { makeEqual(args) };
+	public SMTFormula makeNotEqual(final SMTPredicateSymbol equal, final SMTTerm[] args) {
+		final SMTFormula[] tabEqual = { makeEqual(equal, args) };
 		return makeNot(tabEqual);
 	}
 
-	public SMTFormula makeLesserThan(SMTTerm[] args) {
-		return new SMTAtom(LT, args);
+	public SMTFormula makeLesserThan(final SMTPredicateSymbol lt, final SMTTerm[] args) {
+		return new SMTAtom(lt, args);
 	}
 
-	public SMTFormula makeLesserEqual(SMTTerm[] args) {
-		return new SMTAtom(LE, args);
+	public SMTFormula makeLesserEqual(final SMTPredicateSymbol le, final SMTTerm[] args) {
+		return new SMTAtom(le, args);
 	}
 
-	public SMTFormula makeGreaterThan(SMTTerm[] args) {
-		return new SMTAtom(GT, args);
+	public SMTFormula makeGreaterThan(final SMTPredicateSymbol gt, final SMTTerm[] args) {
+		return new SMTAtom(gt, args);
 	}
 
-	public SMTFormula makeGreaterEqual(SMTTerm[] args) {
-		return new SMTAtom(GE, args);
+	public SMTFormula makeGreaterEqual(final SMTPredicateSymbol ge, final SMTTerm[] args) {
+		return new SMTAtom(ge, args);
 	}
 
 	/**
 	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
 	 */
-	public SMTTerm makePlus(SMTTerm[] args) {
-		return new SMTFunApplication(PLUS, args);
+	public SMTTerm makePlus(final SMTFunctionSymbol plus, final SMTTerm[] args) {
+		return new SMTFunApplication(plus, args);
 	}
 
-	public SMTTerm makeMinus(SMTTerm[] args) {
-		return new SMTFunApplication(MINUS, args);
+	public SMTTerm makeMinus(final SMTFunctionSymbol minus, final SMTTerm[] args) {
+		return new SMTFunApplication(minus, args);
 	}
 
-	public SMTTerm makeMul(SMTTerm[] args) {
-		return new SMTFunApplication(MUL, args);
+	public SMTTerm makeMul(final SMTFunctionSymbol mul, final SMTTerm[] args) {
+		return new SMTFunApplication(mul, args);
 	}
 
-	public SMTTerm makeUMinus(SMTTerm[] arg) {
-		return new SMTFunApplication(UMINUS, arg);
+	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus, final SMTTerm[] arg) {
+		return new SMTFunApplication(uminus, arg);
 	}
 
 	/**
@@ -220,7 +194,7 @@ public final class SMTFactory {
 	public SMTTerm makeVar(final String identifier, final Type type) {
 		// FIXME this is not correct
 		return new SMTVar(new SMTVarSymbol(identifier, new SMTSortSymbol(
-				type.toString())));
+				type.toString(), !SMTSymbol.PREDEFINED), !SMTSymbol.PREDEFINED));
 	}
 
 	/**

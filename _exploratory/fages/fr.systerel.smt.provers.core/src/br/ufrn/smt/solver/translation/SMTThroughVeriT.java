@@ -59,6 +59,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
 /**
  * 
  */
+// FIXME this class must be entirely refactored
 public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
@@ -123,14 +124,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void translateSignature(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		this.translateSignature(SMTLogic.UNKNOWN, hypotheses, goal);
-	}
-
-	private void translateSignature(final String logicName,
+	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		this.signature = new SMTSignatureVerit(logicName);
+		this.signature = new SMTSignatureVerit(logic);
 
 		boolean insertPairDecl = false;
 
@@ -149,7 +145,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			}
 
 			if (varName.equals(varType.toString())) {
-				this.signature.addSort(varType.toString());
+				this.signature.addSort(varType.toString(),
+						!SMTSymbol.PREDEFINED);
 			}
 
 			// Regra 6
@@ -171,15 +168,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				this.signature.addPairPred(varName, sortSymb1, sortSymb2);
 
 				if (!insertPairDecl) {
-					this.signature.addSort("(Pair 's 't)");
+					this.signature.addSort("(Pair 's 't)",
+							!SMTSymbol.PREDEFINED);
 				}
-				this.signature.addSort(sortSymb1);
-				this.signature.addSort(sortSymb2);
+				this.signature.addSort(sortSymb1, !SMTSymbol.PREDEFINED);
+				this.signature.addSort(sortSymb2, !SMTSymbol.PREDEFINED);
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
 				if (varName.equals(varType.getBaseType().toString())) {
-					this.signature.addSort(varName);
+					this.signature.addSort(varName, !SMTSymbol.PREDEFINED);
 				} else {
 					final String[] argSorts = { getSMTAtomicExpressionFormat(varType
 							.getBaseType().toString()) };
@@ -307,7 +305,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				expression.getRight());
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			this.smtNode = sf.makeMinus(children);
+			// this.smtNode = sf.makeMinus(children);
 			break;
 		case Formula.DIV:
 			throw new IllegalArgumentException(
@@ -416,7 +414,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// }
 			switch (predicate.getTag()) {
 			case Formula.NOTEQUAL:
-				this.smtNode = sf.makeNotEqual(children);
+				// this.smtNode = sf.makeNotEqual(children);
 				break;
 			case Formula.EQUAL:
 				// Check Type of equality members
@@ -424,7 +422,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 				// FIXME is this correct? why was this done?
 				// if (type instanceof IntegerType) {
-				this.smtNode = sf.makeEqual(children);
+				// this.smtNode = sf.makeEqual(children);
 				// } else { // FIXME document this... should be as above in all
 				// cases
 				// this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
@@ -432,16 +430,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				// }
 				break;
 			case Formula.LT:
-				this.smtNode = sf.makeLesserThan(children);
+				// this.smtNode = sf.makeLesserThan(children);
 				break;
 			case Formula.LE:
-				this.smtNode = sf.makeLesserEqual(children);
+				// this.smtNode = sf.makeLesserEqual(children);
 				break;
 			case Formula.GT:
-				this.smtNode = sf.makeGreaterThan(children);
+				// this.smtNode = sf.makeGreaterThan(children);
 				break;
 			case Formula.GE:
-				this.smtNode = sf.makeGreaterEqual(children);
+				// this.smtNode = sf.makeGreaterEqual(children);
 				break;
 			// TODO when membership translation implemented
 			/*

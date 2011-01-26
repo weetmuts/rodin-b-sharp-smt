@@ -31,7 +31,6 @@ import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
-import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
@@ -73,7 +72,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignaturePP signature;
-	protected List<SMTTerm> memberShipPredicateStack = new ArrayList<SMTTerm>();
+	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
 	public SMTThroughPP() {
 		super();
@@ -116,11 +115,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getTranslatedHypotheses();
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
+		final SMTLogic logic = determineLogic();
+
 		/**
 		 * SMT translation
 		 */
 		// translates the signature
-		this.translateSignature(ppTranslatedHypotheses, ppTranslatedGoal);
+		this.translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
 
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
@@ -179,7 +180,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * hypotheses and its goal. The method also fill the variables typeMap and
 	 * varMap.
 	 * 
-	 * @param logicName
+	 * @param logic
 	 *            the SMT-LIB logic
 	 * @param hypotheses
 	 *            the set of hypotheses of the sequent
@@ -188,9 +189,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	// FIXME Use the given logic, notably to take account of the symbols defined
 	// by this logic
-	private void translateSignature(final String logicName,
+	@Override
+	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		this.signature = new SMTSignaturePP(logicName);
+		this.signature = new SMTSignaturePP(logic);
+		
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
@@ -313,12 +316,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void translateSignature(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		this.translateSignature(SMTLogic.UNKNOWN, hypotheses, goal);
-	}
-
-	@Override
 	protected SMTSortSymbol translateTypeName(Type type) {
 		if (type.getSource() == null && type.getTarget() == null
 				&& type.getBaseType() == null) {
@@ -333,10 +330,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final int tag = expression.getTag();
 		switch (tag) {
 		case Formula.PLUS:
-			this.smtNode = sf.makePlus(children);
+			this.smtNode = sf.makePlus(signature.getLogic().getPlus(), children);
 			break;
 		case Formula.MUL:
-			this.smtNode = sf.makeMul(children);
+			this.smtNode = sf.makeMul(signature.getLogic().getMul(), children);
 			break;
 		default:
 			/**
@@ -412,15 +409,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			this.smtNode = sf.makeMinus(children);
+			this.smtNode = sf.makeMinus(signature.getLogic().getMinus(), children);
 			break;
 		case Formula.MAPSTO:
 			if (left.getTag() != Formula.MAPSTO) {
-				this.memberShipPredicateStack.add(0, children[0]);
+				this.membershipPredicateTerms.add(0, children[0]);
 			}
 
 			if (right.getTag() != Formula.MAPSTO) {
-				this.memberShipPredicateStack.add(children[1]);
+				this.membershipPredicateTerms.add(children[1]);
 			}
 			break;
 		case Formula.DIV:
@@ -523,37 +520,37 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			} else {
 				final SMTTerm[] children = smtTerms(predicate.getLeft(),
 						predicate.getRight());
-				this.smtNode = sf.makeEqual(children);
+				this.smtNode = sf.makeEqual(signature.getLogic().getEqual(), children);
 			}
 			break;
 		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeNotEqual(children);
+			this.smtNode = sf.makeNotEqual(signature.getLogic().getEqual(), children);
 		}
 			break;
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeLesserThan(children);
+			this.smtNode = sf.makeLesserThan(signature.getLogic().getLesserThan(), children);
 		}
 			break;
 		case Formula.LE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeLesserEqual(children);
+			this.smtNode = sf.makeLesserEqual(signature.getLogic().getLesserEqual(), children);
 		}
 			break;
 		case Formula.GT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeGreaterThan(children);
+			this.smtNode = sf.makeGreaterThan(signature.getLogic().getGreaterThan(), children);
 		}
 			break;
 		case Formula.GE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeGreaterEqual(children);
+			this.smtNode = sf.makeGreaterEqual(signature.getLogic().getGreaterEqual(), children);
 		}
 			break;
 		case Formula.IN:
@@ -562,14 +559,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] children = smtTerms(left, right);
 
 			if (left.getTag() != Formula.MAPSTO) {
-				this.memberShipPredicateStack.add(0, children[0]);
+				this.membershipPredicateTerms.add(0, children[0]);
 			}
-			this.memberShipPredicateStack.add(children[1]);
+			this.membershipPredicateTerms.add(children[1]);
 
-			final int numberOfArguments = this.memberShipPredicateStack.size();
+			final int numberOfArguments = this.membershipPredicateTerms.size();
 			final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
 			for (int i = 0; i < numberOfArguments; i++) {
-				argSorts[i] = this.memberShipPredicateStack.get(i).getSort();
+				argSorts[i] = this.membershipPredicateTerms.get(i).getSort();
 			}
 
 			SMTPredicateSymbol predSymbol = this.signature
@@ -579,10 +576,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			predSymbol = this.signature.getMembershipPredicateSymbol(argSorts);
 
-			final SMTTerm[] args = this.memberShipPredicateStack.toArray(new SMTTerm[numberOfArguments]); 
+			final SMTTerm[] args = this.membershipPredicateTerms
+					.toArray(new SMTTerm[numberOfArguments]);
 
 			this.smtNode = sf.makeAtom(predSymbol, args);
-			this.memberShipPredicateStack.clear();
+			this.membershipPredicateTerms.clear();
 			break;
 		case Formula.NOTIN:
 			break;
@@ -612,7 +610,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
-			this.smtNode = sf.makeUMinus(children);
+			this.smtNode = sf.makeUMinus(signature.getLogic().getUMinus(), children);
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());

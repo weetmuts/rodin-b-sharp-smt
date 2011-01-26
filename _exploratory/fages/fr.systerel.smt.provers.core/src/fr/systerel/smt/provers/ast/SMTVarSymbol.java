@@ -23,8 +23,9 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 public class SMTVarSymbol extends SMTSymbol {
 	final private SMTSortSymbol sort;
 
-	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort) {
-		super(symbolName);
+	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort,
+			final boolean predefined) {
+		super(symbolName, predefined);
 		this.sort = sort;
 	}
 

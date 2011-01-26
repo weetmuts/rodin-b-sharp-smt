@@ -15,19 +15,23 @@ package fr.systerel.smt.provers.ast;
  *
  */
 public abstract class SMTSymbol {
-	final protected String name;
+	protected final String name;
+	protected final boolean predefined;
 
-	SMTSymbol(final String symbolName) {
+	public static final boolean PREDEFINED = true;
+
+	SMTSymbol(final String symbolName, final boolean predefined) {
 		this.name = symbolName;
+		this.predefined = predefined;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	@Override
 	public String toString() {
-		return this.name;
+		return name;
 	}
 
 	public void toString(final StringBuilder buffer) {

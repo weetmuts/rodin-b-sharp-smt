@@ -14,7 +14,7 @@ package fr.systerel.smt.provers.ast;
  * The SMT sorts.
  */
 public class SMTSortSymbol extends SMTSymbol {
-	SMTSortSymbol(String symbolName) {
-		super(symbolName);
+	SMTSortSymbol(String symbolName, final boolean predefined) {
+		super(symbolName, predefined);
 	}
 }

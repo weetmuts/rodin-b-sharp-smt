@@ -13,7 +13,6 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
-import static fr.systerel.smt.provers.ast.SMTFactory.UMINUS;
 
 import java.math.BigInteger;
 
@@ -37,14 +36,14 @@ public final class SMTNumeral extends SMTTerm {
 
 	@Override
 	public SMTSortSymbol getSort() {
-		return SMTFactory.INT;
+		return SMTLogic.IntsTheory.getInstance().getIntegerSort();
 	}
 
 	@Override
 	public void toString(StringBuilder builder) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			builder.append(UMINUS);
+			builder.append(SMTLogic.IntsTheory.getInstance().getUMinus());
 			builder.append(SPACE);
 			builder.append(value.abs());
 			builder.append(CPAR);

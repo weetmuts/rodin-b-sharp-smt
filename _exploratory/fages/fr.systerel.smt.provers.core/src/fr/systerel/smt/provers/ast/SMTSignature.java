@@ -1,7 +1,9 @@
 package fr.systerel.smt.provers.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,18 +43,15 @@ public abstract class SMTSignature {
 	private final static String NEW_SORT_NAME = "NSORT";
 	private final static String MEMBERSHIP_PRED_NAME = "MS";
 
-	protected final static String reservedSymbols[] = { "=", "and",
-			"benchmark", "distinct", "exists", "false", "flet", "forall",
-			"if_then_else", "iff", "implies", "ite", "let", "logic", "not",
-			"or", "sat", "theory", "true", "unknown", "unsat", "xor" };
+	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
-	protected final static String reservedAttributesSymbols[] = { "assumption",
-			"formula", "status", "logic", "extrasorts", "extrafuns",
-			"extrapreds", "funs", "preds", "axioms", "sorts", "definition",
-			"theory", "language", "extensions", "notes" };
+	protected final static String predefinedAttributesSymbols[] = {
+			"assumption", "formula", "status", "logic", "extrasorts",
+			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
+			"definition", "theory", "language", "extensions", "notes" };
 
 	protected final Set<String> attributeSymbols = new HashSet<String>(
-			Arrays.asList(reservedAttributesSymbols));
+			Arrays.asList(predefinedAttributesSymbols));
 
 	protected final Set<SMTSortSymbol> sorts = new HashSet<SMTSortSymbol>();
 
@@ -60,8 +59,21 @@ public abstract class SMTSignature {
 
 	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
-	public SMTSignature(final String logicName) {
-		this.logic = new SMTLogic(logicName);
+	public SMTSignature(final SMTLogic logic) {
+		this.logic = logic;
+	}
+
+	private static Set<String> getReservedSymbolsAndKeywords() {
+		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
+				Arrays.asList("=", "and", "benchmark", "distinct", "exists",
+						"false", "flet", "forall", "if_then_else", "iff",
+						"implies", "ite", "let", "logic", "not", "or", "sat",
+						"theory", "true", "unknown", "unsat", "xor"));
+		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
+				.getConnectiveSymbols())) {
+			// TODO throw new exception
+		}
+		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}
 
 	/**
@@ -85,6 +97,10 @@ public abstract class SMTSignature {
 		}
 		sb.append("    ");
 		return sb.toString();
+	}
+
+	protected void loadLogic() {
+		sorts.addAll(new ArrayList<SMTSortSymbol>(Arrays.asList(logic.sorts)));
 	}
 
 	protected static <T> void extraSection(final StringBuilder sb,
@@ -155,6 +171,10 @@ public abstract class SMTSignature {
 		return freshName.toString();
 	}
 
+	public SMTLogic getLogic() {
+		return logic;
+	}
+
 	public SMTFunctionSymbol getFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
 		for (SMTFunctionSymbol fun : this.funs) {
@@ -186,7 +206,7 @@ public abstract class SMTSignature {
 	}
 
 	public String freshCstName(final String name) {
-		if (Arrays.asList(reservedSymbols).contains(name)
+		if (reservedSymbols.contains(name)
 				|| this.attributeSymbols.contains(name)) {
 			return freshName(getSymbolNames(this.funs), NEW_SYMBOL_NAME);
 		} else {
@@ -205,7 +225,8 @@ public abstract class SMTSignature {
 	 */
 	public SMTSortSymbol freshSort(final String name) {
 		final String freshName = freshName(getSymbolNames(this.sorts), name);
-		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName);
+		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
+				!SMTSymbol.PREDEFINED);
 
 		/**
 		 * Tries to put the sort in sorts set.
@@ -243,20 +264,21 @@ public abstract class SMTSignature {
 	}
 
 	public void addConstant(final String name, final SMTSortSymbol sort) {
-		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort));
+		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort,
+				false, SMTSymbol.PREDEFINED));
 	}
 
 	public void addPredicateSymbol(final boolean isAMembershipPredicate,
 			final String name, final SMTSortSymbol[] argSorts) {
 		this.preds.add(new SMTPredicateSymbol(isAMembershipPredicate, name,
-				argSorts));
+				argSorts, SMTSymbol.PREDEFINED));
 	}
 
 	public void addMembershipPredicateSymbol(final SMTSortSymbol[] argSorts) {
 		// FIXME this is a test for verit
-//		this.addPredicateSymbol(true,
-//				freshName(getSymbolNames(this.preds), MEMBERSHIP_PRED_NAME),
-//				argSorts);
+		// this.addPredicateSymbol(true,
+		// freshName(getSymbolNames(this.preds), MEMBERSHIP_PRED_NAME),
+		// argSorts);
 		this.addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
 	}
 
