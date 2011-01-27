@@ -63,38 +63,39 @@ public class SMTPreferencePage extends PreferencePage implements
 	public static final String SOLVER_ID = "Solver ID";
 
 	public static final String SOLVER_PATH = "Solver path";
-	
-	public static final String SOLVER_ARGS= "Args";
+
+	public static final String SOLVER_ARGS = "Args";
 
 	public static final String V1_2 = "v1.2";
 
 	public static final String V2_0 = "v2.0";
 
-	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, SOLVER_ARGS, V1_2, V2_0 };
+	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, SOLVER_ARGS,
+			V1_2, V2_0 };
 
-	public static final int[] BOUNDS = { 70,190,50, 35, 35 };
+	public static final int[] BOUNDS = { 70, 190, 50, 35, 35 };
 
 	private static final String preferencesName = "solverpreferences";
 
 	/*****************************************/
 	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-	private static boolean prepro;
+	static boolean prepro;
 
-	private static String preproPath;
+	static String preproPath;
 	/*****************************************/
 
-	private int selectedSolverIndex;
+	int selectedSolverIndex;
 
 	protected TableViewer fTable;
 
 	protected Control fTableControl;
 
-	private List<SolverDetail> fModel = new ArrayList<SolverDetail>();
+	List<SolverDetail> fModel = new ArrayList<SolverDetail>();
 
 	/**
 	 * The name of the preference displayed in this preference page.
 	 */
-	private String preferences = new String();
+	String preferences = new String();
 
 	public SMTPreferencePage() {
 		initWithPreferences();
@@ -116,6 +117,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	@Override
 	public void init(IWorkbench workbench) {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -221,7 +223,7 @@ public class SMTPreferencePage extends PreferencePage implements
 						.getSelection();
 				SolverDetail solverToEdit = (SolverDetail) sel
 						.getFirstElement();
-				if (solverToEdit!=null){
+				if (solverToEdit != null) {
 					createSolverDetailsPage(compButtons, true,
 							solverToEdit.getId(), solverToEdit.getPath(),
 							solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
@@ -236,9 +238,12 @@ public class SMTPreferencePage extends PreferencePage implements
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Change color of the selected row
-				Color blue = comp.getDisplay().getSystemColor(SWT.COLOR_BLUE);
-				Color white = comp.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-				Color black = comp.getDisplay().getSystemColor(SWT.COLOR_BLACK);
+				Color blueColor = comp.getDisplay().getSystemColor(
+						SWT.COLOR_BLUE);
+				Color whiteColor = comp.getDisplay().getSystemColor(
+						SWT.COLOR_WHITE);
+				Color blackColor = comp.getDisplay().getSystemColor(
+						SWT.COLOR_BLACK);
 
 				// memorize the selected solver index
 				selectedSolverIndex = fTable.getTable().getSelectionIndex();
@@ -246,11 +251,11 @@ public class SMTPreferencePage extends PreferencePage implements
 				TableItem[] items = fTable.getTable().getItems();
 				for (int i = 0; i < items.length; i++) {
 					if (i == selectedSolverIndex) {
-						items[i].setBackground(blue);
-						items[i].setForeground(white);
+						items[i].setBackground(blueColor);
+						items[i].setForeground(whiteColor);
 					} else {
-						items[i].setBackground(white);
-						items[i].setForeground(black);
+						items[i].setBackground(whiteColor);
+						items[i].setForeground(blackColor);
 					}
 				}
 			}
@@ -377,7 +382,7 @@ public class SMTPreferencePage extends PreferencePage implements
 	 * @return File The File the user selected or <code>null</code> if they do
 	 *         not.
 	 */
-	private File getFile(File startingDirectory) {
+	File getFile(File startingDirectory) {
 
 		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
 		if (startingDirectory != null) {
@@ -407,9 +412,9 @@ public class SMTPreferencePage extends PreferencePage implements
 		return super.performOk();
 	}
 
-	private void createSolverDetailsPage(Composite parent,
-			final boolean editMode, final String id, final String path,
-			final String args, final boolean v1_2, final boolean v2_0) {
+	void createSolverDetailsPage(Composite parent, final boolean editMode,
+			final String id, final String path, final String args,
+			final boolean v1_2, final boolean v2_0) {
 		final Shell shell = new Shell(parent.getShell());
 		shell.setLayout(new GridLayout(1, false));
 		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -538,8 +543,7 @@ public class SMTPreferencePage extends PreferencePage implements
 				} else {
 					if (editMode) {
 						int indexToEdit = fTable.getTable().getSelectionIndex();
-						fModel.get(indexToEdit).setId(
-								solverIdText.getText());
+						fModel.get(indexToEdit).setId(solverIdText.getText());
 						fModel.get(indexToEdit).setPath(
 								solverPathText.getText());
 						fModel.get(indexToEdit).setArgs(
@@ -549,12 +553,11 @@ public class SMTPreferencePage extends PreferencePage implements
 						fModel.get(indexToEdit).setSmtV2_0(
 								smt2_0_Button.getSelection());
 					} else {
-						fModel.add(new SolverDetail(
-								solverIdText.getText(),
-								solverPathText.getText(), 
-								solverArgsText.getText(), 
-								smt1_2_Button.getSelection(), 
-								smt2_0_Button.getSelection()));
+						fModel.add(new SolverDetail(solverIdText.getText(),
+								solverPathText.getText(), solverArgsText
+										.getText(), smt1_2_Button
+										.getSelection(), smt2_0_Button
+										.getSelection()));
 					}
 
 					// save preferences

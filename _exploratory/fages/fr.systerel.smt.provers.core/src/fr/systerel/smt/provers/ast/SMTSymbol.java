@@ -18,6 +18,17 @@ public abstract class SMTSymbol {
 	protected final String name;
 	protected final boolean predefined;
 
+	public static final String INT = "Int";
+	public static final String EQUAL = "=";
+	public static final String LT = "<";
+	public static final String LE = "<=";
+	public static final String GT = ">";
+	public static final String GE = ">=";
+	public static final String UMINUS = "~";
+	public static final String MINUS = "-";
+	public static final String PLUS = "+";
+	public static final String MUL = "*";
+	
 	public static final boolean PREDEFINED = true;
 
 	SMTSymbol(final String symbolName, final boolean predefined) {
@@ -27,6 +38,10 @@ public abstract class SMTSymbol {
 
 	public String getName() {
 		return name;
+	}
+
+	public boolean isPredefined() {
+		return predefined;
 	}
 
 	@Override

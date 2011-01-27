@@ -61,6 +61,7 @@ public abstract class SMTSignature {
 
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
+		loadLogicSymbols();
 	}
 
 	private static Set<String> getReservedSymbolsAndKeywords() {
@@ -89,6 +90,10 @@ public abstract class SMTSignature {
 		return symbolNames;
 	}
 
+	/**
+	 * Returns a string containing as much space characters as needed to indent
+	 * the next line according to the length of the name of the section
+	 */
 	private static String sectionIndentation(final String sectionName) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("\n");
@@ -99,23 +104,48 @@ public abstract class SMTSignature {
 		return sb.toString();
 	}
 
-	protected void loadLogic() {
-		sorts.addAll(new ArrayList<SMTSortSymbol>(Arrays.asList(logic.sorts)));
+	private void loadLogicSymbols() {
+		sorts.addAll(Arrays.asList(logic.getSorts()));
+		preds.addAll(Arrays.asList(logic.getPredicates()));
+		funs.addAll(Arrays.asList(logic.getFunctions()));
 	}
 
-	protected static <T> void extraSection(final StringBuilder sb,
-			final Set<T> elements, final String sectionName) {
+	/**
+	 * This method appends the string representation of the given SMT-LIB
+	 * section by appending the string representation of each SMT-LIB symbols
+	 * that is not predefined in the current logic. It doesn't modify the buffer
+	 * if the set contains only predefined symbols.
+	 * 
+	 * @param <T>
+	 *            The type of SMT-LIB symbols to append to the buffer.
+	 * @param sb
+	 *            the buffer to complete.
+	 * @param elements
+	 *            the symbols to append to the buffer.
+	 * @param sectionName
+	 *            the name of the SMT-LIB section this buffer represents.
+	 */
+	protected static <T extends SMTSymbol> void extraSection(
+			final StringBuilder sb, final Set<T> elements,
+			final String sectionName) {
 		final String eltSep = sectionIndentation(sectionName);
-		String separator = "";
-		sb.append(" :");
-		sb.append(sectionName);
-		sb.append(" (");
+		boolean emptySection = true;
+		final StringBuilder sectionStarting = new StringBuilder();
+		sectionStarting.append(" :");
+		sectionStarting.append(sectionName);
+		sectionStarting.append(" (");
+		String separator = sectionStarting.toString();
 		for (final T element : elements) {
-			sb.append(separator);
-			sb.append(element);
-			separator = eltSep;
+			if (!element.isPredefined()) {
+				sb.append(separator);
+				sb.append(element);
+				separator = eltSep;
+				emptySection = false;
+			}
 		}
-		sb.append(")\n");
+		if (!emptySection) {
+			sb.append(")\n");
+		}
 	}
 
 	/**
@@ -177,7 +207,7 @@ public abstract class SMTSignature {
 
 	public SMTFunctionSymbol getFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
-		for (SMTFunctionSymbol fun : this.funs) {
+		for (SMTFunctionSymbol fun : funs) {
 			if (fun.name.equals(name) && fun.hasRank(argSorts, resultSort)) {
 				return fun;
 			}
@@ -187,7 +217,7 @@ public abstract class SMTSignature {
 
 	public SMTPredicateSymbol getPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
-		for (SMTPredicateSymbol pred : this.preds) {
+		for (SMTPredicateSymbol pred : preds) {
 			if (pred.name.equals(name) && pred.hasRank(argSorts)) {
 				return pred;
 			}
@@ -197,7 +227,7 @@ public abstract class SMTSignature {
 
 	public SMTPredicateSymbol getMembershipPredicateSymbol(
 			final SMTSortSymbol[] argSorts) {
-		for (SMTPredicateSymbol pred : this.preds) {
+		for (SMTPredicateSymbol pred : preds) {
 			if (pred.isAMembershipPredicate() && pred.hasRank(argSorts)) {
 				return pred;
 			}
@@ -206,16 +236,15 @@ public abstract class SMTSignature {
 	}
 
 	public String freshCstName(final String name) {
-		if (reservedSymbols.contains(name)
-				|| this.attributeSymbols.contains(name)) {
-			return freshName(getSymbolNames(this.funs), NEW_SYMBOL_NAME);
+		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
+			return freshName(getSymbolNames(funs), NEW_SYMBOL_NAME);
 		} else {
-			return freshName(getSymbolNames(this.funs), name);
+			return freshName(getSymbolNames(funs), name);
 		}
 	}
 
 	public SMTSortSymbol freshSort() {
-		return this.freshSort(NEW_SORT_NAME);
+		return freshSort(NEW_SORT_NAME);
 	}
 
 	/**
@@ -224,21 +253,21 @@ public abstract class SMTSignature {
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		final String freshName = freshName(getSymbolNames(this.sorts), name);
+		final String freshName = freshName(getSymbolNames(sorts), name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
 
 		/**
 		 * Tries to put the sort in sorts set.
 		 */
-		this.sorts.add(freshSort);
+		sorts.add(freshSort);
 
 		return freshSort;
 	}
 
 	private void logicSection(final StringBuilder sb) {
 		sb.append(" :logic ");
-		sb.append(this.logic);
+		sb.append(logic);
 		sb.append("\n");
 	}
 
@@ -246,46 +275,46 @@ public abstract class SMTSignature {
 	 * One sort per line. May add a comment beside.
 	 */
 	private void extrasortsSection(final StringBuilder sb) {
-		if (!this.sorts.isEmpty()) {
-			extraSection(sb, this.sorts, "extrasorts");
+		if (!sorts.isEmpty()) {
+			extraSection(sb, sorts, "extrasorts");
 		}
 	}
 
 	private void extrapredsSection(final StringBuilder sb) {
 		if (!preds.isEmpty()) {
-			extraSection(sb, this.preds, "extrapreds");
+			extraSection(sb, preds, "extrapreds");
 		}
 	}
 
 	private void extrafunsSection(final StringBuilder sb) {
 		if (!funs.isEmpty()) {
-			extraSection(sb, this.funs, "extrafuns");
+			extraSection(sb, funs, "extrafuns");
 		}
 	}
 
 	public void addConstant(final String name, final SMTSortSymbol sort) {
-		this.funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort,
-				false, SMTSymbol.PREDEFINED));
+		funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort,
+				false, !SMTSymbol.PREDEFINED));
 	}
 
 	public void addPredicateSymbol(final boolean isAMembershipPredicate,
 			final String name, final SMTSortSymbol[] argSorts) {
-		this.preds.add(new SMTPredicateSymbol(isAMembershipPredicate, name,
-				argSorts, SMTSymbol.PREDEFINED));
+		preds.add(new SMTPredicateSymbol(isAMembershipPredicate, name,
+				argSorts, !SMTSymbol.PREDEFINED));
 	}
 
 	public void addMembershipPredicateSymbol(final SMTSortSymbol[] argSorts) {
 		// FIXME this is a test for verit
-		// this.addPredicateSymbol(true,
-		// freshName(getSymbolNames(this.preds), MEMBERSHIP_PRED_NAME),
+		// addPredicateSymbol(true,
+		// freshName(getSymbolNames(preds), MEMBERSHIP_PRED_NAME),
 		// argSorts);
-		this.addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
+		addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
 	}
 
 	public void toString(StringBuilder sb) {
-		this.logicSection(sb);
-		this.extrasortsSection(sb);
-		this.extrapredsSection(sb);
-		this.extrafunsSection(sb);
+		logicSection(sb);
+		extrasortsSection(sb);
+		extrapredsSection(sb);
+		extrafunsSection(sb);
 	}
 }

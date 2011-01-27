@@ -181,14 +181,34 @@ public final class SMTFactory {
 	}
 
 	/**
-	 * Creates a new propositional atom. {FALSE, TRUE}
+	 * Creates a new propositional atom. {, }
 	 */
 	public SMTFormula makePTrue() {
-		return this.makePropAtom(PTRUE);
+		return makePropAtom(PTRUE);
 	}
 
 	public SMTFormula makePFalse() {
-		return this.makePropAtom(PFALSE);
+		return makePropAtom(PFALSE);
+	}
+
+	/**
+	 * Creates a new boolean constant. {FALSE, TRUE}
+	 * @param trueLogicConstant 
+	 */
+	public SMTTerm makeTrue(SMTFunctionSymbol trueLogicConstant) {
+		return makeConstant(trueLogicConstant);
+	}
+
+	public SMTTerm makeFalse(SMTFunctionSymbol falseLogicConstant) {
+		return makeConstant(falseLogicConstant);
+	}
+
+	public SMTTerm makeInteger(final SMTFunctionSymbol integerCste) {
+		return makeConstant(integerCste);
+	}
+
+	public SMTTerm makeBool(final SMTFunctionSymbol booleanCste) {
+		return makeConstant(booleanCste);
 	}
 
 	public SMTTerm makeVar(final String identifier, final Type type) {

@@ -21,10 +21,10 @@ public class SMTLogic {
 	public static String UNKNOWN = "UNKNOWN";
 
 	/** The logic identifier. */
-	protected final String name;
-	protected final SMTSortSymbol[] sorts;
-	protected final SMTPredicateSymbol[] predicates;
-	protected final SMTFunctionSymbol[] functions;
+	private final String name;
+	private final SMTSortSymbol[] sorts;
+	private final SMTPredicateSymbol[] predicates;
+	private final SMTFunctionSymbol[] functions;
 
 	public SMTLogic(final String name, final SMTSortSymbol[] sorts,
 			final SMTPredicateSymbol[] predicates,
@@ -37,6 +37,18 @@ public class SMTLogic {
 
 	public final String getName() {
 		return name;
+	}
+
+	public final SMTSortSymbol[] getSorts() {
+		return sorts;
+	}
+
+	public final SMTPredicateSymbol[] getPredicates() {
+		return predicates;
+	}
+
+	public final SMTFunctionSymbol[] getFunctions() {
+		return functions;
 	}
 
 	public SMTFunctionSymbol getUMinus() {
@@ -52,6 +64,14 @@ public class SMTLogic {
 	}
 
 	public SMTFunctionSymbol getMinus() {
+		return null;
+	}
+
+	public SMTFunctionSymbol getTrue() {
+		return null;
+	}
+
+	public SMTFunctionSymbol getFalse() {
 		return null;
 	}
 
@@ -79,7 +99,15 @@ public class SMTLogic {
 		return null;
 	}
 
+	public SMTFunctionSymbol getIntegerCste() {
+		return null;
+	}
+
 	public SMTSortSymbol getBooleanSort() {
+		return null;
+	}
+
+	public SMTFunctionSymbol getBooleanCste() {
 		return null;
 	}
 
@@ -88,44 +116,65 @@ public class SMTLogic {
 		return name;
 	}
 
+	/**
+	 * This class implements a logic using the SMT-LIB integer theory
+	 */
 	public static class IntsTheory extends SMTLogic {
-		private static final IntsTheory INSTANCE = new IntsTheory();
-
-		private final static SMTSortSymbol INT = new SMTSortSymbol("Int",
-				PREDEFINED);
+		/**
+		 * Sorts of the integer theory
+		 */
+		private final static SMTSortSymbol INT = new SMTSortSymbol(
+				SMTSymbol.INT, PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { INT };
 
-		public final static SMTSortSymbol[] INT_TAB = { INT };
-		public final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
+		/**
+		 * Useful unary and binary integer ranks for predicate and function
+		 * declarations
+		 */
+		private final static SMTSortSymbol[] INT_TAB = { INT };
+		private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
+		/**
+		 * Predicates and functions of the integer theory
+		 */
 		private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-				"=", INT_INT_TAB, PREDEFINED);
+				SMTSymbol.EQUAL, INT_INT_TAB, PREDEFINED);
 
 		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-				"<", INT_INT_TAB, PREDEFINED);
+				SMTSymbol.LT, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-				"<=", INT_INT_TAB, PREDEFINED);
+				SMTSymbol.LE, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-				">", INT_INT_TAB, PREDEFINED);
+				SMTSymbol.GT, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-				">=", INT_INT_TAB, PREDEFINED);
+				SMTSymbol.GE, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE,
 				GT, GE };
 
-		private static final SMTFunctionSymbol ZERO = new SMTFunctionSymbol(
-				"0", SMTFactory.EMPTY_SORT, INT, !ASSOCIATIVE, PREDEFINED);
-		private static final SMTFunctionSymbol ONE = new SMTFunctionSymbol("1",
-				SMTFactory.EMPTY_SORT, INT, !ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol INT_CSTE = new SMTFunctionSymbol(
+				SMTSymbol.INT, EMPTY_SORT, INT, !ASSOCIATIVE, PREDEFINED);
+		/**
+		 * Useless declarations private static final SMTFunctionSymbol ZERO =
+		 * new SMTFunctionSymbol( "0", SMTFactory.EMPTY_SORT, INT, !ASSOCIATIVE,
+		 * PREDEFINED); private static final SMTFunctionSymbol ONE = new
+		 * SMTFunctionSymbol("1", SMTFactory.EMPTY_SORT, INT, !ASSOCIATIVE,
+		 * PREDEFINED);
+		 **/
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				"~", INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
-				"-", INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				"+", INT_INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
-		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol("*",
-				INT_INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { ZERO, ONE,
+				SMTSymbol.PLUS, INT_INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
+				SMTSymbol.MUL, INT_INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol[] FUNCTIONS = { INT_CSTE,
 				UMINUS, MINUS, PLUS, MUL };
+
+		/**
+		 * The sole instance of the integer theory
+		 */
+		private static final IntsTheory INSTANCE = new IntsTheory();
 
 		protected IntsTheory() {
 			super(UNKNOWN, SORTS, PREDICATES, FUNCTIONS);
@@ -142,6 +191,11 @@ public class SMTLogic {
 		@Override
 		public SMTSortSymbol getIntegerSort() {
 			return INT;
+		}
+
+		@Override
+		public SMTFunctionSymbol getIntegerCste() {
+			return INT_CSTE;
 		}
 
 		@Override
@@ -191,8 +245,6 @@ public class SMTLogic {
 	}
 
 	public static class BoolsTheory extends SMTLogic {
-		private static final BoolsTheory INSTANCE = new BoolsTheory();
-
 		private static final String BOOLS = "Bools";
 
 		private final static SMTSortSymbol BOOL = new SMTSortSymbol("Bool",
@@ -202,7 +254,7 @@ public class SMTLogic {
 		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL, BOOL };
 
 		private final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-				"=", BOOL_BOOL_TAB, PREDEFINED);
+				SMTSymbol.EQUAL, BOOL_BOOL_TAB, PREDEFINED);
 		private final static SMTPredicateSymbol[] PREDICATES = { EQUAL };
 
 		private final static SMTFunctionSymbol TRUE = new SMTFunctionSymbol(
@@ -211,12 +263,24 @@ public class SMTLogic {
 				"FALSE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
 
+		private static final BoolsTheory INSTANCE = new BoolsTheory();
+
 		private BoolsTheory() {
 			super(BOOLS, SORTS, PREDICATES, FUNCTIONS);
 		}
 
 		public static BoolsTheory getInstance() {
 			return INSTANCE;
+		}
+
+		@Override
+		public SMTFunctionSymbol getTrue() {
+			return TRUE;
+		}
+
+		@Override
+		public SMTFunctionSymbol getFalse() {
+			return FALSE;
 		}
 
 		@Override
@@ -232,9 +296,9 @@ public class SMTLogic {
 
 	// FIXME provers seems to be unable to use predefined logics
 	public static class UFNIA extends IntsTheory {
-		private static final UFNIA INSTANCE = new UFNIA();
-
 		private static final String UFNIA = "UFNIA";
+
+		private static final UFNIA INSTANCE = new UFNIA();
 
 		private UFNIA() {
 			super(UFNIA);
@@ -246,9 +310,9 @@ public class SMTLogic {
 	}
 
 	public static class LIA extends IntsTheory {
-		private static final LIA INSTANCE = new LIA();
-
 		private static final String LIA = "LIA";
+
+		private static final LIA INSTANCE = new LIA();
 
 		private LIA() {
 			super(LIA);
@@ -260,9 +324,9 @@ public class SMTLogic {
 	}
 
 	public static class AUFLIA extends IntsTheory {
-		private static final AUFLIA INSTANCE = new AUFLIA();
-
 		private static final String AUFLIA = "AUFLIA";
+
+		private static final AUFLIA INSTANCE = new AUFLIA();
 
 		private AUFLIA() {
 			super(AUFLIA);

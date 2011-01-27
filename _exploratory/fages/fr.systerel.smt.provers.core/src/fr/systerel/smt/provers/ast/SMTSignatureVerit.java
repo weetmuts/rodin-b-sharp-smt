@@ -35,7 +35,7 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
-			extraSection(sb, this.macros, "extramacros");
+			//TODO
 		}
 	}
 

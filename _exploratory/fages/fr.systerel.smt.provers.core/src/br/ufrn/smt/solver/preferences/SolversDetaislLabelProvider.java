@@ -11,7 +11,6 @@
 
 package br.ufrn.smt.solver.preferences;
 
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -43,6 +42,8 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public void dispose() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

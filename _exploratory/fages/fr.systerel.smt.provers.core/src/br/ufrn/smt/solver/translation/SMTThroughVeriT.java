@@ -278,8 +278,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
-			this.smtNode = sf.makePTrue(); // FIXME Use boolean value when BOOL
-											// theory implemented
+			this.smtNode = sf.makePTrue(); // FIXME Use boolean value when BOOL theory implemented
 			break;
 		case Formula.FALSE:
 			this.smtNode = sf.makePFalse();

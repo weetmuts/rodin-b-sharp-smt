@@ -17,7 +17,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import java.util.Arrays;
 
 /**
- * @author guyot
  * 
  */
 public class SMTPredicateSymbol extends SMTSymbol {

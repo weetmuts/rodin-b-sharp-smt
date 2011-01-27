@@ -28,6 +28,9 @@ public class SMTFunctionSymbol extends SMTSymbol {
 	 */
 	final private SMTSortSymbol[] argSorts;
 	final private SMTSortSymbol resultSort;
+	// TODO use this field when creating a new FunApplication object, and adapt
+	// the way the rank is verified
+	@SuppressWarnings("unused")
 	final private boolean associative;
 
 	public static final boolean ASSOCIATIVE = true;
