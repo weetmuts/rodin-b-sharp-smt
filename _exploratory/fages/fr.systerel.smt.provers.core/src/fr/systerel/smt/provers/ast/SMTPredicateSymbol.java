@@ -27,69 +27,26 @@ public class SMTPredicateSymbol extends SMTSymbol {
 	 */
 	final private SMTSortSymbol[] argSorts;
 
-	private boolean isAMembershipPredicate = false;
-
-	public SMTPredicateSymbol(final boolean isAMembershipPredicate,
-			final String symbolName, final SMTSortSymbol argSorts[], final boolean predefined) {
-		super(symbolName, predefined);
-		this.isAMembershipPredicate = isAMembershipPredicate;
-		this.argSorts = argSorts.clone();
-	}
-
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined) {
-		this(false, symbolName, argSorts, predefined);
+		super(symbolName, predefined);
+		this.argSorts = argSorts.clone();
 	}
 
 	public boolean isPropositional() {
 		return argSorts.length == 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(argSorts);
-		result = prime * result + (isAMembershipPredicate ? 1231 : 1237);
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SMTPredicateSymbol other = (SMTPredicateSymbol) obj;
-		if (!Arrays.equals(argSorts, other.argSorts))
-			return false;
-		if (isAMembershipPredicate != other.isAMembershipPredicate)
-			return false;
-		return true;
-	}
-
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
 		return Arrays.equals(this.argSorts, argSorts2);
-	}
-
-	public boolean isAMembershipPredicate() {
-		return this.isAMembershipPredicate;
 	}
 
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
-		buffer.append(this.name);
-		for (SMTSortSymbol sort : this.argSorts) {
+		buffer.append(name);
+		for (SMTSortSymbol sort : argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}

@@ -20,7 +20,7 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 public class SMTLogic {
 	public static String UNKNOWN = "UNKNOWN";
 
-	/** The logic identifier. */
+	/** The logic name and symbols */
 	private final String name;
 	private final SMTSortSymbol[] sorts;
 	private final SMTPredicateSymbol[] predicates;

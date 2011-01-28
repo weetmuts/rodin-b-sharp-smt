@@ -20,6 +20,6 @@ public abstract class SMTTerm extends SMTNode<SMTTerm> {
 	public abstract void toString(StringBuilder builder);
 
 	public SMTSortSymbol getSort() {
-		return this.sort;
+		return sort;
 	}
 }

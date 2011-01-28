@@ -45,7 +45,7 @@ public class SMTBenchmark {
 	}
 
 	private void assumptionsSection(final StringBuilder sb) {
-		for (final SMTFormula assumption : this.assumptions) {
+		for (final SMTFormula assumption : assumptions) {
 			sb.append(" :assumption ");
 			assumption.toString(sb);
 			sb.append("\n");
@@ -54,7 +54,7 @@ public class SMTBenchmark {
 
 	private void formulaSection(StringBuilder sb) {
 		sb.append(" :formula (not ");
-		this.goal.toString(sb);
+		goal.toString(sb);
 		sb.append(")\n");
 	}
 
@@ -67,7 +67,7 @@ public class SMTBenchmark {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class SMTBenchmark {
 	 */
 	public void print(final PrintWriter pw) {
 		final StringBuilder sb = new StringBuilder();
-		this.benchmarkCmdOpening(sb);
-		this.signature.toString(sb);
+		benchmarkCmdOpening(sb);
+		signature.toString(sb);
 		sb.append("\n");
-		this.assumptionsSection(sb);
-		this.formulaSection(sb);
+		assumptionsSection(sb);
+		formulaSection(sb);
 		benchmarkCmdClosing(sb);
 		pw.println(sb.toString());
 	}

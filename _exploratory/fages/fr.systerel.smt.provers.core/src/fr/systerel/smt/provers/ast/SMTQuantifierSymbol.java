@@ -10,8 +10,10 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * @author guyot
  *
  */
 public enum SMTQuantifierSymbol {
@@ -26,6 +28,17 @@ public enum SMTQuantifierSymbol {
 
 	@Override
 	public String toString() {
-		return this.symbol;
+		return symbol;
+	}
+
+	public static final List<String> getQuantifierSymbols() {
+		final SMTQuantifierSymbol[] smtQuantifiers = SMTQuantifierSymbol
+				.values();
+		final List<String> quantifiers = new ArrayList<String>(
+				smtQuantifiers.length);
+		for (final SMTQuantifierSymbol quantifier : smtQuantifiers) {
+			quantifiers.add(quantifier.toString());
+		}
+		return quantifiers;
 	}
 }

@@ -624,7 +624,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		protected Object getValue(Object element) {
 			SolverDetail solver = (SolverDetail) element;
 
-			switch (this.column) {
+			switch (column) {
 			case 0:
 				return solver.getId();
 			case 1:
@@ -643,7 +643,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		protected void setValue(Object element, Object value) {
 			SolverDetail solver = (SolverDetail) element;
 
-			switch (this.column) {
+			switch (column) {
 			case 0:
 				solver.setId(String.valueOf(value));
 				break;

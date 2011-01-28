@@ -54,26 +54,26 @@ public class SMTFunctionSymbol extends SMTSymbol {
 	}
 
 	public SMTSortSymbol getResultSort() {
-		return this.resultSort;
+		return resultSort;
 	}
 
 	public boolean hasRank(final SMTSortSymbol[] argSorts2,
 			final SMTSortSymbol resultSort2) {
-		return Arrays.equals(this.argSorts, argSorts2)
-				&& this.resultSort.equals(resultSort2);
+		return Arrays.equals(argSorts, argSorts2)
+				&& resultSort.equals(resultSort2);
 	}
 
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
-		buffer.append(this.name);
-		for (SMTSortSymbol sort : this.argSorts) {
+		buffer.append(name);
+		for (SMTSortSymbol sort : argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}
 		buffer.append(SPACE);
-		buffer.append(this.resultSort);
+		buffer.append(resultSort);
 		buffer.append(CPAR);
 		return buffer.toString();
 	}

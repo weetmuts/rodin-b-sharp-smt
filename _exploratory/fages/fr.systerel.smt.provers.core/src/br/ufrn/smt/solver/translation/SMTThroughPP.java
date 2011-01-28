@@ -11,8 +11,10 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eventb.core.ast.AssociativeExpression;
@@ -24,7 +26,6 @@ import org.eventb.core.ast.BecomesSuchThat;
 import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
-import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.Expression;
@@ -73,15 +74,23 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignaturePP signature;
+	/**
+	 * In order to translate memberships, the approach implemented in this class
+	 * defines some new predicates. <code>msTypeMap</code> is a map between each
+	 * Event-B type used in a membership and the corresponding SMT-LIB predicate
+	 * symbols.
+	 */
+	protected final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
+	/**
+	 * This list contains the terms of the current membership being translated
+	 * in the translation process.
+	 */
+	// FIXME Seems to be unsafe, to be deleted if possible
 	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
-
-	public SMTThroughPP() {
-		super();
-	}
-
-	public SMTThroughPP(final SMTSignaturePP signature) {
-		this.signature = signature;
-	}
+	/**
+	 * This constant is used to name membership predicates.
+	 */
+	protected final static String MS_PREDICATE_NAME = "MS";
 
 	/**
 	 * This is the public translation method
@@ -92,7 +101,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the hypotheses of the Event-B sequent
 	 * @param goal
 	 *            the goal of the Event-B sequent
-	 * @return the SMT-LIB benchmark built from the translation of the given
+	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
@@ -101,10 +110,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return new SMTThroughPP().translate(lemmaName, hypotheses, goal);
 	}
 
-	@Override
 	/**
-	 * This is the translation method for the ppTrans approach of SMT translation.
+	 * This is the translation method for the ppTrans approach of SMT
+	 * translation.
 	 */
+	@Override
 	protected SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
 
@@ -161,9 +171,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return ppProof;
 	}
 
-	public static SMTFormula translate(final SMTSignaturePP signature,
+	/**
+	 * This method is used only to test the SMT translation
+	 */
+	public static SMTFormula translate(final SMTLogic logic,
 			final Predicate predicate) {
-		final SMTThroughPP translator = new SMTThroughPP(signature);
+		final SMTThroughPP translator = new SMTThroughPP();
+		translator.translateSignature(logic, new ArrayList<Predicate>(0),
+				predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
 	}
@@ -178,8 +193,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
-	 * hypotheses and its goal. The method also fill the variables typeMap and
-	 * varMap.
+	 * hypotheses and its goal. The method also fill the variables
+	 * <code>typeMap</code>, <code>varMap</code> and <code>msTypeMap</code>.
 	 * 
 	 * @param logic
 	 *            the SMT-LIB logic
@@ -239,8 +254,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					varType);
 			for (final Type baseType : baseTypes) {
 				if (!typeMap.containsKey(baseType)) {
-					final SMTSortSymbol baseSort = this
-							.translateTypeName(baseType);
+					final SMTSortSymbol baseSort = translateTypeName(baseType);
 					typeMap.put(baseType, baseSort);
 				}
 			}
@@ -254,6 +268,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method links some symbols of the logic to the main Event-B symbols.
+	 */
+	// TODO Should we link all the SMT-LIB symbols to the Event-B symbols here?
+	// (+, -, * ...)
 	private void linkLogicSymbols() {
 		final SMTLogic logic = signature.getLogic();
 		final FormulaFactory ff = FormulaFactory.getDefault();
@@ -336,6 +355,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B type into an SMT-LIB sort. It gives the
+	 * sort a fresh name if necessary, to avoid any name collision.
+	 */
 	@Override
 	protected SMTSortSymbol translateTypeName(Type type) {
 		if (type.getSource() == null && type.getTarget() == null
@@ -345,6 +368,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return signature.freshSort();
 	}
 
+	/**
+	 * This method translates an Event-B associative expression into an SMT
+	 * node.
+	 */
 	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
 		final SMTTerm[] children = smtTerms(expression.getChildren());
@@ -365,6 +392,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B associative predicate into an SMT node.
+	 */
 	@Override
 	public void visitAssociativePredicate(AssociativePredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getChildren());
@@ -380,6 +410,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B atomic expression into an SMT node.
+	 */
 	@Override
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
@@ -406,24 +439,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
-	@Override
-	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
-		throw new IllegalArgumentException(
-				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
-	@Override
-	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		throw new IllegalArgumentException(
-				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
-	@Override
-	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
-		throw new IllegalArgumentException(
-				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
+	/**
+	 * This method translates an Event-B binary expression into an SMT node.
+	 */
 	@Override
 	public void visitBinaryExpression(BinaryExpression expression) {
 		final Expression left = expression.getLeft();
@@ -461,6 +479,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B binary predicate into an SMT node.
+	 */
 	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getLeft(),
@@ -477,6 +498,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B bool expression into an SMT node.
+	 */
 	@Override
 	public void visitBoolExpression(BoolExpression expression) {
 		final SMTFormula predicate = smtFormula(expression.getPredicate());
@@ -489,26 +513,29 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B free identifier into an SMT node.
+	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
 		final String smtName = varMap.get(expression.getName());
-		if (expression.getType() instanceof BooleanType) {
-			final SMTPredicateSymbol predSymbol = signature.getPredicateSymbol(
-					smtName, SMTFactory.EMPTY_SORT);
-			smtNode = sf.makePropAtom(predSymbol);
-		} else {
-			final SMTFunctionSymbol funSymbol = signature.getFunctionSymbol(
-					smtName, SMTFactory.EMPTY_SORT,
-					typeMap.get(expression.getType()));
-			smtNode = sf.makeConstant(funSymbol);
-		}
+		final SMTFunctionSymbol funSymbol = signature.getFunctionSymbol(
+				smtName, SMTFactory.EMPTY_SORT,
+				typeMap.get(expression.getType()));
+		smtNode = sf.makeConstant(funSymbol);
 	}
 
+	/**
+	 * This method translates an Event-B integer literal into an SMT node.
+	 */
 	@Override
 	public void visitIntegerLiteral(final IntegerLiteral expression) {
 		smtNode = sf.makeNumeral(expression.getValue());
 	}
 
+	/**
+	 * This method translates an Event-B literal predicate into an SMT node.
+	 */
 	@Override
 	public void visitLiteralPredicate(final LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
@@ -523,29 +550,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
-	@Override
-	public void visitQuantifiedExpression(final QuantifiedExpression expression) {
-		throw new IllegalArgumentException(
-				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
+	/**
+	 * This method translates an Event-B relational predicate into an SMT node.
+	 */
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		final int tag = predicate.getTag();
 		switch (tag) {
-		case Formula.EQUAL:
-			// FIXME must use SMT-LIB BOOL theory
-			if (predicate.getRight().getType() instanceof BooleanType) {
-				final SMTFormula[] children = smtFormulas(predicate.getLeft(),
-						predicate.getRight());
-				smtNode = sf.makeIff(children);
-			} else {
-				final SMTTerm[] children = smtTerms(predicate.getLeft(),
-						predicate.getRight());
-				smtNode = sf.makeEqual(signature.getLogic().getEqual(),
-						children);
-			}
+		case Formula.EQUAL: { // TODO the getEqual method should take the sort
+								// of the arguments, to select the right equal
+								// predicate. For example, the boolean one if
+								// arguments are boolean terms.
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeEqual(signature.getLogic().getEqual(), children);
 			break;
+		}
 		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
@@ -582,6 +602,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 			break;
 		case Formula.IN:
+			/**
+			 * The predicate is <code>a ∈ s</code> with <code>a ⦂ S</code> and
+			 * <code>s ⦂ ℙ(S)</code>. Then we just need to map the type of
+			 * <code>a</code> to an SMT-LIB predicate : <code>(p S PS)</code>.
+			 */
 			final Expression left = predicate.getLeft();
 			final Expression right = predicate.getRight();
 			final SMTTerm[] children = smtTerms(left, right);
@@ -597,12 +622,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				argSorts[i] = membershipPredicateTerms.get(i).getSort();
 			}
 
-			SMTPredicateSymbol predSymbol = signature
-					.getMembershipPredicateSymbol(argSorts);
+			final Type leftType = left.getType();
+
+			SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
 			if (predSymbol == null) {
-				signature.addMembershipPredicateSymbol(argSorts);
+				predSymbol = signature.addPredicateSymbol(MS_PREDICATE_NAME,
+						argSorts);
 			}
-			predSymbol = signature.getMembershipPredicateSymbol(argSorts);
+
+			if (predSymbol == null) {
+				// TODO throw new exception
+			}
 
 			final SMTTerm[] args = membershipPredicateTerms
 					.toArray(new SMTTerm[numberOfArguments]);
@@ -621,17 +651,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
-	@Override
-	public void visitSetExtension(SetExtension expression) {
-		// TODO
-	}
-
-	@Override
-	public void visitSimplePredicate(SimplePredicate predicate) {
-		throw new IllegalArgumentException(
-				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
+	/**
+	 * This method translates an Event-B unary expression into an SMT node.
+	 */
 	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
 		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
@@ -641,10 +663,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			smtNode = sf.makeUMinus(signature.getLogic().getUMinus(), children);
 			break;
 		default:
+			/**
+			 * KCARD, POW, POW1, KUNION, KINTER, KDOM, KRAN, KPRJ1, KPRJ2, KID,
+			 * KMIN, KMAX, CONVERSE
+			 */
 			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
+	/**
+	 * This method translates an Event-B unary predicate into an SMT node.
+	 */
 	@Override
 	public void visitUnaryPredicate(UnaryPredicate predicate) {
 		final SMTFormula[] children = new SMTFormula[] { smtFormula(predicate
@@ -659,21 +688,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		throw new IllegalArgumentException(
-				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
-	@Override
-	public void visitExtendedExpression(ExtendedExpression expression) {
-		throw new IllegalArgumentException(
-				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
-	}
-
-	@Override
-	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
-		throw new IllegalArgumentException(
-				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
+	public void visitSetExtension(SetExtension expression) {
+		// TODO
 	}
 
 	@Override
@@ -692,5 +708,53 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
+		throw new IllegalArgumentException(
+				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
+		throw new IllegalArgumentException(
+				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
+		throw new IllegalArgumentException(
+				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitQuantifiedExpression(final QuantifiedExpression expression) {
+		throw new IllegalArgumentException(
+				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitSimplePredicate(SimplePredicate predicate) {
+		throw new IllegalArgumentException(
+				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitMultiplePredicate(MultiplePredicate predicate) {
+		throw new IllegalArgumentException(
+				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitExtendedExpression(ExtendedExpression expression) {
+		throw new IllegalArgumentException(
+				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
+	}
+
+	@Override
+	public void visitExtendedPredicate(ExtendedPredicate predicate) {
+		throw new IllegalArgumentException(
+				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 }

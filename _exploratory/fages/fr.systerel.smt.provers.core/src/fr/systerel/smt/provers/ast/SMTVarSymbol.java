@@ -30,7 +30,7 @@ public class SMTVarSymbol extends SMTSymbol {
 	}
 
 	public SMTSortSymbol getSort() {
-		return this.sort;
+		return sort;
 	}
 
 	@Override
@@ -38,9 +38,9 @@ public class SMTVarSymbol extends SMTSymbol {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append(OPAR);
 		buffer.append(QVAR);
-		buffer.append(this.name);
+		buffer.append(name);
 		buffer.append(SPACE);
-		buffer.append(this.sort);
+		buffer.append(sort);
 		buffer.append(CPAR);
 		return buffer.toString();
 	}

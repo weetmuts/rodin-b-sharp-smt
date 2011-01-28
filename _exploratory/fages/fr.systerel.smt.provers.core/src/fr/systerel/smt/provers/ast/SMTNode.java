@@ -19,7 +19,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		this.toString(builder);
+		toString(builder);
 		return builder.toString();
 	}
 

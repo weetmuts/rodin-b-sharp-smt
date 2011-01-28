@@ -217,8 +217,8 @@ public class SmtProverCall extends XProverCall {
 		 * Parse Rodin PO to create Smt file
 		 */
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				this.lemmaName, this.hypotheses, this.goal);
-		this.iFile = writeSMTFile(benchmark);
+				lemmaName, hypotheses, goal);
+		iFile = writeSMTFile(benchmark);
 
 		/**
 		 * Set up arguments
@@ -228,7 +228,7 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Get back translated smt file
 		 */
-		if (!this.iFile.exists()) {
+		if (!iFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 
@@ -251,26 +251,26 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Launch solver and get back solver result
 		 */
-		this.resultOfSolver = Exec.execProgram(args.toArray(new String[args
-				.size()]));
+		resultOfSolver = Exec
+				.execProgram(args.toArray(new String[args.size()]));
 
 		/**
 		 * Set up result file
 		 */
 		File resultFile = new File(iFile.getParent() + File.separatorChar
-				+ this.lemmaName + ".res");
+				+ lemmaName + ".res");
 		if (!resultFile.exists()) {
 			resultFile.createNewFile();
 		}
 		FileWriter fileWriter = new FileWriter(resultFile);
-		fileWriter.write(this.resultOfSolver);
+		fileWriter.write(resultOfSolver);
 		fileWriter.close();
 		oFile = resultFile;
 
 		/**
 		 * Check Solver Result
 		 */
-		checkResult(this.resultOfSolver);
+		checkResult(resultOfSolver);
 	}
 
 	/**
@@ -317,16 +317,16 @@ public class SmtProverCall extends XProverCall {
 		if (solverResult.contains("syntax error")
 				|| solverResult.contains("parse error")
 				|| solverResult.contains("Lexical_error")) {
-			throw new IllegalArgumentException(this.proverName
-					+ " could not parse " + this.lemmaName + ".smt. See "
-					+ this.lemmaName + ".res for more details.");
+			throw new IllegalArgumentException(proverName + " could not parse "
+					+ lemmaName + ".smt. See " + lemmaName
+					+ ".res for more details.");
 		} else if (solverResult.contains("unsat")) {
 			valid = true;
 		} else if (solverResult.contains("sat")) {
 			valid = false;
 		} else {
 			throw new IllegalArgumentException("Unexpected response of "
-					+ this.proverName + ". See " + this.lemmaName
+					+ proverName + ". See " + lemmaName
 					+ ".res for more details.");
 		}
 		return valid;

@@ -36,14 +36,14 @@ public class SMTConnectiveFormula extends SMTFormula {
 	 * @return a list of children
 	 */
 	public SMTFormula[] getFormulas() {
-		return this.formulas.clone();
+		return formulas.clone();
 	}
 
 	@Override
 	public void toString(StringBuilder builder) {
 		builder.append(OPAR);
-		builder.append(this.connective);
-		for (final SMTFormula formula : this.formulas) {
+		builder.append(connective);
+		for (final SMTFormula formula : formulas) {
 			builder.append(SPACE);
 			builder.append(formula);
 		}

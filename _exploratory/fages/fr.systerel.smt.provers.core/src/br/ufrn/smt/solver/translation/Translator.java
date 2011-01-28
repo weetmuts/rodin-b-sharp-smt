@@ -72,7 +72,8 @@ public abstract class Translator implements ISimpleVisitor {
 	 * current sequent.
 	 */
 	protected SMTLogic determineLogic() {
-		// TODO implement this method instead of returning the default UFNIA logic
+		// TODO implement this method instead of returning the default UFNIA
+		// logic
 		return SMTLogic.IntsTheory.getInstance();
 	}
 
@@ -87,14 +88,14 @@ public abstract class Translator implements ISimpleVisitor {
 	 * This method returns the current SMT node.
 	 */
 	protected SMTFormula getSMTFormula() {
-		if (this.smtNode instanceof SMTFormula) {
-			return (SMTFormula) this.smtNode;
+		if (smtNode instanceof SMTFormula) {
+			return (SMTFormula) smtNode;
 		} else {
 			throw new IllegalArgumentException(Messages.Translation_error);
 		}
 	}
 
 	protected void clearFormula() {
-		this.smtNode = null;
+		smtNode = null;
 	}
 }

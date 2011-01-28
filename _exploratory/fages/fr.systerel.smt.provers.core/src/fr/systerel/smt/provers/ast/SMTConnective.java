@@ -34,7 +34,7 @@ public enum SMTConnective {
 
 	@Override
 	public String toString() {
-		return this.symbol;
+		return symbol;
 	}
 
 	public static final List<String> getConnectiveSymbols() {

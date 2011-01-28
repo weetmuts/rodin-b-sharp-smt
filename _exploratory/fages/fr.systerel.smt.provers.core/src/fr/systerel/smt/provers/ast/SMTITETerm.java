@@ -31,6 +31,7 @@ public final class SMTITETerm extends SMTTerm {
 
 	/**
 	 * Creates a new ITE_FORMULA term.
+	 * 
 	 * @param formula
 	 *            the formula to be checked for satisfiability
 	 * @param tTerm
@@ -46,7 +47,7 @@ public final class SMTITETerm extends SMTTerm {
 
 	@Override
 	public SMTSortSymbol getSort() {
-		return this.tTerm.getSort();
+		return tTerm.getSort();
 	}
 
 	@Override

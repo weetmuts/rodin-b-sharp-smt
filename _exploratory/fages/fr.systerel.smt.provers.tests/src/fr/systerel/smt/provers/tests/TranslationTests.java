@@ -15,9 +15,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
-import fr.systerel.smt.provers.ast.SMTSignaturePP;
-
 import br.ufrn.smt.solver.translation.SMTThroughPP;
+import fr.systerel.smt.provers.ast.SMTLogic;
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB
@@ -28,13 +27,13 @@ import br.ufrn.smt.solver.translation.SMTThroughPP;
  */
 public class TranslationTests extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
-	protected static final SMTSignaturePP defaultSig;
+	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
 				"v", "BOOL");
-		defaultSig = null; //TODO
+		defaultLogic = SMTLogic.IntsTheory.getInstance();
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -82,7 +81,8 @@ public class TranslationTests extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final Predicate ppPred,
 			final String expectedSMTNode, final String failMessage) {
-		final String actualSMTNode = SMTThroughPP.translate(defaultSig, ppPred).toString();
+		final String actualSMTNode = SMTThroughPP.translate(defaultLogic,
+				ppPred).toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
@@ -125,22 +125,22 @@ public class TranslationTests extends AbstractTests {
 		 * land
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v)",
-				"(and (= a b) (iff u v))");
+				"(and (= a b) (= u v))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff u v) (= r s))");
+				"(and (= a b) (= u v) (= r s))");
 		/**
 		 * lor
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v)",
-				"(or (= a b) (iff u v))");
+				"(or (= a b) (= u v))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff u v) (= r s))");
+				"(or (= a b) (= u v) (= r s))");
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * notequal
 		 */
-		testTranslationV1_2Default("a ≠ b", "(not(= a b))");
+		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
 		/**
 		 * lt
 		 */

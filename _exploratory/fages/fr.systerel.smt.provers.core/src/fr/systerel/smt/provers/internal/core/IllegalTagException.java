@@ -25,7 +25,7 @@ public class IllegalTagException extends IllegalArgumentException {
 	public String getMessage() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("The given tag \'");
-		sb.append(this.cause);
+		sb.append(cause);
 		sb.append("\' isn't a valid tag");
 		return sb.toString();
 	}

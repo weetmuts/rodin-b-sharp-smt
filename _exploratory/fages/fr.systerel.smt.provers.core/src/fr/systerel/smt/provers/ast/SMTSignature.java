@@ -41,7 +41,6 @@ public abstract class SMTSignature {
 
 	private final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
-	private final static String MEMBERSHIP_PRED_NAME = "MS";
 
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
@@ -66,12 +65,14 @@ public abstract class SMTSignature {
 
 	private static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList("=", "and", "benchmark", "distinct", "exists",
-						"false", "flet", "forall", "if_then_else", "iff",
-						"implies", "ite", "let", "logic", "not", "or", "sat",
-						"theory", "true", "unknown", "unsat", "xor"));
+				Arrays.asList(SMTSymbol.EQUAL, "and", "benchmark", "distinct", "false",
+						"flet", "if_then_else", "iff", "implies", "ite", "let",
+						"logic", "not", "or", "sat", "theory", "true",
+						"unknown", "unsat", "xor"));
 		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
-				.getConnectiveSymbols())) {
+				.getConnectiveSymbols())
+				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
+						.getQuantifierSymbols())) {
 			// TODO throw new exception
 		}
 		return new HashSet<String>(reservedSymbolsAndKeywords);
@@ -225,16 +226,6 @@ public abstract class SMTSignature {
 		return null;
 	}
 
-	public SMTPredicateSymbol getMembershipPredicateSymbol(
-			final SMTSortSymbol[] argSorts) {
-		for (SMTPredicateSymbol pred : preds) {
-			if (pred.isAMembershipPredicate() && pred.hasRank(argSorts)) {
-				return pred;
-			}
-		}
-		return null;
-	}
-
 	public String freshCstName(final String name) {
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
 			return freshName(getSymbolNames(funs), NEW_SYMBOL_NAME);
@@ -297,18 +288,16 @@ public abstract class SMTSignature {
 				false, !SMTSymbol.PREDEFINED));
 	}
 
-	public void addPredicateSymbol(final boolean isAMembershipPredicate,
-			final String name, final SMTSortSymbol[] argSorts) {
-		preds.add(new SMTPredicateSymbol(isAMembershipPredicate, name,
-				argSorts, !SMTSymbol.PREDEFINED));
-	}
-
-	public void addMembershipPredicateSymbol(final SMTSortSymbol[] argSorts) {
-		// FIXME this is a test for verit
-		// addPredicateSymbol(true,
-		// freshName(getSymbolNames(preds), MEMBERSHIP_PRED_NAME),
-		// argSorts);
-		addPredicateSymbol(true, MEMBERSHIP_PRED_NAME, argSorts);
+	public SMTPredicateSymbol addPredicateSymbol(final String name,
+			final SMTSortSymbol[] argSorts) {
+		final SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
+				argSorts, !SMTSymbol.PREDEFINED);
+		boolean successfullyAdded = preds.add(symbol);
+		if (successfullyAdded) {
+			return symbol;
+		} else {
+			return null;
+		}
 	}
 
 	public void toString(StringBuilder sb) {

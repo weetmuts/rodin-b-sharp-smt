@@ -16,14 +16,15 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
  * @author guyot
- *
+ * 
  */
 public class SMTQuantifiedFormula extends SMTFormula {
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
 
-	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier, final SMTVarSymbol[] qVars, final SMTFormula formula) {
+	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
+			final SMTVarSymbol[] qVars, final SMTFormula formula) {
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;
@@ -32,13 +33,13 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	@Override
 	public void toString(StringBuilder builder) {
 		builder.append(OPAR);
-		builder.append(this.quantifier);
-		for (final SMTVarSymbol qVar : this.qVars) {
+		builder.append(quantifier);
+		for (final SMTVarSymbol qVar : qVars) {
 			builder.append(SPACE);
 			builder.append(qVar);
 		}
 		builder.append(SPACE);
-		builder.append(this.formula);
+		builder.append(formula);
 		builder.append(CPAR);
 	}
 }

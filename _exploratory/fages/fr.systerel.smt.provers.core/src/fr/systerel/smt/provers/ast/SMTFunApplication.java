@@ -35,12 +35,12 @@ public class SMTFunApplication extends SMTTerm {
 
 	@Override
 	public void toString(StringBuilder builder) {
-		if (this.symbol.isConstant()) {
-			builder.append(this.symbol.name);
+		if (symbol.isConstant()) {
+			builder.append(symbol.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(this.symbol.name);
-			for (SMTTerm arg : this.args) {
+			builder.append(symbol.name);
+			for (SMTTerm arg : args) {
 				builder.append(SPACE);
 				builder.append(arg);
 			}

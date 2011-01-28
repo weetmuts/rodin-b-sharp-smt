@@ -28,7 +28,7 @@ public class TranslationException extends Exception {
 	@Override
 	public String getMessage() {
 		StringBuffer sb = new StringBuffer();
-		for (final Entry<String, String> cause : this.causes.entrySet()) {
+		for (final Entry<String, String> cause : causes.entrySet()) {
 			sb.append("Formula: ");
 			sb.append(cause.getKey());
 			sb.append(", Reason: ");

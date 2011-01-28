@@ -61,8 +61,8 @@ public abstract class TranslatorV1_2 extends Translator {
 	 */
 	protected SMTTerm smtTerm(Formula<?> formula) {
 		formula.accept(this);
-		if (this.smtNode instanceof SMTTerm) {
-			return (SMTTerm) this.smtNode;
+		if (smtNode instanceof SMTTerm) {
+			return (SMTTerm) smtNode;
 		} else {
 			throw new IllegalArgumentException(
 					"This node type should be 'SMTTerm'.");
@@ -75,8 +75,8 @@ public abstract class TranslatorV1_2 extends Translator {
 	 */
 	protected SMTFormula smtFormula(Formula<?> formula) {
 		formula.accept(this);
-		if (this.smtNode instanceof SMTFormula) {
-			return (SMTFormula) this.smtNode;
+		if (smtNode instanceof SMTFormula) {
+			return (SMTFormula) smtNode;
 		} else {
 			throw new IllegalArgumentException(
 					"This node type should be 'SMTFormula'.");

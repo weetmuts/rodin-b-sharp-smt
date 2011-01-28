@@ -15,7 +15,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
- * @author guyot
  * 
  */
 public class SMTAtom extends SMTFormula {
@@ -29,12 +28,12 @@ public class SMTAtom extends SMTFormula {
 
 	@Override
 	public void toString(StringBuilder builder) {
-		if (this.predicate.isPropositional()) {
-			builder.append(this.predicate.name);
+		if (predicate.isPropositional()) {
+			builder.append(predicate.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(this.predicate.name);
-			for (final SMTTerm term : this.terms) {
+			builder.append(predicate.name);
+			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				builder.append(term);
 			}
