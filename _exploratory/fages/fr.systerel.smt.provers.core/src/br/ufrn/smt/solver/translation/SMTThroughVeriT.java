@@ -363,7 +363,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBoundIdentifier(final BoundIdentifier expression) {
 		final String identifier = boundIdentifers.get(boundIdentifers.size()
 				- expression.getBoundIndex() - 1);
-		this.smtNode = sf.makeVar(identifier, expression.getType());
+		//this.smtNode = sf.makeVar(identifier, expression.getType());
 	}
 
 	@Override

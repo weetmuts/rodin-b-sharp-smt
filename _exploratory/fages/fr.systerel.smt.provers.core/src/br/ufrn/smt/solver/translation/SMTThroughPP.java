@@ -61,6 +61,7 @@ import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -81,6 +82,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * symbols.
 	 */
 	protected final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
+
+	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
+
+	private ArrayList<String> boundIdentifers;
+
 	/**
 	 * This list contains the terms of the current membership being translated
 	 * in the translation process.
@@ -514,18 +520,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates an Event-B free identifier into an SMT node.
-	 */
-	@Override
-	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		final String smtName = varMap.get(expression.getName());
-		final SMTFunctionSymbol funSymbol = signature.getFunctionSymbol(
-				smtName, SMTFactory.EMPTY_SORT,
-				typeMap.get(expression.getType()));
-		smtNode = sf.makeConstant(funSymbol);
-	}
-
-	/**
 	 * This method translates an Event-B integer literal into an SMT node.
 	 */
 	@Override
@@ -695,20 +689,59 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
-		// TODO Auto-generated method stub
+		final String varName = boundIdentDecl.getName();
+		boundIdentifers.add(varName);
 
+		final String smtVarName;
+		if (!varMap.containsKey(varName)) {
+			final Set<String> symbolNames = new HashSet<String>(varMap.values());
+			smtVarName = signature.freshSymbolName(symbolNames, varName);
+			varMap.put(varName, smtVarName);
+		} else {
+			smtVarName = varMap.get(varName);
+		}
+
+		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+		final SMTVar smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
+		qVarMap.put(varName, smtVar);
+
+		smtNode = smtVar;
 	}
 
 	@Override
-	public void visitBoundIdentifier(BoundIdentifier identifierExpression) {
-		// TODO Auto-generated method stub
+	public void visitBoundIdentifier(BoundIdentifier expression) {
+		final String name = boundIdentifers.get(boundIdentifers.size()
+				- expression.getBoundIndex() - 1);
+		smtNode = qVarMap.get(name);
+	}
 
+	/**
+	 * This method translates an Event-B free identifier into an SMT node.
+	 */
+	@Override
+	public void visitFreeIdentifier(final FreeIdentifier expression) {
+		final String smtName = varMap.get(expression.getName());
+		final SMTFunctionSymbol funSymbol = signature.getFunctionSymbol(
+				smtName, SMTFactory.EMPTY_SORT,
+				typeMap.get(expression.getType()));
+		smtNode = sf.makeConstant(funSymbol);
 	}
 
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
-		// TODO Auto-generated method stub
+		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
+		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
 
+		switch (predicate.getTag()) {
+		case Formula.FORALL:
+			this.smtNode = sf.makeForAll(termChildren, formulaChild);
+			break;
+		case Formula.EXISTS:
+			this.smtNode = sf.makeExists(termChildren, formulaChild);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
 	}
 
 	@Override
