@@ -20,7 +20,7 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * SMTFunctionSymbol)
  * 
  */
-public class SMTVarSymbol extends SMTSymbol {
+public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> {
 	final private SMTSortSymbol sort;
 
 	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort,
@@ -43,5 +43,10 @@ public class SMTVarSymbol extends SMTSymbol {
 		buffer.append(sort);
 		buffer.append(CPAR);
 		return buffer.toString();
+	}
+
+	@Override
+	public int compareTo(final SMTVarSymbol symbol) {
+		return (name.compareTo(symbol.getName()));
 	}
 }

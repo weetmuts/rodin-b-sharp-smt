@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
@@ -65,10 +66,10 @@ public abstract class SMTSignature {
 
 	private static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(SMTSymbol.EQUAL, "and", "benchmark", "distinct", "false",
-						"flet", "if_then_else", "iff", "implies", "ite", "let",
-						"logic", "not", "or", "sat", "theory", "true",
-						"unknown", "unsat", "xor"));
+				Arrays.asList(SMTSymbol.EQUAL, "and", "benchmark", "distinct",
+						"false", "flet", "if_then_else", "iff", "implies",
+						"ite", "let", "logic", "not", "or", "sat", "theory",
+						"true", "unknown", "unsat", "xor"));
 		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
 				.getConnectiveSymbols())
 				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
@@ -136,7 +137,8 @@ public abstract class SMTSignature {
 		sectionStarting.append(sectionName);
 		sectionStarting.append(" (");
 		String separator = sectionStarting.toString();
-		for (final T element : elements) {
+		final TreeSet<T> sortedElements = new TreeSet<T>(elements);
+		for (final T element : sortedElements) {
 			if (!element.isPredefined()) {
 				sb.append(separator);
 				sb.append(element);
@@ -288,15 +290,25 @@ public abstract class SMTSignature {
 				false, !SMTSymbol.PREDEFINED));
 	}
 
+	// TODO This method could be improved by calling a method which tells if
+	// <code>this.preds</code> already contains a predicate defined by a name
+	// and a rank before creating the SMTPredicateSymbol to add to the list.
 	public SMTPredicateSymbol addPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
-		final SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
-				argSorts, !SMTSymbol.PREDEFINED);
+		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name, argSorts,
+				!SMTSymbol.PREDEFINED);
 		boolean successfullyAdded = preds.add(symbol);
 		if (successfullyAdded) {
 			return symbol;
 		} else {
-			return null;
+			symbol = new SMTPredicateSymbol(freshName(getSymbolNames(preds),
+					name), argSorts, !SMTSymbol.PREDEFINED);
+			successfullyAdded = preds.add(symbol);
+			if (successfullyAdded) {
+				return symbol;
+			} else {
+				return null;
+			}
 		}
 	}
 

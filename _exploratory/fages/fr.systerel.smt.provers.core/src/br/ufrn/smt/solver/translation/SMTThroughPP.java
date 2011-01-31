@@ -628,6 +628,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (predSymbol == null) {
 				predSymbol = signature.addPredicateSymbol(MS_PREDICATE_NAME,
 						argSorts);
+				msTypeMap.put(leftType, predSymbol);
 			}
 
 			if (predSymbol == null) {

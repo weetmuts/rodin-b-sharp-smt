@@ -19,7 +19,8 @@ import java.util.Arrays;
 /**
  * 
  */
-public class SMTFunctionSymbol extends SMTSymbol {
+public class SMTFunctionSymbol extends SMTSymbol implements
+		Comparable<SMTFunctionSymbol> {
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). It was chosen
 	 * to distinguish between the result sort and the argument sorts by putting
@@ -76,5 +77,34 @@ public class SMTFunctionSymbol extends SMTSymbol {
 		buffer.append(resultSort);
 		buffer.append(CPAR);
 		return buffer.toString();
+	}
+
+	/**
+	 * This method compares the current function symbol with the given function
+	 * symbol. Its aim is to order them. If they've got the same name, they must
+	 * be ordered in respect with their ranks. Remind that two functions can't
+	 * have two different result sorts if their argument sorts are all the same.
+	 */
+	@Override
+	public int compareTo(final SMTFunctionSymbol symbol) {
+		final int nameComp = name.compareTo(symbol.getName());
+		if (nameComp == 0) {
+			if (argSorts.length < symbol.argSorts.length) {
+				return -1;
+			} else if (argSorts.length > symbol.argSorts.length) {
+				return 1;
+			} else {
+				for (int i = 0; i < argSorts.length; i++) {
+					final int argComp = argSorts[i]
+							.compareTo(symbol.argSorts[i]);
+					if (argComp != 0) {
+						return argComp;
+					}
+				}
+				return 0;
+			}
+		} else {
+			return nameComp;
+		}
 	}
 }

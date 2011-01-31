@@ -19,7 +19,7 @@ import java.util.Arrays;
 /**
  * 
  */
-public class SMTPredicateSymbol extends SMTSymbol {
+public class SMTPredicateSymbol extends SMTSymbol implements Comparable<SMTPredicateSymbol> {
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
 	 * is possible to associate a predicate predicate to the empty sequence
@@ -52,5 +52,56 @@ public class SMTPredicateSymbol extends SMTSymbol {
 		}
 		buffer.append(CPAR);
 		return buffer.toString();
+	}
+
+	@Override
+	public int compareTo(final SMTPredicateSymbol symbol) {
+		final int nameComp = name.compareTo(symbol.getName());
+		if (nameComp == 0) {
+			if (argSorts.length < symbol.argSorts.length) {
+				return -1;
+			} else if (argSorts.length > symbol.argSorts.length) {
+				return 1;
+			} else {
+				for (int i = 0; i < argSorts.length; i++) {
+					final int argComp = argSorts[i]
+							.compareTo(symbol.argSorts[i]);
+					if (argComp != 0) {
+						return argComp;
+					}
+				}
+				return 0;
+			}
+		} else {
+			return nameComp;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(argSorts);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SMTPredicateSymbol other = (SMTPredicateSymbol) obj;
+		if (!Arrays.equals(argSorts, other.argSorts))
+			return false;
+		return true;
 	}
 }
