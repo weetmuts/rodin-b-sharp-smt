@@ -160,7 +160,7 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R)(s ?x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (MS ?x s))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -173,7 +173,7 @@ public class TranslationTests extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R)(s ?x))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (MS ?x s))");
 		/**
 		 * exists (multiple identifiers)
 		 */
