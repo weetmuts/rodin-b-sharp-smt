@@ -12,8 +12,6 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
-import org.eventb.core.ast.Type;
-
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -69,28 +67,34 @@ public final class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public SMTFormula makeEqual(final SMTPredicateSymbol equal, final SMTTerm[] args) {
+	public SMTFormula makeEqual(final SMTPredicateSymbol equal,
+			final SMTTerm[] args) {
 		return new SMTAtom(equal, args);
 	}
 
-	public SMTFormula makeNotEqual(final SMTPredicateSymbol equal, final SMTTerm[] args) {
+	public SMTFormula makeNotEqual(final SMTPredicateSymbol equal,
+			final SMTTerm[] args) {
 		final SMTFormula[] tabEqual = { makeEqual(equal, args) };
 		return makeNot(tabEqual);
 	}
 
-	public SMTFormula makeLesserThan(final SMTPredicateSymbol lt, final SMTTerm[] args) {
+	public SMTFormula makeLesserThan(final SMTPredicateSymbol lt,
+			final SMTTerm[] args) {
 		return new SMTAtom(lt, args);
 	}
 
-	public SMTFormula makeLesserEqual(final SMTPredicateSymbol le, final SMTTerm[] args) {
+	public SMTFormula makeLesserEqual(final SMTPredicateSymbol le,
+			final SMTTerm[] args) {
 		return new SMTAtom(le, args);
 	}
 
-	public SMTFormula makeGreaterThan(final SMTPredicateSymbol gt, final SMTTerm[] args) {
+	public SMTFormula makeGreaterThan(final SMTPredicateSymbol gt,
+			final SMTTerm[] args) {
 		return new SMTAtom(gt, args);
 	}
 
-	public SMTFormula makeGreaterEqual(final SMTPredicateSymbol ge, final SMTTerm[] args) {
+	public SMTFormula makeGreaterEqual(final SMTPredicateSymbol ge,
+			final SMTTerm[] args) {
 		return new SMTAtom(ge, args);
 	}
 
@@ -109,7 +113,8 @@ public final class SMTFactory {
 		return new SMTFunApplication(mul, args);
 	}
 
-	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus, final SMTTerm[] arg) {
+	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
+			final SMTTerm[] arg) {
 		return new SMTFunApplication(uminus, arg);
 	}
 
@@ -193,7 +198,8 @@ public final class SMTFactory {
 
 	/**
 	 * Creates a new boolean constant. {FALSE, TRUE}
-	 * @param trueLogicConstant 
+	 * 
+	 * @param trueLogicConstant
 	 */
 	public SMTTerm makeTrue(SMTFunctionSymbol trueLogicConstant) {
 		return makeConstant(trueLogicConstant);
@@ -211,21 +217,35 @@ public final class SMTFactory {
 		return makeConstant(booleanCste);
 	}
 
-	public SMTTerm makeVar(final String identifier, final Type type) {
-		// FIXME this is not correct
-		return new SMTVar(new SMTVarSymbol(identifier, new SMTSortSymbol(
-				type.toString(), !SMTSymbol.PREDEFINED), !SMTSymbol.PREDEFINED));
+	public SMTTerm makeVar(final String name, final SMTSortSymbol sort) {
+		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 
 	/**
 	 * Creates a new quantified pred.
 	 */
 	public SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
-		return new SMTQuantifiedFormula(FORALL, null, formula);
+		return makeSMTQuantifiedFormula(FORALL, terms, formula);
 	}
 
 	public SMTFormula makeExists(final SMTTerm[] terms, final SMTFormula formula) {
-		return new SMTQuantifiedFormula(EXISTS, null, formula);
+		return makeSMTQuantifiedFormula(EXISTS, terms, formula);
+	}
+
+	public SMTFormula makeSMTQuantifiedFormula(SMTQuantifierSymbol qSymbol,
+			final SMTTerm[] terms, final SMTFormula formula) {
+		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
+		for (int i = 0; i < terms.length; i++) {
+			final SMTTerm term = terms[i];
+			if (term instanceof SMTVar) {
+				final SMTVar var = (SMTVar) term;
+				qVars[i] = var.getSymbol();
+			} else {
+				// TODO throw new exception: this term should be an SMTVar
+				return null;
+			}
+		}
+		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
 	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
