@@ -236,6 +236,14 @@ public abstract class SMTSignature {
 		}
 	}
 
+	public String freshSymbolName(final Set<String> symbolNames, final String name) {
+		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
+			return freshName(symbolNames, NEW_SYMBOL_NAME);
+		} else {
+			return freshName(symbolNames, name);
+		}
+	}
+
 	public SMTSortSymbol freshSort() {
 		return freshSort(NEW_SORT_NAME);
 	}

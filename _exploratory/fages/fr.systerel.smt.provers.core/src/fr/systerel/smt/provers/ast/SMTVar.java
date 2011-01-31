@@ -12,13 +12,17 @@ package fr.systerel.smt.provers.ast;
 
 /**
  * @author guyot
- *
+ * 
  */
 public class SMTVar extends SMTTerm {
 	final SMTVarSymbol symbol;
 
 	public SMTVar(final SMTVarSymbol symbol) {
 		this.symbol = symbol;
+	}
+
+	public SMTVarSymbol getSymbol() {
+		return symbol;
 	}
 
 	@Override
