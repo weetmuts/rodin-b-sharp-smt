@@ -142,14 +142,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-		for (Predicate hypothesis : hypotheses) {
+		for (Predicate hypothesis : ppTranslatedHypotheses) {
 			clearFormula();
 			translatedAssumptions.add(translate(hypothesis));
 		}
 
 		// translates the goal
 		clearFormula();
-		final SMTFormula smtFormula = translate(goal);
+		final SMTFormula smtFormula = translate(ppTranslatedGoal);
 
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
