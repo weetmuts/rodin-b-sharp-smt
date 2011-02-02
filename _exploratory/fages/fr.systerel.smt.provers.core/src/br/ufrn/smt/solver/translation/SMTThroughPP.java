@@ -557,14 +557,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 								// arguments are boolean terms.
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeEqual(signature.getLogic().getEqual(), children);
+			smtNode = sf.makeEqual(
+					signature.getLogic().getEqual(
+							typeMap.get(predicate.getLeft().getType())),
+					children);
 			break;
 		}
 		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf
-					.makeNotEqual(signature.getLogic().getEqual(), children);
+			smtNode = sf.makeNotEqual(
+					signature.getLogic().getEqual(
+							typeMap.get(predicate.getLeft().getType())),
+					children);
 		}
 			break;
 		case Formula.LT: {

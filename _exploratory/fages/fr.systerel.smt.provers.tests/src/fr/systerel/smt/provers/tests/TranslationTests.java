@@ -33,7 +33,7 @@ public class TranslationTests extends AbstractTests {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
 				"v", "BOOL");
-		defaultLogic = SMTLogic.IntsTheory.getInstance();
+		defaultLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -300,7 +300,7 @@ public class TranslationTests extends AbstractTests {
 	 */
 	@Test
 	public void testPredIn() {
-		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "");
+		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
 	}
 
 	/**
@@ -316,9 +316,9 @@ public class TranslationTests extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = TRUE", "(iff u true)");
-		testTranslationV1_2Default("TRUE = u", "(iff true u)");
-		testTranslationV1_2Default("u = v", "(iff u v)");
+		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
+		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
+		testTranslationV1_2Default("u = v", "(= u v)");
 	}
 
 	/**

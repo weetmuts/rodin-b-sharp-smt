@@ -19,6 +19,7 @@ public abstract class SMTSymbol {
 	protected final boolean predefined;
 
 	public static final String INT = "Int";
+	public static final String BOOL = "Bool";
 	public static final String EQUAL = "=";
 	public static final String LT = "<";
 	public static final String LE = "<=";

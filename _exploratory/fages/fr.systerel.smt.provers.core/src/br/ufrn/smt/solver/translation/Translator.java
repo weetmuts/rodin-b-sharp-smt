@@ -74,7 +74,7 @@ public abstract class Translator implements ISimpleVisitor {
 	protected SMTLogic determineLogic() {
 		// TODO implement this method instead of returning the default UFNIA
 		// logic
-		return SMTLogic.IntsTheory.getInstance();
+		return SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
 
 	/**

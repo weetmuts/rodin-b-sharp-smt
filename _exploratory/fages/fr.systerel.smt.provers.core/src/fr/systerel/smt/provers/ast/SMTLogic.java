@@ -75,7 +75,7 @@ public class SMTLogic {
 		return null;
 	}
 
-	public SMTPredicateSymbol getEqual() {
+	public SMTPredicateSymbol getEqual(final SMTSortSymbol sort) {
 		return null;
 	}
 
@@ -114,6 +114,128 @@ public class SMTLogic {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public static class SMTLIBUnderlyingLogic extends SMTLogic {
+		private final static IntsTheory ints = IntsTheory.getInstance();
+		private final static BoolsTheory bools = BoolsTheory.getInstance();
+
+		private static final SMTSortSymbol[] SORTS = new SMTSortSymbol[ints
+				.getSorts().length + bools.getSorts().length];
+		static {
+			System.arraycopy(ints.getSorts(), 0, SORTS, 0,
+					ints.getSorts().length);
+			System.arraycopy(bools.getSorts(), 0, SORTS,
+					ints.getSorts().length, bools.getSorts().length);
+		}
+
+		private static final SMTPredicateSymbol[] PREDICATES = new SMTPredicateSymbol[ints
+				.getPredicates().length + bools.getPredicates().length];
+		static {
+			System.arraycopy(ints.getPredicates(), 0, PREDICATES, 0,
+					ints.getPredicates().length);
+			System.arraycopy(bools.getPredicates(), 0, PREDICATES,
+					ints.getPredicates().length, bools.getPredicates().length);
+		}
+
+		private static final SMTFunctionSymbol[] FUNCTIONS = new SMTFunctionSymbol[ints
+				.getFunctions().length + bools.getFunctions().length];
+		static {
+			System.arraycopy(ints.getFunctions(), 0, FUNCTIONS, 0,
+					ints.getFunctions().length);
+			System.arraycopy(bools.getFunctions(), 0, FUNCTIONS,
+					ints.getFunctions().length, bools.getFunctions().length);
+		}
+
+		private static final SMTLIBUnderlyingLogic INSTANCE = new SMTLIBUnderlyingLogic();
+
+		protected SMTLIBUnderlyingLogic() {
+			super(UNKNOWN, SORTS, PREDICATES, FUNCTIONS);
+		}
+
+		public static SMTLIBUnderlyingLogic getInstance() {
+			return INSTANCE;
+		}
+
+		@Override
+		public SMTSortSymbol getIntegerSort() {
+			return ints.getIntegerSort();
+		}
+
+		@Override
+		public SMTFunctionSymbol getIntegerCste() {
+			return ints.getIntegerCste();
+		}
+
+		@Override
+		public SMTFunctionSymbol getUMinus() {
+			return ints.getUMinus();
+		}
+
+		@Override
+		public SMTFunctionSymbol getPlus() {
+			return ints.getPlus();
+		}
+
+		@Override
+		public SMTFunctionSymbol getMul() {
+			return ints.getMul();
+		}
+
+		@Override
+		public SMTFunctionSymbol getMinus() {
+			return ints.getMinus();
+		}
+
+		@Override
+		public SMTPredicateSymbol getEqual(final SMTSortSymbol sort) {
+			SMTPredicateSymbol equal = ints.getEqual(sort);
+			if (equal != null) {
+				return equal;
+			} else {
+				return bools.getEqual(sort);
+			}
+		}
+
+		@Override
+		public SMTPredicateSymbol getLesserThan() {
+			return ints.getLesserThan();
+		}
+
+		@Override
+		public SMTPredicateSymbol getLesserEqual() {
+			return ints.getLesserEqual();
+		}
+
+		@Override
+		public SMTPredicateSymbol getGreaterThan() {
+			return ints.getGreaterThan();
+		}
+
+		@Override
+		public SMTPredicateSymbol getGreaterEqual() {
+			return ints.getGreaterEqual();
+		}
+
+		@Override
+		public SMTFunctionSymbol getTrue() {
+			return bools.getTrue();
+		}
+
+		@Override
+		public SMTFunctionSymbol getFalse() {
+			return bools.getFalse();
+		}
+
+		@Override
+		public SMTSortSymbol getBooleanSort() {
+			return bools.getBooleanSort();
+		}
+
+		@Override
+		public SMTFunctionSymbol getBooleanCste() {
+			return bools.getBooleanCste();
+		}
 	}
 
 	/**
@@ -219,8 +341,12 @@ public class SMTLogic {
 		}
 
 		@Override
-		public SMTPredicateSymbol getEqual() {
-			return EQUAL;
+		public SMTPredicateSymbol getEqual(final SMTSortSymbol sort) {
+			if (sort.equals(INT)) {
+				return EQUAL;
+			} else {
+				return null;
+			}
 		}
 
 		@Override
@@ -247,8 +373,8 @@ public class SMTLogic {
 	public static class BoolsTheory extends SMTLogic {
 		private static final String BOOLS = "Bools";
 
-		private final static SMTSortSymbol BOOL = new SMTSortSymbol("Bool",
-				PREDEFINED);
+		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
+				SMTSymbol.BOOL, PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { BOOL };
 
 		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL, BOOL };
@@ -261,7 +387,11 @@ public class SMTLogic {
 				"TRUE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
 		private final static SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
 				"FALSE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
+
+		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
+				SMTSymbol.BOOL, EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CSTE, TRUE,
+				FALSE };
 
 		private static final BoolsTheory INSTANCE = new BoolsTheory();
 
@@ -271,6 +401,11 @@ public class SMTLogic {
 
 		public static BoolsTheory getInstance() {
 			return INSTANCE;
+		}
+
+		@Override
+		public SMTFunctionSymbol getBooleanCste() {
+			return BOOL_CSTE;
 		}
 
 		@Override
@@ -284,8 +419,12 @@ public class SMTLogic {
 		}
 
 		@Override
-		public SMTPredicateSymbol getEqual() {
-			return EQUAL;
+		public SMTPredicateSymbol getEqual(final SMTSortSymbol sort) {
+			if (sort.equals(BOOL)) {
+				return EQUAL;
+			} else {
+				return null;
+			}
 		}
 
 		@Override
