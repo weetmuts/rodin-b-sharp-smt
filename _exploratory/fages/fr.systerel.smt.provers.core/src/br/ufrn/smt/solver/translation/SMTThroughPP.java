@@ -85,7 +85,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
-	private ArrayList<String> boundIdentifers;
+	private List<String> boundIdentifers = new ArrayList<String>();
 
 	/**
 	 * This list contains the terms of the current membership being translated

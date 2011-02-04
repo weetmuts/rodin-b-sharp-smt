@@ -165,7 +165,7 @@ public class TranslationTests extends AbstractTests {
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R)(and (s ?x) (s ?y)))");
+				"(forall (?x R) (?y R) (and (MS ?x s) (MS ?y s)))");
 	}
 
 	@Test
@@ -178,7 +178,7 @@ public class TranslationTests extends AbstractTests {
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R)(and (s ?x) (s ?y)))");
+				"(exists (?x R) (?y R) (and (MS ?x s) (MS ?y s)))");
 	}
 
 	/**
