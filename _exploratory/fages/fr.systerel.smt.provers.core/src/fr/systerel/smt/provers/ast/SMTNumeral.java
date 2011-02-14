@@ -36,14 +36,14 @@ public final class SMTNumeral extends SMTTerm {
 
 	@Override
 	public SMTSortSymbol getSort() {
-		return SMTLogic.SMTLIBUnderlyingLogic.getInstance().getIntegerSort();
+		return SMTTheory.Ints.getInstance().getIntegerSort();
 	}
 
 	@Override
 	public void toString(StringBuilder builder) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			builder.append(SMTLogic.SMTLIBUnderlyingLogic.getInstance().getUMinus());
+			builder.append(SMTTheory.Ints.getInstance().getUMinus());
 			builder.append(SPACE);
 			builder.append(value.abs());
 			builder.append(CPAR);

@@ -19,7 +19,8 @@ import java.util.Arrays;
 /**
  * 
  */
-public class SMTPredicateSymbol extends SMTSymbol implements Comparable<SMTPredicateSymbol> {
+public class SMTPredicateSymbol extends SMTSymbol implements
+		Comparable<SMTPredicateSymbol> {
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
 	 * is possible to associate a predicate predicate to the empty sequence
@@ -77,7 +78,9 @@ public class SMTPredicateSymbol extends SMTSymbol implements Comparable<SMTPredi
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -88,7 +91,9 @@ public class SMTPredicateSymbol extends SMTSymbol implements Comparable<SMTPredi
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -103,5 +108,11 @@ public class SMTPredicateSymbol extends SMTSymbol implements Comparable<SMTPredi
 		if (!Arrays.equals(argSorts, other.argSorts))
 			return false;
 		return true;
+	}
+
+	public static class SMTEqual extends SMTPredicateSymbol {
+		public SMTEqual(final SMTSortSymbol sort[]) {
+			super(EQUAL, sort, PREDEFINED);
+		}
 	}
 }

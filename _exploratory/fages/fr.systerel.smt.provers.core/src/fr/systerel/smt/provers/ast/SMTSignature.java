@@ -1,5 +1,11 @@
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
+import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.LOGIC;
+import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.SMTSymbol.THEORY;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,7 +54,7 @@ public abstract class SMTSignature {
 	protected final static String predefinedAttributesSymbols[] = {
 			"assumption", "formula", "status", "logic", "extrasorts",
 			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
-			"definition", "theory", "language", "extensions", "notes" };
+			"definition", THEORY, "language", "extensions", "notes" };
 
 	protected final Set<String> attributeSymbols = new HashSet<String>(
 			Arrays.asList(predefinedAttributesSymbols));
@@ -66,10 +72,10 @@ public abstract class SMTSignature {
 
 	private static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(SMTSymbol.EQUAL, "and", "benchmark", "distinct",
-						"false", "flet", "if_then_else", "iff", "implies",
-						"ite", "let", "logic", "not", "or", "sat", "theory",
-						"true", "unknown", "unsat", "xor"));
+				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
+						"distinct", "false", "flet", "if_then_else", "iff",
+						"implies", "ite", "let", LOGIC, "not", "or", "sat",
+						THEORY, "true", "unknown", "unsat", "xor"));
 		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
 				.getConnectiveSymbols())
 				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
@@ -107,9 +113,9 @@ public abstract class SMTSignature {
 	}
 
 	private void loadLogicSymbols() {
-		sorts.addAll(Arrays.asList(logic.getSorts()));
-		preds.addAll(Arrays.asList(logic.getPredicates()));
-		funs.addAll(Arrays.asList(logic.getFunctions()));
+		sorts.addAll(logic.getSorts());
+		preds.addAll(logic.getPredicates());
+		funs.addAll(logic.getFunctions());
 	}
 
 	/**
@@ -236,12 +242,18 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public String freshSymbolName(final Set<String> symbolNames, final String name) {
+	public String freshSymbolName(final Set<String> symbolNames,
+			final String name) {
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
 			return freshName(symbolNames, NEW_SYMBOL_NAME);
 		} else {
 			return freshName(symbolNames, name);
 		}
+	}
+
+	public SMTFunctionSymbol freshConstant(final String name, final SMTSortSymbol sort) {
+		final String freshName = freshCstName(name);
+		return new SMTFunctionSymbol(freshName, EMPTY_SORT, sort, !ASSOCIATIVE, !PREDEFINED);
 	}
 
 	public SMTSortSymbol freshSort() {
@@ -268,7 +280,7 @@ public abstract class SMTSignature {
 
 	private void logicSection(final StringBuilder sb) {
 		sb.append(" :logic ");
-		sb.append(logic);
+		sb.append(logic.getName());
 		sb.append("\n");
 	}
 
@@ -293,9 +305,8 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public void addConstant(final String name, final SMTSortSymbol sort) {
-		funs.add(new SMTFunctionSymbol(name, SMTFactory.EMPTY_SORT, sort,
-				false, !SMTSymbol.PREDEFINED));
+	public void addConstant(final SMTFunctionSymbol constant) {
+		funs.add(constant);
 	}
 
 	// TODO This method could be improved by calling a method which tells if

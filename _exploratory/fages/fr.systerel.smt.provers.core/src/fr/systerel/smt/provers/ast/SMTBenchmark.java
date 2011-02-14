@@ -11,6 +11,11 @@
 
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
+
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -27,19 +32,13 @@ public class SMTBenchmark {
 	private final SMTFormula goal;
 
 	/**
-	 * Adds the closing format of a benchmark command to the given string
-	 * builder.
-	 */
-	private static void benchmarkCmdClosing(final StringBuilder sb) {
-		sb.append(")");
-	}
-
-	/**
 	 * Adds the opening format of a benchmark command to the given string
 	 * builder.
 	 */
 	private void benchmarkCmdOpening(final StringBuilder sb) {
-		sb.append("(benchmark ");
+		sb.append(OPAR);
+		sb.append(BENCHMARK);
+		sb.append(SPACE);
 		sb.append(name);
 		sb.append("\n");
 	}
@@ -80,7 +79,7 @@ public class SMTBenchmark {
 		sb.append("\n");
 		assumptionsSection(sb);
 		formulaSection(sb);
-		benchmarkCmdClosing(sb);
+		sb.append(CPAR);
 		pw.println(sb.toString());
 	}
 }

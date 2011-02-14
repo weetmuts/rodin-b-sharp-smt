@@ -11,7 +11,6 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * @author guyot
  *
  */
 public abstract class SMTSymbol {
@@ -21,6 +20,7 @@ public abstract class SMTSymbol {
 	public static final String INT = "Int";
 	public static final String BOOL = "Bool";
 	public static final String EQUAL = "=";
+	public static final String NOTEQUAL = "!=";
 	public static final String LT = "<";
 	public static final String LE = "<=";
 	public static final String GT = ">";
@@ -29,6 +29,10 @@ public abstract class SMTSymbol {
 	public static final String MINUS = "-";
 	public static final String PLUS = "+";
 	public static final String MUL = "*";
+
+	public static final String BENCHMARK = "benchmark";
+	public static final String LOGIC = "logic";
+	public static final String THEORY = "theory";
 	
 	public static final boolean PREDEFINED = true;
 

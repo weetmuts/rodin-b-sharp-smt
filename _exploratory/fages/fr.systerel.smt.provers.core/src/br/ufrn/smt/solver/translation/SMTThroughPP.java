@@ -53,10 +53,10 @@ import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
@@ -85,7 +85,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
-	private List<String> boundIdentifers = new ArrayList<String>();
+	private List<BoundIdentDecl> boundIdentifers = new ArrayList<BoundIdentDecl>();
 
 	/**
 	 * This list contains the terms of the current membership being translated
@@ -244,12 +244,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * gets a fresh name for the variable to be typed, adds it to the
 			 * variable names mapping (and adds it to the signature symbols set)
 			 */
-			final String smtVarName;
+			final SMTFunctionSymbol smtConstant;
 			if (!varMap.containsKey(varName)) {
-				smtVarName = signature.freshCstName(varName);
-				varMap.put(varName, smtVarName);
+				smtConstant = signature.freshConstant(varName, smtSortSymbol);
+				varMap.put(varName, smtConstant);
 			} else {
-				smtVarName = varMap.get(varName);
+				smtConstant = varMap.get(varName);
 			}
 
 			/**
@@ -270,33 +270,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * constant (<code>extrafuns</code> SMT-LIB section, with a sort but
 			 * no argument: <code>(x S)</code>).
 			 */
-			signature.addConstant(smtVarName, smtSortSymbol);
+			signature.addConstant(smtConstant);
 		}
 	}
 
 	/**
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
-	// TODO Should we link all the SMT-LIB symbols to the Event-B symbols here?
-	// (+, -, * ...)
 	private void linkLogicSymbols() {
 		final SMTLogic logic = signature.getLogic();
 		final FormulaFactory ff = FormulaFactory.getDefault();
 
-		final SMTSortSymbol integerSort = logic.getIntegerSort();
-		if (integerSort != null) {
-			typeMap.put(ff.makeIntegerType(), integerSort);
-			// else {
-			// Nothing to do because the logic should have been
-			// chosen by scanning the symbols used in the sequent. Then if this
-			// logic doesn't define an integer sort, this means no integer is
-			// used in the sequent.
-		}
-
-		final SMTSortSymbol booleanSort = logic.getBooleanSort();
-		if (booleanSort != null) {
-			typeMap.put(ff.makeBooleanType(), booleanSort);
-		}
+		typeMap.put(ff.makeIntegerType(), logic.getIntegerSort());
+		typeMap.put(ff.makeBooleanType(), logic.getBooleanSort());
 	}
 
 	/**
@@ -384,10 +370,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final int tag = expression.getTag();
 		switch (tag) {
 		case Formula.PLUS:
-			smtNode = sf.makePlus(signature.getLogic().getPlus(), children);
+			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.PLUS), children);
 			break;
 		case Formula.MUL:
-			smtNode = sf.makeMul(signature.getLogic().getMul(), children);
+			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MUL), children);
 			break;
 		default:
 			/**
@@ -423,16 +411,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			smtNode = sf.makeInteger(signature.getLogic().getIntegerCste());
+			// FIXME this uses a set theory
+			// smtNode = sf.makeInteger(signature.getLogic().getIntegerCste());
 			break;
 		case Formula.BOOL:
-			smtNode = sf.makeBool(signature.getLogic().getBooleanCste());
+			// FIXME this uses a set theory
+			// smtNode = sf.makeBool(signature.getLogic().getBooleanCste());
 			break;
 		case Formula.TRUE:
-			smtNode = sf.makeTrue(signature.getLogic().getTrue());
+			// FIXME this is the boolean value true
+			// smtNode = sf.makeTrue(signature.getLogic().getTrue());
 			break;
 		case Formula.FALSE:
-			smtNode = sf.makeFalse(signature.getLogic().getFalse());
+			// FIXME this is the boolean value false
+			// smtNode = sf.makeFalse(signature.getLogic().getFalse());
 			break;
 		default:
 			// TODO check that it's true for KPRED, KSUCC, KPRJ1_GEN, KPRJ2_GEN,
@@ -455,7 +447,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			smtNode = sf.makeMinus(signature.getLogic().getMinus(), children);
+			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MINUS), children);
 			break;
 		case Formula.MAPSTO:
 			if (left.getTag() != Formula.MAPSTO) {
@@ -551,53 +544,44 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		final int tag = predicate.getTag();
 		switch (tag) {
-		case Formula.EQUAL: { // TODO the getEqual method should take the sort
-								// of the arguments, to select the right equal
-								// predicate. For example, the boolean one if
-								// arguments are boolean terms.
+		case Formula.EQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeEqual(
-					signature.getLogic().getEqual(
-							typeMap.get(predicate.getLeft().getType())),
-					children);
+			smtNode = sf.makeEqual(children);
 			break;
 		}
 		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeNotEqual(
-					signature.getLogic().getEqual(
-							typeMap.get(predicate.getLeft().getType())),
-					children);
+			smtNode = sf.makeNotEqual(children);
 		}
 			break;
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLesserThan(signature.getLogic().getLesserThan(),
-					children);
+			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
+					.getOperator(SMTOperator.LT), children);
 		}
 			break;
 		case Formula.LE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLesserEqual(signature.getLogic().getLesserEqual(),
-					children);
+			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.LE), children);
 		}
 			break;
 		case Formula.GT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterThan(signature.getLogic().getGreaterThan(),
-					children);
+			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GT), children);
 		}
 			break;
 		case Formula.GE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterEqual(signature.getLogic()
-					.getGreaterEqual(), children);
+			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GE), children);
 		}
 			break;
 		case Formula.IN:
@@ -660,7 +644,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
-			smtNode = sf.makeUMinus(signature.getLogic().getUMinus(), children);
+			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.UMINUS), children);
 			break;
 		default:
 			/**
@@ -694,30 +679,35 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
+		boundIdentifers.add(boundIdentDecl);
 		final String varName = boundIdentDecl.getName();
-		boundIdentifers.add(varName);
+		final SMTVar smtVar;
 
-		final String smtVarName;
-		if (!varMap.containsKey(varName)) {
-			final Set<String> symbolNames = new HashSet<String>(varMap.values());
-			smtVarName = signature.freshSymbolName(symbolNames, varName);
-			varMap.put(varName, smtVarName);
+		if (!qVarMap.containsKey(varName)) {
+			final Set<String> symbolNames = new HashSet<String>();
+			for (final SMTFunctionSymbol function : varMap.values()) {
+				symbolNames.add(function.getName());
+			}
+			for (final SMTVar var : qVarMap.values()) {
+				symbolNames.add(var.getSymbol().getName());
+			}
+			final String smtVarName = signature.freshSymbolName(symbolNames,
+					varName);
+			final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+			smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
+			qVarMap.put(varName, smtVar);
 		} else {
-			smtVarName = varMap.get(varName);
+			smtVar = qVarMap.get(varName);
 		}
-
-		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		final SMTVar smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
-		qVarMap.put(varName, smtVar);
 
 		smtNode = smtVar;
 	}
 
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		final String name = boundIdentifers.get(boundIdentifers.size()
+		final BoundIdentDecl bid = boundIdentifers.get(boundIdentifers.size()
 				- expression.getBoundIndex() - 1);
-		smtNode = qVarMap.get(name);
+		smtNode = qVarMap.get(bid.getName());
 	}
 
 	/**
@@ -725,11 +715,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		final String smtName = varMap.get(expression.getName());
-		final SMTFunctionSymbol funSymbol = signature.getFunctionSymbol(
-				smtName, SMTFactory.EMPTY_SORT,
-				typeMap.get(expression.getType()));
-		smtNode = sf.makeConstant(funSymbol);
+		smtNode = sf.makeConstant(varMap.get(expression.getName()));
 	}
 
 	@Override
@@ -747,6 +733,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(predicate.getTag());
 		}
+
+		boundIdentifers.clear();
 	}
 
 	@Override

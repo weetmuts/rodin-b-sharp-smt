@@ -67,23 +67,27 @@ public final class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public SMTFormula makeEqual(final SMTPredicateSymbol equal,
-			final SMTTerm[] args) {
-		return new SMTAtom(equal, args);
+	public SMTFormula makeEqual(final SMTTerm[] args) {
+		final SMTSortSymbol sort0 = args[0].getSort();
+		final SMTSortSymbol sort[] = { sort0, sort0 };
+		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
-	public SMTFormula makeNotEqual(final SMTPredicateSymbol equal,
-			final SMTTerm[] args) {
-		final SMTFormula[] tabEqual = { makeEqual(equal, args) };
+	/**
+	 * The SMT-LIB language doesn't define a <code>NOTEQUAL</code> symbol. Thus
+	 * we use <code>EQUAL</code> and <code>NOT</code> symbols to build it.
+	 */
+	public SMTFormula makeNotEqual(final SMTTerm[] args) {
+		final SMTFormula[] tabEqual = { makeEqual(args) };
 		return makeNot(tabEqual);
 	}
 
-	public SMTFormula makeLesserThan(final SMTPredicateSymbol lt,
+	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
 			final SMTTerm[] args) {
 		return new SMTAtom(lt, args);
 	}
 
-	public SMTFormula makeLesserEqual(final SMTPredicateSymbol le,
+	public SMTFormula makeLessEqual(final SMTPredicateSymbol le,
 			final SMTTerm[] args) {
 		return new SMTAtom(le, args);
 	}

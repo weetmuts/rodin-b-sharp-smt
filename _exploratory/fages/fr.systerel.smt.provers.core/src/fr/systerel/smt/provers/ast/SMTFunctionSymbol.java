@@ -36,7 +36,7 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	public static final boolean ASSOCIATIVE = true;
 
-	SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
+	public SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
 			final SMTSortSymbol resultSort, final boolean associative,
 			final boolean predefined) {
 		super(symbolName, predefined);

@@ -20,6 +20,7 @@ import org.eventb.core.ast.Type;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTNode;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
@@ -40,7 +41,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * translation process and SMT-LIB symbol names assigned to them. This map
 	 * is built using an SMT-LIB Signature that provides fresh type names.
 	 */
-	protected HashMap<String, String> varMap = new HashMap<String, String>();
+	protected HashMap<String, SMTFunctionSymbol> varMap = new HashMap<String, SMTFunctionSymbol>();
 
 	public static boolean DEBUG = false;
 
