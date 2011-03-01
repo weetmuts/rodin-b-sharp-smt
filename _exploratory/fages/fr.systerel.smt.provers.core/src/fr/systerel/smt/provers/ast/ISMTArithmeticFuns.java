@@ -15,9 +15,13 @@ package fr.systerel.smt.provers.ast;
  * which define arithmetic SMTFunctionSymbol which string representations are
  * the SMT-LIB symbols "+", "*", "-".
  */
-// FIXME The linear Presburger arithmetic logic given as example in The SMT-LIB
-// Standard V1.2 could not be defined with this interface because its signature
-// is more restrictive: {0, s, +, <}.
+
+/**
+ * The linear Presburger arithmetic logic given as example in The SMT-LIB
+ * Standard V1.2 could not be defined with this interface because its signature
+ * is more restrictive: {0, s, +, <}. But this is not a problem as far as such
+ * logics will not be used.
+ **/
 public interface ISMTArithmeticFuns {
 	public SMTFunctionSymbol getUMinus();
 
