@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AssociativePredicate;
@@ -85,7 +86,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
-	private List<BoundIdentDecl> boundIdentifers = new ArrayList<BoundIdentDecl>();
+	private List<BoundIdentDecl> boundIdentifiers = new ArrayList<BoundIdentDecl>();
+	private Stack<Integer> boundIdentifiersMarker = new Stack<Integer>(); 
 
 	/**
 	 * This list contains the terms of the current membership being translated
@@ -678,8 +680,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
-		boundIdentifers.add(boundIdentDecl);
+	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {		
+		boundIdentifiers.add(boundIdentDecl);		
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
 
@@ -705,7 +707,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		final BoundIdentDecl bid = boundIdentifers.get(boundIdentifers.size()
+		final BoundIdentDecl bid = boundIdentifiers.get(boundIdentifiers.size()
 				- expression.getBoundIndex() - 1);
 		smtNode = qVarMap.get(bid.getName());
 	}
@@ -720,6 +722,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
+		boundIdentifiersMarker.push(boundIdentifiers.size());
+		
 		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
 		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
 
@@ -734,7 +738,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			throw new IllegalTagException(predicate.getTag());
 		}
 
-		boundIdentifers.clear();
+		int top = boundIdentifiersMarker.pop();
+		
+		boundIdentifiers.subList(top,boundIdentifiers.size()).clear();		
 	}
 
 	@Override
