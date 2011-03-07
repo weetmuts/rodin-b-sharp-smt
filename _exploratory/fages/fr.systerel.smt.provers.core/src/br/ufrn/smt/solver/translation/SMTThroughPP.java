@@ -86,7 +86,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
-	private List<BoundIdentDecl> boundIdentifiers = new ArrayList<BoundIdentDecl>();
+	private List<String> boundIdentifiers = new ArrayList<String>();
 	private Stack<Integer> boundIdentifiersMarker = new Stack<Integer>(); 
 
 	/**
@@ -681,35 +681,37 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {		
-		boundIdentifiers.add(boundIdentDecl);		
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
+		
+		final Set<String> symbolNames = new HashSet<String>();
+		for (final SMTFunctionSymbol function : varMap.values()) {
+			symbolNames.add(function.getName());
+		}
+		for (final SMTVar var : qVarMap.values()) {
+			symbolNames.add(var.getSymbol().getName());
+		}
+		final String smtVarName = signature.freshSymbolName(symbolNames,
+				varName);
+		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 
 		if (!qVarMap.containsKey(varName)) {
-			final Set<String> symbolNames = new HashSet<String>();
-			for (final SMTFunctionSymbol function : varMap.values()) {
-				symbolNames.add(function.getName());
-			}
-			for (final SMTVar var : qVarMap.values()) {
-				symbolNames.add(var.getSymbol().getName());
-			}
-			final String smtVarName = signature.freshSymbolName(symbolNames,
-					varName);
-			final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-			smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 			qVarMap.put(varName, smtVar);
+			boundIdentifiers.add(varName);
 		} else {
-			smtVar = qVarMap.get(varName);
-		}
-
+			qVarMap.put(smtVarName, smtVar);			
+			//smtVar = qVarMap.get(varName);
+			boundIdentifiers.add(smtVarName);
+		}		
 		smtNode = smtVar;
 	}
 
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
-		final BoundIdentDecl bid = boundIdentifiers.get(boundIdentifiers.size()
+		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
 				- expression.getBoundIndex() - 1);
-		smtNode = qVarMap.get(bid.getName());
+		smtNode = qVarMap.get(bidName);
 	}
 
 	/**
