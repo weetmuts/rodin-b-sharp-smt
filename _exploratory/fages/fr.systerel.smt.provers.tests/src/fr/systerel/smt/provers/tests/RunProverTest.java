@@ -12,6 +12,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -75,7 +77,7 @@ public class RunProverTest extends AbstractTests {
 		}
 
 		final Predicate goal = parse(inputGoal, te);
-
+		
 		doTest(lemmaName, hypotheses, goal, expectedSolverResult);
 	}
 
@@ -220,7 +222,21 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	@Test
-	public void testSolverCallBelong2() {
+	public void testSolverCallSimpleU() {
+		// Set preferences to test with VeriT
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("a ∈ A");
+
+		// perform test
+		doTest("simpleU", hyps, "⊤", te, VALID);
+	}
+
+	@Test
+	public void testSolverCallBelong3() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
 
@@ -235,7 +251,7 @@ public class RunProverTest extends AbstractTests {
 		hyps.add("a↦b↦d ∈ s");
 
 		// perform test
-		doTest("belong_2", hyps, "⊤", te, VALID);
+		doTest("belong_3", hyps, "⊤", te, VALID);
 	}
 
 	@Test
@@ -391,6 +407,85 @@ public class RunProverTest extends AbstractTests {
 
 		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
 	}
+	
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 * 
+	 */
+	@Test
+	public void testCh7LikeEvenSimpler() {
+		setPreferencesForZ3Test();
+		//setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		//hyps.add("n ≥ 1");
+
+		doTest("ch7_likeEvenSimpler", hyps,
+				"A×B ⊆ ℕ×ℕ",
+				te, !VALID);
+	}
+	
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 * 
+	 */
+	@Test
+	public void testCh7LikeMoreSimpleYet() {
+		setPreferencesForZ3Test();
+		//setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		//hyps.add("n ≥ 1");
+
+		doTest("ch7_likeMoreSimpleYet", hyps,
+				"{0 ↦ d} ∈ ({0,1} →  D)",
+				te, !VALID);
+	}
+	
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 */
+	@Test
+	public void testCh7LikeSimple() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("ch7_likeSimple", hyps,
+				"{1 ↦ {0 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+	
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 */
+	@Test
+	public void testCh7LikeConc() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		//hyps.add("n ≥ 1");
+
+		doTest("ch7_likeconc", hyps,
+				"{1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+
 
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
@@ -415,6 +510,7 @@ public class RunProverTest extends AbstractTests {
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
 	 */
+	@Ignore("Running forever")  // FIXME put back later
 	@Test
 	public void testBepiColombo3() {
 		setPreferencesForAltErgoTest();

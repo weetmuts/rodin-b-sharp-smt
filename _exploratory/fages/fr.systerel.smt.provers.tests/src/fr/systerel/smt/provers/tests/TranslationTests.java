@@ -4,14 +4,17 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.tests;
 
+import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
@@ -31,8 +34,8 @@ public class TranslationTests extends AbstractTests {
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
-				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL",
-				"v", "BOOL");
+				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
+				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 		defaultLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
 
@@ -166,6 +169,19 @@ public class TranslationTests extends AbstractTests {
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
 				"(forall (?x R) (?y R) (and (MS ?x s) (MS ?y s)))");
+		/**
+		 * forall (multiple identifiers)
+		 */
+		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
+				"∀x,y·x∈s ∧ y∈s", defaultTe);
+		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
+		bids[1] = bids[0];
+		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
+				base.getPredicate(), null);
+		// System.out.println("Predicate " + p);
+		testTranslationV1_2(p,
+				"(forall (?x R) (?x_0 R) (and (MS ?x s) (MS ?x_0 s)))",
+				"twice same decl");
 	}
 
 	@Test
@@ -297,11 +313,17 @@ public class TranslationTests extends AbstractTests {
 
 	/**
 	 * "pred-in"
+	 * This test should not happen with ppTrans;
+	 * The
 	 */
-	@Test
-	public void testPredIn() {
-		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
-	}
+	
+//	@Test
+//	public void testPredIn() {
+//		//testTranslationV1_2Default("a ∈ A", "(MS a A)");
+//		//testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
+//		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
+//		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
+//	}
 
 	/**
 	 * "pred-setequ"
@@ -316,9 +338,9 @@ public class TranslationTests extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
+		testTranslationV1_2Default("u = v", "(= u v)");
 		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
 		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
-		testTranslationV1_2Default("u = v", "(= u v)");
 	}
 
 	/**
