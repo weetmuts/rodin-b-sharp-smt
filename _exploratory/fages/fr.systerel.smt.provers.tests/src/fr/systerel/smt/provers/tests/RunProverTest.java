@@ -78,6 +78,7 @@ public class RunProverTest extends AbstractTests {
 
 		final Predicate goal = parse(inputGoal, te);
 		
+
 		doTest(lemmaName, hypotheses, goal, expectedSolverResult);
 	}
 
@@ -208,6 +209,26 @@ public class RunProverTest extends AbstractTests {
 	private static void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
 	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple", hyps,
+				"{1 ↦ {0}} ∈ {1} → {{0}}",
+				te, VALID);
+	}
+	
+	
+	
 
 	@Test
 	public void testSolverCallBelong1() {
@@ -222,6 +243,10 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	@Test
+	/**
+	 * This test is related to the 'Empty' problem, which declares the sort U.
+	 * This problem belongs to SMT-Solvers.
+	 */
 	public void testSolverCallSimpleU() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -236,6 +261,10 @@ public class RunProverTest extends AbstractTests {
 	}
 
 	@Test
+	/**
+	 * This test is related to the 'Empty' problem, which declares the sort U.
+	 * This problem belongs to SMT-Solvers.
+	 */
 	public void testSolverCallBelong3() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -450,6 +479,23 @@ public class RunProverTest extends AbstractTests {
 	}
 	
 	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForall() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForall", hyps,
+				"{1 ↦ {0 ↦ d}} ∈ {1} → ({0} →  D)",
+				te, VALID);
+	}
+	
+	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
 	 */
@@ -505,15 +551,62 @@ public class RunProverTest extends AbstractTests {
 				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
+	
+	@Test
+	public void testBepiColombo3Mini() {
+		setPreferencesForAltErgoTest();
 
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("TC = {3 ↦ 5}");
+		hyps.add("TM = {1 ↦ 1}");
+
+		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
+	}
+	
+	@Ignore("Takes too much time with AltErgo")
+	@Test
+	public void testBepiColombo3Medium() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}");
+		hyps.add("TM = {1 ↦ 1}");
+
+		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
+	}
+	
+	@Test
+	public void testBepiColombo3Medium2() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6}");
+		hyps.add("TM = ∅");
+
+		doTest("bepi_colombo3Medium2", hyps, "TC ∩ TM = ∅", te, VALID);
+	}
+	
 	/**
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
-	 */
-	@Ignore("Running forever")  // FIXME put back later
+	 * 
+	 * The testBepiColombo3 doesn't run forever. 
+	 * It's because the alt-ergo solver takes too much time to prove. 
+	 * The translation is very fast, and the other solvers prove this problem in a much shorter time.
+	 *  
+	 */	
 	@Test
 	public void testBepiColombo3() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
