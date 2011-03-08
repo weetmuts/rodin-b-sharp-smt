@@ -13,6 +13,7 @@ package br.ufrn.smt.solver.translation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,12 +30,15 @@ import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.IAccumulator;
+import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerLiteral;
@@ -132,8 +136,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final PPProof ppProof = ppTranslation(hypotheses, goal);
 		final List<Predicate> ppTranslatedHypotheses = ppProof
 				.getTranslatedHypotheses();
-		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
-
+		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();		
+		
 		final SMTLogic logic = determineLogic();
 
 		/**
@@ -141,7 +145,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		// translates the signature
 		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
-
+		
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 		for (Predicate hypothesis : ppTranslatedHypotheses) {
@@ -198,6 +202,31 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		predicate.accept(this);
 		return getSMTFormula();
 	}
+	
+	class SMTFormulaInspector extends DefaultInspector<Type>
+	{
+		@Override
+		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
+			accumulator.add(decl.getType());
+		}
+	}	
+	
+	/**
+	*	This method takes a copy of the BoundIdentDecl types in the hypotheses and goal
+	*/
+	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal )
+	{
+		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new SMTFormulaInspector();
+		final List<Type> typesFound = new ArrayList<Type>();	
+		for(Predicate p : hypotheses)
+		{
+			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
+		}		
+		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
+		
+		return typesFound;		
+	}	
+	
 
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
@@ -274,6 +303,41 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 */
 			signature.addConstant(smtConstant);
 		}
+				
+		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
+		
+		Iterator<Type> bIterator = biTypes.iterator();		
+		
+		while (bIterator.hasNext()) {
+			
+			final Type varType = bIterator.next();
+
+			/**
+			 * translates the type into an SMT-LIB sort, adds it to the types
+			 * mapping (and adds it to the signature sort symbols set)
+			 */
+			final SMTSortSymbol smtSortSymbol;
+			if (!typeMap.containsKey(varType)) {
+				smtSortSymbol = translateTypeName(varType);
+				typeMap.put(varType, smtSortSymbol);
+			} else {
+				smtSortSymbol = typeMap.get(varType);
+			}
+
+			/**
+			 * do the same for each base type used to define this type into an
+			 * SMT-LIB sort
+			 */
+			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
+					varType);
+			for (final Type baseType : baseTypes) {
+				if (!typeMap.containsKey(baseType)) {
+					final SMTSortSymbol baseSort = translateTypeName(baseType);
+					typeMap.put(baseType, baseSort);
+				}
+			}
+		}
+		
 	}
 
 	/**
@@ -695,7 +759,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
 		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
-
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);
