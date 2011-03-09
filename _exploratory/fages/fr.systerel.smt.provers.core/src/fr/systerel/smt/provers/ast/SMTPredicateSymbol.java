@@ -21,17 +21,35 @@ import java.util.Arrays;
  */
 public class SMTPredicateSymbol extends SMTSymbol implements
 		Comparable<SMTPredicateSymbol> {
+	public SMTSortSymbol[] getArgSorts() {
+		return argSorts;
+	}
+
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
 	 * is possible to associate a predicate predicate to the empty sequence
 	 * rank, denoting that the predicate is a propositional predicate.
 	 */
 	final private SMTSortSymbol[] argSorts;
+	
+	final private boolean isN_ARY;	
 
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
+		this.isN_ARY = false;
+	}
+	
+	public SMTPredicateSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[], final boolean predefined, boolean isN_ARY) {
+		super(symbolName, predefined);
+		this.argSorts = argSorts.clone();
+		this.isN_ARY = isN_ARY ;
+	}
+
+	public boolean isN_ARY() {
+		return isN_ARY;
 	}
 
 	public boolean isPropositional() {

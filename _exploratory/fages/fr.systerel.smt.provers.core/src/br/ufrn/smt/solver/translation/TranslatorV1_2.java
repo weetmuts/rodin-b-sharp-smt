@@ -25,7 +25,7 @@ import fr.systerel.smt.provers.ast.SMTTerm;
 /**
  * This class is a translator from Event-B syntax into SMT-LIB syntax.
  */
-public abstract class TranslatorV1_2 extends Translator {
+public abstract class TranslatorV1_2 extends Translator {	
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
 	 * benchmark's signature, that is, free identifiers and given types.
@@ -37,7 +37,7 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 		for (GivenType type : predicate.getGivenTypes()) {
 			typeEnvironment.addGivenSet(type.getName());
-		}
+		}				
 	}
 
 	/**

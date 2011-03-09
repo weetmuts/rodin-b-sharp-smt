@@ -11,6 +11,7 @@
 
 package br.ufrn.smt.solver.translation;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,6 +25,20 @@ public class TranslationException extends Exception {
 		super();
 		this.causes = causes;
 	}
+	
+	public TranslationException(){
+		this.causes = new HashMap<String, String>();
+	}
+	
+	
+	public void addCauses(Map<String, String> causes ){
+		this.causes.putAll(causes);
+	}
+	
+	public Map<String,String> getCauses(){
+		return causes;
+	}
+	
 
 	@Override
 	public String getMessage() {

@@ -35,6 +35,9 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	final private boolean associative;
 
 	public static final boolean ASSOCIATIVE = true;
+	
+	private final boolean isN_ARY;	
+	
 
 	public SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
 			final SMTSortSymbol resultSort, final boolean associative,
@@ -44,6 +47,18 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		// Must not be null
 		this.resultSort = resultSort;
 		this.associative = associative;
+		isN_ARY = false;
+	}
+	
+	public SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
+			final SMTSortSymbol resultSort, final boolean associative,
+			final boolean predefined, boolean isN_ARY) {
+		super(symbolName, predefined);
+		this.argSorts = argSorts.clone();
+		// Must not be null
+		this.resultSort = resultSort;
+		this.associative = associative;
+		this.isN_ARY = isN_ARY;
 	}
 
 	/**
@@ -52,6 +67,14 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 */
 	public boolean isConstant() {
 		return argSorts.length == 0;
+	}
+	
+	public boolean isN_ARY() {
+		return isN_ARY;
+	}
+
+	public SMTSortSymbol[] getArgSorts() {
+		return argSorts;
 	}
 
 	public SMTSortSymbol getResultSort() {

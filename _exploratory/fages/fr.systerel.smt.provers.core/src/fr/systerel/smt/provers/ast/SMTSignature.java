@@ -8,10 +8,14 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.THEORY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import br.ufrn.smt.solver.translation.TranslationException;
 
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
@@ -52,9 +56,9 @@ public abstract class SMTSignature {
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
 	protected final static String predefinedAttributesSymbols[] = {
-			"assumption", "formula", "status", "logic", "extrasorts",
-			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
-			"definition", THEORY, "language", "extensions", "notes" };
+		"assumption", "formula", "status", "logic", "extrasorts",
+		"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
+		"definition", THEORY, "language", "extensions", "notes" };
 
 	protected final Set<String> attributeSymbols = new HashSet<String>(
 			Arrays.asList(predefinedAttributesSymbols));
@@ -68,6 +72,133 @@ public abstract class SMTSignature {
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
 		loadLogicSymbols();
+	}
+
+	public boolean verifySortCompatibilityInPredicate(
+			final SMTPredicateSymbol pSymbol, final SMTTerm[] args)
+	throws TranslationException {
+		if (pSymbol.getName().equals(SMTFactory.PTRUE.getName())
+				|| pSymbol.getName().equals(SMTFactory.PFALSE.getName())) {
+			if (pSymbol.getArgSorts().length == 0) {
+				return true;
+			}
+		}
+		for (SMTPredicateSymbol predicateSymbol : this.preds) {
+			if (pSymbol.getName().equals(predicateSymbol.getName())) {
+				if (predicateSymbol.isN_ARY()) {
+					for (int i = 0; i < args.length; i++) {
+						if (!predicateSymbol.getArgSorts()[0].getName().equals(
+								args[i].getSort().getName())) {
+							Map<String, String> cause = new HashMap<String, String>();
+							cause.put(
+									"Predicate: "
+									+ predicateSymbol.getArgSorts()[0]
+									                                .getName(),
+									                                "Sort "
+									                                + args[i].getSort().getName()
+									                                + "does not match "
+									                                + predicateSymbol.getArgSorts()[i]
+									                                                                .getName());
+							throw new TranslationException(cause);
+						}
+					}
+					return true;
+				}
+				if (predicateSymbol.getArgSorts().length == args.length) {
+					for (int i = 0; i < args.length; i++) {
+						if (!predicateSymbol.getArgSorts()[i].getName().equals(
+								args[i].getSort().getName())) {
+							Map<String, String> cause = new HashMap<String, String>();
+							cause.put(
+									"Predicate: "
+									+ predicateSymbol.getArgSorts()[i]
+									                                .getName(),
+									                                "Sort "
+									                                + args[i].getSort().getName()
+									                                + "does not match "
+									                                + predicateSymbol.getArgSorts()[i]
+									                                                                .getName());
+							throw new TranslationException(cause);
+
+						}
+					}
+					return true;
+				} else {
+					continue;
+//					Map<String, String> cause = new HashMap<String, String>();
+//					cause.put("Predicate: " + predicateSymbol.getName(),
+//					"The number of arguments does not match with the signature");
+//					throw new TranslationException(cause);
+				}
+			}
+
+		}
+		Map<String, String> cause = new HashMap<String, String>();
+		cause.put("Predicate: " + pSymbol.getName(),
+		"This predicate is not declared in the signature");
+		throw new TranslationException(cause);
+	}
+
+	public boolean verifySortCompatibilityInFunction(
+			final SMTFunctionSymbol fSymbol, final SMTTerm[] args)
+	throws TranslationException {
+		for (SMTFunctionSymbol functionSymbol : this.funs) {
+			if (fSymbol.getName().equals(functionSymbol.getName())) {
+				if (functionSymbol.isN_ARY()) {
+					for (int i = 0; i < args.length; i++) {
+						if (!functionSymbol.getArgSorts()[0].getName().equals(
+								args[i].getSort().getName())) {
+							Map<String, String> cause = new HashMap<String, String>();
+							cause.put(
+									"Predicate: "
+									+ functionSymbol.getArgSorts()[0]
+									                               .getName(),
+									                               "Sort "
+									                               + args[i].getSort().getName()
+									                               + "does not match "
+									                               + functionSymbol.getArgSorts()[i]
+									                                                              .getName());
+							
+							
+							
+							
+							throw new TranslationException(cause);
+						}
+					}
+					return true;
+				} else if (functionSymbol.getArgSorts().length == args.length) {
+					for (int i = 0; i < args.length; i++) {
+						if (!functionSymbol.getArgSorts()[i].getName().equals(
+								args[i].getSort().getName())) {
+							Map<String, String> cause = new HashMap<String, String>();
+							cause.put(
+									"Predicate: "
+									+ functionSymbol.getArgSorts()[i]
+									                               .getName(),
+									                               "Sort "
+									                               + args[i].getSort().getName()
+									                               + "does not match "
+									                               + functionSymbol.getArgSorts()[i]
+									                                                              .getName());
+							throw new TranslationException(cause);
+						}
+					}
+					return true;
+				} else {
+					continue;
+//					Map<String, String> cause = new HashMap<String, String>();
+//					cause.put("Predicate: " + fSymbol.getName(),
+//					"The number of arguments does not match with the signature");
+//					throw new TranslationException(cause);
+				}
+
+			}
+
+		}
+		Map<String, String> cause = new HashMap<String, String>();
+		cause.put("Predicate: " + fSymbol.getName(),
+		"This predicate is not declared in the signature");
+		throw new TranslationException(cause);
 	}
 
 	private static Set<String> getReservedSymbolsAndKeywords() {
@@ -251,9 +382,11 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public SMTFunctionSymbol freshConstant(final String name, final SMTSortSymbol sort) {
+	public SMTFunctionSymbol freshConstant(final String name,
+			final SMTSortSymbol sort) {
 		final String freshName = freshCstName(name);
-		return new SMTFunctionSymbol(freshName, EMPTY_SORT, sort, !ASSOCIATIVE, !PREDEFINED);
+		return new SMTFunctionSymbol(freshName, EMPTY_SORT, sort, !ASSOCIATIVE,
+				!PREDEFINED);
 	}
 
 	public SMTSortSymbol freshSort() {

@@ -81,14 +81,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/* The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	private SMTThroughVeriT(Predicate predicate) {
-		freeIdentifiers = new ArrayList<String>();
-		boundIdentifers = new ArrayList<String>();
-		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
-			this.freeIdentifiers.add(ident.getName());
-		}
-	}
-
 	protected SMTThroughVeriT(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
@@ -278,10 +270,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
-			this.smtNode = sf.makePTrue(); // FIXME Use boolean value when BOOL theory implemented
+		//	this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean value when BOOL theory implemented
 			break;
 		case Formula.FALSE:
-			this.smtNode = sf.makePFalse();
+		//	this.smtNode = sf.makePFalse(this.signature); // FIXME Use boolean value when BOOL theory implemented
 			break;
 		// FIXME Must be put in the SMTSignature
 		/*

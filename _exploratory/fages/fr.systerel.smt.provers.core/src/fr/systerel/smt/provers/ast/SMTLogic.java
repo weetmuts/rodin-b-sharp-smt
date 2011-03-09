@@ -228,7 +228,7 @@ public class SMTLogic {
 			return INSTANCE;
 		}
 	}
-
+	
 	// FIXME provers seems to be unable to use predefined logics
 	public static class UFNIA extends SMTLIBUnderlyingLogic {
 		private static final String UFNIA = "UFNIA";

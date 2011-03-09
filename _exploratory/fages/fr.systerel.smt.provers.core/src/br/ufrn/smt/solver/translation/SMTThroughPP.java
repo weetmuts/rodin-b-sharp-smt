@@ -87,7 +87,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * symbols.
 	 */
 	protected final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
-
+	
+	TranslationException translationErrors = new TranslationException();
+	
+	
+	
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
 	private List<String> boundIdentifiers = new ArrayList<String>();
@@ -115,20 +119,23 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the goal of the Event-B sequent
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
+	 * @throws TranslationException 
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal) {
-		return new SMTThroughPP().translate(lemmaName, hypotheses, goal);
+			final Predicate goal) throws TranslationException {
+		SMTBenchmark smtB = new SMTThroughPP().translate(lemmaName, hypotheses, goal); 
+		return smtB; 
 	}
 
 	/**
 	 * This is the translation method for the ppTrans approach of SMT
 	 * translation.
+	 * @throws TranslationException 
 	 */
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal) {
+			final List<Predicate> hypotheses, final Predicate goal) throws TranslationException {
 
 		/**
 		 * PP translation
@@ -197,9 +204,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	/**
 	 * This method translates the given predicate into an SMT Formula.
+	 * @throws TranslationException 
 	 */
-	private SMTFormula translate(final Predicate predicate) {
+	private SMTFormula translate(final Predicate predicate) throws TranslationException {
 		predicate.accept(this);
+		if(!this.translationErrors.getCauses().isEmpty())
+		{
+			throw this.translationErrors;
+		}			
 		return getSMTFormula();
 	}
 	
@@ -436,12 +448,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final int tag = expression.getTag();
 		switch (tag) {
 		case Formula.PLUS:
-			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.PLUS), children);
+			try {
+				smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.PLUS), children,signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 			break;
 		case Formula.MUL:
-			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MUL), children);
+			try {
+				smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MUL), children,signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 			break;
 		default:
 			/**
@@ -513,8 +535,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MINUS), children);
+			try {
+				smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MINUS), children,signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
+			
 			break;
 		case Formula.MAPSTO:
 			if (left.getTag() != Formula.MAPSTO) {
@@ -593,10 +621,18 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitLiteralPredicate(final LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
-			smtNode = sf.makePTrue();
+			try {
+				smtNode = sf.makePTrue(this.signature);
+			} catch (TranslationException e) {
+				translationErrors.addCauses(e.getCauses());
+			}
 			break;
 		case Formula.BFALSE:
-			smtNode = sf.makePFalse();
+			try {
+				smtNode = sf.makePFalse(this.signature);
+			} catch (TranslationException e) {
+				translationErrors.addCauses(e.getCauses());
+			}
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -625,29 +661,47 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
-					.getOperator(SMTOperator.LT), children);
+			try {
+				smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
+						.getOperator(SMTOperator.LT), children,this.signature);
+			} catch (TranslationException e) {
+				translationErrors.addCauses(e.getCauses());
+			}
 		}
 			break;
 		case Formula.LE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.LE), children);
+			try {
+				smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.LE), children,this.signature);
+			} catch (TranslationException e) {
+				translationErrors.addCauses(e.getCauses());
+			}
 		}
 			break;
 		case Formula.GT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GT), children);
+			try {
+				smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GT), children,this.signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 		}
 			break;
 		case Formula.GE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GE), children);
+			try {
+				smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GE), children,this.signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 		}
 			break;
 		case Formula.IN:
@@ -687,7 +741,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] args = membershipPredicateTerms
 					.toArray(new SMTTerm[numberOfArguments]);
 
-			smtNode = sf.makeAtom(predSymbol, args);
+			try {
+				smtNode = sf.makeAtom(predSymbol, args,this.signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 			membershipPredicateTerms.clear();
 			break;
 		case Formula.NOTIN:
@@ -710,8 +769,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
-			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.UMINUS), children);
+			try {
+				smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.UMINUS), children,signature);
+			} catch (TranslationException e) {
+				// TODO Auto-generated catch block
+				translationErrors.addCauses(e.getCauses());
+			}
 			break;
 		default:
 			/**
@@ -782,7 +846,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		smtNode = sf.makeConstant(varMap.get(expression.getName()));
+		try {
+			smtNode = sf.makeConstant(varMap.get(expression.getName()),this.signature);
+		} catch (TranslationException e) {
+			translationErrors.addCauses(e.getCauses());
+		}
 	}
 
 	@Override
