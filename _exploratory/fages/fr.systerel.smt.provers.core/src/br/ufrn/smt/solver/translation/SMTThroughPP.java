@@ -99,10 +99,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	// FIXME Seems to be unsafe, to be deleted if possible
 	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
-	/**
-	 * This constant is used to name membership predicates.
-	 */
-	protected final static String MS_PREDICATE_NAME = "MS";
 
 	/**
 	 * This is the public translation method
@@ -684,8 +680,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
 			if (predSymbol == null) {
-				predSymbol = signature.addPredicateSymbol(MS_PREDICATE_NAME,
-						argSorts);
+				predSymbol = signature.addPredicateSymbol(
+						signature.freshPredName(), argSorts);
 				msTypeMap.put(leftType, predSymbol);
 			}
 

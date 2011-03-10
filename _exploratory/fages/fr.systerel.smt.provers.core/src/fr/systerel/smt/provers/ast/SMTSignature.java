@@ -352,6 +352,18 @@ public abstract class SMTSignature {
 		return null;
 	}
 
+	/**
+	 * This constant is used to name membership predicates.
+	 */
+	protected final static String MS_PREDICATE_NAME = "MS";
+
+	public String freshPredName() {
+		Set<String> names = new HashSet<String>();
+		names.addAll(getSymbolNames(funs));
+		names.addAll(getSymbolNames(preds));
+		return freshName(names, MS_PREDICATE_NAME);
+	}
+
 	public String freshCstName(final String name) {
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
 			return freshName(getSymbolNames(funs), NEW_SYMBOL_NAME);
