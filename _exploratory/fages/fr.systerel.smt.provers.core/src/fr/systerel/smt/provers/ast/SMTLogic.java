@@ -19,6 +19,8 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.THEORY;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
+
 /**
  * The SMT logics.
  */
@@ -88,7 +90,7 @@ public class SMTLogic {
 		}
 		return functions;
 	}
-	
+
 	public final SMTSortSymbol getIntegerSort() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof ISMTIntegerSort) {
@@ -99,12 +101,15 @@ public class SMTLogic {
 	}
 
 	public SMTSortSymbol getBooleanSort() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof ISMTBooleanSort) {
-				return ((ISMTBooleanSort) theory).getBooleanSort();
-			}
-		}
-		return null;
+		// for (final SMTTheory theory : theories) {
+		// if (theory instanceof ISMTBooleanSort) {
+		// return ((ISMTBooleanSort) theory).getBooleanSort();
+		// }
+		// }
+
+		// FIXME: It's temporary, just for verification of function and
+		// predicate ranks! It's necessary to add the Boolean Theory later.
+		return Booleans.getInstance().getBooleanSort();
 	}
 
 	public final SMTSymbol getOperator(final SMTOperator operator) {
@@ -182,14 +187,9 @@ public class SMTLogic {
 	 * This class represents SMT operators.
 	 */
 	public static enum SMTOperator {
-		GE(SMTSymbol.GE),
-		GT(SMTSymbol.GT),
-		LE(SMTSymbol.LE),
-		LT(SMTSymbol.LT),
-		MINUS(SMTSymbol.MINUS),
-		MUL(SMTSymbol.MUL),
-		PLUS(SMTSymbol.PLUS),
-		UMINUS(SMTSymbol.UMINUS);
+		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
+				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
+				SMTSymbol.UMINUS);
 
 		private String symbol;
 
@@ -228,7 +228,7 @@ public class SMTLogic {
 			return INSTANCE;
 		}
 	}
-	
+
 	// FIXME provers seems to be unable to use predefined logics
 	public static class UFNIA extends SMTLIBUnderlyingLogic {
 		private static final String UFNIA = "UFNIA";

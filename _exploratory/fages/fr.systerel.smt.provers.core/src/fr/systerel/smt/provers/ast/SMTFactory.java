@@ -12,8 +12,6 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
-import br.ufrn.smt.solver.translation.TranslationException;
-
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -85,51 +83,53 @@ public final class SMTFactory {
 	}
 
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
-			final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInPredicate(lt, args);		
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyPredicateSignature(lt);
 		return new SMTAtom(lt, args);
 	}
 
 	public SMTFormula makeLessEqual(final SMTPredicateSymbol le,
-			final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInPredicate(le, args);
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyPredicateSignature(le);
 		return new SMTAtom(le, args);
 	}
 
 	public SMTFormula makeGreaterThan(final SMTPredicateSymbol gt,
-			final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInPredicate(gt, args);
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyPredicateSignature(gt);
 		return new SMTAtom(gt, args);
 	}
 
 	public SMTFormula makeGreaterEqual(final SMTPredicateSymbol ge,
-			final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInPredicate(ge, args);
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyPredicateSignature(ge);
 		return new SMTAtom(ge, args);
 	}
 
 	/**
 	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
-	 * @throws TranslationException 
 	 */
-	public SMTTerm makePlus(final SMTFunctionSymbol plus, final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInFunction(plus, args);
+	public SMTTerm makePlus(final SMTFunctionSymbol plus, final SMTTerm[] args,
+			SMTSignature signature) {
+		signature.verifyFunctionSignature(plus);
 		return new SMTFunApplication(plus, args);
 	}
 
-	public SMTTerm makeMinus(final SMTFunctionSymbol minus, final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInFunction(minus, args);
+	public SMTTerm makeMinus(final SMTFunctionSymbol minus,
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyFunctionSignature(minus);
 		return new SMTFunApplication(minus, args);
 	}
 
-	public SMTTerm makeMul(final SMTFunctionSymbol mul, final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInFunction(mul, args);
+	public SMTTerm makeMul(final SMTFunctionSymbol mul, final SMTTerm[] args,
+			SMTSignature signature) {
+		signature.verifyFunctionSignature(mul);
 		return new SMTFunApplication(mul, args);
 	}
 
 	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
-			final SMTTerm[] arg,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInFunction(uminus, arg);
+			final SMTTerm[] arg, SMTSignature signature) {
+		signature.verifyFunctionSignature(uminus);
 		return new SMTFunApplication(uminus, arg);
 	}
 
@@ -202,35 +202,37 @@ public final class SMTFactory {
 
 	/**
 	 * Creates a new propositional atom. {, }
-	 * @throws TranslationException 
 	 */
-	public SMTFormula makePTrue(SMTSignature signature) throws TranslationException {
-		return makePropAtom(PTRUE,signature);
+	public SMTFormula makePTrue(SMTSignature signature) {
+		return makePropAtom(PTRUE, signature);
 	}
 
-	public SMTFormula makePFalse(SMTSignature signature) throws TranslationException {
-		return makePropAtom(PFALSE,signature);
+	public SMTFormula makePFalse(SMTSignature signature) {
+		return makePropAtom(PFALSE, signature);
 	}
 
 	/**
 	 * Creates a new boolean constant. {FALSE, TRUE}
 	 * 
 	 * @param trueLogicConstant
-	 * @throws TranslationException 
 	 */
-	public SMTTerm makeTrue(SMTFunctionSymbol trueLogicConstant,SMTSignature signature) throws TranslationException {
-		return makeConstant(trueLogicConstant,signature);
+	public SMTTerm makeTrue(SMTFunctionSymbol trueLogicConstant,
+			SMTSignature signature) {
+		return makeConstant(trueLogicConstant, signature);
 	}
 
-	public SMTTerm makeFalse(SMTFunctionSymbol falseLogicConstant,SMTSignature signature) throws TranslationException {
+	public SMTTerm makeFalse(SMTFunctionSymbol falseLogicConstant,
+			SMTSignature signature) {
 		return makeConstant(falseLogicConstant, signature);
 	}
 
-	public SMTTerm makeInteger(final SMTFunctionSymbol integerCste, SMTSignature signature) throws TranslationException {
+	public SMTTerm makeInteger(final SMTFunctionSymbol integerCste,
+			SMTSignature signature) {
 		return makeConstant(integerCste, signature);
 	}
 
-	public SMTTerm makeBool(final SMTFunctionSymbol booleanCste, SMTSignature signature) throws TranslationException {
+	public SMTTerm makeBool(final SMTFunctionSymbol booleanCste,
+			SMTSignature signature) {
 		return makeConstant(booleanCste, signature);
 	}
 
@@ -266,22 +268,24 @@ public final class SMTFactory {
 	}
 
 	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
-			final SMTTerm[] args, SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInFunction(functionSymbol, args);		
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyFunctionSignature(functionSymbol);
 		return new SMTFunApplication(functionSymbol, args);
 	}
 
 	public SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol,
-			final SMTTerm[] args,SMTSignature signature) throws TranslationException {
-		signature.verifySortCompatibilityInPredicate(predicateSymbol,args);
+			final SMTTerm[] args, SMTSignature signature) {
+		signature.verifyPredicateSignature(predicateSymbol);
 		return new SMTAtom(predicateSymbol, args);
 	}
 
-	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,SMTSignature signature) throws TranslationException {
-		return makeFunApplication(functionSymbol, EMPTY_TERM,signature);
+	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
+			SMTSignature signature) {
+		return makeFunApplication(functionSymbol, EMPTY_TERM, signature);
 	}
 
-	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,SMTSignature signature) throws TranslationException {
-		return makeAtom(predicateSymbol, EMPTY_TERM,signature);
+	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
+			SMTSignature signature) {
+		return makeAtom(predicateSymbol, EMPTY_TERM, signature);
 	}
 }

@@ -20,13 +20,11 @@ import java.util.List;
 /**
  *
  */
-public class SMTTheory { 
+public class SMTTheory {
 	private final String name;
 	private final SMTSortSymbol[] sorts;
 	private final SMTPredicateSymbol[] predicates;
 	private final SMTFunctionSymbol[] functions;
-	
-	public final static boolean N_ARY = true;
 
 	// TODO add fields needed to print a complete theory (definition, axioms,
 	// notes)
@@ -86,7 +84,6 @@ public class SMTTheory {
 		 */
 		private final static SMTSortSymbol[] INT_TAB = { INT };
 		private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
-		
 
 		/**
 		 * Predicates and functions of the integer theory
@@ -118,9 +115,9 @@ public class SMTTheory {
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED,N_ARY);
+				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED,N_ARY);
+				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
 				PLUS, MUL };
 
@@ -211,7 +208,7 @@ public class SMTTheory {
 		private Booleans() {
 			super(BOOLS, SORTS, PREDICATES, FUNCTIONS);
 		}
-		
+
 		public static Booleans getInstance() {
 			return INSTANCE;
 		}

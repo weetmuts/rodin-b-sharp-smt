@@ -21,6 +21,10 @@ import java.util.Arrays;
  */
 public class SMTFunctionSymbol extends SMTSymbol implements
 		Comparable<SMTFunctionSymbol> {
+	public boolean isAssociative() {
+		return associative;
+	}
+
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). It was chosen
 	 * to distinguish between the result sort and the argument sorts by putting
@@ -29,36 +33,31 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 */
 	final private SMTSortSymbol[] argSorts;
 	final private SMTSortSymbol resultSort;
+
 	// TODO use this field when creating a new FunApplication object, and adapt
 	// the way the rank is verified
-	@SuppressWarnings("unused")
 	final private boolean associative;
 
 	public static final boolean ASSOCIATIVE = true;
-	
-	private final boolean isN_ARY;	
-	
 
-	public SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
-			final SMTSortSymbol resultSort, final boolean associative,
-			final boolean predefined) {
+	public SMTFunctionSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[], final SMTSortSymbol resultSort,
+			final boolean associative, final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;
 		this.associative = associative;
-		isN_ARY = false;
 	}
-	
-	public SMTFunctionSymbol(final String symbolName, final SMTSortSymbol argSorts[],
-			final SMTSortSymbol resultSort, final boolean associative,
-			final boolean predefined, boolean isN_ARY) {
+
+	public SMTFunctionSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[], final SMTSortSymbol resultSort,
+			final boolean associative, final boolean predefined, boolean isN_ARY) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;
 		this.associative = associative;
-		this.isN_ARY = isN_ARY;
 	}
 
 	/**
@@ -67,10 +66,6 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 */
 	public boolean isConstant() {
 		return argSorts.length == 0;
-	}
-	
-	public boolean isN_ARY() {
-		return isN_ARY;
 	}
 
 	public SMTSortSymbol[] getArgSorts() {

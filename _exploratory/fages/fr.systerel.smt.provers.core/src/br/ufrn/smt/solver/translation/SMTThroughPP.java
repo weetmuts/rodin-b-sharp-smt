@@ -87,15 +87,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * symbols.
 	 */
 	protected final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
-	
-	TranslationException translationErrors = new TranslationException();
-	
-	
-	
+
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
 	private List<String> boundIdentifiers = new ArrayList<String>();
-	private Stack<Integer> boundIdentifiersMarker = new Stack<Integer>(); 
+	private Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
 
 	/**
 	 * This list contains the terms of the current membership being translated
@@ -119,23 +115,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the goal of the Event-B sequent
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
-	 * @throws TranslationException 
+	 * @throws TranslationException
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
 			final Predicate goal) throws TranslationException {
-		SMTBenchmark smtB = new SMTThroughPP().translate(lemmaName, hypotheses, goal); 
-		return smtB; 
+		SMTBenchmark smtB = new SMTThroughPP().translate(lemmaName, hypotheses,
+				goal);
+		return smtB;
 	}
 
 	/**
 	 * This is the translation method for the ppTrans approach of SMT
 	 * translation.
-	 * @throws TranslationException 
+	 * 
+	 * @throws TranslationException
 	 */
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal) throws TranslationException {
+			final List<Predicate> hypotheses, final Predicate goal)
+			throws TranslationException {
 
 		/**
 		 * PP translation
@@ -143,8 +142,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final PPProof ppProof = ppTranslation(hypotheses, goal);
 		final List<Predicate> ppTranslatedHypotheses = ppProof
 				.getTranslatedHypotheses();
-		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();		
-		
+		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
+
 		final SMTLogic logic = determineLogic();
 
 		/**
@@ -152,7 +151,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		// translates the signature
 		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
-		
+
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 		for (Predicate hypothesis : ppTranslatedHypotheses) {
@@ -204,41 +203,36 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	/**
 	 * This method translates the given predicate into an SMT Formula.
-	 * @throws TranslationException 
+	 * 
+	 * @throws TranslationException
 	 */
-	private SMTFormula translate(final Predicate predicate) throws TranslationException {
+	private SMTFormula translate(final Predicate predicate)
+			throws TranslationException {
 		predicate.accept(this);
-		if(!this.translationErrors.getCauses().isEmpty())
-		{
-			throw this.translationErrors;
-		}			
 		return getSMTFormula();
 	}
-	
-	class SMTFormulaInspector extends DefaultInspector<Type>
-	{
+
+	class SMTFormulaInspector extends DefaultInspector<Type> {
 		@Override
 		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
 			accumulator.add(decl.getType());
 		}
-	}	
-	
+	}
+
 	/**
-	*	This method takes a copy of the BoundIdentDecl types in the hypotheses and goal
-	*/
-	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal )
-	{
+	 * This method takes a copy of the BoundIdentDecl types in the hypotheses
+	 * and goal
+	 */
+	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal) {
 		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new SMTFormulaInspector();
-		final List<Type> typesFound = new ArrayList<Type>();	
-		for(Predicate p : hypotheses)
-		{
+		final List<Type> typesFound = new ArrayList<Type>();
+		for (Predicate p : hypotheses) {
 			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
-		}		
+		}
 		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
-		
-		return typesFound;		
-	}	
-	
+
+		return typesFound;
+	}
 
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
@@ -315,13 +309,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 */
 			signature.addConstant(smtConstant);
 		}
-				
+
 		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
-		
-		Iterator<Type> bIterator = biTypes.iterator();		
-		
+
+		Iterator<Type> bIterator = biTypes.iterator();
+
 		while (bIterator.hasNext()) {
-			
+
 			final Type varType = bIterator.next();
 
 			/**
@@ -349,7 +343,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -448,22 +442,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final int tag = expression.getTag();
 		switch (tag) {
 		case Formula.PLUS:
-			try {
-				smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.PLUS), children,signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.PLUS), children, signature);
 			break;
 		case Formula.MUL:
-			try {
-				smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.MUL), children,signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		default:
 			/**
@@ -535,14 +519,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			try {
-				smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.MINUS), children,signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
-			
+			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.MAPSTO:
 			if (left.getTag() != Formula.MAPSTO) {
@@ -621,18 +599,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitLiteralPredicate(final LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
-			try {
-				smtNode = sf.makePTrue(this.signature);
-			} catch (TranslationException e) {
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makePTrue(this.signature);
 			break;
 		case Formula.BFALSE:
-			try {
-				smtNode = sf.makePFalse(this.signature);
-			} catch (TranslationException e) {
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makePFalse(this.signature);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -661,47 +631,32 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			try {
-				smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
-						.getOperator(SMTOperator.LT), children,this.signature);
-			} catch (TranslationException e) {
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
+					.getOperator(SMTOperator.LT), children, this.signature);
 		}
 			break;
 		case Formula.LE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			try {
-				smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
-						.getLogic().getOperator(SMTOperator.LE), children,this.signature);
-			} catch (TranslationException e) {
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.LE), children,
+					this.signature);
 		}
 			break;
 		case Formula.GT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			try {
-				smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-						.getLogic().getOperator(SMTOperator.GT), children,this.signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GT), children,
+					this.signature);
 		}
 			break;
 		case Formula.GE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			try {
-				smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
-						.getLogic().getOperator(SMTOperator.GE), children,this.signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GE), children,
+					this.signature);
 		}
 			break;
 		case Formula.IN:
@@ -741,12 +696,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] args = membershipPredicateTerms
 					.toArray(new SMTTerm[numberOfArguments]);
 
-			try {
-				smtNode = sf.makeAtom(predSymbol, args,this.signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeAtom(predSymbol, args, this.signature);
 			membershipPredicateTerms.clear();
 			break;
 		case Formula.NOTIN:
@@ -769,13 +719,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
-			try {
-				smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.UMINUS), children,signature);
-			} catch (TranslationException e) {
-				// TODO Auto-generated catch block
-				translationErrors.addCauses(e.getCauses());
-			}
+			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.UMINUS), children, signature);
 			break;
 		default:
 			/**
@@ -808,10 +753,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {		
+	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
-		
+
 		final Set<String> symbolNames = new HashSet<String>();
 		for (final SMTFunctionSymbol function : varMap.values()) {
 			symbolNames.add(function.getName());
@@ -827,10 +772,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);
 		} else {
-			qVarMap.put(smtVarName, smtVar);			
-			//smtVar = qVarMap.get(varName);
+			qVarMap.put(smtVarName, smtVar);
+			// smtVar = qVarMap.get(varName);
 			boundIdentifiers.add(smtVarName);
-		}		
+		}
 		smtNode = smtVar;
 	}
 
@@ -846,17 +791,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		try {
-			smtNode = sf.makeConstant(varMap.get(expression.getName()),this.signature);
-		} catch (TranslationException e) {
-			translationErrors.addCauses(e.getCauses());
-		}
+		smtNode = sf.makeConstant(varMap.get(expression.getName()),
+				this.signature);
 	}
 
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		boundIdentifiersMarker.push(boundIdentifiers.size());
-		
+
 		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
 		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
 
@@ -872,8 +814,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		int top = boundIdentifiersMarker.pop();
-		
-		boundIdentifiers.subList(top,boundIdentifiers.size()).clear();		
+
+		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 	}
 
 	@Override

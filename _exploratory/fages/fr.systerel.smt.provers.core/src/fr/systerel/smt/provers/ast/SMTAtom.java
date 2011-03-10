@@ -22,6 +22,7 @@ public class SMTAtom extends SMTFormula {
 	final SMTTerm[] terms;
 
 	public SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
+		verifyPredicateRank(symbol, terms);
 		this.predicate = symbol;
 		this.terms = terms.clone();
 	}
@@ -39,5 +40,46 @@ public class SMTAtom extends SMTFormula {
 			}
 			builder.append(CPAR);
 		}
+	}
+
+	private static void verifyPredicateRank(final SMTPredicateSymbol symbol,
+			final SMTTerm terms[]) {
+		SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
+
+		// Verify if the number of arguments expected match the number of terms
+		if (expectedSortArgs.length == terms.length) {
+
+			// Verify if the sort symbols are the same
+			for (int i = 0; i < terms.length; i++) {
+				SMTSortSymbol argSort = terms[i].getSort();
+
+				if (!expectedSortArgs[i].equals(argSort)) {
+					throw incompatiblePredicateRankException(symbol, terms);
+				}
+			}
+			return;
+		}
+		throw incompatiblePredicateRankException(symbol, terms);
+	}
+
+	private static IllegalArgumentException incompatiblePredicateRankException(
+			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Arguments of function symbol: ");
+		sb.append(expectedSymbol);
+		sb.append(": ");
+		String sep = "";
+		for (SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
+			sb.append(sep);
+			sep = " ";
+			expectedArg.toString(sb);
+		}
+		sb.append(" does not match: ");
+		for (SMTTerm arg : args) {
+			sb.append(sep);
+			sep = " ";
+			arg.getSort().toString(sb);
+		}
+		return new IllegalArgumentException(sb.toString());
 	}
 }
