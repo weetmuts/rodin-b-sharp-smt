@@ -274,6 +274,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 
 			/**
+			 * gets a fresh name for the type of the variable to be typed, adds
+			 * it to the type names mapping (and adds it to the signature
+			 * symbols set)
+			 * 
+			 */
+			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
+					varType);
+			for (final Type baseType : baseTypes) {
+				if (!typeMap.containsKey(baseType)) {
+					final SMTSortSymbol baseSort = translateTypeName(baseType);
+					typeMap.put(baseType, baseSort);
+				}
+			}
+
+			/**
 			 * gets a fresh name for the variable to be typed, adds it to the
 			 * variable names mapping (and adds it to the signature symbols set)
 			 */
@@ -283,19 +298,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				varMap.put(varName, smtConstant);
 			} else {
 				smtConstant = varMap.get(varName);
-			}
-
-			/**
-			 * do the same for each base type used to define this type into an
-			 * SMT-LIB sort
-			 */
-			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
-					varType);
-			for (final Type baseType : baseTypes) {
-				if (!typeMap.containsKey(baseType)) {
-					final SMTSortSymbol baseSort = translateTypeName(baseType);
-					typeMap.put(baseType, baseSort);
-				}
 			}
 
 			/**

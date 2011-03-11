@@ -361,14 +361,19 @@ public abstract class SMTSignature {
 		Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(preds));
+		names.addAll(getSymbolNames(sorts));
 		return freshName(names, MS_PREDICATE_NAME);
 	}
 
 	public String freshCstName(final String name) {
+		Set<String> names = new HashSet<String>();
+		names.addAll(getSymbolNames(funs));
+		names.addAll(getSymbolNames(sorts));
+		names.addAll(getSymbolNames(preds));
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
-			return freshName(getSymbolNames(funs), NEW_SYMBOL_NAME);
+			return freshName(names, NEW_SYMBOL_NAME);
 		} else {
-			return freshName(getSymbolNames(funs), name);
+			return freshName(names, name);
 		}
 	}
 
@@ -398,7 +403,11 @@ public abstract class SMTSignature {
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		final String freshName = freshName(getSymbolNames(sorts), name);
+		Set<String> names = new HashSet<String>();
+		names.addAll(getSymbolNames(funs));
+		names.addAll(getSymbolNames(sorts));
+		names.addAll(getSymbolNames(preds));	
+		final String freshName = freshName(names, name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
 
@@ -437,7 +446,7 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public void addConstant(final SMTFunctionSymbol constant) {
+	public void addConstant(final SMTFunctionSymbol constant) {		
 		funs.add(constant);
 	}
 
