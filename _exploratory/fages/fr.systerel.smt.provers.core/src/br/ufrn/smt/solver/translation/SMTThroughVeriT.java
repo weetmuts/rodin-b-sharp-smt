@@ -206,8 +206,25 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	protected SMTBenchmark translate(String lemmaName,
 			List<Predicate> hypotheses, Predicate goal) {
-		// TODO Auto-generated method stub
-		return null;
+		// FIXME Just doing some tests. This method needs to be implemented
+
+		SMTLogic logic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+
+		SMTSignature signature = new SMTSignatureVerit(logic);
+
+		List<SMTFormula> formulas = new ArrayList<SMTFormula>();
+		SMTFormula goalSMT = new SMTFormula() {
+
+			@Override
+			public void toString(StringBuilder builder) {
+				builder.append("(= 0 0)");
+			}
+		};
+
+		SMTBenchmark benchmark = new SMTBenchmark("smttestwithverit",
+				signature, formulas, goalSMT);
+
+		return benchmark;
 	}
 
 	@Override

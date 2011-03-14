@@ -19,7 +19,6 @@ import org.eventb.pptrans.Translator;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTLogic;
 

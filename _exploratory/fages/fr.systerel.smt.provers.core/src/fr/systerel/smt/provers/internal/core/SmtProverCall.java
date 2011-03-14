@@ -42,6 +42,8 @@ import fr.systerel.smt.provers.core.SmtProversCore;
 public class SmtProverCall extends XProverCall {
 	private static String SMT_LIB_FILE_EXTENSION = ".smt";
 	private static String VERIT_TEMP_FILE = "veritTempFile_";
+	private static String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
+	private static String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
 			+ File.separatorChar + "rodin_smtlib_tmp_files";
 
@@ -109,24 +111,6 @@ public class SmtProverCall extends XProverCall {
 
 	private static void closeSMTFileWriter(PrintWriter smtFileWriter) {
 		smtFileWriter.close();
-	}
-
-	private static File writeSMTFile(final SMTBenchmark benchmark,
-			final String filePathName) {
-		mkTranslationDir();
-		File smtFile = new File(filePathName);
-		try {
-			smtFile.createNewFile();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			ioe.getMessage();
-			return null;
-		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(smtFile,
-				benchmark.getName());
-		benchmark.print(smtFileWriter);
-		closeSMTFileWriter(smtFileWriter);
-		return smtFile;
 	}
 
 	/**
@@ -226,7 +210,8 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * First, write the SMT file with macros
 		 */
-		File preprocessedFile = writeVeritPreprocessedSMTFile(veriTPreProcessingFileName);
+		File preprocessedFile = writeVeritPreprocessedSMTFile(benchmark,
+				veriTPreProcessingFileName);
 
 		if (!preprocessedFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
@@ -236,7 +221,7 @@ public class SmtProverCall extends XProverCall {
 		 * Then, call veriT, which produces a version of the SMT file without
 		 * macros
 		 */
-		iFile = callVeriT(veriTPreProcessingFileName);
+		callVeriT(preprocessedFile);
 
 		final List<String> args = setSolverArgs(veriTPreProcessingFileName);
 
@@ -247,12 +232,67 @@ public class SmtProverCall extends XProverCall {
 	 * This method should: call the veriT, produce a simplified version of the
 	 * SMT file without macros, and verify if there is any input error
 	 * 
-	 * @param veriTPreProcessingFileName
+	 * @param preprocessedFile
 	 * @return
+	 * @throws IOException
 	 */
-	private File callVeriT(String veriTPreProcessingFileName) {
-		// TODO Implement this method
-		return null;
+	private void callVeriT(File preprocessedFile) throws IOException {
+		List<String> args = new ArrayList<String>();
+
+		if (smtUiPreferences.getPreproPath().isEmpty()
+				|| smtUiPreferences.getPreproPath() == null) {
+			System.out
+					.println(Messages.SmtProversCall_preprocessor_path_not_defined);
+		}
+
+		args.add(smtUiPreferences.getPreproPath());
+		args.add(VERIT_SIMPLIFY_ARGUMENT_STRING);
+		args.add(VERIT_DISABLE_BANNER);
+		args.add(preprocessedFile.getPath());
+
+		resultOfSolver = Exec
+				.execProgram(args.toArray(new String[args.size()]));
+
+		/**
+		 * Set up temporary result file
+		 */
+		checkPreProcessingResult(preprocessedFile.getParent());
+	}
+
+	private void createPostProcessedFile(String parentFolder, String extension)
+			throws IOException {
+		iFile = new File(parentFolder + File.separatorChar + lemmaName
+				+ "PostProcessed." + extension);
+		if (!iFile.exists()) {
+			iFile.createNewFile();
+		}
+		FileWriter fileWriter = new FileWriter(iFile);
+		fileWriter.write(resultOfSolver);
+		fileWriter.close();
+	}
+
+	private void checkPreProcessingResult(String parentFolder)
+			throws IOException {
+		if (resultOfSolver.contains("(benchmark")) {
+			createPostProcessedFile(parentFolder, "smt");
+			return;
+		} else {
+			createPostProcessedFile(parentFolder, "res");
+			if (resultOfSolver.contains("syntax error")
+					|| resultOfSolver.contains("parse error")
+					|| resultOfSolver.contains("Lexical_error")) {
+				throw new IllegalArgumentException(proverName
+						+ " could not pre-process " + lemmaName
+						+ ".smt with VeriT. See " + lemmaName
+						+ "PostProcessed.res for more details.");
+			} else {
+				throw new IllegalArgumentException("Unexpected response of "
+						+ proverName + ". See " + lemmaName
+						+ "PostProcessed.res for more details.");
+			}
+
+		}
+
 	}
 
 	private List<String> setVeriTPreProcessingArgs(String name) {
@@ -274,9 +314,41 @@ public class SmtProverCall extends XProverCall {
 				+ fileName + SMT_LIB_FILE_EXTENSION;
 	}
 
-	private File writeVeritPreprocessedSMTFile(String veriTPreProcessingFileName) {
-		// TODO Implement this method
-		return null;
+	private File writeVeritPreprocessedSMTFile(SMTBenchmark benchmark,
+			String veriTPreProcessingFileName) {
+		mkTranslationDir();
+		File preProcessedSMTFile = new File(veriTPreProcessingFileName);
+		try {
+			preProcessedSMTFile.createNewFile();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			ioe.getMessage();
+			return null;
+		}
+		final PrintWriter smtFileWriter = openSMTFileWriter(
+				preProcessedSMTFile, benchmark.getName());
+		benchmark.print(smtFileWriter);
+		closeSMTFileWriter(smtFileWriter);
+		return preProcessedSMTFile;
+
+	}
+
+	private static File writeSMTFile(final SMTBenchmark benchmark,
+			final String filePathName) {
+		mkTranslationDir();
+		File smtFile = new File(filePathName);
+		try {
+			smtFile.createNewFile();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			ioe.getMessage();
+			return null;
+		}
+		final PrintWriter smtFileWriter = openSMTFileWriter(smtFile,
+				benchmark.getName());
+		benchmark.print(smtFileWriter);
+		closeSMTFileWriter(smtFileWriter);
+		return smtFile;
 	}
 
 	/**

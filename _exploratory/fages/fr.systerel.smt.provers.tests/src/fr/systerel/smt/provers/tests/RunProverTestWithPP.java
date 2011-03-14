@@ -1,6 +1,8 @@
 package fr.systerel.smt.provers.tests;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,10 +12,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -555,10 +553,9 @@ public class RunProverTestWithPP extends AbstractTests {
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Ignore("Takes too much time with AltErgo")
 	@Test
 	public void testBepiColombo3Medium() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");

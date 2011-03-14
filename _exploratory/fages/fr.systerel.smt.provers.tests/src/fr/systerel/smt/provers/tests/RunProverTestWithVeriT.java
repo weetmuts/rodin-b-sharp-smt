@@ -27,7 +27,6 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
  * @author Vitor Alcantara
  * 
  */
-@Ignore("The VeriT translation is not implemented yet")
 public class RunProverTestWithVeriT extends AbstractTests {
 	/**
 	 * In linux: '/home/username/bin/'
