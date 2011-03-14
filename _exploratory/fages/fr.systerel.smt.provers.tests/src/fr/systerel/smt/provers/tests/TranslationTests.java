@@ -16,6 +16,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
@@ -317,13 +318,14 @@ public class TranslationTests extends AbstractTests {
 	 * The
 	 */
 	
-//	@Test
-//	public void testPredIn() {
-//		//testTranslationV1_2Default("a ∈ A", "(MS a A)");
-//		//testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
-//		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
-//		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
-//	}
+	@Test
+	@Ignore("Not yet implemented")
+	public void testPredIn() {
+		testTranslationV1_2Default("a ∈ A", "(MS a A)");
+		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
+		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
+		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
+	}
 
 	/**
 	 * "pred-setequ"
