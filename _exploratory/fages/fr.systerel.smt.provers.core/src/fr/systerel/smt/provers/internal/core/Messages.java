@@ -21,6 +21,7 @@ public class Messages extends NLS {
 	public static String SmtProversCall_no_defined_solver_path;
 	public static String SmtProversCall_preprocessor_path_not_defined;
 	public static String SmtProversCall_SMT_file_does_not_exist;
+	public static String Verit_Preprocessing_SMT_file_does_not_exist;
 	public static String SmtProversCall_file_could_not_be_deleted;
 	public static String SmtNode_This_node_expected_some_child;
 	static {
@@ -29,6 +30,6 @@ public class Messages extends NLS {
 	}
 
 	private Messages() {
-		//do not instantiate
+		// do not instantiate
 	}
 }

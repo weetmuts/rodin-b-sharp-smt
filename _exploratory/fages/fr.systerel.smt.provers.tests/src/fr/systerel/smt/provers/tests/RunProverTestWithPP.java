@@ -22,12 +22,12 @@ import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 /**
- * This class contains acceptance tests of the plugin.
+ * This class contains acceptance tests of the plugin with pptranslation.
  * 
  * @author Yoann Guyot
  * 
  */
-public class RunProverTest extends AbstractTests {
+public class RunProverTestWithPP extends AbstractTests {
 	/**
 	 * In linux: '/home/username/bin/'
 	 */
@@ -39,11 +39,11 @@ public class RunProverTest extends AbstractTests {
 	 * Possible solver call results
 	 */
 	/**
-	 * H |- ¬ G  is UNSAT, so H |- G is VALID
+	 * H |- ¬ G is UNSAT, so H |- G is VALID
 	 */
 	private static boolean VALID = true;
 	/**
-	 * H |- ¬ G  is SAT, so H |- G is NOT VALID
+	 * H |- ¬ G is SAT, so H |- G is NOT VALID
 	 */
 	private static boolean NOT_VALID = false;
 
@@ -67,9 +67,9 @@ public class RunProverTest extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName, final List<String> inputHyps,
-			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult) {
+	private static void doTest(final String lemmaName,
+			final List<String> inputHyps, final String inputGoal,
+			final ITypeEnvironment te, final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
 		for (String hyp : inputHyps) {
@@ -77,7 +77,6 @@ public class RunProverTest extends AbstractTests {
 		}
 
 		final Predicate goal = parse(inputGoal, te);
-		
 
 		doTest(lemmaName, hypotheses, goal, expectedSolverResult);
 	}
@@ -94,8 +93,9 @@ public class RunProverTest extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName, final List<Predicate> parsedHypothesis,
-			final Predicate parsedGoal, final boolean expectedSolverResult) throws IllegalArgumentException {
+	private static void doTest(final String lemmaName,
+			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
+			final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (Predicate predicate : parsedHypothesis) {
@@ -113,7 +113,7 @@ public class RunProverTest extends AbstractTests {
 
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
-					smtProverCall.smtTranslation());
+					smtProverCall.smtTranslationThroughPP());
 			smtProverCall.callProver(smtArgs);
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
@@ -209,7 +209,7 @@ public class RunProverTest extends AbstractTests {
 	private static void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -222,13 +222,9 @@ public class RunProverTest extends AbstractTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("differentForallPlusSimple", hyps,
-				"{1 ↦ {0}} ∈ {1} → {{0}}",
+		doTest("differentForallPlusSimple", hyps, "{1 ↦ {0}} ∈ {1} → {{0}}",
 				te, VALID);
 	}
-	
-	
-	
 
 	@Test
 	public void testSolverCallBelong1() {
@@ -436,7 +432,7 @@ public class RunProverTest extends AbstractTests {
 
 		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
 	}
-	
+
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
@@ -445,18 +441,16 @@ public class RunProverTest extends AbstractTests {
 	@Test
 	public void testCh7LikeEvenSimpler() {
 		setPreferencesForZ3Test();
-		//setPreferencesForAltErgoTest();
+		// setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		//hyps.add("n ≥ 1");
+		// hyps.add("n ≥ 1");
 
-		doTest("ch7_likeEvenSimpler", hyps,
-				"A×B ⊆ ℕ×ℕ",
-				te, !VALID);
+		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}
-	
+
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
@@ -465,19 +459,18 @@ public class RunProverTest extends AbstractTests {
 	@Test
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForZ3Test();
-		//setPreferencesForAltErgoTest();
+		// setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
 		final List<String> hyps = new ArrayList<String>();
-		//hyps.add("n ≥ 1");
+		// hyps.add("n ≥ 1");
 
-		doTest("ch7_likeMoreSimpleYet", hyps,
-				"{0 ↦ d} ∈ ({0,1} →  D)",
-				te, !VALID);
+		doTest("ch7_likeMoreSimpleYet", hyps, "{0 ↦ d} ∈ ({0,1} →  D)", te,
+				!VALID);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -490,11 +483,10 @@ public class RunProverTest extends AbstractTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("differentForall", hyps,
-				"{1 ↦ {0 ↦ d}} ∈ {1} → ({0} →  D)",
-				te, VALID);
+		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ {1} → ({0} →  D)", te,
+				VALID);
 	}
-	
+
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
@@ -508,11 +500,10 @@ public class RunProverTest extends AbstractTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("ch7_likeSimple", hyps,
-				"{1 ↦ {0 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+		doTest("ch7_likeSimple", hyps, "{1 ↦ {0 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
-	
+
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
@@ -525,13 +516,11 @@ public class RunProverTest extends AbstractTests {
 				"D", "ℙ(D)", "d", "D");
 
 		final List<String> hyps = new ArrayList<String>();
-		//hyps.add("n ≥ 1");
+		// hyps.add("n ≥ 1");
 
 		doTest("ch7_likeconc", hyps,
-				"{1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
-				te, VALID);
+				"{1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)", te, VALID);
 	}
-
 
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
@@ -551,7 +540,7 @@ public class RunProverTest extends AbstractTests {
 				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
-	
+
 	@Test
 	public void testBepiColombo3Mini() {
 		setPreferencesForAltErgoTest();
@@ -565,7 +554,7 @@ public class RunProverTest extends AbstractTests {
 
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
-	
+
 	@Ignore("Takes too much time with AltErgo")
 	@Test
 	public void testBepiColombo3Medium() {
@@ -580,7 +569,7 @@ public class RunProverTest extends AbstractTests {
 
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
-	
+
 	@Test
 	public void testBepiColombo3Medium2() {
 		setPreferencesForAltErgoTest();
@@ -594,16 +583,16 @@ public class RunProverTest extends AbstractTests {
 
 		doTest("bepi_colombo3Medium2", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
-	
+
 	/**
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
 	 * 
-	 * The testBepiColombo3 doesn't run forever. 
-	 * It's because the alt-ergo solver takes too much time to prove. 
-	 * The translation is very fast, and the other solvers prove this problem in a much shorter time.
-	 *  
-	 */	
+	 * The testBepiColombo3 doesn't run forever. It's because the alt-ergo
+	 * solver takes too much time to prove. The translation is very fast, and
+	 * the other solvers prove this problem in a much shorter time.
+	 * 
+	 */
 	@Test
 	public void testBepiColombo3() {
 		setPreferencesForVeriTTest();

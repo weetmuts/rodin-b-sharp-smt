@@ -29,6 +29,7 @@ import org.eventb.core.seqprover.xprover.XProverCall;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
+import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.core.SmtProversCore;
@@ -40,6 +41,7 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  */
 public class SmtProverCall extends XProverCall {
 	private static String SMT_LIB_FILE_EXTENSION = ".smt";
+	private static String VERIT_TEMP_FILE = "veritTempFile_";
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
 			+ File.separatorChar + "rodin_smtlib_tmp_files";
 
@@ -109,9 +111,10 @@ public class SmtProverCall extends XProverCall {
 		smtFileWriter.close();
 	}
 
-	private static File writeSMTFile(final SMTBenchmark benchmark) {
+	private static File writeSMTFile(final SMTBenchmark benchmark,
+			final String filePathName) {
 		mkTranslationDir();
-		File smtFile = new File(smtFilePath(benchmark.getName()));
+		File smtFile = new File(filePathName);
 		try {
 			smtFile.createNewFile();
 		} catch (IOException ioe) {
@@ -179,9 +182,10 @@ public class SmtProverCall extends XProverCall {
 			 */
 			if (smtUiPreferences.getSolver().getsmtV1_2()) {
 				/**
-				 * SMT lib v1.2
+				 * SMT lib v1.2 TODO: Add option here and in the preferences to
+				 * set the pre-processor: veriT or pptrans.
 				 */
-				final List<String> translatedPOs = smtTranslation();
+				final List<String> translatedPOs = smtTranslationThroughPP();
 				callProver(translatedPOs);
 
 			} else if (smtUiPreferences.getSolver().getsmtV2_0()) {
@@ -201,6 +205,80 @@ public class SmtProverCall extends XProverCall {
 		}
 	}
 
+	public List<String> smtTranslationThroughPP() throws TranslationException,
+			PreProcessingException, IOException {
+		SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				lemmaName, hypotheses, goal);
+		return smtTranslation(benchmark);
+	}
+
+	public List<String> smtTranslationThroughVeriT()
+			throws TranslationException, PreProcessingException, IOException {
+		SMTBenchmark benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(
+				lemmaName, hypotheses, goal);
+
+		/**
+		 * The name of the SMT file with macros.
+		 */
+		String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
+				.getName());
+
+		/**
+		 * First, write the SMT file with macros
+		 */
+		File preprocessedFile = writeVeritPreprocessedSMTFile(veriTPreProcessingFileName);
+
+		if (!preprocessedFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+
+		/**
+		 * Then, call veriT, which produces a version of the SMT file without
+		 * macros
+		 */
+		iFile = callVeriT(veriTPreProcessingFileName);
+
+		final List<String> args = setSolverArgs(veriTPreProcessingFileName);
+
+		return args;
+	}
+
+	/**
+	 * This method should: call the veriT, produce a simplified version of the
+	 * SMT file without macros, and verify if there is any input error
+	 * 
+	 * @param veriTPreProcessingFileName
+	 * @return
+	 */
+	private File callVeriT(String veriTPreProcessingFileName) {
+		// TODO Implement this method
+		return null;
+	}
+
+	private List<String> setVeriTPreProcessingArgs(String name) {
+		List<String> args = new ArrayList<String>();
+		args.add(smtUiPreferences.getPreproPath());
+
+		/**
+		 * If solver is V1.2 the smt input is added in arguments
+		 */
+		if (smtUiPreferences.getSolver().getsmtV1_2()) {
+			args.add(smtVeriTPreProcessFilePath(lemmaName));
+		}
+
+		return args;
+	}
+
+	private String smtVeriTPreProcessFilePath(String fileName) {
+		return TRANSLATION_PATH + File.separatorChar + VERIT_TEMP_FILE
+				+ fileName + SMT_LIB_FILE_EXTENSION;
+	}
+
+	private File writeVeritPreprocessedSMTFile(String veriTPreProcessingFileName) {
+		// TODO Implement this method
+		return null;
+	}
+
 	/**
 	 * Performs Rodin PO to SMT translation: First, translate to predicate
 	 * calculus, then translate to SMT with macros, eventually pre-processing
@@ -210,20 +288,15 @@ public class SmtProverCall extends XProverCall {
 	 * @throws IOException
 	 * @throws TranslationException
 	 */
-	public List<String> smtTranslation() throws PreProcessingException,
-			IOException, TranslationException {
+	private List<String> smtTranslation(SMTBenchmark benchmark)
+			throws PreProcessingException, IOException, TranslationException {
+
+		String smtFileName = smtFilePath(benchmark.getName());
 
 		/**
 		 * Parse Rodin PO to create Smt file
 		 */
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal);
-		iFile = writeSMTFile(benchmark);
-
-		/**
-		 * Set up arguments
-		 */
-		final List<String> args = setSolverArgs(benchmark.getName());
+		iFile = writeSMTFile(benchmark, smtFileName);
 
 		/**
 		 * Get back translated smt file
@@ -231,6 +304,11 @@ public class SmtProverCall extends XProverCall {
 		if (!iFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
+
+		/**
+		 * Set up arguments
+		 */
+		final List<String> args = setSolverArgs(smtFileName);
 
 		return args;
 	}
@@ -277,7 +355,7 @@ public class SmtProverCall extends XProverCall {
 	 * Set up input arguments for solver.
 	 * 
 	 */
-	private List<String> setSolverArgs(final String lemmaName) {
+	private List<String> setSolverArgs(final String lemmaFilePath) {
 		List<String> args = new ArrayList<String>();
 		args.add(smtUiPreferences.getSolver().getPath());
 
@@ -285,7 +363,7 @@ public class SmtProverCall extends XProverCall {
 		 * If solver is V1.2 the smt input is added in arguments
 		 */
 		if (smtUiPreferences.getSolver().getsmtV1_2()) {
-			args.add(smtFilePath(lemmaName));
+			args.add(lemmaFilePath);
 		}
 
 		/**

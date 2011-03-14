@@ -75,27 +75,46 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	// // smtTranslationPreprocessing(args);
 	// }
 
+	/**
+	 * This is the public translation method
+	 * 
+	 * @param lemmaName
+	 *            the name to be used in the SMT-LIB benchmark
+	 * @param hypotheses
+	 *            the hypotheses of the Event-B sequent
+	 * @param goal
+	 *            the goal of the Event-B sequent
+	 * @return the SMT-LIB benchmark built over the translation of the given
+	 *         Event-B sequent
+	 * @throws TranslationException
+	 */
+	public static SMTBenchmark translateToSmtLibBenchmark(
+			final String lemmaName, final List<Predicate> hypotheses,
+			final Predicate goal) throws TranslationException {
+		SMTBenchmark smtB = new SMTThroughVeriT().translate(lemmaName,
+				hypotheses, goal);
+		return smtB;
+	}
+
+	public static SMTBenchmark translate(SMTLogic defaultlogic, Predicate ppred) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/* The Bound identifier list. */
 	private ArrayList<String> boundIdentifers;
 
 	/* The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	protected SMTThroughVeriT(Predicate predicate,
-			ArrayList<String> boundIdentifiers,
-			ArrayList<String> freeIdentifiers) {
-		this.boundIdentifers = boundIdentifiers;
-		this.freeIdentifiers = freeIdentifiers;
-		for (FreeIdentifier ident : predicate.getFreeIdentifiers()) {
-			this.freeIdentifiers.add(ident.getName());
-		}
+	protected SMTThroughVeriT() {
+
 	}
 
 	public static SMTFormula translate(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(predicate,
-				boundIdentifiers, freeIdentifiers);
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		predicate.accept(translator);
 		return translator.getSMTFormula();
 	}
@@ -106,8 +125,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public static IdentifiersAndSMTStorage translate1(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(predicate,
-				boundIdentifiers, freeIdentifiers);
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		predicate.accept(translator);
 		IdentifiersAndSMTStorage iSMT = new IdentifiersAndSMTStorage(
 				translator.getSMTFormula(), translator.getBoundIdentifers(),
@@ -205,6 +223,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public static SMTBenchmark translate(final String lemmaName,
 			final SMTSignature signature, final List<Predicate> hypotheses,
 			final Predicate goal) {
+
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
 		HashSet<String> boundIdentifiers = new HashSet<String>();
@@ -270,10 +289,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
-		//	this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean value when BOOL theory implemented
+			// this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean
+			// value when BOOL theory implemented
 			break;
 		case Formula.FALSE:
-		//	this.smtNode = sf.makePFalse(this.signature); // FIXME Use boolean value when BOOL theory implemented
+			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
+			// boolean value when BOOL theory implemented
 			break;
 		// FIXME Must be put in the SMTSignature
 		/*
@@ -355,7 +376,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBoundIdentifier(final BoundIdentifier expression) {
 		final String identifier = boundIdentifers.get(boundIdentifers.size()
 				- expression.getBoundIndex() - 1);
-		//this.smtNode = sf.makeVar(identifier, expression.getType());
+		// this.smtNode = sf.makeVar(identifier, expression.getType());
 	}
 
 	@Override
