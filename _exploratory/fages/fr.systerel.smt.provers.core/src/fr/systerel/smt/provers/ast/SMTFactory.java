@@ -63,6 +63,45 @@ public final class SMTFactory {
 		return DEFAULT_INSTANCE;
 	}
 
+	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+		if (atomicExpression.equals("\u2124")) { // INTEGER
+			return "Int";
+		} else if (atomicExpression.equals("\u2115")) { // NATURAL
+			return "Nat";
+		} else if (atomicExpression.equals("\u2124" + 1)) {
+			return "Int1";
+		} else if (atomicExpression.equals("\u2115" + 1)) {
+			return "Nat1";
+		} else if (atomicExpression.equals("BOOL")) {
+			return "Bool";
+		} else if (atomicExpression.equals("TRUE")) {
+			return "true";
+		} else if (atomicExpression.equals("FALSE")) {
+			return "false";
+		} else if (atomicExpression.equals("\u2205")) {
+			return "emptyset";
+		}
+		return atomicExpression;
+	}
+
+	public SMTSortSymbol makeVeriTSortSymbol(final String sortSymbolName) {
+		String symbolName = getSMTAtomicExpressionFormat(sortSymbolName);
+		return new SMTSortSymbol(symbolName, false);
+	}
+
+	public SMTPairSortSymbol makePairSortSymbol(final String sortSymbolName,
+			SMTSortSymbol sourceSymbol, SMTSortSymbol targetSymbol) {
+		return new SMTPairSortSymbol(sortSymbolName, sourceSymbol,
+				targetSymbol, false);
+
+	}
+
+	public SMTBaseSortSymbol makeBaseSortSymbol(final String sortSymbolName,
+			SMTSortSymbol baseSymbol) {
+		return new SMTBaseSortSymbol(sortSymbolName, baseSymbol, false);
+
+	}
+
 	/**
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}

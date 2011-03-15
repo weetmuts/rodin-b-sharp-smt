@@ -9,18 +9,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
-import org.junit.Ignore;
+
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
+import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 
 /**
  * Ensure that translation to veriT extended version of SMT-LIB is correct
@@ -28,12 +35,15 @@ import fr.systerel.smt.provers.ast.SMTLogic;
  * @author Vitor Alcantara de Almeida
  * 
  */
-@Ignore("The VeriT translation is not implemented yet")
 public class TranslationTestsWithVeriT extends AbstractTests {
-	protected static final ITypeEnvironment defaultTe;
+	protected static final ITypeEnvironment defaultTe, simpleTe;
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
+	private SMTSignature signature;
+
 	static {
+		simpleTe = mTypeEnvironment("e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
+
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
 				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
@@ -92,6 +102,88 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
 	}
 
+	public void setSignatureForTests(ITypeEnvironment typeEnvironment) {
+		this.signature = SMTThroughVeriT.translateSMTSignature(typeEnvironment);
+	}
+
+	private StringBuilder typeEnvironmentFunctionsFail(
+			Set<String> expectedFunctions, Set<SMTFunctionSymbol> functions) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
+		for (String expectedFunction : expectedFunctions) {
+			sb.append("\n");
+			sb.append(expectedFunction);
+		}
+		sb.append("\nBut the translated functions were:");
+		for (SMTFunctionSymbol fSymbol : functions) {
+			sb.append("\n");
+			sb.append(fSymbol.toString());
+		}
+		return sb;
+	}
+
+	private StringBuilder typeEnvironmentPredicatesFail(
+			Set<String> expectedPredicates, Set<SMTPredicateSymbol> predicates) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
+		for (String expectedPredicate : expectedPredicates) {
+			sb.append("\n");
+			sb.append(expectedPredicate);
+		}
+		sb.append("\nBut the translated functions were:");
+		for (SMTPredicateSymbol predicateSymbol : predicates) {
+			sb.append("\n");
+			sb.append(predicateSymbol.toString());
+		}
+		return sb;
+	}
+
+	private StringBuilder typeEnvironmentSortsFail(Set<String> expectedSorts,
+			Set<SMTSortSymbol> sorts) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
+		for (String expectedSort : expectedSorts) {
+			sb.append("\n");
+			sb.append(expectedSort);
+		}
+		sb.append("\nBut the translated functions were:");
+		for (SMTSortSymbol sortSymbol : sorts) {
+			sb.append("\n");
+			sb.append(sortSymbol.toString());
+		}
+		return sb;
+	}
+
+	public void testTypeEnvironmentFunctions(Set<String> expectedFunctions) {
+		expectedFunctions.add("(~ Int Int)");
+		expectedFunctions.add("(- Int Int Int)");
+		expectedFunctions.add("(* Int Int)");
+		expectedFunctions.add("(+ Int Int)");
+		Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
+
+		Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
+
+		StringBuilder sb = typeEnvironmentFunctionsFail(expectedFunctions,
+				functionSymbols);
+		assertEquals(sb.toString(), expectedFunctions.size(),
+				functionSymbols.size());
+
+		while (iterator.hasNext()) {
+			assertTrue(sb.toString(),
+					expectedFunctions.contains(iterator.next().toString()));
+		}
+
+		// Iterator<String> expecIterator = expectedFunctions.iterator();
+		// Iterator<SMTFunctionSymbol> functionIterator = functionSymbols
+		// .iterator();
+		//
+		// while (expecIterator.hasNext() && functionIterator.hasNext()) {
+		// assertEquals(sb.toString(), expecIterator.next(), functionIterator
+		// .next().toString());
+		// }
+
+	}
+
 	private static final String translationMessage(final Predicate ppPred,
 			final String smtNode) {
 		final StringBuilder sb = new StringBuilder();
@@ -101,6 +193,16 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		sb.append(smtNode);
 		sb.append("\'");
 		return sb.toString();
+	}
+
+	@Test
+	public void testTypeEnvironmentFunction() {
+		setSignatureForTests(simpleTe);
+		Set<String> expectedFunctions = new HashSet<String>();
+
+		expectedFunctions.add("(g S)");
+
+		testTypeEnvironmentFunctions(expectedFunctions);
 	}
 
 	/**

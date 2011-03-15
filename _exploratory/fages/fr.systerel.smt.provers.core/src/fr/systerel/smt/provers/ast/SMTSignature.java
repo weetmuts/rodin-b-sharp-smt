@@ -65,6 +65,18 @@ public abstract class SMTSignature {
 
 	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
+	public Set<SMTSortSymbol> getSorts() {
+		return sorts;
+	}
+
+	public Set<SMTPredicateSymbol> getPreds() {
+		return preds;
+	}
+
+	public Set<SMTFunctionSymbol> getFuns() {
+		return funs;
+	}
+
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
 		loadLogicSymbols();

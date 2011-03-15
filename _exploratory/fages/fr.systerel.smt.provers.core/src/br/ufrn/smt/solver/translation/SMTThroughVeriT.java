@@ -47,11 +47,16 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
+import fr.systerel.smt.provers.ast.SMTBaseSortSymbol;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
+import fr.systerel.smt.provers.ast.SMTPairSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
@@ -96,9 +101,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return smtB;
 	}
 
-	public static SMTBenchmark translate(SMTLogic defaultlogic, Predicate ppred) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * This method is used only to test the SMT translation
+	 */
+	public static SMTFormula translate(final SMTLogic logic,
+			final Predicate predicate) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
+		translator.translateSignature(logic, new ArrayList<Predicate>(0),
+				predicate);
+		predicate.accept(translator);
+		return translator.getSMTFormula();
 	}
 
 	/* The Bound identifier list. */
@@ -108,7 +120,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private ArrayList<String> freeIdentifiers;
 
 	protected SMTThroughVeriT() {
-
+		// TODO: Implement this method
 	}
 
 	public static SMTFormula translate(Predicate predicate,
@@ -133,26 +145,69 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return iSMT;
 	}
 
+	private SMTSortSymbol parseBaseTypes(Type varType) {
+		if (varType.getSource() != null) {
+			SMTBaseSortSymbol baseSortSymbol = sf.makeBaseSortSymbol(
+					varType.toString(),
+					parsePairTypes(varType.toString(), varType.getSource(),
+							varType.getTarget()));
+			this.signature.addPred(varType.toString(), baseSortSymbol);
+			return baseSortSymbol;
+		} else if (varType.getBaseType() != null) {
+			SMTBaseSortSymbol baseSortSymbol = sf.makeBaseSortSymbol(
+					varType.toString(), parseBaseTypes(varType.getBaseType()));
+			return baseSortSymbol;
+		} else {
+			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
+					.toString());
+			return sortSymbol;
+		}
+
+	}
+
+	private SMTPairSortSymbol parsePairTypes(String varName, Type sourceType,
+			Type targetType) {
+		SMTSortSymbol sourceSymbol;
+		SMTSortSymbol targetSymbol;
+
+		if (sourceType.getSource() != null) {
+			sourceSymbol = parsePairTypes(varName, sourceType.getSource(),
+					sourceType.getBaseType());
+		} else if (sourceType.getBaseType() != null) {
+			sourceSymbol = parseBaseTypes(sourceType.getBaseType());
+		} else {
+			sourceSymbol = sf.makeVeriTSortSymbol(sourceType.toString());
+		}
+
+		if (targetType.getTarget() != null) {
+			targetSymbol = parsePairTypes(varName, targetType.getSource(),
+					targetType.getBaseType());
+		} else if (targetType.getBaseType() != null) {
+			targetSymbol = parseBaseTypes(targetType.getBaseType());
+		} else {
+			targetSymbol = sf.makeVeriTSortSymbol(targetType.toString());
+		}
+		return sf.makePairSortSymbol(varName, sourceSymbol, targetSymbol);
+
+	}
+
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		this.signature = new SMTSignatureVerit(logic);
-
-		boolean insertPairDecl = false;
-
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
+		translateSignature(typeEnvironment);
+	}
+
+	public void translateSignature(ITypeEnvironment typeEnvironment) {
+		boolean insertPairDecl = false;
 
 		final IIterator iter = typeEnvironment.getIterator();
 		while (iter.hasNext()) {
 			iter.advance();
 			final String varName = iter.getName();
 			final Type varType = iter.getType();
-
-			if (varName.contains("\'")) {
-				final String freshName = this.signature.freshCstName(varName);
-				this.signature.putSingleQuoteVar(varName, freshName);
-			}
 
 			if (varName.equals(varType.toString())) {
 				this.signature.addSort(varType.toString(),
@@ -162,69 +217,93 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// Regra 6
 			else if (varType.getSource() != null) {
 
-				if (varType.getSource().getSource() != null
-						|| varType.getSource().getBaseType() != null) {
-					// TODO: Insert an Error message and abort, cartesian
-					// product of cartesian product || cartesian product of
-					// power type is not implemeted yet
-					System.err
-							.println("Cartesian product of cartesian product || Cartesian product of power type is not implemented yet");
-				}
-
-				final String sortSymb1 = getSMTAtomicExpressionFormat(varType
-						.getSource().toString());
-				final String sortSymb2 = getSMTAtomicExpressionFormat(varType
-						.getTarget().toString());
-				this.signature.addPairPred(varName, sortSymb1, sortSymb2);
-
-				if (!insertPairDecl) {
-					this.signature.addSort("(Pair 's 't)",
-							!SMTSymbol.PREDEFINED);
-				}
-				this.signature.addSort(sortSymb1, !SMTSymbol.PREDEFINED);
-				this.signature.addSort(sortSymb2, !SMTSymbol.PREDEFINED);
+				SMTPairSortSymbol sortSymbol = parsePairTypes(varName,
+						varType.getSource(), varType.getTarget());
+				this.signature.addPairPred(varName, sortSymbol);
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
-				if (varName.equals(varType.getBaseType().toString())) {
-					this.signature.addSort(varName, !SMTSymbol.PREDEFINED);
+				if (varType.getBaseType().toString().equals(varName)) {
+					signature.addSort(varName, !SMTFunctionSymbol.PREDEFINED);
 				} else {
-					final String[] argSorts = { getSMTAtomicExpressionFormat(varType
-							.getBaseType().toString()) };
-					this.signature.addPred(varName, argSorts);
+					SMTSortSymbol sortSymbol = parseBaseTypes(varType
+							.getBaseType());
+					this.signature.addPred(varName, sortSymbol);
 				}
 			} else {
-				this.signature.addFun(varName, null,
-						getSMTAtomicExpressionFormat(varType.toString()));
+				SMTSortSymbol smtSortSymbol = sf.makeVeriTSortSymbol(varType
+						.toString());
+
+				final SMTFunctionSymbol smtConstant;
+				if (!varMap.containsKey(varName)) {
+					smtConstant = signature.freshConstant(varName,
+							smtSortSymbol);
+					varMap.put(varName, smtConstant);
+				} else {
+					smtConstant = varMap.get(varName);
+				}
+
+				signature.addConstant(smtConstant);
 			}
 		}
 		if (insertPairDecl) {
-			this.signature.addFun("pair 's 't", null, "(Pair 's 't)");
+			this.signature.addSort("(Pair 's 't)", !SMTSymbol.PREDEFINED);
+			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol("(Pair 's 't)");
+			SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(
+					"pair 's 't", null, sortSymbol,
+					!SMTFunctionSymbol.ASSOCIATIVE,
+					!SMTFunctionSymbol.PREDEFINED);
+
+			signature.addConstant(functionSymbol);
 		}
+	}
+
+	/**
+	 * This method translates the given predicate into an SMT Formula.
+	 * 
+	 * @throws TranslationException
+	 */
+	private SMTFormula translate(final Predicate predicate)
+			throws TranslationException {
+		predicate.accept(this);
+		return getSMTFormula();
 	}
 
 	@Override
 	protected SMTBenchmark translate(String lemmaName,
-			List<Predicate> hypotheses, Predicate goal) {
-		// FIXME Just doing some tests. This method needs to be implemented
+			List<Predicate> hypotheses, Predicate goal)
+			throws TranslationException {
 
-		SMTLogic logic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+		final SMTLogic logic = determineLogic();
 
-		SMTSignature signature = new SMTSignatureVerit(logic);
+		/**
+		 * SMT translation
+		 */
+		// translates the signature
+		translateSignature(logic, hypotheses, goal);
 
-		List<SMTFormula> formulas = new ArrayList<SMTFormula>();
-		SMTFormula goalSMT = new SMTFormula() {
+		// translates each hypothesis
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+		// for (Predicate hypothesis : hypotheses) {
+		// clearFormula();
+		// translatedAssumptions.add(translate(hypothesis));
+		// }
+
+		// translates the goal
+		// clearFormula();
+		// final SMTFormula smtFormula = translate(goal);
+
+		// FIXME: Just for tests, the SMTFormula shall not be implemented
+		SMTFormula smtFormula = new SMTFormula() {
 
 			@Override
 			public void toString(StringBuilder builder) {
-				builder.append("(= 0 0)");
+				builder.append("true");
 			}
 		};
 
-		SMTBenchmark benchmark = new SMTBenchmark("smttestwithverit",
-				signature, formulas, goalSMT);
-
-		return benchmark;
+		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
+				smtFormula);
 	}
 
 	@Override
@@ -263,27 +342,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula smtFormula = translate(goal, a, b);
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
-	}
-
-	private static String getSMTAtomicExpressionFormat(String atomicExpression) {
-		if (atomicExpression.equals("\u2124")) { // INTEGER
-			return "Int";
-		} else if (atomicExpression.equals("\u2115")) { // NATURAL
-			return "Nat";
-		} else if (atomicExpression.equals("\u2124" + 1)) {
-			return "Int1";
-		} else if (atomicExpression.equals("\u2115" + 1)) {
-			return "Nat1";
-		} else if (atomicExpression.equals("BOOL")) {
-			return "Bool";
-		} else if (atomicExpression.equals("TRUE")) {
-			return "true";
-		} else if (atomicExpression.equals("FALSE")) {
-			return "false";
-		} else if (atomicExpression.equals("\u2205")) {
-			return "emptyset";
-		}
-		return atomicExpression;
 	}
 
 	public ArrayList<String> getBoundIdentifers() {
@@ -590,5 +648,28 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitExtendedPredicate(ExtendedPredicate predicate) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Just for tests
+	 * 
+	 * @param typeEnvironment
+	 * @return
+	 */
+	public static SMTSignature translateSMTSignature(
+			ITypeEnvironment typeEnvironment) {
+		SMTThroughVeriT translator = new SMTThroughVeriT();
+		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
+				.getInstance()));
+		translator.translateSignature(typeEnvironment);
+		return translator.getSignature();
+	}
+
+	public SMTSignatureVerit getSignature() {
+		return signature;
+	}
+
+	public void setSignature(SMTSignatureVerit signature) {
+		this.signature = signature;
 	}
 }

@@ -27,8 +27,6 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	private final Set<String> macros = new HashSet<String>();
 
-	private final Map<String, String> singleQuotVars = new HashMap<String, String>();
-
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
 	}
@@ -50,15 +48,17 @@ public class SMTSignatureVerit extends SMTSignature {
 		this.extramacrosSection(sb);
 	}
 
-	public void putSingleQuoteVar(final String varName, final String freshName) {
-		this.singleQuotVars.put(varName, freshName);
-	}
-
 	public void addSort(final String sortName, final boolean predefined) {
 		final SMTSortSymbol sort = new SMTSortSymbol(sortName, predefined);
 		if (!this.sorts.contains(sort)) {
 			this.sorts.add(sort);
 		}
+	}
+
+	public void addPred(final String predName, final SMTSortSymbol symbol) {
+		SMTSortSymbol[] symbols = { symbol };
+		this.preds.add(new SMTPredicateSymbol(predName, symbols,
+				!SMTSymbol.PREDEFINED));
 	}
 
 	public void addPred(final String predName, final String argSortStrings[]) {
@@ -71,33 +71,11 @@ public class SMTSignatureVerit extends SMTSignature {
 				!SMTSymbol.PREDEFINED));
 	}
 
-	public void addPairPred(final String predName, final String sortSymb1,
-			final String sortSymb2) {
-		final SMTSortSymbol sort1 = new SMTSortSymbol(sortSymb1,
-				!SMTSymbol.PREDEFINED);
-		final SMTSortSymbol sort2 = new SMTSortSymbol(sortSymb2,
-				!SMTSymbol.PREDEFINED);
-		final StringBuilder strSort = new StringBuilder();
-		strSort.append("(Pair ");
-		strSort.append(sort1.toString());
-		strSort.append(" ");
-		strSort.append(sort2.toString());
-		strSort.append(")");
-		final SMTSortSymbol[] pair = { new SMTSortSymbol(strSort.toString(),
-				!SMTSymbol.PREDEFINED) };
-		this.preds.add(new SMTPredicateSymbol(predName, pair,
-				!SMTSymbol.PREDEFINED));
-	}
+	public void addPairPred(final String predName,
+			final SMTPairSortSymbol symbol) {
 
-	public void addFun(final String funName, final String argSorts[],
-			final String resultSort) {
-		final List<SMTSortSymbol> args = new ArrayList<SMTSortSymbol>();
-		for (final String arg : argSorts) {
-			args.add(new SMTSortSymbol(arg, !SMTSymbol.PREDEFINED));
-		}
-		this.funs.add(new SMTFunctionSymbol(funName, (SMTSortSymbol[]) args
-				.toArray(),
-				new SMTSortSymbol(resultSort, !SMTSymbol.PREDEFINED), false,
+		SMTSortSymbol[] symbols = { symbol };
+		this.preds.add(new SMTPredicateSymbol(predName, symbols,
 				!SMTSymbol.PREDEFINED));
 	}
 
