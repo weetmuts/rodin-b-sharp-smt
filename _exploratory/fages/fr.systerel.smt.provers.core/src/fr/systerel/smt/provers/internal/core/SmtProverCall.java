@@ -295,20 +295,6 @@ public class SmtProverCall extends XProverCall {
 
 	}
 
-	private List<String> setVeriTPreProcessingArgs(String name) {
-		List<String> args = new ArrayList<String>();
-		args.add(smtUiPreferences.getPreproPath());
-
-		/**
-		 * If solver is V1.2 the smt input is added in arguments
-		 */
-		if (smtUiPreferences.getSolver().getsmtV1_2()) {
-			args.add(smtVeriTPreProcessFilePath(lemmaName));
-		}
-
-		return args;
-	}
-
 	private String smtVeriTPreProcessFilePath(String fileName) {
 		return TRANSLATION_PATH + File.separatorChar + VERIT_TEMP_FILE
 				+ fileName + SMT_LIB_FILE_EXTENSION;

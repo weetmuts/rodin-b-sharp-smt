@@ -12,6 +12,8 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
+import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -96,12 +98,6 @@ public final class SMTFactory {
 
 	}
 
-	public SMTBaseSortSymbol makeBaseSortSymbol(final String sortSymbolName,
-			SMTSortSymbol baseSymbol) {
-		return new SMTBaseSortSymbol(sortSymbolName, baseSymbol, false);
-
-	}
-
 	/**
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
@@ -166,6 +162,27 @@ public final class SMTFactory {
 		return new SMTFunApplication(mul, args);
 	}
 
+	public SMTTerm makeMacroTerm(SMTVeriTOperator macro, final SMTTerm[] args) {
+		switch (macro) {
+		case BUNION: {
+			return SMTMacros.BUNION_TERM;
+		}
+		case BINTER: {
+			return SMTMacros.BINTER_TERM;
+		}
+		case FCOMP: {
+			return SMTMacros.FCOMP_TERM;
+		}
+		case OVR: {
+			return SMTMacros.REL_OVR_TERM;
+		}
+		default:
+			// This statement shall never be reached
+			throw new IllegalArgumentException("Macro: " + macro.toString()
+					+ " is not a valid macro");
+		}
+	}
+
 	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
 			final SMTTerm[] arg, SMTSignature signature) {
 		signature.verifyFunctionSignature(uminus);
@@ -218,7 +235,7 @@ public final class SMTFactory {
 	/**
 	 * Creates a new boolean.
 	 */
-	// TODO When BOOL theory implemented
+	// TODO When BOOL_SORT theory implemented
 	/*
 	 * public SMTBoolean makeBoolean() { return new SMTBoolean(); }
 	 */
@@ -299,8 +316,8 @@ public final class SMTFactory {
 				final SMTVar var = (SMTVar) term;
 				qVars[i] = var.getSymbol();
 			} else {
-				// TODO throw new exception: this term should be an SMTVar
-				return null;
+				throw new IllegalArgumentException(
+						"The term should be an SMTVar");
 			}
 		}
 		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
@@ -326,5 +343,35 @@ public final class SMTFactory {
 	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			SMTSignature signature) {
 		return makeAtom(predicateSymbol, EMPTY_TERM, signature);
+	}
+
+	public SMTFormula[] convertVeritTermsIntoFormulas(SMTTerm[] children) {
+		SMTFormula[] formulas = new SMTFormula[children.length];
+		int i = 0;
+		for (SMTTerm term : children) {
+			if (!term.getSort().toString().equals(SMTSymbol.VERIT_BOOL_TYPE)) {
+				throw new IllegalArgumentException(
+						"VeriT translation does not accept equal operator under terms with different operators");
+			} else {
+				if (term instanceof SMTFunApplication) {
+					SMTFunApplication function = (SMTFunApplication) term;
+					SMTSortSymbol[] sortSymbols = new SMTSortSymbol[function.args.length];
+					SMTTerm[] argTerms = function.args;
+
+					for (int j = 0; j < function.args.length; j++) {
+						sortSymbols[j] = function.args[j].getSort();
+					}
+					SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
+							function.symbol.name, sortSymbols);
+					SMTAtom atom = new SMTAtom(predicateSymbol, EMPTY_TERM);
+					formulas[i] = atom;
+				} else {
+					throw new IllegalArgumentException(
+							"Conversion from terms to formula in VeriT shall happen only if all arguments of the terms are functions and their return types are boolean");
+				}
+			}
+			++i;
+		}
+		return formulas;
 	}
 }

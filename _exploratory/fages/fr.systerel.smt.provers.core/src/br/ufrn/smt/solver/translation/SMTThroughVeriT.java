@@ -47,12 +47,14 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.UnaryPredicate;
 
-import fr.systerel.smt.provers.ast.SMTBaseSortSymbol;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+import fr.systerel.smt.provers.ast.SMTMacros;
 import fr.systerel.smt.provers.ast.SMTPairSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
@@ -71,14 +73,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignatureVerit signature;
-
-	// TODO the veriT translation preprocessing must be done in this class
-	// if (this.smtUiPreferences.getUsingPrepro()) {
-	// /
-	// Launch preprocessing
-	// /
-	// // smtTranslationPreprocessing(args);
-	// }
 
 	/**
 	 * This is the public translation method
@@ -119,10 +113,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/* The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	protected SMTThroughVeriT() {
-		// TODO: Implement this method
-	}
-
 	public static SMTFormula translate(Predicate predicate,
 			ArrayList<String> boundIdentifiers,
 			ArrayList<String> freeIdentifiers) {
@@ -145,50 +135,77 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return iSMT;
 	}
 
-	private SMTSortSymbol parseBaseTypes(Type varType) {
-		if (varType.getSource() != null) {
-			SMTBaseSortSymbol baseSortSymbol = sf.makeBaseSortSymbol(
-					varType.toString(),
-					parsePairTypes(varType.toString(), varType.getSource(),
-							varType.getTarget()));
-			this.signature.addPred(varType.toString(), baseSortSymbol);
-			return baseSortSymbol;
-		} else if (varType.getBaseType() != null) {
-			SMTBaseSortSymbol baseSortSymbol = sf.makeBaseSortSymbol(
-					varType.toString(), parseBaseTypes(varType.getBaseType()));
-			return baseSortSymbol;
+	/**
+	 * This method translates powerset types. It applies the following rules:
+	 * 
+	 * 1: The BaseType name is equal the Var name: add a new sort with the Var
+	 * name. 2: The BaseType is a CartesianType or a power set of another type:
+	 * throw an {@link IllegalArgumentException}. Default: Add a new predicate
+	 * with the same name as Var name and the first argument as the BaseType.
+	 * 
+	 * @param varName
+	 *            The name of the variable
+	 * @param varType
+	 *            The BaseType of the variable
+	 */
+	private void parseBaseTypes(String varName, Type varType) {
+		if (varType.getBaseType().toString().equals(varName)) {
+			signature.addSort(varName, !SMTFunctionSymbol.PREDEFINED);
+		} else if (varType.getBaseType().getSource() != null
+				|| varType.getBaseType().getBaseType() != null) {
+			throw new IllegalArgumentException("Variable: " + varName
+					+ ", Type " + varType.toString()
+					+ ": Sets of sets are not supported yet");
 		} else {
 			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
-					.toString());
-			return sortSymbol;
+					.getBaseType().toString());
+			this.signature.addSort(sortSymbol.toString(),
+					!SMTFunctionSymbol.PREDEFINED);
+			this.signature.addPred(varName, sortSymbol);
 		}
-
 	}
 
+	/**
+	 * This method translates each type of CartesianProduct Types. It must be
+	 * called only by {@link #parsePairTypes(String, Type, Type)}. It applies
+	 * the following rules:
+	 * 
+	 * 1: if the type is a CartesianProduct Type, the same CartesianProduct
+	 * translating rules are applied again on it. 2: if the type is a BaseType,
+	 * throws an {@link IllegalArgumentException}. Default: It translates and
+	 * return the type.
+	 * 
+	 * @param varName The name of the variable
+	 * @param type The type of the variable
+	 * @return the translated {@link SMTSortSymbol} of one of the types of a CartesianProduct Type.
+	 * 
+	 * @see #parsePairTypes(String, Type, Type)
+	 */
+	private SMTSortSymbol parseOneOfPairTypes(String varName, Type type) {
+		if (type.getSource() != null) {
+			return parsePairTypes(varName, type.getSource(), type.getTarget());
+		} else if (type.getBaseType() != null) {
+			throw new IllegalArgumentException("Variable: " + varName
+					+ ", Type " + type.toString()
+					+ ": Sets of sets are not supported yet");
+		} else {
+			return sf.makeVeriTSortSymbol(type.toString());
+		}
+	}
+
+	/**
+	 * This method translates a CartesianProductType. It translates both the source and the target types.
+	 * 
+	 * @param varName The name of the variable.
+	 * @param sourceType The source type of the variable type.
+	 * @param targetType The target type of the variable type.
+	 * @return the translated @link {@link SMTPairSortSymbol} of the variable type.
+	 */
 	private SMTPairSortSymbol parsePairTypes(String varName, Type sourceType,
 			Type targetType) {
-		SMTSortSymbol sourceSymbol;
-		SMTSortSymbol targetSymbol;
-
-		if (sourceType.getSource() != null) {
-			sourceSymbol = parsePairTypes(varName, sourceType.getSource(),
-					sourceType.getBaseType());
-		} else if (sourceType.getBaseType() != null) {
-			sourceSymbol = parseBaseTypes(sourceType.getBaseType());
-		} else {
-			sourceSymbol = sf.makeVeriTSortSymbol(sourceType.toString());
-		}
-
-		if (targetType.getTarget() != null) {
-			targetSymbol = parsePairTypes(varName, targetType.getSource(),
-					targetType.getBaseType());
-		} else if (targetType.getBaseType() != null) {
-			targetSymbol = parseBaseTypes(targetType.getBaseType());
-		} else {
-			targetSymbol = sf.makeVeriTSortSymbol(targetType.toString());
-		}
+		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(varName, sourceType);
+		SMTSortSymbol targetSymbol = parseOneOfPairTypes(varName, targetType);
 		return sf.makePairSortSymbol(varName, sourceSymbol, targetSymbol);
-
 	}
 
 	@Override
@@ -200,6 +217,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		translateSignature(typeEnvironment);
 	}
 
+	/**
+	 * This method translates the signature.
+	 * 
+	 * @param typeEnvironment The Event-B Type Environment for the translation.
+	 */
 	public void translateSignature(ITypeEnvironment typeEnvironment) {
 		boolean insertPairDecl = false;
 
@@ -214,7 +236,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						!SMTSymbol.PREDEFINED);
 			}
 
-			// Regra 6
 			else if (varType.getSource() != null) {
 
 				SMTPairSortSymbol sortSymbol = parsePairTypes(varName,
@@ -223,50 +244,28 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
-				if (varType.getBaseType().toString().equals(varName)) {
-					signature.addSort(varName, !SMTFunctionSymbol.PREDEFINED);
-				} else {
-					SMTSortSymbol sortSymbol = parseBaseTypes(varType
-							.getBaseType());
-					this.signature.addPred(varName, sortSymbol);
-				}
+				parseBaseTypes(varName, varType);
 			} else {
 				SMTSortSymbol smtSortSymbol = sf.makeVeriTSortSymbol(varType
 						.toString());
-
 				final SMTFunctionSymbol smtConstant;
-				if (!varMap.containsKey(varName)) {
-					smtConstant = signature.freshConstant(varName,
-							smtSortSymbol);
-					varMap.put(varName, smtConstant);
-				} else {
-					smtConstant = varMap.get(varName);
-				}
-
-				signature.addConstant(smtConstant);
+				smtConstant = signature.freshConstant(varName, smtSortSymbol);
+				this.signature.addSort(smtSortSymbol.toString(),
+						!SMTFunctionSymbol.PREDEFINED);
+				this.signature.addConstant(smtConstant);
 			}
 		}
 		if (insertPairDecl) {
 			this.signature.addSort("(Pair 's 't)", !SMTSymbol.PREDEFINED);
 			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol("(Pair 's 't)");
+			SMTSortSymbol[] argSorts = {};
 			SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(
-					"pair 's 't", null, sortSymbol,
+					"pair 's 't", argSorts, sortSymbol,
 					!SMTFunctionSymbol.ASSOCIATIVE,
 					!SMTFunctionSymbol.PREDEFINED);
 
 			signature.addConstant(functionSymbol);
 		}
-	}
-
-	/**
-	 * This method translates the given predicate into an SMT Formula.
-	 * 
-	 * @throws TranslationException
-	 */
-	private SMTFormula translate(final Predicate predicate)
-			throws TranslationException {
-		predicate.accept(this);
-		return getSMTFormula();
 	}
 
 	@Override
@@ -284,26 +283,29 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-		// for (Predicate hypothesis : hypotheses) {
-		// clearFormula();
-		// translatedAssumptions.add(translate(hypothesis));
-		// }
+		for (Predicate hypothesis : hypotheses) {
+			clearFormula();
+			translatedAssumptions.add(translate(hypothesis));
+		}
 
 		// translates the goal
-		// clearFormula();
-		// final SMTFormula smtFormula = translate(goal);
+		clearFormula();
+		final SMTFormula smtFormula = translate(goal);
 
 		// FIXME: Just for tests, the SMTFormula shall not be implemented
-		SMTFormula smtFormula = new SMTFormula() {
-
-			@Override
-			public void toString(StringBuilder builder) {
-				builder.append("true");
-			}
-		};
 
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
+	}
+
+	/**
+	 * This method translates one predicate.
+	 * @param predicate The Rodin predicate to be translated.
+	 * @return the translated SMT Formula from the predicate
+	 */
+	private SMTFormula translate(Predicate predicate) {
+		predicate.accept(this);
+		return getSMTFormula();
 	}
 
 	@Override
@@ -343,19 +345,36 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
 	}
-
+	
+	
+	/**
+	 * 
+	 * @return the bound identifiers saved in the translator.
+	 */
 	public ArrayList<String> getBoundIdentifers() {
 		return boundIdentifers;
 	}
-
+ 
+	/**
+	 * Set the bound identifiers in the translator
+	 * @param boundIdentifers
+	 */
 	public void setBoundIdentifers(ArrayList<String> boundIdentifers) {
 		this.boundIdentifers = boundIdentifers;
 	}
 
+	/**
+	 * Get the free identifiers of the translator
+	 * @return
+	 */
 	public ArrayList<String> getFreeIdentifiers() {
 		return freeIdentifiers;
 	}
 
+	/**
+	 *  Set the free identifiers of the translator
+	 * @param freeIdentifiers
+	 */
 	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
 		this.freeIdentifiers = freeIdentifiers;
 	}
@@ -365,11 +384,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
 			// this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean
-			// value when BOOL theory implemented
+			// value when BOOL_SORT theory implemented
 			break;
 		case Formula.FALSE:
 			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
-			// boolean value when BOOL theory implemented
+			// boolean value when BOOL_SORT theory implemented
 			break;
 		// FIXME Must be put in the SMTSignature
 		/*
@@ -485,60 +504,50 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
-		final int tag = predicate.getTag();
-		if (tag == Formula.EQUAL
-				&& predicate.getRight().getType() instanceof BooleanType) {
-			final SMTFormula[] children = smtFormulas(predicate.getLeft(),
+		switch (predicate.getTag()) {
+		case Formula.EQUAL: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			this.smtNode = sf.makeIff(children);
-		} else {
-			final SMTTerm[] children;
-			// TODO When membership translation implemented
-			// if (tag == Formula.IN || tag == Formula.NOTIN) {
-			// children = smtTerms(predicate.getRight(), predicate.getLeft());
-			// } else {
-			children = smtTerms(predicate.getLeft(), predicate.getRight());
-			// }
-			switch (predicate.getTag()) {
-			case Formula.NOTEQUAL:
-				// this.smtNode = sf.makeNotEqual(children);
-				break;
-			case Formula.EQUAL:
-				// Check Type of equality members
-				// final Type type = predicate.getLeft().getType();
+			if (predicate.getLeft().getType() instanceof BooleanType) {
+				final SMTFormula[] childrenFormulas = sf
+						.convertVeritTermsIntoFormulas(children);
+				this.smtNode = sf.makeIff(childrenFormulas);
+			} else {
+				this.smtNode = sf.makeEqual(children);
+			}
+		}
+		case Formula.NOTEQUAL: {
+			// this.smtNode = sf.makeNotEqual(children);
+			break;
+		}
+		case Formula.LT: {
 
-				// FIXME is this correct? why was this done?
-				// if (type instanceof IntegerType) {
-				// this.smtNode = sf.makeEqual(children);
-				// } else { // FIXME document this... should be as above in all
-				// cases
-				// this.smtNode = sf.makeMacroFormula(SMTNode.MACRO_FORMULA,
-				// "=", children, false);
-				// }
-				break;
-			case Formula.LT:
-				// this.smtNode = sf.makeLesserThan(children);
-				break;
-			case Formula.LE:
-				// this.smtNode = sf.makeLesserEqual(children);
-				break;
-			case Formula.GT:
-				// this.smtNode = sf.makeGreaterThan(children);
-				break;
-			case Formula.GE:
-				// this.smtNode = sf.makeGreaterEqual(children);
-				break;
+			// this.smtNode = sf.makeLesserThan(children);
+			break;
+		}
+		case Formula.LE: {
+			// this.smtNode = sf.makeLesserEqual(children);
+			break;
+		}
+		case Formula.GT: {
+			// this.smtNode = sf.makeGreaterThan(children);
+			break;
+		}
+		case Formula.GE: {
+			// this.smtNode = sf.makeGreaterEqual(children);
+			break;
 			// TODO when membership translation implemented
 			/*
 			 * case Formula.IN: break; case Formula.NOTIN: break;
 			 */
-			default:
-				/**
-				 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
-				 * produced by ppTrans.
-				 */
-				throw new IllegalTagException(tag);
-			}
+		}
+		default: {
+			/**
+			 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be produced by
+			 * ppTrans.
+			 */
+			throw new IllegalTagException(predicate.getTag());
+		}
 		}
 	}
 
@@ -562,7 +571,39 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
-		// TODO Auto-generated method stub
+		final SMTTerm[] children = smtTerms(expression.getChildren());
+		final int tag = expression.getTag();
+		switch (tag) {
+		case Formula.PLUS:
+			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.PLUS), children, signature);
+			break;
+		case Formula.MUL:
+			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MUL), children, signature);
+			break;
+		case Formula.BUNION:
+			this.signature.addMacro(SMTMacros.BUNION_MACRO);
+			smtNode = sf.makeMacroTerm(SMTVeriTOperator.BUNION, children);
+			break;
+		case Formula.BINTER:
+			this.signature.addMacro(SMTMacros.BINTER_MACRO);
+			smtNode = sf.makeMacroTerm(SMTVeriTOperator.BINTER, children);
+			break;
+		case Formula.FCOMP:
+			this.signature.addMacro(SMTMacros.FCOMP);
+			smtNode = sf.makeMacroTerm(SMTVeriTOperator.FCOMP, children);
+			break;
+		case Formula.OVR:
+			this.signature.addMacro(SMTMacros.REL_OVR);
+			smtNode = sf.makeMacroTerm(SMTVeriTOperator.OVR, children);
+			break;
+		default:
+			/**
+			 * , BCOMP tag cannot be produced by VeriT pre-processing.
+			 */
+			throw new IllegalTagException(tag);
+		}
 
 	}
 
@@ -598,8 +639,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
-		// TODO Auto-generated method stub
-
+		smtNode = sf.makeConstant(
+				this.signature.getSMTVariable(identifierExpression.getName()),
+				this.signature);
 	}
 
 	@Override
@@ -651,7 +693,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Just for tests
+	 * Just for tests.
 	 * 
 	 * @param typeEnvironment
 	 * @return
@@ -665,10 +707,18 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return translator.getSignature();
 	}
 
+	/**
+	 * 
+	 * @return The translator signature.
+	 */
 	public SMTSignatureVerit getSignature() {
 		return signature;
 	}
 
+	/**
+	 * 
+	 * @param signature The signature to be set in the translator.
+	 */
 	public void setSignature(SMTSignatureVerit signature) {
 		this.signature = signature;
 	}

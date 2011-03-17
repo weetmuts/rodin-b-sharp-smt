@@ -215,8 +215,7 @@ public class RunProverTestWithPP extends AbstractTests {
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForZ3Test();
 
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
+		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
 

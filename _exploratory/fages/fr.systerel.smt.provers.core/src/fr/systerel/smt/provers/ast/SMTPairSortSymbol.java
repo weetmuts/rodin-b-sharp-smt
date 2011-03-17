@@ -11,6 +11,13 @@ public class SMTPairSortSymbol extends SMTSortSymbol {
 		this.source = source;
 		this.target = target;
 	}
+	
+	SMTPairSortSymbol(String symbolName, SMTSortSymbol source,
+			SMTSortSymbol target) {
+		super(symbolName, false);
+		this.source = source;
+		this.target = target;
+	}
 
 	@Override
 	public String toString() {

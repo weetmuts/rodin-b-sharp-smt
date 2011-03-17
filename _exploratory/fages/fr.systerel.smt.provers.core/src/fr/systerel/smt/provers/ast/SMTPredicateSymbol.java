@@ -37,6 +37,13 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 	}
+	
+	public SMTPredicateSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[]) {
+		super(symbolName, false);
+		this.argSorts = argSorts.clone();
+		
+	}
 
 	public boolean isPropositional() {
 		return argSorts.length == 0;

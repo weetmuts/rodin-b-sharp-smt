@@ -184,7 +184,7 @@ public class SMTTheory {
 		private static final String BOOLS = "Bools";
 
 		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-				SMTSymbol.BOOL, PREDEFINED);
+				SMTSymbol.BOOL_SORT, PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { BOOL };
 
 		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL, BOOL };
@@ -199,7 +199,7 @@ public class SMTTheory {
 				"FALSE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
 
 		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
-				SMTSymbol.BOOL, EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.BOOL_SORT, EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CSTE, TRUE,
 				FALSE };
 

@@ -10,11 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,6 +25,22 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
+	}
+
+	public void addMacro(final String macro) {
+		macros.add(macro);
+	}
+
+	public SMTFunctionSymbol getSMTVariable(final String identifierName) {
+		for (SMTFunctionSymbol functionSymbol : funs) {
+			if (functionSymbol.name.equals(identifierName)) {
+				return functionSymbol;
+			}
+		}
+		throw new IllegalArgumentException(
+				"The translation found a variable with the name: "
+						+ identifierName
+						+ ",which was not translated and saved in the SMTSignature. It's  problem and should not happen.");
 	}
 
 	private void extramacrosSection(final StringBuilder sb) {

@@ -50,6 +50,16 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		this.associative = associative;
 	}
 
+	public SMTFunctionSymbol(final String symbolName,
+			final SMTSortSymbol argSorts[], final SMTSortSymbol resultSort,
+			final boolean associative, final boolean predefined, boolean isN_ARY) {
+		super(symbolName, predefined);
+		this.argSorts = argSorts.clone();
+		// Must not be null
+		this.resultSort = resultSort;
+		this.associative = associative;
+	}
+
 	/**
 	 * If the argSorts tab is empty, then this symbol is a base term: function
 	 * constant.

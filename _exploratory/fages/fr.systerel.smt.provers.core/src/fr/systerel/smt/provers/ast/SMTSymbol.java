@@ -18,7 +18,8 @@ public abstract class SMTSymbol {
 	protected final boolean predefined;
 
 	public static final String INT = "Int";
-	public static final String BOOL = "Bool";
+	public static final String BOOL_SORT = "Bool";
+	public static final String VERIT_BOOL_TYPE = "boolean";
 	public static final String EQUAL = "=";
 	public static final String NOTEQUAL = "!=";
 	public static final String LT = "<";
@@ -30,10 +31,34 @@ public abstract class SMTSymbol {
 	public static final String PLUS = "+";
 	public static final String MUL = "*";
 
+	// VeriT Extended SMT-LIB Symbols
+	public static final String BUNION = "union";
+	public static final String BINTER = "inter";
+	public static final String EMPTY = "empty";
+	public static final String INTER = "inter";
+	public static final String SETMINUS = "setminus";
+	public static final String IN = "in";
+	public static final String SUBSETEQ = "subseteq";
+	public static final String SUBSET = "subset";
+	public static final String RANGE = "range";
+	public static final String PROD = "prod";
+	public static final String DOM = "dom";
+	public static final String RAN = "ran";
+	public static final String IMG = "img";
+	public static final String DOMR = "domr";
+	public static final String DOMS = "doms";
+	public static final String RANR = "ranr";
+	public static final String RANS = "rans";
+	public static final String INV = "inv";
+	public static final String COMP = "comp";
+	public static final String OVR = "ovr";
+	public static final String ID = "id";
+	public static final String FCOMP = "comp";
+
 	public static final String BENCHMARK = "benchmark";
 	public static final String LOGIC = "logic";
 	public static final String THEORY = "theory";
-	
+
 	public static final boolean PREDEFINED = true;
 
 	SMTSymbol(final String symbolName, final boolean predefined) {
@@ -58,7 +83,9 @@ public abstract class SMTSymbol {
 		buffer.append(toString());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -69,7 +96,9 @@ public abstract class SMTSymbol {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

@@ -204,6 +204,34 @@ public class SMTLogic {
 	}
 
 	/**
+	 * This class represents VeriT extended SMT operators.
+	 */
+	public static enum SMTVeriTOperator {
+		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
+				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
+				SMTSymbol.UMINUS), BUNION(SMTSymbol.BUNION), BINTER(
+				SMTSymbol.BINTER), EMPTY(SMTSymbol.EMPTY), INTER(
+				SMTSymbol.INTER), SETMINUS(SMTSymbol.SETMINUS), IN(SMTSymbol.IN), SUBSETEQ(
+				SMTSymbol.SUBSETEQ), SUBSET(SMTSymbol.SUBSET), RANGE(
+				SMTSymbol.RANGE), PROD(SMTSymbol.PROD), DOM(SMTSymbol.DOM), RAN(
+				SMTSymbol.RAN), IMG(SMTSymbol.IMG), DOMR(SMTSymbol.DOMR), DOMS(
+				SMTSymbol.DOMS), RANR(SMTSymbol.RANR), RANS(SMTSymbol.RANS), INV(
+				SMTSymbol.INV), COMP(SMTSymbol.COMP), OVR(SMTSymbol.OVR), ID(
+				SMTSymbol.ID), FCOMP(SMTSymbol.FCOMP);
+
+		private String symbol;
+
+		SMTVeriTOperator(final String symbol) {
+			this.symbol = symbol;
+		}
+
+		@Override
+		public String toString() {
+			return symbol;
+		}
+	}
+
+	/**
 	 * "Version 1.2 of the SMT-LIB format adopts as its underlying logic a basic
 	 * many-sorted version of first-order logic with equality. This logic allows
 	 * the definition of sorts and of sorted symbols but does not allow more
