@@ -13,10 +13,8 @@ package br.ufrn.smt.solver.translation;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eventb.core.ast.AtomicExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.DefaultInspector;
-import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.Predicate;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
+import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 
 /**
  * The SMT logics.
@@ -209,15 +210,19 @@ public class SMTLogic {
 	public static enum SMTVeriTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), BUNION(SMTSymbol.BUNION), BINTER(
-				SMTSymbol.BINTER), EMPTY(SMTSymbol.EMPTY), INTER(
-				SMTSymbol.INTER), SETMINUS(SMTSymbol.SETMINUS), IN(SMTSymbol.IN), SUBSETEQ(
-				SMTSymbol.SUBSETEQ), SUBSET(SMTSymbol.SUBSET), RANGE(
-				SMTSymbol.RANGE), PROD(SMTSymbol.PROD), DOM(SMTSymbol.DOM), RAN(
-				SMTSymbol.RAN), IMG(SMTSymbol.IMG), DOMR(SMTSymbol.DOMR), DOMS(
-				SMTSymbol.DOMS), RANR(SMTSymbol.RANR), RANS(SMTSymbol.RANS), INV(
-				SMTSymbol.INV), COMP(SMTSymbol.COMP), OVR(SMTSymbol.OVR), ID(
-				SMTSymbol.ID), FCOMP(SMTSymbol.FCOMP);
+				SMTSymbol.UMINUS), BUNION(SMTMacroSymbol.BUNION), BINTER(
+				SMTMacroSymbol.BINTER), EMPTY(SMTMacroSymbol.EMPTY), INTER(
+				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
+				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
+				SMTMacroSymbol.SUBSET), RANGE(SMTMacroSymbol.RANGE), PROD(
+				SMTMacroSymbol.PROD), DOM(SMTMacroSymbol.DOM), RAN(
+				SMTMacroSymbol.RAN), IMG(SMTMacroSymbol.IMG), DOMR(
+				SMTMacroSymbol.DOMR), DOMS(SMTMacroSymbol.DOMS), RANR(
+				SMTMacroSymbol.RANR), RANS(SMTMacroSymbol.RANS), INV(
+				SMTMacroSymbol.INV), COMP(SMTMacroSymbol.COMP), OVR(
+				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
+				SMTMacroSymbol.FCOMP), EMPTY_PAIR(SMTMacroSymbol.EMPTY_PAIR), ENUM(
+				SMTMacroSymbol.ENUM);
 
 		private String symbol;
 
@@ -298,5 +303,19 @@ public class SMTLogic {
 		public static AUFLIA getInstance() {
 			return INSTANCE;
 		}
+	}
+
+	public SMTFunctionSymbol getIntegerSortCst() {
+		for (SMTTheory theory : theories) {
+			if (theory instanceof Ints) {
+				SMTSortSymbol integerSort = ((Ints) theory).getIntegerSort();
+				SMTSortSymbol[] argSorts = {};
+				SMTFunctionSymbol integerSortFunction = new SMTFunctionSymbol(
+						"Int", argSorts, integerSort, false, true);
+				return integerSortFunction;
+			}
+		}
+		throw new IllegalArgumentException(
+				"The Int sort is not declared in the signature of this benchmark");
 	}
 }

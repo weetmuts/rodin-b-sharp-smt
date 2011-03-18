@@ -315,7 +315,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 
 	@Test
-	@Ignore("Not yet implemented")
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(MS a A)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");

@@ -74,10 +74,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String predStr, final String expectedSMTNode,
 			final String failMessage) throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
-		// TODO adapter et serialiser le message d'erreur sur le predicat
-		// d'entrée
-		assertTrue("\'" + predStr + "\' isn't a valid input.",
-				Translator.isInGoal(pred));
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(pred);
 
@@ -490,6 +486,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 */
 		testTranslationV1_2Default("a ∗ b ∗ c = a ∗ c ∗ b",
 				"(= (* a b c) (* a c b))");
+	}
+
+	@Test
+	public void testAssociativeExpression() {
+
+		testTranslationV1_2Default("s = {}", "(= s emptyset)");
+		// testTranslationV1_2Default("r = \u2205\u2982ℙ(R)", "(= r emptyset");
+
 	}
 
 	/**

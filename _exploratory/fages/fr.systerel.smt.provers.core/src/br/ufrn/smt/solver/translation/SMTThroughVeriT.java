@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.AssociativeExpression;
-import org.eventb.core.ast.AssociativePredicate;
 import org.eventb.core.ast.AtomicExpression;
 import org.eventb.core.ast.BecomesEqualTo;
 import org.eventb.core.ast.BecomesMemberOf;
@@ -37,6 +36,7 @@ import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.QuantifiedUtil;
@@ -54,6 +54,7 @@ import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+import fr.systerel.smt.provers.ast.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.SMTMacros;
 import fr.systerel.smt.provers.ast.SMTPairSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -175,9 +176,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * throws an {@link IllegalArgumentException}. Default: It translates and
 	 * return the type.
 	 * 
-	 * @param varName The name of the variable
-	 * @param type The type of the variable
-	 * @return the translated {@link SMTSortSymbol} of one of the types of a CartesianProduct Type.
+	 * @param varName
+	 *            The name of the variable
+	 * @param type
+	 *            The type of the variable
+	 * @return the translated {@link SMTSortSymbol} of one of the types of a
+	 *         CartesianProduct Type.
 	 * 
 	 * @see #parsePairTypes(String, Type, Type)
 	 */
@@ -194,12 +198,17 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates a CartesianProductType. It translates both the source and the target types.
+	 * This method translates a CartesianProductType. It translates both the
+	 * source and the target types.
 	 * 
-	 * @param varName The name of the variable.
-	 * @param sourceType The source type of the variable type.
-	 * @param targetType The target type of the variable type.
-	 * @return the translated @link {@link SMTPairSortSymbol} of the variable type.
+	 * @param varName
+	 *            The name of the variable.
+	 * @param sourceType
+	 *            The source type of the variable type.
+	 * @param targetType
+	 *            The target type of the variable type.
+	 * @return the translated @link {@link SMTPairSortSymbol} of the variable
+	 *         type.
 	 */
 	private SMTPairSortSymbol parsePairTypes(String varName, Type sourceType,
 			Type targetType) {
@@ -220,7 +229,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * This method translates the signature.
 	 * 
-	 * @param typeEnvironment The Event-B Type Environment for the translation.
+	 * @param typeEnvironment
+	 *            The Event-B Type Environment for the translation.
 	 */
 	public void translateSignature(ITypeEnvironment typeEnvironment) {
 		boolean insertPairDecl = false;
@@ -300,7 +310,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	/**
 	 * This method translates one predicate.
-	 * @param predicate The Rodin predicate to be translated.
+	 * 
+	 * @param predicate
+	 *            The Rodin predicate to be translated.
 	 * @return the translated SMT Formula from the predicate
 	 */
 	private SMTFormula translate(Predicate predicate) {
@@ -345,8 +357,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return the bound identifiers saved in the translator.
@@ -354,9 +365,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public ArrayList<String> getBoundIdentifers() {
 		return boundIdentifers;
 	}
- 
+
 	/**
 	 * Set the bound identifiers in the translator
+	 * 
 	 * @param boundIdentifers
 	 */
 	public void setBoundIdentifers(ArrayList<String> boundIdentifers) {
@@ -365,6 +377,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	/**
 	 * Get the free identifiers of the translator
+	 * 
 	 * @return
 	 */
 	public ArrayList<String> getFreeIdentifiers() {
@@ -372,7 +385,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 *  Set the free identifiers of the translator
+	 * Set the free identifiers of the translator
+	 * 
 	 * @param freeIdentifiers
 	 */
 	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
@@ -583,20 +597,32 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		case Formula.BUNION:
-			this.signature.addMacro(SMTMacros.BUNION_MACRO);
-			smtNode = sf.makeMacroTerm(SMTVeriTOperator.BUNION, children);
+			this.signature.addMacro(SMTMacroSymbol.BUNION,
+					SMTMacros.BUNION_MACRO);
+			smtNode = sf
+					.makeMacroTerm(
+							SMTMacros.getMacroSymbol(SMTVeriTOperator.BUNION),
+							children);
 			break;
 		case Formula.BINTER:
-			this.signature.addMacro(SMTMacros.BINTER_MACRO);
-			smtNode = sf.makeMacroTerm(SMTVeriTOperator.BINTER, children);
+			this.signature.addMacro(SMTMacroSymbol.BINTER,
+					SMTMacros.BINTER_MACRO);
+			smtNode = sf
+					.makeMacroTerm(
+							SMTMacros.getMacroSymbol(SMTVeriTOperator.BINTER),
+							children);
 			break;
 		case Formula.FCOMP:
-			this.signature.addMacro(SMTMacros.FCOMP);
-			smtNode = sf.makeMacroTerm(SMTVeriTOperator.FCOMP, children);
+			this.signature
+					.addMacro(SMTMacroSymbol.FCOMP, SMTMacros.FCOMP_MACRO);
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.FCOMP), children);
 			break;
 		case Formula.OVR:
-			this.signature.addMacro(SMTMacros.REL_OVR);
-			smtNode = sf.makeMacroTerm(SMTVeriTOperator.OVR, children);
+			this.signature
+					.addMacro(SMTMacroSymbol.OVR, SMTMacros.REL_OVR_MACRO);
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.OVR), children);
 			break;
 		default:
 			/**
@@ -627,8 +653,25 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitSetExtension(SetExtension expression) {
-		// TODO Auto-generated method stub
-
+		SMTTerm[] children = {};
+		if (expression.getChildCount() == 0) {
+			if (expression.getType() instanceof ProductType) {
+				this.signature.addMacro(SMTMacroSymbol.EMPTY_PAIR,
+						SMTMacros.EMPTYSET_PAIR_MACRO);
+				smtNode = sf.makeMacroTerm(
+						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY_PAIR),
+						children);
+			} else {
+				this.signature.addMacro(SMTMacroSymbol.EMPTY,
+						SMTMacros.EMPTYSET_MACRO);
+				smtNode = sf.makeMacroTerm(
+						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY),
+						children);
+			}
+		} else {
+			children = smtTerms(expression.getMembers());
+			SMTMacros.addEnumerationMacroInSignature(signature, children);
+		}
 	}
 
 	@Override
@@ -639,15 +682,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
-		smtNode = sf.makeConstant(
-				this.signature.getSMTVariable(identifierExpression.getName()),
+		smtNode = sf.makeVeriTTerm(
+				this.signature.getSMTSymbol(identifierExpression.getName()),
 				this.signature);
-	}
-
-	@Override
-	public void visitAssociativePredicate(AssociativePredicate predicate) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -717,7 +754,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	/**
 	 * 
-	 * @param signature The signature to be set in the translator.
+	 * @param signature
+	 *            The signature to be set in the translator.
 	 */
 	public void setSignature(SMTSignatureVerit signature) {
 		this.signature = signature;

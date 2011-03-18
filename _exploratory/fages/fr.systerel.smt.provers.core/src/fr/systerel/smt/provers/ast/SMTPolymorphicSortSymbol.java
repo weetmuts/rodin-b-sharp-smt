@@ -1,13 +1,13 @@
 package fr.systerel.smt.provers.ast;
 
-public class SMTGenericSortSymbol extends SMTSortSymbol {
+public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 
-	SMTGenericSortSymbol(String symbolName, boolean predefined) {
+	SMTPolymorphicSortSymbol(String symbolName, boolean predefined) {
 		super(symbolName, predefined);
 		// TODO Auto-generated constructor stub
 	}
 	
-	SMTGenericSortSymbol(String symbolName) {
+	SMTPolymorphicSortSymbol(String symbolName) {
 		super(symbolName, false);
 		// TODO Auto-generated constructor stub
 	}

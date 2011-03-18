@@ -22,10 +22,6 @@ public class SMTFunApplication extends SMTTerm {
 	final SMTFunctionSymbol symbol;
 	final SMTTerm[] args;
 
-	// TODO Assert that terms are as many as specified in function symbol rank
-	// and that their sorts are the same (a method to put in SMTSignature and to
-	// be
-	// called by the makeFun method of the factory)
 	public SMTFunApplication(final SMTFunctionSymbol symbol,
 			final SMTTerm terms[]) {
 		verifyFunctionRank(symbol, terms);

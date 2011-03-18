@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.eventb.core.ast.AssociativeExpression;
-import org.eventb.core.ast.AssociativePredicate;
 import org.eventb.core.ast.AtomicExpression;
 import org.eventb.core.ast.BecomesEqualTo;
 import org.eventb.core.ast.BecomesMemberOf;
@@ -453,24 +452,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * ppTrans.
 			 */
 			throw new IllegalTagException(tag);
-		}
-	}
-
-	/**
-	 * This method translates an Event-B associative predicate into an SMT node.
-	 */
-	@Override
-	public void visitAssociativePredicate(AssociativePredicate predicate) {
-		final SMTFormula[] children = smtFormulas(predicate.getChildren());
-		switch (predicate.getTag()) {
-		case Formula.LAND:
-			smtNode = sf.makeAnd(children);
-			break;
-		case Formula.LOR:
-			smtNode = sf.makeOr(children);
-			break;
-		default:
-			throw new IllegalTagException(predicate.getTag());
 		}
 	}
 

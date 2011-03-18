@@ -12,6 +12,7 @@ package br.ufrn.smt.solver.translation;
 
 import java.util.List;
 
+import org.eventb.core.ast.AssociativePredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
@@ -21,11 +22,12 @@ import org.eventb.core.ast.Predicate;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * This class is a translator from Event-B syntax into SMT-LIB syntax.
  */
-public abstract class TranslatorV1_2 extends Translator {	
+public abstract class TranslatorV1_2 extends Translator {
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
 	 * benchmark's signature, that is, free identifiers and given types.
@@ -37,7 +39,7 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 		for (GivenType type : predicate.getGivenTypes()) {
 			typeEnvironment.addGivenSet(type.getName());
-		}				
+		}
 	}
 
 	/**
@@ -123,5 +125,23 @@ public abstract class TranslatorV1_2 extends Translator {
 			smtFormulas[i] = smtFormula(formulas[i]);
 		}
 		return smtFormulas;
+	}
+
+	/**
+	 * This method translates an Event-B associative predicate into an SMT node.
+	 */
+	@Override
+	public void visitAssociativePredicate(AssociativePredicate predicate) {
+		final SMTFormula[] children = smtFormulas(predicate.getChildren());
+		switch (predicate.getTag()) {
+		case Formula.LAND:
+			smtNode = sf.makeAnd(children);
+			break;
+		case Formula.LOR:
+			smtNode = sf.makeOr(children);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
 	}
 }

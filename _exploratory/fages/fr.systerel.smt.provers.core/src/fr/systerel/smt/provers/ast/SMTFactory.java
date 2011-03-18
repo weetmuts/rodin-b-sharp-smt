@@ -162,25 +162,8 @@ public final class SMTFactory {
 		return new SMTFunApplication(mul, args);
 	}
 
-	public SMTTerm makeMacroTerm(SMTVeriTOperator macro, final SMTTerm[] args) {
-		switch (macro) {
-		case BUNION: {
-			return SMTMacros.BUNION_TERM;
-		}
-		case BINTER: {
-			return SMTMacros.BINTER_TERM;
-		}
-		case FCOMP: {
-			return SMTMacros.FCOMP_TERM;
-		}
-		case OVR: {
-			return SMTMacros.REL_OVR_TERM;
-		}
-		default:
-			// This statement shall never be reached
-			throw new IllegalArgumentException("Macro: " + macro.toString()
-					+ " is not a valid macro");
-		}
+	public SMTTerm makeMacroTerm(SMTMacroSymbol macro, final SMTTerm[] args) {
+		return new SMTMacroTerm(macro, args);
 	}
 
 	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
@@ -340,6 +323,20 @@ public final class SMTFactory {
 		return makeFunApplication(functionSymbol, EMPTY_TERM, signature);
 	}
 
+	public SMTTerm makeVeriTTerm(SMTSymbol smtVariable,
+			SMTSignatureVerit signature) {
+		if (smtVariable instanceof SMTPredicateSymbol) {
+			return new SMTVeriTTerm((SMTPredicateSymbol) smtVariable);
+
+		} else if (smtVariable instanceof SMTFunctionSymbol) {
+			return makeFunApplication((SMTFunctionSymbol) smtVariable,
+					EMPTY_TERM, signature);
+		} else {
+			throw new IllegalArgumentException(
+					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");
+		}
+	}
+
 	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			SMTSignature signature) {
 		return makeAtom(predicateSymbol, EMPTY_TERM, signature);
@@ -356,8 +353,6 @@ public final class SMTFactory {
 				if (term instanceof SMTFunApplication) {
 					SMTFunApplication function = (SMTFunApplication) term;
 					SMTSortSymbol[] sortSymbols = new SMTSortSymbol[function.args.length];
-					SMTTerm[] argTerms = function.args;
-
 					for (int j = 0; j < function.args.length; j++) {
 						sortSymbols[j] = function.args[j].getSort();
 					}
@@ -374,4 +369,5 @@ public final class SMTFactory {
 		}
 		return formulas;
 	}
+
 }

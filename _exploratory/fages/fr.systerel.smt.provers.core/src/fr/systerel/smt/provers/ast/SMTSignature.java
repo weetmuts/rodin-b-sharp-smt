@@ -46,7 +46,7 @@ import java.util.TreeSet;
 public abstract class SMTSignature {
 	private final SMTLogic logic;
 
-	private final static String NEW_SYMBOL_NAME = "NSYMB";
+	protected final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
 
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
@@ -219,7 +219,7 @@ public abstract class SMTSignature {
 	 * This method is used to get the symbol names already in use from a set of
 	 * SMT-LIB symbols
 	 */
-	private static Set<String> getSymbolNames(
+	protected static Set<String> getSymbolNames(
 			final Set<? extends SMTSymbol> symbols) {
 		final Set<String> symbolNames = new HashSet<String>();
 		for (final SMTSymbol symbol : symbols) {
@@ -296,7 +296,7 @@ public abstract class SMTSignature {
 	 */
 	// TODO check which prover needs the "\'" simplification, and document it
 	// here
-	private static String freshName(Set<String> symbols, String name) {
+	protected static String freshName(Set<String> symbols, String name) {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
 
@@ -418,7 +418,7 @@ public abstract class SMTSignature {
 		Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
-		names.addAll(getSymbolNames(preds));	
+		names.addAll(getSymbolNames(preds));
 		final String freshName = freshName(names, name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
@@ -458,7 +458,7 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public void addConstant(final SMTFunctionSymbol constant) {		
+	public void addConstant(final SMTFunctionSymbol constant) {
 		funs.add(constant);
 	}
 
