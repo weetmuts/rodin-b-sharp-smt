@@ -13,12 +13,15 @@ package br.ufrn.smt.solver.translation;
 import java.util.List;
 
 import org.eventb.core.ast.AssociativePredicate;
+import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTTerm;
@@ -144,4 +147,47 @@ public abstract class TranslatorV1_2 extends Translator {
 			throw new IllegalTagException(predicate.getTag());
 		}
 	}
+	
+	@Override
+	public void visitBinaryPredicate(BinaryPredicate predicate) {
+		final SMTFormula[] children = smtFormulas(predicate.getLeft(),
+				predicate.getRight());
+		switch (predicate.getTag()) {
+		case Formula.LIMP:
+			smtNode = sf.makeImplies(children);
+			break;
+		case Formula.LEQV:
+			smtNode = sf.makeIff(children);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
+
+	}
+	
+	/**
+	 * This method translates an Event-B unary predicate into an SMT node.
+	 */
+	@Override
+	public void visitUnaryPredicate(UnaryPredicate predicate) {
+		final SMTFormula[] children = new SMTFormula[] { smtFormula(predicate
+				.getChild()) };
+		switch (predicate.getTag()) {
+		case Formula.NOT:
+			smtNode = sf.makeNot(children);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
+	}
+	
+	/**
+	 * This method translates an Event-B integer literal into an SMT node.
+	 */
+	@Override
+	public void visitIntegerLiteral(final IntegerLiteral expression) {
+		smtNode = sf.makeNumeral(expression.getValue());
+	}
+	
+	
 }

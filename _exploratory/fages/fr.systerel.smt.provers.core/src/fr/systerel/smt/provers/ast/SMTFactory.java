@@ -12,8 +12,6 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
-import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
-
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -91,11 +89,16 @@ public final class SMTFactory {
 		return new SMTSortSymbol(symbolName, false);
 	}
 
-	public SMTPairSortSymbol makePairSortSymbol(final String sortSymbolName,
+	public SMTSortSymbol makePairSortSymbol(final String sortSymbolName,
 			SMTSortSymbol sourceSymbol, SMTSortSymbol targetSymbol) {
-		return new SMTPairSortSymbol(sortSymbolName, sourceSymbol,
-				targetSymbol, false);
 
+		StringBuffer sb = new StringBuffer();
+		sb.append("(Pair ");
+		sb.append(sourceSymbol.toString());
+		sb.append(" ");
+		sb.append(targetSymbol.toString());
+		sb.append(")");
+		return new SMTSortSymbol(sb.toString(), false);
 	}
 
 	/**
@@ -115,6 +118,11 @@ public final class SMTFactory {
 	public SMTFormula makeNotEqual(final SMTTerm[] args) {
 		final SMTFormula[] tabEqual = { makeEqual(args) };
 		return makeNot(tabEqual);
+	}
+
+	public SMTFormula makeNotIff(final SMTFormula[] args) {
+		final SMTFormula[] formulas = { makeIff(args) };
+		return makeNot(formulas);
 	}
 
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
@@ -318,6 +326,13 @@ public final class SMTFactory {
 		return new SMTAtom(predicateSymbol, args);
 	}
 
+	public SMTFormula makeVeriTMacroAtom(
+			final SMTPredicateSymbol predicateSymbol, final SMTTerm[] args,
+			SMTSignature signature) {
+		// TODO Insert a method here to verify signature of the macros
+		return new SMTAtom(predicateSymbol, args);
+	}
+
 	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
 			SMTSignature signature) {
 		return makeFunApplication(functionSymbol, EMPTY_TERM, signature);
@@ -346,7 +361,7 @@ public final class SMTFactory {
 		SMTFormula[] formulas = new SMTFormula[children.length];
 		int i = 0;
 		for (SMTTerm term : children) {
-			if (!term.getSort().toString().equals(SMTSymbol.VERIT_BOOL_TYPE)) {
+			if (!term.getSort().toString().equals(SMTSymbol.BOOL_SORT)) {
 				throw new IllegalArgumentException(
 						"VeriT translation does not accept equal operator under terms with different operators");
 			} else {
@@ -368,6 +383,12 @@ public final class SMTFactory {
 			++i;
 		}
 		return formulas;
+	}
+
+	public SMTTerm makeVeriTTermOperatorApplication(SMTFunctionSymbol operator,
+			SMTTerm[] args, SMTSignatureVerit signature) {
+		signature.verifyFunctionSignature(operator);
+		return new SMTFunApplication(operator, args);
 	}
 
 }

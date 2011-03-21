@@ -52,8 +52,13 @@ public class SMTAtom extends SMTFormula {
 			// Verify if the sort symbols are the same
 			for (int i = 0; i < terms.length; i++) {
 				SMTSortSymbol argSort = terms[i].getSort();
+				SMTSortSymbol expectedSortArg = expectedSortArgs[i];
 
-				if (!expectedSortArgs[i].equals(argSort)) {
+				if (expectedSortArgs[i] instanceof SMTPolymorphicSortSymbol) {
+					continue;
+				}
+
+				if (!expectedSortArg.equals(argSort)) {
 					throw incompatiblePredicateRankException(symbol, terms);
 				}
 			}

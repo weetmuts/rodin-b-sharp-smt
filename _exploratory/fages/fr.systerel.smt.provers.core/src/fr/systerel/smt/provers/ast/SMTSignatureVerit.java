@@ -52,6 +52,7 @@ public class SMTSignatureVerit extends SMTSignature {
 						+ ", which was not translated and saved in the SMTSignature. It should not happen.");
 	}
 
+		
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			sb.append("(extramacros(");
@@ -119,6 +120,7 @@ public class SMTSignatureVerit extends SMTSignature {
 				!SMTSymbol.PREDEFINED));
 	}
 
+	@Override
 	public Set<SMTSortSymbol> getSorts() {
 		return this.sorts;
 	}

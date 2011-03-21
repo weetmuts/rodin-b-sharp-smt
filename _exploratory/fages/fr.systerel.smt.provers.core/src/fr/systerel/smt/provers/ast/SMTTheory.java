@@ -76,6 +76,15 @@ public class SMTTheory {
 		 */
 		private final static SMTSortSymbol INT = new SMTSortSymbol(
 				SMTSymbol.INT, PREDEFINED);
+
+		public static SMTSortSymbol getInt() {
+			return INT;
+		}
+
+		public static SMTSortSymbol[] getIntTab() {
+			return INT_TAB;
+		}
+
 		private static final SMTSortSymbol[] SORTS = { INT };
 
 		/**
@@ -177,6 +186,48 @@ public class SMTTheory {
 		@Override
 		public SMTPredicateSymbol getGreaterEqual() {
 			return GE;
+		}
+
+		public static SMTSortSymbol[] getIntIntTab() {
+			return INT_INT_TAB;
+		}
+	}
+
+	public static class VeritPredefinedTheory extends SMTTheory implements
+			ISMTBooleanSort {
+
+		private static final String NAME = "verit_theory";
+
+		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
+				SMTSymbol.BOOL_SORT, PREDEFINED);
+
+		private static final SMTSortSymbol[] SORTS = { BOOL };
+
+		private static final SMTPredicateSymbol[] PREDICATES = {};
+
+		private static SMTFunctionSymbol VERIT_DIVISION = new SMTFunctionSymbol(
+				SMTMacroSymbol.DIV, Ints.getIntIntTab(), Ints.getInt(), false,
+				false);
+
+		private static final SMTFunctionSymbol[] FUNCTIONS = { VERIT_DIVISION };
+
+		protected VeritPredefinedTheory() {
+			super(NAME, SORTS, PREDICATES, FUNCTIONS);
+		}
+
+		private static final VeritPredefinedTheory INSTANCE = new VeritPredefinedTheory();
+
+		public static VeritPredefinedTheory getInstance() {
+			return INSTANCE;
+		}
+
+		@Override
+		public SMTSortSymbol getBooleanSort() {
+			return BOOL;
+		}
+
+		public SMTFunctionSymbol getDivision() {
+			return VERIT_DIVISION;
 		}
 	}
 

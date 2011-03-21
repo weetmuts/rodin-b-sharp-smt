@@ -1,6 +1,6 @@
 package fr.systerel.smt.provers.ast;
 
-public class SMTMacroSymbol extends SMTSymbol {
+public class SMTMacroSymbol extends SMTPredicateSymbol {
 
 	// VeriT Extended SMT-LIB Symbols
 	public static final String BUNION = "union";
@@ -27,23 +27,25 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String FCOMP = "comp";
 	public static final String EMPTY_PAIR = "emptyset2";
 
-	public static final String ENUM = "enum";
+	public static final String DIV = "/";
 
-	SMTSortSymbol[] argSorts;
+	public static final String ENUM = "enum";
+	public static final String MOD = "mod";
+	public static final String RANGE_SUBSTRACION = "rans";
+	public static final String RANGE_RESTRICTION = "ranr";
+	public static final String RELATION = "rel";
+	public static final String TOTAL_RELATION = "totp";
+	public static final String SURJECTIVE_RELATION = "surp";
+	public static final String TOTAL_SURJECTIVE_RELATION = "totsurp";
+	public static final String PARTIAL_FUNCTION = "pfun";
+	public static final String TOTAL_FUNCTION = "tfun";
+	public static final String MAPSTO = "pair";
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
-		super(symbolName, predefined);
-		this.argSorts = args;
+		super(symbolName, args, predefined);
 	}
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args) {
-		super(symbolName, false);
-		this.argSorts = args;
+		super(symbolName, args, false);
 	}
-
-	public boolean isPropositional() {
-		// TODO Auto-generated method stub
-		return argSorts.length == 0;
-	}
-
 }

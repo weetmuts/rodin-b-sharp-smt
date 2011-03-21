@@ -25,7 +25,6 @@ import org.eventb.core.ast.BecomesEqualTo;
 import org.eventb.core.ast.BecomesMemberOf;
 import org.eventb.core.ast.BecomesSuchThat;
 import org.eventb.core.ast.BinaryExpression;
-import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
@@ -40,7 +39,6 @@ import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
-import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
@@ -530,25 +528,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates an Event-B binary predicate into an SMT node.
-	 */
-	@Override
-	public void visitBinaryPredicate(BinaryPredicate predicate) {
-		final SMTFormula[] children = smtFormulas(predicate.getLeft(),
-				predicate.getRight());
-		switch (predicate.getTag()) {
-		case Formula.LIMP:
-			smtNode = sf.makeImplies(children);
-			break;
-		case Formula.LEQV:
-			smtNode = sf.makeIff(children);
-			break;
-		default:
-			throw new IllegalTagException(predicate.getTag());
-		}
-	}
-
-	/**
 	 * This method translates an Event-B bool expression into an SMT node.
 	 */
 	@Override
@@ -561,14 +540,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
-	}
-
-	/**
-	 * This method translates an Event-B integer literal into an SMT node.
-	 */
-	@Override
-	public void visitIntegerLiteral(final IntegerLiteral expression) {
-		smtNode = sf.makeNumeral(expression.getValue());
 	}
 
 	/**

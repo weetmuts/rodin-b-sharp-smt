@@ -21,7 +21,7 @@ public class SMTPairSortSymbol extends SMTSortSymbol {
 
 	@Override
 	public String toString() {
-		return "(Pair " + source.toString() + " " + target.toString() + ")";
+		return name;
 	}
 	
 	@Override

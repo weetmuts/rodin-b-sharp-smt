@@ -18,8 +18,6 @@ import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.eventb.pptrans.Translator;
-
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
@@ -36,7 +34,7 @@ import fr.systerel.smt.provers.ast.SMTSortSymbol;
  * 
  */
 public class TranslationTestsWithVeriT extends AbstractTests {
-	protected static final ITypeEnvironment defaultTe, simpleTe;
+	protected static final ITypeEnvironment defaultTe, simpleTe, errorTe;
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	private SMTSignature signature;
@@ -46,9 +44,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"ℤ ↔ ℤ", "C", "ℤ ↔ (ℤ ↔ ℤ)");
 
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
-				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
-				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		defaultLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ", "b",
+				"ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
+
+		errorTe = mTypeEnvironment("AZ", "ℤ ↔ ℙ(ℤ)");
+
+		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
 
 	private static void testTranslationV1_2Default(final String predStr,
@@ -159,6 +160,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(- Int Int Int)");
 		expectedFunctions.add("(* Int Int)");
 		expectedFunctions.add("(+ Int Int)");
+		expectedFunctions.add("(pair 's 't (Pair 's 't))");
 		Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
 		Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
 		StringBuilder sb = typeEnvironmentFunctionsFail(expectedFunctions,
@@ -238,6 +240,20 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentSorts(expectedSorts);
 	}
 
+	/*
+	 * The purpose of this test is to show that sets of sets are not supported.
+	 */
+	@Test
+	public void testTypeEnvironmenSortErrorTe() {
+		setSignatureForTests(errorTe);
+		Set<String> expectedSorts = new HashSet<String>();
+
+		expectedSorts
+				.add("AZ (Something. The purpose of this test is to show that sets of sets are not supported.");
+
+		testTypeEnvironmentSorts(expectedSorts);
+	}
+
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTe() {
 		setSignatureForTests(simpleTe);
@@ -251,6 +267,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentPredicates(expectedPredicates);
 	}
 
+	/**
+	 * Sets of sets are not supported yet.
+	 */
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
 		setSignatureForTests(defaultTe);
@@ -260,13 +279,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedPredicates.add("(s R)");
 		expectedPredicates.add("(A Int)");
 		expectedPredicates.add("(AB (Pair Int Int))");
-		expectedPredicates.add("(AZ Int)");
-		expectedPredicates.add("(AZ_0 (Pair Int Bool))");
 
 		testTypeEnvironmentPredicates(expectedPredicates);
 	}
 
-	@Test
 	public void testTypeEnvironmentFunctionDefaultTe() {
 		setSignatureForTests(defaultTe);
 		Set<String> expectedFunctions = new HashSet<String>();
@@ -289,26 +305,37 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testPredAssop() {
 
-		testTranslationV1_2Default("(u = v)", "(= u v)");
+		testTranslationV1_2Default("(u = v)", "(iff u v)");
 
 		/**
 		 * land
 		 */
-		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∧ (u = v)",
+				"(and (= a b) (iff u v))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (= u v) (= r s))");
+				"(and (= a b) (iff u v) (= r s))");
 		/**
 		 * lor
 		 */
-		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∨ (u = v)",
+				"(or (= a b) (iff u v))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (= u v) (= r s))");
+				"(or (= a b) (iff u v) (= r s))");
+	}
+
+	/**
+	 * "pred-boolequ with constants only"
+	 */
+	@Test
+	public void testPredBoolEquCnst() {
+		testTranslationV1_2Default("u = v", "(iff u v)");
+
 	}
 
 	/**
@@ -316,7 +343,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = v", "(= u v)");
 		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
 		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
 	}
@@ -455,8 +481,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
-	// (expected = IllegalArgumentException.class)
-	public void testArithExprBinopUnsupported() { // TODO Add exponential binop
+	public void testArithExprBinopExponentialUnsupported() { // TODO Add
+																// exponential
+																// binop
 		/**
 		 * expn
 		 */
@@ -469,6 +496,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * mod
 		 */
 		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
+	}
+
+	@Test
+	public void testArithExprBinopUnsupported() {
+		/**
+		 * div
+		 */
+		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		/**
+		 * mod
+		 */
+		testTranslationV1_2Default("a mod b = c", "(= (mod a b) c)");
 	}
 
 	/**
@@ -517,11 +556,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
-		testTranslationV1_2Default("a ∈ A", "(MS a A)");
+		testTranslationV1_2Default("a ∈ A", "(in a A)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(in (pair a b) AB)");
-		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(in (pair a Int) AZ)");
-		testTranslationV1_2Default("a↦ℤ↦BOOL_SORT ∈ X",
-				"(in (pair (pair a Int) Bool) X)");
 	}
 
 	/**

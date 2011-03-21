@@ -44,7 +44,7 @@ import java.util.TreeSet;
 // SMTSignature2_0. This might be necessary if naming rules are not the same in
 // the two versions of the language.
 public abstract class SMTSignature {
-	private final SMTLogic logic;
+	protected final SMTLogic logic;
 
 	protected final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
@@ -245,7 +245,7 @@ public abstract class SMTSignature {
 	private void loadLogicSymbols() {
 		sorts.addAll(logic.getSorts());
 		preds.addAll(logic.getPredicates());
-		funs.addAll(logic.getFunctions());
+		funs.addAll(logic.getFunctions());	
 	}
 
 	/**

@@ -21,7 +21,6 @@ import org.eventb.core.ast.BecomesEqualTo;
 import org.eventb.core.ast.BecomesMemberOf;
 import org.eventb.core.ast.BecomesSuchThat;
 import org.eventb.core.ast.BinaryExpression;
-import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
@@ -32,7 +31,6 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
-import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
@@ -45,7 +43,6 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
-import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
@@ -54,9 +51,12 @@ import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+import fr.systerel.smt.provers.ast.SMTTheory.Ints;
+import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.SMTMacros;
 import fr.systerel.smt.provers.ast.SMTPairSortSymbol;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
@@ -106,6 +106,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
+	}
+
+	@Override
+	protected SMTLogic determineLogic() {
+		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
 
 	/* The Bound identifier list. */
@@ -210,7 +215,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the translated @link {@link SMTPairSortSymbol} of the variable
 	 *         type.
 	 */
-	private SMTPairSortSymbol parsePairTypes(String varName, Type sourceType,
+	private SMTSortSymbol parsePairTypes(String varName, Type sourceType,
 			Type targetType) {
 		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(varName, sourceType);
 		SMTSortSymbol targetSymbol = parseOneOfPairTypes(varName, targetType);
@@ -248,9 +253,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			else if (varType.getSource() != null) {
 
-				SMTPairSortSymbol sortSymbol = parsePairTypes(varName,
+				SMTSortSymbol sortSymbol = parsePairTypes(varName,
 						varType.getSource(), varType.getTarget());
-				this.signature.addPairPred(varName, sortSymbol);
+				this.signature.addPred(varName, sortSymbol);
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
@@ -301,8 +306,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// translates the goal
 		clearFormula();
 		final SMTFormula smtFormula = translate(goal);
-
-		// FIXME: Just for tests, the SMTFormula shall not be implemented
 
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
@@ -425,34 +428,169 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				expression.getRight());
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			// this.smtNode = sf.makeMinus(children);
+			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.DIV:
-			throw new IllegalArgumentException(
-					"The operation \'divise\' is not supported yet");
+			smtNode = sf.makeVeriTTermOperatorApplication(VeritPredefinedTheory
+					.getInstance().getDivision(), children, signature);
+			break;
 		case Formula.MOD:
-			throw new IllegalArgumentException(
-					"The operation \'modulo\' is not supported yet");
+			/**
+			 * It'`s added the function ((mod Int Int Int)) in the signature
+			 */
+			SMTFunctionSymbol VERIT_MOD = new SMTFunctionSymbol(
+					SMTMacroSymbol.MOD, Ints.getIntIntTab(), Ints.getInt(),
+					false, false);
+
+			this.signature.addConstant(VERIT_MOD);
+			smtNode = sf.makeVeriTTermOperatorApplication(VERIT_MOD, children,
+					signature);
+			break;
 		case Formula.EXPN:
 			throw new IllegalArgumentException(
 					"The operation \'exponential\' is not supported yet");
-			/*
-			 * case Formula.UPTO: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "range", children, false);
-			 * break; case Formula.RANSUB: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "rans", children, false);
-			 * break; case Formula.RANRES: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "ranr", children, false);
-			 * break; case Formula.DOMSUB: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "doms", children, false);
-			 * break; case Formula.DOMRES: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "domr", children, false);
-			 * break; case Formula.SETMINUS: this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "setminus", children,
-			 * false); break; case Formula.MAPSTO: // TO CHANGE this.smtNode =
-			 * sf.makeMacroTerm(SMTNode.MACRO_TERM, "pair", children, false);
-			 * break;
-			 */
+
+		case Formula.UPTO:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE), children);
+			break;
+		case Formula.RANSUB:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.RANGE_SUBSTRACTION),
+					children);
+			break;
+
+		case Formula.RANRES:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.RANGE_RESTRICTION),
+					children);
+			break;
+
+		case Formula.REL:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RELATION),
+					children);
+			break;
+
+		case Formula.TREL:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_RELATION),
+					children);
+			break;
+
+		case Formula.SREL:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.SURJECTIVE_RELATION),
+					children);
+			break;
+
+		case Formula.STREL:
+			smtNode = sf
+					.makeMacroTerm(
+							SMTMacros
+									.getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION),
+							children);
+			break;
+
+		case Formula.PFUN:
+			smtNode = sf
+					.makeMacroTerm(SMTMacros
+							.getMacroSymbol(SMTVeriTOperator.PARTIAL_FUNCTION),
+							children);
+			break;
+
+		case Formula.TFUN:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_FUNCTION),
+					children);
+			break;
+		// case Formula.PINJ:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.PARTIAL_INJECTION),
+		// children);
+		// break;
+		//
+		// case Formula.TINJ:
+		// smtNode = sf.makeMacroTerm(
+		// SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_INJECTION),
+		// children);
+		// break;
+		//
+		// case Formula.PSUR:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.PARTIAL_SURJECTION),
+		// children);
+		// break;
+		//
+		// case Formula.TSUR:
+		// smtNode = sf
+		// .makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTION),
+		// children);
+		// break;
+		//
+		// case Formula.TBIJ:
+		// smtNode = sf.makeMacroTerm(
+		// SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_BIJECTION),
+		// children);
+		// break;
+		//
+		// case Formula.SETMINUS:
+		// smtNode = sf.makeMacroTerm(
+		// SMTMacros.getMacroSymbol(SMTVeriTOperator.SETMINUS),
+		// children);
+		// break;
+		//
+		// case Formula.CPROD:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.CARTESIAN_PRODUCT),
+		// children);
+		// break;
+		//
+		// case Formula.DPROD:
+		// smtNode = sf.makeMacroTerm(
+		// SMTMacros.getMacroSymbol(SMTVeriTOperator.DIRECT_PRODUCT),
+		// children);
+		// break;
+		//
+		// case Formula.PPROD:
+		// smtNode = sf.makeMacroTerm(
+		// SMTMacros.getMacroSymbol(SMTVeriTOperator.PARALLEL_TO),
+		// children);
+		// break;
+		//
+		// case Formula.DOMRES:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.DOMAIN_RESTRICTION),
+		// children);
+		// break;
+		//
+		// case Formula.DOMSUB:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.DOMAIN_SUBSTRACTION),
+		// children);
+		// break;
+		//
+		// case Formula.FUNIMAGE:
+		// smtNode = sf.makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.FUNCTION_APPLICATION),
+		// children);
+		// break;
+		//
+		// case Formula.RELIMAGE:
+		// smtNode = sf
+		// .makeMacroTerm(SMTMacros
+		// .getMacroSymbol(SMTVeriTOperator.RELATIONAL_IMAGE),
+		// children);
+		// break;
+		//
+		case Formula.MAPSTO:
+			smtNode = sf
+					.makeMacroTerm(
+							SMTMacros.getMacroSymbol(SMTVeriTOperator.MAPSTO),
+							children);
+			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -529,37 +667,97 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			} else {
 				this.smtNode = sf.makeEqual(children);
 			}
+			break;
 		}
 		case Formula.NOTEQUAL: {
-			// this.smtNode = sf.makeNotEqual(children);
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			if (predicate.getLeft().getType() instanceof BooleanType) {
+				final SMTFormula[] childrenFormulas = sf
+						.convertVeritTermsIntoFormulas(children);
+				this.smtNode = sf.makeNotIff(childrenFormulas);
+			} else {
+				this.smtNode = sf.makeNotEqual(children);
+			}
 			break;
 		}
 		case Formula.LT: {
-
-			// this.smtNode = sf.makeLesserThan(children);
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
+					.getOperator(SMTOperator.LT), children, this.signature);
 			break;
 		}
 		case Formula.LE: {
-			// this.smtNode = sf.makeLesserEqual(children);
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.LE), children,
+					this.signature);
 			break;
 		}
 		case Formula.GT: {
-			// this.smtNode = sf.makeGreaterThan(children);
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GT), children,
+					this.signature);
 			break;
 		}
 		case Formula.GE: {
-			// this.smtNode = sf.makeGreaterEqual(children);
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+					.getLogic().getOperator(SMTOperator.GE), children,
+					this.signature);
 			break;
-			// TODO when membership translation implemented
-			/*
-			 * case Formula.IN: break; case Formula.NOTIN: break;
-			 */
+		}
+		case Formula.IN: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeVeriTMacroAtom(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.IN), children,
+					signature);
+			break;
+		}
+
+		case Formula.SUBSET: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeAtom(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSET),
+					children, signature);
+			break;
+		}
+		case Formula.SUBSETEQ: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeAtom(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSETEQ),
+					children, signature);
+			break;
+		}
+		case Formula.NOTSUBSET: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeAtom(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSET),
+					children, signature);
+			SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
+			smtNode = sf.makeNot(subsetFormula);
+			break;
+		}
+		case Formula.NOTSUBSETEQ: {
+			final SMTTerm[] children = smtTerms(predicate.getLeft(),
+					predicate.getRight());
+			smtNode = sf.makeAtom(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSETEQ),
+					children, signature);
+			SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
+			smtNode = sf.makeNot(subsetFormula);
+			break;
 		}
 		default: {
-			/**
-			 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be produced by
-			 * ppTrans.
-			 */
 			throw new IllegalTagException(predicate.getTag());
 		}
 		}
@@ -640,12 +838,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void visitIntegerLiteral(IntegerLiteral expression) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		// TODO Auto-generated method stub
 
@@ -676,7 +868,57 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
-		// TODO Auto-generated method stub
+		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
+				.getChild()) };
+		switch (expression.getTag()) {
+		case Formula.KCARD: {
+			// TODO
+		}
+		case Formula.POW: {
+			// TODO
+		}
+		case Formula.POW1: {
+			// TODO
+		}
+		case Formula.KUNION: {
+			// TODO
+		}
+		case Formula.KINTER: {
+			// TODO
+		}
+		case Formula.KDOM: {
+			// TODO
+		}
+		case Formula.KRAN: {
+			// TODO
+		}
+		case Formula.KPRJ1_GEN: {
+			// TODO
+		}
+		case Formula.KPRJ2_GEN: {
+			// TODO
+		}
+		case Formula.KID_GEN: {
+			// TODO
+		}
+		case Formula.KMIN: {
+			// TODO
+		}
+		case Formula.KMAX: {
+			// TODO
+		}
+		case Formula.CONVERSE: {
+			// TODO
+		}
+		case Formula.UNMINUS: {
+			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.UMINUS), children, signature);
+			break;
+		}
+		default: {
+			throw new IllegalTagException(expression.getTag());
+		}
+		}
 
 	}
 
@@ -687,16 +929,21 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				this.signature);
 	}
 
+	/**
+	 * This method translates an Event-B literal predicate into an SMT node.
+	 */
 	@Override
-	public void visitBinaryPredicate(BinaryPredicate predicate) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visitLiteralPredicate(LiteralPredicate predicate) {
-		// TODO Auto-generated method stub
-
+	public void visitLiteralPredicate(final LiteralPredicate predicate) {
+		switch (predicate.getTag()) {
+		case Formula.BTRUE:
+			smtNode = sf.makePTrue(this.signature);
+			break;
+		case Formula.BFALSE:
+			smtNode = sf.makePFalse(this.signature);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
 	}
 
 	@Override
@@ -707,12 +954,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visitUnaryPredicate(UnaryPredicate predicate) {
 		// TODO Auto-generated method stub
 
 	}

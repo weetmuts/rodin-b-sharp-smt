@@ -138,6 +138,7 @@ public class SMTLogic {
 			return null;
 		case LT:
 			for (final SMTTheory theory : theories) {
+
 				if (theory instanceof ISMTArithmeticPreds) {
 					return ((ISMTArithmeticPreds) theory).getLessThan();
 				}
@@ -222,7 +223,16 @@ public class SMTLogic {
 				SMTMacroSymbol.INV), COMP(SMTMacroSymbol.COMP), OVR(
 				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
 				SMTMacroSymbol.FCOMP), EMPTY_PAIR(SMTMacroSymbol.EMPTY_PAIR), ENUM(
-				SMTMacroSymbol.ENUM);
+				SMTMacroSymbol.ENUM), DIV(SMTMacroSymbol.DIV), MOD(
+				SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
+				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
+				SMTMacroSymbol.RELATION), TOTAL_RELATION(
+				SMTMacroSymbol.TOTAL_RELATION), SURJECTIVE_RELATION(
+				SMTMacroSymbol.SURJECTIVE_RELATION), TOTAL_SURJECTIVE_RELATION(
+				SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION), PARTIAL_FUNCTION(
+				SMTMacroSymbol.PARTIAL_FUNCTION), TOTAL_FUNCTION(
+				SMTMacroSymbol.TOTAL_FUNCTION), MAPSTO(SMTMacroSymbol.MAPSTO);
 
 		private String symbol;
 
@@ -258,6 +268,27 @@ public class SMTLogic {
 		}
 
 		public static SMTLIBUnderlyingLogic getInstance() {
+			return INSTANCE;
+		}
+	}
+
+	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogic {
+
+		private static final SMTTheory[] THEORIES = {
+				SMTTheory.VeritPredefinedTheory.getInstance(),
+				SMTTheory.Ints.getInstance() };
+
+		private static final VeriTSMTLIBUnderlyingLogic INSTANCE = new VeriTSMTLIBUnderlyingLogic();
+
+		protected VeriTSMTLIBUnderlyingLogic() {
+			super(UNKNOWN, THEORIES);
+		}
+
+		protected VeriTSMTLIBUnderlyingLogic(final String name) {
+			super(name, THEORIES);
+		}
+
+		public static VeriTSMTLIBUnderlyingLogic getInstance() {
 			return INSTANCE;
 		}
 	}
