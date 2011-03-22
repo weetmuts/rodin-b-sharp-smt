@@ -12,6 +12,7 @@ package br.ufrn.smt.solver.translation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.eventb.core.ast.QuantifiedUtil;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
@@ -51,17 +51,17 @@ import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
-import fr.systerel.smt.provers.ast.SMTTheory.Ints;
-import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.SMTMacros;
-import fr.systerel.smt.provers.ast.SMTPairSortSymbol;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTTheory.Ints;
+import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
+import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -119,27 +119,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/* The list of names already used (Free identifiers + others) list. */
 	private ArrayList<String> freeIdentifiers;
 
-	public static SMTFormula translate(Predicate predicate,
-			ArrayList<String> boundIdentifiers,
-			ArrayList<String> freeIdentifiers) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT();
-		predicate.accept(translator);
-		return translator.getSMTFormula();
-	}
-
-	/*
-	 * This method translates the given predicate into an SMT Node.
+	/**
+	 * This boolean is used to check if it's necessary to add the polymorphic
+	 * sort Pair and the polymorphic function pair in the signature.
 	 */
-	public static IdentifiersAndSMTStorage translate1(Predicate predicate,
-			ArrayList<String> boundIdentifiers,
-			ArrayList<String> freeIdentifiers) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT();
-		predicate.accept(translator);
-		IdentifiersAndSMTStorage iSMT = new IdentifiersAndSMTStorage(
-				translator.getSMTFormula(), translator.getBoundIdentifers(),
-				translator.getFreeIdentifiers());
-		return iSMT;
-	}
+	private boolean insertPairDecl = false;
 
 	/**
 	 * This method translates powerset types. It applies the following rules:
@@ -156,7 +140,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private void parseBaseTypes(String varName, Type varType) {
 		if (varType.getBaseType().toString().equals(varName)) {
-			signature.addSort(varName, !SMTFunctionSymbol.PREDEFINED);
+			SMTSortSymbol sort = sf.makeVeriTSortSymbol(varName);
+			signature.addSort(sort);
+			typeMap.put(varType, sort);
 		} else if (varType.getBaseType().getSource() != null
 				|| varType.getBaseType().getBaseType() != null) {
 			throw new IllegalArgumentException("Variable: " + varName
@@ -165,9 +151,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} else {
 			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
 					.getBaseType().toString());
-			this.signature.addSort(sortSymbol.toString(),
-					!SMTFunctionSymbol.PREDEFINED);
-			this.signature.addPred(varName, sortSymbol);
+			this.signature.addSort(sortSymbol);
+			typeMap.put(varType, sortSymbol);
+
+			SMTPredicateSymbol predSymbol = sf.makeVeriTPredSymbol(varName,
+					sortSymbol);
+			this.signature.addPred(predSymbol);
+			varMap.put(varName, predSymbol);
 		}
 	}
 
@@ -188,14 +178,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the translated {@link SMTSortSymbol} of one of the types of a
 	 *         CartesianProduct Type.
 	 * 
-	 * @see #parsePairTypes(String, Type, Type)
+	 * @see #parsePairTypes(Type, Type)
 	 */
-	private SMTSortSymbol parseOneOfPairTypes(String varName, Type type) {
+	private SMTSortSymbol parseOneOfPairTypes(Type type) {
 		if (type.getSource() != null) {
-			return parsePairTypes(varName, type.getSource(), type.getTarget());
+			return parsePairTypes(type.getSource(), type.getTarget());
 		} else if (type.getBaseType() != null) {
-			throw new IllegalArgumentException("Variable: " + varName
-					+ ", Type " + type.toString()
+			throw new IllegalArgumentException(", Type " + type.toString()
 					+ ": Sets of sets are not supported yet");
 		} else {
 			return sf.makeVeriTSortSymbol(type.toString());
@@ -215,11 +204,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the translated @link {@link SMTPairSortSymbol} of the variable
 	 *         type.
 	 */
-	private SMTSortSymbol parsePairTypes(String varName, Type sourceType,
-			Type targetType) {
-		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(varName, sourceType);
-		SMTSortSymbol targetSymbol = parseOneOfPairTypes(varName, targetType);
-		return sf.makePairSortSymbol(varName, sourceSymbol, targetSymbol);
+	private SMTSortSymbol parsePairTypes(Type sourceType, Type targetType) {
+		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(sourceType);
+		SMTSortSymbol targetSymbol = parseOneOfPairTypes(targetType);
+		return sf.makePairSortSymbol(sourceSymbol, targetSymbol);
 	}
 
 	@Override
@@ -229,6 +217,72 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 		translateSignature(typeEnvironment);
+
+		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
+		Iterator<Type> bIterator = biTypes.iterator();
+
+		translateSignature(bIterator);
+	}
+
+	/**
+	 * This method extracts types of bound ident declarations and adds them into
+	 * the signature
+	 * 
+	 * @param iter
+	 *            The iterator which contains the types of bound ident
+	 *            declarations
+	 */
+	private void translateSignature(Iterator<Type> iter) {
+		boolean usingPairs = false;
+
+		while (iter.hasNext()) {
+			final Type varType = iter.next();
+
+			if (varType.getSource() != null) {
+
+				SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
+						varType.getTarget());
+				typeMap.put(varType, sortSymbol);
+				usingPairs = true;
+
+			} else if (varType.getBaseType() != null) {
+
+				if (varType.getBaseType().getSource() != null
+						|| varType.getBaseType().getBaseType() != null) {
+					throw new IllegalArgumentException("Type "
+							+ varType.toString()
+							+ ": Sets of sets are not supported yet");
+				} else {
+					SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
+							.getBaseType().toString());
+					this.signature.addSort(sortSymbol);
+					typeMap.put(varType, sortSymbol);
+				}
+
+			} else {
+				SMTSortSymbol smtSortSymbol = sf.makeVeriTSortSymbol(varType
+						.toString());
+				this.signature.addSort(smtSortSymbol);
+				typeMap.put(varType, smtSortSymbol);
+			}
+		}
+		if (!insertPairDecl && usingPairs) {
+			final String sortSymbolName = "(Pair 's 't)";
+			SMTSortSymbol smtSortSymbol = sf
+					.makeVeriTSortSymbol(sortSymbolName);
+			this.signature.addSort(smtSortSymbol);
+			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(sortSymbolName);
+			SMTSortSymbol[] argSorts = {};
+			final String symbolName = "pair 's 't";
+			SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(
+					symbolName, argSorts, sortSymbol,
+					!SMTFunctionSymbol.ASSOCIATIVE,
+					!SMTFunctionSymbol.PREDEFINED);
+
+			signature.addConstant(functionSymbol);
+			varMap.put(symbolName, functionSymbol);
+		}
+
 	}
 
 	/**
@@ -238,8 +292,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The Event-B Type Environment for the translation.
 	 */
 	public void translateSignature(ITypeEnvironment typeEnvironment) {
-		boolean insertPairDecl = false;
-
 		final IIterator iter = typeEnvironment.getIterator();
 		while (iter.hasNext()) {
 			iter.advance();
@@ -247,15 +299,18 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			if (varName.equals(varType.toString())) {
-				this.signature.addSort(varType.toString(),
-						!SMTSymbol.PREDEFINED);
+				final SMTSortSymbol sort = signature.freshSort(varType
+						.toString());
+				this.signature.addSort(sort);
+				typeMap.put(varType, sort);
 			}
 
 			else if (varType.getSource() != null) {
 
-				SMTSortSymbol sortSymbol = parsePairTypes(varName,
-						varType.getSource(), varType.getTarget());
+				SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
+						varType.getTarget());
 				this.signature.addPred(varName, sortSymbol);
+				typeMap.put(varType, sortSymbol);
 				insertPairDecl = true;
 
 			} else if (varType.getBaseType() != null) {
@@ -265,22 +320,29 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.toString());
 				final SMTFunctionSymbol smtConstant;
 				smtConstant = signature.freshConstant(varName, smtSortSymbol);
-				this.signature.addSort(smtSortSymbol.toString(),
-						!SMTFunctionSymbol.PREDEFINED);
+				this.signature.addSort(smtSortSymbol);
 				this.signature.addConstant(smtConstant);
+				typeMap.put(varType, smtSortSymbol);
+				varMap.put(varName, smtConstant);
 			}
 		}
 		if (insertPairDecl) {
-			this.signature.addSort("(Pair 's 't)", !SMTSymbol.PREDEFINED);
-			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol("(Pair 's 't)");
+			final String sortSymbolName = "(Pair 's 't)";
+			SMTSortSymbol smtSortSymbol = sf
+					.makeVeriTSortSymbol(sortSymbolName);
+			this.signature.addSort(smtSortSymbol);
+			SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(sortSymbolName);
 			SMTSortSymbol[] argSorts = {};
+			final String symbolName = "pair 's 't";
 			SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(
-					"pair 's 't", argSorts, sortSymbol,
+					symbolName, argSorts, sortSymbol,
 					!SMTFunctionSymbol.ASSOCIATIVE,
 					!SMTFunctionSymbol.PREDEFINED);
 
 			signature.addConstant(functionSymbol);
+			varMap.put(symbolName, functionSymbol);
 		}
+
 	}
 
 	@Override
@@ -327,38 +389,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	protected SMTSymbol translateTypeName(Type type) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * This method parses hypothesis and goal predicates and translates them
-	 * into SMT nodes
-	 */
-	public static SMTBenchmark translate(final String lemmaName,
-			final SMTSignature signature, final List<Predicate> hypotheses,
-			final Predicate goal) {
-
-		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-
-		HashSet<String> boundIdentifiers = new HashSet<String>();
-		HashSet<String> freeIdentifiers = new HashSet<String>();
-
-		ArrayList<String> a = new ArrayList<String>();
-		ArrayList<String> b = new ArrayList<String>();
-
-		for (Predicate assumption : hypotheses) {
-			IdentifiersAndSMTStorage iSMT = translate1(assumption, a, b);
-
-			boundIdentifiers.addAll(iSMT.getBoundIdentifiers());
-			freeIdentifiers.addAll(iSMT.getFreeIdentifiers());
-			translatedAssumptions.add(iSMT.getSmtFormula());
-
-			a = new ArrayList<String>(boundIdentifiers);
-			b = new ArrayList<String>(freeIdentifiers);
-		}
-
-		final SMTFormula smtFormula = translate(goal, a, b);
-		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
-				smtFormula);
 	}
 
 	/**
@@ -505,6 +535,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_FUNCTION),
 					children);
 			break;
+		// FIXME
 		// case Formula.PINJ:
 		// smtNode = sf.makeMacroTerm(SMTMacros
 		// .getMacroSymbol(SMTVeriTOperator.PARTIAL_INJECTION),
@@ -598,41 +629,40 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
-		final BoundIdentDecl[] decls = new BoundIdentDecl[1];
-		decls[0] = boundIdentDecl;
+		final String varName = boundIdentDecl.getName();
+		final SMTVar smtVar;
 
-		// add bound idents identifier in the list, if exists in the list a new
-		// identifier is computed
-		final Set<String> fidsSet = new HashSet<String>(this.freeIdentifiers);
-		final String[] newNames = QuantifiedUtil.resolveIdents(decls, fidsSet);
-
-		if (newNames.length != 1) { // FIXME Why is that?
-			throw new IllegalStateException();
+		final Set<String> symbolNames = new HashSet<String>();
+		for (final SMTSymbol function : varMap.values()) {
+			symbolNames.add(function.getName());
 		}
-
-		this.freeIdentifiers.add(newNames[0]);
-		this.boundIdentifers.add(newNames[0]);
-
-		// FIXME must create a new SMTVarSymbol
-		// this.smtNode = sf.makeQuantifiedVariable(newNames[0],
-		// boundIdentDecl.getType());
+		for (final SMTVar var : qVarMap.values()) {
+			symbolNames.add(var.getSymbol().getName());
+		}
+		final String smtVarName = signature.freshSymbolName(symbolNames,
+				varName);
+		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
+		if (!qVarMap.containsKey(varName)) {
+			qVarMap.put(varName, smtVar);
+			boundIdentifiers.add(varName);
+		} else {
+			qVarMap.put(smtVarName, smtVar);
+			boundIdentifiers.add(smtVarName);
+		}
+		smtNode = smtVar;
 	}
 
 	@Override
 	public void visitBoundIdentifier(final BoundIdentifier expression) {
-		final String identifier = boundIdentifers.get(boundIdentifers.size()
+		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
 				- expression.getBoundIndex() - 1);
-		// this.smtNode = sf.makeVar(identifier, expression.getType());
+		smtNode = qVarMap.get(bidName);
 	}
 
 	@Override
 	public void visitQuantifiedPredicate(final QuantifiedPredicate predicate) {
-		final BoundIdentDecl[] decls = predicate.getBoundIdentDecls();
-
-		// add bound idents identifier in the list, if exists in the list a new
-		// identifier is computed
-		final Set<String> fidsSet = new HashSet<String>(freeIdentifiers);
-		final String[] newNames = QuantifiedUtil.resolveIdents(decls, fidsSet);
+		boundIdentifiersMarker.push(boundIdentifiers.size());
 
 		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
 		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
@@ -648,10 +678,38 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalTagException(predicate.getTag());
 		}
 
-		// remove added bound idents identifier of the list
-		for (int i = 0; i < newNames.length; i++) {
-			this.boundIdentifers.remove(newNames[i]);
-		}
+		int top = boundIdentifiersMarker.pop();
+
+		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
+
+		// final BoundIdentDecl[] decls = predicate.getBoundIdentDecls();
+
+		// // add bound idents identifier in the list, if exists in the list a
+		// new
+		// // identifier is computed
+		// final Set<String> fidsSet = new HashSet<String>(freeIdentifiers);
+		// final String[] newNames = QuantifiedUtil.resolveIdents(decls,
+		// fidsSet);
+		//
+		// final SMTTerm[] termChildren =
+		// smtTerms(predicate.getBoundIdentDecls());
+		// final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
+		//
+		// switch (predicate.getTag()) {
+		// case Formula.FORALL:
+		// this.smtNode = sf.makeForAll(termChildren, formulaChild);
+		// break;
+		// case Formula.EXISTS:
+		// this.smtNode = sf.makeExists(termChildren, formulaChild);
+		// break;
+		// default:
+		// throw new IllegalTagException(predicate.getTag());
+		// }
+		//
+		// // remove added bound idents identifier of the list
+		// for (int i = 0; i < newNames.length; i++) {
+		// this.boundIdentifers.remove(newNames[i]);
+		// }
 	}
 
 	@Override

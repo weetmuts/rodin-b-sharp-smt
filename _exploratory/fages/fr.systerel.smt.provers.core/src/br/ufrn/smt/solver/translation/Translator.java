@@ -52,7 +52,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * translation process and SMT-LIB symbol names assigned to them. This map
 	 * is built using an SMT-LIB Signature that provides fresh type names.
 	 */
-	protected HashMap<String, SMTFunctionSymbol> varMap = new HashMap<String, SMTFunctionSymbol>();
+	protected HashMap<String, SMTSymbol> varMap = new HashMap<String, SMTSymbol>();
 
 	public static boolean DEBUG = false;
 

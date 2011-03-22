@@ -89,8 +89,14 @@ public final class SMTFactory {
 		return new SMTSortSymbol(symbolName, false);
 	}
 
-	public SMTSortSymbol makePairSortSymbol(final String sortSymbolName,
-			SMTSortSymbol sourceSymbol, SMTSortSymbol targetSymbol) {
+	public SMTPredicateSymbol makeVeriTPredSymbol(final String predName,
+			final SMTSortSymbol symbol) {
+		SMTSortSymbol[] symbols = { symbol };
+		return new SMTPredicateSymbol(predName, symbols, !SMTSymbol.PREDEFINED);
+	}
+
+	public SMTSortSymbol makePairSortSymbol(SMTSortSymbol sourceSymbol,
+			SMTSortSymbol targetSymbol) {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("(Pair ");

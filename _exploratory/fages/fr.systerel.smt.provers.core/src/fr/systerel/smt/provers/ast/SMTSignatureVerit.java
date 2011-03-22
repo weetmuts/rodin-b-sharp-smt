@@ -52,7 +52,6 @@ public class SMTSignatureVerit extends SMTSignature {
 						+ ", which was not translated and saved in the SMTSignature. It should not happen.");
 	}
 
-		
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			sb.append("(extramacros(");
@@ -89,13 +88,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		this.extramacrosSection(sb);
 	}
 
-	public void addSort(final String sortName, final boolean predefined) {
-		final SMTSortSymbol sort = new SMTSortSymbol(sortName, predefined);
-		if (!this.sorts.contains(sort)) {
-			this.sorts.add(sort);
-		}
-	}
-
 	public void addPred(final String predName, final SMTSortSymbol symbol) {
 		SMTSortSymbol[] symbols = { symbol };
 		this.preds.add(new SMTPredicateSymbol(predName, symbols,
@@ -112,16 +104,16 @@ public class SMTSignatureVerit extends SMTSignature {
 				!SMTSymbol.PREDEFINED));
 	}
 
-	public void addPairPred(final String predName,
-			final SMTPairSortSymbol symbol) {
-
-		SMTSortSymbol[] symbols = { symbol };
-		this.preds.add(new SMTPredicateSymbol(predName, symbols,
-				!SMTSymbol.PREDEFINED));
-	}
-
 	@Override
 	public Set<SMTSortSymbol> getSorts() {
 		return this.sorts;
+	}
+
+	public void addSort(SMTSortSymbol sort) {
+		this.sorts.add(sort);
+	}
+
+	public void addPred(SMTPredicateSymbol predSymbol) {
+		this.preds.add(predSymbol);
 	}
 }

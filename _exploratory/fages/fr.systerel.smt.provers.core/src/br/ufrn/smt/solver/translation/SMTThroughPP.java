@@ -62,6 +62,7 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
+import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
@@ -84,11 +85,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * symbols.
 	 */
 	protected final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
-
-	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
-
-	private List<String> boundIdentifiers = new ArrayList<String>();
-	private Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
 
 	/**
 	 * This list contains the terms of the current membership being translated
@@ -205,28 +201,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return getSMTFormula();
 	}
 
-	class SMTFormulaInspector extends DefaultInspector<Type> {
-		@Override
-		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
-			accumulator.add(decl.getType());
-		}
-	}
-
-	/**
-	 * This method takes a copy of the BoundIdentDecl types in the hypotheses
-	 * and goal
-	 */
-	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal) {
-		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new SMTFormulaInspector();
-		final List<Type> typesFound = new ArrayList<Type>();
-		for (Predicate p : hypotheses) {
-			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
-		}
-		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
-
-		return typesFound;
-	}
-
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
 	 * hypotheses and its goal. The method also fill the variables
@@ -294,7 +268,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				smtConstant = signature.freshConstant(varName, smtSortSymbol);
 				varMap.put(varName, smtConstant);
 			} else {
-				smtConstant = varMap.get(varName);
+				smtConstant = (SMTFunctionSymbol) varMap.get(varName);
 			}
 
 			/**
@@ -708,7 +682,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTVar smtVar;
 
 		final Set<String> symbolNames = new HashSet<String>();
-		for (final SMTFunctionSymbol function : varMap.values()) {
+		for (final SMTSymbol function : varMap.values()) {
 			symbolNames.add(function.getName());
 		}
 		for (final SMTVar var : qVarMap.values()) {
@@ -723,7 +697,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			boundIdentifiers.add(varName);
 		} else {
 			qVarMap.put(smtVarName, smtVar);
-			// smtVar = qVarMap.get(varName);
 			boundIdentifiers.add(smtVarName);
 		}
 		smtNode = smtVar;
@@ -741,7 +714,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		smtNode = sf.makeConstant(varMap.get(expression.getName()),
+		smtNode = sf.makeConstant(
+				(SMTFunctionSymbol) varMap.get(expression.getName()),
 				this.signature);
 	}
 

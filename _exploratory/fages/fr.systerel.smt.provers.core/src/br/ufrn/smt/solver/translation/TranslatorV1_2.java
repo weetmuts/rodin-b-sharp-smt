@@ -10,27 +10,42 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import org.eventb.core.ast.AssociativePredicate;
 import org.eventb.core.ast.BinaryPredicate;
+import org.eventb.core.ast.BoundIdentDecl;
+import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.GivenType;
+import org.eventb.core.ast.IAccumulator;
+import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
  * This class is a translator from Event-B syntax into SMT-LIB syntax.
  */
 public abstract class TranslatorV1_2 extends Translator {
+
+	protected Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
+	protected List<String> boundIdentifiers = new ArrayList<String>();
+	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
+
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
 	 * benchmark's signature, that is, free identifiers and given types.
@@ -43,6 +58,28 @@ public abstract class TranslatorV1_2 extends Translator {
 		for (GivenType type : predicate.getGivenTypes()) {
 			typeEnvironment.addGivenSet(type.getName());
 		}
+	}
+
+	class SMTFormulaInspector extends DefaultInspector<Type> {
+		@Override
+		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
+			accumulator.add(decl.getType());
+		}
+	}
+
+	/**
+	 * This method takes a copy of the BoundIdentDecl types in the hypotheses
+	 * and goal
+	 */
+	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal) {
+		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new SMTFormulaInspector();
+		final List<Type> typesFound = new ArrayList<Type>();
+		for (Predicate p : hypotheses) {
+			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
+		}
+		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
+
+		return typesFound;
 	}
 
 	/**
@@ -147,7 +184,7 @@ public abstract class TranslatorV1_2 extends Translator {
 			throw new IllegalTagException(predicate.getTag());
 		}
 	}
-	
+
 	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getLeft(),
@@ -164,7 +201,7 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 
 	}
-	
+
 	/**
 	 * This method translates an Event-B unary predicate into an SMT node.
 	 */
@@ -180,7 +217,7 @@ public abstract class TranslatorV1_2 extends Translator {
 			throw new IllegalTagException(predicate.getTag());
 		}
 	}
-	
+
 	/**
 	 * This method translates an Event-B integer literal into an SMT node.
 	 */
@@ -188,6 +225,5 @@ public abstract class TranslatorV1_2 extends Translator {
 	public void visitIntegerLiteral(final IntegerLiteral expression) {
 		smtNode = sf.makeNumeral(expression.getValue());
 	}
-	
-	
+
 }

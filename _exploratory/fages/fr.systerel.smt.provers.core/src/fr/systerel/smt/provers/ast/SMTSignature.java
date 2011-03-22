@@ -422,12 +422,10 @@ public abstract class SMTSignature {
 		final String freshName = freshName(names, name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
-
 		/**
 		 * Tries to put the sort in sorts set.
 		 */
 		sorts.add(freshSort);
-
 		return freshSort;
 	}
 
