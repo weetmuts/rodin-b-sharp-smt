@@ -54,7 +54,10 @@ public class SMTAtom extends SMTFormula {
 				SMTSortSymbol argSort = terms[i].getSort();
 				SMTSortSymbol expectedSortArg = expectedSortArgs[i];
 
-				if (expectedSortArgs[i] instanceof SMTPolymorphicSortSymbol) {
+				if (expectedSortArg instanceof SMTPolymorphicSortSymbol) {
+					continue;
+				}
+				if (argSort instanceof SMTPolymorphicSortSymbol) {
 					continue;
 				}
 

@@ -397,4 +397,7 @@ public final class SMTFactory {
 		return new SMTFunApplication(operator, args);
 	}
 
+	public SMTTerm makeMacroTerm(SMTMacroSymbol macroSymbol) {
+		return this.makeMacroTerm(macroSymbol, EMPTY_TERM);
+	}
 }

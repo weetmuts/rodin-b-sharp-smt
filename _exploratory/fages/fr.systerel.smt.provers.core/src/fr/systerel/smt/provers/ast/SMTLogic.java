@@ -21,6 +21,7 @@ import java.util.List;
 
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
+import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 
 /**
  * The SMT logics.
@@ -215,7 +216,7 @@ public class SMTLogic {
 				SMTMacroSymbol.BINTER), EMPTY(SMTMacroSymbol.EMPTY), INTER(
 				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
 				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
-				SMTMacroSymbol.SUBSET), RANGE(SMTMacroSymbol.RANGE), PROD(
+				SMTMacroSymbol.SUBSET), RANGE_INTEGER(SMTMacroSymbol.RANGE_INTEGER), PROD(
 				SMTMacroSymbol.PROD), DOM(SMTMacroSymbol.DOM), RAN(
 				SMTMacroSymbol.RAN), IMG(SMTMacroSymbol.IMG), DOMR(
 				SMTMacroSymbol.DOMR), DOMS(SMTMacroSymbol.DOMS), RANR(
@@ -232,7 +233,8 @@ public class SMTLogic {
 				SMTMacroSymbol.SURJECTIVE_RELATION), TOTAL_SURJECTIVE_RELATION(
 				SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION), PARTIAL_FUNCTION(
 				SMTMacroSymbol.PARTIAL_FUNCTION), TOTAL_FUNCTION(
-				SMTMacroSymbol.TOTAL_FUNCTION), MAPSTO(SMTMacroSymbol.MAPSTO);
+				SMTMacroSymbol.TOTAL_FUNCTION), MAPSTO(SMTMacroSymbol.MAPSTO), NAT(
+				SMTMacroSymbol.NAT), NAT1(SMTMacroSymbol.NAT1);
 
 		private String symbol;
 
@@ -348,5 +350,26 @@ public class SMTLogic {
 		}
 		throw new IllegalArgumentException(
 				"The Int sort is not declared in the signature of this benchmark");
+	}
+
+	public SMTFunctionSymbol getBooleanCste() {
+		for (SMTTheory theory : theories) {
+			if (theory instanceof VeritPredefinedTheory) {
+				SMTSortSymbol boolSort = ((VeritPredefinedTheory) theory)
+						.getBooleanSort();
+				SMTSortSymbol[] argSorts = {};
+				SMTFunctionSymbol boolSortFunction = new SMTFunctionSymbol(
+						SMTMacroSymbol.BOOL_SORT, argSorts, boolSort, false,
+						true);
+				return boolSortFunction;
+			}
+		}
+		throw new IllegalArgumentException(
+				"The Int sort is not declared in the signature of this benchmark");
+	}
+
+	public SMTSymbol getIntegerOneSortCst() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

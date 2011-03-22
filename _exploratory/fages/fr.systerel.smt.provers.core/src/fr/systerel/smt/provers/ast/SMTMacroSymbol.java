@@ -11,7 +11,7 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String IN = "in";
 	public static final String SUBSETEQ = "subseteq";
 	public static final String SUBSET = "subset";
-	public static final String RANGE = "range";
+	public static final String RANGE_INTEGER = "range";
 	public static final String PROD = "prod";
 	public static final String DOM = "dom";
 	public static final String RAN = "ran";
@@ -40,6 +40,8 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String PARTIAL_FUNCTION = "pfun";
 	public static final String TOTAL_FUNCTION = "tfun";
 	public static final String MAPSTO = "pair";
+	public static final String NAT = "Nat";
+	public static final String NAT1 = "Nat1";
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
 		super(symbolName, args, predefined);

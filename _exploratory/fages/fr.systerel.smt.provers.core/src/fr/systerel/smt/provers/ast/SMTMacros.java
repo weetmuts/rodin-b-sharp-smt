@@ -27,28 +27,40 @@ public class SMTMacros {
 	public static String IN = "(in (lambda (?p6 't) (?q6 ('t boolean)) . (?q6 ?p6)))";
 	public static String SUBSET = "(subset (lambda (?p7 ('t boolean)) (?q7 ('t boolean)) . (and (subseteq ?p7 ?q7) (not (= ?p7 ?q7	)))))";
 	public static String SUBSETEQ = "(subseteq (lambda (?p8 ('t boolean)) (?q8 ('t boolean)) . (forall (?x6 't). (implies (?p8 ?x6) (?q8 ?x6)))))";
-	public static String INTEGER_RANGE = "(range (lambda (?p9 Int) (?q9 Int) . (lambda (?x7 Int) . (and (<= ?p9 ?x7) (<= ?x7 ?q9)))))";
+	public static String RANGE_INTEGER = "(ran   (lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2)))))";
 	public static String RANGE_SUBSTRACION = "(lambda (?x8 ((Pair 's 't) Bool)(?q10 ('t Bool)).(lambda (?p10 (Pair 's 't).(and (?x8 ?p10)(not (?q10 (snd ?p10)))))))";
 	public static String RANGE_RESTRICTION = "(lambda (?q11 ((Pair 's 't) Bool)(?x9 ('t Bool))(lambda (?p11 (Pair 's 't) (and (?q11 ?p11)(?x9 (snd ?p11))))))";
 	public static String RELATION = "(lambda (?x10 ('s Bool)) (?q12 ('s Bool)) . (lambda (?r ((Pair 's 't) Bool)) . (forall (?p12 (Pair 's 't)) (implies (?r ?p12) (and (?x10 (fst ?p12))(?q12 (snd ?p12)))))))";
-
 	// Using the totp (total property) to define this macro
 	public static String TOTAL_RELATION = "(lambda (?x11 ('s Bool)) . (?r1 ((Pair 's 't) Bool))(forall (?p13 (Pair 's 't)) (= (?r1 ?p13) (?x11 (fst ?p13)))))";
-
-	// Using the surp (surjective property) to define this macro:
+	// Using the surp (surjective property) to define this macro
 	public static String SURJECTIVE_RELATION = "(lambda (?y ('t Bool)) (?r2 ((Pair 's 't) Bool))(forall (?p14 (Pair 's 't)) (= (?r2 ?p14) (?y (snd ?p14)))))";
-
 	// Using the conjunction of surjective relation and total relation macros
 	public static String TOTAL_SURJECTIVE_RELATION = "(lambda (?x12 ('t Bool)) . (?r3 ((Pair 's 't) Bool))(and (forall (?p15 (Pair 's 't)) (= (?r3 ?p15) (?x12 (snd ?p15))))  (forall (?p16 (Pair 's 't)) (= (?r3 ?p16) (?x12 (fst ?p16))))))";
-
 	public static String PARTIAL_FUNCTION = "(lambda (?x13 ('s Bool)) (?y1 ('s Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) .  (and ((rel ?x13 ?y1) ?r4) (funp ?r4))))";
 	public static String TOTAL_FUNCTION = "(lambda (?x14 ('s Bool)) (?y2 ('s Bool))(lambda (?r5 ((Pair 's 't) Bool)) (and ((pfun ?x14 ?y2) ?r5) (totp ?x14 ?r5))))";
+	public static String NAT = "(Nat (lambda (?x15 Int) . (<= 0 ?x15))";
+	public static String NAT1 = "(Nat (lambda (?x16 Int) . (<= 1 ?x16))";
+	public static String INVERSE = "(lambda (?r6 ((Pair 's 't) bool).(lambda (?p17 (Pair 's 't).(?r6 (pair (snd ?p17)(fst ?p17)))))))";
+	public static String ID = "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))";
+	public static String DOM = "(domain (lambda (?r7 ('t1 't2 boolean)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18)))))";
 
-	private static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
+	static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			"");
 	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
 			POLYMORPHIC, POLYMORPHIC };
+	private static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
 
+	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.DOM, POLYMORPHICS);
+	private static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.INV, POLYMORPHICS);
+	private static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.NAT1, EMPTY_SORT);
+	private static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.NAT, EMPTY_SORT);
+	private static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.ID, EMPTY_SORT);
 	private static SMTMacroSymbol MAPSTO_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.MAPSTO, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
@@ -68,7 +80,7 @@ public class SMTMacros {
 	private static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.RANGE_SUBSTRACION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RANGE, Ints.getIntIntTab());
+			SMTMacroSymbol.RANGE_INTEGER, Ints.getIntIntTab());
 	private static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.SUBSETEQ, POLYMORPHIC_PAIRS, true);
 	private static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(
@@ -139,7 +151,8 @@ public class SMTMacros {
 		String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
 		String macroBody = createEnumerationMacro(terms);
 		signature.addMacro(macroName, macroBody);
-		SMTMacroSymbol macroSymbol = new SMTMacroSymbol(macroName, EMPTY_SORT);
+		SMTMacroSymbol macroSymbol = new SMTMacroSymbol(macroName,
+				EMPTY_SORT);
 		return macroSymbol;
 	}
 
@@ -182,7 +195,7 @@ public class SMTMacros {
 		case SUBSETEQ: {
 			return SUBSETEQ_SYMBOL;
 		}
-		case RANGE: {
+		case RANGE_INTEGER: {
 			return INTEGER_RANGE_SYMBOL;
 		}
 		case RANGE_SUBSTRACTION: {
@@ -211,6 +224,21 @@ public class SMTMacros {
 		}
 		case MAPSTO: {
 			return MAPSTO_SYMBOL;
+		}
+		case ID: {
+			return ID_SYMBOL;
+		}
+		case NAT: {
+			return NAT_SYMBOL;
+		}
+		case NAT1: {
+			return NAT1_SYMBOL;
+		}
+		case INV: {
+			return INVERSE_SYMBOL;
+		}
+		case DOM: {
+			return DOM_SYMBOL;
 		}
 
 		default:

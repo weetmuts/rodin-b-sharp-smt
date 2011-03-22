@@ -75,6 +75,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String predStr, final String expectedSMTNode,
 			final String failMessage) throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
+
+		String x = pred.getSyntaxTree();
+
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(pred);
 
@@ -230,6 +233,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentFunctions(expectedFunctions);
 	}
 
+	/**
+	 * Testing rule 7
+	 */
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
 		setSignatureForTests(simpleTe);
@@ -254,6 +260,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentSorts(expectedSorts);
 	}
 
+	/**
+	 * Testing rules 4, 5 and 6
+	 */
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTe() {
 		setSignatureForTests(simpleTe);
@@ -283,6 +292,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentPredicates(expectedPredicates);
 	}
 
+	/**
+	 * Testing rule 8
+	 */
+	@Test
 	public void testTypeEnvironmentFunctionDefaultTe() {
 		setSignatureForTests(defaultTe);
 		Set<String> expectedFunctions = new HashSet<String>();
@@ -365,7 +378,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	/**
-	 * "pred-una"
+	 * "pred-una" Testing rule 14:
 	 */
 	@Test
 	public void testPredUna() {
@@ -574,5 +587,55 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testPredIdentEqu() {
 		testTranslationV1_2Default("p = q", "(= p q)");
+	}
+
+	@Test
+	public void testRule14() {
+
+		/**
+		 * inverse(SMT)/converse(EventB)
+		 */
+		testTranslationV1_2Default("AB = (AB)∼", "(= AB (inv AB))");
+		/**
+		 * not
+		 */
+		testTranslationV1_2Default("\u00ac(p = q)", "(not (= p q))");
+
+		/**
+		 * uminus
+		 */
+		testTranslationV1_2Default("a = (−b)", "(= a (~ b))");
+
+		/**
+		 * id
+		 */
+		testTranslationV1_2Default("AB = id", "(= AB id)");
+
+		/**
+		 * dom
+		 */
+		testTranslationV1_2Default("a ∈ dom(AB)", "(in a (dom AB))");
+
+		/**
+		 * ran
+		 */
+		testTranslationV1_2Default("b ∈ ran(AB)", "(in b (range AB))");
+
+	}
+
+	@Test
+	public void testRule15() {
+		/**
+		 * < , ∧ , > , ⇒ ,
+		 */
+		testTranslationV1_2Default("(a < b ∧ b > c) ⇒ a = c",
+				"(implies (and (< a b) (> b c)) (< a c))");
+
+		/**
+		 * ≤, ∧ , ≥ , ⇔ , <
+		 */
+		testTranslationV1_2Default("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < c",
+				"(iff (and (<= a b) (>= b c)) (< (/ a b) c))");
+
 	}
 }

@@ -429,13 +429,57 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
+		case Formula.INTEGER:
+			smtNode = sf.makeVeriTTerm(
+					signature.getLogic().getIntegerSortCst(), signature);
+		case Formula.NATURAL:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.NAT));
+		case Formula.NATURAL1:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.NAT1));
+		case Formula.BOOL:
+			smtNode = sf.makeVeriTTerm(signature.getLogic().getBooleanCste(),
+					signature);
+		case Formula.EMPTYSET:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.PARTIAL_FUNCTION));
+		case Formula.KPRED:
+			/*
+			 * TODO Check rule and implement it
+			 */
+		case Formula.KSUCC:
+			/*
+			 * TODO Check rule and implement it
+			 */
+		case Formula.KPRJ1_GEN:
+			/*
+			 * TODO Check rule and implement it
+			 */
+		case Formula.KPRJ2_GEN:
+			/*
+			 * TODO Check rule and implement it
+			 */
+		case Formula.KID_GEN:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.ID));
+
 		case Formula.TRUE:
 			// this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean
 			// value when BOOL_SORT theory implemented
+
+			/**
+			 * TODO Check the rules to see how do implement this.
+			 */
 			break;
 		case Formula.FALSE:
 			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
 			// boolean value when BOOL_SORT theory implemented
+
+			/**
+			 * TODO Check the rules to see how do implement this.
+			 */
+
 			break;
 		// FIXME Must be put in the SMTSignature
 		/*
@@ -483,7 +527,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		case Formula.UPTO:
 			smtNode = sf.makeMacroTerm(
-					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE), children);
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER), children);
 			break;
 		case Formula.RANSUB:
 			smtNode = sf.makeMacroTerm(SMTMacros
@@ -681,35 +725,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		int top = boundIdentifiersMarker.pop();
 
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
-
-		// final BoundIdentDecl[] decls = predicate.getBoundIdentDecls();
-
-		// // add bound idents identifier in the list, if exists in the list a
-		// new
-		// // identifier is computed
-		// final Set<String> fidsSet = new HashSet<String>(freeIdentifiers);
-		// final String[] newNames = QuantifiedUtil.resolveIdents(decls,
-		// fidsSet);
-		//
-		// final SMTTerm[] termChildren =
-		// smtTerms(predicate.getBoundIdentDecls());
-		// final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
-		//
-		// switch (predicate.getTag()) {
-		// case Formula.FORALL:
-		// this.smtNode = sf.makeForAll(termChildren, formulaChild);
-		// break;
-		// case Formula.EXISTS:
-		// this.smtNode = sf.makeExists(termChildren, formulaChild);
-		// break;
-		// default:
-		// throw new IllegalTagException(predicate.getTag());
-		// }
-		//
-		// // remove added bound idents identifier of the list
-		// for (int i = 0; i < newNames.length; i++) {
-		// this.boundIdentifers.remove(newNames[i]);
-		// }
 	}
 
 	@Override
@@ -869,14 +884,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 							children);
 			break;
 		case Formula.FCOMP:
-			this.signature
-					.addMacro(SMTMacroSymbol.FCOMP, SMTMacros.FCOMP_MACRO);
+			this.signature.addMacro(SMTMacroSymbol.FCOMP,
+					SMTMacros.FCOMP_MACRO);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.FCOMP), children);
 			break;
 		case Formula.OVR:
-			this.signature
-					.addMacro(SMTMacroSymbol.OVR, SMTMacros.REL_OVR_MACRO);
+			this.signature.addMacro(SMTMacroSymbol.OVR,
+					SMTMacros.REL_OVR_MACRO);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.OVR), children);
 			break;
@@ -931,48 +946,49 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.KCARD: {
 			// TODO
+			break;
 		}
 		case Formula.POW: {
 			// TODO
+			break;
 		}
 		case Formula.POW1: {
 			// TODO
+			break;
 		}
 		case Formula.KUNION: {
 			// TODO
+			break;
 		}
 		case Formula.KINTER: {
 			// TODO
+			break;
 		}
-		case Formula.KDOM: {
-			// TODO
-		}
+		case Formula.KDOM:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.DOM), children);
+			break;
 		case Formula.KRAN: {
-			// TODO
-		}
-		case Formula.KPRJ1_GEN: {
-			// TODO
-		}
-		case Formula.KPRJ2_GEN: {
-			// TODO
-		}
-		case Formula.KID_GEN: {
-			// TODO
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER), children);
+			break;
 		}
 		case Formula.KMIN: {
 			// TODO
+			break;
 		}
 		case Formula.KMAX: {
 			// TODO
+			break;
 		}
-		case Formula.CONVERSE: {
-			// TODO
-		}
-		case Formula.UNMINUS: {
+		case Formula.CONVERSE:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.INV), children);
+			break;
+		case Formula.UNMINUS:
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
 					.getOperator(SMTOperator.UMINUS), children, signature);
 			break;
-		}
 		default: {
 			throw new IllegalTagException(expression.getTag());
 		}

@@ -3,7 +3,6 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
-import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 
 public class SMTMacroTerm extends SMTTerm {
 
@@ -28,7 +27,7 @@ public class SMTMacroTerm extends SMTTerm {
 	public SMTMacroTerm(SMTMacroSymbol macro, SMTTerm[] argTerms) {
 		this.macroSymbol = macro;
 		this.argTerms = argTerms;
-		this.sort = Booleans.getInstance().getBooleanSort();
+		sort = SMTMacros.POLYMORPHIC;
 	}
 
 }
