@@ -42,6 +42,15 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String MAPSTO = "pair";
 	public static final String NAT = "Nat";
 	public static final String NAT1 = "Nat1";
+	public static final String PARTIAL_INJECTION = "pinj";
+	public static final String TOTAL_INJECTION = "tinj";
+	public static final String PARTIAL_SURJECTION = "psur";
+	public static final String TOTAL_SURJECTION = "tsur";
+	public static final String TOTAL_BIJECTION = "bij";
+	public static final String CARTESIAN_PRODUCT = "prod";
+	public static final String DOMAIN_RESTRICTION = "domr";
+	public static final String DOMAIN_SUBSTRACTION = "doms";
+	public static final String RELATIONAL_IMAGE = "img";
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
 		super(symbolName, args, predefined);

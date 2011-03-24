@@ -216,16 +216,16 @@ public class SMTLogic {
 				SMTMacroSymbol.BINTER), EMPTY(SMTMacroSymbol.EMPTY), INTER(
 				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
 				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
-				SMTMacroSymbol.SUBSET), RANGE_INTEGER(SMTMacroSymbol.RANGE_INTEGER), PROD(
-				SMTMacroSymbol.PROD), DOM(SMTMacroSymbol.DOM), RAN(
-				SMTMacroSymbol.RAN), IMG(SMTMacroSymbol.IMG), DOMR(
-				SMTMacroSymbol.DOMR), DOMS(SMTMacroSymbol.DOMS), RANR(
-				SMTMacroSymbol.RANR), RANS(SMTMacroSymbol.RANS), INV(
-				SMTMacroSymbol.INV), COMP(SMTMacroSymbol.COMP), OVR(
-				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
-				SMTMacroSymbol.FCOMP), EMPTY_PAIR(SMTMacroSymbol.EMPTY_PAIR), ENUM(
-				SMTMacroSymbol.ENUM), DIV(SMTMacroSymbol.DIV), MOD(
-				SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.SUBSET), RANGE_INTEGER(
+				SMTMacroSymbol.RANGE_INTEGER), PROD(SMTMacroSymbol.PROD), DOM(
+				SMTMacroSymbol.DOM), RAN(SMTMacroSymbol.RAN), IMG(
+				SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
+				SMTMacroSymbol.DOMS), RANR(SMTMacroSymbol.RANR), RANS(
+				SMTMacroSymbol.RANS), INV(SMTMacroSymbol.INV), COMP(
+				SMTMacroSymbol.COMP), OVR(SMTMacroSymbol.OVR), ID(
+				SMTMacroSymbol.ID), FCOMP(SMTMacroSymbol.FCOMP), EMPTY_PAIR(
+				SMTMacroSymbol.EMPTY_PAIR), ENUM(SMTMacroSymbol.ENUM), DIV(
+				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
 				SMTMacroSymbol.RELATION), TOTAL_RELATION(
@@ -234,7 +234,16 @@ public class SMTLogic {
 				SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION), PARTIAL_FUNCTION(
 				SMTMacroSymbol.PARTIAL_FUNCTION), TOTAL_FUNCTION(
 				SMTMacroSymbol.TOTAL_FUNCTION), MAPSTO(SMTMacroSymbol.MAPSTO), NAT(
-				SMTMacroSymbol.NAT), NAT1(SMTMacroSymbol.NAT1);
+				SMTMacroSymbol.NAT), NAT1(SMTMacroSymbol.NAT1), PARTIAL_INJECTION(
+				SMTMacroSymbol.PARTIAL_INJECTION), TOTAL_INJECTION(
+				SMTMacroSymbol.TOTAL_INJECTION), PARTIAL_SURJECTION(
+				SMTMacroSymbol.PARTIAL_SURJECTION), TOTAL_SURJECTION(
+				SMTMacroSymbol.TOTAL_SURJECTION), TOTAL_BIJECTION(
+				SMTMacroSymbol.TOTAL_BIJECTION), CARTESIAN_PRODUCT(
+				SMTMacroSymbol.CARTESIAN_PRODUCT), DOMAIN_RESTRICTION(
+				SMTMacroSymbol.DOMAIN_RESTRICTION), DOMAIN_SUBSTRACTION(
+				SMTMacroSymbol.DOMAIN_SUBSTRACTION), RELATIONAL_IMAGE(
+				SMTMacroSymbol.RELATIONAL_IMAGE);
 
 		private String symbol;
 

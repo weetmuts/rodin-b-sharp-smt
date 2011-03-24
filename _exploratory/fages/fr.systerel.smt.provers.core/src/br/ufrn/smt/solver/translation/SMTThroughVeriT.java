@@ -527,7 +527,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		case Formula.UPTO:
 			smtNode = sf.makeMacroTerm(
-					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER), children);
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER),
+					children);
 			break;
 		case Formula.RANSUB:
 			smtNode = sf.makeMacroTerm(SMTMacros
@@ -580,86 +581,82 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					children);
 			break;
 		// FIXME
-		// case Formula.PINJ:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.PARTIAL_INJECTION),
-		// children);
-		// break;
-		//
-		// case Formula.TINJ:
-		// smtNode = sf.makeMacroTerm(
-		// SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_INJECTION),
-		// children);
-		// break;
-		//
-		// case Formula.PSUR:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.PARTIAL_SURJECTION),
-		// children);
-		// break;
-		//
-		// case Formula.TSUR:
-		// smtNode = sf
-		// .makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTION),
-		// children);
-		// break;
-		//
-		// case Formula.TBIJ:
-		// smtNode = sf.makeMacroTerm(
-		// SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_BIJECTION),
-		// children);
-		// break;
-		//
-		// case Formula.SETMINUS:
-		// smtNode = sf.makeMacroTerm(
-		// SMTMacros.getMacroSymbol(SMTVeriTOperator.SETMINUS),
-		// children);
-		// break;
-		//
-		// case Formula.CPROD:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.CARTESIAN_PRODUCT),
-		// children);
-		// break;
-		//
-		// case Formula.DPROD:
-		// smtNode = sf.makeMacroTerm(
-		// SMTMacros.getMacroSymbol(SMTVeriTOperator.DIRECT_PRODUCT),
-		// children);
-		// break;
-		//
-		// case Formula.PPROD:
-		// smtNode = sf.makeMacroTerm(
-		// SMTMacros.getMacroSymbol(SMTVeriTOperator.PARALLEL_TO),
-		// children);
-		// break;
-		//
-		// case Formula.DOMRES:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.DOMAIN_RESTRICTION),
-		// children);
-		// break;
-		//
-		// case Formula.DOMSUB:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.DOMAIN_SUBSTRACTION),
-		// children);
-		// break;
-		//
-		// case Formula.FUNIMAGE:
-		// smtNode = sf.makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.FUNCTION_APPLICATION),
-		// children);
-		// break;
-		//
-		// case Formula.RELIMAGE:
-		// smtNode = sf
-		// .makeMacroTerm(SMTMacros
-		// .getMacroSymbol(SMTVeriTOperator.RELATIONAL_IMAGE),
-		// children);
-		// break;
-		//
+		case Formula.PINJ:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.PARTIAL_INJECTION),
+					children);
+			break;
+
+		case Formula.TINJ:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_INJECTION),
+					children);
+			break;
+
+		case Formula.PSUR:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.PARTIAL_SURJECTION),
+					children);
+			break;
+
+		case Formula.TSUR:
+			smtNode = sf
+					.makeMacroTerm(SMTMacros
+							.getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTION),
+							children);
+			break;
+
+		case Formula.TBIJ:
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.TOTAL_BIJECTION),
+					children);
+			break;
+
+		case Formula.SETMINUS:
+			this.signature
+					.addMacro(SMTMacroSymbol.SETMINUS, SMTMacros.SETMINUS);
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.SETMINUS),
+					children);
+			break;
+
+		case Formula.CPROD:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.CARTESIAN_PRODUCT),
+					children);
+			break;
+
+		case Formula.DPROD:
+			// FIXME There is no implementation for DPROD in Verit SMT-LIB
+			break;
+
+		case Formula.PPROD:
+			// FIXME There is no implementation for PPROD in Verit SMT-LIB
+			break;
+
+		case Formula.DOMRES:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.DOMAIN_RESTRICTION),
+					children);
+			break;
+
+		case Formula.DOMSUB:
+			smtNode = sf.makeMacroTerm(SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.DOMAIN_SUBSTRACTION),
+					children);
+			break;
+
+		case Formula.FUNIMAGE:
+			// FIXME There is no implementation for FUNIMAGE in Verit SMT-LIB
+			break;
+
+		case Formula.RELIMAGE:
+			smtNode = sf
+					.makeMacroTerm(SMTMacros
+							.getMacroSymbol(SMTVeriTOperator.RELATIONAL_IMAGE),
+							children);
+			break;
+
 		case Formula.MAPSTO:
 			smtNode = sf
 					.makeMacroTerm(
@@ -797,7 +794,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.SUBSET: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeAtom(
+			smtNode = sf.makeMacroAtom(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSET),
 					children, signature);
 			break;
@@ -805,7 +802,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.SUBSETEQ: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeAtom(
+			smtNode = sf.makeMacroAtom(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSETEQ),
 					children, signature);
 			break;
@@ -813,7 +810,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.NOTSUBSET: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeAtom(
+			smtNode = sf.makeMacroAtom(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.SUBSET),
 					children, signature);
 			SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
@@ -844,14 +841,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		// TODO Auto-generated method stub
-
+		// TODO
 	}
 
 	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -884,14 +879,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 							children);
 			break;
 		case Formula.FCOMP:
-			this.signature.addMacro(SMTMacroSymbol.FCOMP,
-					SMTMacros.FCOMP_MACRO);
+			this.signature
+					.addMacro(SMTMacroSymbol.FCOMP, SMTMacros.FCOMP_MACRO);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.FCOMP), children);
 			break;
 		case Formula.OVR:
-			this.signature.addMacro(SMTMacroSymbol.OVR,
-					SMTMacros.REL_OVR_MACRO);
+			this.signature
+					.addMacro(SMTMacroSymbol.OVR, SMTMacros.REL_OVR_MACRO);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.OVR), children);
 			break;
@@ -970,7 +965,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		case Formula.KRAN: {
 			smtNode = sf.makeMacroTerm(
-					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER), children);
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER),
+					children);
 			break;
 		}
 		case Formula.KMIN: {

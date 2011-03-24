@@ -400,4 +400,10 @@ public final class SMTFactory {
 	public SMTTerm makeMacroTerm(SMTMacroSymbol macroSymbol) {
 		return this.makeMacroTerm(macroSymbol, EMPTY_TERM);
 	}
+
+	public SMTFormula makeMacroAtom(SMTMacroSymbol macroSymbol, SMTTerm[] args,
+			SMTSignatureVerit signature) {
+		return new SMTAtom(macroSymbol, args);
+
+	}
 }

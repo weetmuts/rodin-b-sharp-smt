@@ -27,7 +27,7 @@ public class SMTMacros {
 	public static String IN = "(in (lambda (?p6 't) (?q6 ('t boolean)) . (?q6 ?p6)))";
 	public static String SUBSET = "(subset (lambda (?p7 ('t boolean)) (?q7 ('t boolean)) . (and (subseteq ?p7 ?q7) (not (= ?p7 ?q7	)))))";
 	public static String SUBSETEQ = "(subseteq (lambda (?p8 ('t boolean)) (?q8 ('t boolean)) . (forall (?x6 't). (implies (?p8 ?x6) (?q8 ?x6)))))";
-	public static String RANGE_INTEGER = "(ran   (lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2)))))";
+	public static String RANGE_INTEGER = "(lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2))))";
 	public static String RANGE_SUBSTRACION = "(lambda (?x8 ((Pair 's 't) Bool)(?q10 ('t Bool)).(lambda (?p10 (Pair 's 't).(and (?x8 ?p10)(not (?q10 (snd ?p10)))))))";
 	public static String RANGE_RESTRICTION = "(lambda (?q11 ((Pair 's 't) Bool)(?x9 ('t Bool))(lambda (?p11 (Pair 's 't) (and (?q11 ?p11)(?x9 (snd ?p11))))))";
 	public static String RELATION = "(lambda (?x10 ('s Bool)) (?q12 ('s Bool)) . (lambda (?r ((Pair 's 't) Bool)) . (forall (?p12 (Pair 's 't)) (implies (?r ?p12) (and (?x10 (fst ?p12))(?q12 (snd ?p12)))))))";
@@ -43,13 +43,44 @@ public class SMTMacros {
 	public static String NAT1 = "(Nat (lambda (?x16 Int) . (<= 1 ?x16))";
 	public static String INVERSE = "(lambda (?r6 ((Pair 's 't) bool).(lambda (?p17 (Pair 's 't).(?r6 (pair (snd ?p17)(fst ?p17)))))))";
 	public static String ID = "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))";
-	public static String DOM = "(domain (lambda (?r7 ('t1 't2 boolean)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18)))))";
+	public static String DOM = "(lambda (?r7 ('t1 't2 boolean)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18))))";
+	public static String PARTIAL_INJECTION = "(lambda (?x17 ('s Bool)) . (?y3 ('s Bool))(lambda (?r19 ((Pair 's 't) Bool)) . (and ((pfun ?x17 ?y3) ?r19) (injp ?r19))))";
+	public static String TOTAL_INJECTION = "(lambda (?x18 ('s Bool)) . (?y4 ('s Bool))(lambda (?r20 ((Pair 's 't) Bool)) . (and ((pinj ?x18 ?y4) ?r20) (totp ?x18 ?r20))))";
+	public static String PARTIAL_SURJECTION = "(lambda (?x19 ('s Bool))(?y5 ('s Bool)) . (lambda (?r21 ((Pair 's 't) Bool)) .  (and ((pfun ?x19 ?y5) ?r21) (surp ?y5 ?r21))))";
+	public static String TOTAL_SURJECTION = "(lambda (?x20 ('s Bool)) (?y6 ('s Bool))(lambda (?r22 ((Pair 's 't) Bool)) (and ((psur ?x20 ?y6) ?r22) (totp ?x20 ?r22))))";
+	public static String TOTAL_BIJECTION = "(lambda (?X21 ('s Bool)) (?y7 ('s Bool)) . (lambda (?r23 ((Pair 's 't) Bool)) . (and ((tsur ?X21 ?y7) ?r23) ((tinj ?X21 ?y7)?r23))))";
+	public static String CARTESIAN_PRODUCT = "(lambda (?y8 ('s Bool))(?y9 ('t Bool)) . (lambda (?p19 (Pair 's 't)) . (and (?y8 (fst ?p19)) (?y9 (snd ?p19)))))";
+	public static String DOMAIN_RESTRICTION = "(lambda (?r24 ((Pair 's 't) Bool)(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't) . (and (?r24 ?p20)(?s3 (fst ?p20)))))))";
+	public static String DOMAIN_SUBSTRACTION = "(lambda (?r25 ((Pair 's 't) Bool)(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))))";
+	public static String RELATIONAL_IMAGE = "(lambda (?r26 ((Pair 's 't) Bool)(?p22 ('s Bool)(lambda (?y10 't) (exists (?x22 's)(and (?p22 ?x22)(?r26 (pair ?x22 ?y10))))))";
+	public static String SETMINUS = "(setminus (lambda (?x23 ('t boolean)) (?q13 ('t boolean)) . (lambda (?x23 't) . (and (?x23 ?x23) (not (?q13 ?x23))))))";
 
 	static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			"");
 	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
 			POLYMORPHIC, POLYMORPHIC };
 	private static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
+
+	public static SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.SETMINUS, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol RELATIONAL_IMAGE_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.RELATIONAL_IMAGE, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol DOMAIN_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.DOMAIN_SUBSTRACTION, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol DOMAIN_RESTRICTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.DOMAIN_RESTRICTION, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol CARTESIAN_PRODUCT_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.CARTESIAN_PRODUCT, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol TOTAL_BIJECTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.TOTAL_BIJECTION, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol TOTAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.TOTAL_SURJECTION, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol PARTIAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.PARTIAL_SURJECTION, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol TOTAL_INJECTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.TOTAL_INJECTION, POLYMORPHIC_PAIRS);
+	private static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.PARTIAL_INJECTION, POLYMORPHIC_PAIRS);
 
 	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.DOM, POLYMORPHICS);
@@ -151,8 +182,7 @@ public class SMTMacros {
 		String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
 		String macroBody = createEnumerationMacro(terms);
 		signature.addMacro(macroName, macroBody);
-		SMTMacroSymbol macroSymbol = new SMTMacroSymbol(macroName,
-				EMPTY_SORT);
+		SMTMacroSymbol macroSymbol = new SMTMacroSymbol(macroName, EMPTY_SORT);
 		return macroSymbol;
 	}
 
@@ -240,11 +270,42 @@ public class SMTMacros {
 		case DOM: {
 			return DOM_SYMBOL;
 		}
+		case PARTIAL_INJECTION: {
+			return PARTIAL_INJECTION_SYMBOL;
+		}
+		case TOTAL_INJECTION: {
+			return TOTAL_INJECTION_SYMBOL;
+		}
+		case PARTIAL_SURJECTION: {
+			return PARTIAL_SURJECTION_SYMBOL;
+		}
+		case TOTAL_SURJECTION: {
+			return TOTAL_SURJECTION_SYMBOL;
+		}
+		case TOTAL_BIJECTION: {
+			return TOTAL_BIJECTION_SYMBOL;
+		}
+		case CARTESIAN_PRODUCT: {
+			return CARTESIAN_PRODUCT_SYMBOL;
+		}
+		case DOMAIN_RESTRICTION: {
+			return DOMAIN_RESTRICTION_SYMBOL;
+		}
+		case DOMAIN_SUBSTRACTION: {
+			return DOMAIN_SUBSTRACTION_SYMBOL;
+		}
+		case RELATIONAL_IMAGE: {
+			return RELATIONAL_IMAGE_SYMBOL;
+		}
+		case SETMINUS: {
+			return SETMINUS_SYMBOL;
+		}
 
 		default:
-
+			throw new IllegalArgumentException(
+					"There is no defined macro with symbol: "
+							+ operator.toString());
 		}
-		return null;
 	}
 
 }
