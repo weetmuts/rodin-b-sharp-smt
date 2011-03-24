@@ -11,8 +11,6 @@
 package fr.systerel.smt.provers.ast;
 
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
@@ -25,14 +23,17 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
-	private final Map<String, String> macros = new Hashtable<String, String>();
+	private final Set<SMTMacro> macros = new HashSet<SMTMacro>();
+
+	private Set<String> macroNames = new HashSet<String>();
 
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
 	}
 
-	public void addMacro(final String macroName, String macroBody) {
-		macros.put(macroName, macroBody);
+	public void addMacro(final SMTMacro macro) {
+		macroNames.add(macro.getMacroName());
+		macros.add(macro);
 	}
 
 	public SMTSymbol getSMTSymbol(final String identifierName) {
@@ -53,17 +54,27 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	private void extramacrosSection(final StringBuilder sb) {
-		if (!macros.isEmpty()) {
-			sb.append("(extramacros(");
-			Set<String> macroNames = macros.keySet();
-			for (String macroName : macroNames) {
-				sb.append("\n(");
-				sb.append(macroName);
-				sb.append(macros.get(macroName));
-				sb.append(")");
-			}
-			sb.append("\n)");
+		// TODO Re-implmenent this method
+
+		// if (!macros.isEmpty()) {
+		// sb.append("(extramacros(");
+		// Set<String> macroNames = macros.keySet();
+		// for (String macroName : macroNames) {
+		// sb.append("\n(");
+		// sb.append(macroName);
+		// sb.append(macros.get(macroName));
+		// sb.append(")");
+		// }
+		// sb.append("\n)");
+		// }
+	}
+
+	private static Set<String> getNamesFromMacro(Set<SMTMacro> macros) {
+		Set<String> macroNames = new HashSet<String>();
+		for (SMTMacro macro : macros) {
+			macroNames.add(macro.getMacroName());
 		}
+		return macroNames;
 	}
 
 	@Override
@@ -72,6 +83,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
+		names.addAll(getNamesFromMacro(macros));
 		for (SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
@@ -116,4 +128,5 @@ public class SMTSignatureVerit extends SMTSignature {
 	public void addPred(SMTPredicateSymbol predSymbol) {
 		this.preds.add(predSymbol);
 	}
+
 }

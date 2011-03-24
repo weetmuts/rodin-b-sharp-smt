@@ -1,5 +1,13 @@
 package fr.systerel.smt.provers.ast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.eventb.core.ast.Expression;
+
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 
@@ -132,40 +140,6 @@ public class SMTMacros {
 			SMTMacroSymbol.EMPTY_PAIR, EMPTY_SORT, true);
 
 	/**
-	 * This method creates the macro of an enumeration, as described in the rule
-	 * 19 of the Paper
-	 * "Integration of SMT-Solvers in B and Event-B Development Environments"
-	 * from the author DEHARBE, David.
-	 * 
-	 * For example: the enumeration macro of the translation of the expression R
-	 * = {1,2,3}, where Type(R) = Int, is:
-	 * 
-	 * (lambda ?x Int)(or (= ?x 1) (= ?x 2) (= ?x 3))
-	 * 
-	 * @param terms
-	 *            the terms to be inserted in the macro enumeration
-	 * @return the string of the enumeration macro.
-	 */
-	private static String createEnumerationMacro(SMTTerm[] terms) {
-		// TODO: Verify if all the arguments are of the same sort
-		SMTSortSymbol sort = terms[0].getSort();
-
-		StringBuilder sb = new StringBuilder();
-		if (terms.length == 1) {
-			sb.append("(lambda (?s ");
-			sb.append(sort.toString());
-			sb.append(") . (or \n");
-			for (SMTTerm term : terms) {
-				sb.append("\t\t\t(= ?s ");
-				sb.append(term.toString());
-				sb.append(")\n");
-			}
-			sb.append("\t\t\t))");
-		}
-		return sb.toString();
-	}
-
-	/**
 	 * This method adds a new enumeration macro in the signature, and returns a
 	 * enumeration MacroSymbol. For each new defined enumeration macro, the
 	 * method associates with it a new name.
@@ -177,13 +151,45 @@ public class SMTMacros {
 	 *            Macro Symbol.
 	 * @return
 	 */
-	public static final SMTMacroSymbol addEnumerationMacroInSignature(
-			final SMTSignatureVerit signature, SMTTerm[] terms) {
-		String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
-		String macroBody = createEnumerationMacro(terms);
-		signature.addMacro(macroName, macroBody);
-		SMTMacroSymbol macroSymbol = new SMTMacroSymbol(macroName, EMPTY_SORT);
-		return macroSymbol;
+
+	public static SMTPredefinedMacro makePredefinedMacro(
+			final String macroName, final String body) {
+		return new SMTPredefinedMacro(macroName, body);
+	}
+
+	public static SMTPairEnumMacro makePairEnumerationMacro(
+			final String macroName, final String varName1,
+			final String varName2, final SMTTerm[] terms) {
+
+		return new SMTPairEnumMacro(macroName, varName1, varName2, terms);
+	}
+
+	public static SMTEnumMacro makeEnumMacro(final String macroName,
+			final String varName, final SMTTerm[] terms) {
+		return new SMTEnumMacro(macroName, varName, terms);
+	}
+
+	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
+			String macroName, SMTTerm[] terms, SMTVarSymbol lambdaVar,
+			SMTFormula formula, SMTTerm expression) {
+		// TODO Auto-generated method stub
+		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
+		for (int i = 0; i < terms.length; i++) {
+			final SMTTerm term = terms[i];
+			if (term instanceof SMTVar) {
+				final SMTVar var = (SMTVar) term;
+				qVars[i] = var.getSymbol();
+			} else {
+				throw new IllegalArgumentException(
+						"The term should be an SMTVar");
+			}
+		}
+		return new SMTSetComprehensionMacro(macroName, qVars, lambdaVar,
+				formula, expression);
+	}
+
+	public static SMTMacroSymbol makeMacroSymbol(final String macroName) {
+		return new SMTMacroSymbol(macroName, EMPTY_SORT);
 	}
 
 	/**

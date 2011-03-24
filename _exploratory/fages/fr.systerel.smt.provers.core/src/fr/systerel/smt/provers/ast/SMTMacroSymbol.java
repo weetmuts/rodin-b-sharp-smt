@@ -51,6 +51,9 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String DOMAIN_RESTRICTION = "domr";
 	public static final String DOMAIN_SUBSTRACTION = "doms";
 	public static final String RELATIONAL_IMAGE = "img";
+	public static final String LAMBDA = "lambda";
+	public static final String CSET = "cset";
+	public static final String ELEM = "elem";
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
 		super(symbolName, args, predefined);

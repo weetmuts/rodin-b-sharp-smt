@@ -387,48 +387,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	/**
-	 * "pred-quant"
-	 */
-	@Test
-	public void testForall() {
-		/**
-		 * forall
-		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (in ?x s))");
-		/**
-		 * forall (multiple identifiers)
-		 */
-		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (in ?x s) (in ?y s)))");
-		/**
-		 * forall (multiple identifiers)
-		 */
-		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
-				"∀x,y·x∈s ∧ y∈s", defaultTe);
-		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
-		bids[1] = bids[0];
-		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
-				base.getPredicate(), null);
-		// System.out.println("Predicate " + p);
-		testTranslationV1_2(p,
-				"(forall (?x R) (?x_0 R) (and (in ?x s) (in ?x_0 s)))",
-				"twice same decl");
-	}
-
-	@Test
-	public void testExists() {
-		/**
-		 * exists
-		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (in ?x s))");
-		/**
-		 * exists (multiple identifiers)
-		 */
-		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (in ?x s) (in ?y s)))");
-	}
-
-	/**
 	 * "pred-lit"
 	 */
 	@Test
@@ -624,18 +582,170 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
-	public void testRule15() {
+	public void testExistsRule17() {
 		/**
-		 * < , ∧ , > , ⇒ ,
+		 * exists
 		 */
-		testTranslationV1_2Default("(a < b ∧ b > c) ⇒ a = c",
-				"(implies (and (< a b) (> b c)) (< a c))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (in ?x s))");
+		/**
+		 * exists (multiple identifiers)
+		 */
+		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
+				"(exists (?x R) (?y R) (and (in ?x s) (in ?y s)))");
+	}
 
+	@Test
+	public void testForallRule17() {
 		/**
-		 * ≤, ∧ , ≥ , ⇔ , <
+		 * forall
 		 */
-		testTranslationV1_2Default("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < c",
-				"(iff (and (<= a b) (>= b c)) (< (/ a b) c))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (in ?x s))");
+		/**
+		 * forall (multiple identifiers)
+		 */
+		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
+				"(forall (?x R) (?y R) (and (in ?x s) (in ?y s)))");
+		/**
+		 * forall (multiple identifiers)
+		 */
+		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
+				"∀x,y·x∈s ∧ y∈s", defaultTe);
+		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
+		bids[1] = bids[0];
+		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
+				base.getPredicate(), null);
+		// System.out.println("Predicate " + p);
+		testTranslationV1_2(p,
+				"(forall (?x R) (?x_0 R) (and (in ?x s) (in ?x_0 s)))",
+				"twice same decl");
+	}
+
+	@Test
+	public void testRule16() {
+		testTranslationV1_2Default(
+				"((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)",
+				"(and (subset (inter A A) (union A A)) (= (+ a b c) b) (= (* a b c) 0))");
+
+		testTranslationV1_2Default(
+				"((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c = 0)",
+				"(or (subset (inter A A) (union A A)) (= (+ a b c) b) (= (* a b c) 0))");
+	}
+
+	@Test
+	public void testRule15SetMinusUnionInter() {
+
+		testTranslationV1_2Default("(A ∖ A) ⊂ (A ∪ A)",
+				"(subset (setminus A A) (union A A))");
+
+		testTranslationV1_2Default("(A ∩ A) ⊂ (A ∪ A)",
+				"(subset (inter A A) (union A A))");
 
 	}
+
+	@Test
+	public void testRule15() {
+
+		/**
+		 * ∈ , ⊆ , ⊂
+		 */
+		testTranslationV1_2Default("(a ∈ A) ∧ (A ⊆ A)",
+				"(and (in a A) (subseteq A A) (subset A A))");
+
+		/**
+		 * < , > , ⇒ , =
+		 */
+		testTranslationV1_2Default("(a < b ∧ b > c) ⇒ a = c",
+				"(implies (and (< a b) (> b c)) (= a c))");
+
+		/**
+		 * ≤, ∧ , ≥ , ⇔
+		 */
+		testTranslationV1_2Default("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)",
+				"(iff (and (<= a b) (>= b c)) (< (/ a b) (mod c b)))");
+
+	}
+
+	@Test
+	public void testRule15Functions() {
+
+		testTranslationV1_2Default("AB ∈ (A↔A)", "(in AB (rel A A))");
+
+		testTranslationV1_2Default("AB ∈ (A→A)", "(in AB (tfun A A))");
+
+		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
+
+		testTranslationV1_2Default("AB ∈ (A↣A)", "(in AB (tinj A A))");
+
+		testTranslationV1_2Default("AB ∈ (A⤔A)", "(in AB (pinj A A))");
+
+		testTranslationV1_2Default("AB ∈ (A↠A)", "(in AB (tsur A A))");
+
+		testTranslationV1_2Default("AB ∈ (A⤀A)", "(in AB (psur A A))");
+
+		testTranslationV1_2Default("AB ∈ (A⤖A)", "(in AB (bij A A))");
+
+		testTranslationV1_2Default("AB ∈ (A◁A)", "(in AB (domr A A))");
+	}
+
+	@Test
+	public void testRule15RelationOverridingCompANdCP() {
+		/**
+		 * relation overriding
+		 */
+		testTranslationV1_2Default("(AB \ue103 AB) = (AB \ue103 AB)",
+				"(= (ovr AB AB) (ovr AB AB))");
+
+		testTranslationV1_2Default("(AB \u003b AB) = (AB \u003b AB)",
+				"(= (comp AB AB) (comp AB AB))");
+	}
+
+	@Test
+	public void testRule15CartesianProductAndIntegerRange() {
+
+		testTranslationV1_2Default("(A × A) = (A × A)",
+				"(= (prod A A) (prod A A))");
+
+		testTranslationV1_2Default("(a ‥ a) = (a ‥ a)",
+				"(= (range a a) (range a a))");
+	}
+
+	@Test
+	public void testRule15RestrictionsAndSubstractions() {
+
+		testTranslationV1_2Default("(A ◁ AB) = (A ◁ AB)",
+				"(= (domr A AB) (domr A AB))");
+
+		testTranslationV1_2Default("(A ⩤ AB) = (A ⩤ AB)",
+				"(= (doms A AB) (doms A AB))");
+
+		testTranslationV1_2Default("(AB ▷ A) = (AB ▷ A)",
+				"(= (ranr AB A) (ranr AB A))");
+
+		testTranslationV1_2Default("(AB ⩥ A) = (AB ⩥ A)",
+				"(= (rans AB A) (rans AB A))");
+	}
+
+	@Test
+	public void testRule18() {
+
+		testTranslationV1_2Default("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}",
+				"(= cset cset_0)");
+
+		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset A)");
+	}
+
+	@Test
+	public void testRule19() {
+		testTranslationV1_2Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}",
+				"(= enum_0 enum_1)");
+
+		testTranslationV1_2Default("{0,1,2,3,4} = A", "(= enum_0 A)");
+	}
+
+	@Test
+	public void testRule20() {
+
+		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
+	}
+
 }
