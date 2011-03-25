@@ -10,6 +10,7 @@ import org.eventb.core.ast.Expression;
 
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
+import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -21,54 +22,74 @@ import fr.systerel.smt.provers.ast.SMTTheory.Ints;
  */
 public class SMTMacros {
 
-	private static SMTSortSymbol[] EMPTY_SORT = {};
+	public static SMTSortSymbol[] EMPTY_SORT = {};
 
 	public static boolean IS_GENERIC_SORT = true;
-	public static String ENUM_PREFIX = "enum";
+	public static final String ENUM_PREFIX = "enum";
 
-	public static String BUNION_MACRO = "(lambda (?p1 ('t boolean)) (?q1 ('t boolean)) . (lambda (?x1 't) . (or (?p1 ?x6) (?q1 ?x1))))";
-	public static String BINTER_MACRO = "(lambda (?p2 ('t boolean))(?q2 ('t boolean)) . (lambda (?x2 't) . (and (?p2 ?x2) (?q2 ?x2))))";
-	public static String FCOMP_MACRO = "(lambda (?p3 ((Pair 's 't) bool)(?q3 ((Pair 't 'u) bool)(lambda (?s1 (Pair 's 'u))(exists (?x3 't) (and (?p3 (pair (fst ?s1) ?x3)) (?q3 (pair ?x3 (snd ?s1)))))))))";
-	public static String REL_OVR_MACRO = "(lambda (?p4 ((Pair 's 't) bool)(?q4 ((Pair 's 't) bool)(lambda (?x4 (Pair 's 'u)) (or (?q4 ?x4)(and (?p4 ?x4)(not(exists(?s2 (Pair 's 't))(and (?q4 ?s2)(= (fst ?s2)(fst ?x4)))))))))))";
-	public static String EMPTYSET_MACRO = "(lambda (?x5 't). false)";
-	public static String EMPTYSET_PAIR_MACRO = "(lambda (?p5 't1) (?q5 't2). false)";
-	public static String IN = "(in (lambda (?p6 't) (?q6 ('t boolean)) . (?q6 ?p6)))";
-	public static String SUBSET = "(subset (lambda (?p7 ('t boolean)) (?q7 ('t boolean)) . (and (subseteq ?p7 ?q7) (not (= ?p7 ?q7	)))))";
-	public static String SUBSETEQ = "(subseteq (lambda (?p8 ('t boolean)) (?q8 ('t boolean)) . (forall (?x6 't). (implies (?p8 ?x6) (?q8 ?x6)))))";
-	public static String RANGE_INTEGER = "(lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2))))";
-	public static String RANGE_SUBSTRACION = "(lambda (?x8 ((Pair 's 't) Bool)(?q10 ('t Bool)).(lambda (?p10 (Pair 's 't).(and (?x8 ?p10)(not (?q10 (snd ?p10)))))))";
-	public static String RANGE_RESTRICTION = "(lambda (?q11 ((Pair 's 't) Bool)(?x9 ('t Bool))(lambda (?p11 (Pair 's 't) (and (?q11 ?p11)(?x9 (snd ?p11))))))";
-	public static String RELATION = "(lambda (?x10 ('s Bool)) (?q12 ('s Bool)) . (lambda (?r ((Pair 's 't) Bool)) . (forall (?p12 (Pair 's 't)) (implies (?r ?p12) (and (?x10 (fst ?p12))(?q12 (snd ?p12)))))))";
+	public static final String BUNION_MACRO = "(lambda (?p1 ('t boolean)) (?q1 ('t boolean)) . (lambda (?x1 't) . (or (?p1 ?x6) (?q1 ?x1))))";
+	public static final String BINTER_MACRO = "(lambda (?p2 ('t boolean))(?q2 ('t boolean)) . (lambda (?x2 't) . (and (?p2 ?x2) (?q2 ?x2))))";
+	public static final String FCOMP_MACRO = "(lambda (?p3 ((Pair 's 't) bool)(?q3 ((Pair 't 'u) bool)(lambda (?s1 (Pair 's 'u))(exists (?x3 't) (and (?p3 (pair (fst ?s1) ?x3)) (?q3 (pair ?x3 (snd ?s1)))))))))";
+	public static final String REL_OVR_MACRO = "(lambda (?p4 ((Pair 's 't) bool)(?q4 ((Pair 's 't) bool)(lambda (?x4 (Pair 's 'u)) (or (?q4 ?x4)(and (?p4 ?x4)(not(exists(?s2 (Pair 's 't))(and (?q4 ?s2)(= (fst ?s2)(fst ?x4)))))))))))";
+	public static final String EMPTYSET_MACRO = "(lambda (?x5 't). false)";
+	public static final String EMPTYSET_PAIR_MACRO = "(lambda (?p5 't1) (?q5 't2). false)";
+	public static final String IN_MACRO = "(in (lambda (?p6 't) (?q6 ('t boolean)) . (?q6 ?p6)))";
+	public static final String SUBSET_MACRO = "(subset (lambda (?p7 ('t boolean)) (?q7 ('t boolean)) . (and (subseteq ?p7 ?q7) (not (= ?p7 ?q7	)))))";
+	public static final String SUBSETEQ_MACRO = "(subseteq (lambda (?p8 ('t boolean)) (?q8 ('t boolean)) . (forall (?x6 't). (implies (?p8 ?x6) (?q8 ?x6)))))";
+	public static final String RANGE_INTEGER_MACRO = "(lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2))))";
+	public static final String RANGE_SUBSTRACION = "(lambda (?x8 ((Pair 's 't) Bool)(?q10 ('t Bool)).(lambda (?p10 (Pair 's 't).(and (?x8 ?p10)(not (?q10 (snd ?p10)))))))";
+	public static final String RANGE_RESTRICTION = "(lambda (?q11 ((Pair 's 't) Bool)(?x9 ('t Bool))(lambda (?p11 (Pair 's 't) (and (?q11 ?p11)(?x9 (snd ?p11))))))";
+	public static final String RELATION = "(lambda (?x10 ('s Bool)) (?q12 ('s Bool)) . (lambda (?r ((Pair 's 't) Bool)) . (forall (?p12 (Pair 's 't)) (implies (?r ?p12) (and (?x10 (fst ?p12))(?q12 (snd ?p12)))))))";
 	// Using the totp (total property) to define this macro
-	public static String TOTAL_RELATION = "(lambda (?x11 ('s Bool)) . (?r1 ((Pair 's 't) Bool))(forall (?p13 (Pair 's 't)) (= (?r1 ?p13) (?x11 (fst ?p13)))))";
+	public static final String TOTAL_RELATION = "(lambda (?x11 ('s Bool)) . (?r1 ((Pair 's 't) Bool))(forall (?p13 (Pair 's 't)) (= (?r1 ?p13) (?x11 (fst ?p13)))))";
 	// Using the surp (surjective property) to define this macro
-	public static String SURJECTIVE_RELATION = "(lambda (?y ('t Bool)) (?r2 ((Pair 's 't) Bool))(forall (?p14 (Pair 's 't)) (= (?r2 ?p14) (?y (snd ?p14)))))";
+	public static final String SURJECTIVE_RELATION = "(lambda (?y ('t Bool)) (?r2 ((Pair 's 't) Bool))(forall (?p14 (Pair 's 't)) (= (?r2 ?p14) (?y (snd ?p14)))))";
 	// Using the conjunction of surjective relation and total relation macros
-	public static String TOTAL_SURJECTIVE_RELATION = "(lambda (?x12 ('t Bool)) . (?r3 ((Pair 's 't) Bool))(and (forall (?p15 (Pair 's 't)) (= (?r3 ?p15) (?x12 (snd ?p15))))  (forall (?p16 (Pair 's 't)) (= (?r3 ?p16) (?x12 (fst ?p16))))))";
-	public static String PARTIAL_FUNCTION = "(lambda (?x13 ('s Bool)) (?y1 ('s Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) .  (and ((rel ?x13 ?y1) ?r4) (funp ?r4))))";
-	public static String TOTAL_FUNCTION = "(lambda (?x14 ('s Bool)) (?y2 ('s Bool))(lambda (?r5 ((Pair 's 't) Bool)) (and ((pfun ?x14 ?y2) ?r5) (totp ?x14 ?r5))))";
-	public static String NAT = "(Nat (lambda (?x15 Int) . (<= 0 ?x15))";
-	public static String NAT1 = "(Nat (lambda (?x16 Int) . (<= 1 ?x16))";
-	public static String INVERSE = "(lambda (?r6 ((Pair 's 't) bool).(lambda (?p17 (Pair 's 't).(?r6 (pair (snd ?p17)(fst ?p17)))))))";
-	public static String ID = "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))";
-	public static String DOM = "(lambda (?r7 ('t1 't2 boolean)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18))))";
-	public static String PARTIAL_INJECTION = "(lambda (?x17 ('s Bool)) . (?y3 ('s Bool))(lambda (?r19 ((Pair 's 't) Bool)) . (and ((pfun ?x17 ?y3) ?r19) (injp ?r19))))";
-	public static String TOTAL_INJECTION = "(lambda (?x18 ('s Bool)) . (?y4 ('s Bool))(lambda (?r20 ((Pair 's 't) Bool)) . (and ((pinj ?x18 ?y4) ?r20) (totp ?x18 ?r20))))";
-	public static String PARTIAL_SURJECTION = "(lambda (?x19 ('s Bool))(?y5 ('s Bool)) . (lambda (?r21 ((Pair 's 't) Bool)) .  (and ((pfun ?x19 ?y5) ?r21) (surp ?y5 ?r21))))";
-	public static String TOTAL_SURJECTION = "(lambda (?x20 ('s Bool)) (?y6 ('s Bool))(lambda (?r22 ((Pair 's 't) Bool)) (and ((psur ?x20 ?y6) ?r22) (totp ?x20 ?r22))))";
-	public static String TOTAL_BIJECTION = "(lambda (?X21 ('s Bool)) (?y7 ('s Bool)) . (lambda (?r23 ((Pair 's 't) Bool)) . (and ((tsur ?X21 ?y7) ?r23) ((tinj ?X21 ?y7)?r23))))";
-	public static String CARTESIAN_PRODUCT = "(lambda (?y8 ('s Bool))(?y9 ('t Bool)) . (lambda (?p19 (Pair 's 't)) . (and (?y8 (fst ?p19)) (?y9 (snd ?p19)))))";
-	public static String DOMAIN_RESTRICTION = "(lambda (?r24 ((Pair 's 't) Bool)(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't) . (and (?r24 ?p20)(?s3 (fst ?p20)))))))";
-	public static String DOMAIN_SUBSTRACTION = "(lambda (?r25 ((Pair 's 't) Bool)(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))))";
-	public static String RELATIONAL_IMAGE = "(lambda (?r26 ((Pair 's 't) Bool)(?p22 ('s Bool)(lambda (?y10 't) (exists (?x22 's)(and (?p22 ?x22)(?r26 (pair ?x22 ?y10))))))";
-	public static String SETMINUS = "(setminus (lambda (?x23 ('t boolean)) (?q13 ('t boolean)) . (lambda (?x23 't) . (and (?x23 ?x23) (not (?q13 ?x23))))))";
+	public static final String TOTAL_SURJECTIVE_RELATION = "(lambda (?x12 ('t Bool)) . (?r3 ((Pair 's 't) Bool))(and (forall (?p15 (Pair 's 't)) (= (?r3 ?p15) (?x12 (snd ?p15))))  (forall (?p16 (Pair 's 't)) (= (?r3 ?p16) (?x12 (fst ?p16))))))";
+	public static final String PARTIAL_FUNCTION = "(lambda (?x13 ('s Bool)) (?y1 ('s Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) .  (and ((rel ?x13 ?y1) ?r4) (funp ?r4))))";
+	public static final String TOTAL_FUNCTION = "(lambda (?x14 ('s Bool)) (?y2 ('s Bool))(lambda (?r5 ((Pair 's 't) Bool)) (and ((pfun ?x14 ?y2) ?r5) (totp ?x14 ?r5))))";
+	public static final String NAT = "(Nat (lambda (?x15 Int) . (<= 0 ?x15))";
+	public static final String NAT1 = "(Nat (lambda (?x16 Int) . (<= 1 ?x16))";
+	public static final String INVERSE = "(lambda (?r6 ((Pair 's 't) bool).(lambda (?p17 (Pair 's 't).(?r6 (pair (snd ?p17)(fst ?p17)))))))";
+	public static final String ID = "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))";
+	public static final String DOM = "(lambda (?r7 ('t1 't2 boolean)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18))))";
+	public static final String PARTIAL_INJECTION = "(lambda (?x17 ('s Bool)) . (?y3 ('s Bool))(lambda (?r19 ((Pair 's 't) Bool)) . (and ((pfun ?x17 ?y3) ?r19) (injp ?r19))))";
+	public static final String TOTAL_INJECTION = "(lambda (?x18 ('s Bool)) . (?y4 ('s Bool))(lambda (?r20 ((Pair 's 't) Bool)) . (and ((pinj ?x18 ?y4) ?r20) (totp ?x18 ?r20))))";
+	public static final String PARTIAL_SURJECTION = "(lambda (?x19 ('s Bool))(?y5 ('s Bool)) . (lambda (?r21 ((Pair 's 't) Bool)) .  (and ((pfun ?x19 ?y5) ?r21) (surp ?y5 ?r21))))";
+	public static final String TOTAL_SURJECTION = "(lambda (?x20 ('s Bool)) (?y6 ('s Bool))(lambda (?r22 ((Pair 's 't) Bool)) (and ((psur ?x20 ?y6) ?r22) (totp ?x20 ?r22))))";
+	public static final String TOTAL_BIJECTION = "(lambda (?X21 ('s Bool)) (?y7 ('s Bool)) . (lambda (?r23 ((Pair 's 't) Bool)) . (and ((tsur ?X21 ?y7) ?r23) ((tinj ?X21 ?y7)?r23))))";
+	public static final String CARTESIAN_PRODUCT = "(lambda (?y8 ('s Bool))(?y9 ('t Bool)) . (lambda (?p19 (Pair 's 't)) . (and (?y8 (fst ?p19)) (?y9 (snd ?p19)))))";
+	public static final String DOMAIN_RESTRICTION = "(lambda (?r24 ((Pair 's 't) Bool)(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't) . (and (?r24 ?p20)(?s3 (fst ?p20)))))))";
+	public static final String DOMAIN_SUBSTRACTION = "(lambda (?r25 ((Pair 's 't) Bool)(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))))";
+	public static final String RELATIONAL_IMAGE = "(lambda (?r26 ((Pair 's 't) Bool)(?p22 ('s Bool)(lambda (?y10 't) (exists (?x22 's)(and (?p22 ?x22)(?r26 (pair ?x22 ?y10))))))";
+	public static final String SETMINUS = "(setminus (lambda (?x23 ('t boolean)) (?q13 ('t boolean)) . (lambda (?x23 't) . (and (?x23 ?x23) (not (?q13 ?x23))))))";
+	public static final String ISMIN_MACRO = "(lambda (?m Int) (?t (Int Bool)) . (and(in ?m ?t)(forall (?x24 Int) (implies (in ?x24 ?t)(<= ?m ?x24)))))";
+	public static final String ISMAX_MACRO = "(lambda (?m1 Int) (?t1 (Int Bool)) . (and(in ?m1 ?t1)(forall (?x24 Int) (implies (in ?x24 ?t1)(<= ?x24 ?m1)))))";
+	public static final String FINITE_MACRO = "(lambda (?p23 Bool) (?t2 ('s Bool)) (?f ('s Int)) (?k Int)(iff ?p23 (and (forall (?x25 s)(implies (in ?x25 ?t2)(in (?f ?x25)(range 1 ?k))))(forall (?x25 s)(?y s)(implies (and (in ?x25 ?t2)(in ?y ?t2)(not (equal ?x25 ?y)))(not (equal (?f ?x25)(?f ?y))))))))";
+	public static final String CARD_MACRO = "(lambda (?t3 ('s Bool)) (?f1 ('s Int)) (?k1 Int))(forall (?x26 's)(implies (in ?x26 ?t3)(in (?f1 ?x26)(range 1 ?k1))))(forall (?x26 's)(?y1 's)(implies (and (in ?x26 ?t3) (in ?y1 ?t3))(iff(equal ?x26 ?y1) (equal (?f1 ?x26)(?f1 ?y1))))))";
 
-	static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
+	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			"");
 	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
 			POLYMORPHIC, POLYMORPHIC };
-	private static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
+	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
+	private static SMTSortSymbol[] ISMIN_MAX_SORTS = { Ints.getInt(),
+			POLYMORPHIC };
+	private static SMTSortSymbol[] FINITE_SORTS = {
+			VeritPredefinedTheory.getInstance().getBooleanSort(), POLYMORPHIC,
+			Ints.getInt(), Ints.getInt() };
 
+	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC, Ints.getInt(),
+			Ints.getInt() };
+
+	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.CARD, CARD_SORTS);
+	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.FINITE, FINITE_SORTS);
+	public static SMTMacroSymbol ISMAX_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.ISMAX, ISMIN_MAX_SORTS);
+	public static SMTMacroSymbol ISMIN_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.ISMIN, ISMIN_MAX_SORTS);
 	public static SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.SETMINUS, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol RELATIONAL_IMAGE_SYMBOL = new SMTMacroSymbol(
@@ -158,14 +179,20 @@ public class SMTMacros {
 	}
 
 	public static SMTPairEnumMacro makePairEnumerationMacro(
-			final String macroName, final String varName1,
-			final String varName2, final SMTTerm[] terms) {
+			final String macroName, final SMTVarSymbol varName1,
+			final SMTVarSymbol varName2, final SMTTerm[] terms) {
 
-		return new SMTPairEnumMacro(macroName, varName1, varName2, terms);
+		SMTMacroTerm[] macroTerms = new SMTMacroTerm[terms.length];
+		for (int i = 0; i < macroTerms.length; i++) {
+			macroTerms[i] = (SMTMacroTerm) terms[i];
+		}
+
+		return new SMTPairEnumMacro(macroName, varName1, varName2, macroTerms);
 	}
 
 	public static SMTEnumMacro makeEnumMacro(final String macroName,
-			final String varName, final SMTTerm[] terms) {
+			final SMTVarSymbol varName, final SMTTerm[] terms) {
+
 		return new SMTEnumMacro(macroName, varName, terms);
 	}
 
@@ -306,7 +333,18 @@ public class SMTMacros {
 		case SETMINUS: {
 			return SETMINUS_SYMBOL;
 		}
-
+		case ISMIN: {
+			return ISMIN_SYMBOL;
+		}
+		case ISMAX: {
+			return ISMAX_SYMBOL;
+		}
+		case FINITE: {
+			return FINITE_SYMBOL;
+		}
+		case CARD: {
+			return CARD_SYMBOL;
+		}
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro with symbol: "

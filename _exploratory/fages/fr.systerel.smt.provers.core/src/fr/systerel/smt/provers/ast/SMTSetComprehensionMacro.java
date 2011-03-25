@@ -19,8 +19,26 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	@Override
 	public void toString(StringBuffer builder) {
-		// TODO Auto-generated method stub
+		// TODO
+	}
 
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("(lambda");
+		sb.append(lambdaVar);
+		sb.append("(exists ");
+		for (SMTVarSymbol qVar : qVars) {
+			sb.append(qVar);
+		}
+		sb.append("(and (= ");
+		sb.append(lambdaVar.name);
+		sb.append(" ");
+		sb.append(expression);
+		sb.append(") ");
+		sb.append(formula);
+		sb.append(")))");
+		return sb.toString();
 	}
 
 }

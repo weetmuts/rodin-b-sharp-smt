@@ -70,7 +70,7 @@ public class SMTAtom extends SMTFormula {
 		throw incompatiblePredicateRankException(symbol, terms);
 	}
 
-	private static IllegalArgumentException incompatiblePredicateRankException(
+	protected static IllegalArgumentException incompatiblePredicateRankException(
 			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Arguments of function symbol: ");

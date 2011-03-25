@@ -30,4 +30,8 @@ public class SMTMacroTerm extends SMTTerm {
 		sort = SMTMacros.POLYMORPHIC;
 	}
 
+	SMTTerm[] getArgTerms() {
+		return argTerms;
+	}
+
 }

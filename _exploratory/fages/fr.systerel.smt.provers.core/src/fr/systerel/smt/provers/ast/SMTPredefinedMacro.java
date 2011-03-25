@@ -11,8 +11,16 @@ public class SMTPredefinedMacro extends SMTMacro {
 
 	@Override
 	public void toString(StringBuffer builder) {
-		// TODO Auto-generated method stub
-
+		// TODO: Nothing
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("(");
+		sb.append(macroName);
+		sb.append(body);
+		sb.append(")");
+		return sb.toString();
+	}
 }

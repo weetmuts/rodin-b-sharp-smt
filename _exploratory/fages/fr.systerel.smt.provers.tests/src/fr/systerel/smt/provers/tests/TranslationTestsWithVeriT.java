@@ -748,4 +748,25 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
 	}
 
+	@Test
+	public void testRule22and23() {
+
+		testTranslationV1_2Default("min({2,3}) = min({2,3})",
+				"(= ismin_var ismin_var_0)");
+
+		testTranslationV1_2Default("max({2,3}) = max({2,3})",
+				"(= ismax_var ismax_var_0)");
+	}
+
+	@Test
+	public void testRule24() {
+		testTranslationV1_2Default("finite({1,2,3})", "finite_p");
+	}
+
+	@Test
+	public void testRule25() {
+		testTranslationV1_2Default("card({1,2,3}) = card({1,2,3})",
+				"(= card_k card_k_0)");
+	}
+
 }

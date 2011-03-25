@@ -54,6 +54,10 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String LAMBDA = "lambda";
 	public static final String CSET = "cset";
 	public static final String ELEM = "elem";
+	public static final String ISMIN = "ismin";
+	public static final String ISMAX = "ismax";
+	public static final String FINITE = "finite";
+	public static final String CARD = "card";
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
 		super(symbolName, args, predefined);

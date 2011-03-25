@@ -41,7 +41,7 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  */
 public class SmtProverCall extends XProverCall {
 	private static String SMT_LIB_FILE_EXTENSION = ".smt";
-	private static String VERIT_TEMP_FILE = "veritTempFile_";
+	private static String VERIT_TEMP_FILE = "_veritTempFile";
 	private static String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
@@ -296,8 +296,8 @@ public class SmtProverCall extends XProverCall {
 	}
 
 	private String smtVeriTPreProcessFilePath(String fileName) {
-		return TRANSLATION_PATH + File.separatorChar + VERIT_TEMP_FILE
-				+ fileName + SMT_LIB_FILE_EXTENSION;
+		return TRANSLATION_PATH + File.separatorChar + fileName
+				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
 	}
 
 	private File writeVeritPreprocessedSMTFile(SMTBenchmark benchmark,

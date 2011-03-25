@@ -44,8 +44,10 @@ import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 
+import fr.systerel.smt.provers.ast.SMTAtom;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTEnumMacro;
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
@@ -67,6 +69,8 @@ import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
+import fr.systerel.smt.provers.ast.SMTVeritCardFormula;
+import fr.systerel.smt.provers.ast.SMTVeritFiniteFormula;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -79,6 +83,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignatureVerit signature;
+
+	/**
+	 * This variable stores additional assumptions produced by the translation
+	 * of min,max, finite and cardinality operators
+	 */
+	private List<SMTFormula> additionalAssumptions = new ArrayList<SMTFormula>();
 
 	/**
 	 * This is the public translation method
@@ -229,6 +239,37 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		translateSignature(bIterator);
 	}
 
+	private SMTSortSymbol makeSort(Type varType) {
+		if (varType.getSource() != null) {
+
+			SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
+					varType.getTarget());
+			typeMap.put(varType, sortSymbol);
+			return sortSymbol;
+
+		} else if (varType.getBaseType() != null) {
+
+			if (varType.getBaseType().getSource() != null
+					|| varType.getBaseType().getBaseType() != null) {
+				throw new IllegalArgumentException("Type " + varType.toString()
+						+ ": Sets of sets are not supported yet");
+			} else {
+				SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
+						.getBaseType().toString());
+				this.signature.addSort(sortSymbol);
+				typeMap.put(varType, sortSymbol);
+				return sortSymbol;
+			}
+
+		} else {
+			SMTSortSymbol smtSortSymbol = sf.makeVeriTSortSymbol(varType
+					.toString());
+			this.signature.addSort(smtSortSymbol);
+			typeMap.put(varType, smtSortSymbol);
+			return smtSortSymbol;
+		}
+	}
+
 	/**
 	 * This method extracts types of bound ident declarations and adds them into
 	 * the signature
@@ -238,40 +279,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            declarations
 	 */
 	private void translateSignature(Iterator<Type> iter) {
-		boolean usingPairs = false;
-
 		while (iter.hasNext()) {
 			final Type varType = iter.next();
-
-			if (varType.getSource() != null) {
-
-				SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
-						varType.getTarget());
-				typeMap.put(varType, sortSymbol);
-				usingPairs = true;
-
-			} else if (varType.getBaseType() != null) {
-
-				if (varType.getBaseType().getSource() != null
-						|| varType.getBaseType().getBaseType() != null) {
-					throw new IllegalArgumentException("Type "
-							+ varType.toString()
-							+ ": Sets of sets are not supported yet");
-				} else {
-					SMTSortSymbol sortSymbol = sf.makeVeriTSortSymbol(varType
-							.getBaseType().toString());
-					this.signature.addSort(sortSymbol);
-					typeMap.put(varType, sortSymbol);
-				}
-
-			} else {
-				SMTSortSymbol smtSortSymbol = sf.makeVeriTSortSymbol(varType
-						.toString());
-				this.signature.addSort(smtSortSymbol);
-				typeMap.put(varType, smtSortSymbol);
-			}
+			makeSort(varType);
 		}
-		if (!insertPairDecl && usingPairs) {
+		// Check if it's necessary to add the sort and function pair and if it
+		// was not already inserted.
+		if (insertPairDecl) {
 			final String sortSymbolName = "(Pair 's 't)";
 			SMTSortSymbol smtSortSymbol = sf
 					.makeVeriTSortSymbol(sortSymbolName);
@@ -972,13 +986,27 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
 			String varName1 = signature.freshCstName(SMTMacroSymbol.ELEM);
 			if (expression.getMembers()[0].getType() instanceof ProductType) {
+
 				String varName2 = signature.freshCstName(SMTMacroSymbol.ELEM);
+				SMTSortSymbol sortSymbol1 = makeSort(expression.getType()
+						.getSource());
+				SMTSortSymbol sortSymbol2 = makeSort(expression.getType()
+						.getTarget());
+
+				SMTVarSymbol var1 = new SMTVarSymbol(varName1, sortSymbol1,
+						false);
+				SMTVarSymbol var2 = new SMTVarSymbol(varName2, sortSymbol2,
+						false);
+
 				SMTPairEnumMacro macro = SMTMacros.makePairEnumerationMacro(
-						macroName, varName1, varName2, children);
+						macroName, var1, var2, children);
 				this.signature.addMacro(macro);
 			} else {
-				SMTEnumMacro macro = SMTMacros.makeEnumMacro(macroName,
-						varName1, children);
+				SMTSortSymbol sortSymbol = makeSort(expression.getType());
+				SMTVarSymbol var = new SMTVarSymbol(varName1, sortSymbol, false);
+
+				SMTEnumMacro macro = SMTMacros.makeEnumMacro(macroName, var,
+						children);
 				this.signature.addMacro(macro);
 			}
 			SMTMacroSymbol symbol = SMTMacros.makeMacroSymbol(macroName);
@@ -992,7 +1020,49 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.KCARD: {
-			// TODO
+
+			// Creating ismin macro
+			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
+					SMTMacroSymbol.CARD, SMTMacros.CARD_MACRO);
+
+			// Adding it to the signature
+			this.signature.addMacro(macro);
+
+			// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
+			// 25)
+			String kVarName = signature.freshCstName("card_k");
+			String fVarName = signature.freshCstName("card_f");
+
+			SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
+					SMTMacros.EMPTY_SORT, Ints.getInt(), false, false);
+
+			Type type = expression.getChild().getType();
+			SMTSortSymbol expressionSort = typeMap.get(type);
+			if (expressionSort == null) {
+				expressionSort = makeSort(type);
+			}
+			SMTSortSymbol[] sorts = { expressionSort };
+
+			SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName,
+					sorts, Ints.getInt(), false, false);
+
+			signature.addConstant(kVarSymbol);
+			signature.addConstant(fVarSymbol);
+
+			// Creating the macro operator 'finite'
+			SMTMacroSymbol cardSymbol = SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.CARD);
+
+			// Creating the new assumption (finite p t k f) and saving it.
+			SMTFormula finiteFormula = new SMTVeritCardFormula(cardSymbol,
+					kVarSymbol, fVarSymbol, children);
+
+			this.additionalAssumptions.add(finiteFormula);
+
+			SMTTerm kTerm = sf.makeVeriTTerm(kVarSymbol, signature);
+
+			smtNode = kTerm;
+
 			break;
 		}
 		case Formula.POW: {
@@ -1022,11 +1092,82 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.KMIN: {
-			// TODO
+
+			// Creating ismin macro
+			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
+					SMTMacroSymbol.ISMIN, SMTMacros.ISMIN_MACRO);
+
+			// Adding it to the signature
+			this.signature.addMacro(macro);
+
+			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
+			String mVarName = signature.freshCstName("ismin_var");
+
+			// Creating the constant 'm'
+			SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
+					SMTMacros.EMPTY_SORT, Ints.getInt(), false, false);
+			signature.addConstant(mVarSymbol);
+
+			// Creating the macro operator 'ismin'
+			SMTMacroSymbol isMinSymbol = SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.ISMIN);
+
+			// Creating the term 'm'
+			SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
+					SMTFactory.EMPTY_TERM, signature);
+
+			// Adding the term 'm' to the other children
+			SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+			for (int i = 0; i < children.length; i++) {
+				minChildrenTerms[i + 1] = children[i];
+			}
+			minChildrenTerms[0] = mVarTerm;
+
+			// Creating the new assumption (ismin m t) and saving it.
+			SMTFormula isMinFormula = new SMTAtom(isMinSymbol, minChildrenTerms);
+			this.additionalAssumptions.add(isMinFormula);
+
+			smtNode = mVarTerm;
+
 			break;
 		}
 		case Formula.KMAX: {
-			// TODO
+			// Creating ismax macro
+			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
+					SMTMacroSymbol.ISMAX, SMTMacros.ISMAX_MACRO);
+
+			// Adding it to the signature
+			this.signature.addMacro(macro);
+
+			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
+			String mVarName = signature.freshCstName("ismax_var");
+
+			// Creating the constant 'm'
+			SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
+					SMTMacros.EMPTY_SORT, Ints.getInt(), false, false);
+			signature.addConstant(mVarSymbol);
+
+			// Creating the macro operator 'ismax'
+			SMTMacroSymbol isMinSymbol = SMTMacros
+					.getMacroSymbol(SMTVeriTOperator.ISMAX);
+
+			// Creating the term 'm'
+			SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
+					SMTFactory.EMPTY_TERM, signature);
+
+			// Adding the term 'm' to the other children
+			SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+			for (int i = 0; i < children.length; i++) {
+				minChildrenTerms[i + 1] = children[i];
+			}
+			minChildrenTerms[0] = mVarTerm;
+
+			// Creating the new assumption (ismax m t) and saving it.
+			SMTFormula isMinFormula = new SMTAtom(isMinSymbol, minChildrenTerms);
+			this.additionalAssumptions.add(isMinFormula);
+
+			smtNode = mVarTerm;
+
 			break;
 		}
 		case Formula.CONVERSE:
@@ -1041,7 +1182,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalTagException(expression.getTag());
 		}
 		}
-
 	}
 
 	@Override
@@ -1076,8 +1216,54 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
-		// TODO Auto-generated method stub
+		SMTTerm[] children = smtTerms(predicate.getExpression());
 
+		// Creating ismin macro
+		SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
+				SMTMacroSymbol.FINITE, SMTMacros.FINITE_MACRO);
+
+		// Adding it to the signature
+		this.signature.addMacro(macro);
+
+		// Creating the name for the 'p','f' and 'k' variables in SMT-LIB (rule
+		// 24)
+		String pVarName = signature.freshCstName("finite_p");
+		String kVarName = signature.freshCstName("finite_k");
+		String fVarName = signature.freshCstName("finite_f");
+
+		// Creating the constant 'p'
+		SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,
+				SMTMacros.EMPTY_SORT);
+		SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
+				SMTMacros.EMPTY_SORT, Ints.getInt(), false, false);
+
+		Type type = predicate.getExpression().getType();
+		SMTSortSymbol expressionSort = typeMap.get(type);
+		if (expressionSort == null) {
+			expressionSort = makeSort(type);
+		}
+		SMTSortSymbol[] sorts = { expressionSort };
+
+		SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName, sorts,
+				Ints.getInt(), false, false);
+
+		signature.addPred(pVarSymbol);
+		signature.addConstant(kVarSymbol);
+		signature.addConstant(fVarSymbol);
+
+		// Creating the macro operator 'finite'
+		SMTMacroSymbol finiteSymbol = SMTMacros
+				.getMacroSymbol(SMTVeriTOperator.FINITE);
+
+		// Creating the new assumption (finite p t k f) and saving it.
+		SMTFormula finiteFormula = new SMTVeritFiniteFormula(finiteSymbol,
+				pVarSymbol, kVarSymbol, fVarSymbol, children);
+		this.additionalAssumptions.add(finiteFormula);
+
+		SMTFormula pFormula = sf.makeAtom(pVarSymbol, SMTFactory.EMPTY_TERM,
+				signature);
+
+		smtNode = pFormula;
 	}
 
 	@Override
@@ -1096,7 +1282,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * Just for tests.
 	 * 
 	 * @param typeEnvironment
-	 * @return
+	 * 
 	 */
 	public static SMTSignature translateSMTSignature(
 			ITypeEnvironment typeEnvironment) {
