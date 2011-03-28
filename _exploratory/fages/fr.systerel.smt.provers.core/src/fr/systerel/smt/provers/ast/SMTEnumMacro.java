@@ -22,13 +22,13 @@ public class SMTEnumMacro extends SMTMacro {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(");
-		sb.append(macroName);
+		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
 		sb.append(var);
 		sb.append(" . ");
 		if (terms.length == 1) {
 			sb.append("(= ");
-			sb.append(var.name);
+			sb.append(var.getNameWithQMark());
 			sb.append(" ");
 			sb.append(terms[0]);
 			sb.append(")))");
@@ -36,7 +36,7 @@ public class SMTEnumMacro extends SMTMacro {
 			sb.append("(or");
 			for (SMTTerm term : terms) {
 				sb.append(" (= ");
-				sb.append(var.name);
+				sb.append(var.getNameWithQMark());
 				sb.append(" ");
 				sb.append(term);
 				sb.append(")");
@@ -44,5 +44,10 @@ public class SMTEnumMacro extends SMTMacro {
 			sb.append(")))");
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return true;
 	}
 }

@@ -33,6 +33,10 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 		return sort;
 	}
 
+	public String getNameWithQMark() {
+		return "?" + name;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();

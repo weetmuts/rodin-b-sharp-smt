@@ -1,5 +1,9 @@
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+
 public class SMTPairEnumMacro extends SMTMacro {
 
 	SMTPairEnumMacro(String macroName, SMTVarSymbol var1, SMTVarSymbol var2,
@@ -17,24 +21,29 @@ public class SMTPairEnumMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("(");
-		sb.append(macroName);
+		sb.append(OPAR);
+		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
 		sb.append(var1);
-		sb.append(" ");
+		sb.append(SPACE);
 		sb.append(var2);
 		sb.append(" . ");
 		if (terms.length == 1) {
-			sb.append(elemToString(var1.name, var2.name,
-					terms[0].getArgTerms()[0], terms[0].getArgTerms()[1]));
-			sb.append("))");
+			sb.append(elemToString(var1.getNameWithQMark(),
+					var2.getNameWithQMark(), terms[0].getArgTerms()[0],
+					terms[0].getArgTerms()[1]));
+			sb.append(CPAR);
+			sb.append(CPAR);
 		} else {
 			sb.append("(or");
 			for (SMTMacroTerm term : terms) {
-				sb.append(elemToString(var1.name, var2.name,
-						term.getArgTerms()[0], term.getArgTerms()[1]));
+				sb.append(elemToString(var1.getNameWithQMark(),
+						var2.getNameWithQMark(), term.getArgTerms()[0],
+						term.getArgTerms()[1]));
 			}
-			sb.append(")))");
+			sb.append(CPAR);
+			sb.append(CPAR);
+			sb.append(CPAR);
 		}
 		return sb.toString();
 	}
@@ -44,14 +53,15 @@ public class SMTPairEnumMacro extends SMTMacro {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(= (pair ");
 		sb.append(var1);
-		sb.append(" ");
+		sb.append(SPACE);
 		sb.append(var2);
-		sb.append(")");
+		sb.append(CPAR);
 		sb.append("(pair ");
 		sb.append(term1);
-		sb.append(" ");
+		sb.append(SPACE);
 		sb.append(term2);
-		sb.append("))");
+		sb.append(CPAR);
+		sb.append(CPAR);
 		return sb.toString();
 	}
 
@@ -59,6 +69,12 @@ public class SMTPairEnumMacro extends SMTMacro {
 	public void toString(StringBuffer builder) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO
+		return true;
 	}
 
 }

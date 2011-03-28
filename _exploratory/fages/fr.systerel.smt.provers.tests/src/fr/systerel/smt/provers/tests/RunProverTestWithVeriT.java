@@ -408,10 +408,10 @@ public class RunProverTestWithVeriT extends AbstractTests {
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
 
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("S={a,b,c}");
 		hyps.add("¬ a=b");
 		hyps.add("¬ b=c");
 		hyps.add("¬ c=a");
-		hyps.add("S={a,b,c}");
 
 		doTest("bepi_colombo1", hyps, "{a,b,c} = {c,a,b}", te, VALID);
 	}
@@ -446,7 +446,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1");
+		// hyps.add("n ≥ 1"); 
 
 		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}

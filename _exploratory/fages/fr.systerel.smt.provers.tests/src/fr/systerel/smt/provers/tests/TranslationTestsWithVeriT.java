@@ -649,7 +649,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * ∈ , ⊆ , ⊂
 		 */
 		testTranslationV1_2Default("(a ∈ A) ∧ (A ⊆ A)",
-				"(and (in a A) (subseteq A A) (subset A A))");
+				"(and (in a A) (subseteq A A))");
 
 		/**
 		 * < , > , ⇒ , =
@@ -683,8 +683,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("AB ∈ (A⤀A)", "(in AB (psur A A))");
 
 		testTranslationV1_2Default("AB ∈ (A⤖A)", "(in AB (bij A A))");
-
-		testTranslationV1_2Default("AB ∈ (A◁A)", "(in AB (domr A A))");
 	}
 
 	@Test

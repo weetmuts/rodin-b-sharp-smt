@@ -1,5 +1,8 @@
 package fr.systerel.smt.provers.ast;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SMTMacroSymbol extends SMTPredicateSymbol {
 
 	// VeriT Extended SMT-LIB Symbols
@@ -58,6 +61,26 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String ISMAX = "ismax";
 	public static final String FINITE = "finite";
 	public static final String CARD = "card";
+	public static final String PAIR = "Pair";
+
+	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
+			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, RAN, IMG,
+			DOMR, DOMS, RANR, RANS, INV, COMP, OVR, ID, FCOMP, EMPTY_PAIR, DIV,
+			ENUM, MOD, RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION,
+			TOTAL_RELATION, SURJECTIVE_RELATION, TOTAL_SURJECTIVE_RELATION,
+			PARTIAL_FUNCTION, TOTAL_FUNCTION, MAPSTO, NAT, NAT1,
+			PARTIAL_INJECTION, TOTAL_INJECTION, PARTIAL_SURJECTION,
+			TOTAL_SURJECTION, TOTAL_BIJECTION, CARTESIAN_PRODUCT,
+			DOMAIN_RESTRICTION, DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA,
+			CSET, ELEM, ISMIN, ISMAX, FINITE, CARD, PAIR };
+
+	public static Set<String> getVeritSymbols() {
+		Set<String> set = new HashSet<String>();
+		for (String symbol : VERIT_SYMBOLS) {
+			set.add(symbol);
+		}
+		return set;
+	}
 
 	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
 		super(symbolName, args, predefined);

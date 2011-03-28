@@ -33,8 +33,10 @@ public abstract class SMTSymbol {
 	public static final String BENCHMARK = "benchmark";
 	public static final String LOGIC = "logic";
 	public static final String THEORY = "theory";
-
+	public static final String U_SORT = "U";
+	
 	public static final boolean PREDEFINED = true;
+	
 
 	SMTSymbol(final String symbolName, final boolean predefined) {
 		this.name = symbolName;

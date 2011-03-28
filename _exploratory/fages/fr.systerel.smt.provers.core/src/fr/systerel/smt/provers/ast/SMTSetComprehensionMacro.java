@@ -41,4 +41,10 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 		return sb.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		// TODO
+		return true;
+	}
+
 }

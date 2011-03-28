@@ -223,7 +223,7 @@ public class SmtProverCall extends XProverCall {
 		 */
 		callVeriT(preprocessedFile);
 
-		final List<String> args = setSolverArgs(veriTPreProcessingFileName);
+		final List<String> args = setSolverArgs(iFile.getPath());
 
 		return args;
 	}

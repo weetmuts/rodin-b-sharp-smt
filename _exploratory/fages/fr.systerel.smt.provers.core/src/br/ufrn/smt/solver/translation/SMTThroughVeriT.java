@@ -154,11 +154,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The BaseType of the variable
 	 */
 	private void parseBaseTypes(String varName, Type varType) {
-		if (varType.getBaseType().toString().equals(varName)) {
-			SMTSortSymbol sort = sf.makeVeriTSortSymbol(varName);
-			signature.addSort(sort);
-			typeMap.put(varType, sort);
-		} else if (varType.getBaseType().getSource() != null
+		if (varType.getBaseType().getSource() != null
 				|| varType.getBaseType().getBaseType() != null) {
 			throw new IllegalArgumentException("Variable: " + varName
 					+ ", Type " + varType.toString()
@@ -169,7 +165,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			this.signature.addSort(sortSymbol);
 			typeMap.put(varType, sortSymbol);
 
-			SMTPredicateSymbol predSymbol = sf.makeVeriTPredSymbol(varName,
+			String newVarName = signature.freshCstName(varName);
+
+			SMTPredicateSymbol predSymbol = sf.makeVeriTPredSymbol(newVarName,
 					sortSymbol);
 			this.signature.addPred(predSymbol);
 			varMap.put(varName, predSymbol);
@@ -317,14 +315,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final String varName = iter.getName();
 			final Type varType = iter.getType();
 
-			if (varName.equals(varType.toString())) {
-				final SMTSortSymbol sort = signature.freshSort(varType
-						.toString());
-				this.signature.addSort(sort);
-				typeMap.put(varType, sort);
-			}
-
-			else if (varType.getSource() != null) {
+			if (varType.getSource() != null) {
 
 				SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
 						varType.getTarget());
@@ -360,6 +351,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			signature.addConstant(functionSymbol);
 			varMap.put(symbolName, functionSymbol);
+			SMTPredefinedMacro pairMacro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.PAIR);
+			signature.addMacro(pairMacro);
 		}
 
 	}
@@ -408,41 +402,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	protected SMTSymbol translateTypeName(Type type) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * 
-	 * @return the bound identifiers saved in the translator.
-	 */
-	public ArrayList<String> getBoundIdentifers() {
-		return boundIdentifers;
-	}
-
-	/**
-	 * Set the bound identifiers in the translator
-	 * 
-	 * @param boundIdentifers
-	 */
-	public void setBoundIdentifers(ArrayList<String> boundIdentifers) {
-		this.boundIdentifers = boundIdentifers;
-	}
-
-	/**
-	 * Get the free identifiers of the translator
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> getFreeIdentifiers() {
-		return freeIdentifiers;
-	}
-
-	/**
-	 * Set the free identifiers of the translator
-	 * 
-	 * @param freeIdentifiers
-	 */
-	public void setFreeIdentifiers(ArrayList<String> freeIdentifiers) {
-		this.freeIdentifiers = freeIdentifiers;
 	}
 
 	@Override
@@ -525,6 +484,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBinaryExpression(BinaryExpression expression) {
 		final SMTTerm[] children = smtTerms(expression.getLeft(),
 				expression.getRight());
+		SMTPredefinedMacro macro;
 		switch (expression.getTag()) {
 		case Formula.MINUS:
 			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
@@ -556,6 +516,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					children);
 			break;
 		case Formula.RANSUB:
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.RANS);
+			signature.addMacro(macro);
 			smtNode = sf.makeMacroTerm(SMTMacros
 					.getMacroSymbol(SMTVeriTOperator.RANGE_SUBSTRACTION),
 					children);
@@ -637,8 +599,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.SETMINUS:
-			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-					SMTMacroSymbol.SETMINUS, SMTMacros.SETMINUS);
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.SETMINUS);
 			this.signature.addMacro(macro);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.SETMINUS),
@@ -646,6 +607,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.CPROD:
+			macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.CARTESIAN_PRODUCT);
+			signature.addMacro(macro);
+
 			smtNode = sf.makeMacroTerm(SMTMacros
 					.getMacroSymbol(SMTVeriTOperator.CARTESIAN_PRODUCT),
 					children);
@@ -808,6 +773,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.IN: {
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.IN);
+			signature.addMacro(macro);
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeVeriTMacroAtom(
@@ -817,6 +786,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 
 		case Formula.SUBSET: {
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.SUBSET);
+			signature.addMacro(macro);
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeMacroAtom(
@@ -825,6 +798,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.SUBSETEQ: {
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.SUBSETEQ);
+			signature.addMacro(macro);
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeMacroAtom(
@@ -833,6 +810,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.NOTSUBSET: {
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.SUBSET);
+			signature.addMacro(macro);
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeMacroAtom(
@@ -843,6 +824,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.SUBSETEQ);
+			signature.addMacro(macro);
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeAtom(
@@ -889,8 +874,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		case Formula.BUNION:
-			macro = SMTMacros.makePredefinedMacro(SMTMacroSymbol.BUNION,
-					SMTMacros.BUNION_MACRO);
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.BUNION);
 
 			this.signature.addMacro(macro);
 			smtNode = sf
@@ -899,8 +883,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 							children);
 			break;
 		case Formula.BINTER:
-			macro = SMTMacros.makePredefinedMacro(SMTMacroSymbol.BINTER,
-					SMTMacros.BINTER_MACRO);
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.BINTER);
 			this.signature.addMacro(macro);
 			smtNode = sf
 					.makeMacroTerm(
@@ -908,15 +891,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 							children);
 			break;
 		case Formula.FCOMP:
-			macro = SMTMacros.makePredefinedMacro(SMTMacroSymbol.FCOMP,
-					SMTMacros.FCOMP_MACRO);
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.FCOMP);
 			this.signature.addMacro(macro);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.FCOMP), children);
 			break;
 		case Formula.OVR:
-			macro = SMTMacros.makePredefinedMacro(SMTMacroSymbol.OVR,
-					SMTMacros.REL_OVR_MACRO);
+			macro = SMTMacros.makePredefinedMacro(SMTVeriTOperator.OVR);
 			this.signature.addMacro(macro);
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.OVR), children);
@@ -966,16 +947,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
 			if (expression.getType() instanceof ProductType) {
-				SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-						SMTMacroSymbol.EMPTY_PAIR,
-						SMTMacros.EMPTYSET_PAIR_MACRO);
+				SMTPredefinedMacro macro = SMTMacros
+						.makePredefinedMacro(SMTVeriTOperator.EMPTY_PAIR);
 				this.signature.addMacro(macro);
 				smtNode = sf.makeMacroTerm(
 						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY_PAIR),
 						children);
 			} else {
-				SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-						SMTMacroSymbol.EMPTY, SMTMacros.EMPTYSET_MACRO);
+				SMTPredefinedMacro macro = SMTMacros
+						.makePredefinedMacro(SMTVeriTOperator.EMPTY);
 				this.signature.addMacro(macro);
 				smtNode = sf.makeMacroTerm(
 						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY),
@@ -1022,8 +1002,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KCARD: {
 
 			// Creating ismin macro
-			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-					SMTMacroSymbol.CARD, SMTMacros.CARD_MACRO);
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.CARD);
 
 			// Adding it to the signature
 			this.signature.addMacro(macro);
@@ -1094,8 +1074,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KMIN: {
 
 			// Creating ismin macro
-			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-					SMTMacroSymbol.ISMIN, SMTMacros.ISMIN_MACRO);
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.ISMIN);
 
 			// Adding it to the signature
 			this.signature.addMacro(macro);
@@ -1133,8 +1113,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		case Formula.KMAX: {
 			// Creating ismax macro
-			SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-					SMTMacroSymbol.ISMAX, SMTMacros.ISMAX_MACRO);
+			SMTPredefinedMacro macro = SMTMacros
+					.makePredefinedMacro(SMTVeriTOperator.ISMAX);
 
 			// Adding it to the signature
 			this.signature.addMacro(macro);
@@ -1186,9 +1166,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
-		smtNode = sf.makeVeriTTerm(
-				this.signature.getSMTSymbol(identifierExpression.getName()),
+		smtNode = sf.makeVeriTTerm(varMap.get(identifierExpression.getName()),
 				this.signature);
+		// smtNode = varMap.get(identifierExpression.toString());
+		//
+		//
+		// sf.makeVeriTTerm(
+		// this.signature.getSMTSymbol(identifierExpression.getName()),
+		// this.signature);
 	}
 
 	/**
@@ -1219,8 +1204,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm[] children = smtTerms(predicate.getExpression());
 
 		// Creating ismin macro
-		SMTPredefinedMacro macro = SMTMacros.makePredefinedMacro(
-				SMTMacroSymbol.FINITE, SMTMacros.FINITE_MACRO);
+		SMTPredefinedMacro macro = SMTMacros
+				.makePredefinedMacro(SMTVeriTOperator.FINITE);
 
 		// Adding it to the signature
 		this.signature.addMacro(macro);

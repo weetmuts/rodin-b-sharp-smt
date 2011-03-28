@@ -201,15 +201,18 @@ public class SMTTheory {
 		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
 				SMTSymbol.BOOL_SORT, PREDEFINED);
 
-		private static final SMTSortSymbol[] SORTS = { BOOL };
+		private final static SMTSortSymbol U = new SMTSortSymbol(
+				SMTSymbol.U_SORT, PREDEFINED);
+
+		private static final SMTSortSymbol[] SORTS = { BOOL, U };
 
 		private static final SMTPredicateSymbol[] PREDICATES = {};
 
 		private static SMTFunctionSymbol VERIT_DIVISION = new SMTFunctionSymbol(
 				SMTMacroSymbol.DIV, Ints.getIntIntTab(), Ints.getInt(), false,
-				false);
+				true);
 
-		private static final SMTFunctionSymbol[] FUNCTIONS = { VERIT_DIVISION };
+		private static final SMTFunctionSymbol[] FUNCTIONS = {VERIT_DIVISION};
 
 		protected VeritPredefinedTheory() {
 			super(NAME, SORTS, PREDICATES, FUNCTIONS);

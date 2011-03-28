@@ -18,9 +18,23 @@ public class SMTPredefinedMacro extends SMTMacro {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(");
-		sb.append(macroName);
+		sb.append(super.getMacroName());
 		sb.append(body);
 		sb.append(")");
 		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof SMTMacro) {
+			SMTMacro objMacro = (SMTMacro) object;
+			if (super.getMacroName().equals(objMacro.getMacroName())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

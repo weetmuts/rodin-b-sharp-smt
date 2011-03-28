@@ -32,8 +32,16 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	public void addMacro(final SMTMacro macro) {
-		macroNames.add(macro.getMacroName());
+		// FIXME: The set should take care of unique elements. This comparison
+		// should not exist
+		for (SMTMacro macroEl : macros) {
+			String x1 = macroEl.getMacroName();
+			String x2 = macro.getMacroName();
+			if (x1.equals(x2))
+				return;
+		}
 		macros.add(macro);
+		macroNames.add(macro.getMacroName());
 	}
 
 	public SMTSymbol getSMTSymbol(final String identifierName) {
@@ -47,6 +55,11 @@ public class SMTSignatureVerit extends SMTSignature {
 				return predicateSymbol;
 			}
 		}
+		for (SMTSortSymbol sortSymbol : sorts) {
+			if (sortSymbol.name.equals(identifierName)) {
+				return sortSymbol;
+			}
+		}
 		throw new IllegalArgumentException(
 				"The translation found a variable with the name: "
 						+ identifierName
@@ -54,12 +67,15 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	private void extramacrosSection(final StringBuilder sb) {
-		sb.append("(extramacros(");
-		for (SMTMacro macro : macros) {
-			sb.append("\n");
-			sb.append(macro);
+		if (!macros.isEmpty()) {
+			sb.append(":extramacros(");
+			for (SMTMacro macro : macros) {
+				sb.append("\n");
+				sb.append(macro);
+			}
+			sb.append("\n)");
 		}
-		sb.append("\n)");
+
 	}
 
 	private static Set<String> getNamesFromMacro(Set<SMTMacro> macros) {
@@ -77,6 +93,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
 		names.addAll(getNamesFromMacro(macros));
+		names.addAll(SMTMacroSymbol.getVeritSymbols());
 		for (SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
