@@ -245,7 +245,8 @@ public class SMTLogic {
 				SMTMacroSymbol.DOMAIN_SUBSTRACTION), RELATIONAL_IMAGE(
 				SMTMacroSymbol.RELATIONAL_IMAGE), ISMIN(SMTMacroSymbol.ISMIN), ISMAX(
 				SMTMacroSymbol.ISMAX), FINITE(SMTMacroSymbol.FINITE), CARD(
-				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR);
+				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
+				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP);
 
 		private String symbol;
 

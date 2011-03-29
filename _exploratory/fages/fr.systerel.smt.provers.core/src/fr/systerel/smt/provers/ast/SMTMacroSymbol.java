@@ -63,6 +63,9 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String CARD = "card";
 	public static final String PAIR = "Pair";
 
+	public static final String FUNP = "funp";
+	public static final String INJP = "injp";
+
 	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
 			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, RAN, IMG,
 			DOMR, DOMS, RANR, RANS, INV, COMP, OVR, ID, FCOMP, EMPTY_PAIR, DIV,
@@ -72,7 +75,7 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 			PARTIAL_INJECTION, TOTAL_INJECTION, PARTIAL_SURJECTION,
 			TOTAL_SURJECTION, TOTAL_BIJECTION, CARTESIAN_PRODUCT,
 			DOMAIN_RESTRICTION, DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA,
-			CSET, ELEM, ISMIN, ISMAX, FINITE, CARD, PAIR };
+			CSET, ELEM, ISMIN, ISMAX, FINITE, CARD, PAIR, FUNP, INJP };
 
 	public static Set<String> getVeritSymbols() {
 		Set<String> set = new HashSet<String>();

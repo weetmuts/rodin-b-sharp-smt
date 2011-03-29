@@ -3,10 +3,18 @@ package fr.systerel.smt.provers.ast;
 public class SMTEnumMacro extends SMTMacro {
 
 	SMTEnumMacro(final String macroName, final SMTVarSymbol varName,
-			final SMTTerm[] terms) {
-		super(macroName);
+			final SMTTerm[] terms, int precedence) {
+		super(macroName, precedence);
 		this.var = varName;
 		this.terms = terms;
+	}
+
+	public SMTVarSymbol getVar() {
+		return var;
+	}
+
+	public void setVar(SMTVarSymbol var) {
+		this.var = var;
 	}
 
 	private SMTVarSymbol var;
@@ -35,13 +43,13 @@ public class SMTEnumMacro extends SMTMacro {
 		} else {
 			sb.append("(or");
 			for (SMTTerm term : terms) {
-				sb.append(" (= ");
+				sb.append("\n\t\t(= ");
 				sb.append(var.getNameWithQMark());
 				sb.append(" ");
 				sb.append(term);
 				sb.append(")");
 			}
-			sb.append(")))");
+			sb.append("\n )))");
 		}
 		return sb.toString();
 	}

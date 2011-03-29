@@ -1,9 +1,12 @@
 package fr.systerel.smt.provers.ast;
 
-public abstract class SMTMacro {
+public abstract class SMTMacro implements Comparable<SMTMacro> {
 
-	SMTMacro(String macroName) {
+	protected int precedence;
+
+	SMTMacro(String macroName, int precedence) {
 		this.macroName = macroName;
+		this.precedence = precedence;
 	}
 
 	public String getMacroName() {
@@ -23,6 +26,24 @@ public abstract class SMTMacro {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(SMTMacro o) {
+		if (o.getPrecedence() == precedence) {
+			return 1;
+		} else if (precedence > o.getPrecedence()) {
+			return 1;
+		} else
+			return -1;
+	}
+
+	public int getPrecedence() {
+		return precedence;
+	}
+
+	public void setPrecedence(int precedence) {
+		this.precedence = precedence;
 	}
 
 }

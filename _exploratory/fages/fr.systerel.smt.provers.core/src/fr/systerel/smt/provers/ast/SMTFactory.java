@@ -84,7 +84,7 @@ public final class SMTFactory {
 		return atomicExpression;
 	}
 
-	public SMTSortSymbol makeVeriTSortSymbol(final String sortSymbolName) {
+	public static SMTSortSymbol makeVeriTSortSymbol(final String sortSymbolName) {
 		String symbolName = getSMTAtomicExpressionFormat(sortSymbolName);
 		return new SMTSortSymbol(symbolName, false);
 	}

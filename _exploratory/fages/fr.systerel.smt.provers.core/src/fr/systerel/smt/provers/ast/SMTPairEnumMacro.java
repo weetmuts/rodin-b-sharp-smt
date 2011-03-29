@@ -7,11 +7,27 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 public class SMTPairEnumMacro extends SMTMacro {
 
 	SMTPairEnumMacro(String macroName, SMTVarSymbol var1, SMTVarSymbol var2,
-			SMTMacroTerm[] terms) {
-		super(macroName);
+			SMTMacroTerm[] terms, int precedence) {
+		super(macroName,  precedence);
 		this.var1 = var1;
 		this.var2 = var2;
 		this.terms = terms;
+	}
+
+	public SMTVarSymbol getVar1() {
+		return var1;
+	}
+
+	public void setVar1(SMTVarSymbol var1) {
+		this.var1 = var1;
+	}
+
+	public SMTVarSymbol getVar2() {
+		return var2;
+	}
+
+	public void setVar2(SMTVarSymbol var2) {
+		this.var2 = var2;
 	}
 
 	private SMTVarSymbol var1;
@@ -37,10 +53,12 @@ public class SMTPairEnumMacro extends SMTMacro {
 		} else {
 			sb.append("(or");
 			for (SMTMacroTerm term : terms) {
+				sb.append("\n\t\t");
 				sb.append(elemToString(var1.getNameWithQMark(),
 						var2.getNameWithQMark(), term.getArgTerms()[0],
 						term.getArgTerms()[1]));
 			}
+			sb.append("\n");
 			sb.append(CPAR);
 			sb.append(CPAR);
 			sb.append(CPAR);
@@ -75,6 +93,12 @@ public class SMTPairEnumMacro extends SMTMacro {
 	public boolean equals(Object obj) {
 		// TODO
 		return true;
+	}
+
+	@Override
+	public int compareTo(SMTMacro o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

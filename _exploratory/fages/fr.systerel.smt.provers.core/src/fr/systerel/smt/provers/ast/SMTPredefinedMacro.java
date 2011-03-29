@@ -2,8 +2,8 @@ package fr.systerel.smt.provers.ast;
 
 public class SMTPredefinedMacro extends SMTMacro {
 
-	SMTPredefinedMacro(String macroName, String bodyText) {
-		super(macroName);
+	SMTPredefinedMacro(String macroName, String bodyText, int precedence) {
+		super(macroName, precedence);
 		this.body = bodyText;
 	}
 

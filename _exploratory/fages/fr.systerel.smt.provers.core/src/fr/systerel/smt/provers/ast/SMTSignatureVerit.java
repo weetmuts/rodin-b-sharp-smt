@@ -12,6 +12,8 @@ package fr.systerel.smt.provers.ast;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 
@@ -23,9 +25,7 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
-	private final Set<SMTMacro> macros = new HashSet<SMTMacro>();
-
-	private Set<String> macroNames = new HashSet<String>();
+	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
 
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
@@ -41,7 +41,6 @@ public class SMTSignatureVerit extends SMTSignature {
 				return;
 		}
 		macros.add(macro);
-		macroNames.add(macro.getMacroName());
 	}
 
 	public SMTSymbol getSMTSymbol(final String identifierName) {
@@ -82,6 +81,21 @@ public class SMTSignatureVerit extends SMTSignature {
 		Set<String> macroNames = new HashSet<String>();
 		for (SMTMacro macro : macros) {
 			macroNames.add(macro.getMacroName());
+			if (macro instanceof SMTEnumMacro) {
+				SMTEnumMacro enumMacro = (SMTEnumMacro) macro;
+				macroNames.add(enumMacro.getVar().getName());
+			} else if (macro instanceof SMTPairEnumMacro) {
+				SMTPairEnumMacro pairEnumMacro = (SMTPairEnumMacro) macro;
+				macroNames.add(pairEnumMacro.getVar1().getName());
+				macroNames.add(pairEnumMacro.getVar2().getName());
+			} else if (macro instanceof SMTSetComprehensionMacro) {
+				SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
+				macroNames.add(setComprehensionMacro.getLambdaVar()
+						.getName());
+				for (SMTVarSymbol var : setComprehensionMacro.getqVars()) {
+					macroNames.add(var.getName());
+				}
+			}
 		}
 		return macroNames;
 	}

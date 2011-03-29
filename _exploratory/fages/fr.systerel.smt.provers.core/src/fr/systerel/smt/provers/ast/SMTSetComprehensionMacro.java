@@ -4,12 +4,28 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	SMTSetComprehensionMacro(String macroName,
 			SMTVarSymbol[] quantifiedVariables, SMTVarSymbol lambdaVar,
-			SMTFormula formula, SMTTerm expression) {
-		super(macroName);
+			SMTFormula formula, SMTTerm expression, int precedence ) {
+		super(macroName, precedence);
 		this.qVars = quantifiedVariables;
 		this.lambdaVar = lambdaVar;
 		this.formula = formula;
 		this.expression = expression;
+	}
+
+	public SMTVarSymbol getLambdaVar() {
+		return lambdaVar;
+	}
+
+	public void setLambdaVar(SMTVarSymbol lambdaVar) {
+		this.lambdaVar = lambdaVar;
+	}
+
+	public SMTVarSymbol[] getqVars() {
+		return qVars;
+	}
+
+	public void setqVars(SMTVarSymbol[] qVars) {
+		this.qVars = qVars;
 	}
 
 	SMTVarSymbol lambdaVar;
