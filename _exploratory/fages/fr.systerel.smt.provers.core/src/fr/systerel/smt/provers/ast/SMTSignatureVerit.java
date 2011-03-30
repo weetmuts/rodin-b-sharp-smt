@@ -10,7 +10,9 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -27,8 +29,18 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
 
+	/**
+	 * This variable stores additional assumptions produced by the translation
+	 * of min,max, finite and cardinality operators
+	 */
+	private List<SMTFormula> additionalAssumptions = new ArrayList<SMTFormula>();
+
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
+	}
+
+	public int getMacroLength() {
+		return macros.size();
 	}
 
 	public void addMacro(final SMTMacro macro) {
@@ -90,8 +102,7 @@ public class SMTSignatureVerit extends SMTSignature {
 				macroNames.add(pairEnumMacro.getVar2().getName());
 			} else if (macro instanceof SMTSetComprehensionMacro) {
 				SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
-				macroNames.add(setComprehensionMacro.getLambdaVar()
-						.getName());
+				macroNames.add(setComprehensionMacro.getLambdaVar().getName());
 				for (SMTVarSymbol var : setComprehensionMacro.getqVars()) {
 					macroNames.add(var.getName());
 				}
@@ -122,22 +133,6 @@ public class SMTSignatureVerit extends SMTSignature {
 	public void toString(StringBuilder sb) {
 		super.toString(sb);
 		this.extramacrosSection(sb);
-	}
-
-	public void addPred(final String predName, final SMTSortSymbol symbol) {
-		SMTSortSymbol[] symbols = { symbol };
-		this.preds.add(new SMTPredicateSymbol(predName, symbols,
-				!SMTSymbol.PREDEFINED));
-	}
-
-	public void addPred(final String predName, final String argSortStrings[]) {
-		final SMTSortSymbol[] argSorts = new SMTSortSymbol[argSortStrings.length];
-		for (int i = 0; i < argSortStrings.length; i++) {
-			argSorts[i] = new SMTSortSymbol(argSortStrings[i],
-					!SMTSymbol.PREDEFINED);
-		}
-		this.preds.add(new SMTPredicateSymbol(predName, argSorts,
-				!SMTSymbol.PREDEFINED));
 	}
 
 	@Override

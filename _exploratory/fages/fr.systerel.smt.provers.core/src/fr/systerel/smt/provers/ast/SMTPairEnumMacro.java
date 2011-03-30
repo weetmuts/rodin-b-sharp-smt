@@ -8,7 +8,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 
 	SMTPairEnumMacro(String macroName, SMTVarSymbol var1, SMTVarSymbol var2,
 			SMTMacroTerm[] terms, int precedence) {
-		super(macroName,  precedence);
+		super(macroName, precedence);
 		this.var1 = var1;
 		this.var2 = var2;
 		this.terms = terms;
@@ -94,11 +94,4 @@ public class SMTPairEnumMacro extends SMTMacro {
 		// TODO
 		return true;
 	}
-
-	@Override
-	public int compareTo(SMTMacro o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

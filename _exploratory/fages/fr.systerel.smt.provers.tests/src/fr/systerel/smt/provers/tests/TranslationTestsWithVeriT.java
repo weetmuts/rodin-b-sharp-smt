@@ -727,9 +727,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule18() {
 
 		testTranslationV1_2Default("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}",
-				"(= cset cset_0)");
+				"(= cset_0 cset_1)");
 
-		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset A)");
+		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset_0 A)");
 	}
 
 	@Test
@@ -743,7 +743,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule20() {
 
-		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
+		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset_0 emptyset)");
 	}
 
 	@Test

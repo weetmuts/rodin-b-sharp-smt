@@ -4,7 +4,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	SMTSetComprehensionMacro(String macroName,
 			SMTVarSymbol[] quantifiedVariables, SMTVarSymbol lambdaVar,
-			SMTFormula formula, SMTTerm expression, int precedence ) {
+			SMTFormula formula, SMTTerm expression, int precedence) {
 		super(macroName, precedence);
 		this.qVars = quantifiedVariables;
 		this.lambdaVar = lambdaVar;
@@ -41,19 +41,22 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
+		sb.append("(");
+		sb.append(super.getMacroName());
 		sb.append("(lambda");
 		sb.append(lambdaVar);
+		sb.append(" . ");
 		sb.append("(exists ");
 		for (SMTVarSymbol qVar : qVars) {
 			sb.append(qVar);
 		}
-		sb.append("(and (= ");
-		sb.append(lambdaVar.name);
+		sb.append(". (and (= ");
+		sb.append("?" + lambdaVar.name);
 		sb.append(" ");
 		sb.append(expression);
 		sb.append(") ");
 		sb.append(formula);
-		sb.append(")))");
+		sb.append("))))");
 		return sb.toString();
 	}
 

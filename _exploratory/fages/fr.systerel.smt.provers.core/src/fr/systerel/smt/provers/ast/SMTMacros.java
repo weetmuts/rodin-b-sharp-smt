@@ -22,7 +22,7 @@ public class SMTMacros {
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
-			"(lambda (?p1 ('t Bool)) (?q1 ('t Bool)) . (lambda (?x1 't) . (or (?p1 ?x6) (?q1 ?x1))))",
+			"(lambda (?p1 ('t Bool)) (?q1 ('t Bool)) . (lambda (?x1 't) . (or (?p1 ?x1) (?q1 ?x1))))",
 			0);
 
 	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
@@ -36,7 +36,7 @@ public class SMTMacros {
 			1);
 	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
 			OVR,
-			"(lambda (?p4 ((Pair 's 't) bool)(?q4 ((Pair 's 't) bool)(lambda (?x4 (Pair 's 'u)) (or (?q4 ?x4)(and (?p4 ?x4)(not(exists(?s2 (Pair 's 't))(and (?q4 ?s2)(= (fst ?s2)(fst ?x4)))))))))))",
+			"(lambda (?p4 ((Pair 's 't) Bool)) (?q4 ((Pair 's 't) Bool)) . (lambda (?x4 (Pair 's 'u)) . (or (?q4 ?x4) (and (?p4 ?x4)(not(exists (?s2 (Pair 's 't)) . (and (?q4 ?s2)(= (fst ?s2)(fst ?x4)))))))))",
 			1);
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(lambda (?x5 't). false)", 0);
@@ -57,13 +57,13 @@ public class SMTMacros {
 			RANGE_INTEGER,
 			"(lambda (?i1 Int) (?i2 Int) . (lambda (?i Int) . (and (<= ?i1 ?i) (<= ?i ?i2))))",
 			0);
-	public static final SMTPredefinedMacro RANGE_SUBSTRACION_MACRO = new SMTPredefinedMacro(
+	public static final SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			RANGE_SUBSTRACION,
-			"(lambda (?x8 ((Pair 's 't) Bool)(?q10 ('t Bool)).(lambda (?p10 (Pair 's 't).(and (?x8 ?p10)(not (?q10 (snd ?p10)))))))",
+			"(lambda (?x8 ((Pair 's 't) Bool))(?q10 ('t Bool)) . (lambda (?p10 (Pair 's 't)) . (and (?x8 ?p10)(not (?q10 (snd ?p10))))))",
 			1);
 	public static final SMTPredefinedMacro RANGE_RESTRICTION_MACRO = new SMTPredefinedMacro(
 			RANGE_RESTRICTION,
-			"(lambda (?q11 ((Pair 's 't) Bool)(?x9 ('t Bool))(lambda (?p11 (Pair 's 't) (and (?q11 ?p11)(?x9 (snd ?p11))))))",
+			"(lambda (?q11 ((Pair 's 't) Bool))(?x9 ('t Bool)) . (lambda (?p11 (Pair 's 't)) . (and (?q11 ?p11)(?x9 (snd ?p11)))))",
 			1);
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
@@ -93,7 +93,7 @@ public class SMTMacros {
 			NAT1, "(lambda (?x16 Int) . (<= 1 ?x16))", 0);
 	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
 			INV,
-			"(lambda (?r6 ((Pair 's 't) bool).(lambda (?p17 (Pair 's 't).(?r6 (pair (snd ?p17)(fst ?p17)))))))",
+			"(lambda (?r6 ((Pair 's 't) Bool)) . (lambda (?p17 (Pair 's 't)) . (?r6 (pair (snd ?p17)(fst ?p17)))))",
 			1);
 	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
 			ID, "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))", 1);
@@ -127,11 +127,11 @@ public class SMTMacros {
 			1);
 	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_RESTRICTION,
-			"(lambda (?r24 ((Pair 's 't) Bool)(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't) . (and (?r24 ?p20)(?s3 (fst ?p20)))))))",
+			"(lambda (?r24 ((Pair 's 't) Bool))(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't)) . (and (?r24 ?p20)(?s3 (fst ?p20)))))",
 			1);
 	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_SUBSTRACTION,
-			"(lambda (?r25 ((Pair 's 't) Bool)(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))))",
+			"(lambda (?r25 ((Pair 's 't) Bool))(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't)) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))",
 			1);
 	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
 			RELATIONAL_IMAGE,
@@ -143,15 +143,15 @@ public class SMTMacros {
 			0);
 	public static final SMTPredefinedMacro ISMIN_MACRO = new SMTPredefinedMacro(
 			ISMIN,
-			"(lambda (?m Int) (?t (Int Bool)) . (and(in ?m ?t)(forall (?x24 Int) (implies (in ?x24 ?t)(<= ?m ?x24)))))",
+			"(lambda (?m Int) (?t (Int Bool)) . (and(in ?m ?t)(forall (?x24 Int) . (implies (in ?x24 ?t)(<= ?m ?x24)))))",
 			1);
 	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
 			ISMAX,
-			"(lambda (?m1 Int) (?t1 (Int Bool)) . (and(in ?m1 ?t1)(forall (?x24 Int) (implies (in ?x24 ?t1)(<= ?x24 ?m1)))))",
+			"(lambda (?m1 Int) (?t1 (Int Bool)) . (and(in ?m1 ?t1)(forall (?x24 Int) . (implies (in ?x24 ?t1)(<= ?x24 ?m1)))))",
 			1);
 	public static final SMTPredefinedMacro FINITE_MACRO = new SMTPredefinedMacro(
 			FINITE,
-			"(lambda (?p23 Bool) (?t2 ('s Bool)) (?f ('s Int)) (?k Int)(iff ?p23 (and (forall (?x25 s)(implies (in ?x25 ?t2)(in (?f ?x25)(range 1 ?k))))(forall (?x25 s)(?y s)(implies (and (in ?x25 ?t2)(in ?y ?t2)(not (equal ?x25 ?y)))(not (equal (?f ?x25)(?f ?y))))))))",
+			"(lambda (?p23 Bool) (?t2 ('s Bool)) (?f ('s Int)) (?k Int) . (iff ?p23 (and (forall (?x25 's) . (implies (in ?x25 ?t2)(in (?f ?x25)(range 1 ?k))))(forall (?x25 's)(?y 's) . (implies (and (in ?x25 ?t2)(in ?y ?t2)(not (= ?x25 ?y)))(not (= (?f ?x25)(?f ?y))))))))",
 			1);
 	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
 			CARD,
@@ -171,6 +171,10 @@ public class SMTMacros {
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
 			TOTAL_RELATION,
 			"(lambda (?x27 ('s Bool)) (?r29 ((Pair 's 't) Bool)) . (forall (?p24 (Pair 's 't)) . (= (?r29 ?p24) (?x27 (fst ?p24)))))",
+			1);
+	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
+			RANGE,
+			"(lambda (?r30 ((Pair 's 't) Bool)) . (lambda (?f3 't) . (exists (?e3 's) . (?r30 (pair ?e3 ?f3)))))",
 			1);
 
 	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
@@ -270,7 +274,9 @@ public class SMTMacros {
 
 	public static SMTPairEnumMacro makePairEnumerationMacro(
 			final String macroName, final SMTVarSymbol varName1,
-			final SMTVarSymbol varName2, final SMTTerm[] terms) {
+			final SMTVarSymbol varName2, final SMTTerm[] terms,
+			SMTSignatureVerit signature) {
+		addPairMacroSortAndFunInSignature(signature);
 
 		SMTMacroTerm[] macroTerms = new SMTMacroTerm[terms.length];
 		for (int i = 0; i < macroTerms.length; i++) {
@@ -298,8 +304,9 @@ public class SMTMacros {
 	 */
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
 			String macroName, SMTTerm[] terms, SMTVarSymbol lambdaVar,
-			SMTFormula formula, SMTTerm expression) {
-		// TODO Auto-generated method stub
+			SMTFormula formula, SMTTerm expression, SMTSignatureVerit signature) {
+		addPairMacroSortAndFunInSignature(signature);
+
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];
@@ -319,8 +326,10 @@ public class SMTMacros {
 			SMTSignatureVerit signature) {
 		final String fstSortName = "'s";
 		final String sndSortName = "'t";
-		SMTSortSymbol fstSort = SMTFactory.makeVeriTSortSymbol(fstSortName);
-		SMTSortSymbol sndSort = SMTFactory.makeVeriTSortSymbol(sndSortName);
+		SMTSortSymbol fstSort = SMTFactory.makeVeriTSortSymbol(fstSortName,
+				signature);
+		SMTSortSymbol sndSort = SMTFactory.makeVeriTSortSymbol(sndSortName,
+				signature);
 		SMTSortSymbol[] argSorts = { PAIR_SORT };
 		SMTFunctionSymbol fstFun = new SMTFunctionSymbol("fst", argSorts,
 				fstSort, false, false);
@@ -332,6 +341,19 @@ public class SMTMacros {
 		// TODO Implement the assumptions that defines fst and snd
 	}
 
+	private static void addPairMacroSortAndFunInSignature(
+			SMTSignatureVerit signature) {
+		signature.addMacro(PAIR_MACRO);
+		signature.addSort(PAIR_SORT);
+		SMTSortSymbol[] argSorts = {};
+		final String symbolName = "pair 's 't";
+		SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(symbolName,
+				argSorts, PAIR_SORT, !SMTFunctionSymbol.ASSOCIATIVE,
+				!SMTFunctionSymbol.PREDEFINED);
+
+		signature.addConstant(functionSymbol);
+	}
+
 	public static void addPredefinedMacroInSignature(
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		switch (operator) {
@@ -340,16 +362,7 @@ public class SMTMacros {
 			break;
 		}
 		case PAIR: {
-			signature.addMacro(PAIR_MACRO);
-			signature.addSort(PAIR_SORT);
-			SMTSortSymbol[] argSorts = {};
-			final String symbolName = "pair 's 't";
-			SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(
-					symbolName, argSorts, PAIR_SORT,
-					!SMTFunctionSymbol.ASSOCIATIVE,
-					!SMTFunctionSymbol.PREDEFINED);
-
-			signature.addConstant(functionSymbol);
+			addPairMacroSortAndFunInSignature(signature);
 			break;
 		}
 		case BUNION: {
@@ -404,7 +417,7 @@ public class SMTMacros {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addFstAndSndFunctionsInSignature(signature);
 
-			signature.addMacro(RANGE_SUBSTRACION_MACRO);
+			signature.addMacro(RANGE_SUBSTRACTION_MACRO);
 			break;
 		}
 		case RANGE_RESTRICTION: {
@@ -566,13 +579,11 @@ public class SMTMacros {
 		}
 		case ISMIN: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.IN, signature);
-
 			signature.addMacro(ISMIN_MACRO);
 			break;
 		}
 		case ISMAX: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.IN, signature);
-
 			signature.addMacro(ISMAX_MACRO);
 			break;
 		}
@@ -739,7 +750,6 @@ public class SMTMacros {
 		case CARD: {
 			return CARD_SYMBOL;
 		}
-
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro symbol with symbol: "

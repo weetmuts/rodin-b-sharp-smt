@@ -63,14 +63,17 @@ public final class SMTFactory {
 		return DEFAULT_INSTANCE;
 	}
 
-	public static String getSMTAtomicExpressionFormat(String atomicExpression) {
+	public static String getSMTAtomicExpressionFormat(String atomicExpression,
+			SMTSignatureVerit signature) {
 		if (atomicExpression.equals("\u2124")) { // INTEGER
 			return "Int";
 		} else if (atomicExpression.equals("\u2115")) { // NATURAL
+			signature.addMacro(SMTMacros.NAT_MACRO);
 			return "Nat";
 		} else if (atomicExpression.equals("\u2124" + 1)) {
 			return "Int1";
 		} else if (atomicExpression.equals("\u2115" + 1)) {
+			signature.addMacro(SMTMacros.NAT1_MACRO);
 			return "Nat1";
 		} else if (atomicExpression.equals("BOOL")) {
 			return "Bool";
@@ -79,13 +82,16 @@ public final class SMTFactory {
 		} else if (atomicExpression.equals("FALSE")) {
 			return "false";
 		} else if (atomicExpression.equals("\u2205")) {
+			signature.addMacro(SMTMacros.EMPTYSET_MACRO);
 			return "emptyset";
 		}
 		return atomicExpression;
 	}
 
-	public static SMTSortSymbol makeVeriTSortSymbol(final String sortSymbolName) {
-		String symbolName = getSMTAtomicExpressionFormat(sortSymbolName);
+	public static SMTSortSymbol makeVeriTSortSymbol(
+			final String sortSymbolName, final SMTSignatureVerit signature) {
+		String symbolName = getSMTAtomicExpressionFormat(sortSymbolName,
+				signature);
 		return new SMTSortSymbol(symbolName, false);
 	}
 

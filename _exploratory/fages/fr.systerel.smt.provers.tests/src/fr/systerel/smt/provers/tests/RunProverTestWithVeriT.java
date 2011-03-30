@@ -1,18 +1,20 @@
 package fr.systerel.smt.provers.tests;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eventb.core.ast.BoundIdentDecl;
+import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.seqprover.IProofMonitor;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -208,6 +210,16 @@ public class RunProverTestWithVeriT extends AbstractTests {
 
 	private static void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
+	}
+
+	@Test
+	public void testRule20() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) = ∅", te, VALID);
 	}
 
 	/**
@@ -446,7 +458,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1"); 
+		// hyps.add("n ≥ 1");
 
 		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}
@@ -605,5 +617,199 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		hyps.add("TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
 
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
+	}
+
+	@Test
+	public void testRule14() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "p", "S",
+				"q", "S", "a", "ℤ", "b", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("AB = (AB)∼");
+		hyps.add("\u00ac(p = q)");
+		hyps.add("a = (−b)");
+		hyps.add("AB = id");
+		hyps.add("a ∈ dom(AB)");
+
+		doTest("rule14", hyps, "b ∈ ran(AB)", te, VALID);
+	}
+
+	@Test
+	public void testExistsRule17() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("∃x·x∈s");
+
+		doTest("rule17_exists", hyps, "∃x,y·x∈s∧y∈s", te, VALID);
+	}
+
+	@Test
+	public void testForallRule17() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("∀x·x∈s");
+		hyps.add("∀x,y·x∈s∧y∈s");
+
+		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
+				"∀x,y·x∈s ∧ y∈s", te);
+		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
+		bids[1] = bids[0];
+		final Predicate p = ff.makeQuantifiedPredicate(Formula.FORALL, bids,
+				base.getPredicate(), null);
+		System.out.println("Predicate " + p);
+
+		doTest("rule17_forall", hyps, p.toString(), te, VALID);
+
+	}
+
+	@Test
+	public void testRule16() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
+				"c", "ℤ", "a", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)");
+
+		doTest("rule16", hyps,
+				"((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c = 0)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15SetMinusUnionInter() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(A ∖ A) ⊂ (A ∪ A)");
+
+		doTest("rule15_setminus_union_inter", hyps, "(A ∩ A) ⊂ (A ∪ A)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "A", "ℙ(ℤ)",
+				"b", "ℤ", "c", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(a ∈ A) ∧ (A ⊆ A)");
+		hyps.add("(a < b ∧ b > c) ⇒ a = c");
+		doTest("rule15", hyps, "(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15Functions() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "A", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("AB ∈ (A↔A)");
+		hyps.add("AB ∈ (A→A)");
+		hyps.add("AB ∈ (A⇸A)");
+		hyps.add("AB ∈ (A↣A)");
+		hyps.add("AB ∈ (A⤔A)");
+		hyps.add("AB ∈ (A↠A)");
+		hyps.add("AB ∈ (A⤀A)");
+
+		doTest("rule15_functions", hyps, "AB ∈ (A⤖A)", te, VALID);
+	}
+
+	@Test
+	public void testRule15RelationOverridingCompANdComposition() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(AB \ue103 AB) = (AB \ue103 AB)");
+
+		doTest("rule15_ovr_comp", hyps, "(AB \u003b AB) = (AB \u003b AB)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15CartesianProductAndIntegerRange() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(AB × AB) = (AB × AB)");
+
+		doTest("rule15_cart_prod_int_range", hyps, "(a ‥ a) = (a ‥ a)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15RestrictionsAndSubstractions() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(A ◁ AB) = (A ◁ AB)");
+		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
+		hyps.add("(AB ▷ A) = (AB ▷ A)");
+
+		doTest("rule15_res_subs", hyps, "(AB ⩥ A) = (AB ⩥ A)", te, VALID);
+	}
+
+	@Test
+	public void testRule18() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "b", "ℤ", "A",
+				"ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
+
+		doTest("rule18", hyps, "{a∣a ≥ 0} = A", te, VALID);
+	}
+
+	@Test
+	public void testRule19() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}");
+
+		doTest("rule19", hyps, "{0,1,2,3,4} = A", te, VALID);
+	}
+
+	@Test
+	public void testRule22and23() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("min({2,3}) = min({2,3})");
+
+		doTest("rule22_23", hyps, "max({2,3}) = max({2,3})", te, VALID);
+	}
+
+	@Test
+	public void testRule24() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
+
+	}
+
+	@Test
+	public void testRule25() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
 	}
 }

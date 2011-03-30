@@ -218,14 +218,15 @@ public class SMTLogic {
 				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
 				SMTMacroSymbol.SUBSET), RANGE_INTEGER(
 				SMTMacroSymbol.RANGE_INTEGER), PROD(SMTMacroSymbol.PROD), DOM(
-				SMTMacroSymbol.DOM), RAN(SMTMacroSymbol.RAN), IMG(
-				SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
-				SMTMacroSymbol.DOMS), RANR(SMTMacroSymbol.RANR), RANS(
-				SMTMacroSymbol.RANS), INV(SMTMacroSymbol.INV), COMP(
-				SMTMacroSymbol.COMP), OVR(SMTMacroSymbol.OVR), ID(
-				SMTMacroSymbol.ID), FCOMP(SMTMacroSymbol.FCOMP), EMPTY_PAIR(
-				SMTMacroSymbol.EMPTY_PAIR), ENUM(SMTMacroSymbol.ENUM), DIV(
-				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.DOM),
+		// RAN(SMTMacroSymbol.RAN),
+		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
+				SMTMacroSymbol.DOMS), RANR(SMTMacroSymbol.RANR), INV(
+				SMTMacroSymbol.INV), COMP(SMTMacroSymbol.COMP), OVR(
+				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
+				SMTMacroSymbol.FCOMP), EMPTY_PAIR(SMTMacroSymbol.EMPTY_PAIR), ENUM(
+				SMTMacroSymbol.ENUM), DIV(SMTMacroSymbol.DIV), MOD(
+				SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
 				SMTMacroSymbol.RELATION), TOTAL_RELATION(
@@ -246,7 +247,8 @@ public class SMTLogic {
 				SMTMacroSymbol.RELATIONAL_IMAGE), ISMIN(SMTMacroSymbol.ISMIN), ISMAX(
 				SMTMacroSymbol.ISMAX), FINITE(SMTMacroSymbol.FINITE), CARD(
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
-				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP);
+				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
+				SMTMacroSymbol.RANGE);
 
 		private String symbol;
 

@@ -17,12 +17,10 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String RANGE_INTEGER = "range";
 	public static final String PROD = "prod";
 	public static final String DOM = "dom";
-	public static final String RAN = "ran";
 	public static final String IMG = "img";
 	public static final String DOMR = "domr";
 	public static final String DOMS = "doms";
 	public static final String RANR = "ranr";
-	public static final String RANS = "rans";
 	public static final String INV = "inv";
 	public static final String COMP = "comp";
 	public static final String OVR = "ovr";
@@ -65,11 +63,12 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 
 	public static final String FUNP = "funp";
 	public static final String INJP = "injp";
+	public static final String RANGE = "ran";
 
 	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
-			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, RAN, IMG,
-			DOMR, DOMS, RANR, RANS, INV, COMP, OVR, ID, FCOMP, EMPTY_PAIR, DIV,
-			ENUM, MOD, RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION,
+			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, IMG,
+			RANGE, DOMR, DOMS, RANR, INV, COMP, OVR, ID, FCOMP, EMPTY_PAIR,
+			DIV, ENUM, MOD, RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION,
 			TOTAL_RELATION, SURJECTIVE_RELATION, TOTAL_SURJECTIVE_RELATION,
 			PARTIAL_FUNCTION, TOTAL_FUNCTION, MAPSTO, NAT, NAT1,
 			PARTIAL_INJECTION, TOTAL_INJECTION, PARTIAL_SURJECTION,
