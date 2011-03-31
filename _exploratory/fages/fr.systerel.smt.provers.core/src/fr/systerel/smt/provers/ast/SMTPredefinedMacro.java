@@ -2,16 +2,35 @@ package fr.systerel.smt.provers.ast;
 
 public class SMTPredefinedMacro extends SMTMacro {
 
-	SMTPredefinedMacro(String macroName, String bodyText, int precedence) {
+	SMTPredefinedMacro(final String macroName, final String bodyText,
+			final int precedence) {
 		super(macroName, precedence);
 		this.body = bodyText;
+		extractQSymbols();
 	}
 
-	private String body;
+	private final String body;
 
 	@Override
 	public void toString(StringBuffer builder) {
 		// TODO: Nothing
+	}
+
+	@Override
+	protected void extractQSymbols() {
+		for (int i = 0; i < body.length(); i++) {
+			if (body.charAt(i) == '?') {
+				for (int j = i + 1; j < body.length(); j++) {
+					if (body.charAt(j) == ' ') {
+						++i;
+						++j;
+						super.getQSymbols().add(body.substring(i, j));
+						i = j;
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	@Override

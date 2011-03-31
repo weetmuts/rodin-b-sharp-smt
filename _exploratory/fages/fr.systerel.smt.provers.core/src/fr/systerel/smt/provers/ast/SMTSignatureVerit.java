@@ -28,6 +28,7 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 public class SMTSignatureVerit extends SMTSignature {
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
+	private SMTMacros ms = new SMTMacros();
 
 	/**
 	 * This variable stores additional assumptions produced by the translation
@@ -119,6 +120,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		names.addAll(getSymbolNames(preds));
 		names.addAll(getNamesFromMacro(macros));
 		names.addAll(SMTMacroSymbol.getVeritSymbols());
+		names.addAll(ms.getqSymbols());
 		for (SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}

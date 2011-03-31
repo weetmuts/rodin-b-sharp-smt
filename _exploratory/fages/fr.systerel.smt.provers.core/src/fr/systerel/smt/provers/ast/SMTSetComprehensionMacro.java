@@ -66,4 +66,10 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 		return true;
 	}
 
+	@Override
+	protected void extractQSymbols() {
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -221,12 +221,11 @@ public class SMTLogic {
 				SMTMacroSymbol.DOM),
 		// RAN(SMTMacroSymbol.RAN),
 		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
-				SMTMacroSymbol.DOMS), RANR(SMTMacroSymbol.RANR), INV(
-				SMTMacroSymbol.INV), COMP(SMTMacroSymbol.COMP), OVR(
-				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
-				SMTMacroSymbol.FCOMP), EMPTY_PAIR(SMTMacroSymbol.EMPTY_PAIR), ENUM(
-				SMTMacroSymbol.ENUM), DIV(SMTMacroSymbol.DIV), MOD(
-				SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), COMP(
+				SMTMacroSymbol.COMP), OVR(SMTMacroSymbol.OVR), ID(
+				SMTMacroSymbol.ID), FCOMP(SMTMacroSymbol.FCOMP), EMPTY_PAIR(
+				SMTMacroSymbol.EMPTY_PAIR), ENUM(SMTMacroSymbol.ENUM), DIV(
+				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
 				SMTMacroSymbol.RELATION), TOTAL_RELATION(

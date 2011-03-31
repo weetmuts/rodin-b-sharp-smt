@@ -218,6 +218,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(λx· ∀y·y ∈ ℕ ∧ x > y ∣ x+x) = ∅");
 
 		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) = ∅", te, VALID);
 	}
@@ -811,5 +812,57 @@ public class RunProverTestWithVeriT extends AbstractTests {
 
 		final List<String> hyps = new ArrayList<String>();
 		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
+	}
+
+	@Test
+	public void testAllBehaviorOfAllMacrosTogether() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "p", "S",
+				"q", "S", "r", "ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)",
+				"AB", "ℤ ↔ ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("card({1,2,3}) = card({1,2,3})");
+		hyps.add("finite({1,2,3})");
+		hyps.add("max({2,3}) = max({2,3})");
+		hyps.add("{0,1,2,3,4} = A");
+		hyps.add("{a∣a ≥ 0} = A");
+		hyps.add("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}");
+		hyps.add("min({2,3}) = min({2,3})");
+		hyps.add("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
+		hyps.add("(A ◁ AB) = (A ◁ AB)");
+		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
+		hyps.add("(AB ▷ A) = (AB ▷ A)");
+		hyps.add("(AB ⩥ A) = (AB ⩥ A)");
+		hyps.add("(a ‥ a) = (a ‥ a)");
+		hyps.add("(AB × AB) = (AB × AB)");
+		hyps.add("(AB \ue103 AB) = (AB \ue103 AB)");
+		hyps.add("(AB \u003b AB) = (AB \u003b AB)");
+		hyps.add("AB ∈ (A⤖A)");
+		hyps.add("AB ∈ (A↔A)");
+		hyps.add("AB ∈ (A→A)");
+		hyps.add("AB ∈ (A⇸A)");
+		hyps.add("AB ∈ (A↣A)");
+		hyps.add("AB ∈ (A⤔A)");
+		hyps.add("AB ∈ (A↠A)");
+		hyps.add("AB ∈ (A⤀A)");
+		hyps.add("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)");
+		hyps.add("(a ∈ A) ∧ (A ⊆ A)");
+		hyps.add("(a < b ∧ b > c) ⇒ a = c");
+		hyps.add("(A ∖ A) ⊂ (A ∪ A)");
+		hyps.add("(A ∩ A) ⊂ (A ∪ A)");
+		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c = 0)");
+		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)");
+		hyps.add("∀x·x∈s");
+		hyps.add("∀x,y·x∈s∧y∈s");
+		hyps.add("∃x·x∈s");
+		hyps.add("∃x,y·x∈s∧y∈s");
+		hyps.add("b ∈ ran(AB)");
+		hyps.add("AB = (AB)∼");
+		hyps.add("\u00ac(p = q)");
+		hyps.add("a = (−b)");
+		hyps.add("AB = id");
+		hyps.add("a ∈ dom(AB)");
+
+		doTest("all_macros_together", hyps, "⊤", te, VALID);
 	}
 }

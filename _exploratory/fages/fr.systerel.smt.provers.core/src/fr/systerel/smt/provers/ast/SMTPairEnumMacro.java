@@ -94,4 +94,10 @@ public class SMTPairEnumMacro extends SMTMacro {
 		// TODO
 		return true;
 	}
+
+	@Override
+	protected void extractQSymbols() {
+		// TODO Auto-generated method stub
+
+	}
 }

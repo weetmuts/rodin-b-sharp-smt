@@ -1,5 +1,8 @@
 package fr.systerel.smt.provers.ast;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class SMTMacro implements Comparable<SMTMacro> {
 
 	protected int precedence;
@@ -14,6 +17,11 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	}
 
 	private String macroName;
+	private final Set<String> qSymbols = new HashSet<String>();
+
+	public Set<String> getQSymbols() {
+		return qSymbols;
+	}
 
 	public abstract void toString(StringBuffer builder);
 
@@ -45,5 +53,7 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	public void setPrecedence(int precedence) {
 		this.precedence = precedence;
 	}
+
+	protected abstract void extractQSymbols();
 
 }

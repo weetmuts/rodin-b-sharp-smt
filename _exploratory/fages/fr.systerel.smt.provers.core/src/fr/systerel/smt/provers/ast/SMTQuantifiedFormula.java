@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import static fr.systerel.smt.provers.ast.SMTFactory.POINT;
 
 /**
  * @author guyot
@@ -22,12 +23,15 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
+	private final boolean printPoint;
 
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
-			final SMTVarSymbol[] qVars, final SMTFormula formula) {
+			final SMTVarSymbol[] qVars, final SMTFormula formula,
+			final boolean printPoint) {
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;
+		this.printPoint = printPoint;
 	}
 
 	@Override
@@ -37,6 +41,11 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		for (final SMTVarSymbol qVar : qVars) {
 			builder.append(SPACE);
 			builder.append(qVar);
+		}
+		if (printPoint) {
+			builder.append(SPACE);
+			builder.append(POINT);
+			builder.append(SPACE);
 		}
 		builder.append(SPACE);
 		builder.append(formula);

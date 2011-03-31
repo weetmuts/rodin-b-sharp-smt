@@ -26,6 +26,7 @@ public final class SMTFactory {
 	public final static String CPAR = ")";
 	public final static String SPACE = " ";
 	public final static String QVAR = "?";
+	public final static String POINT = ".";
 
 	public final static String ITE_TERM = "ite";
 
@@ -302,16 +303,27 @@ public final class SMTFactory {
 	/**
 	 * Creates a new quantified pred.
 	 */
+	public SMTFormula makeForAll(final SMTTerm[] terms,
+			final SMTFormula formula, final boolean printPoint) {
+		return makeSMTQuantifiedFormula(FORALL, terms, formula, printPoint);
+	}
+
+	public SMTFormula makeExists(final SMTTerm[] terms,
+			final SMTFormula formula, final boolean printPoint) {
+		return makeSMTQuantifiedFormula(EXISTS, terms, formula, printPoint);
+	}
+
 	public SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(FORALL, terms, formula);
+		return makeSMTQuantifiedFormula(FORALL, terms, formula, false);
 	}
 
 	public SMTFormula makeExists(final SMTTerm[] terms, final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(EXISTS, terms, formula);
+		return makeSMTQuantifiedFormula(EXISTS, terms, formula, false);
 	}
 
 	public SMTFormula makeSMTQuantifiedFormula(SMTQuantifierSymbol qSymbol,
-			final SMTTerm[] terms, final SMTFormula formula) {
+			final SMTTerm[] terms, final SMTFormula formula,
+			final boolean printPoint) {
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];
@@ -323,7 +335,7 @@ public final class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
+		return new SMTQuantifiedFormula(qSymbol, qVars, formula, printPoint);
 	}
 
 	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,

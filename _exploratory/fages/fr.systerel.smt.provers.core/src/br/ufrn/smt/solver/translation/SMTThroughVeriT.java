@@ -85,6 +85,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	protected SMTSignatureVerit signature;
 
 	/**
+	 * This variable is used to control if it's necessary to print a point ( . )
+	 * after declaration of variables in a existencial predicate. The point is
+	 * necessary when the predicate being translated is inside a macro (it can
+	 * be produced by set intension translation rules of lambda abstraction
+	 * translation rules)
+	 */
+	private boolean printPointInQuantifiedOperator = false;
+
+	/**
 	 * This variable stores additional assumptions produced by the translation
 	 * of min,max, finite and cardinality operators
 	 */
@@ -127,12 +136,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	protected SMTLogic determineLogic() {
 		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
-
-	/* The Bound identifier list. */
-	private ArrayList<String> boundIdentifers;
-
-	/* The list of names already used (Free identifiers + others) list. */
-	private ArrayList<String> freeIdentifiers;
 
 	/**
 	 * This boolean is used to check if it's necessary to add the polymorphic
@@ -205,17 +208,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates a CartesianProductType. It translates both the
-	 * source and the target types.
+	 * This method translates a ProductType. It translates both the source and
+	 * the target types.
 	 * 
-	 * @param varName
-	 *            The name of the variable.
 	 * @param sourceType
-	 *            The source type of the variable type.
 	 * @param targetType
-	 *            The target type of the variable type.
-	 * @return the translated @link {@link SMTPairSortSymbol} of the variable
-	 *         type.
+	 * @return The translated sort symbol from productType.
 	 */
 	private SMTSortSymbol parsePairTypes(Type sourceType, Type targetType) {
 		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(sourceType);
@@ -514,7 +512,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBinaryExpression(BinaryExpression expression) {
 		final SMTTerm[] children = smtTerms(expression.getLeft(),
 				expression.getRight());
-		SMTPredefinedMacro macro;
 		switch (expression.getTag()) {
 		case Formula.MINUS:
 			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
@@ -782,10 +779,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			this.smtNode = sf.makeForAll(termChildren, formulaChild);
+			this.smtNode = sf.makeForAll(termChildren, formulaChild,
+					this.printPointInQuantifiedOperator);
 			break;
 		case Formula.EXISTS:
-			this.smtNode = sf.makeExists(termChildren, formulaChild);
+			this.smtNode = sf.makeExists(termChildren, formulaChild,
+					this.printPointInQuantifiedOperator);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -938,7 +937,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
-		SMTPredefinedMacro macro;
 		final SMTTerm[] children = smtTerms(expression.getChildren());
 		final int tag = expression.getTag();
 		switch (tag) {
@@ -999,26 +997,41 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
-		final SMTTerm[] termChildren = smtTerms(expression.getBoundIdentDecls());
-		final SMTFormula formulaChild = smtFormula(expression.getPredicate());
-		final SMTTerm[] expressionTerm = smtTerms(expression.getExpression());
 		switch (expression.getTag()) {
 		case Formula.CSET:
+			this.printPointInQuantifiedOperator = true;
+
+			// Translating the children
+			final SMTTerm[] termChildren = smtTerms(expression
+					.getBoundIdentDecls());
+			final SMTFormula formulaChild = smtFormula(expression
+					.getPredicate());
+			final SMTTerm[] expressionTerm = smtTerms(expression
+					.getExpression());
+
+			// obtaining the expression type
 			SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
 			if (expressionSymbol == null) {
 				expressionSymbol = makeSort(expression.getType());
 			}
+
+			// obtaining fresh name for the variables
 			String macroName = signature.freshCstName(SMTMacroSymbol.CSET);
 			String lambdaName = signature.freshCstName(SMTMacroSymbol.ELEM);
+
 			SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
 					expressionSymbol, false);
+
+			// Creating the macro
 			SMTSetComprehensionMacro macro = SMTMacros
 					.makeSetComprehensionMacro(macroName, termChildren,
 							lambdaVar, formulaChild, expressionTerm[0],
 							signature);
+
 			this.signature.addMacro(macro);
 			SMTMacroSymbol macroSymbol = SMTMacros.makeMacroSymbol(macroName);
 			this.smtNode = sf.makeMacroTerm(macroSymbol);
+			this.printPointInQuantifiedOperator = false;
 			break;
 		default:
 			throw new IllegalArgumentException(
@@ -1152,8 +1165,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature);
 
 			smtNode = sf.makeMacroTerm(
-					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER),
-					children);
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.RANGE), children);
 			break;
 		}
 		case Formula.KMIN: {

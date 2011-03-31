@@ -41,7 +41,7 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  */
 public class SmtProverCall extends XProverCall {
 	private static String SMT_LIB_FILE_EXTENSION = ".smt";
-	private static String VERIT_TEMP_FILE = "_veritTempFile";
+	private static String VERIT_TEMP_FILE = "_verit";
 	private static String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
@@ -80,6 +80,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	protected File iFile;
 	protected File oFile;
+	private static final String POST_PROCESSED_FILE_POSTFIX = "_postprocessed.";
 
 	private static String smtFilePath(final String fileName) {
 		return TRANSLATION_PATH + File.separatorChar + fileName
@@ -262,7 +263,7 @@ public class SmtProverCall extends XProverCall {
 	private void createPostProcessedFile(String parentFolder, String extension)
 			throws IOException {
 		iFile = new File(parentFolder + File.separatorChar + lemmaName
-				+ "PostProcessed." + extension);
+				+ POST_PROCESSED_FILE_POSTFIX + extension);
 		if (!iFile.exists()) {
 			iFile.createNewFile();
 		}
@@ -284,15 +285,13 @@ public class SmtProverCall extends XProverCall {
 				throw new IllegalArgumentException(proverName
 						+ " could not pre-process " + lemmaName
 						+ ".smt with VeriT. See " + lemmaName
-						+ "PostProcessed.res for more details.");
+						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
 			} else {
 				throw new IllegalArgumentException("Unexpected response of "
 						+ proverName + ". See " + lemmaName
-						+ "PostProcessed.res for more details.");
+						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
 			}
-
 		}
-
 	}
 
 	private String smtVeriTPreProcessFilePath(String fileName) {

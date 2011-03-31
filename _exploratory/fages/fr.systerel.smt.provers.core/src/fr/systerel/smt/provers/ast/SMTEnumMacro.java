@@ -23,7 +23,6 @@ public class SMTEnumMacro extends SMTMacro {
 	@Override
 	public void toString(StringBuffer builder) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -57,5 +56,11 @@ public class SMTEnumMacro extends SMTMacro {
 	@Override
 	public boolean equals(Object obj) {
 		return true;
+	}
+
+	@Override
+	protected void extractQSymbols() {
+		// TODO Auto-generated method stub
+
 	}
 }
