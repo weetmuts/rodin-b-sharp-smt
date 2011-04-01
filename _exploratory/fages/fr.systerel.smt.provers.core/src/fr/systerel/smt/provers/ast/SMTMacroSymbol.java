@@ -21,11 +21,9 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String DOMR = "domr";
 	public static final String DOMS = "doms";
 	public static final String INV = "inv";
-	public static final String COMP = "comp";
 	public static final String OVR = "ovr";
 	public static final String ID = "id";
-	public static final String FCOMP = "comp";
-	public static final String EMPTY_PAIR = "emptyset2";
+	public static final String FCOMP = "fcomp";
 
 	public static final String DIV = "/";
 
@@ -63,17 +61,19 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String FUNP = "funp";
 	public static final String INJP = "injp";
 	public static final String RANGE = "ran";
+	public static final String NOT_EQUAL = "neq";
+	public static final String BCOMP = "bcomp";
 
 	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
 			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, IMG,
-			RANGE, DOMR, DOMS, INV, COMP, OVR, ID, FCOMP, EMPTY_PAIR, DIV,
-			ENUM, MOD, RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION,
-			TOTAL_RELATION, SURJECTIVE_RELATION, TOTAL_SURJECTIVE_RELATION,
-			PARTIAL_FUNCTION, TOTAL_FUNCTION, MAPSTO, NAT, NAT1,
-			PARTIAL_INJECTION, TOTAL_INJECTION, PARTIAL_SURJECTION,
-			TOTAL_SURJECTION, TOTAL_BIJECTION, CARTESIAN_PRODUCT,
-			DOMAIN_RESTRICTION, DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA,
-			CSET, ELEM, ISMIN, ISMAX, FINITE, CARD, PAIR, FUNP, INJP };
+			RANGE, DOMR, DOMS, INV, OVR, ID, FCOMP, DIV, ENUM, MOD,
+			RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION, TOTAL_RELATION,
+			SURJECTIVE_RELATION, TOTAL_SURJECTIVE_RELATION, PARTIAL_FUNCTION,
+			TOTAL_FUNCTION, MAPSTO, NAT, NAT1, PARTIAL_INJECTION,
+			TOTAL_INJECTION, PARTIAL_SURJECTION, TOTAL_SURJECTION,
+			TOTAL_BIJECTION, CARTESIAN_PRODUCT, DOMAIN_RESTRICTION,
+			DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA, CSET, ELEM, ISMIN,
+			ISMAX, FINITE, CARD, PAIR, FUNP, INJP, NOT_EQUAL, BCOMP };
 
 	public static Set<String> getVeritSymbols() {
 		Set<String> set = new HashSet<String>();

@@ -41,14 +41,18 @@ public class SMTMacros {
 			FCOMP,
 			"(lambda (?p3 ((Pair 's 't) Bool)) (?q3 ((Pair 't 'u) Bool)) . (lambda (?s1 (Pair 's 'u)) . (exists (?x3 't) . (and (?p3 (pair (fst ?s1) ?x3)) (?q3 (pair ?x3 (snd ?s1)))))))",
 			1);
+
+	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
+			BCOMP,
+			"(lambda (?p3b ((Pair 's 't) Bool)) (?q3b ((Pair 't 'u) Bool)) . (fcomp ?q3b ?p3b))",
+			2);
+
 	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
 			OVR,
 			"(lambda (?p4 ((Pair 's 't) Bool)) (?q4 ((Pair 's 't) Bool)) . (lambda (?x4 (Pair 's 'u)) . (or (?q4 ?x4) (and (?p4 ?x4)(not(exists (?s2 (Pair 's 't)) . (and (?q4 ?s2)(= (fst ?s2)(fst ?x4)))))))))",
 			1);
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(lambda (?x5 't). false)", 0);
-	public static final SMTPredefinedMacro EMPTYSET_PAIR_MACRO = new SMTPredefinedMacro(
-			EMPTY_PAIR, "(lambda (?p5 't1) (?q5 't2). false)", 0);
 	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
 			IN, "(lambda (?p6 't) (?q6 ('t Bool)) . (?q6 ?p6))", 0);
 
@@ -183,6 +187,9 @@ public class SMTMacros {
 			RANGE,
 			"(lambda (?r30 ((Pair 's 't) Bool)) . (lambda (?f3 't) . (exists (?e3 's) . (?r30 (pair ?e3 ?f3)))))",
 			1);
+	public static final SMTPredefinedMacro NOTEQUAL_MACRO = new SMTPredefinedMacro(
+			NOT_EQUAL, "(lambda (?t6 Bool) (?t5 Bool) . (not (= ?t6 ?t5)))", 0);
+
 	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			"");
 	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
@@ -199,6 +206,9 @@ public class SMTMacros {
 
 	private static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.RANGE, POLYMORPHICS);
+
+	private static final SMTMacroSymbol NOT_EQUAL_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.NOT_EQUAL, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.CARD, CARD_SORTS);
 	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(
@@ -269,31 +279,31 @@ public class SMTMacros {
 	private static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.BINTER, POLYMORPHIC_PAIRS, true);
 	private static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.COMP, POLYMORPHIC_PAIRS, true);
+			SMTMacroSymbol.FCOMP, POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(
+			SMTMacroSymbol.BCOMP, POLYMORPHIC_PAIRS, true);
 	private static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.OVR, POLYMORPHIC_PAIRS, true);
 	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.EMPTY, EMPTY_SORT, true);
-	private static SMTMacroSymbol EMPTYSET_PAIR_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.EMPTY_PAIR, EMPTY_SORT, true);
 
 	public static SMTSortSymbol PAIR_SORT = new SMTSortSymbol("(Pair 's 't)",
 			false);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
-			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO,
-			EMPTYSET_PAIR_MACRO, IN_MACRO, SUBSET_MACRO, SUBSETEQ_MACRO,
-			RANGE_INTEGER_MACRO, RANGE_SUBSTRACTION_MACRO,
-			RANGE_RESTRICTION_MACRO, RELATION_MACRO, SURJECTIVE_RELATION_MACRO,
-			TOTAL_SURJECTIVE_RELATION_MACRO, PARTIAL_FUNCTION_MACRO,
-			TOTAL_FUNCTION_MACRO, NAT_MACRO, NAT1_MACRO, INVERSE_MACRO,
-			ID_MACRO, DOM_MACRO, PARTIAL_INJECTION_MACRO,
-			TOTAL_INJECTION_MACRO, PARTIAL_SURJECTION_MACRO,
-			TOTAL_SURJECTION_MACRO, TOTAL_BIJECTION_MACRO,
-			CARTESIAN_PRODUCT_MACRO, DOMAIN_RESTRICTION_MACRO,
-			DOMAIN_SUBSTRACTION_MACRO, RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO,
-			ISMIN_MACRO, ISMAX_MACRO, FINITE_MACRO, CARD_MACRO, PAIR_MACRO,
-			FUNP_MACRO, INJP_MACRO, TOTAL_RELATION_MACRO, RANGE_MACRO };
+			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
+			SUBSET_MACRO, SUBSETEQ_MACRO, RANGE_INTEGER_MACRO,
+			RANGE_SUBSTRACTION_MACRO, RANGE_RESTRICTION_MACRO, RELATION_MACRO,
+			SURJECTIVE_RELATION_MACRO, TOTAL_SURJECTIVE_RELATION_MACRO,
+			PARTIAL_FUNCTION_MACRO, TOTAL_FUNCTION_MACRO, NAT_MACRO,
+			NAT1_MACRO, INVERSE_MACRO, ID_MACRO, DOM_MACRO,
+			PARTIAL_INJECTION_MACRO, TOTAL_INJECTION_MACRO,
+			PARTIAL_SURJECTION_MACRO, TOTAL_SURJECTION_MACRO,
+			TOTAL_BIJECTION_MACRO, CARTESIAN_PRODUCT_MACRO,
+			DOMAIN_RESTRICTION_MACRO, DOMAIN_SUBSTRACTION_MACRO,
+			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
+			FINITE_MACRO, CARD_MACRO, PAIR_MACRO, FUNP_MACRO, INJP_MACRO,
+			TOTAL_RELATION_MACRO, RANGE_MACRO, NOTEQUAL_MACRO, BCOMP_MACRO };
 
 	/**
 	 * Thi constructor adds all qSymbols which will are necessary to be checked
@@ -461,12 +471,12 @@ public class SMTMacros {
 			signature.addMacro(REL_OVR_MACRO);
 			break;
 		}
-		case EMPTY: {
-			signature.addMacro(EMPTYSET_MACRO);
+		case NOT_EQUAL: {
+			signature.addMacro(NOTEQUAL_MACRO);
 			break;
 		}
-		case EMPTY_PAIR: {
-			signature.addMacro(EMPTYSET_PAIR_MACRO);
+		case EMPTY: {
+			signature.addMacro(EMPTYSET_MACRO);
 			break;
 		}
 		case IN: {
@@ -487,6 +497,11 @@ public class SMTMacros {
 			signature.addMacro(RANGE_INTEGER_MACRO);
 			break;
 		}
+		case BCOMP:
+			addPredefinedMacroInSignature(SMTVeriTOperator.FCOMP, signature);
+
+			signature.addMacro(BCOMP_MACRO);
+			break;
 		case RANGE_SUBSTRACTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addFstAndSndFunctionsInSignature(signature);
@@ -731,9 +746,6 @@ public class SMTMacros {
 		case EMPTY: {
 			return EMPTYSET_SYMBOL;
 		}
-		case EMPTY_PAIR: {
-			return EMPTYSET_PAIR_SYMBOL;
-		}
 		case IN: {
 			return IN_SYMBOL;
 		}
@@ -764,6 +776,8 @@ public class SMTMacros {
 		case TOTAL_SURJECTIVE_RELATION: {
 			return TOTAL_SURJECTIVE_RELATION_SYMBOL;
 		}
+		case NOT_EQUAL:
+			return NOT_EQUAL_SYMBOL;
 		case PARTIAL_FUNCTION: {
 			return PARTIAL_FUNCTION_SYMBOL;
 		}
@@ -833,6 +847,8 @@ public class SMTMacros {
 		case RANGE: {
 			return RANGE_SYMBOL;
 		}
+		case BCOMP:
+			return BCOMP_SYMBOL;
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro symbol with symbol: "

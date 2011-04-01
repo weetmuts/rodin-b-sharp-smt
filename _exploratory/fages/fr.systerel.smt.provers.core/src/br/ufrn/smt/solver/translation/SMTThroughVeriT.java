@@ -179,8 +179,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	/**
 	 * This method translates each type of CartesianProduct Types. It must be
-	 * called only by {@link #parsePairTypes(String, Type, Type)}. It applies
-	 * the following rules:
+	 * called only by {@link #parsePairTypes(Type, Type)}. It applies the
+	 * following rules:
 	 * 
 	 * 1: if the type is a CartesianProduct Type, the same CartesianProduct
 	 * translating rules are applied again on it. 2: if the type is a BaseType,
@@ -232,7 +232,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
 		Iterator<Type> bIterator = biTypes.iterator();
 
-		translateSignature(bIterator);
+		extractTypeFromBoundIdentDecl(bIterator);
 	}
 
 	private SMTSortSymbol makeSort(Type varType) {
@@ -293,7 +293,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The iterator which contains the types of bound ident
 	 *            declarations
 	 */
-	private void translateSignature(Iterator<Type> iter) {
+	private void extractTypeFromBoundIdentDecl(Iterator<Type> iter) {
 		while (iter.hasNext()) {
 			final Type varType = iter.next();
 			makeSort(varType);
@@ -429,20 +429,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature);
 			break;
 		case Formula.EMPTYSET:
-			if (expression.getType() instanceof ProductType) {
-				if (expression.getType().getSource() instanceof ProductType
-						|| expression.getType().getTarget() instanceof ProductType) {
-					throw new IllegalArgumentException("Type: "
-							+ expression.getType().toString()
-							+ ": power set of power set is not supported yet");
-				} else {
-					SMTMacros.addPredefinedMacroInSignature(
-							SMTVeriTOperator.EMPTY_PAIR, signature);
-
-					smtNode = sf.makeMacroTerm(SMTMacros
-							.getMacroSymbol(SMTVeriTOperator.EMPTY_PAIR));
-				}
-
+			if (expression.getType().getSource() instanceof ProductType
+					|| expression.getType().getTarget() instanceof ProductType) {
+				throw new IllegalArgumentException("Type: "
+						+ expression.getType().toString()
+						+ ": power set of power set is not supported yet");
 			} else {
 				SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.EMPTY,
 						signature);
@@ -450,7 +441,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				smtNode = sf.makeMacroTerm(SMTMacros
 						.getMacroSymbol(SMTVeriTOperator.EMPTY));
 			}
-
 			break;
 		case Formula.KPRED:
 			/*
@@ -493,16 +483,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
 			// boolean value when BOOL_SORT theory implemented
 			break;
-		// FIXME Must be put in the SMTSignature
-		/*
-		 * case Formula.INTEGER: this.smtNode = sf.makeMacroTerm(SMTNode.MACRO,
-		 * "Int", null, false); break; case Formula.NATURAL: this.smtNode =
-		 * sf.makeMacroTerm(SMTNode.MACRO, "Nat", null, false); break; case
-		 * Formula.NATURAL1: this.smtNode = sf.makeMacroTerm(SMTNode.MACRO,
-		 * "Nat1", null, false); break; case Formula.BOOL: break; case
-		 * Formula.EMPTYSET: this.smtNode = sf.makeMacroTerm(SMTNode.MACRO,
-		 * "emptyset", null, false); break;
-		 */
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -818,7 +798,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.convertVeritTermsIntoFormulas(children);
 				this.smtNode = sf.makeNotIff(childrenFormulas);
 			} else {
-				this.smtNode = sf.makeNotEqual(children);
+				SMTMacros.addPredefinedMacroInSignature(
+						SMTVeriTOperator.NOT_EQUAL, signature);
+
+				this.smtNode = sf.makeMacroAtom(
+						SMTMacros.getMacroSymbol(SMTVeriTOperator.NOT_EQUAL),
+						children, signature);
 			}
 			break;
 		}
@@ -973,6 +958,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = sf.makeMacroTerm(
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.FCOMP), children);
 			break;
+		case Formula.BCOMP:
+			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.BCOMP,
+					signature);
+
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.BCOMP), children);
+			break;
 		case Formula.OVR:
 			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.OVR,
 					signature);
@@ -981,9 +973,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					SMTMacros.getMacroSymbol(SMTVeriTOperator.OVR), children);
 			break;
 		default:
-			/**
-			 * , BCOMP tag cannot be produced by VeriT pre-processing.
-			 */
 			throw new IllegalTagException(tag);
 		}
 
@@ -1043,19 +1032,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitSetExtension(SetExtension expression) {
 		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
-			if (expression.getType() instanceof ProductType) {
-				SMTMacros.addPredefinedMacroInSignature(
-						SMTVeriTOperator.EMPTY_PAIR, signature);
-				smtNode = sf.makeMacroTerm(
-						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY_PAIR),
-						children);
-			} else {
-				SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.EMPTY,
-						signature);
-				smtNode = sf.makeMacroTerm(
-						SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY),
-						children);
-			}
+			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.EMPTY,
+					signature);
+			smtNode = sf.makeMacroTerm(
+					SMTMacros.getMacroSymbol(SMTVeriTOperator.EMPTY), children);
 		} else {
 			children = smtTerms(expression.getMembers());
 			String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);

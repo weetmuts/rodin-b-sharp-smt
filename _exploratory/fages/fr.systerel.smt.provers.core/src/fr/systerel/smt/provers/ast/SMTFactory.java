@@ -129,8 +129,9 @@ public final class SMTFactory {
 	 * we use <code>EQUAL</code> and <code>NOT</code> symbols to build it.
 	 */
 	public SMTFormula makeNotEqual(final SMTTerm[] args) {
-		final SMTFormula[] tabEqual = { makeEqual(args) };
-		return makeNot(tabEqual);
+		final SMTSortSymbol sort0 = args[0].getSort();
+		final SMTSortSymbol sort[] = { sort0, sort0 };
+		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
 	public SMTFormula makeNotIff(final SMTFormula[] args) {

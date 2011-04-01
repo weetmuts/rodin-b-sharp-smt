@@ -76,8 +76,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String failMessage) throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
 
-		String x = pred.getSyntaxTree();
-
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(pred);
 
@@ -744,6 +742,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule20() {
 
 		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset_0 emptyset)");
+	}
+
+	@Test
+	public void testRule21() {
+		// FIXME
+		testTranslationV1_2Default("bool(⊤) ∈ BOOL", "(= cset_0 emptyset)");
 	}
 
 	@Test

@@ -223,6 +223,27 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) = ∅", te, VALID);
 	}
 
+	@Test
+	public void testRule20ManyForalls() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule20_many_foralls", hyps,
+				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule20MacroInsideMacro() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule20_macro_inside_macro", hyps,
+				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
+	}
+
 	/**
 	 * 
 	 */
@@ -678,8 +699,20 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)");
 
 		doTest("rule16", hyps,
-				"((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c = 0)", te,
+				"((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c ≠ 0)", te,
 				VALID);
+	}
+
+	@Test
+	public void testRule16NotEqual() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
+				"c", "ℤ", "a", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(a = 1) ∧ (b = 2)");
+
+		doTest("rule16_not_equal", hyps, "(a ∗ b ≠ 0)", te, VALID);
 	}
 
 	@Test
@@ -732,7 +765,18 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("(AB \ue103 AB) = (AB \ue103 AB)");
 
-		doTest("rule15_ovr_comp", hyps, "(AB \u003b AB) = (AB \u003b AB)", te,
+		doTest("rule15_ovr_fcomp", hyps, "(AB \u003b AB) = (AB \u003b AB)", te,
+				VALID);
+	}
+
+	@Test
+	public void testRule15BackwardComposition() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule15_bcomp", hyps, "(AB \u2218 AB) = (AB \u2218 AB)", te,
 				VALID);
 	}
 

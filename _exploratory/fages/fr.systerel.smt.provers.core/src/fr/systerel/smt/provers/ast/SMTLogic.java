@@ -221,10 +221,9 @@ public class SMTLogic {
 				SMTMacroSymbol.DOM),
 		// RAN(SMTMacroSymbol.RAN),
 		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
-				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), COMP(
-				SMTMacroSymbol.COMP), OVR(SMTMacroSymbol.OVR), ID(
-				SMTMacroSymbol.ID), FCOMP(SMTMacroSymbol.FCOMP), EMPTY_PAIR(
-				SMTMacroSymbol.EMPTY_PAIR), ENUM(SMTMacroSymbol.ENUM), DIV(
+				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(
+				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
+				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), DIV(
 				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
@@ -247,7 +246,8 @@ public class SMTLogic {
 				SMTMacroSymbol.ISMAX), FINITE(SMTMacroSymbol.FINITE), CARD(
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
 				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
-				SMTMacroSymbol.RANGE);
+				SMTMacroSymbol.RANGE), NOT_EQUAL(SMTMacroSymbol.NOT_EQUAL), BCOMP(
+				SMTMacroSymbol.BCOMP);
 
 		private String symbol;
 
