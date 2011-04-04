@@ -7,16 +7,23 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 import static fr.systerel.smt.provers.ast.SMTMacroSymbol.*;
+import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
- * VeriT. It stores macro expressions, Macro Symbols and cretes macro
+ * VeriT. It stores macro expressions, Macro Symbols and creates macro
  * enumerations, which are used to translate in extension.
  * 
  * @author vitor
  * 
  */
 public class SMTMacros {
+
+	private static final String SND_PAIR_ARG_NAME = "e";
+	private static final String FST_PAIR_ARG_NAME = "f";
+	private static final String FST_PAIR_SORT_NAME = "'s";
+	private static final String SND_PAIR_SORT_NAME = "'t";
 
 	public static SMTSortSymbol[] EMPTY_SORT = {};
 
@@ -288,7 +295,27 @@ public class SMTMacros {
 			SMTMacroSymbol.EMPTY, EMPTY_SORT, true);
 
 	public static SMTSortSymbol PAIR_SORT = new SMTSortSymbol("(Pair 's 't)",
-			false);
+			!PREDEFINED);
+
+	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
+
+	private static final SMTSortSymbol FST_RETURN_SORT = new SMTSortSymbol(
+			FST_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+
+	private static final SMTSortSymbol SND_RETURN_SORT = new SMTSortSymbol(
+			SND_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+
+	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
+			SND_RETURN_SORT };
+
+	private static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
+			"pair", PAIR_ARG_SORTS, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED);
+
+	private static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
+			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
+
+	private static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
+			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
 			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
@@ -407,35 +434,90 @@ public class SMTMacros {
 	}
 
 	private static void addFstAndSndFunctionsInSignature(
-			SMTSignatureVerit signature) {
-		final String fstSortName = "'s";
-		final String sndSortName = "'t";
-		SMTSortSymbol fstSort = SMTFactory.makeVeriTSortSymbol(fstSortName,
-				signature);
-		SMTSortSymbol sndSort = SMTFactory.makeVeriTSortSymbol(sndSortName,
-				signature);
-		SMTSortSymbol[] argSorts = { PAIR_SORT };
-		SMTFunctionSymbol fstFun = new SMTFunctionSymbol("fst", argSorts,
-				fstSort, false, false);
-		SMTFunctionSymbol sndFun = new SMTFunctionSymbol("snd", argSorts,
-				sndSort, false, false);
-		signature.addConstant(fstFun);
-		signature.addConstant(sndFun);
+			final SMTSignatureVerit signature) {
+		signature.addConstant(FST_SYMBOL);
+		signature.addConstant(SND_SYMBOL);
+		signature.addFstOrSndAuxiliarAssumption(createFstAssumption());
+		signature.addFstOrSndAuxiliarAssumption(createSndAssumption());
+		signature.setFstAndSndAssumptionsAdded(true);
+		// FIXME Check the additional assumptions
+	}
 
-		// TODO Implement the assumptions that defines fst and snd
+	/**
+	 * This method creates the auxiliar function (forall (?e 's) (?f 't) (= (fst
+	 * (pair ?e ?f)) ?e))
+	 * 
+	 * @return
+	 */
+	private static SMTFormula createFstAssumption() {
+		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
+				FST_RETURN_SORT, PREDEFINED);
+		SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(SND_PAIR_ARG_NAME,
+				SND_RETURN_SORT, PREDEFINED);
+
+		SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
+		SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
+
+		SMTTerm[] pairTerms = { varSymbol1, varSymbol2 };
+
+		SMTFunApplication pairFunAppl = new SMTFunApplication(PAIR_SYMBOL,
+				pairTerms);
+
+		SMTTerm[] fstTerms = { pairFunAppl };
+
+		SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
+				fstTerms);
+
+		SMTTerm[] equalTerms = { fstFunAppl, varSymbol1 };
+
+		SMTAtom equalAtom = new SMTAtom(new SMTPredicateSymbol.SMTEqual(
+				POLYMORPHIC_PAIRS), equalTerms);
+
+		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
+
+		SMTQuantifiedFormula quantifiedFormula = new SMTQuantifiedFormula(
+				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
+
+		return quantifiedFormula;
+	}
+
+	private static SMTFormula createSndAssumption() {
+		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
+				FST_RETURN_SORT, PREDEFINED);
+		SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(SND_PAIR_ARG_NAME,
+				SND_RETURN_SORT, PREDEFINED);
+
+		SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
+		SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
+
+		SMTTerm[] pairTerms = { varSymbol1, varSymbol2 };
+
+		SMTFunApplication pairFunAppl = new SMTFunApplication(PAIR_SYMBOL,
+				pairTerms);
+
+		SMTTerm[] fstTerms = { pairFunAppl };
+
+		SMTFunApplication sndFunAppl = new SMTFunApplication(SND_SYMBOL,
+				fstTerms);
+
+		SMTTerm[] equalTerms = { sndFunAppl, varSymbol2 };
+
+		SMTAtom equalAtom = new SMTAtom(new SMTPredicateSymbol.SMTEqual(
+				POLYMORPHIC_PAIRS), equalTerms);
+
+		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
+
+		SMTQuantifiedFormula quantifiedFormula = new SMTQuantifiedFormula(
+				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
+
+		return quantifiedFormula;
 	}
 
 	private static void addPairMacroSortAndFunInSignature(
 			SMTSignatureVerit signature) {
 		signature.addMacro(PAIR_MACRO);
 		signature.addSort(PAIR_SORT);
-		SMTSortSymbol[] argSorts = {};
-		final String symbolName = "pair 's 't";
-		SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(symbolName,
-				argSorts, PAIR_SORT, !SMTFunctionSymbol.ASSOCIATIVE,
-				!SMTFunctionSymbol.PREDEFINED);
-
-		signature.addConstant(functionSymbol);
+		signature.addConstant(PAIR_SYMBOL);
 	}
 
 	public static void addPredefinedMacroInSignature(

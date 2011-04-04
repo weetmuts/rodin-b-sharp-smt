@@ -12,7 +12,7 @@ public class SMTVeritCardFormula extends SMTFormula {
 	private SMTTerm[] terms;
 
 	public SMTVeritCardFormula(SMTMacroSymbol cardSymbol,
-			SMTFunctionSymbol kVarSymbol, SMTFunctionSymbol fVarSymbol,
+			SMTFunctionSymbol fVarSymbol, SMTFunctionSymbol kVarSymbol,
 			SMTTerm[] terms) {
 		this.predicate = cardSymbol;
 		this.terms = terms;

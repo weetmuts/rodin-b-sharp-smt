@@ -10,6 +10,8 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
+import static fr.systerel.smt.provers.ast.SMTMacros.PAIR_SORT;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,7 +59,6 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.SMTMacros;
 import fr.systerel.smt.provers.ast.SMTPairEnumMacro;
-import fr.systerel.smt.provers.ast.SMTPredefinedMacro;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -92,12 +93,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * translation rules)
 	 */
 	private boolean printPointInQuantifiedOperator = false;
-
-	/**
-	 * This variable stores additional assumptions produced by the translation
-	 * of min,max, finite and cardinality operators
-	 */
-	private List<SMTFormula> additionalAssumptions = new ArrayList<SMTFormula>();
 
 	/**
 	 * This is the public translation method
@@ -267,18 +262,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	public void addPairSortAndFunctions() {
-		// TODO: Add Pair Macro
-
-		final String sortSymbolName = "(Pair 's 't)";
-		SMTSortSymbol smtSortSymbol = SMTFactory.makeVeriTSortSymbol(
-				sortSymbolName, signature);
-		this.signature.addSort(smtSortSymbol);
-		SMTSortSymbol sortSymbol = SMTFactory.makeVeriTSortSymbol(
-				sortSymbolName, signature);
+		this.signature.addSort(PAIR_SORT);
 		SMTSortSymbol[] argSorts = {};
 		final String symbolName = "pair 's 't";
 		SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(symbolName,
-				argSorts, sortSymbol, !SMTFunctionSymbol.ASSOCIATIVE,
+				argSorts, PAIR_SORT, !SMTFunctionSymbol.ASSOCIATIVE,
 				!SMTFunctionSymbol.PREDEFINED);
 
 		signature.addConstant(functionSymbol);
@@ -367,14 +355,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		for (Predicate hypothesis : hypotheses) {
 			clearFormula();
 			SMTFormula translatedFormula = translate(hypothesis);
-			translatedAssumptions.addAll(this.additionalAssumptions);
+			translatedAssumptions.addAll(signature.getAdditionalAssumptions());
 			translatedAssumptions.add(translatedFormula);
 		}
 
 		// translates the goal
 		clearFormula();
 		final SMTFormula smtFormula = translate(goal);
-		translatedAssumptions.addAll(this.additionalAssumptions);
+		translatedAssumptions.addAll(signature.getAdditionalAssumptions());
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
 	}
@@ -399,7 +387,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	protected void clearFormula() {
-		additionalAssumptions.clear();
+		signature.getAdditionalAssumptions().clear();
 		smtNode = null;
 	}
 
@@ -1105,11 +1093,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			SMTMacroSymbol cardSymbol = SMTMacros
 					.getMacroSymbol(SMTVeriTOperator.CARD);
 
-			// Creating the new assumption (finite p t k f) and saving it.
-			SMTFormula finiteFormula = new SMTVeritCardFormula(cardSymbol,
-					kVarSymbol, fVarSymbol, children);
+			// Creating the new assumption (card p t k f) and saving it.
+			SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
+					fVarSymbol, kVarSymbol, children);
 
-			this.additionalAssumptions.add(finiteFormula);
+			signature.addAdditionalAssumption(cardFormula);
 
 			SMTTerm kTerm = sf.makeVeriTTerm(kVarSymbol, signature);
 
@@ -1179,7 +1167,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the new assumption (ismin m t) and saving it.
 			SMTFormula isMinFormula = new SMTAtom(isMinSymbol, minChildrenTerms);
-			this.additionalAssumptions.add(isMinFormula);
+			signature.addAdditionalAssumption(isMinFormula);
 
 			smtNode = mVarTerm;
 
@@ -1216,7 +1204,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the new assumption (ismax m t) and saving it.
 			SMTFormula isMaxFormula = new SMTAtom(isMaxSymbol, maxChildrenTerms);
-			this.additionalAssumptions.add(isMaxFormula);
+			signature.addAdditionalAssumption(isMaxFormula);
 
 			smtNode = mVarTerm;
 
@@ -1308,8 +1296,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the new assumption (finite p t k f) and saving it.
 		SMTFormula finiteFormula = new SMTVeritFiniteFormula(finiteSymbol,
-				pVarSymbol, kVarSymbol, fVarSymbol, children);
-		this.additionalAssumptions.add(finiteFormula);
+				pVarSymbol, fVarSymbol, kVarSymbol, children);
+
+		signature.addAdditionalAssumption(finiteFormula);
 
 		SMTFormula pFormula = sf.makeAtom(pVarSymbol, SMTFactory.EMPTY_TERM,
 				signature);
@@ -1348,7 +1337,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * 
 	 * @return The translator signature.
 	 */
-	public SMTSignatureVerit getSignature() {
+	public SMTSignature getSignature() {
 		return signature;
 	}
 

@@ -27,6 +27,12 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
+	private boolean isFstAndSndAssumptionsAdded = false;
+
+	public void setFstAndSndAssumptionsAdded(boolean isFstAndSndAssumptionsAdded) {
+		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
+	}
+
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
 	private SMTMacros ms = new SMTMacros();
 
@@ -34,7 +40,15 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * This variable stores additional assumptions produced by the translation
 	 * of min,max, finite and cardinality operators
 	 */
-	private List<SMTFormula> additionalAssumptions = new ArrayList<SMTFormula>();
+	private Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
+
+	public Set<SMTFormula> getAdditionalAssumptions() {
+		return additionalAssumptions;
+	}
+
+	public void setAdditionalAssumptions(Set<SMTFormula> additionalAssumptions) {
+		this.additionalAssumptions = additionalAssumptions;
+	}
 
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
@@ -148,6 +162,17 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	public void addPred(SMTPredicateSymbol predSymbol) {
 		this.preds.add(predSymbol);
+	}
+
+	public void addAdditionalAssumption(SMTFormula formula) {
+		additionalAssumptions.add(formula);
+	}
+
+	public void addFstOrSndAuxiliarAssumption(SMTFormula formula) {
+		if (!isFstAndSndAssumptionsAdded) {
+			this.additionalAssumptions.add(formula);
+		}
+
 	}
 
 }

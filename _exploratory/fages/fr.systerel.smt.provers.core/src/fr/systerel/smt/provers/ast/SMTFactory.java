@@ -364,7 +364,7 @@ public final class SMTFactory {
 	}
 
 	public SMTTerm makeVeriTTerm(SMTSymbol smtVariable,
-			SMTSignatureVerit signature) {
+			SMTSignature signature) {
 		if (smtVariable instanceof SMTPredicateSymbol) {
 			return new SMTVeriTTerm((SMTPredicateSymbol) smtVariable);
 
@@ -411,7 +411,7 @@ public final class SMTFactory {
 	}
 
 	public SMTTerm makeVeriTTermOperatorApplication(SMTFunctionSymbol operator,
-			SMTTerm[] args, SMTSignatureVerit signature) {
+			SMTTerm[] args, SMTSignature signature) {
 		signature.verifyFunctionSignature(operator);
 		return new SMTFunApplication(operator, args);
 	}
@@ -421,7 +421,7 @@ public final class SMTFactory {
 	}
 
 	public SMTFormula makeMacroAtom(SMTMacroSymbol macroSymbol, SMTTerm[] args,
-			SMTSignatureVerit signature) {
+			SMTSignature signature) {
 		return new SMTAtom(macroSymbol, args);
 
 	}

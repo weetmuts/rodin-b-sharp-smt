@@ -13,8 +13,8 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 	private SMTTerm[] terms;
 
 	public SMTVeritFiniteFormula(SMTMacroSymbol symbol,
-			SMTPredicateSymbol pArgument, SMTFunctionSymbol kArgument,
-			SMTFunctionSymbol fArgument, SMTTerm[] terms) {
+			SMTPredicateSymbol pArgument, SMTFunctionSymbol fArgument,
+			SMTFunctionSymbol kArgument, SMTTerm[] terms) {
 		this.predicate = symbol;
 		this.terms = terms;
 		this.pArgument = pArgument;

@@ -415,7 +415,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * notequal
 		 */
-		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
+		testTranslationV1_2Default("a ≠ b", "(neq a b))");
 		/**
 		 * lt
 		 */
@@ -575,7 +575,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * ran
 		 */
-		testTranslationV1_2Default("b ∈ ran(AB)", "(in b (range AB))");
+		testTranslationV1_2Default("b ∈ ran(AB)", "(in b (ran AB))");
 
 	}
 
@@ -692,7 +692,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(= (ovr AB AB) (ovr AB AB))");
 
 		testTranslationV1_2Default("(AB \u003b AB) = (AB \u003b AB)",
-				"(= (comp AB AB) (comp AB AB))");
+				"(= (fcomp AB AB) (fcomp AB AB))");
 	}
 
 	@Test
