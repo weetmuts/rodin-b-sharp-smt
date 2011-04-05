@@ -10,9 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -29,10 +27,6 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	private boolean isFstAndSndAssumptionsAdded = false;
 
-	public void setFstAndSndAssumptionsAdded(boolean isFstAndSndAssumptionsAdded) {
-		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
-	}
-
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
 	private SMTMacros ms = new SMTMacros();
 
@@ -44,6 +38,10 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	public Set<SMTFormula> getAdditionalAssumptions() {
 		return additionalAssumptions;
+	}
+
+	public void setFstAndSndAssumptionsAdded(boolean isFstAndSndAssumptionsAdded) {
+		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
 	}
 
 	public void setAdditionalAssumptions(Set<SMTFormula> additionalAssumptions) {

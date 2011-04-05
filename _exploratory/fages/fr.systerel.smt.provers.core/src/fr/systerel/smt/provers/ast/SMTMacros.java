@@ -348,6 +348,8 @@ public class SMTMacros {
 				}
 			}
 			qSymbols.addAll(pMacro.getQSymbols());
+			qSymbols.add(FST_PAIR_ARG_NAME);
+			qSymbols.add(SND_PAIR_ARG_NAME);
 		}
 	}
 

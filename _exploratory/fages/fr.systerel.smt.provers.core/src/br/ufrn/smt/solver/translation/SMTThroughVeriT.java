@@ -77,7 +77,6 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
 /**
  * 
  */
-// FIXME this class must be entirely refactored
 public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
@@ -182,13 +181,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * throws an {@link IllegalArgumentException}. Default: It translates and
 	 * return the type.
 	 * 
-	 * @param varName
-	 *            The name of the variable
 	 * @param type
 	 *            The type of the variable
 	 * @return the translated {@link SMTSortSymbol} of one of the types of a
 	 *         CartesianProduct Type.
-	 * 
 	 * @see #parsePairTypes(Type, Type)
 	 */
 	private SMTSortSymbol parseOneOfPairTypes(Type type) {
@@ -230,37 +226,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		extractTypeFromBoundIdentDecl(bIterator);
 	}
 
-	private SMTSortSymbol makeSort(Type varType) {
-		if (varType.getSource() != null) {
-
-			SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
-					varType.getTarget());
-			typeMap.put(varType, sortSymbol);
-			return sortSymbol;
-
-		} else if (varType.getBaseType() != null) {
-
-			if (varType.getBaseType().getSource() != null
-					|| varType.getBaseType().getBaseType() != null) {
-				throw new IllegalArgumentException("Type " + varType.toString()
-						+ ": Sets of sets are not supported yet");
-			} else {
-				SMTSortSymbol sortSymbol = SMTFactory.makeVeriTSortSymbol(
-						varType.getBaseType().toString(), signature);
-				this.signature.addSort(sortSymbol);
-				typeMap.put(varType, sortSymbol);
-				return sortSymbol;
-			}
-
-		} else {
-			SMTSortSymbol smtSortSymbol = SMTFactory.makeVeriTSortSymbol(
-					varType.toString(), signature);
-			this.signature.addSort(smtSortSymbol);
-			typeMap.put(varType, smtSortSymbol);
-			return smtSortSymbol;
-		}
-	}
-
+	/**
+	 * This method adds the sort (Pair 's 't) and the fun (pair 's 't (Pair 's
+	 * 't)) to the signature
+	 */
 	public void addPairSortAndFunctions() {
 		this.signature.addSort(PAIR_SORT);
 		SMTSortSymbol[] argSorts = {};
@@ -284,14 +253,53 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void extractTypeFromBoundIdentDecl(Iterator<Type> iter) {
 		while (iter.hasNext()) {
 			final Type varType = iter.next();
-			makeSort(varType);
+			translateTypeName(varType);
 		}
-		// Check if it's necessary to add the sort and function pair and if it
+		// Checking if it's necessary to add the sort and function pair and if
+		// it
 		// was not already inserted.
 		if (insertPairDecl) {
 			addPairSortAndFunctions();
 		}
+	}
 
+	/**
+	 * Translate variables which type is product type.
+	 * 
+	 * @param varName
+	 *            The name of the variable
+	 * @param varType
+	 *            The type of the variable
+	 */
+	private void translatePairTypeSymbol(String varName, Type varType) {
+		SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
+				varType.getTarget());
+		SMTSortSymbol[] sorts = { sortSymbol };
+		SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(varName, sorts,
+				false);
+		signature.addPred(predSymbol);
+		varMap.put(varName, predSymbol);
+		typeMap.put(varType, sortSymbol);
+		insertPairDecl = true;
+	}
+
+	/**
+	 * Translate variables into functions
+	 * 
+	 * @param varName
+	 *            the name of variable
+	 * @param varType
+	 *            the type of variable
+	 */
+	private void translateFunSymbol(String varName, Type varType) {
+		SMTSortSymbol smtSortSymbol = SMTFactory.makeVeriTSortSymbol(
+				varType.toString(), signature);
+		final SMTFunctionSymbol smtConstant;
+		smtConstant = signature.freshConstant(varName, smtSortSymbol);
+		this.signature.addSort(smtSortSymbol);
+		this.signature.addConstant(smtConstant);
+		typeMap.put(varType, smtSortSymbol);
+		varMap.put(varName, smtConstant);
 	}
 
 	/**
@@ -309,26 +317,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			if (varType.getSource() != null) {
-				SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
-						varType.getTarget());
-				SMTSortSymbol[] sorts = { sortSymbol };
-				SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(
-						freshVarName, sorts, false);
-				signature.addPred(predSymbol);
-				varMap.put(varName, predSymbol);
-				typeMap.put(varType, sortSymbol);
-				insertPairDecl = true;
+				translatePairTypeSymbol(freshVarName, varType);
 			} else if (varType.getBaseType() != null) {
 				parseBaseTypes(varName, varType);
 			} else {
-				SMTSortSymbol smtSortSymbol = SMTFactory.makeVeriTSortSymbol(
-						varType.toString(), signature);
-				final SMTFunctionSymbol smtConstant;
-				smtConstant = signature.freshConstant(varName, smtSortSymbol);
-				this.signature.addSort(smtSortSymbol);
-				this.signature.addConstant(smtConstant);
-				typeMap.put(varType, smtSortSymbol);
-				varMap.put(varName, smtConstant);
+				translateFunSymbol(varName, varType);
 			}
 		}
 		if (insertPairDecl) {
@@ -380,9 +373,35 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	@Override
-	protected SMTSymbol translateTypeName(Type type) {
-		// TODO Auto-generated method stub
-		return null;
+	protected SMTSortSymbol translateTypeName(Type type) {
+		if (type.getSource() != null) {
+
+			SMTSortSymbol sortSymbol = parsePairTypes(type.getSource(),
+					type.getTarget());
+			typeMap.put(type, sortSymbol);
+			return sortSymbol;
+
+		} else if (type.getBaseType() != null) {
+
+			if (type.getBaseType().getSource() != null
+					|| type.getBaseType().getBaseType() != null) {
+				throw new IllegalArgumentException("Type " + type.toString()
+						+ ": Sets of sets are not supported yet");
+			} else {
+				SMTSortSymbol sortSymbol = SMTFactory.makeVeriTSortSymbol(type
+						.getBaseType().toString(), signature);
+				this.signature.addSort(sortSymbol);
+				typeMap.put(type, sortSymbol);
+				return sortSymbol;
+			}
+
+		} else {
+			SMTSortSymbol smtSortSymbol = SMTFactory.makeVeriTSortSymbol(
+					type.toString(), signature);
+			this.signature.addSort(smtSortSymbol);
+			typeMap.put(type, smtSortSymbol);
+			return smtSortSymbol;
+		}
 	}
 
 	@Override
@@ -974,6 +993,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
+		// FIXME Refactor this method
 		switch (expression.getTag()) {
 		case Formula.CSET:
 			this.printPointInQuantifiedOperator = true;
@@ -989,7 +1009,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// obtaining the expression type
 			SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
 			if (expressionSymbol == null) {
-				expressionSymbol = makeSort(expression.getType());
+				expressionSymbol = translateTypeName(expression.getType());
 			}
 
 			// obtaining fresh name for the variables
@@ -1018,6 +1038,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitSetExtension(SetExtension expression) {
+		// FIXME: Refactor this method
 		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
 			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.EMPTY,
@@ -1031,10 +1052,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			if (expression.getMembers()[0].getType() instanceof ProductType) {
 
 				String varName2 = signature.freshCstName(SMTMacroSymbol.ELEM);
-				SMTSortSymbol sortSymbol1 = makeSort(expression.getType()
-						.getSource());
-				SMTSortSymbol sortSymbol2 = makeSort(expression.getType()
-						.getTarget());
+				SMTSortSymbol sortSymbol1 = translateTypeName(expression
+						.getType().getSource());
+				SMTSortSymbol sortSymbol2 = translateTypeName(expression
+						.getType().getTarget());
 
 				SMTVarSymbol var1 = new SMTVarSymbol(varName1, sortSymbol1,
 						false);
@@ -1045,7 +1066,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						macroName, var1, var2, children, signature);
 				this.signature.addMacro(macro);
 			} else {
-				SMTSortSymbol sortSymbol = makeSort(expression.getType());
+				SMTSortSymbol sortSymbol = translateTypeName(expression
+						.getType());
 				SMTVarSymbol var = new SMTVarSymbol(varName1, sortSymbol, false);
 
 				SMTEnumMacro macro = SMTMacros.makeEnumMacro(macroName, var,
@@ -1059,6 +1081,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
+		// FIXME Refactor this method
 		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
 				.getChild()) };
 		switch (expression.getTag()) {
@@ -1079,7 +1102,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			Type type = expression.getChild().getType();
 			SMTSortSymbol expressionSort = typeMap.get(type);
 			if (expressionSort == null) {
-				expressionSort = makeSort(type);
+				expressionSort = translateTypeName(type);
 			}
 			SMTSortSymbol[] sorts = { expressionSort };
 
@@ -1137,6 +1160,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.KMIN: {
+			// TODO Refactor
 
 			// Creating ismin macro and add it to the signature
 			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.ISMIN,
@@ -1174,6 +1198,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.KMAX: {
+			// TODO Refactor
 
 			// Creating ismax macro and adding it to the signature
 			SMTMacros.addPredefinedMacroInSignature(SMTVeriTOperator.ISMAX,
@@ -1279,7 +1304,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
 		if (expressionSort == null) {
-			expressionSort = makeSort(type);
+			expressionSort = translateTypeName(type);
 		}
 		SMTSortSymbol[] sorts = { expressionSort };
 

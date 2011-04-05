@@ -42,7 +42,14 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  */
 public abstract class TranslatorV1_2 extends Translator {
 
+	/**
+	 * TODO Finish this comment When the translator finishes translating a
+	 * quantified predicate, it deletes all the bound identifiers of that
+	 * predicate. In nested quantified predicates, the translator must delete
+	 * the bound identifier declarations inside
+	 */
 	protected Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
+
 	protected List<String> boundIdentifiers = new ArrayList<String>();
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
