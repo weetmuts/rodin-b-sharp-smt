@@ -12,16 +12,20 @@ package fr.systerel.smt.provers.ast.macros;
 
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 
+/**
+ * This class represent polymorphic sorts, which are used with macros, because
+ * the arguments of macros are higher order and polymorphic.
+ * 
+ * @author vitor
+ */
 public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 
-	SMTPolymorphicSortSymbol(String symbolName, boolean predefined) {
-		super(symbolName, predefined);
-		// TODO Auto-generated constructor stub
-	}
-
-	SMTPolymorphicSortSymbol(String symbolName) {
-		super(symbolName, false);
-		// TODO Auto-generated constructor stub
+	/**
+	 * Initializes the sort class. By default, they have no string associated
+	 * and is not predefined.
+	 */
+	SMTPolymorphicSortSymbol() {
+		super("", !PREDEFINED);
 	}
 
 }

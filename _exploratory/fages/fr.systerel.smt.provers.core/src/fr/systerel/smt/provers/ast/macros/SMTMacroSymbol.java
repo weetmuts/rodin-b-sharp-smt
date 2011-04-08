@@ -16,6 +16,17 @@ import java.util.Set;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 
+/**
+ * This class is used to store the symbols that represent the macros. They
+ * extend SMTPredicateSymbol because the return sort of macros are boolean, and
+ * veriT interprets the return values of predicates as elements of the Bool
+ * sort. This class also stores the symbols that are defined only in the
+ * extended SMT-LIB, like macro names.
+ * 
+ * 
+ * @author vitor
+ * 
+ */
 public class SMTMacroSymbol extends SMTPredicateSymbol {
 
 	// VeriT Extended SMT-LIB Symbols
@@ -77,6 +88,9 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String NOT_EQUAL = "neq";
 	public static final String BCOMP = "bcomp";
 
+	/**
+	 * This array keeps the VeriT_Symbols.
+	 */
 	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
 			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, IMG,
 			RANGE, DOMR, DOMS, INV, OVR, ID, FCOMP, DIV, ENUM, MOD,
@@ -88,6 +102,11 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 			DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA, CSET, ELEM, ISMIN,
 			ISMAX, FINITE, CARD, PAIR, FUNP, INJP, NOT_EQUAL, BCOMP };
 
+	/**
+	 * Returns a set containing all Extended SMT-LIB symbols.
+	 * 
+	 * @return The veriT extended SMT-LIB symbols.
+	 */
 	public static Set<String> getVeritSymbols() {
 		Set<String> set = new HashSet<String>();
 		for (String symbol : VERIT_SYMBOLS) {
@@ -96,11 +115,30 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 		return set;
 	}
 
-	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args, boolean predefined) {
-		super(symbolName, args, predefined);
+	/**
+	 * Creates a new macro symbol.
+	 * 
+	 * @param symbolName
+	 *            The string representation of the symbol
+	 * @param argSorts
+	 *            The expected sorts of the arguments
+	 * @param predefined
+	 *            If it's predefined
+	 */
+	SMTMacroSymbol(String symbolName, SMTSortSymbol[] argSorts,
+			boolean predefined) {
+		super(symbolName, argSorts, predefined);
 	}
 
-	SMTMacroSymbol(String symbolName, SMTSortSymbol[] args) {
-		super(symbolName, args, false);
+	/**
+	 * Creates a new, not predefined symbol.
+	 * 
+	 * @param symbolName
+	 *            The string representation of the symbol
+	 * @param argSorts
+	 *            The expected sorts of the arguments
+	 */
+	SMTMacroSymbol(String symbolName, SMTSortSymbol[] argSorts) {
+		super(symbolName, argSorts, false);
 	}
 }

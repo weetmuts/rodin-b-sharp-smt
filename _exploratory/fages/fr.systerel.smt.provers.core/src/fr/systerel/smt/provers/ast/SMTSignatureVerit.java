@@ -19,7 +19,7 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
-import fr.systerel.smt.provers.ast.macros.SMTMacros;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
@@ -34,7 +34,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	private boolean isFstAndSndAssumptionsAdded = false;
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
-	private SMTMacros ms = new SMTMacros();
+	private SMTMacroFactory ms = new SMTMacroFactory();
 
 	/**
 	 * This variable stores additional assumptions produced by the translation
@@ -114,11 +114,11 @@ public class SMTSignatureVerit extends SMTSignature {
 			macroNames.add(macro.getMacroName());
 			if (macro instanceof SMTEnumMacro) {
 				SMTEnumMacro enumMacro = (SMTEnumMacro) macro;
-				macroNames.add(enumMacro.getVar().getName());
+				macroNames.add(enumMacro.getAssignedVar().getName());
 			} else if (macro instanceof SMTPairEnumMacro) {
 				SMTPairEnumMacro pairEnumMacro = (SMTPairEnumMacro) macro;
-				macroNames.add(pairEnumMacro.getVar1().getName());
-				macroNames.add(pairEnumMacro.getVar2().getName());
+				macroNames.add(pairEnumMacro.getKey().getName());
+				macroNames.add(pairEnumMacro.getValue().getName());
 			} else if (macro instanceof SMTSetComprehensionMacro) {
 				SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
 				macroNames.add(setComprehensionMacro.getLambdaVar().getName());

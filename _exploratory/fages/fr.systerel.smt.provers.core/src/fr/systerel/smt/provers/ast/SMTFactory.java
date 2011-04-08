@@ -13,7 +13,7 @@ package fr.systerel.smt.provers.ast;
 import java.math.BigInteger;
 
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
-import fr.systerel.smt.provers.ast.macros.SMTMacros;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
@@ -72,12 +72,12 @@ public final class SMTFactory {
 		if (atomicExpression.equals("\u2124")) { // INTEGER
 			return "Int";
 		} else if (atomicExpression.equals("\u2115")) { // NATURAL
-			signature.addMacro(SMTMacros.NAT_MACRO);
+			signature.addMacro(SMTMacroFactory.NAT_MACRO);
 			return "Nat";
 		} else if (atomicExpression.equals("\u2124" + 1)) {
 			return "Int1";
 		} else if (atomicExpression.equals("\u2115" + 1)) {
-			signature.addMacro(SMTMacros.NAT1_MACRO);
+			signature.addMacro(SMTMacroFactory.NAT1_MACRO);
 			return "Nat1";
 		} else if (atomicExpression.equals("BOOL")) {
 			return "Bool";
@@ -86,7 +86,7 @@ public final class SMTFactory {
 		} else if (atomicExpression.equals("FALSE")) {
 			return "false";
 		} else if (atomicExpression.equals("\u2205")) {
-			signature.addMacro(SMTMacros.EMPTYSET_MACRO);
+			signature.addMacro(SMTMacroFactory.EMPTYSET_MACRO);
 			return "emptyset";
 		}
 		return atomicExpression;

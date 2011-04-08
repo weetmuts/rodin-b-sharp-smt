@@ -39,7 +39,6 @@ public class SMTMacroTerm extends SMTTerm {
 	public SMTMacroTerm(SMTMacroSymbol macro, SMTTerm[] argTerms) {
 		this.macroSymbol = macro;
 		this.argTerms = argTerms;
-		// sort = SMTMacros.POLYMORPHIC;
 		sort = Booleans.getInstance().getBooleanSort();
 	}
 

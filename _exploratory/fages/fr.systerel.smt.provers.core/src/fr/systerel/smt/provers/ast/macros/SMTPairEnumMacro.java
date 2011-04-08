@@ -17,34 +17,115 @@ import fr.systerel.smt.provers.ast.SMTMacroTerm;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 
+/**
+ * <p>
+ * This class is also used to create macros that are enumerations. But these
+ * enumerations are of mapped values, and all elements are composed of the
+ * function pair and the two arguments that form the maplet.
+ * </p>
+ * 
+ * <p>
+ * The translation is done as follows:
+ * </p>
+ * 
+ * <p>
+ * Given an Event-B set defined in extension:
+ * </p>
+ * 
+ * <code>{x1 ↦ y1, x2 ↦ y2, … ,xn ↦ yn}</code>
+ * 
+ * <p>
+ * where x1 … xn, y1...yn are predicate variables, and assuming that MP = {x1 ↦
+ * y1, x2 ↦ y2, … ,xn ↦ yn}, they are translated to the macro:
+ * </p>
+ * 
+ * <p>
+ * <code>
+ * (lambda ( ?f S) (?g T) . (or (= (pair ?f ?g) ( pair X1 Y1) (= (pair ?f ?g) (
+ * pair X2 Y2) .. (= (pair ?f ?g) ( pair Xn Yn) )))
+ * </code>
+ * </p>
+ * 
+ * <p>
+ * where:
+ * </p>
+ * 
+ * <ul>
+ * <li>S = dom(MP)</li>
+ * <li>T = ran(MP)></li>
+ * <li>?f is a fresh variable with type S</li>
+ * <li>?g is a fresh variable with type T</li>
+ * <li>X1 = smt(x1),X2 = smt(x2), … , Xn = smt(xn)</li>
+ * <li>Y1 = smt(y1), Y2 = smt(y2) … , Yn = smt(yn)</li>
+ * </ul>
+ * 
+ * @author vitor
+ */
 public class SMTPairEnumMacro extends SMTMacro {
 
-	SMTPairEnumMacro(String macroName, SMTVarSymbol var1, SMTVarSymbol var2,
+	/**
+	 * Initializes the class.
+	 * 
+	 * @param macroName
+	 *            The name of the macro
+	 * @param key
+	 *            The ?f variable. See {@link SMTPairEnumMacro} for more
+	 *            details.
+	 * @param value
+	 *            The ?g variable. See {@link SMTPairEnumMacro} for more
+	 *            details.
+	 * @param terms
+	 *            The terms that contains the two values for each maplet. See
+	 *            {@link SMTPairEnumMacro} for more details.
+	 * 
+	 * @param precedence
+	 *            The precedence of the macro. See {@link SMTMacro} for more
+	 *            details.
+	 */
+	SMTPairEnumMacro(String macroName, SMTVarSymbol key, SMTVarSymbol value,
 			SMTMacroTerm[] terms, int precedence) {
 		super(macroName, precedence);
-		this.var1 = var1;
-		this.var2 = var2;
+		this.key = key;
+		this.value = value;
 		this.terms = terms;
 	}
 
-	public SMTVarSymbol getVar1() {
-		return var1;
+	/**
+	 * return the ?f variable.
+	 * 
+	 * @see SMTPairEnumMacro
+	 * 
+	 * @return the ?f variable.
+	 */
+	public SMTVarSymbol getKey() {
+		return key;
 	}
 
-	public void setVar1(SMTVarSymbol var1) {
-		this.var1 = var1;
+	/**
+	 * return the ?g variable.
+	 * 
+	 * @see SMTPairEnumMacro
+	 * 
+	 * @return the ?g variable.
+	 */
+	public SMTVarSymbol getValue() {
+		return value;
 	}
 
-	public SMTVarSymbol getVar2() {
-		return var2;
-	}
+	/**
+	 * It's the ?f variable as described in {@link SMTPairEnumMacro}
+	 */
+	private SMTVarSymbol key;
 
-	public void setVar2(SMTVarSymbol var2) {
-		this.var2 = var2;
-	}
+	/**
+	 * It's the ?g variable as described in {@link SMTPairEnumMacro}
+	 */
+	private SMTVarSymbol value;
 
-	private SMTVarSymbol var1;
-	private SMTVarSymbol var2;
+	/**
+	 * The terms that contains the two values for each maplet. See
+	 * {@link SMTPairEnumMacro} for more details.
+	 */
 	private SMTMacroTerm[] terms;
 
 	@Override
@@ -53,13 +134,13 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(OPAR);
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
-		sb.append(var1);
+		sb.append(key);
 		sb.append(SPACE);
-		sb.append(var2);
+		sb.append(value);
 		sb.append(" . ");
 		if (terms.length == 1) {
-			sb.append(elemToString(var1.getNameWithQMark(),
-					var2.getNameWithQMark(), terms[0].getArgTerms()[0],
+			sb.append(elemToString(key.getNameWithQMark(),
+					value.getNameWithQMark(), terms[0].getArgTerms()[0],
 					terms[0].getArgTerms()[1]));
 			sb.append(CPAR);
 			sb.append(CPAR);
@@ -67,8 +148,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 			sb.append("(or");
 			for (SMTMacroTerm term : terms) {
 				sb.append("\n\t\t");
-				sb.append(elemToString(var1.getNameWithQMark(),
-						var2.getNameWithQMark(), term.getArgTerms()[0],
+				sb.append(elemToString(key.getNameWithQMark(),
+						value.getNameWithQMark(), term.getArgTerms()[0],
 						term.getArgTerms()[1]));
 			}
 			sb.append("\n");
@@ -79,18 +160,36 @@ public class SMTPairEnumMacro extends SMTMacro {
 		return sb.toString();
 	}
 
-	private String elemToString(String var1, String var2, SMTTerm term1,
-			SMTTerm term2) {
+	/**
+	 * returns a string representation of each element of the enumeration. The
+	 * string representation is:
+	 * 
+	 * (= (pair ?f ?g) ( pair Xn Yn) )
+	 * 
+	 * @see SMTPairEnumMacro
+	 * 
+	 * @param keyEl
+	 *            the ?f identifier
+	 * @param valueEl
+	 *            the ?g identifier
+	 * @param keyTerm
+	 *            the Xn term
+	 * @param valueTerm
+	 *            the Yn term
+	 * @return The string representation of a element of the pair enumeration
+	 */
+	private String elemToString(String keyEl, String valueEl, SMTTerm keyTerm,
+			SMTTerm valueTerm) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(= (pair ");
-		sb.append(var1);
+		sb.append(keyEl);
 		sb.append(SPACE);
-		sb.append(var2);
+		sb.append(valueEl);
 		sb.append(CPAR);
 		sb.append("(pair ");
-		sb.append(term1);
+		sb.append(keyTerm);
 		sb.append(SPACE);
-		sb.append(term2);
+		sb.append(valueTerm);
 		sb.append(CPAR);
 		sb.append(CPAR);
 		return sb.toString();
@@ -108,9 +207,4 @@ public class SMTPairEnumMacro extends SMTMacro {
 		return true;
 	}
 
-	@Override
-	protected void extractQSymbols() {
-		// TODO Auto-generated method stub
-
-	}
 }

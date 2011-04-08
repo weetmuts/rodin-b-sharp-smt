@@ -46,7 +46,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.*;
  * @author vitor
  * 
  */
-public class SMTMacros {
+public class SMTMacroFactory {
 
 	private static final String SND_PAIR_ARG_NAME = "e";
 	private static final String FST_PAIR_ARG_NAME = "f";
@@ -58,8 +58,18 @@ public class SMTMacros {
 	public static boolean IS_GENERIC_SORT = true;
 	public static final String ENUM_PREFIX = "enum";
 
+	/**
+	 * This set stores the name of all identifiers of the macro that have a
+	 * question mark prefixed.
+	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
+	/**
+	 * Retrieves the name of the identifiers that have a question mark as a
+	 * prefix.
+	 * 
+	 * @return the identifiers as defined above.
+	 */
 	public Set<String> getqSymbols() {
 		return qSymbols;
 	}
@@ -225,8 +235,7 @@ public class SMTMacros {
 	public static final SMTPredefinedMacro NOTEQUAL_MACRO = new SMTPredefinedMacro(
 			NOT_EQUAL, "(lambda (?t6 Bool) (?t5 Bool) . (not (= ?t6 ?t5)))", 0);
 
-	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
-			"");
+	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
 	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
 			POLYMORPHIC, POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
@@ -364,7 +373,7 @@ public class SMTMacros {
 	 * Thi constructor adds all qSymbols which will are necessary to be checked
 	 * when creating fresh name.
 	 */
-	public SMTMacros() {
+	public SMTMacroFactory() {
 		for (SMTPredefinedMacro pMacro : PREDEFINED_MACROS) {
 			for (String qSymbol : pMacro.getQSymbols()) {
 				if (this.qSymbols.contains(qSymbol)) {
@@ -441,7 +450,7 @@ public class SMTMacros {
 	 * @param formula
 	 * @param expression
 	 * @param signature
-	 * @return
+	 * @return a new set comprehension macro
 	 */
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
 			String macroName, SMTTerm[] terms, SMTVarSymbol lambdaVar,
@@ -463,6 +472,13 @@ public class SMTMacros {
 				formula, expression, 1);
 	}
 
+	/**
+	 * This method adds the <code>fst<code> and <code>snd</code> to the
+	 * signature, as well as the assumptions that defines them.
+	 * 
+	 * @param signature
+	 *            The signature that will receive the functions and assumptions
+	 */
 	private static void addFstAndSndFunctionsInSignature(
 			final SMTSignatureVerit signature) {
 		signature.addConstant(FST_SYMBOL);
@@ -470,14 +486,20 @@ public class SMTMacros {
 		signature.addFstOrSndAuxiliarAssumption(createFstAssumption());
 		signature.addFstOrSndAuxiliarAssumption(createSndAssumption());
 		signature.setFstAndSndAssumptionsAdded(true);
-		// FIXME Check the additional assumptions
 	}
 
 	/**
-	 * This method creates the auxiliar function (forall (?e 's) (?f 't) (= (fst
-	 * (pair ?e ?f)) ?e))
+	 * This method creates the auxiliar assumption:
 	 * 
-	 * @return
+	 * <p>
+	 * <code>(forall (?e 's) (?f 't) (= (fst (pair ?e ?f)) ?e))</code>
+	 * </p>
+	 * 
+	 * <p>
+	 * that defines the <code>fst</code> function
+	 * </p>
+	 * 
+	 * @return The formula that represents the fst auxiliar function assumption
 	 */
 	private static SMTFormula createFstAssumption() {
 		// TODO Refactor
@@ -512,6 +534,19 @@ public class SMTMacros {
 		return quantifiedFormula;
 	}
 
+	/**
+	 * This method creates the auxiliar assumption:
+	 * 
+	 * <p>
+	 * (forall (?e 's) (?f 't) (= (snd (pair ?e ?f)) ?e))
+	 * </p>
+	 * 
+	 * <p>
+	 * that defines the <code>snd</code> function
+	 * </p>
+	 * 
+	 * @return The formula that represents the snd auxiliar function assumption
+	 */
 	private static SMTFormula createSndAssumption() {
 		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
 				FST_RETURN_SORT, PREDEFINED);
@@ -544,6 +579,10 @@ public class SMTMacros {
 		return quantifiedFormula;
 	}
 
+	/**
+	 * 
+	 * @param signature
+	 */
 	private static void addPairMacroSortAndFunInSignature(
 			SMTSignatureVerit signature) {
 		signature.addMacro(PAIR_MACRO);
@@ -551,6 +590,15 @@ public class SMTMacros {
 		signature.addConstant(PAIR_SYMBOL);
 	}
 
+	/**
+	 * Adds a predefined macro and other macros on which it depends on the
+	 * signature
+	 * 
+	 * @param operator
+	 *            The operator that represents the predefined macro
+	 * @param signature
+	 *            The signature that will receive the macro
+	 */
 	public static void addPredefinedMacroInSignature(
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		switch (operator) {
@@ -969,6 +1017,13 @@ public class SMTMacros {
 		}
 	}
 
+	/**
+	 * Creates and returns a macroSymbol.
+	 * 
+	 * @param macroName
+	 *            The string representation of the macro
+	 * @return a new macroSymbol
+	 */
 	public static SMTMacroSymbol makeMacroSymbol(final String macroName) {
 		return new SMTMacroSymbol(macroName, EMPTY_SORT);
 	}

@@ -10,29 +10,60 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
-import java.util.HashSet;
-import java.util.Set;
-
+/**
+ * <p>
+ * This class is the base class for implementing macros. All macros has at least
+ * a name to define it.
+ * </p>
+ * 
+ * <p>
+ * The macro has also a priority number. This number is used to define which
+ * macros must be written first, because some macros are dependent on other
+ * macros
+ * </p>
+ * 
+ * @author vitor
+ * 
+ */
 public abstract class SMTMacro implements Comparable<SMTMacro> {
 
-	protected int precedence;
+	/**
+	 * The precedence of the macro. See {@link SMTMacro} for more details.
+	 */
+	protected final int precedence;
 
+	/**
+	 * The name of the macro
+	 */
+	private final String macroName;
+
+	/**
+	 * Initializes a macro with a name and precedence.
+	 * 
+	 * @param macroName
+	 *            the name of the macro
+	 * @param precedence
+	 *            the precedence of the macro
+	 */
 	SMTMacro(String macroName, int precedence) {
 		this.macroName = macroName;
 		this.precedence = precedence;
 	}
 
+	/**
+	 * Retrieves the macro name
+	 * 
+	 * @return the macro name
+	 */
 	public String getMacroName() {
 		return macroName;
 	}
 
-	private String macroName;
-	private final Set<String> qSymbols = new HashSet<String>();
-
-	public Set<String> getQSymbols() {
-		return qSymbols;
-	}
-
+	/**
+	 * Adds a string representation to the builder
+	 * 
+	 * @param builder
+	 */
 	public abstract void toString(StringBuffer builder);
 
 	@Override
@@ -56,14 +87,12 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 			return -1;
 	}
 
+	/**
+	 * Get the precedence. See {@link SMTMacro} for more details.
+	 * 
+	 * @return the precedence.
+	 */
 	public int getPrecedence() {
 		return precedence;
 	}
-
-	public void setPrecedence(int precedence) {
-		this.precedence = precedence;
-	}
-
-	protected abstract void extractQSymbols();
-
 }
