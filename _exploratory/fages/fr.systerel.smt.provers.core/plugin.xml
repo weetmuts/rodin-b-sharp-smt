@@ -10,29 +10,6 @@
       </reasoner>
    </extension>
    <extension
-         point="org.eventb.core.seqprover.autoTactics">
-      <autoTactic
-            class="fr.systerel.smt.provers.internal.core.AutoTactics$SMT"
-            description="%SmtProver.description"
-            id="SmtProver"
-            name="%SmtProver.name">
-      </autoTactic>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="br.ufrn.smt.solver.preferences.PreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="br.ufrn.smt.solver.preferences.SMTPreferencePage"
-            id="br.ufrn.smt.solver.preferences.SMTPreferencePage2"
-            name="%SMTPreferencePage2.name">
-      </page>
-   </extension>
-   <extension
          point="org.eventb.core.pomTactics">
       <tactic
             id="fr.systerel.smt.provers.core.SmtProver">

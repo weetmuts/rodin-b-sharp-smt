@@ -18,6 +18,7 @@ import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
+import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
  * This class contains acceptance tests of the plugin with pptranslation.
@@ -162,7 +163,8 @@ public class RunProverTestWithPP extends AbstractTests {
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
-		final SmtProversCore core = SmtProversCore.getDefault();
+		final SmtProversUIPlugin core = SmtProversUIPlugin.getDefault();
+		SmtProversCore.getDefault();
 		final IPreferenceStore store = core.getPreferenceStore();
 		final String solverPath;
 

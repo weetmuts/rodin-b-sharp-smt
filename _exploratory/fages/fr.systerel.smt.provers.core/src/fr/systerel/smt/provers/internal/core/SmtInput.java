@@ -16,27 +16,26 @@ import org.eventb.core.seqprover.xprover.XProverInput;
 
 public class SmtInput extends XProverInput {
 
-
 	// Forces to use in the mono-lemma prover
 	final String forces;
-	
+
 	protected SmtInput(String forces, long timeOutDelay, boolean restricted) {
 		super(restricted, timeOutDelay);
-		if (forces.length() == 0){
+		if (forces.length() == 0) {
 			this.forces = null;
 			return;
 		}
 		this.forces = forces;
 	}
-	
+
 	protected SmtInput(String forces, long timeOutDelay) {
 		this(forces, timeOutDelay, false);
 	}
-	
+
 	public SmtInput(int forces, long timeOutDelay) {
 		this(forcesToString(forces), timeOutDelay, false);
 	}
-	
+
 	public SmtInput(int forces, long timeOutDelay, boolean restricted) {
 		this(forcesToString(forces), timeOutDelay, restricted);
 	}
@@ -45,7 +44,7 @@ public class SmtInput extends XProverInput {
 		return null;
 
 	}
-	
+
 	@Override
 	public boolean hasError() {
 		return forces == null || super.hasError();
@@ -57,5 +56,5 @@ public class SmtInput extends XProverInput {
 			return Messages.force_error_invalid_forces;
 		return super.getError();
 	}
-	
+
 }

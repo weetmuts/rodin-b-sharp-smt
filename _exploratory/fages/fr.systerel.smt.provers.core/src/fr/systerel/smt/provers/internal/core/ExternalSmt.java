@@ -26,17 +26,30 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  * @author Y. Fages-Tafanelli
  */
 public class ExternalSmt extends XProverReasoner {
-	
-	public static String REASONER_ID = SmtProversCore.PLUGIN_ID + ".externalSMT";
-	
+
+	public static String REASONER_ID = SmtProversCore.PLUGIN_ID
+			+ ".externalSMT";
+
 	@Override
 	public String getReasonerID() {
 		return REASONER_ID;
 	}
-	
+
 	@Override
 	public XProverCall newProverCall(IReasonerInput input,
-			Iterable<Predicate> hypotheses, Predicate goal, IProofMonitor pm) {		
-		return new SmtProverCall(hypotheses, goal, pm, "rodin_sequent"); //TODO replace "rodin_sequent" with the name of the theorem being proved in Rodin
+			Iterable<Predicate> hypotheses, Predicate goal, IProofMonitor pm) {
+		return new SmtProverCall(hypotheses, goal, pm, "rodin_sequent"); // TODO
+																			// replace
+																			// "rodin_sequent"
+																			// with
+																			// the
+																			// name
+																			// of
+																			// the
+																			// theorem
+																			// being
+																			// proved
+																			// in
+																			// Rodin
 	}
 }

@@ -4,6 +4,8 @@ import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferenc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +168,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
-		final SmtProversCore core = SmtProversCore.getDefault();
+		final SmtProversUIPlugin core = SmtProversUIPlugin.getDefault();
 		final IPreferenceStore store = core.getPreferenceStore();
 		final String solverPath;
 
@@ -277,8 +279,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
-	public void testSolverCallSimpleU() {
-		// Set preferences to test with VeriT
+	public void testSolverCallSimpleUWithVeriT() {
 		setPreferencesForVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
@@ -287,7 +288,45 @@ public class RunProverTestWithVeriT extends AbstractTests {
 		hyps.add("a ∈ A");
 
 		// perform test
-		doTest("simpleU", hyps, "⊤", te, VALID);
+		doTest("simpleU_verit", hyps, "⊤", te, VALID);
+	}
+
+	@Test
+	/**
+	 * This test is related to the 'Empty' problem, which declares the sort U.
+	 * This problem belongs to SMT-Solvers.
+	 */
+	public void testSolverCallSimpleUWithAltErgo() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("a ∈ A");
+
+		// perform test
+		doTest("simpleU_altergo", hyps, "⊤", te, VALID);
+	}
+
+	@Test
+	/**
+	 * This test is related to the 'Empty' problem, which declares the sort U.
+	 * This problem belongs to SMT-Solvers.
+	 * 
+	 * NOTE: CVC3 Doesn't have the sort U already predefined
+	 *
+	 * 
+	 */
+	public void testSolverCallSimpleUWithCVC3() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("a ∈ A");
+
+		// perform test
+		doTest("simpleU_cvc3", hyps, "⊤", te, VALID);
 	}
 
 	@Test
@@ -818,7 +857,7 @@ public class RunProverTestWithVeriT extends AbstractTests {
 	}
 
 	@Test
-	public void testRule19() {
+	public void test() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 

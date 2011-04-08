@@ -22,17 +22,19 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
+import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**
  * 
@@ -47,15 +49,17 @@ public class SmtProverCall extends XProverCall {
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
 			+ File.separatorChar + "rodin_smtlib_tmp_files";
 
+	private static String PREFS_ID = "fr.systerel.smt.provers.ui";
+
 	/**
 	 * Name of the called external SMT prover
 	 */
 	private final String proverName;
 
-	/**
-	 * SMT UI preferences
-	 */
-	private UIPreferences smtUiPreferences;
+	private final IPreferencesService preferencesService = Platform
+			.getPreferencesService();
+
+	private SMTPreferences smtUiPreferences;
 
 	/**
 	 * Name of the lemma to prove
@@ -132,14 +136,16 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Get back preferences from UI
 		 */
-		smtUiPreferences = new UIPreferences(SmtProversCore.getDefault()
-				.getPreferenceStore().getString("solverpreferences"),//$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getInt("solverindex"), //$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getBoolean("usingprepro"), //$NON-NLS-1$
-				SmtProversCore.getDefault().getPreferenceStore()
-						.getString("prepropath"));//$NON-NLS-1$
+
+		String string1 = preferencesService.getString(PREFS_ID,
+				"solverpreferences", null, null);
+		int int2 = preferencesService.getInt(PREFS_ID, "solverindex", -1, null);
+		boolean bool3 = preferencesService.getBoolean(PREFS_ID, "usingprepro",
+				false, null);
+		String string4 = preferencesService.getString(PREFS_ID, "prepropath",
+				null, null);
+
+		smtUiPreferences = new SMTPreferences(string1, int2, bool3, string4);
 
 		this.proverName = smtUiPreferences.getSolver().getId();
 		this.lemmaName = lemmaName;
@@ -157,8 +163,8 @@ public class SmtProverCall extends XProverCall {
 			/**
 			 * Message popup displayed when there is no defined solver path
 			 */
-			UIUtils.showError(Messages.SmtProversCall_Check_Smt_Preferences);
-			return;
+			throw new IllegalArgumentException(
+					Messages.SmtProversCall_Check_Smt_Preferences);
 		}
 
 		try {
@@ -179,14 +185,17 @@ public class SmtProverCall extends XProverCall {
 				 */
 			}
 		} catch (TranslationException t) {
-			UIUtils.showError(t.getMessage());
-			return;
+			throw new IllegalArgumentException(t);
+			// FIXME
+			// UIUtils.showError(t.getMessage());
 		} catch (IOException e) {
-			UIUtils.showError(e.getMessage());
-			return;
-		} catch (IllegalArgumentException iae) {
-			UIUtils.showError(iae.getMessage());
-			return;
+			throw new IllegalArgumentException(e);
+			// FIXME
+			// UIUtils.showError(e.getMessage());
+			// } catch (IllegalArgumentException iae) {
+			// // FIXME
+			// // UIUtils.showError(iae.getMessage());
+			// return;
 		}
 	}
 
@@ -234,7 +243,6 @@ public class SmtProverCall extends XProverCall {
 	 * SMT file without macros, and verify if there is any input error
 	 * 
 	 * @param preprocessedFile
-	 * @return
 	 * @throws IOException
 	 */
 	private void callVeriT(File preprocessedFile) throws IOException {
@@ -242,8 +250,8 @@ public class SmtProverCall extends XProverCall {
 
 		if (smtUiPreferences.getPreproPath().isEmpty()
 				|| smtUiPreferences.getPreproPath() == null) {
-			System.out
-					.println(Messages.SmtProversCall_preprocessor_path_not_defined);
+			throw new IllegalArgumentException(
+					Messages.SmtProversCall_preprocessor_path_not_defined);
 		}
 
 		args.add(smtUiPreferences.getPreproPath());

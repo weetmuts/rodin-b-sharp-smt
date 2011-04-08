@@ -13,7 +13,8 @@ package fr.systerel.smt.provers.ast;
 /**
  * The SMT sorts.
  */
-public class SMTSortSymbol extends SMTSymbol implements Comparable<SMTSortSymbol> {
+public class SMTSortSymbol extends SMTSymbol implements
+		Comparable<SMTSortSymbol> {
 	SMTSortSymbol(String symbolName, final boolean predefined) {
 		super(symbolName, predefined);
 	}

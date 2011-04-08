@@ -266,8 +266,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTests(simpleTe);
 		Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(e S)");
-		expectedPredicates.add("(f S)");
+		expectedPredicates.add("(e_0 S)");
+		expectedPredicates.add("(f_0 S)");
 		expectedPredicates.add("(AB (Pair Int Int))");
 		expectedPredicates.add("(C (Pair Int (Pair Int Int)))");
 
@@ -286,6 +286,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedPredicates.add("(s R)");
 		expectedPredicates.add("(A Int)");
 		expectedPredicates.add("(AB (Pair Int Int))");
+		expectedPredicates.add("(S_0 S)");
 
 		testTypeEnvironmentPredicates(expectedPredicates);
 	}
@@ -415,7 +416,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * notequal
 		 */
-		testTranslationV1_2Default("a ≠ b", "(neq a b))");
+		testTranslationV1_2Default("a ≠ b", "(neq a b)");
 		/**
 		 * lt
 		 */
@@ -746,8 +747,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testRule21() {
-		// FIXME
-		testTranslationV1_2Default("bool(⊤) ∈ BOOL", "(= cset_0 emptyset)");
+		// FIXME The translation of bool(⊤) is not defined yet
+		testTranslationV1_2Default("bool(⊤) ∈ BOOL",
+				"translation not defined yet");
 	}
 
 	@Test

@@ -363,8 +363,7 @@ public final class SMTFactory {
 		return makeFunApplication(functionSymbol, EMPTY_TERM, signature);
 	}
 
-	public SMTTerm makeVeriTTerm(SMTSymbol smtVariable,
-			SMTSignature signature) {
+	public SMTTerm makeVeriTTerm(SMTSymbol smtVariable, SMTSignature signature) {
 		if (smtVariable instanceof SMTPredicateSymbol) {
 			return new SMTVeriTTerm((SMTPredicateSymbol) smtVariable);
 
@@ -423,6 +422,5 @@ public final class SMTFactory {
 	public SMTFormula makeMacroAtom(SMTMacroSymbol macroSymbol, SMTTerm[] args,
 			SMTSignature signature) {
 		return new SMTAtom(macroSymbol, args);
-
 	}
 }

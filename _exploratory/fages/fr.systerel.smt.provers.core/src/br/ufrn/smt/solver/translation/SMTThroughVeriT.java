@@ -1051,7 +1051,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			String varName1 = signature.freshCstName(SMTMacroSymbol.ELEM);
 			if (expression.getMembers()[0].getType() instanceof ProductType) {
 
-				String varName2 = signature.freshCstName(SMTMacroSymbol.ELEM);
+				String varName2 = signature.freshCstName(SMTMacroSymbol.ELEM,
+						varName1);
 				SMTSortSymbol sortSymbol1 = translateTypeName(expression
 						.getType().getSource());
 				SMTSortSymbol sortSymbol2 = translateTypeName(expression

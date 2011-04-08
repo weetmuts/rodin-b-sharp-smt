@@ -12,21 +12,15 @@
 package fr.systerel.smt.provers.core;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eventb.core.seqprover.ITactic;
-import org.eventb.core.seqprover.tactics.BasicTactics;
-import org.eventb.core.seqprover.xprover.XProverInput;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 import br.ufrn.smt.solver.translation.Translator;
-import fr.systerel.smt.provers.internal.core.ExternalSmt;
 
 /**
  * The main plugin class for the Smt provers.
  */
-public class SmtProversCore extends AbstractUIPlugin {
+public class SmtProversCore extends Plugin {
 
 	/**
 	 * The plug-in identifier
@@ -36,32 +30,8 @@ public class SmtProversCore extends AbstractUIPlugin {
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
 
-	/**
-	 * Default delay for time-out of the Smt provers (value 30 seconds).
-	 */
-	public static long DEFAULT_DELAY = 30 * 1000;
-
 	// The shared instance.
 	private static SmtProversCore plugin;
-
-	/**
-	 * Returns a tactic for applying the Smt prover to a proof tree node.
-	 * <p>
-	 * This is a convenience method, fully equivalent to:
-	 * 
-	 * <pre>
-	 * externalSMT(forces, DEFAULT_DELAY)
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @return a tactic for running SMT with the given forces
-	 */
-	public static ITactic ExternalSmtTac(boolean restricted) {
-		return BasicTactics.reasonerTac(//
-				new ExternalSmt(), //
-				new XProverInput(restricted, DEFAULT_DELAY));
-	}
 
 	/**
 	 * Returns the single instance of the Smt Provers for Rodin core plug-in.
@@ -70,31 +40,6 @@ public class SmtProversCore extends AbstractUIPlugin {
 	 */
 	public static SmtProversCore getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * Getting the workbench shell
-	 * <p>
-	 * 
-	 * @return the shell associated with the active workbench window or null if
-	 *         there is no active workbench window
-	 */
-	public static Shell getActiveWorkbenchShell() {
-		final IWorkbenchWindow window = getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getShell();
-		}
-		return null;
-	}
-
-	/**
-	 * Return the active workbench window
-	 * <p>
-	 * 
-	 * @return the active workbench window
-	 */
-	public static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 
 	@Override
