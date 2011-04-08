@@ -17,10 +17,46 @@
             name="%tactic.name"
             priority="fr.systerel.smt.provers.ui.tactic"
             skipPostTactic="false"
-            tacticProvider="fr.systerel.smt.provers.internal.ui.SMT"
+            tacticProvider="fr.systerel.smt.provers.internal.ui.SMTTacticProvider"
             target="global"
             tooltip="%tactic.tooltip">
       </tactic>
    </extension>
-
+   <extension
+         point="org.eventb.core.seqprover.autoTactics">
+      <autoTactic
+            class="fr.systerel.smt.provers.internal.ui.AutoTactics$SMT"
+            description="%autoTactic.description"
+            id="SmtProver"
+            name="%SmtProver.name">
+      </autoTactic>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="br.ufrn.smt.solver.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="br.ufrn.smt.solver.preferences.SMTPreferencePage"
+            id="fr.systerel.smt.provers.ui.page1"
+            name="%page.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eventb.core.seqprover.reasoners">
+      <reasoner
+            class="fr.systerel.smt.provers.internal.core.ExternalSmt"
+            id="fr.systerel.smt.provers.ui.reasoner1"
+            name="%reasoner.name">
+      </reasoner>
+   </extension>
+   <extension
+         point="org.eventb.core.pomTactics">
+      <tactic
+            id="fr.systerel.smt.provers.ui.SmtProver">
+      </tactic>
+   </extension>
 </plugin>
