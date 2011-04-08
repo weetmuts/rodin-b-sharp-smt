@@ -12,6 +12,9 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacros;
+
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -94,6 +97,11 @@ public final class SMTFactory {
 		String symbolName = getSMTAtomicExpressionFormat(sortSymbolName,
 				signature);
 		return new SMTSortSymbol(symbolName, false);
+	}
+
+	public static SMTSortSymbol makeSortSymbol(String symbolName,
+			boolean predefined) {
+		return new SMTSortSymbol(symbolName, predefined);
 	}
 
 	public SMTPredicateSymbol makeVeriTPredSymbol(final String predName,
@@ -336,6 +344,12 @@ public final class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
+		return makeSMTQuantifiedFormula(qSymbol, qVars, formula, printPoint);
+	}
+
+	public static SMTFormula makeSMTQuantifiedFormula(
+			SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
+			final SMTFormula formula, final boolean printPoint) {
 		return new SMTQuantifiedFormula(qSymbol, qVars, formula, printPoint);
 	}
 

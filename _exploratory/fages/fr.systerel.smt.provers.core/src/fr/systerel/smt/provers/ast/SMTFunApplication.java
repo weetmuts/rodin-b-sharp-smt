@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import fr.systerel.smt.provers.ast.macros.SMTPolymorphicSortSymbol;
 
 /**
  * @author guyot

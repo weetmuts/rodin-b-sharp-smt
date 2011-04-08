@@ -22,6 +22,7 @@ import java.util.List;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  * The SMT logics.

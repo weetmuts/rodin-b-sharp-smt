@@ -8,7 +8,7 @@
  * Contributors:
  *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.ast;
+package fr.systerel.smt.provers.ast.macros;
 
 public class SMTPredefinedMacro extends SMTMacro {
 

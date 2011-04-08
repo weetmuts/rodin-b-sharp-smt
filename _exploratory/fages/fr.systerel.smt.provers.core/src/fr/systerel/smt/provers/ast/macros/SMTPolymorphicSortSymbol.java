@@ -8,7 +8,9 @@
  * Contributors:
  *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.ast;
+package fr.systerel.smt.provers.ast.macros;
+
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 
 public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 

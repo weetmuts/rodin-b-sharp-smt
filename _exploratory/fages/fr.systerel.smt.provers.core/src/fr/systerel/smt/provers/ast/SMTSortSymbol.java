@@ -15,7 +15,7 @@ package fr.systerel.smt.provers.ast;
  */
 public class SMTSortSymbol extends SMTSymbol implements
 		Comparable<SMTSortSymbol> {
-	SMTSortSymbol(String symbolName, final boolean predefined) {
+	protected SMTSortSymbol(String symbolName, final boolean predefined) {
 		super(symbolName, predefined);
 	}
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
-import static fr.systerel.smt.provers.ast.SMTMacros.PAIR_SORT;
+import static fr.systerel.smt.provers.ast.macros.SMTMacros.PAIR_SORT;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,7 +48,6 @@ import org.eventb.core.ast.UnaryExpression;
 
 import fr.systerel.smt.provers.ast.SMTAtom;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.ast.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
@@ -56,11 +55,7 @@ import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
-import fr.systerel.smt.provers.ast.SMTMacroSymbol;
-import fr.systerel.smt.provers.ast.SMTMacros;
-import fr.systerel.smt.provers.ast.SMTPairEnumMacro;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
-import fr.systerel.smt.provers.ast.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
@@ -68,6 +63,11 @@ import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
+import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacros;
+import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTVeritCardFormula;

@@ -8,7 +8,10 @@
  * Contributors:
  *     Vitor Alcantara de Almeida - implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.ast;
+package fr.systerel.smt.provers.ast.macros;
+
+import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTVarSymbol;
 
 public class SMTEnumMacro extends SMTMacro {
 

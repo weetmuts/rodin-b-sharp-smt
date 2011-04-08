@@ -8,17 +8,35 @@
  * Contributors:
  *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.ast;
+package fr.systerel.smt.provers.ast.macros;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.systerel.smt.provers.ast.SMTAtom;
+import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunApplication;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
+import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTMacroTerm;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
+import fr.systerel.smt.provers.ast.SMTQuantifiedFormula;
+import fr.systerel.smt.provers.ast.SMTQuantifierSymbol;
+import fr.systerel.smt.provers.ast.SMTSignatureVerit;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
+import fr.systerel.smt.provers.ast.SMTSymbol;
+import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTTheory;
+import fr.systerel.smt.provers.ast.SMTVar;
+import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol.SMTEqual;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
-import static fr.systerel.smt.provers.ast.SMTMacroSymbol.*;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.*;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -304,16 +322,16 @@ public class SMTMacros {
 	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(
 			SMTMacroSymbol.EMPTY, EMPTY_SORT, true);
 
-	public static SMTSortSymbol PAIR_SORT = new SMTSortSymbol("(Pair 's 't)",
-			!PREDEFINED);
+	public static SMTSortSymbol PAIR_SORT = SMTFactory.makeSortSymbol(
+			"(Pair 's 't)", !PREDEFINED);
 
 	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
 
-	private static final SMTSortSymbol FST_RETURN_SORT = new SMTSortSymbol(
-			FST_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+	private static final SMTSortSymbol FST_RETURN_SORT = SMTFactory
+			.makeSortSymbol(FST_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
 
-	private static final SMTSortSymbol SND_RETURN_SORT = new SMTSortSymbol(
-			SND_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+	private static final SMTSortSymbol SND_RETURN_SORT = SMTFactory
+			.makeSortSymbol(SND_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
@@ -462,6 +480,7 @@ public class SMTMacros {
 	 * @return
 	 */
 	private static SMTFormula createFstAssumption() {
+		// TODO Refactor
 		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
 				FST_RETURN_SORT, PREDEFINED);
 		SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(SND_PAIR_ARG_NAME,
@@ -487,7 +506,7 @@ public class SMTMacros {
 
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 
-		SMTQuantifiedFormula quantifiedFormula = new SMTQuantifiedFormula(
+		SMTFormula quantifiedFormula = SMTFactory.makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
 
 		return quantifiedFormula;
@@ -519,7 +538,7 @@ public class SMTMacros {
 
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 
-		SMTQuantifiedFormula quantifiedFormula = new SMTQuantifiedFormula(
+		SMTFormula quantifiedFormula = SMTFactory.makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
 
 		return quantifiedFormula;

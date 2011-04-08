@@ -16,6 +16,12 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
+import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTMacro;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacros;
+import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
 /**
  * This is the SMTSignature to be used by the SMT translation process through

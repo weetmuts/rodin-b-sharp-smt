@@ -14,6 +14,7 @@ import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 public class SMTMacroTerm extends SMTTerm {
 
@@ -42,7 +43,7 @@ public class SMTMacroTerm extends SMTTerm {
 		sort = Booleans.getInstance().getBooleanSort();
 	}
 
-	SMTTerm[] getArgTerms() {
+	public SMTTerm[] getArgTerms() {
 		return argTerms;
 	}
 

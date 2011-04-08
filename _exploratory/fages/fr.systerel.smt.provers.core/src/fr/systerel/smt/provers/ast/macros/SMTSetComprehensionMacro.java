@@ -8,7 +8,11 @@
  * Contributors:
  *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.ast;
+package fr.systerel.smt.provers.ast.macros;
+
+import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTVarSymbol;
 
 public class SMTSetComprehensionMacro extends SMTMacro {
 
@@ -61,7 +65,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 			sb.append(qVar);
 		}
 		sb.append(". (and (= ");
-		sb.append("?" + lambdaVar.name);
+		sb.append("?" + lambdaVar.getName());
 		sb.append(" ");
 		sb.append(expression);
 		sb.append(") ");
