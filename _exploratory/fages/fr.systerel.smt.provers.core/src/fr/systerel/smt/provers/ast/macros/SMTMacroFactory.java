@@ -10,33 +10,72 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
+import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.VeritPredefinedTheory.POLYMORPHIC;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.BCOMP;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.BINTER;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.BUNION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.CARD;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.CARTESIAN_PRODUCT;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.DOM;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.DOMAIN_RESTRICTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.DOMAIN_SUBSTRACTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.EMPTY;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.FCOMP;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.FINITE;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.FUNP;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.ID;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.IN;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.INJP;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.INV;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.ISMAX;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.ISMIN;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT1;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NOT_EQUAL;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.OVR;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PAIR;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE_INTEGER;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE_RESTRICTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE_SUBSTRACION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RELATION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RELATIONAL_IMAGE;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SETMINUS;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SUBSET;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SUBSETEQ;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SURJECTIVE_RELATION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.systerel.smt.provers.ast.SMTAtom;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunApplication;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
-import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTMacroTerm;
+import fr.systerel.smt.provers.ast.SMTPolymorphicSortSymbol;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
-import fr.systerel.smt.provers.ast.SMTQuantifiedFormula;
 import fr.systerel.smt.provers.ast.SMTQuantifierSymbol;
+import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
-import fr.systerel.smt.provers.ast.SMTTheory;
+import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
-import fr.systerel.smt.provers.ast.SMTPredicateSymbol.SMTEqual;
-import fr.systerel.smt.provers.ast.SMTTheory.Ints;
-import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
-import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.*;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -235,15 +274,15 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro NOTEQUAL_MACRO = new SMTPredefinedMacro(
 			NOT_EQUAL, "(lambda (?t6 Bool) (?t5 Bool) . (not (= ?t6 ?t5)))", 0);
 
-	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
-	private static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
-			POLYMORPHIC, POLYMORPHIC };
+	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
+			POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
 	private static SMTSortSymbol[] ISMIN_MAX_SORTS = { Ints.getInt(),
 			POLYMORPHIC };
 	private static SMTSortSymbol[] FINITE_SORTS = {
-			VeritPredefinedTheory.getInstance().getBooleanSort(), POLYMORPHIC,
-			Ints.getInt(), Ints.getInt() };
+			fr.systerel.smt.provers.ast.VeritPredefinedTheory.getInstance()
+					.getBooleanSort(), POLYMORPHIC, Ints.getInt(),
+			Ints.getInt() };
 
 	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC, Ints.getInt(),
 			Ints.getInt() };
@@ -483,8 +522,8 @@ public class SMTMacroFactory {
 			final SMTSignatureVerit signature) {
 		signature.addConstant(FST_SYMBOL);
 		signature.addConstant(SND_SYMBOL);
-		signature.addFstOrSndAuxiliarAssumption(createFstAssumption());
-		signature.addFstOrSndAuxiliarAssumption(createSndAssumption());
+		signature.addFstOrSndAuxiliarAssumption(createFstAssumption(signature));
+		signature.addFstOrSndAuxiliarAssumption(createSndAssumption(signature));
 		signature.setFstAndSndAssumptionsAdded(true);
 	}
 
@@ -501,7 +540,7 @@ public class SMTMacroFactory {
 	 * 
 	 * @return The formula that represents the fst auxiliar function assumption
 	 */
-	private static SMTFormula createFstAssumption() {
+	private static SMTFormula createFstAssumption(SMTSignature signature) {
 		// TODO Refactor
 		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
 				FST_RETURN_SORT, PREDEFINED);
@@ -523,8 +562,11 @@ public class SMTMacroFactory {
 
 		SMTTerm[] equalTerms = { fstFunAppl, varSymbol1 };
 
-		SMTAtom equalAtom = new SMTAtom(new SMTPredicateSymbol.SMTEqual(
-				POLYMORPHIC_PAIRS), equalTerms);
+		SMTSortSymbol[] fstReturnSorts = { FST_RETURN_SORT, FST_RETURN_SORT };
+
+		SMTFormula equalAtom = SMTFactory.makeAtom(
+				new SMTPredicateSymbol.SMTEqual(fstReturnSorts), equalTerms,
+				signature);
 
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 
@@ -547,7 +589,7 @@ public class SMTMacroFactory {
 	 * 
 	 * @return The formula that represents the snd auxiliar function assumption
 	 */
-	private static SMTFormula createSndAssumption() {
+	private static SMTFormula createSndAssumption(SMTSignature signature) {
 		SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(FST_PAIR_ARG_NAME,
 				FST_RETURN_SORT, PREDEFINED);
 		SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(SND_PAIR_ARG_NAME,
@@ -568,8 +610,9 @@ public class SMTMacroFactory {
 
 		SMTTerm[] equalTerms = { sndFunAppl, varSymbol2 };
 
-		SMTAtom equalAtom = new SMTAtom(new SMTPredicateSymbol.SMTEqual(
-				POLYMORPHIC_PAIRS), equalTerms);
+		SMTFormula equalAtom = SMTFactory.makeAtom(
+				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), equalTerms,
+				signature);
 
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 

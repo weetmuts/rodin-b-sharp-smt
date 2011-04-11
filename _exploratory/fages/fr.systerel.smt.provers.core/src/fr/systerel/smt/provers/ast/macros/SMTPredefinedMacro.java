@@ -31,6 +31,12 @@ public class SMTPredefinedMacro extends SMTMacro {
 	private final String body;
 
 	/**
+	 * This set stores the name of all identifiers of the macro that have a
+	 * question mark prefixed.
+	 */
+	private final Set<String> qSymbols = new HashSet<String>();
+
+	/**
 	 * Initializes the class with the name of the macro, the body text and the
 	 * precedence.
 	 * 
@@ -48,12 +54,6 @@ public class SMTPredefinedMacro extends SMTMacro {
 		this.body = bodyText;
 		collectQSymbols();
 	}
-
-	/**
-	 * This set stores the name of all identifiers of the macro that have a
-	 * question mark prefixed.
-	 */
-	private final Set<String> qSymbols = new HashSet<String>();
 
 	/**
 	 * Retrieves the name of the identifiers that have a question mark as a
@@ -104,15 +104,13 @@ public class SMTPredefinedMacro extends SMTMacro {
 
 	@Override
 	public boolean equals(Object object) {
-		if (object instanceof SMTMacro) {
-			SMTMacro objMacro = (SMTMacro) object;
-			if (super.getMacroName().equals(objMacro.getMacroName())) {
+		if (object instanceof SMTPredefinedMacro) {
+			SMTPredefinedMacro obj = (SMTPredefinedMacro) object;
+			if (this.getMacroName().equals(obj.getMacroName())
+					&& this.body.equals(obj.body)) {
 				return true;
-			} else {
-				return false;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 }
