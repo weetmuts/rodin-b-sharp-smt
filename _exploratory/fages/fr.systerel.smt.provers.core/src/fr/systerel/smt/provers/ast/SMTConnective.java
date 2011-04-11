@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class represents SMT Connectives.
+ * 
  * @author guyot
  * 
  */
@@ -26,8 +28,17 @@ public enum SMTConnective {
 	XOR("xor"), //
 	IFF("iff");
 
+	/**
+	 * The symbol of the connective
+	 */
 	private String symbol;
 
+	/**
+	 * Constructs a new SMT connective with a symbol.
+	 * 
+	 * @param symbol
+	 *            the connective symbol
+	 */
 	SMTConnective(final String symbol) {
 		this.symbol = symbol;
 	}
@@ -37,6 +48,11 @@ public enum SMTConnective {
 		return symbol;
 	}
 
+	/**
+	 * Retrieves all the SMT connective symbols.
+	 * 
+	 * @return the list with all the connective symbols.
+	 */
 	public static final List<String> getConnectiveSymbols() {
 		final SMTConnective[] smtConnectives = SMTConnective.values();
 		final List<String> connectives = new ArrayList<String>(

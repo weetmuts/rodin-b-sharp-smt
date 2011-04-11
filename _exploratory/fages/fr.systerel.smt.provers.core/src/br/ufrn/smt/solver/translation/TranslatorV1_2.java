@@ -192,6 +192,9 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 	}
 
+	/**
+	 * This method translates an Event-B binary predicate into an SMT node 
+	 */
 	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getLeft(),

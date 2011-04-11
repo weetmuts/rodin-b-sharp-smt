@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
  * <ul>
@@ -111,9 +112,13 @@ public abstract class SMTSignature {
 
 					// Verify each argument sort
 					for (int i = 0; i < expectedArgSorts.length; i++) {
+						if (expectedArgSorts[i] instanceof SMTPolymorphicSortSymbol) {
+							continue;
+						}
 						if (!expectedArgSorts[i].equals(argSorts[i])) {
-							throw makeIncompatiblePredicatesException(
-									predicateSymbol, predSymbol);
+							throw new IllegalArgumentException(
+									makeIncompatiblePredicatesExceptionMessage(
+											predicateSymbol, predSymbol));
 						}
 					}
 					return;
@@ -151,6 +156,9 @@ public abstract class SMTSignature {
 
 					// Verify each argument sort
 					for (int i = 0; i < expectedArgSorts.length; i++) {
+						if (expectedArgSorts[i] instanceof SMTPolymorphicSortSymbol) {
+							continue;
+						}
 						if (!expectedArgSorts[i].equals(argSorts[i])) {
 							throw makeIncompatibleFunctionsException(
 									functionSymbol, symbol);
@@ -187,7 +195,7 @@ public abstract class SMTSignature {
 		return new IllegalArgumentException(sb.toString());
 	}
 
-	private static IllegalArgumentException makeIncompatiblePredicatesException(
+	private static String makeIncompatiblePredicatesExceptionMessage(
 			final SMTPredicateSymbol actualPredicateSymbol,
 			final SMTPredicateSymbol expectedPredSymbol) {
 		final StringBuilder sb = new StringBuilder();
@@ -207,7 +215,7 @@ public abstract class SMTSignature {
 			arg.toString(sb);
 		}
 		sb.append(" in the declaration of predicate in the signature.");
-		return new IllegalArgumentException(sb.toString());
+		return sb.toString();
 	}
 
 	private static Set<String> getReservedSymbolsAndKeywords() {

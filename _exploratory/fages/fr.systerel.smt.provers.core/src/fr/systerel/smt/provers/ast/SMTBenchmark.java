@@ -43,6 +43,13 @@ public class SMTBenchmark {
 		sb.append("\n");
 	}
 
+	/**
+	 * Appends the string representation of the assumptions section to the
+	 * string builder
+	 * 
+	 * @param sb
+	 *            the builder that will receive the representation
+	 */
 	private void assumptionsSection(final StringBuilder sb) {
 		for (final SMTFormula assumption : assumptions) {
 			sb.append(" :assumption ");
@@ -51,12 +58,32 @@ public class SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Appends the string representation of the formula section to the strinh
+	 * builder
+	 * 
+	 * @param sb
+	 *            the builder that will receive the representation
+	 */
 	private void formulaSection(StringBuilder sb) {
 		sb.append(" :formula (not ");
 		goal.toString(sb);
 		sb.append(")\n");
 	}
 
+	/**
+	 * Constructs a new SMT Benchmark. It is composed by the name of the
+	 * benchmark, the signature, the assumptions and the goal.
+	 * 
+	 * @param lemmaName
+	 *            the name of the benchmark
+	 * @param signature
+	 *            the signature
+	 * @param assumptions
+	 *            the list of assumptions
+	 * @param goal
+	 *            the goal formula
+	 */
 	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
 			final List<SMTFormula> assumptions, final SMTFormula goal) {
 		this.name = lemmaName;
@@ -65,6 +92,11 @@ public class SMTBenchmark {
 		this.goal = goal;
 	}
 
+	/**
+	 * returns the name of the benchmark
+	 * 
+	 * @return the name of the benchmark
+	 */
 	public String getName() {
 		return name;
 	}

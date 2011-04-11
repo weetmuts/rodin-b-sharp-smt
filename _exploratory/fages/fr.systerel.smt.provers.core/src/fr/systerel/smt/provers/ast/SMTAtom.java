@@ -13,16 +13,20 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
-import fr.systerel.smt.provers.ast.macros.SMTPolymorphicSortSymbol;
 
 /**
- * 
+ * This class represents an SMTAtom
  */
-public class SMTAtom extends SMTFormula {
+class SMTAtom extends SMTFormula {
 	final SMTPredicateSymbol predicate;
 	final SMTTerm[] terms;
 
-	public SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
+	/**
+	 * 
+	 * @param symbol
+	 * @param terms
+	 */
+	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
 		verifyPredicateRank(symbol, terms);
 		this.predicate = symbol;
 		this.terms = terms.clone();
@@ -43,18 +47,28 @@ public class SMTAtom extends SMTFormula {
 		}
 	}
 
+	/**
+	 * This method verifies if the real arguments match in sort, order and
+	 * number the expected arguments.
+	 * 
+	 * @param symbol
+	 *            The operator
+	 * @param terms
+	 *            The terms to be checked
+	 */
 	private static void verifyPredicateRank(final SMTPredicateSymbol symbol,
 			final SMTTerm terms[]) {
 		SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
 
-		// Verify if the number of arguments expected match the number of terms
+		// Check if the number of arguments expected match the number of terms
 		if (expectedSortArgs.length == terms.length) {
 
-			// Verify if the sort symbols are the same
+			// Check if the sort symbols are the same
 			for (int i = 0; i < terms.length; i++) {
 				SMTSortSymbol argSort = terms[i].getSort();
 				SMTSortSymbol expectedSortArg = expectedSortArgs[i];
 
+				// If one of the expected sorts are polymorphic, ignore it
 				if (expectedSortArg instanceof SMTPolymorphicSortSymbol) {
 					continue;
 				}
@@ -71,6 +85,19 @@ public class SMTAtom extends SMTFormula {
 		throw incompatiblePredicateRankException(symbol, terms);
 	}
 
+	/**
+	 * Constructs a string message that explains the error if the rank of the
+	 * symbol is not compatible with its arguments, and returns an
+	 * {@link IllegalArgumentException} with thee message.
+	 * 
+	 * @param expectedSymbol
+	 *            the symbol
+	 * @param args
+	 *            the arguments
+	 * @return an {@link IllegalArgumentException} with the detailed message.
+	 * 
+	 * @see #verifyPredicateRank(SMTPredicateSymbol, SMTTerm[])
+	 */
 	protected static IllegalArgumentException incompatiblePredicateRankException(
 			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args) {
 		final StringBuilder sb = new StringBuilder();

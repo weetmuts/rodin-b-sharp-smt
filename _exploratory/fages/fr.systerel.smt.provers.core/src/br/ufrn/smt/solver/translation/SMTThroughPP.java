@@ -655,27 +655,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
-	/**
-	 * This method translates an Event-B unary predicate into an SMT node.
-	 */
-	@Override
-	public void visitUnaryPredicate(UnaryPredicate predicate) {
-		final SMTFormula[] children = new SMTFormula[] { smtFormula(predicate
-				.getChild()) };
-		switch (predicate.getTag()) {
-		case Formula.NOT:
-			smtNode = sf.makeNot(children);
-			break;
-		default:
-			throw new IllegalTagException(predicate.getTag());
-		}
-	}
-
 	@Override
 	public void visitSetExtension(SetExtension expression) {
 		// TODO
 	}
 
+	/**
+	 * This method translates an Event-B bound identifier declaration into an SMT node.
+	 */
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
@@ -702,6 +689,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		smtNode = smtVar;
 	}
 
+	/**
+	 * This method translates an Event-B bound identifier into an SMT node.
+	 */
 	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
 		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
@@ -719,6 +709,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				this.signature);
 	}
 
+	/**
+	 * This method translates an Event-B quantified predicate into an SMT node
+	 */
 	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		boundIdentifiersMarker.push(boundIdentifiers.size());
@@ -742,48 +735,72 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
 		throw new IllegalArgumentException(
 				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
 		throw new IllegalArgumentException(
 				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
 		throw new IllegalArgumentException(
 				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitQuantifiedExpression(final QuantifiedExpression expression) {
 		throw new IllegalArgumentException(
 				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		throw new IllegalArgumentException(
 				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
 
+	/**
+	 * This method should not be called in the PP approach of SMT translation
+	 */
 	@Override
 	public void visitExtendedPredicate(ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(

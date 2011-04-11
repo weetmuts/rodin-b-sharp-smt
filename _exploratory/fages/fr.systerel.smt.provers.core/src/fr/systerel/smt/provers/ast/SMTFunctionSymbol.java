@@ -34,12 +34,24 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	final private SMTSortSymbol[] argSorts;
 	final private SMTSortSymbol resultSort;
 
-	// TODO use this field when creating a new FunApplication object, and adapt
-	// the way the rank is verified
 	final private boolean associative;
 
 	public static final boolean ASSOCIATIVE = true;
 
+	/**
+	 * Constructs a new SMT function symbol
+	 * 
+	 * @param symbolName
+	 *            the name of the function
+	 * @param argSorts
+	 *            the arguments of the function
+	 * @param resultSort
+	 *            the result sort
+	 * @param associative
+	 *            determines if the function is associative
+	 * @param predefined
+	 *            determines if the function is predefined
+	 */
 	public SMTFunctionSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final SMTSortSymbol resultSort,
 			final boolean associative, final boolean predefined) {

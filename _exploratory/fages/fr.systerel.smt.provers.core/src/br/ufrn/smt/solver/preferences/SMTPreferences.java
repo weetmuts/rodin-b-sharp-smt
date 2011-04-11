@@ -51,6 +51,15 @@ public class SMTPreferences {
 		return preproPath;
 	}
 
+	/**
+	 * Creates a list with all solver detail elements from the preferences
+	 * String
+	 * 
+	 * @param preferences
+	 *            The String that contains the details of the solver
+	 * @return The list of solvers and its details parsed from the preferences
+	 *         String
+	 */
 	public static List<SolverDetail> CreateModel(String preferences) {
 		List<SolverDetail> model = new ArrayList<SolverDetail>();
 
@@ -66,6 +75,19 @@ public class SMTPreferences {
 		return model;
 	}
 
+	/**
+	 * Constructs a new SMT preferences
+	 * 
+	 * @param solverSettingsPreferences
+	 *            The string that contains the details of the solvers
+	 * @param selectedSolverIndex
+	 *            the index of the selected solver
+	 * @param usingprepro
+	 *            the boolean that defines if it will use veriT pre-processing
+	 *            or not
+	 * @param prepropath
+	 *            The path of the veriT solver for pre-processing
+	 */
 	public SMTPreferences(String solverSettingsPreferences,
 			int selectedSolverIndex, boolean usingprepro, String prepropath) {
 		List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);

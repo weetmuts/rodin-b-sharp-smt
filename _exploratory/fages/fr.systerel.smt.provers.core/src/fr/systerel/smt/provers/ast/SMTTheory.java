@@ -17,7 +17,6 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  *
@@ -192,47 +191,6 @@ public class SMTTheory {
 
 		public static SMTSortSymbol[] getIntIntTab() {
 			return INT_INT_TAB;
-		}
-	}
-
-	public static class VeritPredefinedTheory extends SMTTheory implements
-			ISMTBooleanSort {
-
-		private static final String NAME = "verit_theory";
-
-		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-				SMTSymbol.BOOL_SORT, PREDEFINED);
-
-		private final static SMTSortSymbol U = new SMTSortSymbol(
-				SMTSymbol.U_SORT, PREDEFINED);
-
-		private static final SMTSortSymbol[] SORTS = { BOOL, U };
-
-		private static final SMTPredicateSymbol[] PREDICATES = {};
-
-		private static SMTFunctionSymbol VERIT_DIVISION = new SMTFunctionSymbol(
-				SMTMacroSymbol.DIV, Ints.getIntIntTab(), Ints.getInt(),
-				!ASSOCIATIVE, PREDEFINED);
-
-		private static final SMTFunctionSymbol[] FUNCTIONS = { VERIT_DIVISION };
-
-		protected VeritPredefinedTheory() {
-			super(NAME, SORTS, PREDICATES, FUNCTIONS);
-		}
-
-		private static final VeritPredefinedTheory INSTANCE = new VeritPredefinedTheory();
-
-		public static VeritPredefinedTheory getInstance() {
-			return INSTANCE;
-		}
-
-		@Override
-		public SMTSortSymbol getBooleanSort() {
-			return BOOL;
-		}
-
-		public SMTFunctionSymbol getDivision() {
-			return VERIT_DIVISION;
 		}
 	}
 

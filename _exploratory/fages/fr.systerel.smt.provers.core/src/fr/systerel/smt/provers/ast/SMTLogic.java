@@ -21,7 +21,6 @@ import java.util.List;
 
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
-import fr.systerel.smt.provers.ast.SMTTheory.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
@@ -290,9 +289,8 @@ public class SMTLogic {
 
 	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogic {
 
-		private static final SMTTheory[] THEORIES = {
-				SMTTheory.VeritPredefinedTheory.getInstance(),
-				SMTTheory.Ints.getInstance() };
+		private static final SMTTheory[] THEORIES = { VeritPredefinedTheory
+				.getInstance() };
 
 		private static final VeriTSMTLIBUnderlyingLogic INSTANCE = new VeriTSMTLIBUnderlyingLogic();
 

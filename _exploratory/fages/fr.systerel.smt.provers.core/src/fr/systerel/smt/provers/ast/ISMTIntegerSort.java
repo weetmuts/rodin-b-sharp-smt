@@ -10,9 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-/**
- *
- */
 public interface ISMTIntegerSort {
 	public SMTSortSymbol getIntegerSort();
 }
