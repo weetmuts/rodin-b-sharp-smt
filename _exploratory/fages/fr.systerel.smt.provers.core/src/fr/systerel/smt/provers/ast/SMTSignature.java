@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
  * <ul>

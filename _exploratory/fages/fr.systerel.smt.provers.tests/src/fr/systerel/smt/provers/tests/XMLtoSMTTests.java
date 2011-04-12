@@ -35,6 +35,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.decert.smt.BenchmarkWriter;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
@@ -48,6 +49,16 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
  */
 @RunWith(Parameterized.class)
 public class XMLtoSMTTests extends CommonSolverRunTests {
+
+	/**
+	 * If true, is printed details of the test for each test iteration.
+	 */
+	private final boolean PRINT_INFO = true;
+
+	/**
+	 * The chosen solver for the tests
+	 */
+	private final SMTSolver SOLVER = SMTSolver.Z3;
 
 	@Parameters
 	public static List<XMLDocumentData[]> getDocumentDatas() {
@@ -108,12 +119,12 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * The path of the input folder containing the XML files for the Event-B
 	 * lemmas to be translated in SMT-LIB format, and their associated DTD file.
 	 */
-	private final static String XMLFolder = "/u/vitor/rodin_xml_tmp_files/xml"; // "C:\\Utilisateurs\\pascal\\workspace\\c444\\1\\Sorted Lemmas";
+	private final static String XMLFolder = "/u/vitor/rodin_xml_tmp_files/xml";
 
 	/**
 	 * The path of the output folder where to store the generated SMT files.
 	 */
-	private final static String SMTFolder = "/u/vitor/rodin_xml_tmp_files/smt"; // "C:\\Utilisateurs\\pascal\\workspace\\c444\\1\\Benchmarks";
+	private final static String SMTFolder = "/u/vitor/rodin_xml_tmp_files/smt";
 
 	/**
 	 * Test if the result of the proof of lemma is equal to the
@@ -320,10 +331,25 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testTranslate() {
-		RunProverTestWithPP.setPreferencesForZ3Test();
+		switch (SOLVER) {
+		case ALT_ERGO:
+			setPreferencesForAltErgoTest();
+			break;
+		case CVC3:
+			setPreferencesForCvc3Test();
+		case VERIT:
+			setPreferencesForVeriTTest();
+		case Z3:
+			setPreferencesForZ3Test();
+		default:
+			break;
+		}
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
+		}
+		if (PRINT_INFO) {
+			System.out.println("Testing lemma: " + name + ".\n");
 		}
 		doTestWithVeriT(name, data.getHypotheses(), data.getGoal(),
 				data.getTe(), VALID);

@@ -18,7 +18,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private final static SMTSortSymbol[] INT_TAB = { INT };
 	private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
-	public static SMTPolymorphicSortSymbol POLYMORPHIC =  new SMTPolymorphicSortSymbol();
+	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
 	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
 			POLYMORPHIC };
 

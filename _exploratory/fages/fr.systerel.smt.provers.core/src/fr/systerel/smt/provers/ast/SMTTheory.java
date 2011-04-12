@@ -17,7 +17,6 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  *
  */

@@ -42,8 +42,9 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
  * 
  */
 public class SmtProverCall extends XProverCall {
+	private static final String RES = "res";
 	private static String SMT_LIB_FILE_EXTENSION = ".smt";
-	private static String VERIT_TEMP_FILE = "_verit";
+	private static String VERIT_TEMP_FILE = "_prep";
 	private static String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
@@ -84,7 +85,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	protected File iFile;
 	protected File oFile;
-	private static final String POST_PROCESSED_FILE_POSTFIX = "_postprocessed.";
+	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
 	private static String smtFilePath(final String fileName) {
 		return TRANSLATION_PATH + File.separatorChar + fileName
@@ -286,7 +287,7 @@ public class SmtProverCall extends XProverCall {
 			createPostProcessedFile(parentFolder, "smt");
 			return;
 		} else {
-			createPostProcessedFile(parentFolder, "res");
+			createPostProcessedFile(parentFolder, RES);
 			if (resultOfSolver.contains("syntax error")
 					|| resultOfSolver.contains("parse error")
 					|| resultOfSolver.contains("Lexical_error")) {
@@ -297,7 +298,8 @@ public class SmtProverCall extends XProverCall {
 			} else {
 				throw new IllegalArgumentException("Unexpected response of "
 						+ proverName + ". See " + lemmaName
-						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
+						+ POST_PROCESSED_FILE_POSTFIX + RES
+						+ " for more details.");
 			}
 		}
 	}

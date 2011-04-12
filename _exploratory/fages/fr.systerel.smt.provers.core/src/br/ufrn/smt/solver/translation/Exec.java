@@ -35,8 +35,8 @@ public class Exec {
 				p.getErrorStream()));
 
 		/**
-		 * Reads input and error streams and writes content into the buffer to be
-		 * returned
+		 * Reads input and error streams and writes content into the buffer to
+		 * be returned
 		 */
 		final StringBuilder outputBuilder = new StringBuilder();
 		while ((ln = br.readLine()) != null) {

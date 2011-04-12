@@ -401,9 +401,6 @@ public final class SMTFactory {
 		if (!(predicateSymbol instanceof SMTMacroSymbol)) {
 			throw new IllegalArgumentException("faiou");
 		}
-		
-		
-		
 
 		return new SMTAtom(predicateSymbol, args);
 	}

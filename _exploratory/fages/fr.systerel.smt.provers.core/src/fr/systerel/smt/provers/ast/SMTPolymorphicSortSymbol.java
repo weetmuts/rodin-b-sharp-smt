@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-
 /**
  * This class represent polymorphic sorts, which are used with macros, because
  * the arguments of macros are higher order and polymorphic.

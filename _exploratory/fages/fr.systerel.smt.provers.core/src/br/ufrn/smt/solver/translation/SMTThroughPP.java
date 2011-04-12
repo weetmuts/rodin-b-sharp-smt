@@ -661,7 +661,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates an Event-B bound identifier declaration into an SMT node.
+	 * This method translates an Event-B bound identifier declaration into an
+	 * SMT node.
 	 */
 	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
