@@ -6,7 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Systerel - initial API and implementation
+ *     Systerel - Implementation
+ *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.tests;
 
@@ -25,23 +26,26 @@ import java.util.List;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import br.ufrn.smt.solver.translation.TranslationException;
-import fr.systerel.decert.Lemma;
-import fr.systerel.decert.smt.Benchmark;
 import fr.systerel.decert.smt.BenchmarkWriter;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
+/**
+ * This class is used to make tests with XML files. It's a parameterized tests
+ * class.
+ * 
+ * @author vitor
+ * 
+ */
 @RunWith(Parameterized.class)
 public class XMLtoSMTTests extends CommonSolverRunTests {
 
@@ -63,10 +67,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 					XMLFile = BenchmarkWriter.setDoctype(files[i].toURI()
 							.toURL(), DTDFile.toURI().toURL());
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Document document = null;
@@ -74,10 +76,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 					document = BenchmarkWriter.load(XMLFile, DTDFile.toURI()
 							.toURL());
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SAXException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				String output = files[i].getName();
@@ -92,6 +92,12 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		return totalDocData;
 	}
 
+	/**
+	 * Constructs a new test.
+	 * 
+	 * @param data
+	 *            the parameter of one test.
+	 */
 	public XMLtoSMTTests(XMLDocumentData data) {
 		this.data = data;
 	}
@@ -110,24 +116,24 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	private final static String SMTFolder = "/u/vitor/rodin_xml_tmp_files/smt"; // "C:\\Utilisateurs\\pascal\\workspace\\c444\\1\\Benchmarks";
 
 	/**
-	 * TODO: Comment this
+	 * Test if the result of the proof of lemma is equal to the
+	 * 'expectedSolverResult' argument
 	 * 
-	 * @param lemma
-	 * @param SMTFile
-	 * @throws IOException
+	 * @param lemmaName
+	 *            the name of the lemma
+	 * @param parsedHypothesis
+	 *            the hypotheses
+	 * @param parsedGoal
+	 *            the goal
+	 * @param expectedSolverResult
+	 *            it is compared to the result of the SMT-Solver proof
+	 * @throws IllegalArgumentException
 	 */
-	public final static void write(final Lemma lemma, final File SMTFile)
-			throws IOException {
-		Benchmark benchmark = new Benchmark(lemma);
-
-		BenchmarkWriter.write(benchmark, SMTFile);
-	}
-
 	private static void doTestWithVeriT(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		SmtProverCall smtProverCall = doTest(lemmaName, parsedHypothesis,
-				parsedGoal);
+		SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
+				parsedHypothesis, parsedGoal);
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughVeriT());
@@ -144,7 +150,20 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		}
 	}
 
-	private static SmtProverCall doTest(final String lemmaName,
+	/**
+	 * Assert that the hypotheses and goal are type checked and returns a new
+	 * {@link SmtProverCall}.
+	 * 
+	 * @param lemmaName
+	 *            the name of the lemma
+	 * @param parsedHypothesis
+	 *            the hypotheses
+	 * @param parsedGoal
+	 *            the goal
+	 * @return a new {@link SmtProverCall}
+	 * @throws IllegalArgumentException
+	 */
+	private static SmtProverCall createSMTProverCall(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal)
 			throws IllegalArgumentException {
 		// Type check goal and hypotheses
@@ -177,7 +196,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName,
+	private static void doTestWithVeriT(final String lemmaName,
 			final List<String> inputHyps, final String inputGoal,
 			final ITypeEnvironment te, final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
@@ -198,6 +217,14 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		assertTrue("Formula is not typed: " + formula, formula.isTypeChecked());
 	}
 
+	/**
+	 * Parses the elements of a {@link Document} that contains the lemma info
+	 * and stores it in a {@link XMLDocumentData}
+	 * 
+	 * @param document
+	 *            the document that contains the lemma info
+	 * @return the parsed content
+	 */
 	public static List<XMLDocumentData[]> parse(final Document document) {
 		NodeList nodelist = document.getElementsByTagName("lemma");
 		ArrayList<XMLDocumentData[]> docDatas = new ArrayList<XMLDocumentData[]>();
@@ -212,18 +239,15 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				title = patch(((Element) elements.item(0)).getTextContent());
 
 			// Origin
-
 			elements = node.getElementsByTagName("origin");
 			String origin = null;
 			if (elements.getLength() > 0)
 				origin = patch(((Element) elements.item(0)).getTextContent());
 
-			// Comment
-			// TODO Add comments later
-			// elements = node.getElementsByTagName("comment");
-			// String comment = null;
-			// if (elements.getLength() > 0)
-			// comment = ((Element) elements.item(0)).getTextContent();
+			elements = node.getElementsByTagName("comment");
+			String comment = null;
+			if (elements.getLength() > 0)
+				comment = ((Element) elements.item(0)).getTextContent();
 
 			// Goal
 			elements = node.getElementsByTagName("goal");
@@ -233,20 +257,18 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				goal = element.getTextContent();
 			}
 
-			// Theories
-			// TODO Add theories later
-			// elements = node.getElementsByTagName("theories");
-			// if (elements.getLength() > 0) {
-			// elements = ((Element) elements.item(0))
-			// .getElementsByTagName("theory");
-			// for (int j = 0; j < elements.getLength(); j++)
-			// lemma.addTheory(Theory.fromName(((Element) elements.item(j))
-			// .getAttribute("name")));
-			// }
+			ArrayList<String> theories = new ArrayList<String>();
+			elements = node.getElementsByTagName("theories");
+			if (elements.getLength() > 0) {
+				elements = ((Element) elements.item(0))
+						.getElementsByTagName("theory");
+				for (int j = 0; j < elements.getLength(); j++)
+					theories.add(((Element) elements.item(j))
+							.getAttribute("name"));
+			}
+
 			// Type environment
-
 			String[] teVar = { "" };
-
 			elements = node.getElementsByTagName("typenv");
 			if (elements.getLength() > 0) {
 				elements = ((Element) elements.item(0))
@@ -272,7 +294,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				predicates.add(element.getTextContent());
 			}
 			XMLDocumentData[] data = { new XMLDocumentData(title, predicates,
-					goal, te, origin) };
+					goal, te, origin, comment, theories) };
 
 			docDatas.add(data);
 		}
@@ -294,17 +316,16 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	}
 
 	/**
-	 * TODO: Comment this method
-	 * 
-	 * @throws Exception
+	 * Translates the each lemma of each xml file.
 	 */
 	@Test
-	public void testTranslate() throws Exception {
+	public void testTranslate() {
 		RunProverTestWithPP.setPreferencesForZ3Test();
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
 		}
-		doTest(name, data.getHypotheses(), data.getGoal(), data.getTe(), VALID);
+		doTestWithVeriT(name, data.getHypotheses(), data.getGoal(),
+				data.getTe(), VALID);
 	}
 }

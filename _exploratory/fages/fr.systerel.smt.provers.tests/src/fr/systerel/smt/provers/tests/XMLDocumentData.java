@@ -7,13 +7,32 @@ import org.eventb.core.ast.ITypeEnvironment;
 public class XMLDocumentData {
 
 	public XMLDocumentData(String lemmaName, List<String> hypotheses,
-			String goal, ITypeEnvironment te, String origin) {
+			String goal, ITypeEnvironment te, String origin, String comments,
+			List<String> theories) {
 		super();
 		this.lemmaName = lemmaName;
 		this.hypotheses = hypotheses;
 		this.goal = goal;
 		this.te = te;
 		this.origin = origin;
+		this.comments = comments;
+		this.theories = theories;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public List<String> getTheories() {
+		return theories;
+	}
+
+	public void setTheories(List<String> theories) {
+		this.theories = theories;
 	}
 
 	private String lemmaName;
@@ -21,6 +40,8 @@ public class XMLDocumentData {
 	private String goal;
 	private ITypeEnvironment te;
 	private String origin;
+	private String comments;
+	private List<String> theories;
 
 	public String getOrigin() {
 		return origin;
