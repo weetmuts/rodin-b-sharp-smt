@@ -11,7 +11,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
-public class CommonSolverTests extends AbstractTests {
+public class CommonSolverRunTests extends AbstractTests {
 
 	/**
 	 * A ProofMonitor is necessary for SmtProverCall instances creation.

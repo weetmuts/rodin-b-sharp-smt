@@ -20,7 +20,7 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
  * @author Yoann Guyot
  * 
  */
-public class RunProverTestWithPP extends CommonSolverTests {
+public class RunProverTestWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//

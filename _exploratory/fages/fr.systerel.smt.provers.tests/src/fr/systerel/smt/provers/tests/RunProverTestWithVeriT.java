@@ -24,7 +24,7 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
  * @author Vitor Alcantara
  * 
  */
-public class RunProverTestWithVeriT extends CommonSolverTests {
+public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
