@@ -195,7 +195,7 @@ public class RunProverTestWithPP extends AbstractTests {
 
 	}
 
-	private static void setPreferencesForZ3Test() {
+	public static void setPreferencesForZ3Test() {
 		String solver = "z3";
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			solver = "bin" + System.getProperty("file.separator") + solver

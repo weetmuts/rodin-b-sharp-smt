@@ -61,10 +61,6 @@ public abstract class AbstractTests {
 		return parsedPredicate;
 	}
 
-	public static Predicate parse(final String predicate) {
-		return parse(predicate, ff.makeTypeEnvironment());
-	}
-
 	/**
 	 * Asserts that the given formula is typed.
 	 */

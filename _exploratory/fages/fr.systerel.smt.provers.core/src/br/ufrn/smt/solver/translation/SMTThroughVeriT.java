@@ -125,6 +125,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return translator.getSMTFormula();
 	}
 
+	/**
+	 * Determine the logic. In the veriT approach for the translation, it is
+	 * returned the solver's own logic.
+	 */
 	@Override
 	protected SMTLogic determineLogic() {
 		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();

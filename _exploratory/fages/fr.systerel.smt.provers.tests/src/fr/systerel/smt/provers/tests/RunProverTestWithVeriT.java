@@ -4,8 +4,6 @@ import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferenc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +20,8 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.TranslationException;
-import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
+import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
  * This class contains acceptance tests of the plugin using veriT preprocessing.
