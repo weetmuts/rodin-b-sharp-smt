@@ -341,8 +341,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				element = (Element) elements.item(j);
 				predicates.add(element.getTextContent());
 			}
-			LemmaData[] data = { new LemmaData(title, predicates,
-					goal, te, origin, comment, theories) };
+			LemmaData[] data = { new LemmaData(title, predicates, goal, te,
+					origin, comment, theories) };
 
 			docDatas.add(data);
 		}

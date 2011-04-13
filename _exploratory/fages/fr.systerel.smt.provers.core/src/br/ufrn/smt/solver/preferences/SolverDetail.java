@@ -16,6 +16,66 @@ package br.ufrn.smt.solver.preferences;
  * 
  */
 public class SolverDetail {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((args == null) ? 0 : args.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + (smtV1_2 ? 1231 : 1237);
+		result = prime * result + (smtV2_0 ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SolverDetail [id=");
+		builder.append(id);
+		builder.append(", path=");
+		builder.append(path);
+		builder.append(", args=");
+		builder.append(args);
+		builder.append(", smtV1_2=");
+		builder.append(smtV1_2);
+		builder.append(", smtV2_0=");
+		builder.append(smtV2_0);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SolverDetail other = (SolverDetail) obj;
+		if (args == null) {
+			if (other.args != null)
+				return false;
+		} else if (!args.equals(other.args))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		if (smtV1_2 != other.smtV1_2)
+			return false;
+		if (smtV2_0 != other.smtV2_0)
+			return false;
+		return true;
+	}
+
 	private String id;
 
 	private String path;

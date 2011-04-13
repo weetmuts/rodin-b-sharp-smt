@@ -83,6 +83,19 @@ public class SMTPreferences {
 		return model;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SMTPreferences [solver=");
+		builder.append(solver);
+		builder.append(", usingPrepro=");
+		builder.append(usingPrepro);
+		builder.append(", preproPath=");
+		builder.append(preproPath);
+		builder.append("]");
+		return builder.toString();
+	}
+
 	/**
 	 * Constructs a new SMT preferences
 	 * 
@@ -109,6 +122,41 @@ public class SMTPreferences {
 
 		this.usingPrepro = usingprepro;
 		this.preproPath = prepropath;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((preproPath == null) ? 0 : preproPath.hashCode());
+		result = prime * result + ((solver == null) ? 0 : solver.hashCode());
+		result = prime * result + (usingPrepro ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SMTPreferences other = (SMTPreferences) obj;
+		if (preproPath == null) {
+			if (other.preproPath != null)
+				return false;
+		} else if (!preproPath.equals(other.preproPath))
+			return false;
+		if (solver == null) {
+			if (other.solver != null)
+				return false;
+		} else if (!solver.equals(other.solver))
+			return false;
+		if (usingPrepro != other.usingPrepro)
+			return false;
+		return true;
 	}
 
 }

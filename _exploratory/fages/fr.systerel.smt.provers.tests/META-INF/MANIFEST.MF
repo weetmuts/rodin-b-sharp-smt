@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: fr.systerel.smt.provers.tests
+Bundle-SymbolicName: fr.systerel.smt.provers.core.tests
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  fr.systerel.smt.provers.core,

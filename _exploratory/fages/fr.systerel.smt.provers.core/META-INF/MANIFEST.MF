@@ -17,4 +17,4 @@ Export-Package:
  br.ufrn.smt.solver.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,fr.systerel.smt.provers.ast",
  fr.systerel.smt.provers.ast,
  fr.systerel.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
- fr.systerel.smt.provers.internal.core;x-friends:="fr.systerel.smt.provers.tests,fr.systerel.smt.provers.ui2,fr.systerel.smt.provers.ui"
+ fr.systerel.smt.provers.internal.core;x-friends:="fr.systerel.smt.provers.ui,fr.systerel.smt.provers.ui2,fr.systerel.smt.provers.core.tests"

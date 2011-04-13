@@ -6,8 +6,8 @@ import org.eventb.core.ast.ITypeEnvironment;
 
 public class LemmaData {
 
-	public LemmaData(String lemmaName, List<String> hypotheses,
-			String goal, ITypeEnvironment te, String origin, String comments,
+	public LemmaData(String lemmaName, List<String> hypotheses, String goal,
+			ITypeEnvironment te, String origin, String comments,
 			List<String> theories) {
 		super();
 		this.lemmaName = lemmaName;
