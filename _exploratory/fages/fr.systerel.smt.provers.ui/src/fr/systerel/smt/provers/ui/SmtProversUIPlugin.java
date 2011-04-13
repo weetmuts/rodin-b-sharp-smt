@@ -1,5 +1,6 @@
 package fr.systerel.smt.provers.ui;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -109,7 +110,12 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * @return the shared instance
 	 */
 	public static SmtProversUIPlugin getDefault() {
+		plugin.getPreferenceStore();
 		return plugin;
+	}
+
+	public static IPreferenceStore getDefaultPreferenceStore() {
+		return plugin.getPreferenceStore();
 	}
 
 }
