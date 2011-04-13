@@ -2,7 +2,7 @@
  * Copyright (c)
  *     
  *******************************************************************************/
-package fr.systerel.smt.provers.tests;
+package fr.systerel.smt.provers.core.tests;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;

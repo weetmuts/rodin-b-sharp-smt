@@ -9,7 +9,7 @@
  *     Systerel - Implementation
  *     Vitor Alcantara de Almeida - Implementation
  *******************************************************************************/
-package fr.systerel.smt.provers.tests;
+package fr.systerel.smt.provers.core.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,11 +35,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import utils.LemmaData;
 
 import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.decert.smt.BenchmarkWriter;
+import fr.systerel.smt.provers.core.tests.utils.LemmaData;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 /**

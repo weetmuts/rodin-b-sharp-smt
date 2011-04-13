@@ -1,4 +1,4 @@
-package fr.systerel.smt.provers.tests;
+package fr.systerel.smt.provers.core.tests;
 
 import org.eventb.core.seqprover.IProofMonitor;
 

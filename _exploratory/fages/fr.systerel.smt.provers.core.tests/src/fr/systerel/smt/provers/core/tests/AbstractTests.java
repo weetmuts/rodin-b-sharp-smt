@@ -9,7 +9,7 @@
  *     ETH Zurich - initial API and implementation
  *     Systerel - mathematical language V2
  *******************************************************************************/
-package fr.systerel.smt.provers.tests;
+package fr.systerel.smt.provers.core.tests;
 
 import static org.eventb.core.ast.LanguageVersion.V2;
 import static org.eventb.core.ast.tests.AbstractTests.parseType;

@@ -1,4 +1,4 @@
-package utils;
+package fr.systerel.smt.provers.core.tests.utils;
 
 import java.util.List;
 
