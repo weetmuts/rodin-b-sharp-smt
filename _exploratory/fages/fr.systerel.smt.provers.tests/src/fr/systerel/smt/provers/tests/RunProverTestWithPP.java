@@ -39,9 +39,9 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName,
-			final List<String> inputHyps, final String inputGoal,
-			final ITypeEnvironment te, final boolean expectedSolverResult) {
+	private void doTest(final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
 		for (String hyp : inputHyps) {
@@ -65,7 +65,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName,
+	private void doTest(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
@@ -76,7 +76,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		// Create an instance of SmtProversCall
 		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
-				parsedGoal, MONITOR, lemmaName) {
+				parsedGoal, MONITOR, preferences, lemmaName) {
 			@Override
 			public String displayMessage() {
 				return "SMT";
@@ -97,17 +97,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		} catch (IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
-	}
-
-	public static void setPreferencesForZ3Test() {
-		String solver = "z3";
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			solver = "bin" + System.getProperty("file.separator") + solver
-					+ System.getProperty("file.separator") + "bin"
-					+ System.getProperty("file.separator") + "z3";
-		}
-
-		setSolverPreferences(solver, "", true, false);
 	}
 
 	/**

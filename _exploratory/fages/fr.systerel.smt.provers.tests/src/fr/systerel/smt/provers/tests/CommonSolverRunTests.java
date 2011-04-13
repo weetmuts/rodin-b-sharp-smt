@@ -1,17 +1,14 @@
 package fr.systerel.smt.provers.tests;
 
-import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.seqprover.IProofMonitor;
 
+import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 public class CommonSolverRunTests extends AbstractTests {
+
+	private static final String VERIT = "verit";
+	protected SMTPreferences preferences;
 
 	/**
 	 * A ProofMonitor is necessary for SmtProverCall instances creation.
@@ -62,12 +59,10 @@ public class CommonSolverRunTests extends AbstractTests {
 	 * @param isSMTV1_2Compatible
 	 * @param isSMTV2_0Compatible
 	 */
-	protected static void setSolverPreferences(final String solverBinaryName,
+	protected void setSolverPreferences(final String solverBinaryName,
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
-		final SmtProversUIPlugin core = SmtProversUIPlugin.getDefault();
-		final IPreferenceStore store = core.getPreferenceStore();
 		final String solverPath;
 
 		if (OS.startsWith("Windows")) {
@@ -76,28 +71,21 @@ public class CommonSolverRunTests extends AbstractTests {
 			solverPath = BIN_PATH + solverBinaryName;
 		}
 
-		System.out.println(solverPath);
-
-		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
-				isSMTV1_2Compatible, isSMTV2_0Compatible));
-		final String preferences = CreatePreferences(solvers);
-		store.setValue("solverpreferences", preferences);
-		store.setValue("solverindex", 0);
-		store.setValue("usingprepro", true);
-		store.setValue("prepropath", BIN_PATH + "verit");
+		SolverDetail sd = new SolverDetail(solverBinaryName, solverPath,
+				solverArgs, isSMTV1_2Compatible, isSMTV2_0Compatible);
+		preferences = new SMTPreferences(sd, true, BIN_PATH + VERIT);
 	}
 
-	protected static void setPreferencesForVeriTTest() {
-		setSolverPreferences("verit", "", true, false);
+	protected void setPreferencesForVeriTTest() {
+		setSolverPreferences(VERIT, "", true, false);
 	}
 
-	protected static void setPreferencesForCvc3Test() {
+	protected void setPreferencesForCvc3Test() {
 		setSolverPreferences("cvc3", "-lang smt", true, false);
 
 	}
 
-	protected static void setPreferencesForZ3Test() {
+	protected void setPreferencesForZ3Test() {
 		String solver = "z3";
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			solver = "bin" + System.getProperty("file.separator") + solver
@@ -108,7 +96,7 @@ public class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(solver, "", true, false);
 	}
 
-	protected static void setPreferencesForAltErgoTest() {
+	protected void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
 	}
 

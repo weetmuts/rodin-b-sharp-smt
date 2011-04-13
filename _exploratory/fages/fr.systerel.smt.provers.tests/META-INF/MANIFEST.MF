@@ -7,9 +7,7 @@ Require-Bundle: org.junit4,
  fr.systerel.smt.provers.core,
  org.eventb.core.seqprover,
  org.eventb.pptrans,
- org.eventb.core.ast.tests,
- org.eclipse.ui,
- fr.systerel.smt.provers.ui
+ org.eventb.core.ast.tests
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName

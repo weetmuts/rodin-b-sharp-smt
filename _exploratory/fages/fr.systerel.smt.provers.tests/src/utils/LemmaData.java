@@ -1,12 +1,12 @@
-package fr.systerel.smt.provers.tests;
+package utils;
 
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 
-public class XMLDocumentData {
+public class LemmaData {
 
-	public XMLDocumentData(String lemmaName, List<String> hypotheses,
+	public LemmaData(String lemmaName, List<String> hypotheses,
 			String goal, ITypeEnvironment te, String origin, String comments,
 			List<String> theories) {
 		super();

@@ -21,6 +21,14 @@ import br.ufrn.smt.solver.preferences.SolverDetail;
  */
 public class SMTPreferences {
 
+	public SMTPreferences(SolverDetail solver, boolean usingPrepro,
+			String preproPath) {
+		super();
+		this.solver = solver;
+		this.usingPrepro = usingPrepro;
+		this.preproPath = preproPath;
+	}
+
 	private static final String SEPARATOR1 = ",,";
 	private static final String SEPARATOR2 = ";";
 

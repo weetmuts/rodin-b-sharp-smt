@@ -43,9 +43,9 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName,
-			final List<String> inputHyps, final String inputGoal,
-			final ITypeEnvironment te, final boolean expectedSolverResult) {
+	private void doTest(final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
 		for (String hyp : inputHyps) {
@@ -69,7 +69,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private static void doTest(final String lemmaName,
+	private void doTest(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
@@ -80,7 +80,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 		// Create an instance of SmtProversCall
 		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
-				parsedGoal, MONITOR, lemmaName) {
+				parsedGoal, MONITOR, preferences, lemmaName) {
 			@Override
 			public String displayMessage() {
 				return "SMT";

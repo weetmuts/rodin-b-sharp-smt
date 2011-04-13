@@ -50,15 +50,10 @@ public class SmtProverCall extends XProverCall {
 	private static String TRANSLATION_PATH = System.getProperty("user.home")
 			+ File.separatorChar + "rodin_smtlib_tmp_files";
 
-	private static String PREFS_ID = "fr.systerel.smt.provers.ui";
-
 	/**
 	 * Name of the called external SMT prover
 	 */
 	private final String proverName;
-
-	private final IPreferencesService preferencesService = Platform
-			.getPreferencesService();
 
 	private SMTPreferences smtUiPreferences;
 
@@ -131,25 +126,11 @@ public class SmtProverCall extends XProverCall {
 	 *            proof monitor used for cancellation
 	 */
 	public SmtProverCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, String lemmaName) {
+			IProofMonitor pm, SMTPreferences preferences, String lemmaName) {
 		super(hypotheses, goal, pm);
-
-		/**
-		 * Get back preferences from UI
-		 */
-
-		String string1 = preferencesService.getString(PREFS_ID,
-				"solverpreferences", null, null);
-		int int2 = preferencesService.getInt(PREFS_ID, "solverindex", -1, null);
-		boolean bool3 = preferencesService.getBoolean(PREFS_ID, "usingprepro",
-				false, null);
-		String string4 = preferencesService.getString(PREFS_ID, "prepropath",
-				null, null);
-
-		smtUiPreferences = new SMTPreferences(string1, int2, bool3, string4);
-
-		this.proverName = smtUiPreferences.getSolver().getId();
+		this.smtUiPreferences = preferences;
 		this.lemmaName = lemmaName;
+		this.proverName = preferences.getSolver().getId();
 	}
 
 	/**
