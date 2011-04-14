@@ -493,4 +493,76 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
+
+	@Test
+	public void testDynamicStableLSR_081014_15WithVeriT() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
+				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("h ∈ S →  (S × S →  ℕ)");
+		hyps.add("n ∈ dom(h)");
+		hyps.add("m ↦ n ∈ dom(h(n))");
+		hyps.add("h(n){m ↦ n ↦ (h(n))(m ↦ n)+1} ∈ S × S →  ℕ");
+
+		doTest("DynamicStableLSR_081014_15_verit", hyps,
+				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
+				te, VALID);
+	}
+
+	@Test
+	public void testDynamicStableLSR_081014_15WithCVC3() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
+				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("h ∈ S →  (S × S →  ℕ)");
+		hyps.add("n ∈ dom(h)");
+		hyps.add("m ↦ n ∈ dom(h(n))");
+		hyps.add("h(n){m ↦ n ↦ (h(n))(m ↦ n)+1} ∈ S × S →  ℕ");
+
+		doTest("DynamicStableLSR_081014_15_cvc3", hyps,
+				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
+				te, VALID);
+	}
+
+	@Test
+	public void testDynamicStableLSR_081014_15WithZ3() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
+				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("h ∈ S →  (S × S →  ℕ)");
+		hyps.add("n ∈ dom(h)");
+		hyps.add("m ↦ n ∈ dom(h(n))");
+		hyps.add("h(n){m ↦ n ↦ (h(n))(m ↦ n)+1} ∈ S × S →  ℕ");
+
+		doTest("DynamicStableLSR_081014_15_z3", hyps,
+				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
+				te, VALID);
+	}
+
+	@Test
+	public void testDynamicStableLSR_081014_15WithAltErgo() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
+				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("h ∈ S →  (S × S →  ℕ)");
+		hyps.add("n ∈ dom(h)");
+		hyps.add("m ↦ n ∈ dom(h(n))");
+		hyps.add("h(n){m ↦ n ↦ (h(n))(m ↦ n)+1} ∈ S × S →  ℕ");
+
+		doTest("DynamicStableLSR_081014_15_altergo", hyps,
+				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
+				te, VALID);
+	}
 }

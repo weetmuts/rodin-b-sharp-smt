@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AtomicExpression;
@@ -28,15 +27,12 @@ import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.IAccumulator;
-import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.LiteralPredicate;
@@ -50,11 +46,11 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
-import org.eventb.core.ast.UnaryPredicate;
 import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
@@ -543,7 +539,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.EQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeEqual(children);
+			smtNode = SMTFactory.makeEqual(children);
 			break;
 		}
 		case Formula.NOTEQUAL: {
@@ -620,7 +616,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] args = membershipPredicateTerms
 					.toArray(new SMTTerm[numberOfArguments]);
 
-			smtNode = sf.makeAtom(predSymbol, args, this.signature);
+			smtNode = SMTFactory.makeAtom(predSymbol, args, this.signature);
 			membershipPredicateTerms.clear();
 			break;
 		case Formula.NOTIN:

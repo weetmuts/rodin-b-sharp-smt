@@ -61,16 +61,16 @@ import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
-import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
-import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
-import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
-import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
-import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTVeritCardFormula;
 import fr.systerel.smt.provers.ast.SMTVeritFiniteFormula;
+import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
+import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -239,7 +239,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final String symbolName = "pair 's 't";
 		SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(symbolName,
 				argSorts, PAIR_SORT, !SMTFunctionSymbol.ASSOCIATIVE,
-				!SMTFunctionSymbol.PREDEFINED);
+				!SMTSymbol.PREDEFINED);
 
 		signature.addConstant(functionSymbol);
 		varMap.put(symbolName, functionSymbol);

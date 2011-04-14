@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
 
 import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.TranslationException;
-import fr.systerel.decert.smt.BenchmarkWriter;
+import fr.systerel.decert.LemmaParser;
 import fr.systerel.smt.provers.core.tests.utils.LemmaData;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
@@ -65,7 +65,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
 		List<LemmaData[]> totalDocData = new ArrayList<LemmaData[]>();
-		File DTDFile = new File(XMLFolder, "lemmas.dtd");
+		File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
 		File dir = new File(XMLFolder);
 		if (dir.isDirectory()) {
 			File[] files = dir.listFiles(new FilenameFilter() {
@@ -77,8 +77,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			for (int i = 0; i < files.length; i++) {
 				URL XMLFile = null;
 				try {
-					XMLFile = BenchmarkWriter.setDoctype(files[i].toURI()
-							.toURL(), DTDFile.toURI().toURL());
+					XMLFile = LemmaParser.setDoctype(files[i].toURI().toURL(),
+							DTDFile.toURI().toURL());
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -86,7 +86,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				}
 				Document document = null;
 				try {
-					document = BenchmarkWriter.load(XMLFile, DTDFile.toURI()
+					document = LemmaParser.load(XMLFile, DTDFile.toURI()
 							.toURL());
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -123,6 +123,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * lemmas to be translated in SMT-LIB format, and their associated DTD file.
 	 */
 	private final static String XMLFolder = "/u/vitor/rodin_xml_tmp_files/xml";
+	private final static String DTDFolder = "src/fr/systerel/smt/provers/core/tests/utils";
 
 	/**
 	 * The path of the output folder where to store the generated SMT files.
@@ -367,7 +368,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test
+	@Test(timeout = 5000)
 	public void testTranslateWithVerit() {
 		switch (SOLVER) {
 		case ALT_ERGO:
@@ -396,7 +397,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test
+	@Test(timeout = 5000)
 	public void testTranslateWithPP() {
 		switch (SOLVER) {
 		case ALT_ERGO:

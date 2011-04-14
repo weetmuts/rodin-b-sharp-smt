@@ -371,8 +371,7 @@ public class SMTLogic {
 						.getBooleanSort();
 				SMTSortSymbol[] argSorts = {};
 				SMTFunctionSymbol boolSortFunction = new SMTFunctionSymbol(
-						SMTMacroSymbol.BOOL_SORT, argSorts, boolSort, false,
-						true);
+						SMTSymbol.BOOL_SORT, argSorts, boolSort, false, true);
 				return boolSortFunction;
 			}
 		}

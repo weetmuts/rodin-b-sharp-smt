@@ -11,9 +11,9 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
+import static fr.systerel.smt.provers.ast.SMTFactory.ITE_TERM;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
-import static fr.systerel.smt.provers.ast.SMTFactory.ITE_TERM;
 
 /**
  * This class represents an ITE_FORMULA (If Then Else) term in SMT-LIB grammar.

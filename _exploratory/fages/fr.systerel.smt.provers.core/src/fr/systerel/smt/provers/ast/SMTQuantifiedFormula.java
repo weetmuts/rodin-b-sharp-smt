@@ -12,8 +12,8 @@ package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
-import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import static fr.systerel.smt.provers.ast.SMTFactory.POINT;
+import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
  * @author guyot

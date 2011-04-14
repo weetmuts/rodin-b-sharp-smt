@@ -12,8 +12,8 @@ package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
 
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.

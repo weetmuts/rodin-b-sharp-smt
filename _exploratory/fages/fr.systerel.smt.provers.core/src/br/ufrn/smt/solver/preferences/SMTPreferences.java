@@ -14,8 +14,6 @@ package br.ufrn.smt.solver.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufrn.smt.solver.preferences.SolverDetail;
-
 /**
  * The SMT preferences class
  */

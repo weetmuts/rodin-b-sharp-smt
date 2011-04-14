@@ -1,0 +1,92 @@
+<!--
+   DTD for Event-B lemmas files.
+
+   Copyright (c) 2009 Systerel and others.
+
+   All rights reserved. This program and the accompanying materials
+   are made available under the terms of the Eclipse Public License v1.0
+   which accompanies this distribution, and is available at
+   http://www.eclipse.org/legal/epl-v10.html
+
+-->
+
+<!-- Element Names -->
+<!ENTITY % lemmas	"lemmas">
+<!ENTITY % lemma	"lemma">
+<!ENTITY % title 	"title">
+<!ENTITY % origin 	"origin">
+<!ENTITY % comment 	"comment">
+<!ENTITY % theories 	"theories">
+<!ENTITY % theory 	"theory">
+<!ENTITY % typenv 	"typenv">
+<!ENTITY % variable 	"variable">
+<!ENTITY % hypothesis 	"hypothesis">
+<!ENTITY % goal 	"goal">
+
+<!-- Attribute Names -->
+<!ENTITY % name          "name">
+<!ENTITY % type          "type">
+<!ENTITY % needed        "needed">
+
+
+<!--============= Start of element type declarations =============-->
+
+<!ELEMENT %lemmas;
+   ( %lemma; )*>
+
+<!ELEMENT %lemma;
+   ( %title;
+   , %origin;
+   , ( %comment; )?
+   , %theories;
+   , ( %typenv; )?
+   , ( %hypothesis; )*
+   , %goal;
+   ) >
+<!--ATTLIST %lemma;
+  %name; ID #REQUIRED
+  -->
+
+<!ELEMENT %title; ( #PCDATA )>
+
+<!ELEMENT %origin; ( #PCDATA )>
+
+<!ELEMENT %comment; ( #PCDATA )>
+
+<!ELEMENT %theories;
+   ( %theory; )*>
+
+<!ELEMENT %theory; EMPTY>
+<!ATTLIST %theory;
+  %name;
+    ( lists
+    | arrays
+    | basic_set
+    | basic_relation
+    | full_set_theory
+    | integer
+    | linear_order_int
+    | linear_arith
+    | nonlinear_arith
+    | full_arith
+    | boolean
+    ) #REQUIRED
+  >
+
+<!ELEMENT %typenv; ( %variable; )* >
+
+<!ELEMENT %variable; EMPTY >
+<!ATTLIST %variable;
+  %name; CDATA #REQUIRED
+  %type; CDATA #REQUIRED
+  >
+
+<!ELEMENT %hypothesis; (#PCDATA) >
+<!ATTLIST %hypothesis;
+  %needed; (false|true) "false"
+  >
+
+<!ELEMENT %goal; (#PCDATA) >
+<!ATTLIST %goal;
+  %needed; (false|true) "true"
+  >
