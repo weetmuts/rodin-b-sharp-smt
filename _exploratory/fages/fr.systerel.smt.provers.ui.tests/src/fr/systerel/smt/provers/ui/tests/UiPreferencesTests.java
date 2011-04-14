@@ -4,7 +4,6 @@
 package fr.systerel.smt.provers.ui.tests;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-
 import fr.systerel.smt.provers.core.SmtProversCore;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
