@@ -139,6 +139,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
+	@Ignore("Not yet implemented")
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForZ3Test();
 

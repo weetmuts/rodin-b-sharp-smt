@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.TranslationException;
@@ -309,6 +310,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
+	@Ignore("Not yet implemented")
 	public void testCh915Bin10() {
 		setPreferencesForAltErgoTest();
 

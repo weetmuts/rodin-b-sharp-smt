@@ -18,6 +18,7 @@ import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
@@ -254,6 +255,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 * The purpose of this test is to show that sets of sets are not supported.
 	 */
 	@Test
+	@Ignore("Not yet implemented")
 	public void testTypeEnvironmenSortErrorTe() {
 		setSignatureForTests(errorTe);
 		Set<String> expectedSorts = new HashSet<String>();
@@ -360,6 +362,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 * "pred-boolequ"
 	 */
 	@Test
+	@Ignore("Not yet implemented")
 	public void testPredBoolEqu() {
 		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
 		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
@@ -457,6 +460,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	@Ignore("Not yet implemented")
 	public void testArithExprBinopExponentialUnsupported() { // TODO Add
 																// exponential
 																// binop
@@ -752,6 +756,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	@Ignore("Not yet implemented")
 	public void testRule21() {
 		// FIXME The translation of bool(⊤) is not defined yet
 		testTranslationV1_2Default("bool(⊤) ∈ BOOL",

@@ -16,6 +16,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
@@ -262,6 +263,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	// (expected = IllegalArgumentException.class)
+	@Ignore("Not yet implemented")
 	public void testArithExprBinopUnsupported() { // TODO Add exponential binop
 		/**
 		 * expn
