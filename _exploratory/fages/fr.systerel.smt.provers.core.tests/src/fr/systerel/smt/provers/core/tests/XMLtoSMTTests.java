@@ -35,7 +35,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
 import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.decert.smt.BenchmarkWriter;
@@ -56,6 +55,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * If true, is printed details of the test for each test iteration.
 	 */
 	private final boolean PRINT_INFO = true;
+	private static int round = 0;
 
 	/**
 	 * The chosen solver for the tests
@@ -113,6 +113,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	public XMLtoSMTTests(LemmaData data) {
 		this.data = data;
+		System.out.println("Loop: " + round++ / 2);
 	}
 
 	private LemmaData data;

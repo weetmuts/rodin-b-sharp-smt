@@ -88,6 +88,7 @@ public final class SMTFactory {
 			return "Nat1";
 		} else if (atomicExpression.equals("BOOL")) {
 			return "Bool";
+			// FIXME: How to deal with these elements?
 			// } else if (atomicExpression.equals("TRUE")) {
 			// return "true";
 			// } else if (atomicExpression.equals("FALSE")) {

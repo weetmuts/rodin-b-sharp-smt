@@ -34,7 +34,8 @@ import fr.systerel.smt.provers.ast.SMTSortSymbol;
  * 
  */
 public class TranslationTestsWithVeriT extends AbstractTests {
-	protected static final ITypeEnvironment defaultTe, simpleTe, errorTe;
+	protected static final ITypeEnvironment defaultTe, simpleTe, errorTe,
+			cdisTe;
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	private SMTSignature signature;
@@ -46,6 +47,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ", "b",
 				"ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
+
+		cdisTe = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔  R", "x",
+				"S", "y", "R");
 
 		errorTe = mTypeEnvironment("AZ", "ℤ ↔ ℙ(ℤ)");
 
@@ -94,6 +98,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final Predicate ppred,
 			final String expectedSMTNode, final String failMessage) {
+
+		String x = ppred.getSyntaxTree();
 		final String actualSMTNode = SMTThroughVeriT.translate(defaultLogic,
 				ppred).toString();
 
@@ -771,6 +777,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule25() {
 		testTranslationV1_2Default("card({1,2,3}) = card({1,2,3})",
 				"(= card_k card_k_0)");
+	}
+
+	@Test
+	public void testCDIS_2() {
+		testTranslationV1_2(cdisTe, "f{x ↦ y} ∈ S ⇸  R",
+				"(in (ovr f_0 enum_0) (pfun S_0 R_0))", defaultFailMessage);
 	}
 
 }

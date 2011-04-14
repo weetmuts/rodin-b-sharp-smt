@@ -274,12 +274,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param varType
 	 *            The type of the variable
 	 */
-	private void translatePairTypeSymbol(String varName, Type varType) {
+	private void translatePairTypeSymbol(String varName, String freshVarName,
+			Type varType) {
 		SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
 				varType.getTarget());
 		SMTSortSymbol[] sorts = { sortSymbol };
-		SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(varName, sorts,
-				false);
+		SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(freshVarName,
+				sorts, false);
 		signature.addPred(predSymbol);
 		varMap.put(varName, predSymbol);
 		typeMap.put(varType, sortSymbol);
@@ -320,7 +321,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 
 			if (varType.getSource() != null) {
-				translatePairTypeSymbol(freshVarName, varType);
+				translatePairTypeSymbol(varName, freshVarName, varType);
 			} else if (varType.getBaseType() != null) {
 				parseBaseTypes(varName, varType);
 			} else {
@@ -463,22 +464,26 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			/*
 			 * TODO Check rule and implement it
 			 */
-			break;
+			throw new IllegalArgumentException(
+					"pred (KPRED) is not implemented yet");
 		case Formula.KSUCC:
 			/*
 			 * TODO Check rule and implement it
 			 */
-			break;
+			throw new IllegalArgumentException(
+					"succ (KSUCC) is not implemented yet");
 		case Formula.KPRJ1_GEN:
 			/*
 			 * TODO Check rule and implement it
 			 */
-			break;
+			throw new IllegalArgumentException(
+					"prj1 (KPRJ1_GEN) is not implemented yet");
 		case Formula.KPRJ2_GEN:
 			/*
 			 * TODO Check rule and implement it
 			 */
-			break;
+			throw new IllegalArgumentException(
+					"prj2 (KPRJ2_GEN) is not implemented yet");
 		case Formula.KID_GEN:
 			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.ID,
 					signature);
@@ -492,14 +497,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			 */
 			// this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean
 			// value when BOOL_SORT theory implemented
-			break;
+			throw new IllegalArgumentException(
+					"TRUE value (TRUE)is not implemented yet");
 		case Formula.FALSE:
 			/**
 			 * TODO Check the rules to see how do implement this.
 			 */
 			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
 			// boolean value when BOOL_SORT theory implemented
-			break;
+			throw new IllegalArgumentException(
+					"false value (FALSE) is not implemented yet");
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -683,11 +690,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		case Formula.DPROD:
 			// FIXME There is no implementation for DPROD in Verit SMT-LIB
-			break;
+			throw new IllegalArgumentException(
+					"Operator direct product (DPROD) is not implemented yet");
 
 		case Formula.PPROD:
 			// FIXME There is no implementation for PPROD in Verit SMT-LIB
-			break;
+			throw new IllegalArgumentException(
+					"Operator parallel product (PPROD) is not implemented yet");
 
 		case Formula.DOMRES:
 			SMTMacroFactory.addPredefinedMacroInSignature(
@@ -709,7 +718,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		case Formula.FUNIMAGE:
 			// FIXME There is no implementation for FUNIMAGE in Verit SMT-LIB
-			break;
+			throw new IllegalArgumentException(
+					"function application (FUNIMAGE) is not implemented yet");
 
 		case Formula.RELIMAGE:
 			SMTMacroFactory.addPredefinedMacroInSignature(
@@ -937,18 +947,20 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalArgumentException(
+				"BecomesEqualTo assignment is not implemented yet");
 	}
 
 	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
-		// TODO
+		throw new IllegalArgumentException(
+				"BecomesMemberOf assignment is not implemented yet");
 	}
 
 	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
-		// TODO Auto-generated method stub
+		throw new IllegalArgumentException(
+				"BecomesSuchThat assignment is not implemented yet");
 	}
 
 	/**
@@ -1023,9 +1035,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// TODO Implement rule 21
 		throw new IllegalArgumentException(
 				"'Translation of Boolean Expression is not implemented yet");
-
 	}
 
+	/**
+	 * This method translates an Event-B bool quantified expression into an
+	 * Extended SMT node.
+	 */
 	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		// FIXME Refactor this method
@@ -1066,12 +1081,21 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			this.smtNode = sf.makeMacroTerm(macroSymbol);
 			this.printPointInQuantifiedOperator = false;
 			break;
-		default:
+		case Formula.QUNION:
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate quantified union and quantified interesection to SMT-LIB");
+					"It's not possible to translated quantified union (QUNION) to SMT-LIB yet");
+		case Formula.QINTER:
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate quantified intersection (QINTER) to SMT-LIB yet");
+		default:
+			throw new IllegalTagException(expression.getTag());
 		}
 	}
 
+	/**
+	 * This method translates an Event-B bool setextension expression into an
+	 * Extended SMT node.
+	 */
 	@Override
 	public void visitSetExtension(SetExtension expression) {
 		// FIXME: Refactor this method
@@ -1171,20 +1195,24 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.POW: {
-			// TODO
-			break;
+			// TODO Implement this translation
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate  PowerSet unary expression (POW) to SMT-LIB yet");
 		}
 		case Formula.POW1: {
-			// TODO
-			break;
+			// TODO Implement this translationTODO
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate  PowerSet1 unary expression (POW1) to SMT-LIB yet");
 		}
 		case Formula.KUNION: {
-			// TODO
-			break;
+			// TODO Implement this translationTODO
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate generalized union (KUNION) to SMT-LIB yet");
 		}
 		case Formula.KINTER: {
-			// TODO
-			break;
+			// TODO Implement this translationTODO
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");
 		}
 		case Formula.KDOM:
 			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.DOM,
@@ -1301,7 +1329,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates an Event-B free identifier into an SMT node.
+	 * This method translates an Event-B free identifier into an Extended SMT
+	 * node.
 	 */
 	@Override
 	public void visitFreeIdentifier(FreeIdentifier identifierExpression) {
@@ -1329,10 +1358,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		// TODO Auto-generated method stub
+		throw new IllegalArgumentException(
+				"It's not possible yet to translate multiple predicate to SMT-LIB yet");
 
 	}
 
+	/**
+	 * This method translates an Event-B simple predicate into an Extended SMT
+	 * node.
+	 */
 	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
 		SMTTerm[] children = smtTerms(predicate.getExpression());
@@ -1386,12 +1420,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		// TODO Auto-generated method stub
+		throw new IllegalArgumentException(
+				"It's not possible yet to translate extended expressionto SMT-LIB yet");
 
 	}
 
 	@Override
 	public void visitExtendedPredicate(ExtendedPredicate predicate) {
 		// TODO Auto-generated method stub
+		throw new IllegalArgumentException(
+				"It's not possible yet to translate extended predicate to SMT-LIB yet");
 
 	}
 

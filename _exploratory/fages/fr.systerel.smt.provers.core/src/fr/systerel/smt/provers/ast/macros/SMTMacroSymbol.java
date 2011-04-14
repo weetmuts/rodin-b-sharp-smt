@@ -89,33 +89,6 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String BCOMP = "bcomp";
 
 	/**
-	 * This array keeps the VeriT_Symbols.
-	 */
-	private static String[] VERIT_SYMBOLS = { BUNION, BINTER, EMPTY, INTER,
-			SETMINUS, IN, SUBSETEQ, SUBSET, RANGE_INTEGER, PROD, DOM, IMG,
-			RANGE, DOMR, DOMS, INV, OVR, ID, FCOMP, DIV, ENUM, MOD,
-			RANGE_SUBSTRACION, RANGE_RESTRICTION, RELATION, TOTAL_RELATION,
-			SURJECTIVE_RELATION, TOTAL_SURJECTIVE_RELATION, PARTIAL_FUNCTION,
-			TOTAL_FUNCTION, MAPSTO, NAT, NAT1, PARTIAL_INJECTION,
-			TOTAL_INJECTION, PARTIAL_SURJECTION, TOTAL_SURJECTION,
-			TOTAL_BIJECTION, CARTESIAN_PRODUCT, DOMAIN_RESTRICTION,
-			DOMAIN_SUBSTRACTION, RELATIONAL_IMAGE, LAMBDA, CSET, ELEM, ISMIN,
-			ISMAX, FINITE, CARD, PAIR, FUNP, INJP, NOT_EQUAL, BCOMP };
-
-	/**
-	 * Returns a set containing all Extended SMT-LIB symbols.
-	 * 
-	 * @return The veriT extended SMT-LIB symbols.
-	 */
-	public static Set<String> getVeritSymbols() {
-		Set<String> set = new HashSet<String>();
-		for (String symbol : VERIT_SYMBOLS) {
-			set.add(symbol);
-		}
-		return set;
-	}
-
-	/**
 	 * Creates a new macro symbol.
 	 * 
 	 * @param symbolName
