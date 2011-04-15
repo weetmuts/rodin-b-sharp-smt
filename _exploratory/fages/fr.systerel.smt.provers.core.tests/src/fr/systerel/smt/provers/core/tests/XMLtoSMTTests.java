@@ -26,6 +26,7 @@ import java.util.List;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -61,6 +62,11 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * The chosen solver for the tests
 	 */
 	private final SMTSolver SOLVER = SMTSolver.Z3;
+
+	@BeforeClass
+	protected static void cleanSMTFolder() {
+		cleanSMTFilesFolder();
+	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {

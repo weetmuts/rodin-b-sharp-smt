@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,6 +27,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
+
+	@BeforeClass
+	protected static void cleanSMTFolder() {
+		cleanSMTFilesFolder();
+	}
 
 	/**
 	 * Parses the given sequent in the given type environment and launch the

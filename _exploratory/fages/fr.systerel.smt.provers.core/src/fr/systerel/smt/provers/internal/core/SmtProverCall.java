@@ -41,12 +41,14 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
  */
 public class SmtProverCall extends XProverCall {
 	private static final String RES = "res";
-	private static String SMT_LIB_FILE_EXTENSION = ".smt";
-	private static String VERIT_TEMP_FILE = "_prep";
-	private static String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
-	private static String VERIT_DISABLE_BANNER = "--disable-banner";
-	private static String TRANSLATION_PATH = System.getProperty("user.home")
-			+ File.separatorChar + "rodin_smtlib_tmp_files";
+	private static final String SMT_LIB_FILE_EXTENSION = ".smt";
+	private static final String VERIT_TEMP_FILE = "_prep";
+	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
+	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
+	public static final String TRANSLATION_PATH = System
+			.getProperty("user.home")
+			+ File.separatorChar
+			+ "rodin_smtlib_tmp_files";
 
 	/**
 	 * Name of the called external SMT prover
@@ -239,8 +241,7 @@ public class SmtProverCall extends XProverCall {
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());
 
-		resultOfSolver = Exec
-				.execProgram(args);
+		resultOfSolver = Exec.execProgram(args);
 
 		/**
 		 * Set up temporary result file
@@ -375,8 +376,7 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Launch solver and get back solver result
 		 */
-		resultOfSolver = Exec
-				.execProgram(args);
+		resultOfSolver = Exec.execProgram(args);
 
 		/**
 		 * Set up result file

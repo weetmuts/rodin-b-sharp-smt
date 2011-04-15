@@ -12,6 +12,7 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -29,6 +30,11 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
+	
+	@BeforeClass
+	protected static void cleanSMTFolder() {
+		cleanSMTFilesFolder();
+	}
 
 	/**
 	 * Parses the given sequent in the given type environment and launch the
