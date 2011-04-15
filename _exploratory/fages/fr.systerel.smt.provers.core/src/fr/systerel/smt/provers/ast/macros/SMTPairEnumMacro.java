@@ -115,18 +115,18 @@ public class SMTPairEnumMacro extends SMTMacro {
 	/**
 	 * It's the ?f variable as described in {@link SMTPairEnumMacro}
 	 */
-	private SMTVarSymbol key;
+	private final SMTVarSymbol key;
 
 	/**
 	 * It's the ?g variable as described in {@link SMTPairEnumMacro}
 	 */
-	private SMTVarSymbol value;
+	private final SMTVarSymbol value;
 
 	/**
 	 * The terms that contains the two values for each maplet. See
 	 * {@link SMTPairEnumMacro} for more details.
 	 */
-	private SMTMacroTerm[] terms;
+	private final SMTMacroTerm[] terms;
 
 	@Override
 	public String toString() {

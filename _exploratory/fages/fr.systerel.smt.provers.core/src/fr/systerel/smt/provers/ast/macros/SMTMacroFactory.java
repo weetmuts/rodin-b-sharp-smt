@@ -35,7 +35,6 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT1;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NOT_EQUAL;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.OVR;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PAIR;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
@@ -252,10 +251,6 @@ public class SMTMacroFactory {
 			CARD,
 			"(lambda (?t3 ('s Bool)) (?f4 ('s Int)) (?k1 Int) . (and (forall (?x26 's) . (implies (in ?x26 ?t3)(in (?f4 ?x26)(range 1 ?k1))))(forall (?x26 's)(?y1 's) . (implies (and (in ?x26 ?t3) (in ?y1 ?t3))(iff(= ?x26 ?y1) (= (?f4 ?x26)(?f4 ?y1)))))))",
 			1);
-	public static final SMTPredefinedMacro PAIR_MACRO = new SMTPredefinedMacro(
-			PAIR,
-			"(lambda (?e4 't) (?e5 't) . (lambda (?f5 't) (?f6 't) . (and (= ?f5 ?e4) (= ?f6 ?e5))))",
-			0);
 	private static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
 			FUNP,
 			"(lambda (?r27 ((Pair 's 't )Bool)) . (forall (?pt (Pair 's 't))(?p0 (Pair 's 't)) . (implies (and (?r27 ?pt) (?r27 ?p0)) (implies (= (fst ?pt) (fst ?p0))(= (snd ?pt) (snd ?p0))))))",
@@ -405,7 +400,7 @@ public class SMTMacroFactory {
 			TOTAL_BIJECTION_MACRO, CARTESIAN_PRODUCT_MACRO,
 			DOMAIN_RESTRICTION_MACRO, DOMAIN_SUBSTRACTION_MACRO,
 			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
-			FINITE_MACRO, CARD_MACRO, PAIR_MACRO, FUNP_MACRO, INJP_MACRO,
+			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
 			TOTAL_RELATION_MACRO, RANGE_MACRO, NOTEQUAL_MACRO, BCOMP_MACRO };
 
 	/**
@@ -628,7 +623,6 @@ public class SMTMacroFactory {
 	 */
 	private static void addPairMacroSortAndFunInSignature(
 			SMTSignatureVerit signature) {
-		signature.addMacro(PAIR_MACRO);
 		signature.addSort(PAIR_SORT);
 		signature.addConstant(PAIR_SYMBOL);
 	}
@@ -646,7 +640,6 @@ public class SMTMacroFactory {
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		switch (operator) {
 		case MAPSTO: {
-			signature.addMacro(PAIR_MACRO);
 			break;
 		}
 		case PAIR: {
