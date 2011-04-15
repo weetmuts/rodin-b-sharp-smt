@@ -116,7 +116,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		System.out.println("Loop: " + round++ / 2);
 	}
 
-	private LemmaData data;
+	private final LemmaData data;
 
 	/**
 	 * The path of the input folder containing the XML files for the Event-B

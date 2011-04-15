@@ -30,4 +30,6 @@ public interface ISMTArithmeticFuns {
 	public SMTFunctionSymbol getMul();
 
 	public SMTFunctionSymbol getMinus();
+
+	public SMTSymbol getDiv();
 }

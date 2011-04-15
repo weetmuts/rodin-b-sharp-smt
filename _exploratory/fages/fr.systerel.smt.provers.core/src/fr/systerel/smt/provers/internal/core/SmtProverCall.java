@@ -53,7 +53,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	private final String proverName;
 
-	private SMTPreferences smtUiPreferences;
+	private final SMTPreferences smtUiPreferences;
 
 	/**
 	 * Name of the lemma to prove
@@ -240,7 +240,7 @@ public class SmtProverCall extends XProverCall {
 		args.add(preprocessedFile.getPath());
 
 		resultOfSolver = Exec
-				.execProgram(args.toArray(new String[args.size()]));
+				.execProgram(args);
 
 		/**
 		 * Set up temporary result file
@@ -376,7 +376,7 @@ public class SmtProverCall extends XProverCall {
 		 * Launch solver and get back solver result
 		 */
 		resultOfSolver = Exec
-				.execProgram(args.toArray(new String[args.size()]));
+				.execProgram(args);
 
 		/**
 		 * Set up result file

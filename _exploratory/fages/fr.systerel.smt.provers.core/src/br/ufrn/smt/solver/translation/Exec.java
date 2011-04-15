@@ -15,6 +15,7 @@ package br.ufrn.smt.solver.translation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * This class executes the given command with arguments and returns a String
@@ -22,17 +23,18 @@ import java.io.InputStreamReader;
  */
 public class Exec {
 
-	public static String execProgram(String[] args) throws IOException {
+	public static String execProgram(List<String> args) throws IOException {
 		String ln;
 		/**
 		 * Executes the command with args in a new process
 		 */
-		final Process p = Runtime.getRuntime().exec(args);
+		ProcessBuilder pb = new ProcessBuilder(args);
+		pb.redirectErrorStream(true);
+
+		final Process p = pb.start();
 
 		final BufferedReader br = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
-		final BufferedReader bre = new BufferedReader(new InputStreamReader(
-				p.getErrorStream()));
 
 		/**
 		 * Reads input and error streams and writes content into the buffer to
@@ -40,10 +42,6 @@ public class Exec {
 		 */
 		final StringBuilder outputBuilder = new StringBuilder();
 		while ((ln = br.readLine()) != null) {
-			outputBuilder.append("\n");
-			outputBuilder.append(ln);
-		}
-		while ((ln = bre.readLine()) != null) {
 			outputBuilder.append("\n");
 			outputBuilder.append(ln);
 		}

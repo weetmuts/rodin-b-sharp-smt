@@ -216,6 +216,12 @@ public final class SMTFactory {
 		return new SMTFunApplication(uminus, arg);
 	}
 
+	public SMTTerm makeDiv(final SMTFunctionSymbol div, final SMTTerm[] args,
+			SMTSignature signature) {
+		signature.verifyFunctionSignature(div);
+		return new SMTFunApplication(div, args);
+	}
+
 	/**
 	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
 	 * XOR, IFF}

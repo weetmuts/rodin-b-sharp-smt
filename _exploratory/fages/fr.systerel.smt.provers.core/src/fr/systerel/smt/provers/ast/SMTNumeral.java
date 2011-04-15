@@ -43,7 +43,7 @@ public final class SMTNumeral extends SMTTerm {
 	public void toString(StringBuilder builder) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			builder.append(SMTTheory.Ints.getInstance().getUMinus());
+			builder.append(SMTTheory.Ints.getInstance().getUMinus().getName());
 			builder.append(SPACE);
 			builder.append(value.abs());
 			builder.append(CPAR);

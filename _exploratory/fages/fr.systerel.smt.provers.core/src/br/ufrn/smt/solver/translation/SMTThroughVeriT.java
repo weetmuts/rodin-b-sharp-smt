@@ -65,7 +65,6 @@ import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTVeritCardFormula;
 import fr.systerel.smt.provers.ast.SMTVeritFiniteFormula;
-import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
@@ -526,8 +525,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.DIV:
-			smtNode = sf.makeVeriTTermOperatorApplication(VeritPredefinedTheory
-					.getInstance().getDivision(), children, signature);
+			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.DIV), children, signature);
 			break;
 		case Formula.MOD:
 			/**

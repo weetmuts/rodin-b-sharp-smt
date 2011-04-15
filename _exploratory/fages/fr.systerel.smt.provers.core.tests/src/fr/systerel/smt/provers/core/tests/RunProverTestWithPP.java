@@ -127,11 +127,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
 	}
 
-	@Test
 	/**
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
+	@Test
 	public void testSolverCallSimpleU() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -145,11 +145,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		doTest("simpleU", hyps, "⊤", te, VALID);
 	}
 
-	@Test
 	/**
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
+	@Test
 	public void testSolverCallBelong3() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -310,7 +310,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
-	@Ignore("Not yet implemented")
 	public void testCh915Bin10() {
 		setPreferencesForAltErgoTest();
 
@@ -460,6 +459,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Takes more than 30 seconds to return a result")
 	public void testBepiColombo3Medium2() {
 		setPreferencesForAltErgoTest();
 
@@ -533,6 +533,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Runs forever")
 	public void testDynamicStableLSR_081014_15WithZ3() {
 		setPreferencesForZ3Test();
 
@@ -551,6 +552,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Takes more than 10 seconds to return a result")
 	public void testDynamicStableLSR_081014_15WithAltErgo() {
 		setPreferencesForAltErgoTest();
 
@@ -567,4 +569,112 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
 				te, VALID);
 	}
+
+	@Test
+	public void testExactDivisionWithVeriT() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_verit1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
+		doTest("div_verit2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
+		doTest("div_verit3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
+		doTest("div_verit4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+	}
+
+	@Test
+	public void testExactDivisionWithZ3() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_Z31", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
+		doTest("div_Z32", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
+		doTest("div_Z33", hyps, "(−4) ÷ (−2) = 2", te, VALID);
+		doTest("div_Z34", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+	}
+
+	@Test
+	public void testExactDivisionWithCVC3() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_cvc3_1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
+		doTest("div_cvc3_2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
+		doTest("div_cvc3_3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
+		doTest("div_cvc3_4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+	}
+
+	@Test
+	public void testExactDivisionWithAltErgo() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_AltErgo1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
+		doTest("div_AltErgo2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
+		doTest("div_AltErgo3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
+		doTest("div_AltErgo4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+	}
+
+	// --------------------------------------------
+	// --------------------------------------------
+
+	@Test
+	public void testDivisionWithRemainderWithVeriT() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_rem_verit1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
+		doTest("div_rem_verit2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
+		doTest("div_rem_verit3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
+		doTest("div_rem_verit4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+	}
+
+	@Test
+	public void testDivisionWithRemainderWithZ3() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_rem_Z31", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
+		doTest("div_rem_Z32", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
+		doTest("div_rem_Z33", hyps, "(−3) ÷ (−2) = 1", te, VALID);
+		doTest("div_rem_Z34", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+	}
+
+	@Test
+	public void testDivisionWithRemainderWithCVC3() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div_rem_cvc3_1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
+		doTest("div_rem_cvc3_2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
+		doTest("div_rem_cvc3_3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
+		doTest("div_rem_cvc3_4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+	}
+
+	@Test
+	public void testDivisionWithRemainderWithAltErgo() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("div__remAltErgo1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
+		doTest("div__remAltErgo2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
+		doTest("div__remAltErgo3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
+		doTest("div__remAltErgo4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+	}
+
 }

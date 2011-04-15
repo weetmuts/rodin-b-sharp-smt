@@ -123,12 +123,14 @@ public class SMTTheory {
 				SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
+				SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
-				PLUS, MUL };
+				PLUS, MUL, DIV };
 
 		/**
 		 * The sole instance of the integer theory
@@ -169,6 +171,11 @@ public class SMTTheory {
 		}
 
 		@Override
+		public SMTSymbol getDiv() {
+			return DIV;
+		}
+
+		@Override
 		public SMTPredicateSymbol getLessThan() {
 			return LT;
 		}
@@ -191,6 +198,7 @@ public class SMTTheory {
 		public static SMTSortSymbol[] getIntIntTab() {
 			return INT_INT_TAB;
 		}
+
 	}
 
 	public static class Booleans extends SMTTheory implements ISMTBooleanSort {

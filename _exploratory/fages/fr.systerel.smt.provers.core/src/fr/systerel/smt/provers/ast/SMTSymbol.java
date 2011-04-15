@@ -36,6 +36,7 @@ public abstract class SMTSymbol {
 	public static final String U_SORT = "U";
 
 	public static final boolean PREDEFINED = true;
+	public static final String DIV = "/";
 
 	SMTSymbol(final String symbolName, final boolean predefined) {
 		this.name = symbolName;

@@ -479,8 +479,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.DIV:
-			throw new IllegalArgumentException(
-					"The operation \'divise\' is not supported yet");
+			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.DIV), children, signature);
+			break;
 		case Formula.MOD:
 			throw new IllegalArgumentException(
 					"The operation \'modulo\' is not supported yet");

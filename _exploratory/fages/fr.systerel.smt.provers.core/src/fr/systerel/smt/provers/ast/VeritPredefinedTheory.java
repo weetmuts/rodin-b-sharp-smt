@@ -2,7 +2,6 @@ package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 public class VeritPredefinedTheory extends SMTTheory implements
 		ISMTArithmeticFuns, ISMTArithmeticPreds, ISMTIntegerSort,
@@ -38,6 +37,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
+			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
@@ -48,12 +49,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE, GT,
 			GE };
 
-	private static SMTFunctionSymbol VERIT_DIVISION = new SMTFunctionSymbol(
-			SMTMacroSymbol.DIV, Ints.getIntIntTab(), Ints.getInt(),
-			!ASSOCIATIVE, PREDEFINED);
-
-	private static final SMTFunctionSymbol[] FUNCTIONS = { VERIT_DIVISION,
-			UMINUS, MINUS, PLUS, MUL };
+	private static final SMTFunctionSymbol[] FUNCTIONS = { DIV,UMINUS, MINUS, PLUS, MUL };
 
 	protected VeritPredefinedTheory() {
 		super(NAME, SORTS, PREDICATES, FUNCTIONS);
@@ -68,10 +64,6 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	@Override
 	public SMTSortSymbol getBooleanSort() {
 		return BOOL;
-	}
-
-	public SMTFunctionSymbol getDivision() {
-		return VERIT_DIVISION;
 	}
 
 	public static SMTSortSymbol getInt() {
@@ -105,6 +97,11 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	@Override
 	public SMTFunctionSymbol getMinus() {
 		return MINUS;
+	}
+
+	@Override
+	public SMTSymbol getDiv() {
+		return DIV;
 	}
 
 	@Override
