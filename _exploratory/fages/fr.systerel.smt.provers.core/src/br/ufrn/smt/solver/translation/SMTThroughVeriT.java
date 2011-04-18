@@ -13,7 +13,9 @@ package br.ufrn.smt.solver.translation;
 import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.PAIR_SORT;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.*;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
@@ -438,12 +441,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				false);
 
 		// Creating the macro
-		SMTSetComprehensionMacro macro = SMTMacroFactory
-				.makeSetComprehensionMacro(macroName, termChildren, lambdaVar,
-						formulaChild, expressionTerm[0], signature);
+		SMTSetComprehensionMacro macro = makeSetComprehensionMacro(macroName,
+				termChildren, lambdaVar, formulaChild, expressionTerm[0],
+				signature);
 
 		this.signature.addMacro(macro);
-		SMTMacroSymbol macroSymbol = SMTMacroFactory.makeMacroSymbol(macroName);
+		SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName);
 		this.smtNode = sf.makeMacroTerm(macroSymbol);
 		this.printPointInQuantifiedOperator = false;
 	}
@@ -484,18 +487,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = sf.makePTrue(this.signature);
 			break;
 		case Formula.NATURAL:
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.NAT,
-					signature);
+			addPredefinedMacroInSignature(NAT, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.NAT));
+			smtNode = sf.makeMacroTerm(getMacroSymbol(NAT));
 			break;
 		case Formula.NATURAL1:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.NAT1, signature);
+			addPredefinedMacroInSignature(NAT1, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.NAT1));
+			smtNode = sf.makeMacroTerm(getMacroSymbol(NAT1));
 			break;
 		case Formula.BOOL:
 			smtNode = sf.makeVeriTConstantTerm(signature.getLogic()
@@ -508,11 +507,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						+ expression.getType().toString()
 						+ ": power set of power set is not supported yet");
 			} else {
-				SMTMacroFactory.addPredefinedMacroInSignature(
-						SMTVeriTOperator.EMPTY, signature);
+				addPredefinedMacroInSignature(EMPTY, signature);
 
 				smtNode = sf.makeMacroTerm(SMTMacroFactory
-						.getMacroSymbol(SMTVeriTOperator.EMPTY));
+						.getMacroSymbol(EMPTY));
 			}
 			break;
 		case Formula.KSUCC:
@@ -552,11 +550,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalArgumentException(
 					"prj2 (KPRJ2_GEN) is not implemented yet");
 		case Formula.KID_GEN:
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.ID,
-					signature);
+			addPredefinedMacroInSignature(ID, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.ID));
+			smtNode = sf.makeMacroTerm(getMacroSymbol(ID));
 			break;
 		case Formula.TRUE:
 			/**
@@ -618,145 +614,109 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					"The operation \'exponential\' is not supported yet");
 
 		case Formula.UPTO:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RANGE_INTEGER, signature);
+			addPredefinedMacroInSignature(RANGE_INTEGER, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.RANGE_INTEGER), children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RANGE_INTEGER), children);
 			break;
 		case Formula.RANSUB:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RANGE_SUBSTRACTION, signature);
+			addPredefinedMacroInSignature(RANGE_SUBSTRACTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.RANGE_SUBSTRACTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RANGE_SUBSTRACTION),
 					children);
 			break;
 
 		case Formula.RANRES:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RANGE_RESTRICTION, signature);
+			addPredefinedMacroInSignature(RANGE_RESTRICTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.RANGE_RESTRICTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RANGE_RESTRICTION),
 					children);
 			break;
 
 		case Formula.REL:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RELATION, signature);
+			addPredefinedMacroInSignature(RELATION, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.RELATION),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RELATION), children);
 			break;
 
 		case Formula.TREL:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_RELATION, signature);
+			addPredefinedMacroInSignature(TOTAL_RELATION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.TOTAL_RELATION), children);
+			smtNode = sf
+					.makeMacroTerm(getMacroSymbol(TOTAL_RELATION), children);
 			break;
 
 		case Formula.SREL:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SURJECTIVE_RELATION, signature);
+			addPredefinedMacroInSignature(SURJECTIVE_RELATION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.SURJECTIVE_RELATION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(SURJECTIVE_RELATION),
 					children);
 			break;
 
 		case Formula.STREL:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION, signature);
+			addPredefinedMacroInSignature(TOTAL_SURJECTIVE_RELATION, signature);
 
-			smtNode = sf
-					.makeMacroTerm(
-							SMTMacroFactory
-									.getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION),
-							children);
+			smtNode = sf.makeMacroTerm(
+					getMacroSymbol(TOTAL_SURJECTIVE_RELATION), children);
 			break;
 
 		case Formula.PFUN:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.PARTIAL_FUNCTION, signature);
+			addPredefinedMacroInSignature(PARTIAL_FUNCTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.PARTIAL_FUNCTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(PARTIAL_FUNCTION),
 					children);
 			break;
 
 		case Formula.TFUN:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_FUNCTION, signature);
+			addPredefinedMacroInSignature(TOTAL_FUNCTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.TOTAL_FUNCTION), children);
+			smtNode = sf
+					.makeMacroTerm(getMacroSymbol(TOTAL_FUNCTION), children);
 			break;
 		case Formula.PINJ:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.PARTIAL_INJECTION, signature);
+			addPredefinedMacroInSignature(PARTIAL_INJECTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.PARTIAL_INJECTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(PARTIAL_INJECTION),
 					children);
 			break;
 
 		case Formula.TINJ:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_INJECTION, signature);
+			addPredefinedMacroInSignature(TOTAL_INJECTION, signature);
 
-			smtNode = sf
-					.makeMacroTerm(SMTMacroFactory
-							.getMacroSymbol(SMTVeriTOperator.TOTAL_INJECTION),
-							children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(TOTAL_INJECTION),
+					children);
 			break;
 
 		case Formula.PSUR:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.PARTIAL_SURJECTION, signature);
+			addPredefinedMacroInSignature(PARTIAL_SURJECTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.PARTIAL_SURJECTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(PARTIAL_SURJECTION),
 					children);
 			break;
 
 		case Formula.TSUR:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_SURJECTION, signature);
+			addPredefinedMacroInSignature(TOTAL_SURJECTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.TOTAL_SURJECTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(TOTAL_SURJECTION),
 					children);
 			break;
 
 		case Formula.TBIJ:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.TOTAL_BIJECTION, signature);
+			addPredefinedMacroInSignature(TOTAL_BIJECTION, signature);
 
-			smtNode = sf
-					.makeMacroTerm(SMTMacroFactory
-							.getMacroSymbol(SMTVeriTOperator.TOTAL_BIJECTION),
-							children);
-			break;
-
-		case Formula.SETMINUS:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SETMINUS, signature);
-
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.SETMINUS),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(TOTAL_BIJECTION),
 					children);
 			break;
 
-		case Formula.CPROD:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.CARTESIAN_PRODUCT, signature);
+		case Formula.SETMINUS:
+			addPredefinedMacroInSignature(SETMINUS, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.CARTESIAN_PRODUCT),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(SETMINUS), children);
+			break;
+
+		case Formula.CPROD:
+			addPredefinedMacroInSignature(CARTESIAN_PRODUCT, signature);
+
+			smtNode = sf.makeMacroTerm(getMacroSymbol(CARTESIAN_PRODUCT),
 					children);
 			break;
 
@@ -771,20 +731,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					"Operator parallel product (PPROD) is not implemented yet");
 
 		case Formula.DOMRES:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.DOMAIN_RESTRICTION, signature);
+			addPredefinedMacroInSignature(DOMAIN_RESTRICTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.DOMAIN_RESTRICTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(DOMAIN_RESTRICTION),
 					children);
 			break;
 
 		case Formula.DOMSUB:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.DOMAIN_SUBSTRACTION, signature);
+			addPredefinedMacroInSignature(DOMAIN_SUBSTRACTION, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.DOMAIN_SUBSTRACTION),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(DOMAIN_SUBSTRACTION),
 					children);
 			break;
 
@@ -794,21 +750,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					"function application (FUNIMAGE) is not implemented yet");
 
 		case Formula.RELIMAGE:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RELATIONAL_IMAGE, signature);
+			addPredefinedMacroInSignature(RELATIONAL_IMAGE, signature);
 
-			smtNode = sf.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.RELATIONAL_IMAGE),
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RELATIONAL_IMAGE),
 					children);
 			break;
 
 		case Formula.MAPSTO:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.MAPSTO, signature);
+			addPredefinedMacroInSignature(MAPSTO, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.MAPSTO),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(MAPSTO), children);
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
@@ -900,7 +851,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.convertVeritTermsIntoFormulas(children);
 				this.smtNode = sf.makeIff(childrenFormulas);
 			} else {
-				this.smtNode = SMTFactory.makeEqual(children);
+				this.smtNode = makeEqual(children);
 			}
 			break;
 		}
@@ -912,11 +863,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.convertVeritTermsIntoFormulas(children);
 				this.smtNode = sf.makeNotIff(childrenFormulas);
 			} else {
-				SMTMacroFactory.addPredefinedMacroInSignature(
-						SMTVeriTOperator.NOT_EQUAL, signature);
+				addPredefinedMacroInSignature(NOT_EQUAL, signature);
 
-				this.smtNode = SMTFactory.makeMacroAtom(SMTMacroFactory
-						.getMacroSymbol(SMTVeriTOperator.NOT_EQUAL), children);
+				this.smtNode = SMTFactory.makeMacroAtom(
+						getMacroSymbol(NOT_EQUAL), children);
 			}
 			break;
 		}
@@ -952,61 +902,51 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.IN: {
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.IN,
-					signature);
+			addPredefinedMacroInSignature(IN, signature);
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeVeriTMacroAtom(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.IN),
-					children, signature);
+			smtNode = sf.makeVeriTMacroAtom(getMacroSymbol(IN), children,
+					signature);
 			break;
 		}
 
 		case Formula.SUBSET: {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SUBSET, signature);
+			addPredefinedMacroInSignature(SUBSET, signature);
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeMacroAtom(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.SUBSET),
-					children);
+			smtNode = SMTFactory
+					.makeMacroAtom(getMacroSymbol(SUBSET), children);
 			break;
 		}
 		case Formula.SUBSETEQ: {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SUBSETEQ, signature);
+			addPredefinedMacroInSignature(SUBSETEQ, signature);
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeMacroAtom(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.SUBSETEQ),
+			smtNode = SMTFactory.makeMacroAtom(getMacroSymbol(SUBSETEQ),
 					children);
 			break;
 		}
 		case Formula.NOTSUBSET: {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SUBSET, signature);
+			addPredefinedMacroInSignature(SUBSET, signature);
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeMacroAtom(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.SUBSET),
-					children);
+			smtNode = SMTFactory
+					.makeMacroAtom(getMacroSymbol(SUBSET), children);
 			SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
 			smtNode = sf.makeNot(subsetFormula);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.SUBSETEQ, signature);
+			addPredefinedMacroInSignature(SUBSETEQ, signature);
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeAtom(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.SUBSETEQ),
-					children, signature);
+			smtNode = SMTFactory.makeAtom(getMacroSymbol(SUBSETEQ), children,
+					signature);
 			SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
 			smtNode = sf.makeNot(subsetFormula);
 			break;
@@ -1053,44 +993,29 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		case Formula.BUNION:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.BUNION, signature);
+			addPredefinedMacroInSignature(BUNION, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.BUNION),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(BUNION), children);
 			break;
 		case Formula.BINTER:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.BINTER, signature);
+			addPredefinedMacroInSignature(BINTER, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.BINTER),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(BINTER), children);
 			break;
 		case Formula.FCOMP:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.FCOMP, signature);
+			addPredefinedMacroInSignature(FCOMP, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.FCOMP),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(FCOMP), children);
 			break;
 		case Formula.BCOMP:
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.BCOMP, signature);
+			addPredefinedMacroInSignature(BCOMP, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.BCOMP),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(BCOMP), children);
 			break;
 		case Formula.OVR:
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.OVR,
-					signature);
+			addPredefinedMacroInSignature(OVR, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.OVR),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(OVR), children);
 			break;
 		default:
 			throw new IllegalTagException(tag);
@@ -1156,19 +1081,18 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// FIXME: Refactor this method
 		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.EMPTY, signature);
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.EMPTY),
-					children);
+			addPredefinedMacroInSignature(EMPTY, signature);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(EMPTY), children);
 		} else {
 			children = smtTerms(expression.getMembers());
 			String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
 			String varName1 = signature.freshCstName(SMTMacroSymbol.ELEM);
 			if (expression.getMembers()[0].getType() instanceof ProductType) {
 
-				String varName2 = signature.freshCstName(SMTMacroSymbol.ELEM,
-						varName1);
+				List<String> l = new ArrayList<String>();
+				l.add(varName1);
+				String varName2 = signature
+						.freshCstName(SMTMacroSymbol.ELEM, l);
 				SMTSortSymbol sortSymbol1 = translateTypeName(expression
 						.getType().getSource());
 				SMTSortSymbol sortSymbol2 = translateTypeName(expression
@@ -1188,11 +1112,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.getType());
 				SMTVarSymbol var = new SMTVarSymbol(varName1, sortSymbol, false);
 
-				SMTEnumMacro macro = SMTMacroFactory.makeEnumMacro(macroName,
-						var, children);
+				SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
 				this.signature.addMacro(macro);
 			}
-			SMTMacroSymbol symbol = SMTMacroFactory.makeMacroSymbol(macroName);
+			SMTMacroSymbol symbol = makeMacroSymbol(macroName);
 			smtNode = sf.makeMacroTerm(symbol);
 		}
 	}
@@ -1209,8 +1132,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KCARD: {
 
 			// Creating card macro and to the signature
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.CARD, signature);
+			addPredefinedMacroInSignature(CARD, signature);
 
 			// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
 			// 25)
@@ -1218,7 +1140,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			String fVarName = signature.freshCstName("card_f");
 
 			SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
-					SMTMacroFactory.EMPTY_SORT, Ints.getInt(), false, false);
+					EMPTY_SORT, Ints.getInt(), false, false);
 
 			Type type = expression.getChild().getType();
 			SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1234,8 +1156,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			signature.addConstant(fVarSymbol);
 
 			// Creating the macro operator 'finite'
-			SMTMacroSymbol cardSymbol = SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.CARD);
+			SMTMacroSymbol cardSymbol = getMacroSymbol(CARD);
 
 			// Creating the new assumption (card p t k f) and saving it.
 			SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
@@ -1270,40 +1191,32 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");
 		}
 		case Formula.KDOM:
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.DOM,
-					signature);
+			addPredefinedMacroInSignature(DOM, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.DOM),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(DOM), children);
 			break;
 		case Formula.KRAN: {
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.RANGE, signature);
+			addPredefinedMacroInSignature(RANGE, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.RANGE),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(RANGE), children);
 			break;
 		}
 		case Formula.KMIN: {
 			// TODO Refactor
 
 			// Creating ismin macro and add it to the signature
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.ISMIN, signature);
+			addPredefinedMacroInSignature(ISMIN, signature);
 
 			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
 			String mVarName = signature.freshCstName("ismin_var");
 
 			// Creating the constant 'm'
 			SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
-					SMTMacroFactory.EMPTY_SORT, Ints.getInt(), false, false);
+					EMPTY_SORT, Ints.getInt(), false, false);
 			signature.addConstant(mVarSymbol);
 
 			// Creating the macro operator 'ismin'
-			SMTMacroSymbol isMinSymbol = SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.ISMIN);
+			SMTMacroSymbol isMinSymbol = getMacroSymbol(ISMIN);
 
 			// Creating the term 'm'
 			SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
@@ -1329,20 +1242,18 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// TODO Refactor
 
 			// Creating ismax macro and adding it to the signature
-			SMTMacroFactory.addPredefinedMacroInSignature(
-					SMTVeriTOperator.ISMAX, signature);
+			addPredefinedMacroInSignature(ISMAX, signature);
 
 			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
 			String mVarName = signature.freshCstName("ismax_var");
 
 			// Creating the constant 'm'
 			SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
-					SMTMacroFactory.EMPTY_SORT, Ints.getInt(), false, false);
+					EMPTY_SORT, Ints.getInt(), false, false);
 			signature.addConstant(mVarSymbol);
 
 			// Creating the macro operator 'ismax'
-			SMTMacroSymbol isMaxSymbol = SMTMacroFactory
-					.getMacroSymbol(SMTVeriTOperator.ISMAX);
+			SMTMacroSymbol isMaxSymbol = getMacroSymbol(ISMAX);
 
 			// Creating the term 'm'
 			SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
@@ -1366,12 +1277,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.CONVERSE:
-			SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.INV,
-					signature);
+			addPredefinedMacroInSignature(INV, signature);
 
-			smtNode = sf.makeMacroTerm(
-					SMTMacroFactory.getMacroSymbol(SMTVeriTOperator.INV),
-					children);
+			smtNode = sf.makeMacroTerm(getMacroSymbol(INV), children);
 			break;
 		case Formula.UNMINUS:
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
@@ -1413,8 +1321,51 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		throw new IllegalArgumentException(
-				"It's not possible yet to translate multiple predicate to SMT-LIB yet");
+		Expression[] expressions = predicate.getChildren();
+		for (int i = 1; i < expressions.length; i++) {
+			if (expressions[i].getChildCount() != 1) {
+				// TODO: Implement the case where the child sets are not
+				// singleton
+				return;
+			}
+		}
+		SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
+
+		// Translation of special case where all child sets are singleton
+		List<String> usedNames = new ArrayList<String>();
+		List<SMTTerm> newVars = new ArrayList<SMTTerm>();
+		for (Expression expression : expressions) {
+			String x = signature.freshCstName("x", usedNames);
+			usedNames.add(x);
+			newVars.add(addEqualAssumption(x, expression.getType(), e0));
+
+		}
+		addDistinctAssumption(newVars);
+		addUnionAssumption(newVars, e0);
+
+	}
+
+	private void addUnionAssumption(List<SMTTerm> newVars, SMTTerm e0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private SMTTerm addEqualAssumption(String x, Type type, SMTTerm e0) {
+		SMTSortSymbol sort = typeMap.get(type);
+		if (sort == null) {
+			sort = this.translateTypeName(type);
+		}
+		SMTFunctionSymbol symbol = new SMTFunctionSymbol(x, EMPTY_SORT, sort,
+				!ASSOCIATIVE, !PREDEFINED);
+
+		SMTTerm xTerm = sf.makeConstant(symbol, signature);
+
+		SMTTerm[] args = { xTerm, e0 };
+		signature.addAdditionalAssumption(SMTFactory.makeEqual(args));
+		return xTerm;
+	}
+
+	private void addDistinctAssumption(List<SMTTerm> newVars) {
 
 	}
 
@@ -1427,8 +1378,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm[] children = smtTerms(predicate.getExpression());
 
 		// Creating ismin macro and adding it to the signature
-		SMTMacroFactory.addPredefinedMacroInSignature(SMTVeriTOperator.FINITE,
-				signature);
+		addPredefinedMacroInSignature(FINITE, signature);
 
 		// Creating the name for the 'p','f' and 'k' variables in SMT-LIB (rule
 		// 24)
@@ -1438,9 +1388,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the constant 'p'
 		SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,
-				SMTMacroFactory.EMPTY_SORT);
+				EMPTY_SORT);
 		SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
-				SMTMacroFactory.EMPTY_SORT, Ints.getInt(), false, false);
+				EMPTY_SORT, Ints.getInt(), false, false);
 
 		Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1457,8 +1407,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		signature.addConstant(fVarSymbol);
 
 		// Creating the macro operator 'finite'
-		SMTMacroSymbol finiteSymbol = SMTMacroFactory
-				.getMacroSymbol(SMTVeriTOperator.FINITE);
+		SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE);
 
 		// Creating the new assumption (finite p t k f) and saving it.
 		SMTFormula finiteFormula = new SMTVeritFiniteFormula(finiteSymbol,

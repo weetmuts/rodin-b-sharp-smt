@@ -12,7 +12,6 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 

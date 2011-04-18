@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -134,10 +135,10 @@ public class SMTSignatureVerit extends SMTSignature {
 		return freshCstName(name, null);
 	}
 
-	public String freshCstName(final String name, String usedName) {
+	public String freshCstName(final String name, List<String> usedNames) {
 		Set<String> names = new HashSet<String>();
 		if (name != null) {
-			names.add(usedName);
+			names.addAll(usedNames);
 		}
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
