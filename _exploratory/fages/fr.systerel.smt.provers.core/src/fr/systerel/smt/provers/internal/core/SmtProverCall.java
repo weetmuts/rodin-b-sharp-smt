@@ -48,7 +48,33 @@ public class SmtProverCall extends XProverCall {
 	public static final String TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
-			+ "rodin_smtlib_tmp_files";
+			+ "rodin_smtlib_temp_files";
+	private String translationFolder;
+
+	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = true;
+
+	protected static void deleteFile(File file) {
+		if (file.isFile()) {
+			file.delete();
+		} else {
+			File[] childFiles = file.listFiles();
+			for (File childFile : childFiles) {
+				deleteFile(childFile);
+			}
+			file.delete();
+		}
+	}
+
+	public static void cleanSMTFolder(File file) {
+		if (file.exists()) {
+			if (file.isDirectory()) {
+				File[] children = file.listFiles();
+				for (File child : children) {
+					deleteFile(child);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Name of the called external SMT prover
@@ -82,13 +108,41 @@ public class SmtProverCall extends XProverCall {
 	protected File oFile;
 	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
-	private static String smtFilePath(final String fileName) {
-		return TRANSLATION_PATH + File.separatorChar + fileName
+	private String smtFilePath(final String fileName) {
+		return translationFolder + File.separatorChar + fileName
 				+ SMT_LIB_FILE_EXTENSION;
 	}
 
-	private static void mkTranslationDir() {
-		new File(TRANSLATION_PATH).mkdir();
+	private void mkTranslationDir() {
+		File f = new File(TRANSLATION_PATH);
+		if (!f.mkdir()) {
+			if (f.isDirectory()) {
+				this.translationFolder = f.getPath();
+			} else
+				for (int i = 0;; i++) {
+					f = new File(TRANSLATION_PATH + i);
+					if (!f.mkdir()) {
+						if (f.isDirectory()) {
+							if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
+								cleanSMTFolder(f);
+							}
+							this.translationFolder = f.getPath();
+						} else
+							continue;
+					} else {
+						if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
+							cleanSMTFolder(f);
+						}
+						this.translationFolder = f.getPath();
+						break;
+					}
+				}
+		} else {
+			if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
+				cleanSMTFolder(f);
+			}
+			this.translationFolder = f.getPath();
+		}
 	}
 
 	private static PrintWriter openSMTFileWriter(File smtFile,
@@ -168,16 +222,8 @@ public class SmtProverCall extends XProverCall {
 			}
 		} catch (TranslationException t) {
 			throw new IllegalArgumentException(t);
-			// FIXME
-			// UIUtils.showError(t.getMessage());
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
-			// FIXME
-			// UIUtils.showError(e.getMessage());
-			// } catch (IllegalArgumentException iae) {
-			// // FIXME
-			// // UIUtils.showError(iae.getMessage());
-			// return;
 		}
 	}
 
@@ -194,10 +240,10 @@ public class SmtProverCall extends XProverCall {
 		SMTBenchmark benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
 						.getId());
-
 		/**
 		 * The name of the SMT file with macros.
 		 */
+		mkTranslationDir();
 		String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
 				.getName());
 
@@ -287,13 +333,12 @@ public class SmtProverCall extends XProverCall {
 	}
 
 	private String smtVeriTPreProcessFilePath(String fileName) {
-		return TRANSLATION_PATH + File.separatorChar + fileName
+		return translationFolder + File.separatorChar + fileName
 				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
 	}
 
 	private File writeVeritPreprocessedSMTFile(SMTBenchmark benchmark,
 			String veriTPreProcessingFileName) {
-		mkTranslationDir();
 		File preProcessedSMTFile = new File(veriTPreProcessingFileName);
 		try {
 			preProcessedSMTFile.createNewFile();
@@ -310,9 +355,8 @@ public class SmtProverCall extends XProverCall {
 
 	}
 
-	private static File writeSMTFile(final SMTBenchmark benchmark,
+	private File writeSMTFile(final SMTBenchmark benchmark,
 			final String filePathName) {
-		mkTranslationDir();
 		File smtFile = new File(filePathName);
 		try {
 			smtFile.createNewFile();
@@ -339,7 +383,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	private List<String> smtTranslation(SMTBenchmark benchmark)
 			throws PreProcessingException, IOException, TranslationException {
-
+		mkTranslationDir();
 		String smtFileName = smtFilePath(benchmark.getName());
 
 		/**

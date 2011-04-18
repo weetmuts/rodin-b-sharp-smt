@@ -14,35 +14,6 @@ public class CommonSolverRunTests extends AbstractTests {
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 
-	protected static void deleteFile(File file) {
-		if (file.isFile()) {
-			file.delete();
-		} else {
-			File[] childFiles = file.listFiles();
-			for (File childFile : childFiles) {
-				deleteFile(childFile);
-			}
-			file.delete();
-		}
-	}
-
-	public static void cleanSMTFiles() {
-		// if (CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-		// File smtFilesFolder = new File(SmtProverCall.TRANSLATION_PATH);
-		// if (smtFilesFolder.exists()) {
-		// if (smtFilesFolder.isDirectory()) {
-		// File[] childFiles = smtFilesFolder.listFiles();
-		// for (File childFile : childFiles) {
-		// deleteFile(childFile);
-		// }
-		// }
-		// else{
-		//
-		// }
-		// }
-		// }
-	}
-
 	/**
 	 * A ProofMonitor is necessary for SmtProverCall instances creation.
 	 * Instances from this ProofMonitor do nothing.
