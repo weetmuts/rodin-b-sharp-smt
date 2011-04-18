@@ -76,6 +76,11 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * 
  */
 public class SMTThroughVeriT extends TranslatorV1_2 {
+
+	public SMTThroughVeriT(String solver) {
+		super(solver);
+	}
+
 	/**
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -106,8 +111,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal) throws TranslationException {
-		SMTBenchmark smtB = new SMTThroughVeriT().translate(lemmaName,
+			final Predicate goal, String solver) throws TranslationException {
+		SMTBenchmark smtB = new SMTThroughVeriT(solver).translate(lemmaName,
 				hypotheses, goal);
 		return smtB;
 	}
@@ -116,8 +121,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT();
+			final Predicate predicate, String solver) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
 		predicate.accept(translator);
@@ -525,8 +530,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.DIV:
-			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), children, signature);
+			if (solver.equals(SMTSolver.Z3.toString())) {
+				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.DIV_Z3), children, signature);
+			} else {
+				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.DIV), children, signature);
+			}
 			break;
 		case Formula.MOD:
 			/**
@@ -1439,8 +1449,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * 
 	 */
 	public static SMTSignature translateSMTSignature(
-			ITypeEnvironment typeEnvironment) {
-		SMTThroughVeriT translator = new SMTThroughVeriT();
+			ITypeEnvironment typeEnvironment, String solver) {
+		SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
 				.getInstance()));
 		translator.translateSignature(typeEnvironment);

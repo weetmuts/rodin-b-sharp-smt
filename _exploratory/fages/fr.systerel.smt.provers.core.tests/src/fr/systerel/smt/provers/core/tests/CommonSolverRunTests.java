@@ -6,7 +6,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 public class CommonSolverRunTests extends AbstractTests {
 
@@ -27,20 +26,21 @@ public class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	protected static void cleanSMTFilesFolder() {
-		if (CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			File smtFilesFolder = new File(SmtProverCall.TRANSLATION_PATH);
-			if (!smtFilesFolder.isDirectory()) {
-				throw new IllegalArgumentException("It's not a directory");
-			}
-			if (smtFilesFolder.exists()) {
-				deleteFile(smtFilesFolder);
-			}
-			if (smtFilesFolder.exists()) {
-				throw new IllegalArgumentException(
-						"The file should not exist at this part");
-			}
-		}
+	public static void cleanSMTFiles() {
+		// if (CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
+		// File smtFilesFolder = new File(SmtProverCall.TRANSLATION_PATH);
+		// if (smtFilesFolder.exists()) {
+		// if (smtFilesFolder.isDirectory()) {
+		// File[] childFiles = smtFilesFolder.listFiles();
+		// for (File childFile : childFiles) {
+		// deleteFile(childFile);
+		// }
+		// }
+		// else{
+		//
+		// }
+		// }
+		// }
 	}
 
 	/**

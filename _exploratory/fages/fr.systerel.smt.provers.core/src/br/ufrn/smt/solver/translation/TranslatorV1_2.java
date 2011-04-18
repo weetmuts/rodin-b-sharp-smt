@@ -42,6 +42,12 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  */
 public abstract class TranslatorV1_2 extends Translator {
 
+	String solver;
+	
+	public TranslatorV1_2(String solver){
+		this.solver = solver;
+	}
+
 	/**
 	 * TODO Finish this comment When the translator finishes translating a
 	 * quantified predicate, it deletes all the bound identifiers of that

@@ -125,12 +125,14 @@ public class SMTTheory {
 				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
 				SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol DIV_Z3 = new SMTFunctionSymbol(
+				SMTSymbol.DIV_Z3, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
-				PLUS, MUL, DIV };
+				PLUS, MUL, DIV, DIV_Z3 };
 
 		/**
 		 * The sole instance of the integer theory
@@ -197,6 +199,11 @@ public class SMTTheory {
 
 		public static SMTSortSymbol[] getIntIntTab() {
 			return INT_INT_TAB;
+		}
+
+		@Override
+		public SMTSymbol getDivZ3() {
+			return DIV_Z3;
 		}
 
 	}

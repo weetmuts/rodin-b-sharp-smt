@@ -30,10 +30,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
-	
+
 	@BeforeClass
-	protected static void cleanSMTFolder() {
-		cleanSMTFilesFolder();
+	public static void cleanSMTFolder() {
+		cleanSMTFiles();
 	}
 
 	/**

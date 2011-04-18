@@ -184,14 +184,16 @@ public class SmtProverCall extends XProverCall {
 	public List<String> smtTranslationThroughPP() throws TranslationException,
 			PreProcessingException, IOException {
 		SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal);
+				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
+						.getId());
 		return smtTranslation(benchmark);
 	}
 
 	public List<String> smtTranslationThroughVeriT()
 			throws TranslationException, PreProcessingException, IOException {
 		SMTBenchmark benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal);
+				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
+						.getId());
 
 		/**
 		 * The name of the SMT file with macros.

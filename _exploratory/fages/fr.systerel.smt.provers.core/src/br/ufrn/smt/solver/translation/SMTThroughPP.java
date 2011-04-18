@@ -69,6 +69,10 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * is done.
  */
 public class SMTThroughPP extends TranslatorV1_2 {
+	public SMTThroughPP(String solver) {
+		super(solver);
+	}
+
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -104,9 +108,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal) throws TranslationException {
-		SMTBenchmark smtB = new SMTThroughPP().translate(lemmaName, hypotheses,
-				goal);
+			final Predicate goal, String solver) throws TranslationException {
+		SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
+				hypotheses, goal);
 		return smtB;
 	}
 
@@ -178,8 +182,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate) {
-		final SMTThroughPP translator = new SMTThroughPP();
+			final Predicate predicate, String solver) {
+		final SMTThroughPP translator = new SMTThroughPP(solver);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
 		predicate.accept(translator);

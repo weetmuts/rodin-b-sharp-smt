@@ -42,7 +42,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
-		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
+		testTranslationV1_2_Ver(defaultTe, ppPredStr, expectedSMTNode,
 				defaultFailMessage);
 	}
 
@@ -59,9 +59,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
-			final String ppPredStr, final String expectedSMTNode,
-			final String failMessage) throws AssertionError {
+	private static void testTranslationV1_2_Ver(
+			final ITypeEnvironment iTypeEnv, final String ppPredStr,
+			final String expectedSMTNode, final String failMessage)
+			throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
@@ -70,7 +71,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
 
-		testTranslationV1_2(ppPred, expectedSMTNode, failMessage);
+		testTranslationV1_2(ppPred, expectedSMTNode, failMessage, "verit");
 	}
 
 	/**
@@ -84,9 +85,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 *            Human readable error message
 	 */
 	private static void testTranslationV1_2(final Predicate ppPred,
-			final String expectedSMTNode, final String failMessage) {
+			final String expectedSMTNode, final String failMessage,
+			String solver) {
 		final String actualSMTNode = SMTThroughPP.translate(defaultLogic,
-				ppPred).toString();
+				ppPred, solver).toString();
 
 		System.out.println(translationMessage(ppPred, actualSMTNode));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
@@ -180,7 +182,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		// System.out.println("Predicate " + p);
 		testTranslationV1_2(p,
 				"(forall (?x R) (?x_0 R) (and (MS ?x s) (MS ?x_0 s)))",
-				"twice same decl");
+				"twice same decl", "verit");
 	}
 
 	@Test

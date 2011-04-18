@@ -65,7 +65,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 
 	@BeforeClass
 	protected static void cleanSMTFolder() {
-		cleanSMTFilesFolder();
+		cleanSMTFiles();
 	}
 
 	@Parameters

@@ -180,6 +180,13 @@ public class SMTLogic {
 				}
 			}
 			break;
+		case DIV_Z3:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFuns) {
+					return ((ISMTArithmeticFuns) theory).getDivZ3();
+				}
+			}
+			break;
 		}
 		return null;
 	}
@@ -199,7 +206,7 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV);
+				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), DIV_Z3(SMTSymbol.DIV_Z3);
 
 		private String symbol;
 

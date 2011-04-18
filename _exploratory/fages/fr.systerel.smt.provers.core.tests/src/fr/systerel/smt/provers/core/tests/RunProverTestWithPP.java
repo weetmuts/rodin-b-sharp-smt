@@ -29,8 +29,8 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	@BeforeClass
-	protected static void cleanSMTFolder() {
-		cleanSMTFilesFolder();
+	public static void cleanSMTFolder() {
+		cleanSMTFiles();
 	}
 
 	/**
@@ -583,10 +583,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_verit1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
-		doTest("div_verit2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
-		doTest("div_verit3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
-		doTest("div_verit4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+		final String smtFileName = "div_verit";
+		doTest(smtFileName + "_1", hyps, "4 ÷ 2 = 2", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−4 ÷ 2 = −2", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−4 ÷ −2 = 2", te, VALID);
+		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
 	@Test
@@ -596,10 +597,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_Z31", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
-		doTest("div_Z32", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
-		doTest("div_Z33", hyps, "(−4) ÷ (−2) = 2", te, VALID);
-		doTest("div_Z34", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+		final String smtFileName = "div_Z3";
+		doTest(smtFileName + "_1", hyps, "4 ÷ 2 = 2", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−4 ÷ 2 = −2", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−4 ÷ −2 = 2", te, VALID);
+		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
 	@Test
@@ -609,10 +611,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_cvc3_1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
-		doTest("div_cvc3_2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
-		doTest("div_cvc3_3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
-		doTest("div_cvc3_4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+		final String smtFileName = "div_cvc3";
+		doTest(smtFileName + "_1", hyps, "4 ÷ 2 = 2", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−4 ÷ 2 = −2", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−4 ÷ −2 = 2", te, VALID);
+		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
 	@Test
@@ -622,10 +625,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_AltErgo1", hyps, "−(4 ÷ 2) = −(2)", te, VALID);
-		doTest("div_AltErgo2", hyps, "(−4) ÷ 2 = −(2)", te, VALID);
-		doTest("div_AltErgo3", hyps, "(−4) ÷ (−2) = 2", te, VALID);
-		doTest("div_AltErgo4", hyps, "4 ÷ (−2) = (−2)", te, VALID);
+		final String smtFileName = "div_AltErgo";
+		doTest(smtFileName + "_1", hyps, "4 ÷ 2 = 2", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−4 ÷ 2 = −2", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−4 ÷ −2 = 2", te, VALID);
+		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
 	// --------------------------------------------
@@ -638,10 +642,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_rem_verit1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
-		doTest("div_rem_verit2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
-		doTest("div_rem_verit3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
-		doTest("div_rem_verit4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+		final String smtFileName = "div_rem_verit";
+		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
+		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
 	@Test
@@ -651,10 +656,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_rem_Z31", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
-		doTest("div_rem_Z32", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
-		doTest("div_rem_Z33", hyps, "(−3) ÷ (−2) = 1", te, VALID);
-		doTest("div_rem_Z34", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+		final String smtFileName = "div_rem_Z3";
+		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
+		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
 	@Test
@@ -664,10 +670,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div_rem_cvc3_1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
-		doTest("div_rem_cvc3_2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
-		doTest("div_rem_cvc3_3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
-		doTest("div_rem_cvc3_4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+		final String smtFileName = "div_rem_cvc3";
+		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
+		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
 	@Test
@@ -677,10 +684,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		doTest("div__remAltErgo1", hyps, "−(3 ÷ 2) = −(1)", te, VALID);
-		doTest("div__remAltErgo2", hyps, "(−3) ÷ 2 = −(1)", te, VALID);
-		doTest("div__remAltErgo3", hyps, "(−3) ÷ (−2) = 1", te, VALID);
-		doTest("div__remAltErgo4", hyps, "3 ÷ (−2) = (−1)", te, VALID);
+		final String smtFileName = "div__remAltErgo";
+		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
+		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
+		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
+		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
 }

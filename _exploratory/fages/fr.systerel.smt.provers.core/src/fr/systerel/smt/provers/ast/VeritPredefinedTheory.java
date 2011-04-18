@@ -39,6 +39,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
 			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+	private static final SMTFunctionSymbol DIV_Z3 = new SMTFunctionSymbol(
+			SMTSymbol.DIV_Z3, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
@@ -49,7 +51,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE, GT,
 			GE };
 
-	private static final SMTFunctionSymbol[] FUNCTIONS = { DIV,UMINUS, MINUS, PLUS, MUL };
+	private static final SMTFunctionSymbol[] FUNCTIONS = { DIV, UMINUS, MINUS,
+			PLUS, MUL, DIV_Z3 };
 
 	protected VeritPredefinedTheory() {
 		super(NAME, SORTS, PREDICATES, FUNCTIONS);
@@ -126,6 +129,11 @@ public class VeritPredefinedTheory extends SMTTheory implements
 
 	public static SMTSortSymbol[] getIntIntTab() {
 		return INT_INT_TAB;
+	}
+
+	@Override
+	public SMTSymbol getDivZ3() {
+		return DIV_Z3;
 	}
 
 }
