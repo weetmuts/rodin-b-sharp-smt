@@ -78,6 +78,8 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String FINITE = "finite";
 	public static final String CARD = "card";
 	public static final String PAIR = "Pair";
+	public static final String PRED = "pred";
+	public static final String SUCC = "succ";
 
 	public static final String FUNP = "funp";
 	public static final String INJP = "injp";

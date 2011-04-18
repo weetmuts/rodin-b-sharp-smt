@@ -807,4 +807,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				VERIT.toString());
 	}
 
+	@Test
+	public void testKSuccAndKPred() {
+		testTranslationV1_2Default("x = pred", "(= x pred)");
+		
+		testTranslationV1_2Default("x = succ", "(= x succ)");
+
+	}
+
 }

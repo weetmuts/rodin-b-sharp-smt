@@ -793,6 +793,32 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
 	}
 
+	/**
+	 * Check if this is a right way to translate
+	 */
+	@Test
+	public void testPredSucc() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("testpred_succ", hyps, "x = succ", te, VALID);
+
+	}
+
+	/**
+	 * Check if this is a right way to translate
+	 */
+	@Test
+	public void testPred() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("testpred_pred", hyps, "x = pred", te, VALID);
+
+	}
+
 	@Test
 	public void testAllBehaviorOfAllMacrosTogether() {
 		setPreferencesForZ3Test();
