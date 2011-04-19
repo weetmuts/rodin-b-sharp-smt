@@ -28,10 +28,13 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	// @BeforeClass
-	// public static void cleanSMTFolder() {
-	// cleanSMTFiles();
-	// }
+	@BeforeClass
+	public static void cleanSMTFolder() {
+		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
+			CommonSolverRunTests.smtFolder = SmtProverCall
+					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
+		}
+	}
 
 	/**
 	 * Parses the given sequent in the given type environment and launch the

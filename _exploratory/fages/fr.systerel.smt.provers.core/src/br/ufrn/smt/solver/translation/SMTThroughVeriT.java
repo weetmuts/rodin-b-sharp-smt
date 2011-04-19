@@ -1093,7 +1093,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTTerm[] termChildren = smtTerms(expression
 					.getBoundIdentDecls());
 			final SMTFormula formulaChild = smtFormula(expression
-					.getExpression());
+					.getPredicate());
 			final SMTTerm[] expressionTerm = smtTerms(expression
 					.getExpression());
 

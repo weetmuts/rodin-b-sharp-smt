@@ -12,6 +12,8 @@ public class CommonSolverRunTests extends AbstractTests {
 	private static final String VERIT = "verit";
 	protected SMTPreferences preferences;
 
+	public static String smtFolder;
+
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 
 	/**

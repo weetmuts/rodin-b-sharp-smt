@@ -49,11 +49,11 @@ public class SmtProverCall extends XProverCall {
 			.getProperty("user.home")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
-	private String translationFolder;
+	private String translationFolder = null;
 
-	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = true;
+	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
 
-	protected static void deleteFile(File file) {
+	public static void deleteFile(File file) {
 		if (file.isFile()) {
 			file.delete();
 		} else {
@@ -113,30 +113,33 @@ public class SmtProverCall extends XProverCall {
 				+ SMT_LIB_FILE_EXTENSION;
 	}
 
-	private void mkTranslationDir() {
+	public static String mkTranslationDir(boolean cleanSmtFolder) {
+		final String returnString;
 		File f = new File(TRANSLATION_PATH);
 		if (!f.mkdir()) {
 			if (f.isDirectory()) {
-				this.translationFolder = f.getPath();
+				returnString = f.getPath();
 			} else
 				for (int i = 0;; i++) {
 					f = new File(TRANSLATION_PATH + i);
 					if (!f.mkdir()) {
 						if (f.isDirectory()) {
-							this.translationFolder = f.getPath();
+							returnString = f.getPath();
+							break;
 						} else
 							continue;
 					} else {
-						this.translationFolder = f.getPath();
+						returnString = f.getPath();
 						break;
 					}
 				}
 		} else {
-			this.translationFolder = f.getPath();
+			returnString = f.getPath();
 		}
-		if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
+		if (cleanSmtFolder) {
 			cleanSMTFolder(f);
 		}
+		return returnString;
 	}
 
 	private static PrintWriter openSMTFileWriter(File smtFile,
@@ -179,6 +182,27 @@ public class SmtProverCall extends XProverCall {
 		this.smtUiPreferences = preferences;
 		this.lemmaName = lemmaName;
 		this.proverName = preferences.getSolver().getId();
+	}
+
+	/**
+	 * Creates an instance of this class. Additional computations are: prover
+	 * name and preferences settings.
+	 * 
+	 * @param hypotheses
+	 *            hypotheses of the sequent to discharge
+	 * @param goal
+	 *            goal of the sequent to discharge
+	 * @param pm
+	 *            proof monitor used for cancellation
+	 */
+	public SmtProverCall(Iterable<Predicate> hypotheses, Predicate goal,
+			IProofMonitor pm, SMTPreferences preferences, String lemmaName,
+			String smtFolder) {
+		super(hypotheses, goal, pm);
+		this.smtUiPreferences = preferences;
+		this.lemmaName = lemmaName;
+		this.proverName = preferences.getSolver().getId();
+		this.translationFolder = smtFolder;
 	}
 
 	/**
@@ -237,7 +261,9 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * The name of the SMT file with macros.
 		 */
-		mkTranslationDir();
+		if (translationFolder == null) {
+			this.translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+		}
 		String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
 				.getName());
 
@@ -377,7 +403,9 @@ public class SmtProverCall extends XProverCall {
 	 */
 	private List<String> smtTranslation(SMTBenchmark benchmark)
 			throws PreProcessingException, IOException, TranslationException {
-		mkTranslationDir();
+		if (translationFolder == null) {
+			this.translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+		}
 		String smtFileName = smtFilePath(benchmark.getName());
 
 		/**
