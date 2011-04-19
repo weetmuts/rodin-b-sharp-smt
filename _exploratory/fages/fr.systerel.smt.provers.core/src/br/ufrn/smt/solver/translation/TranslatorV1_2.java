@@ -43,8 +43,8 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
 public abstract class TranslatorV1_2 extends Translator {
 
 	String solver;
-	
-	public TranslatorV1_2(String solver){
+
+	public TranslatorV1_2(String solver) {
 		this.solver = solver;
 	}
 

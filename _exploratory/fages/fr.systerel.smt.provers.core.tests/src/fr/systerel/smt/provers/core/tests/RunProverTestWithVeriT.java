@@ -818,13 +818,34 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testDistinctForSingleton() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("A = {1,2,3}");
+		doTest("distinct_singletons", hyps, "partition(A,{1},{2},{3})", te,
+				VALID);
+	}
+
+	@Test
 	public void testDistinct() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("A = {1,2,3,4}");
+		doTest("distincttest", hyps, "partition(A,{1,2},{4},{3})", te, VALID);
+	}
 
-		doTest("distincttest", hyps, "partition(A,{1},{2},{3})", te, VALID);
+	@Test
+	public void testSimplerDistinct() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("A = {1,2,3}");
+		doTest("distinctsimpletest", hyps, "partition(A,{1,2},{3})", te, VALID);
 	}
 
 	@Test

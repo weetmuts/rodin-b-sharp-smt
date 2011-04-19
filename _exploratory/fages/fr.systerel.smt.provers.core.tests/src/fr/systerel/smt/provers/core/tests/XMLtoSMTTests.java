@@ -63,10 +63,10 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	private final SMTSolver SOLVER = SMTSolver.Z3;
 
-//	@BeforeClass
-//	public static void cleanSMTFolder() {
-//		cleanSMTFiles();
-//	}
+	// @BeforeClass
+	// public static void cleanSMTFolder() {
+	// cleanSMTFiles();
+	// }
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {

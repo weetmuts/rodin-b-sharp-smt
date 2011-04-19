@@ -32,6 +32,6 @@ public interface ISMTArithmeticFuns {
 	public SMTFunctionSymbol getMinus();
 
 	public SMTSymbol getDiv();
-	
+
 	public SMTSymbol getDivZ3();
 }

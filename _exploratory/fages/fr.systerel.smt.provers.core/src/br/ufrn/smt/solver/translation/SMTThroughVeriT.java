@@ -11,12 +11,56 @@
 package br.ufrn.smt.solver.translation;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
-import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
-import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
-import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.*;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.*;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeDistinct;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
+import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BCOMP;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BINTER;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BUNION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.CARD;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.CARTESIAN_PRODUCT;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.DOM;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.DOMAIN_RESTRICTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.DOMAIN_SUBSTRACTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.EMPTY;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.FCOMP;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.FINITE;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ID;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.IN;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INV;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMAX;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMIN;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.MAPSTO;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT1;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NOT_EQUAL;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.OVR;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.PARTIAL_FUNCTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.PARTIAL_INJECTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.PARTIAL_SURJECTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RANGE;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RANGE_INTEGER;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RANGE_RESTRICTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RANGE_SUBSTRACTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RELATION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RELATIONAL_IMAGE;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SETMINUS;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SUBSET;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SUBSETEQ;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SURJECTIVE_RELATION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_BIJECTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_FUNCTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_INJECTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_RELATION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_SURJECTION;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION;
+import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.PAIR_SORT;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.addPredefinedMacroInSignature;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -35,10 +79,10 @@ import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
@@ -53,6 +97,7 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
+import org.eventb.core.ast.expanders.Expanders;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
@@ -1321,28 +1366,43 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		Expression[] expressions = predicate.getChildren();
-		for (int i = 1; i < expressions.length; i++) {
-			if (expressions[i].getChildCount() != 1) {
-				// TODO: Implement the case where the child sets are not
-				// singleton
-				return;
-			}
-		}
-		SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
+		Predicate expandedPredicate = Expanders.expandPARTITION(predicate,
+				FormulaFactory.getDefault());
+		smtNode = smtFormula(expandedPredicate);
+		return;
 
-		// Translation of special case where all child sets are singleton
-		Set<String> usedNames = new HashSet<String>();
-		List<SMTTerm> newVars = new ArrayList<SMTTerm>();
-		for (int i = 1; i < expressions.length; i++) {
-			SMTTerm expTerm = smtTerm(expressions[i]);
+		/*
+		 * FIXME: Using expandPartition to translate multiple predicate. The
+		 * problem of translating it to the simple case (only singletons), is
+		 * that the macro union is not working with more than two arguments
+		 */
 
-			String x = signature.freshCstName("set", usedNames);
-			usedNames.add(x);
-			newVars.add(addEqualAssumption(x, expressions[i].getType(), expTerm));
-		}
-		addDistinctAssumption(newVars);
-		setNodeWithUnionAssumption(newVars, e0);
+		// Expression[] expressions = predicate.getChildren();
+		// for (int i = 1; i < expressions.length; i++) {
+		// if (expressions[i].getChildCount() != 1) {
+		// // Translate the case where the child sets are not
+		// // singleton
+		// Predicate expandedPredicate = Expanders.expandPARTITION(
+		// predicate, FormulaFactory.getDefault());
+		// smtNode = smtFormula(expandedPredicate);
+		// return;
+		// }
+		// }
+		// SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
+		//
+		// // Translation of special case where all child sets are singleton
+		// Set<String> usedNames = new HashSet<String>();
+		// List<SMTTerm> newVars = new ArrayList<SMTTerm>();
+		// for (int i = 1; i < expressions.length; i++) {
+		// SMTTerm expTerm = smtTerm(expressions[i]);
+		//
+		// String x = signature.freshCstName("set", usedNames);
+		// usedNames.add(x);
+		// newVars.add(addEqualAssumption(x, expressions[i].getType(),
+		// expTerm));
+		// }
+		// addDistinctAssumption(newVars);
+		// setNodeWithUnionAssumption(newVars, e0);
 	}
 
 	private void setNodeWithUnionAssumption(List<SMTTerm> newVars, SMTTerm e0) {
