@@ -123,25 +123,19 @@ public class SmtProverCall extends XProverCall {
 					f = new File(TRANSLATION_PATH + i);
 					if (!f.mkdir()) {
 						if (f.isDirectory()) {
-							if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
-								cleanSMTFolder(f);
-							}
 							this.translationFolder = f.getPath();
 						} else
 							continue;
 					} else {
-						if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
-							cleanSMTFolder(f);
-						}
 						this.translationFolder = f.getPath();
 						break;
 					}
 				}
 		} else {
-			if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
-				cleanSMTFolder(f);
-			}
 			this.translationFolder = f.getPath();
+		}
+		if (CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF) {
+			cleanSMTFolder(f);
 		}
 	}
 
