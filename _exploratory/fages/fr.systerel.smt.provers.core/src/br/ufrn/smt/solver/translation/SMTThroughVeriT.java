@@ -16,6 +16,7 @@ import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.*;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.*;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeDistinct;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTNumeral;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -1089,7 +1089,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			String varName1 = signature.freshCstName(SMTMacroSymbol.ELEM);
 			if (expression.getMembers()[0].getType() instanceof ProductType) {
 
-				List<String> l = new ArrayList<String>();
+				Set<String> l = new HashSet<String>();
 				l.add(varName1);
 				String varName2 = signature
 						.freshCstName(SMTMacroSymbol.ELEM, l);
@@ -1332,22 +1332,27 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
 
 		// Translation of special case where all child sets are singleton
-		List<String> usedNames = new ArrayList<String>();
+		Set<String> usedNames = new HashSet<String>();
 		List<SMTTerm> newVars = new ArrayList<SMTTerm>();
-		for (Expression expression : expressions) {
-			String x = signature.freshCstName("x", usedNames);
-			usedNames.add(x);
-			newVars.add(addEqualAssumption(x, expression.getType(), e0));
+		for (int i = 1; i < expressions.length; i++) {
+			SMTTerm expTerm = smtTerm(expressions[i]);
 
+			String x = signature.freshCstName("set", usedNames);
+			usedNames.add(x);
+			newVars.add(addEqualAssumption(x, expressions[i].getType(), expTerm));
 		}
 		addDistinctAssumption(newVars);
-		addUnionAssumption(newVars, e0);
-
+		setNodeWithUnionAssumption(newVars, e0);
 	}
 
-	private void addUnionAssumption(List<SMTTerm> newVars, SMTTerm e0) {
+	private void setNodeWithUnionAssumption(List<SMTTerm> newVars, SMTTerm e0) {
 		// TODO Auto-generated method stub
+		addPredefinedMacroInSignature(BUNION, signature);
+		SMTTerm unionTerm = sf.makeMacroTerm(getMacroSymbol(BUNION),
+				newVars.toArray(new SMTTerm[newVars.size()]));
+		SMTTerm[] equalTerms = { e0, unionTerm };
 
+		this.smtNode = makeEqual(equalTerms);
 	}
 
 	private SMTTerm addEqualAssumption(String x, Type type, SMTTerm e0) {
@@ -1355,10 +1360,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sort == null) {
 			sort = this.translateTypeName(type);
 		}
-		SMTFunctionSymbol symbol = new SMTFunctionSymbol(x, EMPTY_SORT, sort,
-				!ASSOCIATIVE, !PREDEFINED);
 
-		SMTTerm xTerm = sf.makeConstant(symbol, signature);
+		SMTPredicateSymbol symbol = sf.makeVeriTPredSymbol(x, sort);
+
+		this.signature.addPred(symbol);
+
+		SMTTerm xTerm = sf.makeVeriTConstantTerm(symbol, signature);
 
 		SMTTerm[] args = { xTerm, e0 };
 		signature.addAdditionalAssumption(SMTFactory.makeEqual(args));
@@ -1366,7 +1373,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	private void addDistinctAssumption(List<SMTTerm> newVars) {
-
+		signature.addAdditionalAssumption(makeDistinct(newVars
+				.toArray(new SMTTerm[newVars.size()])));
 	}
 
 	/**
@@ -1388,7 +1396,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the constant 'p'
 		SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,
-				EMPTY_SORT);
+				EMPTY_SORT, !PREDEFINED);
 		SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
 				EMPTY_SORT, Ints.getInt(), false, false);
 

@@ -135,9 +135,9 @@ public class SMTSignatureVerit extends SMTSignature {
 		return freshCstName(name, null);
 	}
 
-	public String freshCstName(final String name, List<String> usedNames) {
+	public String freshCstName(final String name, Set<String> usedNames) {
 		Set<String> names = new HashSet<String>();
-		if (name != null) {
+		if (usedNames != null) {
 			names.addAll(usedNames);
 		}
 		names.addAll(getSymbolNames(funs));

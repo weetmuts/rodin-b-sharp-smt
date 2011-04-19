@@ -11,6 +11,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 
 	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
 			SMTSymbol.BOOL_SORT, PREDEFINED);
+
 	private final static SMTSortSymbol INT = new SMTSortSymbol(SMTSymbol.INT,
 			PREDEFINED);
 

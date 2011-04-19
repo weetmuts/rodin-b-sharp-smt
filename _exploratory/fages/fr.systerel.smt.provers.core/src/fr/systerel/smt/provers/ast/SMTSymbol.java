@@ -29,6 +29,7 @@ public abstract class SMTSymbol {
 	public static final String MINUS = "-";
 	public static final String PLUS = "+";
 	public static final String MUL = "*";
+	public static final String DISTINCT = "distinct";
 
 	public static final String BENCHMARK = "benchmark";
 	public static final String LOGIC = "logic";

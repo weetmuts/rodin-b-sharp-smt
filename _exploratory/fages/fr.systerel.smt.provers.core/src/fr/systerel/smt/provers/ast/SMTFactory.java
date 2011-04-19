@@ -11,6 +11,8 @@
 package fr.systerel.smt.provers.ast;
 
 import java.math.BigInteger;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
+import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
@@ -48,9 +50,11 @@ public final class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", EMPTY_SORT, SMTSymbol.PREDEFINED);
+			"true", EMPTY_SORT, PREDEFINED);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", EMPTY_SORT, SMTSymbol.PREDEFINED);
+			"false", EMPTY_SORT, PREDEFINED);
+	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
+			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true);
 
 	/**
 	 * Quantifier symbols
@@ -140,11 +144,9 @@ public final class SMTFactory {
 		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
-	// public static SMTFormula makeVeriTEqual(final SMTTerm[] args) {
-	// final SMTSortSymbol sort0 = args[0].getSort();
-	// final SMTSortSymbol sort[] = { sort0, sort0 };
-	// return new SMTAtom(VeritPredefinedTheory.getExtendedEqual(), args);
-	// }
+	public static SMTFormula makeDistinct(final SMTTerm[] args) {
+		return new SMTAtom(DISTINCT, args);
+	}
 
 	/**
 	 * The SMT-LIB language doesn't define a <code>NOTEQUAL</code> symbol. Thus
@@ -490,7 +492,7 @@ public final class SMTFactory {
 						sortSymbols[j] = function.args[j].getSort();
 					}
 					SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.name, sortSymbols);
+							function.symbol.name, sortSymbols, !PREDEFINED);
 					SMTAtom atom = new SMTAtom(predicateSymbol, EMPTY_TERM);
 					formulas[i] = atom;
 				} else {

@@ -810,9 +810,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testKSuccAndKPred() {
 		testTranslationV1_2Default("x = pred", "(= x pred)");
-		
-		testTranslationV1_2Default("x = succ", "(= x succ)");
 
+		testTranslationV1_2Default("x = succ", "(= x succ)");
+	}
+
+	@Test
+	public void testDistinct() {
+		testTranslationV1_2Default("partition(A,{1},{2},{3})",
+				"(= A (union set set_0 set_1 set_2))");
 	}
 
 }

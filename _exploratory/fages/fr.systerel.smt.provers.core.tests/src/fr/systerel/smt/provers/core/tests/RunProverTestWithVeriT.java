@@ -815,7 +815,16 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		doTest("testpred_pred", hyps, "x = pred", te, VALID);
+	}
 
+	@Test
+	public void testDistinct() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("distincttest", hyps, "partition(A,{1},{2},{3})", te, VALID);
 	}
 
 	@Test

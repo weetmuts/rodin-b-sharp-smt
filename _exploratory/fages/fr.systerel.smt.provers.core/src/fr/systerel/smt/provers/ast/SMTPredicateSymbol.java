@@ -21,9 +21,6 @@ import java.util.Arrays;
  */
 public class SMTPredicateSymbol extends SMTSymbol implements
 		Comparable<SMTPredicateSymbol> {
-	public SMTSortSymbol[] getArgSorts() {
-		return argSorts;
-	}
 
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
@@ -32,17 +29,29 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 */
 	final private SMTSortSymbol[] argSorts;
 
+	final private boolean acceptsAnInfiniteNumberOfArgs;
+
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
+		acceptsAnInfiniteNumberOfArgs = false;
+	}
+
+	public boolean acceptsAnInfiniteNumberOfArgs() {
+		return acceptsAnInfiniteNumberOfArgs;
+	}
+
+	public SMTSortSymbol[] getArgSorts() {
+		return argSorts;
 	}
 
 	public SMTPredicateSymbol(final String symbolName,
-			final SMTSortSymbol argSorts[]) {
-		super(symbolName, false);
+			final SMTSortSymbol argSorts[], final boolean predefined,
+			boolean acceptsAnInfiniteNumberOfArgs) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
-
+		this.acceptsAnInfiniteNumberOfArgs = acceptsAnInfiniteNumberOfArgs;
 	}
 
 	public boolean isPropositional() {

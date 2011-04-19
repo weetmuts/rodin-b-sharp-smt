@@ -60,8 +60,21 @@ class SMTAtom extends SMTFormula {
 			final SMTTerm terms[]) {
 		SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
 
+		if (symbol.acceptsAnInfiniteNumberOfArgs()) {
+			SMTSortSymbol expectedSort = expectedSortArgs[0];
+			if (expectedSort instanceof SMTPolymorphicSortSymbol) {
+				return;
+			} else {
+				for (SMTTerm term : terms) {
+					if (!term.getSort().equals(expectedSort)) {
+						throw incompatiblePredicateRankException(symbol, terms);
+					}
+				}
+				return;
+			}
+		}
 		// Check if the number of arguments expected match the number of terms
-		if (expectedSortArgs.length == terms.length) {
+		else if (expectedSortArgs.length == terms.length) {
 
 			// Check if the sort symbols are the same
 			for (int i = 0; i < terms.length; i++) {
