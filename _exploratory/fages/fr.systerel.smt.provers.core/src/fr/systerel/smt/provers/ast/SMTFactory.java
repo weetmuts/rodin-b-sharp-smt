@@ -97,11 +97,8 @@ public final class SMTFactory {
 			// return "true";
 			// } else if (atomicExpression.equals("FALSE")) {
 			// return "false";
-		} else if (atomicExpression.equals("\u2205")) {
-			signature.addMacro(SMTMacroFactory.EMPTYSET_MACRO);
-			return "emptyset";
-		}
-		return atomicExpression;
+		} else
+			return signature.freshCstName(atomicExpression);
 	}
 
 	public static SMTSortSymbol makeVeriTSortSymbol(
