@@ -73,6 +73,13 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				defaultFailMessage, solver.toString());
 	}
 
+	private static void testTranslationV1_2VerDefaultSolver(
+			ITypeEnvironment typeEnvironment, final String ppPredStr,
+			final String expectedSMTNode) {
+		testTranslationV1_2(typeEnvironment, ppPredStr, expectedSMTNode,
+				defaultFailMessage, VERIT.toString());
+	}
+
 	/**
 	 * Parses a Predicate Calculus formula, (builds hypotheses and goal) and
 	 * tests its SMT-LIB translation
@@ -652,6 +659,34 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(or (subset (inter A A) (union A A)) (= (+ a b c) b) (= (* a b c) 0))");
 	}
 
+	/**
+	 * "pred-setequ"
+	 */
+	@Test
+	public void testAssociativeExpressionsUnionAndInter() {
+		ITypeEnvironment tpe = mTypeEnvironment("A", "ℙ(ℤ)", "B", "ℙ(ℤ)", "C",
+				"ℙ(ℤ)", "D", "ℙ(ℤ)", "E", "ℙ(ℤ)");
+		testTranslationV1_2VerDefaultSolver(tpe, "A ∪ B ∪ C ∪ D = E",
+				"(= (union (union (union A B) C) D) E)");
+
+		testTranslationV1_2VerDefaultSolver(tpe, "A ∩ B ∩ C ∩ D = E",
+				"(= (inter (inter (inter A B) C) D) E)");
+	}
+
+	@Test
+	public void testAssociativeFcompAndOvr() {
+		ITypeEnvironment tpe = mTypeEnvironment("A", "ℤ ↔ ℤ", "B", "ℤ ↔ ℤ",
+				"C", "ℤ ↔ ℤ", "D", "ℤ ↔ ℤ", "E", "ℤ ↔ ℤ");
+
+		testTranslationV1_2VerDefaultSolver(tpe,
+				"A \u003b B \u003b C \u003b D = E",
+				"(= (fcomp (fcomp (fcomp A B) C) D) E)");
+
+		testTranslationV1_2VerDefaultSolver(tpe,
+				"A \ue103 B \ue103 C \ue103 D = E",
+				"(= (ovr (ovr (ovr A B) C) D) E)");
+	}
+
 	@Test
 	public void testRule15SetMinusUnionInter() {
 
@@ -716,6 +751,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testTranslationV1_2Default("(AB \u003b AB) = (AB \u003b AB)",
 				"(= (fcomp AB AB) (fcomp AB AB))");
+
+		testTranslationV1_2Default("(AB \u2218 AB) = (AB \u2218 AB)",
+				"(= (bcomp AB AB) (bcomp AB AB))");
 	}
 
 	@Test

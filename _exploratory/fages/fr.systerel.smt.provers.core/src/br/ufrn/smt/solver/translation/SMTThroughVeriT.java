@@ -1187,46 +1187,118 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
-		final SMTTerm[] children = smtTerms(expression.getChildren());
+		SMTTerm[] children;
+		Expression[] expressions = expression.getChildren();
 		final int tag = expression.getTag();
+		SMTTerm macroTerm;
 		switch (tag) {
 		case Formula.PLUS:
+			children = smtTerms(expressions);
 			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
 					.getOperator(SMTOperator.PLUS), children, signature);
 			break;
 		case Formula.MUL:
+			children = smtTerms(expressions);
 			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
 					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		case Formula.BUNION:
 			addPredefinedMacroInSignature(BUNION, signature);
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BUNION), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BUNION), children);
+				for (int i = 2; i < expressions.length; i++) {
+					children = new SMTTerm[2];
+					children[0] = macroTerm;
+					children[1] = smtTerm(expressions[i]);
+					macroTerm = sf.makeMacroTerm(getMacroSymbol(BUNION),
+							children);
+				}
 
-			smtNode = sf.makeMacroTerm(getMacroSymbol(BUNION), children);
+			}
+			smtNode = macroTerm;
 			break;
 		case Formula.BINTER:
 			addPredefinedMacroInSignature(BINTER, signature);
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BINTER), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BINTER), children);
+				for (int i = 2; i < expressions.length; i++) {
+					children = new SMTTerm[2];
+					children[0] = macroTerm;
+					children[1] = smtTerm(expressions[i]);
+					macroTerm = sf.makeMacroTerm(getMacroSymbol(BINTER),
+							children);
+				}
 
-			smtNode = sf.makeMacroTerm(getMacroSymbol(BINTER), children);
+			}
+			smtNode = macroTerm;
 			break;
 		case Formula.FCOMP:
 			addPredefinedMacroInSignature(FCOMP, signature);
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(FCOMP), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(FCOMP), children);
+				for (int i = 2; i < expressions.length; i++) {
+					children = new SMTTerm[2];
+					children[0] = macroTerm;
+					children[1] = smtTerm(expressions[i]);
+					macroTerm = sf.makeMacroTerm(getMacroSymbol(FCOMP),
+							children);
+				}
 
-			smtNode = sf.makeMacroTerm(getMacroSymbol(FCOMP), children);
+			}
+			smtNode = macroTerm;
 			break;
 		case Formula.BCOMP:
 			addPredefinedMacroInSignature(BCOMP, signature);
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BCOMP), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(BCOMP), children);
+				for (int i = 2; i < expressions.length; i++) {
+					children = new SMTTerm[2];
+					children[0] = macroTerm;
+					children[1] = smtTerm(expressions[i]);
+					macroTerm = sf.makeMacroTerm(getMacroSymbol(BCOMP),
+							children);
+				}
 
-			smtNode = sf.makeMacroTerm(getMacroSymbol(BCOMP), children);
+			}
+			smtNode = macroTerm;
 			break;
 		case Formula.OVR:
 			addPredefinedMacroInSignature(OVR, signature);
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(OVR), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = sf.makeMacroTerm(getMacroSymbol(OVR), children);
+				for (int i = 2; i < expressions.length; i++) {
+					children = new SMTTerm[2];
+					children[0] = macroTerm;
+					children[1] = smtTerm(expressions[i]);
+					macroTerm = sf.makeMacroTerm(getMacroSymbol(OVR), children);
+				}
 
-			smtNode = sf.makeMacroTerm(getMacroSymbol(OVR), children);
+			}
+			smtNode = macroTerm;
 			break;
 		default:
 			throw new IllegalTagException(tag);
 		}
-
 	}
 
 	/**
