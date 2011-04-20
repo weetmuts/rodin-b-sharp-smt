@@ -33,7 +33,6 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMIN;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.MAPSTO;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT1;
-import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NOT_EQUAL;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.OVR;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.PARTIAL_FUNCTION;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.PARTIAL_INJECTION;
@@ -79,6 +78,7 @@ import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
@@ -118,6 +118,7 @@ import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTVeritCardFormula;
 import fr.systerel.smt.provers.ast.SMTVeritFiniteFormula;
+import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
@@ -655,9 +656,27 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature);
 			break;
 		case Formula.EXPN:
-			throw new IllegalArgumentException(
-					"The operation \'exponential\' is not supported yet");
+			/**
+			 * Translation of exponentiation:
+			 * 
+			 * forall x n . n > 0 => exp(x, n) = x * exp(x, n-1)
+			 * 
+			 * forall x . x ≠ 0 => exp(x, 0) = 1
+			 * 
+			 * forall n . n > 0 => exp(0, n) = 0
+			 */
 
+			this.signature
+					.addConstant((SMTFunctionSymbol) VeritPredefinedTheory
+							.getInstance().getExpn());
+
+			signature.addAdditionalAssumption(makeZeroCaseOfExpnAxioms());
+			signature.addAdditionalAssumption(makeOneCaseOfExpnAxioms());
+			signature.addAdditionalAssumption(makeRecursionCaseOfExpnAxioms());
+
+			this.smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.EXPN), children, signature);
+			break;
 		case Formula.UPTO:
 			addPredefinedMacroInSignature(RANGE_INTEGER, signature);
 
@@ -812,6 +831,145 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * forall x . x ≠ 0 => exp(x, 0) = 1
+	 * 
+	 * @return the one case base formula
+	 */
+	private SMTFormula makeOneCaseOfExpnAxioms() {
+		// addPredefinedMacroInSignature(NOT_EQUAL, signature);
+
+		// making the boundIdentifier
+		String symbolName = signature.freshCstName("x");
+		SMTVarSymbol varSymbol = new SMTVarSymbol(symbolName,
+				VeritPredefinedTheory.getInt(), !PREDEFINED);
+		SMTVar var = new SMTVar(varSymbol);
+		SMTVar[] vars = { var };
+
+		// making the moreOrEqual terms
+		SMTTerm numeralZero = sf.makeNumeral(BigInteger.ZERO);
+		SMTTerm numeralOne = sf.makeNumeral(BigInteger.ONE);
+		SMTTerm[] moreOrEqualTerms = { var, numeralZero };
+
+		// making the moreOrEqual formula
+		SMTFormula impliesFstArgument = sf.makeNotEqual(moreOrEqualTerms);
+
+		// making the expn fun application
+		SMTTerm[] expnTerms = { var, numeralZero };
+
+		SMTTerm[] equalTerms = {
+				sf.makeFunApplication((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.EXPN), expnTerms, signature),
+				numeralOne };
+
+		// making the Equal formula
+		SMTFormula impliesSndArgument = makeEqual(equalTerms);
+
+		// making the implies formula
+		SMTFormula[] impliesArgs = { impliesFstArgument, impliesSndArgument };
+
+		return sf.makeForAll(vars, sf.makeImplies(impliesArgs));
+	}
+
+	/**
+	 * forall x n . n > 0 => exp(x, n) = x * exp(x, n-1)
+	 * 
+	 * @return the recursion case base formula
+	 */
+	private SMTFormula makeRecursionCaseOfExpnAxioms() {
+		String n = signature.freshCstName("n");
+		String x = signature.freshCstName("x");
+
+		SMTTerm nVar = sf.makeVar(n, VeritPredefinedTheory.getInt());
+		SMTTerm xVar = sf.makeVar(x, VeritPredefinedTheory.getInt());
+
+		SMTTerm[] boundIdents = { nVar, xVar };
+		SMTFormula greaterThan = makeGreaterThan(nVar, BigInteger.ZERO);
+		SMTTerm expnAppl1 = makeExpnAppl(xVar, nVar);
+		SMTTerm nMinusOne = makeMinus(nVar, BigInteger.ONE);
+		SMTTerm expnAppl2 = makeExpnAppl(xVar, nMinusOne);
+		SMTTerm multTerm = makeMul(xVar, expnAppl2);
+		SMTFormula equalFormula = makeEqualFormula(expnAppl1, multTerm);
+		SMTFormula impliesFormula = makeImpliesFormula(greaterThan,
+				equalFormula);
+
+		return sf.makeForAll(boundIdents, impliesFormula);
+	}
+
+	private SMTFormula makeImpliesFormula(SMTFormula greaterThan,
+			SMTFormula equalFormula) {
+		SMTFormula[] formulas = { greaterThan, equalFormula };
+		return sf.makeImplies(formulas);
+	}
+
+	private SMTFormula makeEqualFormula(SMTTerm expnAppl1, SMTTerm multTerm) {
+		SMTTerm[] terms = { expnAppl1, multTerm };
+		return makeEqual(terms);
+	}
+
+	private SMTTerm makeMul(SMTTerm xVar, SMTTerm expnAppl2) {
+		SMTTerm[] terms = { xVar, expnAppl2 };
+		return sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+				.getOperator(SMTOperator.EXPN), terms, signature);
+	}
+
+	private SMTTerm makeExpnAppl(SMTTerm xVar, SMTTerm nVar) {
+		SMTTerm[] terms = { xVar, nVar };
+		return sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+				.getOperator(SMTOperator.EXPN), terms, signature);
+	}
+
+	private SMTTerm makeMinus(SMTTerm nVar, BigInteger numeral) {
+		SMTTerm[] terms = { nVar, sf.makeNumeral(numeral) };
+		return sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+				.getOperator(SMTOperator.MINUS), terms, signature);
+	}
+
+	private SMTFormula makeGreaterThan(SMTTerm nVar, BigInteger numeral) {
+		SMTTerm[] terms = { nVar, sf.makeNumeral(numeral) };
+		return sf.makeGreaterThan((SMTPredicateSymbol) signature.getLogic()
+				.getOperator(SMTOperator.GT), terms, signature);
+	}
+
+	/**
+	 * forall n . n > 0 => exp(0, n) = 0
+	 * 
+	 * @return the zero case base formula
+	 */
+	private SMTFormula makeZeroCaseOfExpnAxioms() {
+		// making the boundIdentifier
+		String symbolName = signature.freshCstName("n");
+		SMTVarSymbol varSymbol = new SMTVarSymbol(symbolName,
+				VeritPredefinedTheory.getInt(), !PREDEFINED);
+		SMTVar var = new SMTVar(varSymbol);
+		SMTVar[] vars = { var };
+
+		// making the moreOrEqual terms
+		SMTTerm numeralZero = sf.makeNumeral(BigInteger.ZERO);
+		SMTTerm[] moreOrEqualTerms = { var, numeralZero };
+
+		// making the moreOrEqual formula
+		SMTFormula impliesFstArgument = sf.makeGreaterThan(
+				(SMTPredicateSymbol) signature.getLogic().getOperator(
+						SMTOperator.GT), moreOrEqualTerms, signature);
+
+		// making the expn fun application
+		SMTTerm[] expnTerms = { numeralZero, var };
+
+		SMTTerm[] equalTerms = {
+				sf.makeFunApplication((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.EXPN), expnTerms, signature),
+				numeralZero };
+
+		// making the Equal formula
+		SMTFormula impliesSndArgument = makeEqual(equalTerms);
+
+		// making the implies formula
+		SMTFormula[] impliesArgs = { impliesFstArgument, impliesSndArgument };
+
+		return sf.makeForAll(vars, sf.makeImplies(impliesArgs));
+	}
+
+	/**
 	 * This method translates an Event-B bound identifier declaration into an
 	 * Extended SMT node.
 	 */
@@ -901,6 +1059,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.NOTEQUAL: {
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			if (predicate.getLeft().getType() instanceof BooleanType) {
@@ -908,10 +1067,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.convertVeritTermsIntoFormulas(children);
 				this.smtNode = sf.makeNotIff(childrenFormulas);
 			} else {
-				addPredefinedMacroInSignature(NOT_EQUAL, signature);
+				this.smtNode = sf.makeNotEqual(children);
 
-				this.smtNode = SMTFactory.makeMacroAtom(
-						getMacroSymbol(NOT_EQUAL), children);
+				// addPredefinedMacroInSignature(NOT_EQUAL, signature);
+				//
+				// this.smtNode = SMTFactory.makeMacroAtom(
+				// getMacroSymbol(NOT_EQUAL), children);
 			}
 			break;
 		}
@@ -1366,50 +1527,53 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
-		Predicate expandedPredicate = Expanders.expandPARTITION(predicate,
-				FormulaFactory.getDefault());
-		smtNode = smtFormula(expandedPredicate);
-		return;
+		Expression[] expressions = predicate.getChildren();
+		for (int i = 1; i < expressions.length; i++) {
+			if (expressions[i].getChildCount() != 1) {
+				// Translate the case where the child sets are not
+				// singleton
+				Predicate expandedPredicate = Expanders.expandPARTITION(
+						predicate, FormulaFactory.getDefault());
+				smtNode = smtFormula(expandedPredicate);
+				return;
+			}
+		}
+		SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
 
-		/*
-		 * FIXME: Using expandPartition to translate multiple predicate. The
-		 * problem of translating it to the simple case (only singletons), is
-		 * that the macro union is not working with more than two arguments
-		 */
+		// Translation of special case where all child sets are singleton
+		Set<String> usedNames = new HashSet<String>();
+		List<SMTTerm> newVars = new ArrayList<SMTTerm>();
+		for (int i = 1; i < expressions.length; i++) {
+			SMTTerm expTerm = smtTerm(expressions[i]);
 
-		// Expression[] expressions = predicate.getChildren();
-		// for (int i = 1; i < expressions.length; i++) {
-		// if (expressions[i].getChildCount() != 1) {
-		// // Translate the case where the child sets are not
-		// // singleton
-		// Predicate expandedPredicate = Expanders.expandPARTITION(
-		// predicate, FormulaFactory.getDefault());
-		// smtNode = smtFormula(expandedPredicate);
-		// return;
-		// }
-		// }
-		// SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
-		//
-		// // Translation of special case where all child sets are singleton
-		// Set<String> usedNames = new HashSet<String>();
-		// List<SMTTerm> newVars = new ArrayList<SMTTerm>();
-		// for (int i = 1; i < expressions.length; i++) {
-		// SMTTerm expTerm = smtTerm(expressions[i]);
-		//
-		// String x = signature.freshCstName("set", usedNames);
-		// usedNames.add(x);
-		// newVars.add(addEqualAssumption(x, expressions[i].getType(),
-		// expTerm));
-		// }
-		// addDistinctAssumption(newVars);
-		// setNodeWithUnionAssumption(newVars, e0);
+			String x = signature.freshCstName("set", usedNames);
+			usedNames.add(x);
+			newVars.add(addEqualAssumption(x, expressions[i].getType(), expTerm));
+		}
+		addDistinctAssumption(newVars);
+		setNodeWithUnionAssumption(newVars, e0);
 	}
 
 	private void setNodeWithUnionAssumption(List<SMTTerm> newVars, SMTTerm e0) {
+		assert !newVars.isEmpty();
 		// TODO Auto-generated method stub
 		addPredefinedMacroInSignature(BUNION, signature);
-		SMTTerm unionTerm = sf.makeMacroTerm(getMacroSymbol(BUNION),
-				newVars.toArray(new SMTTerm[newVars.size()]));
+
+		SMTTerm unionTerm;
+
+		if (newVars.size() == 1) {
+			unionTerm = newVars.get(0);
+		} else {
+			SMTTerm[] unionTermArgs = { newVars.get(0), newVars.get(1) };
+			unionTerm = sf.makeMacroTerm(getMacroSymbol(BUNION), unionTermArgs);
+			for (int i = 2; i < newVars.size(); i++) {
+				unionTermArgs = new SMTTerm[2];
+				unionTermArgs[0] = unionTerm;
+				unionTermArgs[1] = newVars.get(i);
+				unionTerm = sf.makeMacroTerm(getMacroSymbol(BUNION),
+						unionTermArgs);
+			}
+		}
 		SMTTerm[] equalTerms = { e0, unionTerm };
 
 		this.smtNode = makeEqual(equalTerms);

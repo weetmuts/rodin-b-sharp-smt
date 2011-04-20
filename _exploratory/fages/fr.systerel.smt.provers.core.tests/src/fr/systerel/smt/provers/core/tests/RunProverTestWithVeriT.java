@@ -34,7 +34,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@BeforeClass
 	public static void cleanSMTFolder() {
 		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SmtProverCall.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
+			CommonSolverRunTests.smtFolder = SmtProverCall
+					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
 		}
 	}
 
@@ -274,6 +275,15 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 		// perform test
 		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	@Ignore("Z3 doesn't stop processing")
+	public void testExpn() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("expn", hyps, "x ^ y = z", arith_te, VALID);
 	}
 
 	@Test

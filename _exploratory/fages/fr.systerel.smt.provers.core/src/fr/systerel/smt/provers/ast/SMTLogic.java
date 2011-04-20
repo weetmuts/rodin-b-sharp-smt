@@ -147,46 +147,54 @@ public class SMTLogic {
 			return null;
 		case MINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getMinus();
 				}
 			}
 			return null;
 		case MUL:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getMul();
 				}
 			}
 			return null;
 		case PLUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getPlus();
 				}
 			}
 			return null;
 		case UMINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getUMinus();
 				}
 			}
 			return null;
 		case DIV:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getDiv();
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getDiv();
 				}
 			}
 			break;
 		case DIV_Z3:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getDivZ3();
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getDivZ3();
 				}
 			}
 			break;
+		case EXPN:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getExpn();
+				}
+			}
+			break;
+
 		}
 		return null;
 	}
@@ -206,7 +214,8 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), DIV_Z3(SMTSymbol.DIV_Z3);
+				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), DIV_Z3(SMTSymbol.DIV_Z3), EXPN(
+				SMTSymbol.EXPN);
 
 		private String symbol;
 

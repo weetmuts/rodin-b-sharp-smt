@@ -133,8 +133,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		}
 		sb.append("\nBut the translated functions were:");
 		for (SMTFunctionSymbol fSymbol : functions) {
-			sb.append("\n");
-			sb.append(fSymbol.toString());
+			if (!fSymbol.isPredefined()) {
+				sb.append("\n");
+				sb.append(fSymbol.toString());
+			}
 		}
 		sb.append("\n");
 		return sb;
@@ -150,8 +152,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		}
 		sb.append("\nBut the translated predicates were:");
 		for (SMTPredicateSymbol predicateSymbol : predicates) {
-			sb.append("\n");
-			sb.append(predicateSymbol.toString());
+			if (!predicateSymbol.isPredefined()) {
+				sb.append("\n");
+				sb.append(predicateSymbol.toString());
+			}
 		}
 		sb.append("\n");
 		return sb;
@@ -175,21 +179,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	public void testTypeEnvironmentFunctions(Set<String> expectedFunctions) {
-		expectedFunctions.add("(~ Int Int)");
-		expectedFunctions.add("(- Int Int Int)");
-		expectedFunctions.add("(* Int Int)");
-		expectedFunctions.add("(+ Int Int)");
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
 		Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
 		Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
 		StringBuilder sb = typeEnvironmentFunctionsFail(expectedFunctions,
 				functionSymbols);
-		assertEquals(sb.toString(), expectedFunctions.size(),
-				functionSymbols.size());
 
 		while (iterator.hasNext()) {
-			assertTrue(sb.toString(),
-					expectedFunctions.contains(iterator.next().toString()));
+			SMTFunctionSymbol fS = iterator.next();
+			if (!fS.isPredefined()) {
+				assertTrue(sb.toString(),
+						expectedFunctions.contains(fS.toString()));
+			}
 		}
 	}
 
@@ -209,22 +210,17 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	public void testTypeEnvironmentPredicates(Set<String> expectedPredicates) {
-		expectedPredicates.add("(>= Int Int)");
-		expectedPredicates.add("(> Int Int)");
-		expectedPredicates.add("(= Int Int)");
-		expectedPredicates.add("(< Int Int)");
-		expectedPredicates.add("(<= Int Int)");
-
 		Set<SMTPredicateSymbol> predicateSymbols = signature.getPreds();
 		Iterator<SMTPredicateSymbol> iterator = predicateSymbols.iterator();
 		StringBuilder sb = typeEnvironmentPredicatesFail(expectedPredicates,
 				predicateSymbols);
-		assertEquals(sb.toString(), expectedPredicates.size(),
-				predicateSymbols.size());
 
 		while (iterator.hasNext()) {
-			assertTrue(sb.toString(),
-					expectedPredicates.contains(iterator.next().toString()));
+			SMTPredicateSymbol pS = iterator.next();
+			if (!pS.isPredefined()) {
+				assertTrue(sb.toString(),
+						expectedPredicates.contains(pS.toString()));
+			}
 		}
 	}
 
@@ -301,7 +297,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTestsVerit(defaultTe);
 		Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(r R)");
+		expectedPredicates.add("(r_0 R)");
 		expectedPredicates.add("(s R)");
 		expectedPredicates.add("(A Int)");
 		expectedPredicates.add("(AB (Pair Int Int))");
@@ -318,8 +314,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTestsVerit(defaultTe);
 		Set<String> expectedFunctions = new HashSet<String>();
 
-		expectedFunctions.add("(p S)");
-		expectedFunctions.add("(q S)");
+		expectedFunctions.add("(p_0 S)");
+		expectedFunctions.add("(q_0 S)");
 		expectedFunctions.add("(a Int)");
 		expectedFunctions.add("(b Int)");
 		expectedFunctions.add("(c Int)");
@@ -347,7 +343,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff u v) (= r s))");
+				"(and (= a b) (iff u v) (= r_0 s))");
 		/**
 		 * lor
 		 */
@@ -357,7 +353,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff u v) (= r s))");
+				"(or (= a b) (iff u v) (= r_0 s))");
 	}
 
 	/**
@@ -436,7 +432,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * notequal
 		 */
-		testTranslationV1_2Default("a ≠ b", "(neq a b)");
+		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
 		/**
 		 * lt
 		 */
@@ -478,7 +474,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * expn
 		 */
-		testTranslationV1_2Default("a ^ b = c", "(= (^ a b) c)");
+		testTranslationV1_2Default("a ^ b = c", "(= (expn a b) c)");
 		/**
 		 * div
 		 */
@@ -561,7 +557,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testPredSetEqu() {
-		testTranslationV1_2Default("r = s", "(= r s)");
+		testTranslationV1_2Default("r = s", "(= r_0 s)");
 	}
 
 	/**
@@ -569,7 +565,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testPredIdentEqu() {
-		testTranslationV1_2Default("p = q", "(= p q)");
+		testTranslationV1_2Default("p = q", "(= p_0 q_0)");
 	}
 
 	@Test
@@ -582,7 +578,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * not
 		 */
-		testTranslationV1_2Default("\u00ac(p = q)", "(not (= p q))");
+		testTranslationV1_2Default("\u00ac(p = q)", "(not (= p_0 q_0))");
 
 		/**
 		 * uminus
@@ -752,9 +748,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule18() {
 
 		testTranslationV1_2Default("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}",
-				"(= cset_0 cset_1)");
+				"(= cset cset_0)");
 
-		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset_0 A)");
+		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset A)");
 	}
 
 	@Test
@@ -768,7 +764,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule20() {
 
-		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset_0 emptyset)");
+		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
 	}
 
 	@Test
@@ -817,7 +813,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testDistinct() {
 		testTranslationV1_2Default("partition(A,{1},{2},{3})",
-				"(= A (union set set_0 set_1 set_2))");
+				"(= A (union (union set set_0) set_1))");
 	}
 
 }

@@ -67,8 +67,8 @@ public class SMTTheory {
 	/**
 	 * This class implements a logic using the SMT-LIB integer theory
 	 */
-	public static class Ints extends SMTTheory implements ISMTArithmeticFuns,
-			ISMTArithmeticPreds, ISMTIntegerSort {
+	public static class Ints extends SMTTheory implements
+			ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort {
 		private static final String INTS = "Ints";
 
 		/**
@@ -131,6 +131,8 @@ public class SMTTheory {
 				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
+				SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
 				PLUS, MUL, DIV, DIV_Z3 };
 
@@ -204,6 +206,11 @@ public class SMTTheory {
 		@Override
 		public SMTSymbol getDivZ3() {
 			return DIV_Z3;
+		}
+
+		@Override
+		public SMTSymbol getExpn() {
+			return EXPN;
 		}
 
 	}

@@ -155,7 +155,9 @@ public final class SMTFactory {
 	public SMTFormula makeNotEqual(final SMTTerm[] args) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
-		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
+		SMTFormula[] argsT = { new SMTAtom(
+				new SMTPredicateSymbol.SMTEqual(sort), args) };
+		return makeNot(argsT);
 	}
 
 	public SMTFormula makeNotIff(final SMTFormula[] args) {
@@ -194,6 +196,12 @@ public final class SMTFactory {
 			SMTSignature signature) {
 		signature.verifyFunctionSignature(plus);
 		return new SMTFunApplication(plus, args);
+	}
+
+	public SMTTerm makeExpn(final SMTFunctionSymbol expn, final SMTTerm[] args,
+			SMTSignature signature) {
+		signature.verifyFunctionSignature(expn);
+		return new SMTFunApplication(expn, args);
 	}
 
 	public SMTTerm makeMinus(final SMTFunctionSymbol minus,

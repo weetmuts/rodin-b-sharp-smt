@@ -39,6 +39,7 @@ public abstract class SMTSymbol {
 	public static final boolean PREDEFINED = true;
 	public static final String DIV = "/";
 	public static final String DIV_Z3 = "div";
+	public static final String EXPN = "expn";
 
 	SMTSymbol(final String symbolName, final boolean predefined) {
 		this.name = symbolName;

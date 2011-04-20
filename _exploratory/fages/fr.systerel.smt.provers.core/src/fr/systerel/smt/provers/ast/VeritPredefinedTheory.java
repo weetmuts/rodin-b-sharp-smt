@@ -4,7 +4,7 @@ import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
 public class VeritPredefinedTheory extends SMTTheory implements
-		ISMTArithmeticFuns, ISMTArithmeticPreds, ISMTIntegerSort,
+		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
 		ISMTBooleanSort {
 
 	private static final String NAME = "verit_theory";
@@ -46,6 +46,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 			SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
+			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static final SMTSortSymbol[] SORTS = { BOOL, INT };
 
@@ -135,6 +137,11 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	@Override
 	public SMTSymbol getDivZ3() {
 		return DIV_Z3;
+	}
+
+	@Override
+	public SMTSymbol getExpn() {
+		return EXPN;
 	}
 
 }
