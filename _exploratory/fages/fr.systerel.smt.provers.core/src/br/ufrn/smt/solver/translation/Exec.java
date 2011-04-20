@@ -23,7 +23,8 @@ import java.util.List;
  */
 public class Exec {
 
-	public static String execProgram(List<String> args) throws IOException {
+	public static void execProgram(final List<String> args,
+			final StringBuilder outputBuilder) throws IOException {
 		String ln;
 		/**
 		 * Executes the command with args in a new process
@@ -40,12 +41,35 @@ public class Exec {
 		 * Reads input and error streams and writes content into the buffer to
 		 * be returned
 		 */
-		final StringBuilder outputBuilder = new StringBuilder();
 		while ((ln = br.readLine()) != null) {
 			outputBuilder.append("\n");
 			outputBuilder.append(ln);
 		}
+	}
 
-		return outputBuilder.toString();
+	public static Process startProcess(final List<String> args)
+			throws IOException {
+		ProcessBuilder pb = new ProcessBuilder(args);
+		pb.redirectErrorStream(true);
+
+		return pb.start();
+
+	}
+
+	public static void execProgram(Process p, final List<String> args,
+			final StringBuilder outputBuilder) throws IOException {
+		String ln;
+
+		final BufferedReader br = new BufferedReader(new InputStreamReader(
+				p.getInputStream()));
+
+		/**
+		 * Reads input and error streams and writes content into the buffer to
+		 * be returned
+		 */
+		while ((ln = br.readLine()) != null) {
+			outputBuilder.append("\n");
+			outputBuilder.append(ln);
+		}
 	}
 }

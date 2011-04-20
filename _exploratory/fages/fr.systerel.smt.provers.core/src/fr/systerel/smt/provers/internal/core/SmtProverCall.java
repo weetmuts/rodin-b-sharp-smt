@@ -309,7 +309,9 @@ public class SmtProverCall extends XProverCall {
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());
 
-		resultOfSolver = Exec.execProgram(args);
+		final StringBuilder sb = new StringBuilder();
+		Exec.execProgram(args, sb);
+		resultOfSolver = sb.toString();
 
 		/**
 		 * Set up temporary result file
@@ -444,8 +446,36 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Launch solver and get back solver result
 		 */
-		resultOfSolver = Exec.execProgram(args);
+		final StringBuilder sb = new StringBuilder();
+		Exec.execProgram(args, sb);
+		resultOfSolver = sb.toString();
+		/**
+		 * Set up result file
+		 */
+		File resultFile = new File(iFile.getParent() + File.separatorChar
+				+ lemmaName + ".res");
+		if (!resultFile.exists()) {
+			resultFile.createNewFile();
+		}
+		FileWriter fileWriter = new FileWriter(resultFile);
+		fileWriter.write(resultOfSolver);
+		fileWriter.close();
+		oFile = resultFile;
 
+		/**
+		 * Check Solver Result
+		 */
+		checkResult(resultOfSolver);
+	}
+
+	public void callProver(final Process p, final List<String> args)
+			throws IOException, IllegalArgumentException {
+		/**
+		 * Launch solver and get back solver result
+		 */
+		final StringBuilder sb = new StringBuilder();
+		Exec.execProgram(p, args, sb);
+		resultOfSolver = sb.toString();
 		/**
 		 * Set up result file
 		 */

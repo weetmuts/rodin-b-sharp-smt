@@ -1,7 +1,5 @@
 package fr.systerel.smt.provers.core.tests;
 
-import java.io.File;
-
 import org.eventb.core.seqprover.IProofMonitor;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
@@ -13,6 +11,8 @@ public class CommonSolverRunTests extends AbstractTests {
 	protected SMTPreferences preferences;
 
 	public static String smtFolder;
+
+	protected Process solverProcess;
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 

@@ -12,10 +12,12 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
@@ -36,6 +38,13 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
 			CommonSolverRunTests.smtFolder = SmtProverCall
 					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
+		}
+	}
+
+	@After
+	public void finalizeSolverProcess() {
+		if (solverProcess != null) {
+			solverProcess.destroy();
 		}
 	}
 
@@ -99,7 +108,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughVeriT());
-			smtProverCall.callProver(smtArgs);
+			super.solverProcess = Exec.startProcess(smtArgs);
+			smtProverCall.callProver(super.solverProcess, smtArgs);
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
@@ -277,8 +287,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
 	}
 
-	@Test
-	@Ignore("Z3 doesn't stop processing")
+	@Test(timeout = 5000)
 	public void testExpn() {
 		setPreferencesForZ3Test();
 
