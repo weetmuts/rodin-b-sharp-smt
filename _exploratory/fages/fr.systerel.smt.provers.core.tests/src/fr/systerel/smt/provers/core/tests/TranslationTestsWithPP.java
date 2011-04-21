@@ -164,12 +164,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (MS ?x s))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (MS ?x s) (MS ?y s)))");
+				"(forall (?x R) (?y R) (and (s ?x) (s ?y)))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -181,7 +181,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 				base.getPredicate(), null);
 		// System.out.println("Predicate " + p);
 		testTranslationV1_2(p,
-				"(forall (?x R) (?x_0 R) (and (MS ?x s) (MS ?x_0 s)))",
+				"(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))",
 				"twice same decl", "verit");
 	}
 
@@ -190,12 +190,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (MS ?x s))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (s ?x))");
 		/**
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (MS ?x s) (MS ?y s)))");
+				"(exists (?x R) (?y R) (and (s ?x) (s ?y)))");
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
-		testTranslationV1_2Default("a ∈ A", "(MS a A)");
+		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
 		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
 		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");

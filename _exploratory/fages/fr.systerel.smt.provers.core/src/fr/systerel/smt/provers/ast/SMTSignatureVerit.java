@@ -148,8 +148,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		for (SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
-		// Special case U sort:
-		names.add("U");
 
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
 			return freshName(names, NEW_SYMBOL_NAME);

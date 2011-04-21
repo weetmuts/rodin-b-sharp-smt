@@ -73,7 +73,7 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 	}
 
-	class SMTFormulaInspector extends DefaultInspector<Type> {
+	class BidTypeInspector extends DefaultInspector<Type> {
 		@Override
 		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
 			accumulator.add(decl.getType());
@@ -85,7 +85,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * and goal
 	 */
 	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal) {
-		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new SMTFormulaInspector();
+		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new BidTypeInspector();
 		final List<Type> typesFound = new ArrayList<Type>();
 		for (Predicate p : hypotheses) {
 			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));

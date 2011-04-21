@@ -27,12 +27,14 @@ import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
+import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.LiteralPredicate;
@@ -112,6 +114,63 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
 				hypotheses, goal);
 		return smtB;
+	}
+
+	class MemberShipPredicateInspector extends
+			DefaultInspector<RelationalPredicate> {
+		@Override
+		public void inspect(RelationalPredicate relPredicate,
+				IAccumulator<RelationalPredicate> accumulator) {
+			if (relPredicate.getTag() == Formula.IN) {
+				accumulator.add(relPredicate);
+			}
+		}
+	}
+
+	private Map<String, Type> storeMonadicMSPIdentifiers(
+			List<Predicate> hypotheses, Predicate goal) {
+		final MemberShipPredicateInspector msp = new MemberShipPredicateInspector();
+		List<RelationalPredicate> msRelPred = new ArrayList<RelationalPredicate>();
+		for (Predicate p : hypotheses) {
+			msRelPred.addAll(p.inspect(msp));
+		}
+		msRelPred.addAll(goal.inspect(msp));
+
+		Set<FreeIdentifier> monadicSetElements = new HashSet<FreeIdentifier>();
+		Set<Expression> notMSPSets = new HashSet<Expression>();
+
+		Expression left;
+		Expression right;
+
+		for (RelationalPredicate predicate : msRelPred) {
+			left = predicate.getLeft();
+			right = predicate.getRight();
+
+			assert right instanceof FreeIdentifier
+					|| right instanceof BoundIdentifier;
+
+			notMSPSets.add(left);
+			if (notMSPSets.contains(right)) {
+				continue;
+			} else if (right instanceof BoundIdentifier) {
+				notMSPSets.add(right);
+				continue;
+			} else if (right.getType().getSource() != null) {
+				notMSPSets.add(right);
+				continue;
+			} else {
+				monadicSetElements.add((FreeIdentifier) right);
+			}
+		}
+		monadicSetElements.removeAll(notMSPSets);
+
+		Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
+
+		for (FreeIdentifier set : monadicSetElements) {
+			monadicSetEnv.put(set.getName(), set.getType());
+		}
+
+		return monadicSetEnv;
 	}
 
 	/**
@@ -201,6 +260,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return getSMTFormula();
 	}
 
+	Map<String, Type> monadicSets = new HashMap<String, Type>();
+
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
 	 * hypotheses and its goal. The method also fill the variables
@@ -223,6 +284,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
+		monadicSets.putAll(storeMonadicMSPIdentifiers(hypotheses, goal));
+
 		/**
 		 * For each membership of the type environment,
 		 */
@@ -230,7 +293,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		while (iter.hasNext()) {
 			iter.advance();
 			final String varName = iter.getName();
-			final Type varType = iter.getType();
+			Type varType = iter.getType();
+			boolean parseConstant = true;
+
+			/**
+			 * check if the the variable is a monadic set. If so, translate the
+			 * base type of it
+			 */
+			if (monadicSets.containsValue(varName)) {
+				varType = monadicSets.get(varName).getBaseType();
+				parseConstant = false;
+			}
 
 			/**
 			 * translates the type into an SMT-LIB sort, adds it to the types
@@ -259,24 +332,28 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				}
 			}
 
-			/**
-			 * gets a fresh name for the variable to be typed, adds it to the
-			 * variable names mapping (and adds it to the signature symbols set)
-			 */
-			final SMTFunctionSymbol smtConstant;
-			if (!varMap.containsKey(varName)) {
-				smtConstant = signature.freshConstant(varName, smtSortSymbol);
-				varMap.put(varName, smtConstant);
-			} else {
-				smtConstant = (SMTFunctionSymbol) varMap.get(varName);
-			}
+			if (parseConstant) {
+				/**
+				 * gets a fresh name for the variable to be typed, adds it to
+				 * the variable names mapping (and adds it to the signature
+				 * symbols set)
+				 */
+				final SMTFunctionSymbol smtConstant;
+				if (!varMap.containsKey(varName)) {
+					smtConstant = signature.freshConstant(varName,
+							smtSortSymbol);
+					varMap.put(varName, smtConstant);
+				} else {
+					smtConstant = (SMTFunctionSymbol) varMap.get(varName);
+				}
 
-			/**
-			 * adds the typing item (<code>x ⦂ S</code>) to the signature as a
-			 * constant (<code>extrafuns</code> SMT-LIB section, with a sort but
-			 * no argument: <code>(x S)</code>).
-			 */
-			signature.addConstant(smtConstant);
+				/**
+				 * adds the typing item (<code>x ⦂ S</code>) to the signature as
+				 * a constant (<code>extrafuns</code> SMT-LIB section, with a
+				 * sort but no argument: <code>(x S)</code>).
+				 */
+				signature.addConstant(smtConstant);
+			}
 		}
 
 		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
@@ -592,6 +669,27 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 */
 			final Expression left = predicate.getLeft();
 			final Expression right = predicate.getRight();
+
+			// Translate monadic sets (special case)
+			if (right instanceof FreeIdentifier) {
+				final FreeIdentifier rightSet = (FreeIdentifier) right;
+				if (monadicSets.containsKey(rightSet.getName())) {
+					final Type leftType = left.getType();
+					final SMTTerm leftTerm = smtTerm(left);
+					final SMTTerm[] argTerms = { leftTerm };
+					// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
+					SMTSortSymbol[] argSorts = { leftTerm.getSort() };
+					SMTPredicateSymbol predSymbol = signature
+							.addPredicateSymbol(rightSet.getName(), argSorts);
+					msTypeMap.put(leftType, predSymbol);
+
+					smtNode = SMTFactory.makeAtom(predSymbol, argTerms,
+							this.signature);
+					membershipPredicateTerms.clear();
+					break;
+				}
+			}
+
 			final SMTTerm[] children = smtTerms(left, right);
 
 			if (left.getTag() != Formula.MAPSTO) {

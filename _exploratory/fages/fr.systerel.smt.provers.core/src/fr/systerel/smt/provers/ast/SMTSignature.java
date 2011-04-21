@@ -317,6 +317,9 @@ public abstract class SMTSignature {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
 
+		// To avoid the sort U problem
+		symbols.add("U");
+
 		if (name.contains("\'")) {
 			final StringBuilder patch = new StringBuilder();
 			/**
