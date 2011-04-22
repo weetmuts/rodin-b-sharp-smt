@@ -474,7 +474,7 @@ public class SmtProverCall extends XProverCall {
 		 * Launch solver and get back solver result
 		 */
 		final StringBuilder sb = new StringBuilder();
-		Exec.execProgram(p, args, sb);
+		Exec.execProgram(p, sb);
 		resultOfSolver = sb.toString();
 		/**
 		 * Set up result file

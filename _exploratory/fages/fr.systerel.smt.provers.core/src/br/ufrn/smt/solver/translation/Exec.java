@@ -47,6 +47,15 @@ public class Exec {
 		}
 	}
 
+	/**
+	 * This method starts a process with the arguments and returns it. The error
+	 * stream is redirect to the output stream in the returned process.
+	 * 
+	 * @param args
+	 *            The arguments of the process
+	 * @return a new process
+	 * @throws IOException
+	 */
 	public static Process startProcess(final List<String> args)
 			throws IOException {
 		ProcessBuilder pb = new ProcessBuilder(args);
@@ -56,8 +65,18 @@ public class Exec {
 
 	}
 
-	public static void execProgram(Process p, final List<String> args,
-			final StringBuilder outputBuilder) throws IOException {
+	/**
+	 * This method reads and save in the stringbuilder the output of the
+	 * process.
+	 * 
+	 * @param p
+	 *            the process
+	 * @param outputBuilder
+	 *            the stringBuilder that will store the output of the process p
+	 * @throws IOException
+	 */
+	public static void execProgram(Process p, final StringBuilder outputBuilder)
+			throws IOException {
 		String ln;
 
 		final BufferedReader br = new BufferedReader(new InputStreamReader(

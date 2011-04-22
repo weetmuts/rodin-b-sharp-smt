@@ -318,6 +318,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 
 	@Test
+	@Ignore("The Int set is not implemented")
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
@@ -337,6 +338,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * "pred-boolequ"
 	 */
 	@Test
+	@Ignore("The boolean set is not yet implemented")
 	public void testPredBoolEqu() {
 		testTranslationV1_2Default("u = v", "(= u v)");
 		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");

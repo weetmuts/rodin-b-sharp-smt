@@ -386,7 +386,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			iter.advance();
 			final Type varType = iter.getType();
 			if (iter.isGivenSet()) {
-				SMTSortSymbol sortSymbol = typeMap.get(varType);
+				SMTSortSymbol sortSymbol = typeMap.get(varType.getBaseType());
 				if (sortSymbol == null) {
 					sortSymbol = SMTFactory.makeVeriTSortSymbol(varType
 							.getBaseType().toString(), signature);
@@ -458,7 +458,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			SMTSortSymbol sortSymbol = typeMap.get(type);
 			if (sortSymbol == null) {
-				parsePairTypes(type.getSource(), type.getTarget());
+				sortSymbol = parsePairTypes(type.getSource(), type.getTarget());
 				typeMap.put(type, sortSymbol);
 			}
 			return sortSymbol;
@@ -1704,6 +1704,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return xTerm;
 	}
 
+	/**
+	 * 
+	 * @param newVars
+	 */
 	private void addDistinctAssumption(List<SMTTerm> newVars) {
 		signature.addAdditionalAssumption(makeDistinct(newVars
 				.toArray(new SMTTerm[newVars.size()])));

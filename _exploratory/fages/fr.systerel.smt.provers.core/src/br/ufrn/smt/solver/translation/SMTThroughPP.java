@@ -300,7 +300,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			if (monadicSets.containsValue(varName)) {
+			if (monadicSets.containsKey(varName)) {
 				varType = monadicSets.get(varName).getBaseType();
 				parseConstant = false;
 			}
@@ -679,8 +679,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					final SMTTerm[] argTerms = { leftTerm };
 					// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
 					SMTSortSymbol[] argSorts = { leftTerm.getSort() };
+
+					// FIXME Check if there is already defined a predicate
+					// before creating a new one.
 					SMTPredicateSymbol predSymbol = signature
 							.addPredicateSymbol(rightSet.getName(), argSorts);
+
 					msTypeMap.put(leftType, predSymbol);
 
 					smtNode = SMTFactory.makeAtom(predSymbol, argTerms,
@@ -707,7 +711,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
 			if (predSymbol == null) {
-				predSymbol = signature.addPredicateSymbol(
+				predSymbol = signature.addNewPredicateSymbol(
 						signature.freshPredName(), argSorts);
 				msTypeMap.put(leftType, predSymbol);
 			}

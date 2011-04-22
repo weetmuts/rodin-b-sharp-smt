@@ -57,7 +57,7 @@ public class SMTLogic {
 			sb.append(THEORY);
 			sb.append(SPACE);
 			sb.append(theory.getName());
-			sb.append("\n");
+			sb.append("\n"); 
 		}
 	}
 

@@ -417,6 +417,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		if (PRINT_INFO) {
 			System.out.println("Testing lemma: " + name + ".\n");
 		}
+		name = name + "vt";
 		doTestWithVeriT(name, data.getHypotheses(), data.getGoal(),
 				data.getTe(), VALID);
 	}
@@ -446,6 +447,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		if (PRINT_INFO) {
 			System.out.println("Testing lemma: " + name + ".\n");
 		}
+		name = name + "pp";
 		doTestWithPP(name, data.getHypotheses(), data.getGoal(), data.getTe(),
 				VALID);
 	}

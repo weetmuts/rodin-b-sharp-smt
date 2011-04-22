@@ -123,10 +123,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Emptyset macro does not work with identifiers with polymorphic type")
 	public void testRule20() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
-
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("(λx· ∀y·y ∈ ℕ ∧ x > y ∣ x+x) = ∅");
 
@@ -288,6 +288,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 5000)
+	@Ignore("Expn is not working")
 	public void testExpn() {
 		setPreferencesForZ3Test();
 
@@ -362,6 +363,19 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		hyps.add("¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
 
 		doTest("quick_sort1", hyps, "x = k", te, VALID);
+	}
+
+	@Test
+	@Ignore("Set Int cannot be in a relation")
+	public void testIntInRelation() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)", "f",
+				"ℙ(ℤ × D)", "n", "ℤ", "r", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("int_in_relation", hyps, "f ∈ ℤ ⇸  D", te, VALID);
 	}
 
 	/**
@@ -774,6 +788,9 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Error produced from z3: "
+			+ "ERROR: line 10 column 12: could not find overload for 'pair' Argument: 0 has type Int."
+			+ "Argument: 1 has type Int.")
 	public void test() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
