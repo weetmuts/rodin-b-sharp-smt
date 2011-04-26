@@ -311,7 +311,7 @@ public class SmtProverCall extends XProverCall {
 
 		final StringBuilder sb = new StringBuilder();
 		Exec.execProgram(args, sb);
-		resultOfSolver = sb.toString();
+		resultOfSolver = sb.toString().trim();
 
 		/**
 		 * Set up temporary result file
@@ -443,29 +443,8 @@ public class SmtProverCall extends XProverCall {
 	 */
 	public void callProver(final List<String> args) throws IOException,
 			IllegalArgumentException {
-		/**
-		 * Launch solver and get back solver result
-		 */
-		final StringBuilder sb = new StringBuilder();
-		Exec.execProgram(args, sb);
-		resultOfSolver = sb.toString();
-		/**
-		 * Set up result file
-		 */
-		File resultFile = new File(iFile.getParent() + File.separatorChar
-				+ lemmaName + ".res");
-		if (!resultFile.exists()) {
-			resultFile.createNewFile();
-		}
-		FileWriter fileWriter = new FileWriter(resultFile);
-		fileWriter.write(resultOfSolver);
-		fileWriter.close();
-		oFile = resultFile;
-
-		/**
-		 * Check Solver Result
-		 */
-		checkResult(resultOfSolver);
+		Process p = Exec.startProcess(args);
+		callProver(p, args);
 	}
 
 	public void callProver(final Process p, final List<String> args)
@@ -475,7 +454,7 @@ public class SmtProverCall extends XProverCall {
 		 */
 		final StringBuilder sb = new StringBuilder();
 		Exec.execProgram(p, sb);
-		resultOfSolver = sb.toString();
+		resultOfSolver = sb.toString().trim();
 		/**
 		 * Set up result file
 		 */

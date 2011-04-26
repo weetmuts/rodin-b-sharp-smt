@@ -123,7 +123,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Emptyset macro does not work with identifiers with polymorphic type")
+	// @Ignore("Emptyset macro does not work with identifiers with polymorphic type")
+	// FIXME: Implement methods to print point inside a macro
 	public void testRule20() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -135,6 +136,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule20ManyForalls() {
+		// FIXME: Implement methods to print point inside a macro
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -145,6 +147,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	// FIXME: error : Sort 't and (Pair Int Int) mismatch.
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -158,7 +161,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("Not yet implemented")
+	@Ignore("Type ℙ(ℤ×ℙ(ℤ)): Sets of sets are not supported yet")
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForZ3Test();
 
@@ -366,7 +369,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Set Int cannot be in a relation")
+	// @Ignore("Error: error : DAG_new: unable to determine sort")
 	public void testIntInRelation() {
 		setPreferencesForZ3Test();
 
@@ -443,6 +446,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
+	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeEvenSimpler() {
 		setPreferencesForZ3Test();
 		// setPreferencesForAltErgoTest();
@@ -461,9 +465,9 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
+	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForZ3Test();
-		// setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -479,6 +483,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
+	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testDifferentForall() {
 		setPreferencesForZ3Test();
 
@@ -496,6 +501,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
+	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7LikeSimple() {
 		setPreferencesForZ3Test();
 
@@ -513,6 +519,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
+	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7LikeConc() {
 		setPreferencesForAltErgoTest();
 
@@ -531,6 +538,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
+	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7Conc29() {
 		setPreferencesForAltErgoTest();
 
@@ -788,9 +796,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Error produced from z3: "
-			+ "ERROR: line 10 column 12: could not find overload for 'pair' Argument: 0 has type Int."
-			+ "Argument: 1 has type Int.")
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void test() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -885,6 +891,16 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("A = {1,2,3}");
 		doTest("distinctsimpletest", hyps, "partition(A,{1,2},{3})", te, VALID);
+	}
+
+	@Test
+	public void testIntSet() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("intsettest", hyps, "A ⊆ ℤ", te, VALID);
+
 	}
 
 	@Test

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import java.math.BigInteger;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
+
+import java.math.BigInteger;
 
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
@@ -92,11 +93,6 @@ public final class SMTFactory {
 			return "Nat1";
 		} else if (atomicExpression.equals("BOOL")) {
 			return "Bool";
-			// FIXME: How to deal with these elements?
-			// } else if (atomicExpression.equals("TRUE")) {
-			// return "true";
-			// } else if (atomicExpression.equals("FALSE")) {
-			// return "false";
 		} else
 			return signature.freshCstName(atomicExpression);
 	}
@@ -119,7 +115,7 @@ public final class SMTFactory {
 		return new SMTPredicateSymbol(predName, symbols, !SMTSymbol.PREDEFINED);
 	}
 
-	public SMTSortSymbol makePairSortSymbol(SMTSortSymbol sourceSymbol,
+	public static SMTSortSymbol makePairSortSymbol(SMTSortSymbol sourceSymbol,
 			SMTSortSymbol targetSymbol) {
 
 		StringBuffer sb = new StringBuffer();

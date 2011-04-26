@@ -57,7 +57,7 @@ public class SMTLogic {
 			sb.append(THEORY);
 			sb.append(SPACE);
 			sb.append(theory.getName());
-			sb.append("\n"); 
+			sb.append("\n");
 		}
 	}
 
@@ -270,7 +270,7 @@ public class SMTLogic {
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
 				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
 				SMTMacroSymbol.RANGE), NOT_EQUAL(SMTMacroSymbol.NOT_EQUAL), BCOMP(
-				SMTMacroSymbol.BCOMP);
+				SMTMacroSymbol.BCOMP), INTEGER(SMTMacroSymbol.INT);
 
 		private String symbol;
 

@@ -118,7 +118,6 @@ public class SMTSignatureVerit extends SMTSignature {
 			} else if (macro instanceof SMTPairEnumMacro) {
 				SMTPairEnumMacro pairEnumMacro = (SMTPairEnumMacro) macro;
 				macroNames.add(pairEnumMacro.getKey().getName());
-				macroNames.add(pairEnumMacro.getValue().getName());
 			} else if (macro instanceof SMTSetComprehensionMacro) {
 				SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
 				macroNames.add(setComprehensionMacro.getLambdaVar().getName());

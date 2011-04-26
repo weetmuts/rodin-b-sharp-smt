@@ -27,6 +27,7 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.FCOMP;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.FINITE;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ID;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.IN;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INTEGER;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INV;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMAX;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMIN;
@@ -60,6 +61,8 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
+import static fr.systerel.smt.provers.ast.SMTFactory.makePairSortSymbol;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeVeriTSortSymbol;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -247,13 +250,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The type of the variable
 	 * @return the translated {@link SMTSortSymbol} of one of the types of a
 	 *         CartesianProduct Type.
-	 * @see #parsePairTypes(Type, Type)
 	 */
-	private SMTSortSymbol parseOneOfPairTypes(Type type) {
-		if (type.getSource() != null) {
-			return parsePairTypes(type.getSource(), type.getTarget());
-		} else if (type.getBaseType() != null) {
-			throw new IllegalArgumentException(", Type " + type.toString()
+	private SMTSortSymbol parseOneOfPairTypes(Type type, Type parentType) {
+		if (type.getBaseType() != null || type.getSource() != null) {
+			throw new IllegalArgumentException(", Type "
+					+ parentType.toString()
 					+ ": Sets of sets are not supported yet");
 		} else {
 			SMTSortSymbol sortSymbol = typeMap.get(type);
@@ -275,10 +276,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param targetType
 	 * @return The translated sort symbol from productType.
 	 */
-	private SMTSortSymbol parsePairTypes(Type sourceType, Type targetType) {
-		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(sourceType);
-		SMTSortSymbol targetSymbol = parseOneOfPairTypes(targetType);
-		return sf.makePairSortSymbol(sourceSymbol, targetSymbol);
+	private SMTSortSymbol parsePairTypes(Type parentType) {
+		SMTSortSymbol sourceSymbol = parseOneOfPairTypes(
+				parentType.getSource(), parentType);
+		SMTSortSymbol targetSymbol = parseOneOfPairTypes(
+				parentType.getTarget(), parentType);
+		return makePairSortSymbol(sourceSymbol, targetSymbol);
 	}
 
 	@Override
@@ -342,8 +345,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private void translatePairTypeSymbol(String varName, String freshVarName,
 			Type varType) {
-		SMTSortSymbol sortSymbol = parsePairTypes(varType.getSource(),
-				varType.getTarget());
+		SMTSortSymbol sortSymbol = parsePairTypes(varType);
 		SMTSortSymbol[] sorts = { sortSymbol };
 		SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(freshVarName,
 				sorts, false);
@@ -454,42 +456,58 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	protected SMTSortSymbol translateTypeName(Type type) {
-		if (type.getSource() != null) {
-
-			SMTSortSymbol sortSymbol = typeMap.get(type);
+		SMTSortSymbol sortSymbol;
+		Type baseType = type.getBaseType();
+		if (baseType != null) {
+			checkIfIsSetOfSet(baseType, type);
+			sortSymbol = typeMap.get(baseType);
 			if (sortSymbol == null) {
-				sortSymbol = parsePairTypes(type.getSource(), type.getTarget());
-				typeMap.put(type, sortSymbol);
-			}
-			return sortSymbol;
-
-		} else if (type.getBaseType() != null) {
-
-			if (type.getBaseType().getSource() != null
-					|| type.getBaseType().getBaseType() != null) {
-				throw new IllegalArgumentException("Type " + type.toString()
-						+ ": Sets of sets are not supported yet");
-			} else {
-				SMTSortSymbol sortSymbol = typeMap.get(type.getBaseType());
-				if (sortSymbol == null) {
-					sortSymbol = SMTFactory.makeVeriTSortSymbol(type
-							.getBaseType().toString(), signature);
+				if (baseType instanceof ProductType) {
+					sortSymbol = translateProductType((ProductType) baseType);
+				} else {
+					sortSymbol = SMTFactory.makeVeriTSortSymbol(
+							baseType.toString(), signature);
+					this.signature.addSort(sortSymbol);
 				}
-				this.signature.addSort(sortSymbol);
-				typeMap.put(type, sortSymbol);
-				return sortSymbol;
 			}
-
 		} else {
-			SMTSortSymbol smtSortSymbol = typeMap.get(type);
-			if (smtSortSymbol == null) {
-				smtSortSymbol = SMTFactory.makeVeriTSortSymbol(type.toString(),
-						signature);
+			sortSymbol = typeMap.get(type);
+			if (sortSymbol == null) {
+				if (type instanceof ProductType) {
+					sortSymbol = translateProductType((ProductType) type);
+				} else {
+					sortSymbol = makeVeriTSortSymbol(type.toString(), signature);
+					this.signature.addSort(sortSymbol);
+				}
 			}
-			this.signature.addSort(smtSortSymbol);
-			typeMap.put(type, smtSortSymbol);
-			return smtSortSymbol;
 		}
+		typeMap.put(type, sortSymbol);
+		return sortSymbol;
+	}
+
+	/**
+	 * @param type
+	 */
+	private void checkIfIsSetOfSet(Type type, Type parentType) {
+		if (type.getSource() != null || type.getBaseType() != null) {
+			throw new IllegalArgumentException("Type " + parentType.toString()
+					+ ": Sets of sets are not supported yet");
+		}
+	}
+
+	private SMTSortSymbol translateProductType(ProductType type) {
+		checkIfIsSetOfSet(type);
+		SMTSortSymbol left = translateTypeName(type.getLeft());
+		SMTSortSymbol right = translateTypeName(type.getRight());
+		return makePairSortSymbol(left, right);
+	}
+
+	/**
+	 * @param type
+	 */
+	private void checkIfIsSetOfSet(ProductType type) {
+		checkIfIsSetOfSet(type.getLeft(), type);
+		checkIfIsSetOfSet(type.getRight(), type);
 	}
 
 	/**
@@ -556,7 +574,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			break;
 		case Formula.INTEGER:
-			smtNode = sf.makePTrue(this.signature);
+			addPredefinedMacroInSignature(INTEGER, signature);
+
+			smtNode = sf.makeMacroTerm(getMacroSymbol(INTEGER));
 			break;
 		case Formula.NATURAL:
 			addPredefinedMacroInSignature(NAT, signature);
@@ -862,6 +882,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the one case base formula
 	 */
 	private SMTFormula makeOneCaseOfExpnAxioms() {
+		// TODO Refactor
 		// addPredefinedMacroInSignature(NOT_EQUAL, signature);
 
 		// making the boundIdentifier
@@ -902,6 +923,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the recursion case base formula
 	 */
 	private SMTFormula makeRecursionCaseOfExpnAxioms() {
+		// TODO: Refactor
 		String n = signature.freshCstName("n");
 		String x = signature.freshCstName("x");
 
@@ -962,6 +984,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the zero case base formula
 	 */
 	private SMTFormula makeZeroCaseOfExpnAxioms() {
+		// TODO: Refactor
 		// making the boundIdentifier
 		String symbolName = signature.freshCstName("n");
 		SMTVarSymbol varSymbol = new SMTVarSymbol(symbolName,
@@ -1390,41 +1413,25 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} else {
 			children = smtTerms(expression.getMembers());
 			String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
-			String varName1 = signature.freshCstName(SMTMacroSymbol.ELEM);
-			if (expression.getMembers()[0].getType() instanceof ProductType) {
+			String varName = signature.freshCstName(SMTMacroSymbol.ELEM);
 
-				Set<String> l = new HashSet<String>();
-				l.add(varName1);
-				String varName2 = signature
-						.freshCstName(SMTMacroSymbol.ELEM, l);
-				SMTSortSymbol sortSymbol1 = typeMap.get(expression.getType()
-						.getSource());
-				if (sortSymbol1 == null) {
-					sortSymbol1 = translateTypeName(expression.getType()
-							.getSource());
-				}
-				SMTSortSymbol sortSymbol2 = typeMap.get(expression.getType()
-						.getTarget());
-				if (sortSymbol2 == null) {
-					sortSymbol2 = translateTypeName(expression.getType()
-							.getTarget());
-				}
+			Type setExtensionType = expression.getMembers()[0].getType();
+			if (setExtensionType instanceof ProductType) {
 
-				SMTVarSymbol var1 = new SMTVarSymbol(varName1, sortSymbol1,
-						false);
-				SMTVarSymbol var2 = new SMTVarSymbol(varName2, sortSymbol2,
-						false);
+				SMTSortSymbol pairSort = parsePairTypes(expression.getType());
+
+				SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false);
 
 				SMTPairEnumMacro macro = SMTMacroFactory
-						.makePairEnumerationMacro(macroName, var1, var2,
-								children, signature);
+						.makePairEnumerationMacro(macroName, var, children,
+								signature);
 				this.signature.addMacro(macro);
 			} else {
 				SMTSortSymbol sortSymbol = typeMap.get(expression.getType());
 				if (sortSymbol == null) {
 					sortSymbol = translateTypeName(expression.getType());
 				}
-				SMTVarSymbol var = new SMTVarSymbol(varName1, sortSymbol, false);
+				SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false);
 
 				SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
 				this.signature.addMacro(macro);

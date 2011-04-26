@@ -47,7 +47,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	static {
 		simpleTe = mTypeEnvironment("e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "AB",
-				"ℤ ↔ ℤ", "C", "ℤ ↔ (ℤ ↔ ℤ)");
+				"ℤ ↔ ℤ");
 
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ", "b",
@@ -722,6 +722,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	@Ignore("Type ℙ(ℙ(ℤ×ℤ)): Sets of sets are not supported yet")
 	public void testRule15Functions() {
 
 		testTranslationV1_2Default("AB ∈ (A↔A)", "(in AB (rel A A))");
@@ -835,6 +836,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	@Ignore("Type ℙ(ℙ(S×R)): Sets of sets are not supported yet")
 	public void testCDIS_2() {
 		testTranslationV1_2(cdisTe, "f{x ↦ y} ∈ S ⇸  R",
 				"(in (ovr f_0 enum_0) (pfun S_0 R_0))", defaultFailMessage,
@@ -852,6 +854,11 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testDistinct() {
 		testTranslationV1_2Default("partition(A,{1},{2},{3})",
 				"(= A (union (union set set_0) set_1))");
+	}
+
+	@Test
+	public void testIntSet() {
+		testTranslationV1_2Default("A = ℤ", "(= A Int)");
 	}
 
 }

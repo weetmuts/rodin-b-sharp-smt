@@ -54,6 +54,8 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -269,6 +271,9 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro NOTEQUAL_MACRO = new SMTPredefinedMacro(
 			NOT_EQUAL, "(lambda (?t6 Bool) (?t5 Bool) . (not (= ?t6 ?t5)))", 0);
 
+	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
+			INT, "(lambda (?t7 Int). true)", 0);
+
 	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
 			POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
@@ -283,87 +288,88 @@ public class SMTMacroFactory {
 			Ints.getInt() };
 
 	private static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RANGE, POLYMORPHICS);
+			RANGE, POLYMORPHICS);
 
+	private static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
+			INT, EMPTY_SORT);
 	private static final SMTMacroSymbol NOT_EQUAL_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.NOT_EQUAL, POLYMORPHIC_PAIRS);
-	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.CARD, CARD_SORTS);
-	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.FINITE, FINITE_SORTS);
-	public static SMTMacroSymbol ISMAX_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.ISMAX, ISMIN_MAX_SORTS);
-	public static SMTMacroSymbol ISMIN_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.ISMIN, ISMIN_MAX_SORTS);
-	public static SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.SETMINUS, POLYMORPHIC_PAIRS);
+			NOT_EQUAL, POLYMORPHIC_PAIRS);
+	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
+			CARD_SORTS);
+	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(FINITE,
+			FINITE_SORTS);
+	public static SMTMacroSymbol ISMAX_SYMBOL = new SMTMacroSymbol(ISMAX,
+			ISMIN_MAX_SORTS);
+	public static SMTMacroSymbol ISMIN_SYMBOL = new SMTMacroSymbol(ISMIN,
+			ISMIN_MAX_SORTS);
+	public static SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(SETMINUS,
+			POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol RELATIONAL_IMAGE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RELATIONAL_IMAGE, POLYMORPHIC_PAIRS);
+			RELATIONAL_IMAGE, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol DOMAIN_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.DOMAIN_SUBSTRACTION, POLYMORPHIC_PAIRS);
+			DOMAIN_SUBSTRACTION, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol DOMAIN_RESTRICTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.DOMAIN_RESTRICTION, POLYMORPHIC_PAIRS);
+			DOMAIN_RESTRICTION, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol CARTESIAN_PRODUCT_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.CARTESIAN_PRODUCT, POLYMORPHIC_PAIRS);
+			CARTESIAN_PRODUCT, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol TOTAL_BIJECTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_BIJECTION, POLYMORPHIC_PAIRS);
+			TOTAL_BIJECTION, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol TOTAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_SURJECTION, POLYMORPHIC_PAIRS);
+			TOTAL_SURJECTION, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol PARTIAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.PARTIAL_SURJECTION, POLYMORPHIC_PAIRS);
+			PARTIAL_SURJECTION, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol TOTAL_INJECTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_INJECTION, POLYMORPHIC_PAIRS);
+			TOTAL_INJECTION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.PARTIAL_INJECTION, POLYMORPHIC_PAIRS);
+			PARTIAL_INJECTION, POLYMORPHIC_PAIRS);
 
-	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.DOM, POLYMORPHICS);
-	private static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.INV, POLYMORPHICS);
-	private static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.NAT1, EMPTY_SORT);
-	private static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.NAT, EMPTY_SORT);
-	private static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.ID, EMPTY_SORT);
-	private static SMTMacroSymbol MAPSTO_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.MAPSTO, POLYMORPHIC_PAIRS);
+	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
+			POLYMORPHICS);
+	private static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
+			POLYMORPHICS);
+	private static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
+			EMPTY_SORT);
+	private static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
+			EMPTY_SORT);
+	private static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(ID, EMPTY_SORT);
+	private static SMTMacroSymbol MAPSTO_SYMBOL = new SMTMacroSymbol(MAPSTO,
+			POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_FUNCTION, POLYMORPHIC_PAIRS);
+			TOTAL_FUNCTION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol PARTIAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.PARTIAL_FUNCTION, POLYMORPHIC_PAIRS);
+			PARTIAL_FUNCTION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol TOTAL_SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION, POLYMORPHIC_PAIRS);
+			TOTAL_SURJECTIVE_RELATION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.SURJECTIVE_RELATION, POLYMORPHIC_PAIRS);
+			SURJECTIVE_RELATION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.TOTAL_RELATION, POLYMORPHIC_PAIRS);
+			TOTAL_RELATION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RELATION, POLYMORPHIC_PAIRS);
+			RELATION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RANGE_RESTRICTION, POLYMORPHIC_PAIRS);
+			RANGE_RESTRICTION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RANGE_SUBSTRACION, POLYMORPHIC_PAIRS);
+			RANGE_SUBSTRACION, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.RANGE_INTEGER, Ints.getIntIntTab());
+			RANGE_INTEGER, Ints.getIntIntTab());
 	private static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.SUBSETEQ, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.SUBSET, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.IN, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.BUNION, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.BINTER, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.FCOMP, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.BCOMP, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.OVR, POLYMORPHIC_PAIRS, true);
-	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(
-			SMTMacroSymbol.EMPTY, EMPTY_SORT, true);
+			SUBSETEQ, POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(IN,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(BUNION,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(BINTER,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(FCOMP,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(BCOMP,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(OVR,
+			POLYMORPHIC_PAIRS, true);
+	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
+			EMPTY_SORT, true);
 
 	public static SMTSortSymbol PAIR_SORT = SMTFactory.makeSortSymbol(
 			"(Pair 's 't)", !PREDEFINED);
@@ -401,7 +407,8 @@ public class SMTMacroFactory {
 			DOMAIN_RESTRICTION_MACRO, DOMAIN_SUBSTRACTION_MACRO,
 			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
 			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
-			TOTAL_RELATION_MACRO, RANGE_MACRO, NOTEQUAL_MACRO, BCOMP_MACRO };
+			TOTAL_RELATION_MACRO, RANGE_MACRO, NOTEQUAL_MACRO, BCOMP_MACRO,
+			INTEGER_MACRO };
 
 	/**
 	 * Thi constructor adds all qSymbols which will are necessary to be checked
@@ -435,8 +442,6 @@ public class SMTMacroFactory {
 	 *            The name of the macro
 	 * @param varName1
 	 *            The first variable (in the example above: (x1 s1))
-	 * @param varName2
-	 *            The second variable (in the example above: (x2 s2))
 	 * @param terms
 	 *            The terms of the set defined by extension (in the example
 	 *            above: t1a, t1b ... tna,tnb)
@@ -446,8 +451,7 @@ public class SMTMacroFactory {
 	 */
 	public static SMTPairEnumMacro makePairEnumerationMacro(
 			final String macroName, final SMTVarSymbol varName1,
-			final SMTVarSymbol varName2, final SMTTerm[] terms,
-			SMTSignatureVerit signature) {
+			final SMTTerm[] terms, SMTSignatureVerit signature) {
 		addPairMacroSortAndFunInSignature(signature);
 
 		SMTMacroTerm[] macroTerms = new SMTMacroTerm[terms.length];
@@ -455,8 +459,7 @@ public class SMTMacroFactory {
 			macroTerms[i] = (SMTMacroTerm) terms[i];
 		}
 
-		return new SMTPairEnumMacro(macroName, varName1, varName2, macroTerms,
-				1);
+		return new SMTPairEnumMacro(macroName, varName1, macroTerms, 1);
 	}
 
 	public static SMTEnumMacro makeEnumMacro(final String macroName,
@@ -909,6 +912,10 @@ public class SMTMacroFactory {
 			signature.addMacro(RANGE_MACRO);
 			break;
 		}
+		case INTEGER: {
+			signature.addMacro(INTEGER_MACRO);
+			break;
+		}
 		default:
 			throw new IllegalArgumentException(
 					"There is no predefined macro with symbol: "
@@ -1046,6 +1053,8 @@ public class SMTMacroFactory {
 		}
 		case BCOMP:
 			return BCOMP_SYMBOL;
+		case INTEGER:
+			return INTEGER_SYMBOL;
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro symbol with symbol: "
