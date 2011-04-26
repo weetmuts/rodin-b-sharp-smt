@@ -340,13 +340,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * 
 	 * @param varName
 	 *            The name of the variable
-	 * @param varType
-	 *            The type of the variable
 	 */
-	private void translatePairTypeSymbol(String varName, String freshVarName,
-			Type varType) {
-		SMTSortSymbol sortSymbol = parsePairTypes(varType);
-		SMTSortSymbol[] sorts = { sortSymbol };
+	private void translatePredSymbol(String varName, String freshVarName,
+			SMTSortSymbol sort) {
+		SMTSortSymbol[] sorts = { sort };
 		SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(freshVarName,
 				sorts, false);
 		signature.addPred(predSymbol);
@@ -359,19 +356,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * 
 	 * @param varName
 	 *            the name of variable
-	 * @param varType
-	 *            the type of variable
 	 */
-	private void translateFunSymbol(String varName, Type varType) {
-		SMTSortSymbol smtSortSymbol = typeMap.get(varType);
-		if (smtSortSymbol == null) {
-			smtSortSymbol = SMTFactory.makeVeriTSortSymbol(varType.toString(),
-					signature);
-			this.signature.addSort(smtSortSymbol);
-			typeMap.put(varType, smtSortSymbol);
-		}
+	private void translateFunSymbol(String varName, SMTSortSymbol sort) {
 		final SMTFunctionSymbol smtConstant;
-		smtConstant = signature.freshConstant(varName, smtSortSymbol);
+		smtConstant = signature.freshConstant(varName, sort);
 		this.signature.addConstant(smtConstant);
 		varMap.put(varName, smtConstant);
 	}
@@ -387,23 +375,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		while (iter.hasNext()) {
 			iter.advance();
 			final Type varType = iter.getType();
-			if (iter.isGivenSet()) {
-				SMTSortSymbol sortSymbol = typeMap.get(varType.getBaseType());
-				if (sortSymbol == null) {
-					sortSymbol = SMTFactory.makeVeriTSortSymbol(varType
-							.getBaseType().toString(), signature);
-				}
-				this.signature.addSort(sortSymbol);
-				typeMap.put(varType.getBaseType(), sortSymbol);
-			}
+			SMTSortSymbol sort = translateTypeName(varType);
 			final String varName = iter.getName();
 			final String freshVarName = signature.freshCstName(varName);
-			if (varType.getSource() != null) {
-				translatePairTypeSymbol(varName, freshVarName, varType);
-			} else if (varType.getBaseType() != null) {
-				parseBaseTypes(varName, varType);
+			if (varType.getSource() != null || varType.getBaseType() != null) {
+				translatePredSymbol(varName, freshVarName, sort);
 			} else {
-				translateFunSymbol(varName, varType);
+				translateFunSymbol(varName, sort);
 			}
 		}
 		if (insertPairDecl) {
@@ -468,6 +446,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					sortSymbol = SMTFactory.makeVeriTSortSymbol(
 							baseType.toString(), signature);
 					this.signature.addSort(sortSymbol);
+					typeMap.put(baseType, sortSymbol);
 				}
 			}
 		} else {
@@ -478,10 +457,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				} else {
 					sortSymbol = makeVeriTSortSymbol(type.toString(), signature);
 					this.signature.addSort(sortSymbol);
+					typeMap.put(type, sortSymbol);
 				}
 			}
 		}
-		typeMap.put(type, sortSymbol);
 		return sortSymbol;
 	}
 
@@ -507,7 +486,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private void checkIfIsSetOfSet(ProductType type) {
 		checkIfIsSetOfSet(type.getLeft(), type);
+		if (type.getLeft() instanceof ProductType) {
+			throw new IllegalArgumentException("Type " + type.toString()
+					+ ": Sets of sets are not supported yet");
+		}
 		checkIfIsSetOfSet(type.getRight(), type);
+		if (type.getRight() instanceof ProductType) {
+			throw new IllegalArgumentException("Type " + type.toString()
+					+ ": Sets of sets are not supported yet");
+		}
 	}
 
 	/**

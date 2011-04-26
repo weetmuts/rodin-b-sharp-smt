@@ -51,47 +51,40 @@ public class SMTFunApplication extends SMTTerm {
 	 */
 	private static void verifyFunctionRank(final SMTFunctionSymbol symbol,
 			final SMTTerm terms[]) {
-		SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
-
-		// Verifying if it's associative. If so, verify if all the arguments are
-		// of
-		// the same type
+		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
+		final boolean wellSorted;
 		if (symbol.isAssociative()) {
-
-			for (SMTTerm term : terms) {
-				if (!term.getSort().equals(expectedSortArgs[0])) {
-					throw new IllegalArgumentException(
-							incompatibleFunctionRankExceptionMessage(symbol,
-									terms));
-				}
-			}
-			return;
+			wellSorted = verifyAssociativeRank(expectedSortArgs[0], terms);
+		} else {
+			wellSorted = verifyNonAssociativeRank(expectedSortArgs, terms);
 		}
-
-		// Verify if the number of arguments expected match the number of terms
-		if (expectedSortArgs.length == terms.length) {
-
-			// Verify if the sort symbols are the same
-			for (int i = 0; i < terms.length; i++) {
-				SMTSortSymbol argSort = terms[i].getSort();
-				SMTSortSymbol expectedSortArg = expectedSortArgs[i];
-
-				if (argSort instanceof SMTPolymorphicSortSymbol
-						|| expectedSortArg instanceof SMTPolymorphicSortSymbol) {
-					continue;
-				}
-				if (expectedSortArg.equals(argSort)) {
-					continue;
-				} else {
-					throw new IllegalArgumentException(
-							incompatibleFunctionRankExceptionMessage(symbol,
-									terms));
-				}
-			}
-			return;
+		if (!wellSorted) {
+			throw new IllegalArgumentException(
+					incompatibleFunctionRankExceptionMessage(symbol, terms));
 		}
-		throw new IllegalArgumentException(
-				incompatibleFunctionRankExceptionMessage(symbol, terms));
+	}
+
+	private static boolean verifyAssociativeRank(
+			final SMTSortSymbol expectedSortArg, final SMTTerm[] terms) {
+		for (SMTTerm term : terms) {
+			if (!term.getSort().equals(expectedSortArg)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean verifyNonAssociativeRank(
+			SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
+		if (expectedSortArgs.length != terms.length) {
+			return false;
+		}
+		for (int i = 0; i < terms.length; i++) {
+			if (!expectedSortArgs[i].isCompatibleWith(terms[i].getSort())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -116,7 +109,7 @@ public class SMTFunApplication extends SMTTerm {
 			sep = " ";
 			expectedArg.toString(sb);
 		}
-		sb.append(" does not match: ");
+		sb.append(" do not match: ");
 		for (SMTTerm arg : args) {
 			sb.append(sep);
 			sep = " ";

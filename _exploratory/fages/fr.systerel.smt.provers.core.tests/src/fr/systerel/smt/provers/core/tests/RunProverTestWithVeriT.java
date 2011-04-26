@@ -175,6 +175,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not ")
 	public void testSolverCallBelong1() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -242,10 +243,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	/**
-	 * This test is related to the 'Empty' problem, which declares the sort U.
-	 * This problem belongs to SMT-Solvers.
-	 */
+	@Ignore("Type S×T×U: Sets of sets are not supported yet")
 	public void testSolverCallBelong3() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
@@ -408,6 +406,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'basic_set' theory
 	 */
 	@Test
+	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not ")
 	public void testBepiColombo1() {
 		setPreferencesForAltErgoTest();
 
@@ -446,16 +445,13 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	// @Ignore("error : DAG_new: unable to determine sort")
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeEvenSimpler() {
 		setPreferencesForZ3Test();
 		// setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment();
-
 		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1");
-
 		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}
 
@@ -465,7 +461,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	// @Ignore("error : DAG_new: unable to determine sort")
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForZ3Test();
 
@@ -501,7 +497,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
-	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
+	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7LikeSimple() {
 		setPreferencesForZ3Test();
 
@@ -519,7 +515,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
-	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
+	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7LikeConc() {
 		setPreferencesForAltErgoTest();
 
@@ -538,7 +534,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
-	// @Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
+	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
 	public void testCh7Conc29() {
 		setPreferencesForAltErgoTest();
 

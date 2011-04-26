@@ -108,23 +108,21 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	@Override
 	public int compareTo(final SMTFunctionSymbol symbol) {
 		final int nameComp = name.compareTo(symbol.getName());
-		if (nameComp == 0) {
-			if (argSorts.length < symbol.argSorts.length) {
-				return -1;
-			} else if (argSorts.length > symbol.argSorts.length) {
-				return 1;
-			} else {
-				for (int i = 0; i < argSorts.length; i++) {
-					final int argComp = argSorts[i]
-							.compareTo(symbol.argSorts[i]);
-					if (argComp != 0) {
-						return argComp;
-					}
-				}
-				return 0;
-			}
-		} else {
+		if (nameComp != 0) {
 			return nameComp;
 		}
+		if (argSorts.length < symbol.argSorts.length) {
+			return -1;
+		}
+		if (argSorts.length > symbol.argSorts.length) {
+			return 1;
+		}
+		for (int i = 0; i < argSorts.length; i++) {
+			final int argComp = argSorts[i].compareTo(symbol.argSorts[i]);
+			if (argComp != 0) {
+				return argComp;
+			}
+		}
+		return 0;
 	}
 }

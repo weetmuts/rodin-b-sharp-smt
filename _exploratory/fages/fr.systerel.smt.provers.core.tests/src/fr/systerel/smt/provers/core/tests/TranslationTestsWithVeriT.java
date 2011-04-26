@@ -291,7 +291,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedPredicates.add("(e_0 S)");
 		expectedPredicates.add("(f_0 S)");
 		expectedPredicates.add("(AB (Pair Int Int))");
-		expectedPredicates.add("(C (Pair Int (Pair Int Int)))");
 
 		testTypeEnvironmentPredicates(expectedPredicates);
 	}

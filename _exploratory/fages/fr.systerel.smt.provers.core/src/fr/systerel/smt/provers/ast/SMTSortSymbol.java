@@ -23,4 +23,19 @@ public class SMTSortSymbol extends SMTSymbol implements
 	public int compareTo(final SMTSortSymbol symbol) {
 		return (name.compareTo(symbol.getName()));
 	}
+
+	/**
+	 * Tells whether this sort is compatible with the given sort. Two sorts are
+	 * compatible if either one is polymorphic or if they are equal.
+	 * 
+	 * @param other
+	 *            the other sort to test for compatibility
+	 * @return whether this sort is compatible with the given sort
+	 */
+	public boolean isCompatibleWith(SMTSortSymbol other) {
+		if (other instanceof SMTPolymorphicSortSymbol) {
+			return true;
+		}
+		return this.equals(other);
+	}
 }
