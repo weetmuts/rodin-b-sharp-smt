@@ -30,7 +30,7 @@ public class SMTMacroTerm extends SMTTerm {
 			builder.append(macroSymbol.name);
 			for (final SMTTerm term : argTerms) {
 				builder.append(SPACE);
-				builder.append(term);
+				term.toString(builder);
 			}
 			builder.append(CPAR);
 		}

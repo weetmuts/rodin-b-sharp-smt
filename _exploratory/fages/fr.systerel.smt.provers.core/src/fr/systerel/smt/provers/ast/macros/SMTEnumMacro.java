@@ -66,23 +66,29 @@ public class SMTEnumMacro extends SMTMacro {
 	private SMTTerm[] terms;
 
 	@Override
-	public void toString(StringBuffer builder) {
-		// TODO Auto-generated method stub
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
 	}
 
 	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
+	public boolean equals(Object obj) {
+		return true;
+	}
+
+	@Override
+	public void toString(StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
-		sb.append(assignedVar);
+		assignedVar.toString(sb);
 		sb.append(" . ");
 		if (terms.length == 1) {
 			sb.append("(= ");
 			sb.append(assignedVar.getNameWithQMark());
 			sb.append(" ");
-			sb.append(terms[0]);
+			terms[0].toString(sb);
 			sb.append(")))");
 		} else {
 			sb.append("(or");
@@ -90,16 +96,10 @@ public class SMTEnumMacro extends SMTMacro {
 				sb.append("\n\t\t(= ");
 				sb.append(assignedVar.getNameWithQMark());
 				sb.append(" ");
-				sb.append(term);
+				term.toString(sb);
 				sb.append(")");
 			}
 			sb.append("\n )))");
 		}
-		return sb.toString();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return true;
 	}
 }

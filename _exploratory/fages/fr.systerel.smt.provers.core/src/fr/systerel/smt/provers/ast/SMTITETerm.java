@@ -55,7 +55,7 @@ public final class SMTITETerm extends SMTTerm {
 		builder.append(OPAR);
 		builder.append(ITE_TERM);
 		builder.append(SPACE);
-		formula.toString(builder);
+		formula.toString(builder, false);
 		builder.append(SPACE);
 		tTerm.toString(builder);
 		builder.append(SPACE);

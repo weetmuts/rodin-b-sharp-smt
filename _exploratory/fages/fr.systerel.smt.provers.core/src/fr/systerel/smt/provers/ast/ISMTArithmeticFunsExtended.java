@@ -26,7 +26,5 @@ package fr.systerel.smt.provers.ast;
 public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
 	public SMTSymbol getDiv();
 
-	public SMTSymbol getDivZ3();
-
 	public SMTSymbol getExpn();
 }

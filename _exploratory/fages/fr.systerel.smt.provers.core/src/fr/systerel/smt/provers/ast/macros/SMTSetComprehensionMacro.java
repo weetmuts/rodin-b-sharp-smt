@@ -136,33 +136,33 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(StringBuffer builder) {
-		// TODO
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
+	public void toString(StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append("(lambda");
-		sb.append(lambdaVar);
+		lambdaVar.toString(sb);
 		sb.append(" . ");
 		sb.append("(exists ");
 		for (SMTVarSymbol qVar : qVars) {
-			sb.append(qVar);
+			qVar.toString(sb);
 		}
 		sb.append(". (and (= ");
 		sb.append("?" + lambdaVar.getName());
 		sb.append(" ");
-		sb.append(expression);
+		expression.toString(sb);
 		sb.append(") ");
 		if (formula instanceof SMTQuantifiedFormula) {
 			((SMTQuantifiedFormula) formula).toString(sb, true);
 		} else {
-			formula.toString(sb);
+			formula.toString(sb, true);
 		}
 		sb.append("))))");
-		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
 	}
 }

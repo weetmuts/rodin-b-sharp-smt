@@ -294,7 +294,7 @@ public abstract class SMTSignature {
 		for (final T element : sortedElements) {
 			if (!element.isPredefined()) {
 				sb.append(separator);
-				sb.append(element);
+				element.toString(sb);
 				separator = eltSep;
 				emptySection = false;
 			}

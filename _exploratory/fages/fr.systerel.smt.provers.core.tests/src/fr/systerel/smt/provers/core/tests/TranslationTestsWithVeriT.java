@@ -118,11 +118,13 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String expectedSMTNode, final String failMessage,
 			String solver) {
 
-		final String actualSMTNode = SMTThroughVeriT.translate(defaultLogic,
-				ppred, solver).toString();
+		final StringBuilder actualSMTNode = new StringBuilder();
 
-		System.out.println(translationMessage(ppred, actualSMTNode));
-		assertEquals(failMessage, expectedSMTNode, actualSMTNode);
+		SMTThroughVeriT.translate(defaultLogic, ppred, solver).toString(
+				actualSMTNode, false);
+
+		System.out.println(translationMessage(ppred, actualSMTNode.toString()));
+		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
 	public void setSignatureForTestsVerit(ITypeEnvironment typeEnvironment) {
@@ -130,8 +132,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				VERIT.toString());
 	}
 
-	private StringBuilder typeEnvironmentFunctionsFail(
-			Set<String> expectedFunctions, Set<SMTFunctionSymbol> functions) {
+	private String typeEnvironmentFunctionsFail(Set<String> expectedFunctions,
+			Set<SMTFunctionSymbol> functions) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
 		for (String expectedFunction : expectedFunctions) {
@@ -142,14 +144,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		for (SMTFunctionSymbol fSymbol : functions) {
 			if (!fSymbol.isPredefined()) {
 				sb.append("\n");
-				sb.append(fSymbol.toString());
+				fSymbol.toString(sb);
 			}
 		}
 		sb.append("\n");
-		return sb;
+		return sb.toString();
 	}
 
-	private StringBuilder typeEnvironmentPredicatesFail(
+	private String typeEnvironmentPredicatesFail(
 			Set<String> expectedPredicates, Set<SMTPredicateSymbol> predicates) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The translated predicates wasn't the expected ones. The expected predicates are:");
@@ -161,14 +163,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		for (SMTPredicateSymbol predicateSymbol : predicates) {
 			if (!predicateSymbol.isPredefined()) {
 				sb.append("\n");
-				sb.append(predicateSymbol.toString());
+				predicateSymbol.toString(sb);
 			}
 		}
 		sb.append("\n");
-		return sb;
+		return sb.toString();
 	}
 
-	private StringBuilder typeEnvironmentSortsFail(Set<String> expectedSorts,
+	private String typeEnvironmentSortsFail(Set<String> expectedSorts,
 			Set<SMTSortSymbol> sorts) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The translated sorts wasn't the expected ones. The expected sorts are:");
@@ -182,21 +184,22 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			sb.append(sortSymbol.toString());
 		}
 		sb.append("\n");
-		return sb;
+		return sb.toString();
 	}
 
 	public void testTypeEnvironmentFunctions(Set<String> expectedFunctions) {
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
 		Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
 		Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
-		StringBuilder sb = typeEnvironmentFunctionsFail(expectedFunctions,
+		String sb = typeEnvironmentFunctionsFail(expectedFunctions,
 				functionSymbols);
 
 		while (iterator.hasNext()) {
 			SMTFunctionSymbol fS = iterator.next();
 			if (!fS.isPredefined()) {
-				assertTrue(sb.toString(),
-						expectedFunctions.contains(fS.toString()));
+				StringBuilder builder = new StringBuilder();
+				fS.toString(builder);
+				assertTrue(sb, expectedFunctions.contains(builder.toString()));
 			}
 		}
 	}
@@ -207,26 +210,26 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		Set<SMTSortSymbol> sortSymbols = signature.getSorts();
 		Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
-		StringBuilder sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
+		String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
 		assertEquals(sb.toString(), expectedSorts.size(), sortSymbols.size());
 
 		while (iterator.hasNext()) {
-			assertTrue(sb.toString(),
-					expectedSorts.contains(iterator.next().toString()));
+			assertTrue(sb, expectedSorts.contains(iterator.next().toString()));
 		}
 	}
 
 	public void testTypeEnvironmentPredicates(Set<String> expectedPredicates) {
 		Set<SMTPredicateSymbol> predicateSymbols = signature.getPreds();
 		Iterator<SMTPredicateSymbol> iterator = predicateSymbols.iterator();
-		StringBuilder sb = typeEnvironmentPredicatesFail(expectedPredicates,
+		String sb = typeEnvironmentPredicatesFail(expectedPredicates,
 				predicateSymbols);
 
 		while (iterator.hasNext()) {
 			SMTPredicateSymbol pS = iterator.next();
 			if (!pS.isPredefined()) {
-				assertTrue(sb.toString(),
-						expectedPredicates.contains(pS.toString()));
+				StringBuilder builder = new StringBuilder();
+				pS.toString(builder);
+				assertTrue(sb, expectedPredicates.contains(builder.toString()));
 			}
 		}
 	}
@@ -248,6 +251,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(g S)");
+		expectedFunctions.add("(divi Int Int Int)");
 
 		testTypeEnvironmentFunctions(expectedFunctions);
 	}
@@ -328,6 +332,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(u Bool)");
 		expectedFunctions.add("(v Bool)");
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
+		expectedFunctions.add("(divi Int Int Int)");
 
 		testTypeEnvironmentFunctions(expectedFunctions);
 	}
@@ -495,13 +500,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testArithExprBinopUnsupported() {
 		/**
-		 * div with z3
-		 */
-		testTranslationV1_2Default("a ÷ b = c", "(= (div a b) c)", Z3);
-		/**
 		 * div
 		 */
-		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		testTranslationV1_2Default("a ÷ b = c", "(= (divi a b) c)");
 		/**
 		 * mod
 		 */
@@ -716,7 +717,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * ≤, ∧ , ≥ , ⇔
 		 */
 		testTranslationV1_2Default("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)",
-				"(iff (and (<= a b) (>= b c)) (< (/ a b) (mod c b)))");
+				"(iff (and (<= a b) (>= b c)) (< (divi a b) (mod c b)))");
 
 	}
 

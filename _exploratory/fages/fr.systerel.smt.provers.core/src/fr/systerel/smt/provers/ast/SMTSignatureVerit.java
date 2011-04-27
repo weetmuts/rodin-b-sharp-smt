@@ -11,7 +11,6 @@
 package fr.systerel.smt.provers.ast;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -101,7 +100,7 @@ public class SMTSignatureVerit extends SMTSignature {
 			sb.append(":extramacros(");
 			for (SMTMacro macro : macros) {
 				sb.append("\n");
-				sb.append(macro);
+				macro.toString(sb);
 			}
 			sb.append("\n)");
 		}
@@ -183,7 +182,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		if (!isFstAndSndAssumptionsAdded) {
 			this.additionalAssumptions.add(formula);
 		}
-
 	}
 
 }

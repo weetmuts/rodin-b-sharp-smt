@@ -16,7 +16,6 @@ package fr.systerel.smt.provers.ast;
 public abstract class SMTTerm extends SMTNode<SMTTerm> {
 	protected SMTSortSymbol sort;
 
-	@Override
 	public abstract void toString(StringBuilder builder);
 
 	public SMTSortSymbol getSort() {

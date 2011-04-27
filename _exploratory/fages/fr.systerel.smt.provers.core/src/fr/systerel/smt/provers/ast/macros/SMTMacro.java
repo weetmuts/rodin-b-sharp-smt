@@ -64,7 +64,7 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	 * 
 	 * @param builder
 	 */
-	public abstract void toString(StringBuffer builder);
+	public abstract void toString(final StringBuilder builder);
 
 	@Override
 	public boolean equals(Object obj) {

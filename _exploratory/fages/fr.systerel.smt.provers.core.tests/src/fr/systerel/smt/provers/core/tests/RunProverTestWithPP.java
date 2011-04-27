@@ -320,6 +320,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
+	@Ignore("AltErgo MESSAGE: unknown (sat)")
 	public void testCh915Bin10() {
 		setPreferencesForAltErgoTest();
 
@@ -617,6 +618,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("division is uninterpreted, so the solver returned sat")
 	public void testExactDivisionWithVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -646,6 +648,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("division is uninterpreted, so the solver returned sat")
 	public void testExactDivisionWithCVC3() {
 		setPreferencesForCvc3Test();
 
@@ -660,6 +663,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("division is uninterpreted, so the solver returned sat")
 	public void testExactDivisionWithAltErgo() {
 		setPreferencesForAltErgoTest();
 

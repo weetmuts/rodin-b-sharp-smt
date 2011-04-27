@@ -31,12 +31,13 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		this.formula = formula;
 	}
 
+	@Override
 	public void toString(StringBuilder builder, boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(quantifier);
 		for (final SMTVarSymbol qVar : qVars) {
 			builder.append(SPACE);
-			builder.append(qVar);
+			qVar.toString(builder);
 		}
 		if (printPoint) {
 			builder.append(SPACE);
@@ -44,16 +45,11 @@ public class SMTQuantifiedFormula extends SMTFormula {
 			builder.append(SPACE);
 		}
 		builder.append(SPACE);
-		if (formula instanceof SMTQuantifiedFormula) {
+		if (formula instanceof SMTQuantifiedFormula && printPoint) {
 			((SMTQuantifiedFormula) formula).toString(builder, true);
 		} else {
-			builder.append(formula);
+			formula.toString(builder, printPoint);
 		}
 		builder.append(CPAR);
-	}
-
-	@Override
-	public void toString(StringBuilder builder) {
-		toString(builder, false);
 	}
 }

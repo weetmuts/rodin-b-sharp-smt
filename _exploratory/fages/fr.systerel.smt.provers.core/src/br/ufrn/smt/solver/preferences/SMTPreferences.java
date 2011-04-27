@@ -84,6 +84,11 @@ public class SMTPreferences {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
+	}
+
+	public void toString(final StringBuilder builder) {
 		builder.append("SMTPreferences [solver=");
 		builder.append(solver);
 		builder.append(", usingPrepro=");
@@ -91,7 +96,6 @@ public class SMTPreferences {
 		builder.append(", preproPath=");
 		builder.append(preproPath);
 		builder.append("]");
-		return builder.toString();
 	}
 
 	/**

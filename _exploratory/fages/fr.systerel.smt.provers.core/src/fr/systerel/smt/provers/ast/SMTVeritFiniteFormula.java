@@ -34,20 +34,21 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder, final boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(finitePred.name);
 		builder.append(SPACE);
 		builder.append(pArgument.name);
 		for (final SMTTerm term : terms) {
 			builder.append(SPACE);
-			builder.append(term);
+			term.toString(builder);
 		}
 		builder.append(SPACE);
 		builder.append(fArgument.name);
 		builder.append(SPACE);
 		builder.append(kArgument.name);
 		builder.append(CPAR);
+
 	}
 
 }

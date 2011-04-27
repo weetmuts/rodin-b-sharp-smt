@@ -53,7 +53,7 @@ public class SMTBenchmark {
 	private void assumptionsSection(final StringBuilder sb) {
 		for (final SMTFormula assumption : assumptions) {
 			sb.append(" :assumption ");
-			assumption.toString(sb);
+			assumption.toString(sb, false);
 			sb.append("\n");
 		}
 	}
@@ -67,7 +67,7 @@ public class SMTBenchmark {
 	 */
 	private void formulaSection(StringBuilder sb) {
 		sb.append(" :formula (not ");
-		goal.toString(sb);
+		goal.toString(sb, false);
 		sb.append(")\n");
 	}
 

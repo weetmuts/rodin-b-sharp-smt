@@ -15,6 +15,5 @@ package fr.systerel.smt.provers.ast;
  */
 public abstract class SMTFormula extends SMTNode<SMTFormula> {
 
-	@Override
-	public abstract void toString(StringBuilder builder);
+	public abstract void toString(StringBuilder builder, boolean printPoint);
 }

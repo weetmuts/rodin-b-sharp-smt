@@ -110,31 +110,9 @@ public class SMTPairEnumMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(OPAR);
-		sb.append(super.getMacroName());
-		sb.append(" (lambda ");
-		sb.append(key);
-		sb.append(" . ");
-		if (terms.length == 1) {
-
-			sb.append(elemToString(key.getNameWithQMark(),
-					terms[0].getArgTerms()[0], terms[0].getArgTerms()[1]));
-			sb.append(CPAR);
-			sb.append(CPAR);
-		} else {
-			sb.append("(or");
-			for (SMTMacroTerm term : terms) {
-				sb.append("\n\t\t");
-				sb.append(elemToString(key.getNameWithQMark(),
-						term.getArgTerms()[0], term.getArgTerms()[1]));
-			}
-			sb.append("\n");
-			sb.append(CPAR);
-			sb.append(CPAR);
-			sb.append(CPAR);
-		}
-		return sb.toString();
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
 	}
 
 	/**
@@ -153,8 +131,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            the Yn term
 	 * @return The string representation of a element of the pair enumeration
 	 */
-	private String elemToString(String keyEl, SMTTerm keyTerm, SMTTerm valueTerm) {
-		StringBuffer sb = new StringBuffer();
+	private void elemToString(String keyEl, SMTTerm keyTerm, SMTTerm valueTerm,
+			final StringBuilder sb) {
 		sb.append(OPAR);
 		sb.append("=");
 		sb.append(SPACE);
@@ -163,23 +141,40 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(OPAR);
 		sb.append("pair");
 		sb.append(SPACE);
-		sb.append(keyTerm);
+		// sb.append(keyTerm);
+		keyTerm.toString(sb);
 		sb.append(SPACE);
-		sb.append(valueTerm);
+		// sb.append(valueTerm);
+		valueTerm.toString(sb);
 		sb.append(CPAR);
 		sb.append(CPAR);
-		return sb.toString();
 	}
 
 	@Override
-	public void toString(StringBuffer builder) {
-		// TODO Auto-generated method stub
-	}
+	public void toString(final StringBuilder sb) {
+		sb.append(OPAR);
+		sb.append(super.getMacroName());
+		sb.append(" (lambda ");
+		// sb.append(key);
+		key.toString(sb);
+		sb.append(" . ");
+		if (terms.length == 1) {
 
-	@Override
-	public boolean equals(Object obj) {
-		// TODO
-		return true;
+			elemToString(key.getNameWithQMark(), terms[0].getArgTerms()[0],
+					terms[0].getArgTerms()[1], sb);
+			sb.append(CPAR);
+			sb.append(CPAR);
+		} else {
+			sb.append("(or");
+			for (SMTMacroTerm term : terms) {
+				sb.append("\n\t\t");
+				elemToString(key.getNameWithQMark(), term.getArgTerms()[0],
+						term.getArgTerms()[1], sb);
+			}
+			sb.append("\n");
+			sb.append(CPAR);
+			sb.append(CPAR);
+			sb.append(CPAR);
+		}
 	}
-
 }

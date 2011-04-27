@@ -40,19 +40,17 @@ public class SMTVeritCardFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder, boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(cardSymbol.getName());
 		for (final SMTTerm term : terms) {
 			builder.append(SPACE);
-			builder.append(term);
+			term.toString(builder);
 		}
 		builder.append(SPACE);
 		builder.append(fArgument.getName());
 		builder.append(SPACE);
 		builder.append(kArgument.getName());
 		builder.append(CPAR);
-
 	}
-
 }

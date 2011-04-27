@@ -180,13 +180,6 @@ public class SMTLogic {
 				}
 			}
 			break;
-		case DIV_Z3:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getDivZ3();
-				}
-			}
-			break;
 		case EXPN:
 			for (final SMTTheory theory : theories) {
 				if (theory instanceof ISMTArithmeticFunsExtended) {
@@ -201,11 +194,15 @@ public class SMTLogic {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
+	}
+
+	public void toString(final StringBuilder sb) {
 		logicCmdOpening(sb);
 		theoriesSection(sb);
 		sb.append(CPAR);
-		return sb.toString();
 	}
 
 	/**
@@ -214,8 +211,7 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), DIV_Z3(SMTSymbol.DIV_Z3), EXPN(
-				SMTSymbol.EXPN);
+				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), EXPN(SMTSymbol.EXPN);
 
 		private String symbol;
 

@@ -33,7 +33,7 @@ class SMTAtom extends SMTFormula {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder, final boolean printPoint) {
 		if (predicate.isPropositional()) {
 			builder.append(predicate.name);
 		} else {
@@ -41,7 +41,7 @@ class SMTAtom extends SMTFormula {
 			builder.append(predicate.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
-				builder.append(term);
+				term.toString(builder);
 			}
 			builder.append(CPAR);
 		}

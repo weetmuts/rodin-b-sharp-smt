@@ -31,6 +31,11 @@ public class SolverDetail {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
+	}
+
+	public void toString(final StringBuilder builder) {
 		builder.append("SolverDetail [id=");
 		builder.append(id);
 		builder.append(", path=");
@@ -42,7 +47,6 @@ public class SolverDetail {
 		builder.append(", smtV2_0=");
 		builder.append(smtV2_0);
 		builder.append("]");
-		return builder.toString();
 	}
 
 	@Override

@@ -65,11 +65,6 @@ public class SMTPredefinedMacro extends SMTMacro {
 		return qSymbols;
 	}
 
-	@Override
-	public void toString(StringBuffer builder) {
-		// TODO: Nothing
-	}
-
 	/**
 	 * This method collects and saves all the identifiers of the macro that has
 	 * a question mark prefixed.
@@ -95,12 +90,9 @@ public class SMTPredefinedMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("(");
-		sb.append(super.getMacroName());
-		sb.append(body);
-		sb.append(")");
-		return sb.toString();
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
 	}
 
 	@Override
@@ -113,5 +105,13 @@ public class SMTPredefinedMacro extends SMTMacro {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void toString(StringBuilder sb) {
+		sb.append("(");
+		sb.append(super.getMacroName());
+		sb.append(body);
+		sb.append(")");
 	}
 }

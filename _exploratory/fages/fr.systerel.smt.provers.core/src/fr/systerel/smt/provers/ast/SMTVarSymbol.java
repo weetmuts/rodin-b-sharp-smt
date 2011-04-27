@@ -39,14 +39,19 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 
 	@Override
 	public String toString() {
-		final StringBuilder buffer = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
+		toString(builder);
+		return builder.toString();
+	}
+
+	@Override
+	public void toString(final StringBuilder buffer) {
 		buffer.append(OPAR);
 		buffer.append(QVAR);
 		buffer.append(name);
 		buffer.append(SPACE);
 		buffer.append(sort);
 		buffer.append(CPAR);
-		return buffer.toString();
 	}
 
 	@Override

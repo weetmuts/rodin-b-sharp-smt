@@ -261,22 +261,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method adds the sort (Pair 's 't) and the fun (pair 's 't (Pair 's
-	 * 't)) to the signature
-	 */
-	public void addPairSortAndFunctions() {
-		this.signature.addSort(PAIR_SORT);
-		SMTSortSymbol[] argSorts = {};
-		final String symbolName = "pair 's 't";
-		SMTFunctionSymbol functionSymbol = new SMTFunctionSymbol(symbolName,
-				argSorts, PAIR_SORT, !SMTFunctionSymbol.ASSOCIATIVE,
-				!SMTSymbol.PREDEFINED);
-
-		signature.addConstant(functionSymbol);
-		varMap.put(symbolName, functionSymbol);
-	}
-
-	/**
 	 * This method extracts types of bound ident declarations and adds them into
 	 * the signature
 	 * 
@@ -350,6 +334,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			addPairSortAndFunctions();
 		}
 
+	}
+
+	/**
+	 * This method adds the sort (Pair 's 't) and the fun (pair 's 't (Pair 's
+	 * 't)) to the signature
+	 */
+	public void addPairSortAndFunctions() {
+		this.signature.addSort(SMTMacroFactory.PAIR_SORT);
+		this.signature.addConstant(SMTMacroFactory.PAIR_SYMBOL);
 	}
 
 	@Override
@@ -704,13 +697,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.DIV:
-			if (solver.equals(SMTSolver.Z3.toString())) {
-				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.DIV_Z3), children, signature);
-			} else {
-				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.DIV), children, signature);
-			}
+			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.DIV), children, signature);
 			break;
 		case Formula.MOD:
 			/**

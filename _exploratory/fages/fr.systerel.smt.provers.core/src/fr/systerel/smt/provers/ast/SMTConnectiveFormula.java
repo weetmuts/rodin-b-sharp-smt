@@ -40,12 +40,12 @@ public class SMTConnectiveFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder, final boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(connective);
 		for (final SMTFormula formula : formulas) {
 			builder.append(SPACE);
-			builder.append(formula);
+			formula.toString(builder, printPoint);
 		}
 		builder.append(CPAR);
 	}

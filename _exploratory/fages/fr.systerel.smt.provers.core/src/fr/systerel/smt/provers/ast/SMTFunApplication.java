@@ -60,7 +60,8 @@ public class SMTFunApplication extends SMTTerm {
 		}
 		if (!wellSorted) {
 			throw new IllegalArgumentException(
-					incompatibleFunctionRankExceptionMessage(symbol, terms));
+					incompatibleFunctionRankExceptionMessage(symbol, terms,
+							new StringBuilder()));
 		}
 	}
 
@@ -98,8 +99,8 @@ public class SMTFunApplication extends SMTTerm {
 	 * @return the exception message
 	 */
 	private static String incompatibleFunctionRankExceptionMessage(
-			final SMTFunctionSymbol functionSymbol, final SMTTerm[] args) {
-		final StringBuilder sb = new StringBuilder();
+			final SMTFunctionSymbol functionSymbol, final SMTTerm[] args,
+			StringBuilder sb) {
 		sb.append("Arguments of function symbol: ");
 		sb.append(functionSymbol);
 		sb.append(": ");
@@ -127,7 +128,7 @@ public class SMTFunApplication extends SMTTerm {
 			builder.append(symbol.name);
 			for (SMTTerm arg : args) {
 				builder.append(SPACE);
-				builder.append(arg);
+				arg.toString(builder);
 			}
 			builder.append(CPAR);
 		}
