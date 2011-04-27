@@ -77,7 +77,6 @@ public final class SMTFactory {
 	 * 
 	 * @param atomicExpression
 	 * @param signature
-	 * @return
 	 */
 	public static String getSMTAtomicExpressionFormat(String atomicExpression,
 			SMTSignatureVerit signature) {
@@ -209,7 +208,7 @@ public final class SMTFactory {
 		return new SMTFunApplication(mul, args);
 	}
 
-	public SMTTerm makeMacroTerm(SMTMacroSymbol macro, final SMTTerm[] args) {
+	public static SMTTerm makeMacroTerm(SMTMacroSymbol macro, final SMTTerm[] args) {
 		return new SMTMacroTerm(macro, args);
 	}
 
@@ -332,19 +331,6 @@ public final class SMTFactory {
 		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 
-	/**
-	 * Creates a new quantified pred.
-	 */
-	public SMTFormula makeForAll(final SMTTerm[] terms,
-			final SMTFormula formula, final boolean printPoint) {
-		return makeSMTQuantifiedFormula(FORALL, terms, formula, printPoint);
-	}
-
-	public SMTFormula makeExists(final SMTTerm[] terms,
-			final SMTFormula formula, final boolean printPoint) {
-		return makeSMTQuantifiedFormula(EXISTS, terms, formula, printPoint);
-	}
-
 	public SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
 		return makeSMTQuantifiedFormula(FORALL, terms, formula, false);
 	}
@@ -367,13 +353,13 @@ public final class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return makeSMTQuantifiedFormula(qSymbol, qVars, formula, printPoint);
+		return makeSMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
 	public static SMTFormula makeSMTQuantifiedFormula(
 			SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
-			final SMTFormula formula, final boolean printPoint) {
-		return new SMTQuantifiedFormula(qSymbol, qVars, formula, printPoint);
+			final SMTFormula formula) {
+		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
 	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
@@ -531,8 +517,8 @@ public final class SMTFactory {
 	 *            the symbol of the term
 	 * @return a new smt term with the macro symbol.
 	 */
-	public SMTTerm makeMacroTerm(SMTMacroSymbol macroSymbol) {
-		return this.makeMacroTerm(macroSymbol, EMPTY_TERM);
+	public static SMTTerm makeMacroTerm(SMTMacroSymbol macroSymbol) {
+		return makeMacroTerm(macroSymbol, EMPTY_TERM);
 	}
 
 }

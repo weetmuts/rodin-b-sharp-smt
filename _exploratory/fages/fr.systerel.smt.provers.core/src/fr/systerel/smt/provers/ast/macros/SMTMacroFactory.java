@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast.macros;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.VeritPredefinedTheory.POLYMORPHIC;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.BCOMP;
@@ -31,6 +32,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.INJP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.INV;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.ISMAX;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.ISMIN;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.MAPSTO;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NAT1;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.NOT_EQUAL;
@@ -54,8 +56,6 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
-import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -195,11 +195,11 @@ public class SMTMacroFactory {
 			ID, "(lambda (?p18 (Pair 't 't)) . (= (fst ?p18)(snd ?p18)))", 1);
 	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
 			DOM,
-			"(lambda (?r7 ('t1 't2 Bool)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18))))",
+			"(lambda (?r7 ((Pair't1 't2) Bool)) . (lambda (?r17 't1) . (exists (?r18 't2) . (?r7 ?r17 ?r18))))",
 			0);
 	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_INJECTION,
-			"(lambda (?x17 ('s Bool)) . (?y3 ('s Bool))(lambda (?r19 ((Pair 's 't) Bool)) . (and ((pfun ?x17 ?y3) ?r19) (injp ?r19))))",
+			"(lambda (?x17 ('s Bool)) (?y3 ('s Bool)) . (lambda (?r19 ((Pair 's 't) Bool)) . (and ((pfun ?x17 ?y3) ?r19) (injp ?r19))))",
 			3);
 	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_INJECTION,
@@ -569,7 +569,7 @@ public class SMTMacroFactory {
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 
 		SMTFormula quantifiedFormula = SMTFactory.makeSMTQuantifiedFormula(
-				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
+				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom);
 
 		return quantifiedFormula;
 	}
@@ -615,7 +615,7 @@ public class SMTMacroFactory {
 		SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1, forallVarSymbol2 };
 
 		SMTFormula quantifiedFormula = SMTFactory.makeSMTQuantifiedFormula(
-				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom, false);
+				SMTQuantifierSymbol.FORALL, forallVarSymbols, equalAtom);
 
 		return quantifiedFormula;
 	}

@@ -117,6 +117,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(key);
 		sb.append(" . ");
 		if (terms.length == 1) {
+
 			sb.append(elemToString(key.getNameWithQMark(),
 					terms[0].getArgTerms()[0], terms[0].getArgTerms()[1]));
 			sb.append(CPAR);
@@ -155,6 +156,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 	private String elemToString(String keyEl, SMTTerm keyTerm, SMTTerm valueTerm) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(OPAR);
+		sb.append("=");
+		sb.append(SPACE);
 		sb.append(keyEl);
 		sb.append(SPACE);
 		sb.append(OPAR);

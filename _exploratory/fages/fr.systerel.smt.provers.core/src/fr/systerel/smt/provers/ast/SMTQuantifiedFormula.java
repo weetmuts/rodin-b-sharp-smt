@@ -23,19 +23,15 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
-	private final boolean printPoint;
 
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
-			final SMTVarSymbol[] qVars, final SMTFormula formula,
-			final boolean printPoint) {
+			final SMTVarSymbol[] qVars, final SMTFormula formula) {
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;
-		this.printPoint = printPoint;
 	}
 
-	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(StringBuilder builder, boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(quantifier);
 		for (final SMTVarSymbol qVar : qVars) {
@@ -48,7 +44,16 @@ public class SMTQuantifiedFormula extends SMTFormula {
 			builder.append(SPACE);
 		}
 		builder.append(SPACE);
-		builder.append(formula);
+		if (formula instanceof SMTQuantifiedFormula) {
+			((SMTQuantifiedFormula) formula).toString(builder, true);
+		} else {
+			builder.append(formula);
+		}
 		builder.append(CPAR);
+	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		toString(builder, false);
 	}
 }

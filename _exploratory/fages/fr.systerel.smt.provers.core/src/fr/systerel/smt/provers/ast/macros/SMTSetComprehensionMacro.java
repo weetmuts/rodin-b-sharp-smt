@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast.macros;
 
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTQuantifiedFormula;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 
@@ -141,7 +142,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append("(lambda");
@@ -156,15 +157,12 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 		sb.append(" ");
 		sb.append(expression);
 		sb.append(") ");
-		sb.append(formula);
+		if (formula instanceof SMTQuantifiedFormula) {
+			((SMTQuantifiedFormula) formula).toString(sb, true);
+		} else {
+			formula.toString(sb);
+		}
 		sb.append("))))");
 		return sb.toString();
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		// TODO
-		return true;
-	}
-
 }
