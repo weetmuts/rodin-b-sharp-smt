@@ -40,8 +40,8 @@ public abstract class SMTSymbol {
 	public static final String DIV = "divi";
 	public static final String EXPN = "expn";
 
-	SMTSymbol(final String symbolName, final boolean predefined) {
-		this.name = symbolName;
+	protected SMTSymbol(final String symbolName, final boolean predefined) {
+		name = symbolName;
 		this.predefined = predefined;
 	}
 
@@ -71,7 +71,7 @@ public abstract class SMTSymbol {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -81,19 +81,24 @@ public abstract class SMTSymbol {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		SMTSymbol other = (SMTSymbol) obj;
+		}
+		final SMTSymbol other = (SMTSymbol) obj;
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 }

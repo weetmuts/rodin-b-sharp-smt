@@ -71,7 +71,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * is done.
  */
 public class SMTThroughPP extends TranslatorV1_2 {
-	public SMTThroughPP(String solver) {
+	public SMTThroughPP(final String solver) {
 		super(solver);
 	}
 
@@ -110,8 +110,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, String solver) throws TranslationException {
-		SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
+			final Predicate goal, final String solver)
+			throws TranslationException {
+		final SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
 				hypotheses, goal);
 		return smtB;
 	}
@@ -119,8 +120,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	class MemberShipPredicateInspector extends
 			DefaultInspector<RelationalPredicate> {
 		@Override
-		public void inspect(RelationalPredicate relPredicate,
-				IAccumulator<RelationalPredicate> accumulator) {
+		public void inspect(final RelationalPredicate relPredicate,
+				final IAccumulator<RelationalPredicate> accumulator) {
 			if (relPredicate.getTag() == Formula.IN) {
 				accumulator.add(relPredicate);
 			}
@@ -128,21 +129,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	private Map<String, Type> storeMonadicMSPIdentifiers(
-			List<Predicate> hypotheses, Predicate goal) {
+			final List<Predicate> hypotheses, final Predicate goal) {
 		final MemberShipPredicateInspector msp = new MemberShipPredicateInspector();
-		List<RelationalPredicate> msRelPred = new ArrayList<RelationalPredicate>();
-		for (Predicate p : hypotheses) {
+		final List<RelationalPredicate> msRelPred = new ArrayList<RelationalPredicate>();
+		for (final Predicate p : hypotheses) {
 			msRelPred.addAll(p.inspect(msp));
 		}
 		msRelPred.addAll(goal.inspect(msp));
 
-		Set<FreeIdentifier> monadicSetElements = new HashSet<FreeIdentifier>();
-		Set<Expression> notMSPSets = new HashSet<Expression>();
+		final Set<FreeIdentifier> monadicSetElements = new HashSet<FreeIdentifier>();
+		final Set<Expression> notMSPSets = new HashSet<Expression>();
 
 		Expression left;
 		Expression right;
 
-		for (RelationalPredicate predicate : msRelPred) {
+		for (final RelationalPredicate predicate : msRelPred) {
 			left = predicate.getLeft();
 			right = predicate.getRight();
 
@@ -164,9 +165,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 		monadicSetElements.removeAll(notMSPSets);
 
-		Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
+		final Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
 
-		for (FreeIdentifier set : monadicSetElements) {
+		for (final FreeIdentifier set : monadicSetElements) {
 			monadicSetEnv.put(set.getName(), set.getType());
 		}
 
@@ -202,7 +203,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-		for (Predicate hypothesis : ppTranslatedHypotheses) {
+		for (final Predicate hypothesis : ppTranslatedHypotheses) {
 			clearFormula();
 			translatedAssumptions.add(translate(hypothesis));
 		}
@@ -241,7 +242,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, String solver) {
+			final Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
@@ -356,9 +357,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 		}
 
-		List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
+		final List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
 
-		Iterator<Type> bIterator = biTypes.iterator();
+		final Iterator<Type> bIterator = biTypes.iterator();
 
 		while (bIterator.hasNext()) {
 
@@ -414,7 +415,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the type from which base types must be extracted
 	 * @return the list of base types extracted from this type
 	 */
-	private static Set<Type> getBaseTypes(Set<Type> baseTypes, final Type type) {
+	private static Set<Type> getBaseTypes(final Set<Type> baseTypes,
+			final Type type) {
 		final boolean isAProductType = type instanceof ProductType;
 		/**
 		 * Base case: the type is a base type. Adds it to the list and returns
@@ -431,7 +433,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * <code>getBaseTypes</code> on alpha and beta.
 		 */
 		else if (isAProductType) {
-			ProductType product = (ProductType) type;
+			final ProductType product = (ProductType) type;
 			return getBaseTypes(getBaseTypes(baseTypes, product.getLeft()),
 					product.getRight());
 		}
@@ -470,7 +472,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * sort a fresh name if necessary, to avoid any name collision.
 	 */
 	@Override
-	protected SMTSortSymbol translateTypeName(Type type) {
+	protected SMTSortSymbol translateTypeName(final Type type) {
 		if (type.getSource() == null && type.getTarget() == null
 				&& type.getBaseType() == null) {
 			return signature.freshSort(type.toString());
@@ -483,7 +485,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * node.
 	 */
 	@Override
-	public void visitAssociativeExpression(AssociativeExpression expression) {
+	public void visitAssociativeExpression(
+			final AssociativeExpression expression) {
 		final SMTTerm[] children = smtTerms(expression.getChildren());
 		final int tag = expression.getTag();
 		switch (tag) {
@@ -508,7 +511,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates an Event-B atomic expression into an SMT node.
 	 */
 	@Override
-	public void visitAtomicExpression(AtomicExpression expression) {
+	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
 			// FIXME this uses a set theory
@@ -541,7 +544,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates an Event-B binary expression into an SMT node.
 	 */
 	@Override
-	public void visitBinaryExpression(BinaryExpression expression) {
+	public void visitBinaryExpression(final BinaryExpression expression) {
 		final Expression left = expression.getLeft();
 		final Expression right = expression.getRight();
 		final SMTTerm[] children = smtTerms(left, right);
@@ -583,7 +586,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates an Event-B bool expression into an SMT node.
 	 */
 	@Override
-	public void visitBoolExpression(BoolExpression expression) {
+	public void visitBoolExpression(final BoolExpression expression) {
 		final SMTFormula predicate = smtFormula(expression.getPredicate());
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
@@ -601,10 +604,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitLiteralPredicate(final LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
-			smtNode = sf.makePTrue(this.signature);
+			smtNode = sf.makePTrue(signature);
 			break;
 		case Formula.BFALSE:
-			smtNode = sf.makePFalse(this.signature);
+			smtNode = sf.makePFalse(signature);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -634,7 +637,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
-					.getOperator(SMTOperator.LT), children, this.signature);
+					.getOperator(SMTOperator.LT), children, signature);
 		}
 			break;
 		case Formula.LE: {
@@ -642,7 +645,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					predicate.getRight());
 			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
 					.getLogic().getOperator(SMTOperator.LE), children,
-					this.signature);
+					signature);
 		}
 			break;
 		case Formula.GT: {
@@ -650,7 +653,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					predicate.getRight());
 			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
 					.getLogic().getOperator(SMTOperator.GT), children,
-					this.signature);
+					signature);
 		}
 			break;
 		case Formula.GE: {
@@ -658,7 +661,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					predicate.getRight());
 			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
 					.getLogic().getOperator(SMTOperator.GE), children,
-					this.signature);
+					signature);
 		}
 			break;
 		case Formula.IN:
@@ -678,17 +681,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					final SMTTerm leftTerm = smtTerm(left);
 					final SMTTerm[] argTerms = { leftTerm };
 					// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
-					SMTSortSymbol[] argSorts = { leftTerm.getSort() };
+					final SMTSortSymbol[] argSorts = { leftTerm.getSort() };
 
 					// FIXME Check if there is already defined a predicate
 					// before creating a new one.
-					SMTPredicateSymbol predSymbol = signature
+					final SMTPredicateSymbol predSymbol = signature
 							.addPredicateSymbol(rightSet.getName(), argSorts);
 
 					msTypeMap.put(leftType, predSymbol);
 
 					smtNode = SMTFactory.makeAtom(predSymbol, argTerms,
-							this.signature);
+							signature);
 					membershipPredicateTerms.clear();
 					break;
 				}
@@ -723,7 +726,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] args = membershipPredicateTerms
 					.toArray(new SMTTerm[numberOfArguments]);
 
-			smtNode = SMTFactory.makeAtom(predSymbol, args, this.signature);
+			smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
 			membershipPredicateTerms.clear();
 			break;
 		case Formula.NOTIN:
@@ -741,7 +744,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates an Event-B unary expression into an SMT node.
 	 */
 	@Override
-	public void visitUnaryExpression(UnaryExpression expression) {
+	public void visitUnaryExpression(final UnaryExpression expression) {
 		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
 				.getChild()) };
 		switch (expression.getTag()) {
@@ -759,7 +762,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	@Override
-	public void visitSetExtension(SetExtension expression) {
+	public void visitSetExtension(final SetExtension expression) {
 		// TODO
 	}
 
@@ -768,7 +771,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * SMT node.
 	 */
 	@Override
-	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
+	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
 
@@ -797,7 +800,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates an Event-B bound identifier into an SMT node.
 	 */
 	@Override
-	public void visitBoundIdentifier(BoundIdentifier expression) {
+	public void visitBoundIdentifier(final BoundIdentifier expression) {
 		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
 				- expression.getBoundIndex() - 1);
 		smtNode = qVarMap.get(bidName);
@@ -808,16 +811,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		smtNode = sf.makeConstant(
-				(SMTFunctionSymbol) varMap.get(expression.getName()),
-				this.signature);
+		smtNode = sf
+				.makeConstant(
+						(SMTFunctionSymbol) varMap.get(expression.getName()),
+						signature);
 	}
 
 	/**
 	 * This method translates an Event-B quantified predicate into an SMT node
 	 */
 	@Override
-	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
+	public void visitQuantifiedPredicate(final QuantifiedPredicate predicate) {
 		boundIdentifiersMarker.push(boundIdentifiers.size());
 
 		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
@@ -825,16 +829,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			this.smtNode = sf.makeForAll(termChildren, formulaChild);
+			smtNode = sf.makeForAll(termChildren, formulaChild);
 			break;
 		case Formula.EXISTS:
-			this.smtNode = sf.makeExists(termChildren, formulaChild);
+			smtNode = sf.makeExists(termChildren, formulaChild);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
 		}
 
-		int top = boundIdentifiersMarker.pop();
+		final int top = boundIdentifiersMarker.pop();
 
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 	}
@@ -843,7 +847,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
+	public void visitBecomesEqualTo(final BecomesEqualTo assignment) {
 		throw new IllegalArgumentException(
 				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -852,7 +856,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
+	public void visitBecomesMemberOf(final BecomesMemberOf assignment) {
 		throw new IllegalArgumentException(
 				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -861,7 +865,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
+	public void visitBecomesSuchThat(final BecomesSuchThat assignment) {
 		throw new IllegalArgumentException(
 				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -879,7 +883,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitSimplePredicate(SimplePredicate predicate) {
+	public void visitSimplePredicate(final SimplePredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -888,7 +892,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitMultiplePredicate(MultiplePredicate predicate) {
+	public void visitMultiplePredicate(final MultiplePredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -897,7 +901,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitExtendedExpression(ExtendedExpression expression) {
+	public void visitExtendedExpression(final ExtendedExpression expression) {
 		throw new IllegalArgumentException(
 				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}
@@ -906,7 +910,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method should not be called in the PP approach of SMT translation
 	 */
 	@Override
-	public void visitExtendedPredicate(ExtendedPredicate predicate) {
+	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
 	}

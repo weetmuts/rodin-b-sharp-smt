@@ -98,13 +98,14 @@ public abstract class SMTSignature {
 				|| predicateSymbol.equals(SMTFactory.PFALSE)) {
 			return;
 		}
-		for (SMTPredicateSymbol predSymbol : this.preds) {
+		for (final SMTPredicateSymbol predSymbol : preds) {
 
 			// Verify if the predicates have the same name
 			if (predicateSymbol.getName().equals(predSymbol.getName())) {
 
-				SMTSortSymbol[] argSorts = predicateSymbol.getArgSorts();
-				SMTSortSymbol[] expectedArgSorts = predSymbol.getArgSorts();
+				final SMTSortSymbol[] argSorts = predicateSymbol.getArgSorts();
+				final SMTSortSymbol[] expectedArgSorts = predSymbol
+						.getArgSorts();
 
 				// Verify if the number of arguments are the same
 				if (expectedArgSorts.length == argSorts.length) {
@@ -129,18 +130,18 @@ public abstract class SMTSignature {
 	}
 
 	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
-		for (SMTFunctionSymbol symbol : this.funs) {
+		for (final SMTFunctionSymbol symbol : funs) {
 
 			// Verify if the predicates have the same name
 			if (functionSymbol.getName().equals(symbol.getName())) {
 
-				SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
-				SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
+				final SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
+				final SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
 
 				// Verify if the function is associative. If yes, all the
 				// arguments of the sort of functionSymbol shall be the same.
 				if (symbol.isAssociative()) {
-					for (SMTSortSymbol argSort : argSorts) {
+					for (final SMTSortSymbol argSort : argSorts) {
 						if (!argSort.equals(expectedArgSorts[0])) {
 							throw makeIncompatibleFunctionsException(
 									functionSymbol, symbol);
@@ -179,13 +180,13 @@ public abstract class SMTSignature {
 		sb.append(expectedSymbol);
 		sb.append(": ");
 		String sep = "";
-		for (SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
+		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
 		sb.append(" does not match the arguments: ");
-		for (SMTSortSymbol arg : actualFunctionSymbol.getArgSorts()) {
+		for (final SMTSortSymbol arg : actualFunctionSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			arg.toString(sb);
@@ -202,13 +203,13 @@ public abstract class SMTSignature {
 		sb.append(expectedPredSymbol);
 		sb.append(": ");
 		String sep = "";
-		for (SMTSortSymbol expectedArg : expectedPredSymbol.getArgSorts()) {
+		for (final SMTSortSymbol expectedArg : expectedPredSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
 		sb.append(" does not match: ");
-		for (SMTSortSymbol arg : actualPredicateSymbol.getArgSorts()) {
+		for (final SMTSortSymbol arg : actualPredicateSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			arg.toString(sb);
@@ -313,7 +314,8 @@ public abstract class SMTSignature {
 	 */
 	// TODO check which prover needs the "\'" simplification, and document it
 	// here
-	protected static String freshName(Set<String> symbols, String name) {
+	protected static String freshName(final Set<String> symbols,
+			final String name) {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
 
@@ -366,7 +368,7 @@ public abstract class SMTSignature {
 
 	public SMTFunctionSymbol getFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
-		for (SMTFunctionSymbol fun : funs) {
+		for (final SMTFunctionSymbol fun : funs) {
 			if (fun.name.equals(name) && fun.hasRank(argSorts, resultSort)) {
 				return fun;
 			}
@@ -376,7 +378,7 @@ public abstract class SMTSignature {
 
 	public SMTPredicateSymbol getPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
-		for (SMTPredicateSymbol pred : preds) {
+		for (final SMTPredicateSymbol pred : preds) {
 			if (pred.name.equals(name) && pred.hasRank(argSorts)) {
 				return pred;
 			}
@@ -390,7 +392,7 @@ public abstract class SMTSignature {
 	protected final static String MS_PREDICATE_NAME = "MS";
 
 	public String freshPredName() {
-		Set<String> names = new HashSet<String>();
+		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(preds));
 		names.addAll(getSymbolNames(sorts));
@@ -398,7 +400,7 @@ public abstract class SMTSignature {
 	}
 
 	public String freshCstName(final String name) {
-		Set<String> names = new HashSet<String>();
+		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
@@ -435,7 +437,7 @@ public abstract class SMTSignature {
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		Set<String> names = new HashSet<String>();
+		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
@@ -504,13 +506,13 @@ public abstract class SMTSignature {
 
 	public SMTPredicateSymbol addPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
-		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name, argSorts,
-				!SMTSymbol.PREDEFINED);
+		final SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
+				argSorts, !SMTSymbol.PREDEFINED);
 		preds.add(symbol);
 		return symbol;
 	}
 
-	public void toString(StringBuilder sb) {
+	public void toString(final StringBuilder sb) {
 		logicSection(sb);
 		extrasortsSection(sb);
 		extrapredsSection(sb);

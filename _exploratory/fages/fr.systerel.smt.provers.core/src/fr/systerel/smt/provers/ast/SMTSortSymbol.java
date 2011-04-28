@@ -15,13 +15,13 @@ package fr.systerel.smt.provers.ast;
  */
 public class SMTSortSymbol extends SMTSymbol implements
 		Comparable<SMTSortSymbol> {
-	protected SMTSortSymbol(String symbolName, final boolean predefined) {
+	protected SMTSortSymbol(final String symbolName, final boolean predefined) {
 		super(symbolName, predefined);
 	}
 
 	@Override
 	public int compareTo(final SMTSortSymbol symbol) {
-		return (name.compareTo(symbol.getName()));
+		return name.compareTo(symbol.getName());
 	}
 
 	/**
@@ -32,10 +32,10 @@ public class SMTSortSymbol extends SMTSymbol implements
 	 *            the other sort to test for compatibility
 	 * @return whether this sort is compatible with the given sort
 	 */
-	public boolean isCompatibleWith(SMTSortSymbol other) {
+	public boolean isCompatibleWith(final SMTSortSymbol other) {
 		if (other instanceof SMTPolymorphicSortSymbol) {
 			return true;
 		}
-		return this.equals(other);
+		return equals(other);
 	}
 }

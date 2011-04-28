@@ -4,10 +4,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.core.tests;
 
-import static org.eventb.core.ast.Formula.FORALL;
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
-import static br.ufrn.smt.solver.translation.SMTSolver.Z3;
-
+import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,7 +22,6 @@ import org.eventb.core.ast.QuantifiedPredicate;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
@@ -67,14 +64,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				defaultFailMessage, VERIT.toString());
 	}
 
-	private static void testTranslationV1_2Default(final String predStr,
-			final String expectedSMTNode, SMTSolver solver) {
-		testTranslationV1_2(defaultTe, predStr, expectedSMTNode,
-				defaultFailMessage, solver.toString());
-	}
-
 	private static void testTranslationV1_2VerDefaultSolver(
-			ITypeEnvironment typeEnvironment, final String ppPredStr,
+			final ITypeEnvironment typeEnvironment, final String ppPredStr,
 			final String expectedSMTNode) {
 		testTranslationV1_2(typeEnvironment, ppPredStr, expectedSMTNode,
 				defaultFailMessage, VERIT.toString());
@@ -95,7 +86,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
 			final String predStr, final String expectedSMTNode,
-			final String failMessage, String solver) throws AssertionError {
+			final String failMessage, final String solver)
+			throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
 
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
@@ -116,7 +108,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	private static void testTranslationV1_2Verit(final Predicate ppred,
 			final String expectedSMTNode, final String failMessage,
-			String solver) {
+			final String solver) {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
@@ -127,21 +119,22 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
-	public void setSignatureForTestsVerit(ITypeEnvironment typeEnvironment) {
-		this.signature = SMTThroughVeriT.translateSMTSignature(typeEnvironment,
+	public void setSignatureForTestsVerit(final ITypeEnvironment typeEnvironment) {
+		signature = SMTThroughVeriT.translateSMTSignature(typeEnvironment,
 				VERIT.toString());
 	}
 
-	private String typeEnvironmentFunctionsFail(Set<String> expectedFunctions,
-			Set<SMTFunctionSymbol> functions) {
-		StringBuilder sb = new StringBuilder();
+	private String typeEnvironmentFunctionsFail(
+			final Set<String> expectedFunctions,
+			final Set<SMTFunctionSymbol> functions) {
+		final StringBuilder sb = new StringBuilder();
 		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
-		for (String expectedFunction : expectedFunctions) {
+		for (final String expectedFunction : expectedFunctions) {
 			sb.append("\n");
 			sb.append(expectedFunction);
 		}
 		sb.append("\nBut the translated functions were:");
-		for (SMTFunctionSymbol fSymbol : functions) {
+		for (final SMTFunctionSymbol fSymbol : functions) {
 			if (!fSymbol.isPredefined()) {
 				sb.append("\n");
 				fSymbol.toString(sb);
@@ -152,15 +145,16 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	private String typeEnvironmentPredicatesFail(
-			Set<String> expectedPredicates, Set<SMTPredicateSymbol> predicates) {
-		StringBuilder sb = new StringBuilder();
+			final Set<String> expectedPredicates,
+			final Set<SMTPredicateSymbol> predicates) {
+		final StringBuilder sb = new StringBuilder();
 		sb.append("The translated predicates wasn't the expected ones. The expected predicates are:");
-		for (String expectedPredicate : expectedPredicates) {
+		for (final String expectedPredicate : expectedPredicates) {
 			sb.append("\n");
 			sb.append(expectedPredicate);
 		}
 		sb.append("\nBut the translated predicates were:");
-		for (SMTPredicateSymbol predicateSymbol : predicates) {
+		for (final SMTPredicateSymbol predicateSymbol : predicates) {
 			if (!predicateSymbol.isPredefined()) {
 				sb.append("\n");
 				predicateSymbol.toString(sb);
@@ -170,16 +164,16 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		return sb.toString();
 	}
 
-	private String typeEnvironmentSortsFail(Set<String> expectedSorts,
-			Set<SMTSortSymbol> sorts) {
-		StringBuilder sb = new StringBuilder();
+	private String typeEnvironmentSortsFail(final Set<String> expectedSorts,
+			final Set<SMTSortSymbol> sorts) {
+		final StringBuilder sb = new StringBuilder();
 		sb.append("The translated sorts wasn't the expected ones. The expected sorts are:");
-		for (String expectedSort : expectedSorts) {
+		for (final String expectedSort : expectedSorts) {
 			sb.append("\n");
 			sb.append(expectedSort);
 		}
 		sb.append("\nBut the translated sorts were:");
-		for (SMTSortSymbol sortSymbol : sorts) {
+		for (final SMTSortSymbol sortSymbol : sorts) {
 			sb.append("\n");
 			sb.append(sortSymbol.toString());
 		}
@@ -187,30 +181,30 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		return sb.toString();
 	}
 
-	public void testTypeEnvironmentFunctions(Set<String> expectedFunctions) {
+	public void testTypeEnvironmentFunctions(final Set<String> expectedFunctions) {
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
-		Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
-		Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
-		String sb = typeEnvironmentFunctionsFail(expectedFunctions,
+		final Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
+		final Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
+		final String sb = typeEnvironmentFunctionsFail(expectedFunctions,
 				functionSymbols);
 
 		while (iterator.hasNext()) {
-			SMTFunctionSymbol fS = iterator.next();
+			final SMTFunctionSymbol fS = iterator.next();
 			if (!fS.isPredefined()) {
-				StringBuilder builder = new StringBuilder();
+				final StringBuilder builder = new StringBuilder();
 				fS.toString(builder);
 				assertTrue(sb, expectedFunctions.contains(builder.toString()));
 			}
 		}
 	}
 
-	public void testTypeEnvironmentSorts(Set<String> expectedSorts) {
+	public void testTypeEnvironmentSorts(final Set<String> expectedSorts) {
 		expectedSorts.add("(Pair 's 't)");
 		expectedSorts.add("Int");
 
-		Set<SMTSortSymbol> sortSymbols = signature.getSorts();
-		Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
-		String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
+		final Set<SMTSortSymbol> sortSymbols = signature.getSorts();
+		final Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
+		final String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
 		assertEquals(sb.toString(), expectedSorts.size(), sortSymbols.size());
 
 		while (iterator.hasNext()) {
@@ -218,16 +212,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		}
 	}
 
-	public void testTypeEnvironmentPredicates(Set<String> expectedPredicates) {
-		Set<SMTPredicateSymbol> predicateSymbols = signature.getPreds();
-		Iterator<SMTPredicateSymbol> iterator = predicateSymbols.iterator();
-		String sb = typeEnvironmentPredicatesFail(expectedPredicates,
+	public void testTypeEnvironmentPredicates(
+			final Set<String> expectedPredicates) {
+		final Set<SMTPredicateSymbol> predicateSymbols = signature.getPreds();
+		final Iterator<SMTPredicateSymbol> iterator = predicateSymbols
+				.iterator();
+		final String sb = typeEnvironmentPredicatesFail(expectedPredicates,
 				predicateSymbols);
 
 		while (iterator.hasNext()) {
-			SMTPredicateSymbol pS = iterator.next();
+			final SMTPredicateSymbol pS = iterator.next();
 			if (!pS.isPredefined()) {
-				StringBuilder builder = new StringBuilder();
+				final StringBuilder builder = new StringBuilder();
 				pS.toString(builder);
 				assertTrue(sb, expectedPredicates.contains(builder.toString()));
 			}
@@ -248,7 +244,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentFunctionSimpleTe() {
 		setSignatureForTestsVerit(simpleTe);
-		Set<String> expectedFunctions = new HashSet<String>();
+		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(g S)");
 		expectedFunctions.add("(divi Int Int Int)");
@@ -262,7 +258,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
 		setSignatureForTestsVerit(simpleTe);
-		Set<String> expectedSorts = new HashSet<String>();
+		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts.add("S");
 
@@ -276,7 +272,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Ignore("Not yet implemented")
 	public void testTypeEnvironmenSortErrorTe() {
 		setSignatureForTestsVerit(errorTe);
-		Set<String> expectedSorts = new HashSet<String>();
+		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts
 				.add("AZ (Something. The purpose of this test is to show that sets of sets are not supported.");
@@ -290,7 +286,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTe() {
 		setSignatureForTestsVerit(simpleTe);
-		Set<String> expectedPredicates = new HashSet<String>();
+		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(e_0 S)");
 		expectedPredicates.add("(f_0 S)");
@@ -305,7 +301,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
 		setSignatureForTestsVerit(defaultTe);
-		Set<String> expectedPredicates = new HashSet<String>();
+		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(r_0 R)");
 		expectedPredicates.add("(s R)");
@@ -322,7 +318,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentFunctionDefaultTe() {
 		setSignatureForTestsVerit(defaultTe);
-		Set<String> expectedFunctions = new HashSet<String>();
+		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(p_0 S)");
 		expectedFunctions.add("(q_0 S)");
@@ -479,9 +475,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	@Ignore("Not yet implemented")
-	public void testArithExprBinopExponentialUnsupported() { // TODO Add
-																// exponential
-																// binop
+	public void testArithExprBinopExponentialUnsupported() {
 		/**
 		 * expn
 		 */
@@ -576,6 +570,16 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	public void testDynamicStableLSR_081014_20_hyp1() {
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "P",
+				"ℙ(S × S)", "Q", "ℙ(S × S)", "k", "S × S", "m", "S", "n", "S");
+
+		testTranslationV1_2VerDefaultSolver(te, "¬ k = m ↦ n",
+				"(not (= k (pair m_0 n)))");
+	}
+
+	@Test
 	public void testRule14() {
 
 		/**
@@ -664,8 +668,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testAssociativeExpressionsUnionAndInter() {
-		ITypeEnvironment tpe = mTypeEnvironment("A", "ℙ(ℤ)", "B", "ℙ(ℤ)", "C",
-				"ℙ(ℤ)", "D", "ℙ(ℤ)", "E", "ℙ(ℤ)");
+		final ITypeEnvironment tpe = mTypeEnvironment("A", "ℙ(ℤ)", "B", "ℙ(ℤ)",
+				"C", "ℙ(ℤ)", "D", "ℙ(ℤ)", "E", "ℙ(ℤ)");
 		testTranslationV1_2VerDefaultSolver(tpe, "A ∪ B ∪ C ∪ D = E",
 				"(= (union (union (union A B) C) D) E)");
 
@@ -675,8 +679,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testAssociativeFcompAndOvr() {
-		ITypeEnvironment tpe = mTypeEnvironment("A", "ℤ ↔ ℤ", "B", "ℤ ↔ ℤ",
-				"C", "ℤ ↔ ℤ", "D", "ℤ ↔ ℤ", "E", "ℤ ↔ ℤ");
+		final ITypeEnvironment tpe = mTypeEnvironment("A", "ℤ ↔ ℤ", "B",
+				"ℤ ↔ ℤ", "C", "ℤ ↔ ℤ", "D", "ℤ ↔ ℤ", "E", "ℤ ↔ ℤ");
 
 		testTranslationV1_2VerDefaultSolver(tpe,
 				"A \u003b B \u003b C \u003b D = E",

@@ -54,7 +54,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
-		for (String hyp : inputHyps) {
+		for (final String hyp : inputHyps) {
 			hypotheses.add(parse(hyp, te));
 		}
 
@@ -80,7 +80,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
-		for (Predicate predicate : parsedHypothesis) {
+		for (final Predicate predicate : parsedHypothesis) {
 			assertTypeChecked(predicate);
 		}
 
@@ -100,11 +100,11 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (TranslationException t) {
+		} catch (final TranslationException t) {
 			fail(t.getMessage());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
-		} catch (IllegalArgumentException iae) {
+		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
 	}

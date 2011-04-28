@@ -31,12 +31,12 @@ public class CommonSolverRunTests extends AbstractTests {
 		}
 
 		@Override
-		public void setCanceled(boolean value) {
+		public void setCanceled(final boolean value) {
 			// nothing to do
 		}
 
 		@Override
-		public void setTask(String name) {
+		public void setTask(final String name) {
 			// nothing to do
 		}
 	}
@@ -77,7 +77,7 @@ public class CommonSolverRunTests extends AbstractTests {
 			solverPath = BIN_PATH + solverBinaryName;
 		}
 
-		SolverDetail sd = new SolverDetail(solverBinaryName, solverPath,
+		final SolverDetail sd = new SolverDetail(solverBinaryName, solverPath,
 				solverArgs, isSMTV1_2Compatible, isSMTV2_0Compatible);
 		preferences = new SMTPreferences(sd, true, BIN_PATH + VERIT);
 	}

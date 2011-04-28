@@ -33,7 +33,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	private boolean isFstAndSndAssumptionsAdded = false;
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
-	private SMTMacroFactory ms = new SMTMacroFactory();
+	private final SMTMacroFactory ms = new SMTMacroFactory();
 
 	/**
 	 * This variable stores additional assumptions produced by the translation
@@ -45,11 +45,13 @@ public class SMTSignatureVerit extends SMTSignature {
 		return additionalAssumptions;
 	}
 
-	public void setFstAndSndAssumptionsAdded(boolean isFstAndSndAssumptionsAdded) {
+	public void setFstAndSndAssumptionsAdded(
+			final boolean isFstAndSndAssumptionsAdded) {
 		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
 	}
 
-	public void setAdditionalAssumptions(Set<SMTFormula> additionalAssumptions) {
+	public void setAdditionalAssumptions(
+			final Set<SMTFormula> additionalAssumptions) {
 		this.additionalAssumptions = additionalAssumptions;
 	}
 
@@ -64,27 +66,28 @@ public class SMTSignatureVerit extends SMTSignature {
 	public void addMacro(final SMTMacro macro) {
 		// FIXME: The set should take care of unique elements. This comparison
 		// should not exist
-		for (SMTMacro macroEl : macros) {
-			String x1 = macroEl.getMacroName();
-			String x2 = macro.getMacroName();
-			if (x1.equals(x2))
+		for (final SMTMacro macroEl : macros) {
+			final String x1 = macroEl.getMacroName();
+			final String x2 = macro.getMacroName();
+			if (x1.equals(x2)) {
 				return;
+			}
 		}
 		macros.add(macro);
 	}
 
 	public SMTSymbol getSMTSymbol(final String identifierName) {
-		for (SMTFunctionSymbol functionSymbol : funs) {
+		for (final SMTFunctionSymbol functionSymbol : funs) {
 			if (functionSymbol.name.equals(identifierName)) {
 				return functionSymbol;
 			}
 		}
-		for (SMTPredicateSymbol predicateSymbol : preds) {
+		for (final SMTPredicateSymbol predicateSymbol : preds) {
 			if (predicateSymbol.name.equals(identifierName)) {
 				return predicateSymbol;
 			}
 		}
-		for (SMTSortSymbol sortSymbol : sorts) {
+		for (final SMTSortSymbol sortSymbol : sorts) {
 			if (sortSymbol.name.equals(identifierName)) {
 				return sortSymbol;
 			}
@@ -98,7 +101,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			sb.append(":extramacros(");
-			for (SMTMacro macro : macros) {
+			for (final SMTMacro macro : macros) {
 				sb.append("\n");
 				macro.toString(sb);
 			}
@@ -107,20 +110,20 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	}
 
-	private static Set<String> getNamesFromMacro(Set<SMTMacro> macros) {
-		Set<String> macroNames = new HashSet<String>();
-		for (SMTMacro macro : macros) {
+	private static Set<String> getNamesFromMacro(final Set<SMTMacro> macros) {
+		final Set<String> macroNames = new HashSet<String>();
+		for (final SMTMacro macro : macros) {
 			macroNames.add(macro.getMacroName());
 			if (macro instanceof SMTEnumMacro) {
-				SMTEnumMacro enumMacro = (SMTEnumMacro) macro;
+				final SMTEnumMacro enumMacro = (SMTEnumMacro) macro;
 				macroNames.add(enumMacro.getAssignedVar().getName());
 			} else if (macro instanceof SMTPairEnumMacro) {
-				SMTPairEnumMacro pairEnumMacro = (SMTPairEnumMacro) macro;
+				final SMTPairEnumMacro pairEnumMacro = (SMTPairEnumMacro) macro;
 				macroNames.add(pairEnumMacro.getKey().getName());
 			} else if (macro instanceof SMTSetComprehensionMacro) {
-				SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
+				final SMTSetComprehensionMacro setComprehensionMacro = (SMTSetComprehensionMacro) macro;
 				macroNames.add(setComprehensionMacro.getLambdaVar().getName());
-				for (SMTVarSymbol var : setComprehensionMacro.getqVars()) {
+				for (final SMTVarSymbol var : setComprehensionMacro.getqVars()) {
 					macroNames.add(var.getName());
 				}
 			}
@@ -133,8 +136,8 @@ public class SMTSignatureVerit extends SMTSignature {
 		return freshCstName(name, null);
 	}
 
-	public String freshCstName(final String name, Set<String> usedNames) {
-		Set<String> names = new HashSet<String>();
+	public String freshCstName(final String name, final Set<String> usedNames) {
+		final Set<String> names = new HashSet<String>();
 		if (usedNames != null) {
 			names.addAll(usedNames);
 		}
@@ -143,7 +146,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		names.addAll(getSymbolNames(preds));
 		names.addAll(getNamesFromMacro(macros));
 		names.addAll(ms.getqSymbols());
-		for (SMTVeriTOperator op : SMTVeriTOperator.values()) {
+		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
 
@@ -155,32 +158,32 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	@Override
-	public void toString(StringBuilder sb) {
+	public void toString(final StringBuilder sb) {
 		super.toString(sb);
-		this.extramacrosSection(sb);
+		extramacrosSection(sb);
 	}
 
 	@Override
 	public Set<SMTSortSymbol> getSorts() {
-		return this.sorts;
+		return sorts;
 	}
 
-	public void addSort(SMTSortSymbol sort) {
-		assert (!sort.name.equals("U"));
-		this.sorts.add(sort);
+	public void addSort(final SMTSortSymbol sort) {
+		assert !sort.name.equals("U");
+		sorts.add(sort);
 	}
 
-	public void addPred(SMTPredicateSymbol predSymbol) {
-		this.preds.add(predSymbol);
+	public void addPred(final SMTPredicateSymbol predSymbol) {
+		preds.add(predSymbol);
 	}
 
-	public void addAdditionalAssumption(SMTFormula formula) {
+	public void addAdditionalAssumption(final SMTFormula formula) {
 		additionalAssumptions.add(formula);
 	}
 
-	public void addFstOrSndAuxiliarAssumption(SMTFormula formula) {
+	public void addFstOrSndAuxiliarAssumption(final SMTFormula formula) {
 		if (!isFstAndSndAssumptionsAdded) {
-			this.additionalAssumptions.add(formula);
+			additionalAssumptions.add(formula);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class IllegalTagException extends IllegalArgumentException {
 
 	public IllegalTagException(final int tag) {
 		super();
-		this.cause = tag;
+		cause = tag;
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public abstract class AbstractTests {
 	/**
 	 * Builds a type environment with given combined symbols
 	 */
-	protected static ITypeEnvironment mTypeEnvironment(String... strs) {
+	protected static ITypeEnvironment mTypeEnvironment(final String... strs) {
 		assert (strs.length & 1) == 0;
 		final ITypeEnvironment te = ff.makeTypeEnvironment();
 		for (int i = 0; i < strs.length; i += 2) {

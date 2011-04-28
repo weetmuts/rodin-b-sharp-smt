@@ -194,7 +194,7 @@ public class SMTLogic {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -370,11 +370,12 @@ public class SMTLogic {
 	}
 
 	public SMTFunctionSymbol getIntegerSortCst() {
-		for (SMTTheory theory : theories) {
+		for (final SMTTheory theory : theories) {
 			if (theory instanceof Ints) {
-				SMTSortSymbol integerSort = ((Ints) theory).getIntegerSort();
-				SMTSortSymbol[] argSorts = {};
-				SMTFunctionSymbol integerSortFunction = new SMTFunctionSymbol(
+				final SMTSortSymbol integerSort = ((Ints) theory)
+						.getIntegerSort();
+				final SMTSortSymbol[] argSorts = {};
+				final SMTFunctionSymbol integerSortFunction = new SMTFunctionSymbol(
 						"Int", argSorts, integerSort, false, true);
 				return integerSortFunction;
 			}
@@ -384,12 +385,12 @@ public class SMTLogic {
 	}
 
 	public SMTFunctionSymbol getBooleanCste() {
-		for (SMTTheory theory : theories) {
+		for (final SMTTheory theory : theories) {
 			if (theory instanceof VeritPredefinedTheory) {
-				SMTSortSymbol boolSort = ((VeritPredefinedTheory) theory)
+				final SMTSortSymbol boolSort = ((VeritPredefinedTheory) theory)
 						.getBooleanSort();
-				SMTSortSymbol[] argSorts = {};
-				SMTFunctionSymbol boolSortFunction = new SMTFunctionSymbol(
+				final SMTSortSymbol[] argSorts = {};
+				final SMTFunctionSymbol boolSortFunction = new SMTFunctionSymbol(
 						SMTSymbol.BOOL_SORT, argSorts, boolSort, false, true);
 				return boolSortFunction;
 			}

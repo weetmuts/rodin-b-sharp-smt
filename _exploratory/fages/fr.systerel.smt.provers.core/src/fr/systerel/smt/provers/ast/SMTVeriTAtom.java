@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Vitor Alcantara de Almeida - Implementation
+ *     YGU (Systerel) - initial API and implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
@@ -15,41 +15,36 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
-public class SMTMacroTerm extends SMTTerm {
+/**
+ * This class represents an SMTAtom
+ */
+class SMTVeriTAtom extends SMTFormula {
+	final SMTMacroSymbol predicate;
+	final SMTTerm[] terms;
 
-	private final SMTMacroSymbol macroSymbol;
-	SMTTerm[] argTerms;
+	/**
+	 * 
+	 * @param symbol
+	 * @param terms
+	 */
+	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[]) {
+		// TODO: Create a verification method for macros
+		predicate = symbol;
+		this.terms = terms.clone();
+	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
-		if (macroSymbol.isPropositional()) {
-			builder.append(macroSymbol.name);
+	public void toString(final StringBuilder builder, final boolean printPoint) {
+		if (predicate.isPropositional()) {
+			builder.append(predicate.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(macroSymbol.name);
-			for (final SMTTerm term : argTerms) {
+			builder.append(predicate.name);
+			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder);
 			}
 			builder.append(CPAR);
 		}
 	}
-
-	public SMTMacroTerm(final SMTMacroSymbol macro, final SMTTerm[] argTerms,
-			final SMTSortSymbol returnSort) {
-		macroSymbol = macro;
-		this.argTerms = argTerms;
-		sort = returnSort;
-	}
-
-	public SMTMacroTerm(final SMTMacroSymbol macro, final SMTTerm[] argTerms) {
-		macroSymbol = macro;
-		this.argTerms = argTerms;
-		sort = macro.getReturnSort();
-	}
-
-	public SMTTerm[] getArgTerms() {
-		return argTerms;
-	}
-
 }

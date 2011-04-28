@@ -36,8 +36,8 @@ public class SMTFunApplication extends SMTTerm {
 			final SMTTerm terms[]) {
 		verifyFunctionRank(symbol, terms);
 		this.symbol = symbol;
-		this.args = terms.clone();
-		this.sort = symbol.getResultSort();
+		args = terms.clone();
+		sort = symbol.getResultSort();
 	}
 
 	/**
@@ -67,8 +67,8 @@ public class SMTFunApplication extends SMTTerm {
 
 	private static boolean verifyAssociativeRank(
 			final SMTSortSymbol expectedSortArg, final SMTTerm[] terms) {
-		for (SMTTerm term : terms) {
-			if (!term.getSort().equals(expectedSortArg)) {
+		for (final SMTTerm term : terms) {
+			if (!term.getSort().isCompatibleWith(expectedSortArg)) {
 				return false;
 			}
 		}
@@ -76,7 +76,7 @@ public class SMTFunApplication extends SMTTerm {
 	}
 
 	private static boolean verifyNonAssociativeRank(
-			SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
+			final SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
 		if (expectedSortArgs.length != terms.length) {
 			return false;
 		}
@@ -100,18 +100,18 @@ public class SMTFunApplication extends SMTTerm {
 	 */
 	private static String incompatibleFunctionRankExceptionMessage(
 			final SMTFunctionSymbol functionSymbol, final SMTTerm[] args,
-			StringBuilder sb) {
+			final StringBuilder sb) {
 		sb.append("Arguments of function symbol: ");
 		sb.append(functionSymbol);
 		sb.append(": ");
 		String sep = "";
-		for (SMTSortSymbol expectedArg : functionSymbol.getArgSorts()) {
+		for (final SMTSortSymbol expectedArg : functionSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
 		sb.append(" do not match: ");
-		for (SMTTerm arg : args) {
+		for (final SMTTerm arg : args) {
 			sb.append(sep);
 			sep = " ";
 			arg.getSort().toString(sb);
@@ -120,13 +120,13 @@ public class SMTFunApplication extends SMTTerm {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		if (symbol.isConstant()) {
 			builder.append(symbol.name);
 		} else {
 			builder.append(OPAR);
 			builder.append(symbol.name);
-			for (SMTTerm arg : args) {
+			for (final SMTTerm arg : args) {
 				builder.append(SPACE);
 				arg.toString(builder);
 			}

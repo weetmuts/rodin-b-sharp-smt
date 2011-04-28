@@ -29,7 +29,7 @@ public class Exec {
 		/**
 		 * Executes the command with args in a new process
 		 */
-		ProcessBuilder pb = new ProcessBuilder(args);
+		final ProcessBuilder pb = new ProcessBuilder(args);
 		pb.redirectErrorStream(true);
 
 		final Process p = pb.start();
@@ -58,7 +58,7 @@ public class Exec {
 	 */
 	public static Process startProcess(final List<String> args)
 			throws IOException {
-		ProcessBuilder pb = new ProcessBuilder(args);
+		final ProcessBuilder pb = new ProcessBuilder(args);
 		pb.redirectErrorStream(true);
 
 		return pb.start();
@@ -75,8 +75,8 @@ public class Exec {
 	 *            the stringBuilder that will store the output of the process p
 	 * @throws IOException
 	 */
-	public static void execProgram(Process p, final StringBuilder outputBuilder)
-			throws IOException {
+	public static void execProgram(final Process p,
+			final StringBuilder outputBuilder) throws IOException {
 		String ln;
 
 		final BufferedReader br = new BufferedReader(new InputStreamReader(

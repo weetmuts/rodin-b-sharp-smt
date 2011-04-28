@@ -27,7 +27,6 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,48 +80,42 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		}
 	}
 
-	@AfterClass
-	public static void doSomething() {
-		String x = "casa";
-		System.out.println(x.toString());
-	}
-
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
-		List<LemmaData[]> totalDocData = new ArrayList<LemmaData[]>();
-		File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
-		File dir = new File(XMLFolder);
+		final List<LemmaData[]> totalDocData = new ArrayList<LemmaData[]>();
+		final File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
+		final File dir = new File(XMLFolder);
 		if (dir.isDirectory()) {
-			File[] files = dir.listFiles(new FilenameFilter() {
+			final File[] files = dir.listFiles(new FilenameFilter() {
 				@Override
-				public boolean accept(File file, String name) {
-					return (name.endsWith(".xml"));
+				public boolean accept(final File file, final String name) {
+					return name.endsWith(".xml");
 				}
 			});
-			for (int i = 0; i < files.length; i++) {
+			for (final File file : files) {
 				URL XMLFile = null;
 				try {
-					XMLFile = LemmaParser.setDoctype(files[i].toURI().toURL(),
+					XMLFile = LemmaParser.setDoctype(file.toURI().toURL(),
 							DTDFile.toURI().toURL());
-				} catch (MalformedURLException e) {
+				} catch (final MalformedURLException e) {
 					e.printStackTrace();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 				Document document = null;
 				try {
 					document = LemmaParser.load(XMLFile, DTDFile.toURI()
 							.toURL());
-				} catch (MalformedURLException e) {
+				} catch (final MalformedURLException e) {
 					e.printStackTrace();
-				} catch (SAXException e) {
+				} catch (final SAXException e) {
 					e.printStackTrace();
 				}
-				String output = files[i].getName();
+				String output = file.getName();
 				output = output.substring(0, output.indexOf("."));
-				File outputFolder = new File(new File(SMTFolder), output);
+				final File outputFolder = new File(new File(SMTFolder), output);
 				outputFolder.mkdir();
-				List<LemmaData[]> docDatas = parse(document);
+				final List<LemmaData[]> docDatas = parse(document);
 
 				totalDocData.addAll(docDatas);
 			}
@@ -136,7 +129,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * @param data
 	 *            the parameter of one test.
 	 */
-	public XMLtoSMTTests(LemmaData data) {
+	public XMLtoSMTTests(final LemmaData data) {
 		this.data = data;
 		System.out.println("Loop: " + round++ / 2);
 	}
@@ -172,7 +165,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	private void doTestWithVeriT(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
+		final SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
 				parsedHypothesis, parsedGoal);
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
@@ -182,11 +175,11 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (TranslationException t) {
+		} catch (final TranslationException t) {
 			fail(t.getMessage());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
-		} catch (IllegalArgumentException iae) {
+		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
 	}
@@ -194,7 +187,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	private void doTestWithPP(final String lemmaName,
 			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
+		final SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
 				parsedHypothesis, parsedGoal);
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
@@ -204,11 +197,11 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (TranslationException t) {
+		} catch (final TranslationException t) {
 			fail(t.getMessage());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
-		} catch (IllegalArgumentException iae) {
+		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
 	}
@@ -231,7 +224,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
-		for (Predicate predicate : parsedHypothesis) {
+		for (final Predicate predicate : parsedHypothesis) {
 			assertTypeChecked(predicate);
 		}
 
@@ -264,7 +257,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			final ITypeEnvironment te, final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
-		for (String hyp : inputHyps) {
+		for (final String hyp : inputHyps) {
 			hypotheses.add(parse(hyp, te));
 		}
 
@@ -278,7 +271,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			final ITypeEnvironment te, final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
-		for (String hyp : inputHyps) {
+		for (final String hyp : inputHyps) {
 			hypotheses.add(parse(hyp, te));
 		}
 
@@ -303,28 +296,31 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * @return the parsed content
 	 */
 	public static List<LemmaData[]> parse(final Document document) {
-		NodeList nodelist = document.getElementsByTagName("lemma");
-		ArrayList<LemmaData[]> docDatas = new ArrayList<LemmaData[]>();
+		final NodeList nodelist = document.getElementsByTagName("lemma");
+		final ArrayList<LemmaData[]> docDatas = new ArrayList<LemmaData[]>();
 
 		for (int i = 0; i < nodelist.getLength(); i++) {
-			Element node = (Element) nodelist.item(i);
+			final Element node = (Element) nodelist.item(i);
 			Element element;
 			// Title
 			NodeList elements = node.getElementsByTagName("title");
 			String title = null;
-			if (elements.getLength() > 0)
+			if (elements.getLength() > 0) {
 				title = patch(((Element) elements.item(0)).getTextContent());
+			}
 
 			// Origin
 			elements = node.getElementsByTagName("origin");
 			String origin = null;
-			if (elements.getLength() > 0)
+			if (elements.getLength() > 0) {
 				origin = patch(((Element) elements.item(0)).getTextContent());
+			}
 
 			elements = node.getElementsByTagName("comment");
 			String comment = null;
-			if (elements.getLength() > 0)
+			if (elements.getLength() > 0) {
 				comment = ((Element) elements.item(0)).getTextContent();
+			}
 
 			// Goal
 			elements = node.getElementsByTagName("goal");
@@ -334,14 +330,15 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				goal = element.getTextContent();
 			}
 
-			ArrayList<String> theories = new ArrayList<String>();
+			final ArrayList<String> theories = new ArrayList<String>();
 			elements = node.getElementsByTagName("theories");
 			if (elements.getLength() > 0) {
 				elements = ((Element) elements.item(0))
 						.getElementsByTagName("theory");
-				for (int j = 0; j < elements.getLength(); j++)
+				for (int j = 0; j < elements.getLength(); j++) {
 					theories.add(((Element) elements.item(j))
 							.getAttribute("name"));
+				}
 			}
 
 			// Type environment
@@ -360,9 +357,9 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				}
 			}
 
-			ITypeEnvironment te = mTypeEnvironment(teVar);
+			final ITypeEnvironment te = mTypeEnvironment(teVar);
 
-			List<String> predicates = new ArrayList<String>();
+			final List<String> predicates = new ArrayList<String>();
 
 			// Hypotheses
 			elements = node.getElementsByTagName("hypothesis");
@@ -370,8 +367,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				element = (Element) elements.item(j);
 				predicates.add(element.getTextContent());
 			}
-			LemmaData[] data = { new LemmaData(title, predicates, goal, te,
-					origin, comment, theories) };
+			final LemmaData[] data = { new LemmaData(title, predicates, goal,
+					te, origin, comment, theories) };
 
 			docDatas.add(data);
 		}

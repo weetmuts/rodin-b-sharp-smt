@@ -39,7 +39,7 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -56,6 +56,6 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 
 	@Override
 	public int compareTo(final SMTVarSymbol symbol) {
-		return (name.compareTo(symbol.getName()));
+		return name.compareTo(symbol.getName());
 	}
 }

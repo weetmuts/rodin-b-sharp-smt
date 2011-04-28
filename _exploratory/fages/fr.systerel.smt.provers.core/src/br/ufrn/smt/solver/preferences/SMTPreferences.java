@@ -19,8 +19,8 @@ import java.util.List;
  */
 public class SMTPreferences {
 
-	public SMTPreferences(SolverDetail solver, boolean usingPrepro,
-			String preproPath) {
+	public SMTPreferences(final SolverDetail solver, final boolean usingPrepro,
+			final String preproPath) {
 		super();
 		this.solver = solver;
 		this.usingPrepro = usingPrepro;
@@ -38,12 +38,12 @@ public class SMTPreferences {
 	/**
 	 * The preprocessing boolean option
 	 */
-	private boolean usingPrepro;
+	private final boolean usingPrepro;
 
 	/**
 	 * The preprocessing Solver Path
 	 */
-	private String preproPath;
+	private final String preproPath;
 
 	public SolverDetail getSolver() {
 		return solver;
@@ -66,11 +66,11 @@ public class SMTPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	public static List<SolverDetail> CreateModel(String preferences) {
-		List<SolverDetail> model = new ArrayList<SolverDetail>();
+	public static List<SolverDetail> CreateModel(final String preferences) {
+		final List<SolverDetail> model = new ArrayList<SolverDetail>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
-		for (String row : rows) {
+		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
 				model.add(new SolverDetail(columns[0], columns[1], columns[2],
@@ -83,7 +83,7 @@ public class SMTPreferences {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -111,9 +111,10 @@ public class SMTPreferences {
 	 * @param prepropath
 	 *            The path of the veriT solver for pre-processing
 	 */
-	public SMTPreferences(String solverSettingsPreferences,
-			int selectedSolverIndex, boolean usingprepro, String prepropath) {
-		List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
+	public SMTPreferences(final String solverSettingsPreferences,
+			final int selectedSolverIndex, final boolean usingprepro,
+			final String prepropath) {
+		final List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
 		if (selectedSolverIndex == -1) {
 			solver = null;
 		} else if (selectedSolverIndex < solvers.size()) {
@@ -122,8 +123,8 @@ public class SMTPreferences {
 			solver = null;
 		}
 
-		this.usingPrepro = usingprepro;
-		this.preproPath = prepropath;
+		usingPrepro = usingprepro;
+		preproPath = prepropath;
 	}
 
 	@Override
@@ -131,33 +132,41 @@ public class SMTPreferences {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((preproPath == null) ? 0 : preproPath.hashCode());
-		result = prime * result + ((solver == null) ? 0 : solver.hashCode());
+				+ (preproPath == null ? 0 : preproPath.hashCode());
+		result = prime * result + (solver == null ? 0 : solver.hashCode());
 		result = prime * result + (usingPrepro ? 1231 : 1237);
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		SMTPreferences other = (SMTPreferences) obj;
+		}
+		final SMTPreferences other = (SMTPreferences) obj;
 		if (preproPath == null) {
-			if (other.preproPath != null)
+			if (other.preproPath != null) {
 				return false;
-		} else if (!preproPath.equals(other.preproPath))
+			}
+		} else if (!preproPath.equals(other.preproPath)) {
 			return false;
+		}
 		if (solver == null) {
-			if (other.solver != null)
+			if (other.solver != null) {
 				return false;
-		} else if (!solver.equals(other.solver))
+			}
+		} else if (!solver.equals(other.solver)) {
 			return false;
-		if (usingPrepro != other.usingPrepro)
+		}
+		if (usingPrepro != other.usingPrepro) {
 			return false;
+		}
 		return true;
 	}
 

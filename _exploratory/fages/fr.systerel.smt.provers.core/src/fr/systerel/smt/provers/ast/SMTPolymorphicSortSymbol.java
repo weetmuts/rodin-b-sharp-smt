@@ -27,7 +27,7 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 	}
 
 	@Override
-	public boolean isCompatibleWith(SMTSortSymbol other) {
+	public boolean isCompatibleWith(final SMTSortSymbol other) {
 		return true;
 	}
 

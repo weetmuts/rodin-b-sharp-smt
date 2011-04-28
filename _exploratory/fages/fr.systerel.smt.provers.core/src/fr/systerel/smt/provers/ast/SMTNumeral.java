@@ -30,7 +30,7 @@ public final class SMTNumeral extends SMTTerm {
 	 * @param value
 	 *            the value
 	 */
-	SMTNumeral(BigInteger value) {
+	SMTNumeral(final BigInteger value) {
 		this.value = value;
 	}
 
@@ -40,7 +40,7 @@ public final class SMTNumeral extends SMTTerm {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
 			builder.append(SMTTheory.Ints.getInstance().getUMinus().getName());

@@ -86,16 +86,16 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
 
 	@Override
-	public void toString(StringBuilder buffer) {
+	public void toString(final StringBuilder buffer) {
 		buffer.append(OPAR);
 		buffer.append(name);
-		for (SMTSortSymbol sort : argSorts) {
+		for (final SMTSortSymbol sort : argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}
@@ -138,28 +138,35 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		result = prime * result + Arrays.hashCode(argSorts);
 		result = prime * result + (associative ? 1231 : 1237);
 		result = prime * result
-				+ ((resultSort == null) ? 0 : resultSort.hashCode());
+				+ (resultSort == null ? 0 : resultSort.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		SMTFunctionSymbol other = (SMTFunctionSymbol) obj;
-		if (this.compareTo((SMTFunctionSymbol) obj) != 0)
+		}
+		final SMTFunctionSymbol other = (SMTFunctionSymbol) obj;
+		if (compareTo((SMTFunctionSymbol) obj) != 0) {
 			return false;
-		if (associative != other.associative)
+		}
+		if (associative != other.associative) {
 			return false;
+		}
 		if (resultSort == null) {
-			if (other.resultSort != null)
+			if (other.resultSort != null) {
 				return false;
-		} else if (!resultSort.equals(other.resultSort))
+			}
+		} else if (!resultSort.equals(other.resultSort)) {
 			return false;
+		}
 		return true;
 	}
 

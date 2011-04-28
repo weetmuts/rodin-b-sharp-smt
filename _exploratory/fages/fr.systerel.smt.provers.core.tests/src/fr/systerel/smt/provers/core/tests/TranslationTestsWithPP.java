@@ -86,10 +86,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final Predicate ppPred,
 			final String expectedSMTNode, final String failMessage,
-			String solver) {
+			final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
 		SMTThroughPP.translate(defaultLogic, ppPred, solver).toString(
-				actualSMTNode,false);
+				actualSMTNode, false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));

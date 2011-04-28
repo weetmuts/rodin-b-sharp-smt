@@ -28,7 +28,7 @@ class SMTAtom extends SMTFormula {
 	 */
 	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
 		verifyPredicateRank(symbol, terms);
-		this.predicate = symbol;
+		predicate = symbol;
 		this.terms = terms.clone();
 	}
 
@@ -58,14 +58,14 @@ class SMTAtom extends SMTFormula {
 	 */
 	private static void verifyPredicateRank(final SMTPredicateSymbol symbol,
 			final SMTTerm terms[]) {
-		SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
+		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
 
 		if (symbol.acceptsAnInfiniteNumberOfArgs()) {
-			SMTSortSymbol expectedSort = expectedSortArgs[0];
+			final SMTSortSymbol expectedSort = expectedSortArgs[0];
 			if (expectedSort instanceof SMTPolymorphicSortSymbol) {
 				return;
 			} else {
-				for (SMTTerm term : terms) {
+				for (final SMTTerm term : terms) {
 					if (!term.getSort().equals(expectedSort)) {
 						throw incompatiblePredicateRankException(symbol, terms);
 					}
@@ -78,8 +78,8 @@ class SMTAtom extends SMTFormula {
 
 			// Check if the sort symbols are the same
 			for (int i = 0; i < terms.length; i++) {
-				SMTSortSymbol argSort = terms[i].getSort();
-				SMTSortSymbol expectedSortArg = expectedSortArgs[i];
+				final SMTSortSymbol argSort = terms[i].getSort();
+				final SMTSortSymbol expectedSortArg = expectedSortArgs[i];
 
 				// If one of the expected sorts are polymorphic, ignore it
 				if (expectedSortArg instanceof SMTPolymorphicSortSymbol) {
@@ -118,13 +118,13 @@ class SMTAtom extends SMTFormula {
 		sb.append(expectedSymbol);
 		sb.append(": ");
 		String sep = "";
-		for (SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
+		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
 		sb.append(" does not match: ");
-		for (SMTTerm arg : args) {
+		for (final SMTTerm arg : args) {
 			sb.append(sep);
 			sep = " ";
 			arg.getSort().toString(sb);

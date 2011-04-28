@@ -51,8 +51,9 @@ public class ExternalSmt extends XProverReasoner {
 	}
 
 	@Override
-	public XProverCall newProverCall(IReasonerInput input,
-			Iterable<Predicate> hypotheses, Predicate goal, IProofMonitor pm) {
+	public XProverCall newProverCall(final IReasonerInput input,
+			final Iterable<Predicate> hypotheses, final Predicate goal,
+			final IProofMonitor pm) {
 
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
@@ -60,14 +61,15 @@ public class ExternalSmt extends XProverReasoner {
 		/**
 		 * Get back preferences from UI
 		 */
-		String string1 = preferencesService.getString(PREFS_ID,
+		final String string1 = preferencesService.getString(PREFS_ID,
 				SOLVERPREFERENCES, null, null);
-		int int2 = preferencesService.getInt(PREFS_ID, SOLVERINDEX, -1, null);
-		boolean bool3 = preferencesService.getBoolean(PREFS_ID, USINGPREPRO,
-				false, null);
-		String string4 = preferencesService.getString(PREFS_ID, PREPROPATH,
-				null, null);
-		SMTPreferences smtPreferences = new SMTPreferences(string1, int2,
+		final int int2 = preferencesService.getInt(PREFS_ID, SOLVERINDEX, -1,
+				null);
+		final boolean bool3 = preferencesService.getBoolean(PREFS_ID,
+				USINGPREPRO, false, null);
+		final String string4 = preferencesService.getString(PREFS_ID,
+				PREPROPATH, null, null);
+		final SMTPreferences smtPreferences = new SMTPreferences(string1, int2,
 				bool3, string4);
 
 		return new SmtProverCall(hypotheses, goal, pm, smtPreferences,

@@ -19,7 +19,7 @@ public class PreProcessingException extends RuntimeException {
 		super(Messages.PreProcessingException_error);
 	}
 
-	public PreProcessingException(String cause) {
+	public PreProcessingException(final String cause) {
 		super(cause);
 	}
 

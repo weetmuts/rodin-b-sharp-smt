@@ -44,7 +44,7 @@ public abstract class TranslatorV1_2 extends Translator {
 
 	String solver;
 
-	public TranslatorV1_2(String solver) {
+	public TranslatorV1_2(final String solver) {
 		this.solver = solver;
 	}
 
@@ -65,17 +65,18 @@ public abstract class TranslatorV1_2 extends Translator {
 	 */
 	private static void extractPredicateTypenv(
 			final ITypeEnvironment typeEnvironment, final Predicate predicate) {
-		for (FreeIdentifier id : predicate.getFreeIdentifiers()) {
+		for (final FreeIdentifier id : predicate.getFreeIdentifiers()) {
 			typeEnvironment.add(id);
 		}
-		for (GivenType type : predicate.getGivenTypes()) {
+		for (final GivenType type : predicate.getGivenTypes()) {
 			typeEnvironment.addGivenSet(type.getName());
 		}
 	}
 
 	class BidTypeInspector extends DefaultInspector<Type> {
 		@Override
-		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
+		public void inspect(final BoundIdentDecl decl,
+				final IAccumulator<Type> accumulator) {
 			accumulator.add(decl.getType());
 		}
 	}
@@ -84,10 +85,11 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * This method takes a copy of the BoundIdentDecl types in the hypotheses
 	 * and goal
 	 */
-	List<Type> getBoundIDentDeclTypes(List<Predicate> hypotheses, Predicate goal) {
+	List<Type> getBoundIDentDeclTypes(final List<Predicate> hypotheses,
+			final Predicate goal) {
 		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new BidTypeInspector();
 		final List<Type> typesFound = new ArrayList<Type>();
-		for (Predicate p : hypotheses) {
+		for (final Predicate p : hypotheses) {
 			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
 		}
 		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
@@ -114,7 +116,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of an Event-B formula that is a term in SMT-LIB V1.2
 	 * language.
 	 */
-	protected SMTTerm smtTerm(Formula<?> formula) {
+	protected SMTTerm smtTerm(final Formula<?> formula) {
 		formula.accept(this);
 		if (smtNode instanceof SMTTerm) {
 			return (SMTTerm) smtNode;
@@ -128,7 +130,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of an Event-B formula that is a formula in SMT-LIB V1.2
 	 * language.
 	 */
-	protected SMTFormula smtFormula(Formula<?> formula) {
+	protected SMTFormula smtFormula(final Formula<?> formula) {
 		formula.accept(this);
 		if (smtNode instanceof SMTFormula) {
 			return (SMTFormula) smtNode;
@@ -142,7 +144,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of two Event-B formulas (left and right children of a
 	 * node) which are terms in SMT-LIB V1.2 language.
 	 */
-	protected SMTTerm[] smtTerms(Formula<?> left, Formula<?> right) {
+	protected SMTTerm[] smtTerms(final Formula<?> left, final Formula<?> right) {
 		return new SMTTerm[] { smtTerm(left), smtTerm(right) };
 	}
 
@@ -150,7 +152,8 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of two Event-B formulas (left and right children of a
 	 * node) which are formulas in SMT-LIB V1.2 language.
 	 */
-	protected SMTFormula[] smtFormulas(Formula<?> left, Formula<?> right) {
+	protected SMTFormula[] smtFormulas(final Formula<?> left,
+			final Formula<?> right) {
 		return new SMTFormula[] { smtFormula(left), smtFormula(right) };
 	}
 
@@ -158,7 +161,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of a set of Event-B formulas which are terms in SMT-LIB
 	 * V1.2 language.
 	 */
-	protected SMTTerm[] smtTerms(Formula<?>... formulas) {
+	protected SMTTerm[] smtTerms(final Formula<?>... formulas) {
 		final int length = formulas.length;
 		final SMTTerm[] smtTerms = new SMTTerm[length];
 		for (int i = 0; i < length; i++) {
@@ -171,7 +174,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * SMT translation of a set of Event-B formulas which are formulas in
 	 * SMT-LIB V1.2 language.
 	 */
-	protected SMTFormula[] smtFormulas(Formula<?>... formulas) {
+	protected SMTFormula[] smtFormulas(final Formula<?>... formulas) {
 		final int length = formulas.length;
 		final SMTFormula[] smtFormulas = new SMTFormula[length];
 		for (int i = 0; i < length; i++) {
@@ -184,7 +187,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * This method translates an Event-B associative predicate into an SMT node.
 	 */
 	@Override
-	public void visitAssociativePredicate(AssociativePredicate predicate) {
+	public void visitAssociativePredicate(final AssociativePredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getChildren());
 		switch (predicate.getTag()) {
 		case Formula.LAND:
@@ -202,7 +205,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * This method translates an Event-B binary predicate into an SMT node
 	 */
 	@Override
-	public void visitBinaryPredicate(BinaryPredicate predicate) {
+	public void visitBinaryPredicate(final BinaryPredicate predicate) {
 		final SMTFormula[] children = smtFormulas(predicate.getLeft(),
 				predicate.getRight());
 		switch (predicate.getTag()) {
@@ -222,7 +225,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * This method translates an Event-B unary predicate into an SMT node.
 	 */
 	@Override
-	public void visitUnaryPredicate(UnaryPredicate predicate) {
+	public void visitUnaryPredicate(final UnaryPredicate predicate) {
 		final SMTFormula[] children = new SMTFormula[] { smtFormula(predicate
 				.getChild()) };
 		switch (predicate.getTag()) {

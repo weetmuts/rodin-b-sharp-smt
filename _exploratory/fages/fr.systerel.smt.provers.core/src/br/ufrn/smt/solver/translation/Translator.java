@@ -35,7 +35,8 @@ public abstract class Translator implements ISimpleVisitor {
 
 	class SMTBoundIdentDeclTypeInspector extends DefaultInspector<Type> {
 		@Override
-		public void inspect(BoundIdentDecl decl, IAccumulator<Type> accumulator) {
+		public void inspect(final BoundIdentDecl decl,
+				final IAccumulator<Type> accumulator) {
 			accumulator.add(decl.getType());
 		}
 	}
@@ -59,10 +60,10 @@ public abstract class Translator implements ISimpleVisitor {
 	protected SMTNode<?> smtNode;
 
 	protected Translator() {
-		this.sf = SMTFactory.getDefault();
+		sf = SMTFactory.getDefault();
 	}
 
-	protected Translator(SMTFactory sf) {
+	protected Translator(final SMTFactory sf) {
 		this.sf = sf;
 	}
 

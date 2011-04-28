@@ -31,7 +31,7 @@ public class SMTVar extends SMTTerm {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		builder.append(SMTFactory.QVAR);
 		builder.append(symbol.getName());
 	}

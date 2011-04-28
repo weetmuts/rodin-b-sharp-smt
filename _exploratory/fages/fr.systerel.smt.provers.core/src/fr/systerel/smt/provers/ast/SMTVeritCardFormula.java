@@ -17,10 +17,10 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 public class SMTVeritCardFormula extends SMTFormula {
 
-	private SMTMacroSymbol cardSymbol;
-	private SMTFunctionSymbol kArgument;
-	private SMTFunctionSymbol fArgument;
-	private SMTTerm[] terms;
+	private final SMTMacroSymbol cardSymbol;
+	private final SMTFunctionSymbol kArgument;
+	private final SMTFunctionSymbol fArgument;
+	private final SMTTerm[] terms;
 
 	/**
 	 * TODO Comment this
@@ -30,17 +30,17 @@ public class SMTVeritCardFormula extends SMTFormula {
 	 * @param kVarSymbol
 	 * @param terms
 	 */
-	public SMTVeritCardFormula(SMTMacroSymbol cardSymbol,
-			SMTFunctionSymbol fVarSymbol, SMTFunctionSymbol kVarSymbol,
-			SMTTerm[] terms) {
+	public SMTVeritCardFormula(final SMTMacroSymbol cardSymbol,
+			final SMTFunctionSymbol fVarSymbol,
+			final SMTFunctionSymbol kVarSymbol, final SMTTerm[] terms) {
 		this.cardSymbol = cardSymbol;
 		this.terms = terms;
-		this.kArgument = kVarSymbol;
-		this.fArgument = fVarSymbol;
+		kArgument = kVarSymbol;
+		fArgument = fVarSymbol;
 	}
 
 	@Override
-	public void toString(StringBuilder builder, boolean printPoint) {
+	public void toString(final StringBuilder builder, final boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(cardSymbol.getName());
 		for (final SMTTerm term : terms) {

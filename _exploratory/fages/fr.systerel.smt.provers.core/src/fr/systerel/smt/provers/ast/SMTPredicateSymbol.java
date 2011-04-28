@@ -48,7 +48,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined,
-			boolean acceptsAnInfiniteNumberOfArgs) {
+			final boolean acceptsAnInfiniteNumberOfArgs) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		this.acceptsAnInfiniteNumberOfArgs = acceptsAnInfiniteNumberOfArgs;
@@ -59,12 +59,12 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	}
 
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
-		return Arrays.equals(this.argSorts, argSorts2);
+		return Arrays.equals(argSorts, argSorts2);
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -73,7 +73,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	public void toString(final StringBuilder buffer) {
 		buffer.append(OPAR);
 		buffer.append(name);
-		for (SMTSortSymbol sort : argSorts) {
+		for (final SMTSortSymbol sort : argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
 		}
@@ -104,7 +104,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	}
 
 	public boolean equals(final SMTPredicateSymbol symbol) {
-		if (this.compareTo(symbol) == 0) {
+		if (compareTo(symbol) == 0) {
 			return true;
 		}
 		return false;
@@ -129,16 +129,20 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		SMTPredicateSymbol other = (SMTPredicateSymbol) obj;
-		if (!Arrays.equals(argSorts, other.argSorts))
+		}
+		final SMTPredicateSymbol other = (SMTPredicateSymbol) obj;
+		if (!Arrays.equals(argSorts, other.argSorts)) {
 			return false;
+		}
 		return true;
 	}
 

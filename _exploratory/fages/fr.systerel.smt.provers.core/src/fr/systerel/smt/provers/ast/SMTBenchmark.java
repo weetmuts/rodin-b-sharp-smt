@@ -65,7 +65,7 @@ public class SMTBenchmark {
 	 * @param sb
 	 *            the builder that will receive the representation
 	 */
-	private void formulaSection(StringBuilder sb) {
+	private void formulaSection(final StringBuilder sb) {
 		sb.append(" :formula (not ");
 		goal.toString(sb, false);
 		sb.append(")\n");
@@ -86,7 +86,7 @@ public class SMTBenchmark {
 	 */
 	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
 			final List<SMTFormula> assumptions, final SMTFormula goal) {
-		this.name = lemmaName;
+		name = lemmaName;
 		this.signature = signature;
 		this.assumptions = assumptions;
 		this.goal = goal;

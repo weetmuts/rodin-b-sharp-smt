@@ -17,16 +17,17 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 public class SMTVeritFiniteFormula extends SMTFormula {
 
-	private SMTMacroSymbol finitePred;
-	private SMTPredicateSymbol pArgument;
-	private SMTFunctionSymbol kArgument;
-	private SMTFunctionSymbol fArgument;
-	private SMTTerm[] terms;
+	private final SMTMacroSymbol finitePred;
+	private final SMTPredicateSymbol pArgument;
+	private final SMTFunctionSymbol kArgument;
+	private final SMTFunctionSymbol fArgument;
+	private final SMTTerm[] terms;
 
-	public SMTVeritFiniteFormula(SMTMacroSymbol finitePredSymbol,
-			SMTPredicateSymbol pArgument, SMTFunctionSymbol fArgument,
-			SMTFunctionSymbol kArgument, SMTTerm[] terms) {
-		this.finitePred = finitePredSymbol;
+	public SMTVeritFiniteFormula(final SMTMacroSymbol finitePredSymbol,
+			final SMTPredicateSymbol pArgument,
+			final SMTFunctionSymbol fArgument,
+			final SMTFunctionSymbol kArgument, final SMTTerm[] terms) {
+		finitePred = finitePredSymbol;
 		this.terms = terms;
 		this.pArgument = pArgument;
 		this.kArgument = kArgument;

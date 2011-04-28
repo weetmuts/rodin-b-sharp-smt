@@ -20,9 +20,9 @@ public class SolverDetail {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((args == null) ? 0 : args.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + (args == null ? 0 : args.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (path == null ? 0 : path.hashCode());
 		result = prime * result + (smtV1_2 ? 1231 : 1237);
 		result = prime * result + (smtV2_0 ? 1231 : 1237);
 		return result;
@@ -30,7 +30,7 @@ public class SolverDetail {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -50,33 +50,44 @@ public class SolverDetail {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		SolverDetail other = (SolverDetail) obj;
+		}
+		final SolverDetail other = (SolverDetail) obj;
 		if (args == null) {
-			if (other.args != null)
+			if (other.args != null) {
 				return false;
-		} else if (!args.equals(other.args))
+			}
+		} else if (!args.equals(other.args)) {
 			return false;
+		}
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (path == null) {
-			if (other.path != null)
+			if (other.path != null) {
 				return false;
-		} else if (!path.equals(other.path))
+			}
+		} else if (!path.equals(other.path)) {
 			return false;
-		if (smtV1_2 != other.smtV1_2)
+		}
+		if (smtV1_2 != other.smtV1_2) {
 			return false;
-		if (smtV2_0 != other.smtV2_0)
+		}
+		if (smtV2_0 != other.smtV2_0) {
 			return false;
+		}
 		return true;
 	}
 
@@ -110,23 +121,23 @@ public class SolverDetail {
 		return smtV2_0;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = path;
 	}
 
-	public void setArgs(String args) {
+	public void setArgs(final String args) {
 		this.args = args;
 	}
 
-	public void setSmtV1_2(boolean smtV1_2) {
+	public void setSmtV1_2(final boolean smtV1_2) {
 		this.smtV1_2 = smtV1_2;
 	}
 
-	public void setSmtV2_0(boolean smtV2_0) {
+	public void setSmtV2_0(final boolean smtV2_0) {
 		this.smtV2_0 = smtV2_0;
 	}
 
@@ -144,8 +155,8 @@ public class SolverDetail {
 	 * @param smtV2_0
 	 *            determines if the solver will be used for SMT 2.0
 	 */
-	public SolverDetail(String id, String path, String args, boolean smtV1_2,
-			boolean smtV2_0) {
+	public SolverDetail(final String id, final String path, final String args,
+			final boolean smtV1_2, final boolean smtV2_0) {
 		this.id = id;
 		this.path = path;
 		this.args = args;

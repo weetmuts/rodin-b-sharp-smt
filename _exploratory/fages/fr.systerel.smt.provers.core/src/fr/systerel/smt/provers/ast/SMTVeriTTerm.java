@@ -14,16 +14,16 @@ import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 
 public class SMTVeriTTerm extends SMTTerm {
 
-	private SMTPredicateSymbol symbol;
+	private final SMTPredicateSymbol symbol;
 
-	SMTVeriTTerm(SMTPredicateSymbol symbol) {
+	SMTVeriTTerm(final SMTPredicateSymbol symbol) {
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
-		this.sort = Booleans.getInstance().getBooleanSort();
+		sort = Booleans.getInstance().getBooleanSort();
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		builder.append(symbol.name);
 	}
 

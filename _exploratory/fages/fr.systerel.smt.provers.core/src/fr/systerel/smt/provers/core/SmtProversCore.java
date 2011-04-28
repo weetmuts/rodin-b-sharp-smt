@@ -43,12 +43,13 @@ public class SmtProversCore extends Plugin {
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		enableAssertions();
-		if (isDebugging())
+		if (isDebugging()) {
 			configureDebugOptions();
+		}
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class SmtProversCore extends Plugin {
 		Translator.DEBUG = parseOption(DEBUG_TRANSLATOR);
 	}
 
-	private static boolean parseOption(String key) {
+	private static boolean parseOption(final String key) {
 		final String option = Platform.getDebugOption(key);
 		return "true".equalsIgnoreCase(option); //$NON-NLS-1$
 	}
@@ -71,7 +72,7 @@ public class SmtProversCore extends Plugin {
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}

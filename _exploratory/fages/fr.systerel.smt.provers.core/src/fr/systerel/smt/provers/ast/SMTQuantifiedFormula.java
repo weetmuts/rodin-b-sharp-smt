@@ -32,7 +32,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(StringBuilder builder, boolean printPoint) {
+	public void toString(final StringBuilder builder, final boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(quantifier);
 		for (final SMTVarSymbol qVar : qVars) {

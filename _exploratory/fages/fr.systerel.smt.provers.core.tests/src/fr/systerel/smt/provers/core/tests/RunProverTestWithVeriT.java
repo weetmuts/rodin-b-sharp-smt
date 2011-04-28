@@ -66,7 +66,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			final boolean expectedSolverResult) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
-		for (String hyp : inputHyps) {
+		for (final String hyp : inputHyps) {
 			hypotheses.add(parse(hyp, te));
 		}
 
@@ -92,7 +92,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			final boolean expectedSolverResult) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
-		for (Predicate predicate : parsedHypothesis) {
+		for (final Predicate predicate : parsedHypothesis) {
 			assertTypeChecked(predicate);
 		}
 
@@ -113,11 +113,11 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (TranslationException t) {
+		} catch (final TranslationException t) {
 			fail(t.getMessage());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
-		} catch (IllegalArgumentException iae) {
+		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
 	}
@@ -726,6 +726,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15RelationOverridingCompANdComposition() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
@@ -738,6 +739,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15BackwardComposition() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
@@ -834,6 +836,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * Check if this is a right way to translate
 	 */
 	@Test
+	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not recognized by the solvers")
 	public void testKSucc() {
 		setPreferencesForZ3Test();
 
@@ -844,6 +847,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not recognized by the solvers")
 	public void testPredSuccMacro() {
 		setPreferencesForZ3Test();
 
@@ -907,6 +911,46 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Type ℤ×ℙ(ℤ×ℙ(ℤ)): Sets of sets are not supported yet")
+	public void testch910_ring_6() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("itv ∈ P → (P → ℙ(P))");
+		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
+	}
+
+	@Test
+	@Ignore("Sort BOOL is not implemented yet")
+	public void testLinearSort29() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
+				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("r ∈ 1 ‥ m → BOOL");
+		hyps.add("x ∈ 1 ‥ m");
+		hyps.add("j+1 ∈ dom(f)");
+		doTest("linear_sort_29", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Sort 't and (Pair S S) mismatch.")
+	public void testDynamicStableLSR_081014_20() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "P",
+				"ℙ(S × S)", "Q", "ℙ(S × S)", "k", "S × S", "m", "S", "n", "S");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("¬ k = m ↦ n");
+		hyps.add("k ∈ P ∪ {m ↦ n} ∪ (Q ∖ {m ↦ n})");
+		doTest("dynamicStableLSR_081014_20", hyps, "k ∈ P ∪ Q", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testAllBehaviorOfAllMacrosTogether() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "p", "S",

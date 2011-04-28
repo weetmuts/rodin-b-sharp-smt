@@ -39,7 +39,8 @@ public final class SMTITETerm extends SMTTerm {
 	 * @param fTerm
 	 *            the term to be used if the formula is not satisfiable
 	 */
-	SMTITETerm(SMTFormula formula, SMTTerm tTerm, SMTTerm fTerm) {
+	SMTITETerm(final SMTFormula formula, final SMTTerm tTerm,
+			final SMTTerm fTerm) {
 		this.formula = formula;
 		this.tTerm = tTerm;
 		this.fTerm = fTerm;
@@ -51,7 +52,7 @@ public final class SMTITETerm extends SMTTerm {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		builder.append(OPAR);
 		builder.append(ITE_TERM);
 		builder.append(SPACE);

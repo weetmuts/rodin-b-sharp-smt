@@ -53,23 +53,23 @@ public class SmtProverCall extends XProverCall {
 
 	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
 
-	public static void deleteFile(File file) {
+	public static void deleteFile(final File file) {
 		if (file.isFile()) {
 			file.delete();
 		} else {
-			File[] childFiles = file.listFiles();
-			for (File childFile : childFiles) {
+			final File[] childFiles = file.listFiles();
+			for (final File childFile : childFiles) {
 				deleteFile(childFile);
 			}
 			file.delete();
 		}
 	}
 
-	public static void cleanSMTFolder(File file) {
+	public static void cleanSMTFolder(final File file) {
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				File[] children = file.listFiles();
-				for (File child : children) {
+				final File[] children = file.listFiles();
+				for (final File child : children) {
 					deleteFile(child);
 				}
 			}
@@ -113,26 +113,28 @@ public class SmtProverCall extends XProverCall {
 				+ SMT_LIB_FILE_EXTENSION;
 	}
 
-	public static String mkTranslationDir(boolean cleanSmtFolder) {
+	public static String mkTranslationDir(final boolean cleanSmtFolder) {
 		final String returnString;
 		File f = new File(TRANSLATION_PATH);
 		if (!f.mkdir()) {
 			if (f.isDirectory()) {
 				returnString = f.getPath();
-			} else
+			} else {
 				for (int i = 0;; i++) {
 					f = new File(TRANSLATION_PATH + i);
 					if (!f.mkdir()) {
 						if (f.isDirectory()) {
 							returnString = f.getPath();
 							break;
-						} else
+						} else {
 							continue;
+						}
 					} else {
 						returnString = f.getPath();
 						break;
 					}
 				}
+			}
 		} else {
 			returnString = f.getPath();
 		}
@@ -142,7 +144,7 @@ public class SmtProverCall extends XProverCall {
 		return returnString;
 	}
 
-	private static PrintWriter openSMTFileWriter(File smtFile,
+	private static PrintWriter openSMTFileWriter(final File smtFile,
 			final String fileName) {
 		try {
 			final PrintWriter smtFileWriter = new PrintWriter(
@@ -150,18 +152,18 @@ public class SmtProverCall extends XProverCall {
 
 			return smtFileWriter;
 
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			ioe.printStackTrace();
 			ioe.getMessage();
 			return null;
-		} catch (SecurityException se) {
+		} catch (final SecurityException se) {
 			se.printStackTrace();
 			se.getMessage();
 			return null;
 		}
 	}
 
-	private static void closeSMTFileWriter(PrintWriter smtFileWriter) {
+	private static void closeSMTFileWriter(final PrintWriter smtFileWriter) {
 		smtFileWriter.close();
 	}
 
@@ -176,12 +178,13 @@ public class SmtProverCall extends XProverCall {
 	 * @param pm
 	 *            proof monitor used for cancellation
 	 */
-	public SmtProverCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, SMTPreferences preferences, String lemmaName) {
+	public SmtProverCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm);
-		this.smtUiPreferences = preferences;
+		smtUiPreferences = preferences;
 		this.lemmaName = lemmaName;
-		this.proverName = preferences.getSolver().getId();
+		proverName = preferences.getSolver().getId();
 	}
 
 	/**
@@ -195,14 +198,15 @@ public class SmtProverCall extends XProverCall {
 	 * @param pm
 	 *            proof monitor used for cancellation
 	 */
-	public SmtProverCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, SMTPreferences preferences, String lemmaName,
-			String smtFolder) {
+	public SmtProverCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final SMTPreferences preferences, final String lemmaName,
+			final String smtFolder) {
 		super(hypotheses, goal, pm);
-		this.smtUiPreferences = preferences;
+		smtUiPreferences = preferences;
 		this.lemmaName = lemmaName;
-		this.proverName = preferences.getSolver().getId();
-		this.translationFolder = smtFolder;
+		proverName = preferences.getSolver().getId();
+		translationFolder = smtFolder;
 	}
 
 	/**
@@ -238,16 +242,16 @@ public class SmtProverCall extends XProverCall {
 				 * SMT lib v2.0
 				 */
 			}
-		} catch (TranslationException t) {
+		} catch (final TranslationException t) {
 			throw new IllegalArgumentException(t);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
 	public List<String> smtTranslationThroughPP() throws TranslationException,
 			PreProcessingException, IOException {
-		SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
 						.getId());
 		return smtTranslation(benchmark);
@@ -255,22 +259,22 @@ public class SmtProverCall extends XProverCall {
 
 	public List<String> smtTranslationThroughVeriT()
 			throws TranslationException, PreProcessingException, IOException {
-		SMTBenchmark benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
-						.getId());
+		final SMTBenchmark benchmark = SMTThroughVeriT
+				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
+						smtUiPreferences.getSolver().getId());
 		/**
 		 * The name of the SMT file with macros.
 		 */
 		if (translationFolder == null) {
-			this.translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
-		String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
+		final String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
 				.getName());
 
 		/**
 		 * First, write the SMT file with macros
 		 */
-		File preprocessedFile = writeVeritPreprocessedSMTFile(benchmark,
+		final File preprocessedFile = writeVeritPreprocessedSMTFile(benchmark,
 				veriTPreProcessingFileName);
 
 		if (!preprocessedFile.exists()) {
@@ -295,8 +299,8 @@ public class SmtProverCall extends XProverCall {
 	 * @param preprocessedFile
 	 * @throws IOException
 	 */
-	private void callVeriT(File preprocessedFile) throws IOException {
-		List<String> args = new ArrayList<String>();
+	private void callVeriT(final File preprocessedFile) throws IOException {
+		final List<String> args = new ArrayList<String>();
 
 		if (smtUiPreferences.getPreproPath().isEmpty()
 				|| smtUiPreferences.getPreproPath() == null) {
@@ -319,19 +323,19 @@ public class SmtProverCall extends XProverCall {
 		checkPreProcessingResult(preprocessedFile.getParent());
 	}
 
-	private void createPostProcessedFile(String parentFolder, String extension)
-			throws IOException {
+	private void createPostProcessedFile(final String parentFolder,
+			final String extension) throws IOException {
 		iFile = new File(parentFolder + File.separatorChar + lemmaName
 				+ POST_PROCESSED_FILE_POSTFIX + extension);
 		if (!iFile.exists()) {
 			iFile.createNewFile();
 		}
-		FileWriter fileWriter = new FileWriter(iFile);
+		final FileWriter fileWriter = new FileWriter(iFile);
 		fileWriter.write(resultOfSolver);
 		fileWriter.close();
 	}
 
-	private void checkPreProcessingResult(String parentFolder)
+	private void checkPreProcessingResult(final String parentFolder)
 			throws IOException {
 		if (resultOfSolver.contains("(benchmark")) {
 			createPostProcessedFile(parentFolder, "smt");
@@ -354,17 +358,17 @@ public class SmtProverCall extends XProverCall {
 		}
 	}
 
-	private String smtVeriTPreProcessFilePath(String fileName) {
+	private String smtVeriTPreProcessFilePath(final String fileName) {
 		return translationFolder + File.separatorChar + fileName
 				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
 	}
 
-	private File writeVeritPreprocessedSMTFile(SMTBenchmark benchmark,
-			String veriTPreProcessingFileName) {
-		File preProcessedSMTFile = new File(veriTPreProcessingFileName);
+	private File writeVeritPreprocessedSMTFile(final SMTBenchmark benchmark,
+			final String veriTPreProcessingFileName) {
+		final File preProcessedSMTFile = new File(veriTPreProcessingFileName);
 		try {
 			preProcessedSMTFile.createNewFile();
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			ioe.printStackTrace();
 			ioe.getMessage();
 			return null;
@@ -379,10 +383,10 @@ public class SmtProverCall extends XProverCall {
 
 	private File writeSMTFile(final SMTBenchmark benchmark,
 			final String filePathName) {
-		File smtFile = new File(filePathName);
+		final File smtFile = new File(filePathName);
 		try {
 			smtFile.createNewFile();
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			ioe.printStackTrace();
 			ioe.getMessage();
 			return null;
@@ -403,12 +407,12 @@ public class SmtProverCall extends XProverCall {
 	 * @throws IOException
 	 * @throws TranslationException
 	 */
-	private List<String> smtTranslation(SMTBenchmark benchmark)
+	private List<String> smtTranslation(final SMTBenchmark benchmark)
 			throws PreProcessingException, IOException, TranslationException {
 		if (translationFolder == null) {
-			this.translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
-		String smtFileName = smtFilePath(benchmark.getName());
+		final String smtFileName = smtFilePath(benchmark.getName());
 
 		/**
 		 * Parse Rodin PO to create Smt file
@@ -443,7 +447,7 @@ public class SmtProverCall extends XProverCall {
 	 */
 	public void callProver(final List<String> args) throws IOException,
 			IllegalArgumentException {
-		Process p = Exec.startProcess(args);
+		final Process p = Exec.startProcess(args);
 		callProver(p, args);
 	}
 
@@ -458,12 +462,12 @@ public class SmtProverCall extends XProverCall {
 		/**
 		 * Set up result file
 		 */
-		File resultFile = new File(iFile.getParent() + File.separatorChar
+		final File resultFile = new File(iFile.getParent() + File.separatorChar
 				+ lemmaName + ".res");
 		if (!resultFile.exists()) {
 			resultFile.createNewFile();
 		}
-		FileWriter fileWriter = new FileWriter(resultFile);
+		final FileWriter fileWriter = new FileWriter(resultFile);
 		fileWriter.write(resultOfSolver);
 		fileWriter.close();
 		oFile = resultFile;
@@ -479,7 +483,7 @@ public class SmtProverCall extends XProverCall {
 	 * 
 	 */
 	private List<String> setSolverArgs(final String lemmaFilePath) {
-		List<String> args = new ArrayList<String>();
+		final List<String> args = new ArrayList<String>();
 		args.add(smtUiPreferences.getSolver().getPath());
 
 		/**
@@ -496,9 +500,9 @@ public class SmtProverCall extends XProverCall {
 			/**
 			 * Split arguments and add them in the list
 			 */
-			String[] argumentsString = smtUiPreferences.getSolver().getArgs()
-					.split(" "); //$NON-NLS-1$
-			for (String argString : argumentsString) {
+			final String[] argumentsString = smtUiPreferences.getSolver()
+					.getArgs().split(" "); //$NON-NLS-1$
+			for (final String argString : argumentsString) {
 				args.add(argString);
 			}
 		}
@@ -514,7 +518,7 @@ public class SmtProverCall extends XProverCall {
 	 * @param solverResult
 	 *            The string result from the SMT solver.
 	 */
-	private boolean checkResult(String solverResult) {
+	private boolean checkResult(final String solverResult) {
 		if (solverResult.contains("syntax error")
 				|| solverResult.contains("parse error")
 				|| solverResult.contains("Lexical_error")) {
