@@ -18,13 +18,13 @@ import org.eclipse.swt.graphics.Image;
 class SolversDetailsLabelProvider implements ITableLabelProvider {
 
 	@Override
-	public Image getColumnImage(Object element, int columnIndex) {
+	public Image getColumnImage(final Object element, final int columnIndex) {
 		return null;
 	}
 
 	@Override
-	public String getColumnText(Object element, int columnIndex) {
-		SolverDetail solver = (SolverDetail) element;
+	public String getColumnText(final Object element, final int columnIndex) {
+		final SolverDetail solver = (SolverDetail) element;
 		switch (columnIndex) {
 		case 0:
 			return solver.getId();
@@ -47,18 +47,18 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 	}
 
 	@Override
-	public boolean isLabelProperty(Object element, String property) {
+	public boolean isLabelProperty(final Object element, final String property) {
 		return false;
 	}
 
 	@Override
-	public void addListener(ILabelProviderListener listener) {
+	public void addListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener listener) {
+	public void removeListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}

@@ -30,12 +30,13 @@ public class SolversDetailsContentProvider implements
 	}
 
 	@Override
-	public Object[] getElements(Object inputElement) {
+	public Object[] getElements(final Object inputElement) {
 		return ((List<SolverDetail>) inputElement).toArray();
 	}
 
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
 		// TODO Auto-generated method stub
 
 	}

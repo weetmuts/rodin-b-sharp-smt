@@ -42,7 +42,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * )
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
@@ -75,7 +75,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic ExternalSmtTac(boolean restricted) {
+	public static ITactic ExternalSmtTac(final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSmt(), //
 				new XProverInput(restricted, DEFAULT_DELAY));
@@ -99,7 +99,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * )
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}

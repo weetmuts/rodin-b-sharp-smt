@@ -23,7 +23,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = SmtProversUIPlugin.getDefault()
+		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
 		store.setDefault("solverPreferences", "");
 		store.setDefault("solverindex", -1);

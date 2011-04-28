@@ -46,28 +46,28 @@ public class SolverDetail {
 		return smtV2_0;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = path;
 	}
 
-	public void setArgs(String args) {
+	public void setArgs(final String args) {
 		this.args = args;
 	}
 
-	public void setSmtV1_2(boolean smtV1_2) {
+	public void setSmtV1_2(final boolean smtV1_2) {
 		this.smtV1_2 = smtV1_2;
 	}
 
-	public void setSmtV2_0(boolean smtV2_0) {
+	public void setSmtV2_0(final boolean smtV2_0) {
 		this.smtV2_0 = smtV2_0;
 	}
 
-	public SolverDetail(String id, String path, String args, boolean smtV1_2,
-			boolean smtV2_0) {
+	public SolverDetail(final String id, final String path, final String args,
+			final boolean smtV1_2, final boolean smtV2_0) {
 		this.id = id;
 		this.path = path;
 		this.args = args;

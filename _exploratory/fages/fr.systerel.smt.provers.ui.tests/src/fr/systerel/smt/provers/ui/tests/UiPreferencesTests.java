@@ -107,35 +107,35 @@ public class UiPreferencesTests {
 		/**
 		 * Get back preferences from UI
 		 */
-		String solverPreferencesString = preferencesService.getString(
+		final String solverPreferencesString = preferencesService.getString(
 				PREFERENCES_ID, SOLVER_PREFERENCES, null, null);
-		int solverIndex = preferencesService.getInt(PREFERENCES_ID,
+		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVER_INDEX, -1, null);
-		boolean usingPrePro = preferencesService.getBoolean(PREFERENCES_ID,
-				USING_PREPRO, false, null);
-		String preProPath = preferencesService.getString(PREFERENCES_ID,
+		final boolean usingPrePro = preferencesService.getBoolean(
+				PREFERENCES_ID, USING_PREPRO, false, null);
+		final String preProPath = preferencesService.getString(PREFERENCES_ID,
 				PREPROPATH, null, null);
-		SMTPreferences smtPreferences = new SMTPreferences(
+		final SMTPreferences smtPreferences = new SMTPreferences(
 				solverPreferencesString, solverIndex, usingPrePro, preProPath);
 
-		String expectedId = "alt-ergo";
+		final String expectedId = "alt-ergo";
 		String expectedSolverPath = BIN_PATH + expectedId;
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			expectedSolverPath += ".exe";
 		}
-		String args = "";
-		boolean smtV1_2 = true;
-		boolean smtV2_0 = false;
-		boolean expectedPrePro = true;
-		String expectedPreproPath = BIN_PATH + "verit";
+		final String args = "";
+		final boolean smtV1_2 = true;
+		final boolean smtV2_0 = false;
+		final boolean expectedPrePro = true;
+		final String expectedPreproPath = BIN_PATH + "verit";
 
-		SolverDetail expectedSolverDetail = new SolverDetail(expectedId,
+		final SolverDetail expectedSolverDetail = new SolverDetail(expectedId,
 				expectedSolverPath, args, smtV1_2, smtV2_0);
-		SMTPreferences expectedSMTPreferences = new SMTPreferences(
+		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
 				expectedSolverDetail, expectedPrePro, expectedPreproPath);
 
-		SMTPreferences[] p = { smtPreferences };
-		SMTPreferences[] expP = { expectedSMTPreferences };
+		final SMTPreferences[] p = { smtPreferences };
+		final SMTPreferences[] expP = { expectedSMTPreferences };
 
 		Assert.assertArrayEquals(expP, p);
 

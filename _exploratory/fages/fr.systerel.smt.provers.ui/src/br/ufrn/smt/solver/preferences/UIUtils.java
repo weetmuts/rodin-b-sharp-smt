@@ -39,7 +39,7 @@ public class UIUtils {
 		});
 	}
 
-	private static void syncExec(Runnable runnable) {
+	private static void syncExec(final Runnable runnable) {
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(runnable);
 	}

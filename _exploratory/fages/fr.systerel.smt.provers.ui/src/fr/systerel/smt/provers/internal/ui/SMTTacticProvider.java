@@ -20,7 +20,7 @@ public class SMTTacticProvider extends DefaultTacticProvider implements
 	public static class SMTApplication extends DefaultPredicateApplication {
 
 		@Override
-		public ITactic getTactic(String[] inputs, String globalInput) {
+		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			return SmtProversUIPlugin.ExternalSmtTac(true);
 		}
 
@@ -28,7 +28,8 @@ public class SMTTacticProvider extends DefaultTacticProvider implements
 
 	@Override
 	public List<ITacticApplication> getPossibleApplications(
-			IProofTreeNode node, Predicate hyp, String globalInput) {
+			final IProofTreeNode node, final Predicate hyp,
+			final String globalInput) {
 		if (node != null && node.isOpen()) {
 			final ITacticApplication appli = new SMTApplication();
 			return singletonList(appli);

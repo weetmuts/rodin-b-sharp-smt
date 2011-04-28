@@ -19,10 +19,10 @@ public class SMTPreferencesStore {
 	private static final String SEPARATOR1 = ",,";
 	private static final String SEPARATOR2 = ";";
 
-	public static String CreatePreferences(List<SolverDetail> model) {
+	public static String CreatePreferences(final List<SolverDetail> model) {
 		final StringBuilder sb = new StringBuilder();
 
-		for (SolverDetail solverDetail : model) {
+		for (final SolverDetail solverDetail : model) {
 			sb.append(solverDetail.getId());
 			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getPath());
@@ -38,11 +38,11 @@ public class SMTPreferencesStore {
 		return sb.toString();
 	}
 
-	public static List<SolverDetail> CreateModel(String preferences) {
-		List<SolverDetail> model = new ArrayList<SolverDetail>();
+	public static List<SolverDetail> CreateModel(final String preferences) {
+		final List<SolverDetail> model = new ArrayList<SolverDetail>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
-		for (String row : rows) {
+		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
 				model.add(new SolverDetail(columns[0], columns[1], columns[2],
