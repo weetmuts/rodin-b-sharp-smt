@@ -107,11 +107,12 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	 *            The precedence of the macro. See {@link SMTMacro} for more
 	 *            details.
 	 */
-	SMTSetComprehensionMacro(String macroName,
-			SMTVarSymbol[] quantifiedVariables, SMTVarSymbol lambdaVar,
-			SMTFormula formula, SMTTerm expression, int precedence) {
+	SMTSetComprehensionMacro(final String macroName,
+			final SMTVarSymbol[] quantifiedVariables,
+			final SMTVarSymbol lambdaVar, final SMTFormula formula,
+			final SMTTerm expression, final int precedence) {
 		super(macroName, precedence);
-		this.qVars = quantifiedVariables;
+		qVars = quantifiedVariables;
 		this.lambdaVar = lambdaVar;
 		this.formula = formula;
 		this.expression = expression;
@@ -136,14 +137,14 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(StringBuilder sb) {
+	public void toString(final StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append("(lambda");
 		lambdaVar.toString(sb);
 		sb.append(" . ");
 		sb.append("(exists ");
-		for (SMTVarSymbol qVar : qVars) {
+		for (final SMTVarSymbol qVar : qVars) {
 			qVar.toString(sb);
 		}
 		sb.append(". (and (= ");
@@ -161,7 +162,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}

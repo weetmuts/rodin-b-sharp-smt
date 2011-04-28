@@ -45,7 +45,7 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	 * @param precedence
 	 *            the precedence of the macro
 	 */
-	SMTMacro(String macroName, int precedence) {
+	SMTMacro(final String macroName, final int precedence) {
 		this.macroName = macroName;
 		this.precedence = precedence;
 	}
@@ -67,10 +67,10 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	public abstract void toString(final StringBuilder builder);
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof SMTMacro) {
-			SMTMacro macroObj = (SMTMacro) obj;
-			if (macroObj.getMacroName().equals(this.getMacroName())) {
+			final SMTMacro macroObj = (SMTMacro) obj;
+			if (macroObj.getMacroName().equals(getMacroName())) {
 				return true;
 			}
 		}
@@ -78,13 +78,14 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	}
 
 	@Override
-	public int compareTo(SMTMacro o) {
+	public int compareTo(final SMTMacro o) {
 		if (o.getPrecedence() == precedence) {
 			return 1;
 		} else if (precedence > o.getPrecedence()) {
 			return 1;
-		} else
+		} else {
 			return -1;
+		}
 	}
 
 	/**

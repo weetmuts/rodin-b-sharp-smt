@@ -10,8 +10,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
-import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
+import fr.systerel.smt.provers.ast.SMTSymbol;
 
 /**
  * This class is used to store the symbols that represent the macros. They
@@ -24,7 +24,7 @@ import fr.systerel.smt.provers.ast.SMTSortSymbol;
  * @author vitor
  * 
  */
-public class SMTMacroSymbol extends SMTPredicateSymbol {
+public class SMTMacroSymbol extends SMTSymbol {
 
 	// VeriT Extended SMT-LIB Symbols
 	public static final String BUNION = "union";
@@ -45,8 +45,6 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String OVR = "ovr";
 	public static final String ID = "id";
 	public static final String FCOMP = "fcomp";
-
-	public static final String DIV = "/";
 
 	public static final String ENUM = "enum";
 	public static final String MOD = "mod";
@@ -87,7 +85,13 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	public static final String NOT_EQUAL = "neq";
 	public static final String BCOMP = "bcomp";
 
+	private final SMTSortSymbol[] argSorts;
+	private final SMTSortSymbol returnSort;
+
+	// FIXME: Remake this commentary
 	/**
+	 * 
+	 * 
 	 * Creates a new macro symbol.
 	 * 
 	 * @param symbolName
@@ -97,20 +101,22 @@ public class SMTMacroSymbol extends SMTPredicateSymbol {
 	 * @param predefined
 	 *            If it's predefined
 	 */
-	SMTMacroSymbol(String symbolName, SMTSortSymbol[] argSorts,
-			boolean predefined) {
-		super(symbolName, argSorts, predefined);
+	SMTMacroSymbol(final String symbolName, final SMTSortSymbol[] argSorts,
+			final SMTSortSymbol returnSort, final boolean predefined) {
+		super(symbolName, predefined);
+		this.argSorts = argSorts;
+		this.returnSort = returnSort;
 	}
 
-	/**
-	 * Creates a new, not predefined symbol.
-	 * 
-	 * @param symbolName
-	 *            The string representation of the symbol
-	 * @param argSorts
-	 *            The expected sorts of the arguments
-	 */
-	SMTMacroSymbol(String symbolName, SMTSortSymbol[] argSorts) {
-		super(symbolName, argSorts, false);
+	public SMTSortSymbol[] getArgSorts() {
+		return argSorts;
+	}
+
+	public SMTSortSymbol getReturnSort() {
+		return returnSort;
+	}
+
+	public boolean isPropositional() {
+		return argSorts.length == 0;
 	}
 }

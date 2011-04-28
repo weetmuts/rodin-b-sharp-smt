@@ -51,7 +51,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	SMTPredefinedMacro(final String macroName, final String bodyText,
 			final int precedence) {
 		super(macroName, precedence);
-		this.body = bodyText;
+		body = bodyText;
 		collectQSymbols();
 	}
 
@@ -90,17 +90,17 @@ public class SMTPredefinedMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
 
 	@Override
-	public boolean equals(Object object) {
+	public boolean equals(final Object object) {
 		if (object instanceof SMTPredefinedMacro) {
-			SMTPredefinedMacro obj = (SMTPredefinedMacro) object;
-			if (this.getMacroName().equals(obj.getMacroName())
-					&& this.body.equals(obj.body)) {
+			final SMTPredefinedMacro obj = (SMTPredefinedMacro) object;
+			if (getMacroName().equals(obj.getMacroName())
+					&& body.equals(obj.body)) {
 				return true;
 			}
 		}
@@ -108,7 +108,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(StringBuilder sb) {
+	public void toString(final StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append(body);

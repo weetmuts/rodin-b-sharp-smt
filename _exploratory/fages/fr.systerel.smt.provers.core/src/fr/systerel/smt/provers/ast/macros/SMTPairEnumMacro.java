@@ -79,8 +79,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            The precedence of the macro. See {@link SMTMacro} for more
 	 *            details.
 	 */
-	SMTPairEnumMacro(String macroName, SMTVarSymbol key, SMTMacroTerm[] terms,
-			int precedence) {
+	SMTPairEnumMacro(final String macroName, final SMTVarSymbol key,
+			final SMTMacroTerm[] terms, final int precedence) {
 		super(macroName, precedence);
 		this.key = key;
 		this.terms = terms;
@@ -110,7 +110,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
@@ -131,8 +131,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            the Yn term
 	 * @return The string representation of a element of the pair enumeration
 	 */
-	private void elemToString(String keyEl, SMTTerm keyTerm, SMTTerm valueTerm,
-			final StringBuilder sb) {
+	private void elemToString(final String keyEl, final SMTTerm keyTerm,
+			final SMTTerm valueTerm, final StringBuilder sb) {
 		sb.append(OPAR);
 		sb.append("=");
 		sb.append(SPACE);
@@ -166,7 +166,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 			sb.append(CPAR);
 		} else {
 			sb.append("(or");
-			for (SMTMacroTerm term : terms) {
+			for (final SMTMacroTerm term : terms) {
 				sb.append("\n\t\t");
 				elemToString(key.getNameWithQMark(), term.getArgTerms()[0],
 						term.getArgTerms()[1], sb);

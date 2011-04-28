@@ -40,7 +40,7 @@ public class SMTEnumMacro extends SMTMacro {
 	 *            details.
 	 */
 	SMTEnumMacro(final String macroName, final SMTVarSymbol assignedVar,
-			final SMTTerm[] terms, int precedence) {
+			final SMTTerm[] terms, final int precedence) {
 		super(macroName, precedence);
 		this.assignedVar = assignedVar;
 		this.terms = terms;
@@ -58,27 +58,27 @@ public class SMTEnumMacro extends SMTMacro {
 	/**
 	 * The assigned variable of the enumeration macro.
 	 */
-	private SMTVarSymbol assignedVar;
+	private final SMTVarSymbol assignedVar;
 
 	/**
 	 * They represent the elements of the enumeration.
 	 */
-	private SMTTerm[] terms;
+	private final SMTTerm[] terms;
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		return true;
 	}
 
 	@Override
-	public void toString(StringBuilder sb) {
+	public void toString(final StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
@@ -92,7 +92,7 @@ public class SMTEnumMacro extends SMTMacro {
 			sb.append(")))");
 		} else {
 			sb.append("(or");
-			for (SMTTerm term : terms) {
+			for (final SMTTerm term : terms) {
 				sb.append("\n\t\t(= ");
 				sb.append(assignedVar.getNameWithQMark());
 				sb.append(" ");

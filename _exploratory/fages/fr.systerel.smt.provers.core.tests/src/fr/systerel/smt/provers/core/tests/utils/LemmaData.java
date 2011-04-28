@@ -6,9 +6,9 @@ import org.eventb.core.ast.ITypeEnvironment;
 
 public class LemmaData {
 
-	public LemmaData(String lemmaName, List<String> hypotheses, String goal,
-			ITypeEnvironment te, String origin, String comments,
-			List<String> theories) {
+	public LemmaData(final String lemmaName, final List<String> hypotheses,
+			final String goal, final ITypeEnvironment te, final String origin,
+			final String comments, final List<String> theories) {
 		super();
 		this.lemmaName = lemmaName;
 		this.hypotheses = hypotheses;
@@ -23,7 +23,7 @@ public class LemmaData {
 		return comments;
 	}
 
-	public void setComments(String comments) {
+	public void setComments(final String comments) {
 		this.comments = comments;
 	}
 
@@ -31,7 +31,7 @@ public class LemmaData {
 		return theories;
 	}
 
-	public void setTheories(List<String> theories) {
+	public void setTheories(final List<String> theories) {
 		this.theories = theories;
 	}
 
@@ -47,7 +47,7 @@ public class LemmaData {
 		return origin;
 	}
 
-	public void setOrigin(String origin) {
+	public void setOrigin(final String origin) {
 		this.origin = origin;
 	}
 
@@ -55,7 +55,7 @@ public class LemmaData {
 		return te;
 	}
 
-	public void setTe(ITypeEnvironment te) {
+	public void setTe(final ITypeEnvironment te) {
 		this.te = te;
 	}
 
@@ -63,7 +63,7 @@ public class LemmaData {
 		return lemmaName;
 	}
 
-	public void setLemmaName(String lemmaName) {
+	public void setLemmaName(final String lemmaName) {
 		this.lemmaName = lemmaName;
 	}
 
@@ -71,7 +71,7 @@ public class LemmaData {
 		return hypotheses;
 	}
 
-	public void setHypotheses(List<String> hypotheses) {
+	public void setHypotheses(final List<String> hypotheses) {
 		this.hypotheses = hypotheses;
 	}
 
@@ -79,7 +79,7 @@ public class LemmaData {
 		return goal;
 	}
 
-	public void setGoal(String goal) {
+	public void setGoal(final String goal) {
 		this.goal = goal;
 	}
 
