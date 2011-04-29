@@ -59,43 +59,40 @@ class SMTAtom extends SMTFormula {
 	private static void verifyPredicateRank(final SMTPredicateSymbol symbol,
 			final SMTTerm terms[]) {
 		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
+		final boolean wellSorted;
+		if (symbol.isAssociative()) {
+			wellSorted = verifyAssociativeRank(expectedSortArgs[0], terms);
+		} else {
+			wellSorted = verifyNonAssociativeRank(expectedSortArgs, terms);
+		}
+		if (!wellSorted) {
+			throw new IllegalArgumentException(
+					incompatiblePredicateRankException(symbol, terms,
+							new StringBuilder()));
+		}
+	}
 
-		if (symbol.acceptsAnInfiniteNumberOfArgs()) {
-			final SMTSortSymbol expectedSort = expectedSortArgs[0];
-			if (expectedSort instanceof SMTPolymorphicSortSymbol) {
-				return;
-			} else {
-				for (final SMTTerm term : terms) {
-					if (!term.getSort().equals(expectedSort)) {
-						throw incompatiblePredicateRankException(symbol, terms);
-					}
-				}
-				return;
+	private static boolean verifyAssociativeRank(
+			final SMTSortSymbol expectedSortArg, final SMTTerm[] terms) {
+		for (final SMTTerm term : terms) {
+			if (!term.getSort().isCompatibleWith(expectedSortArg)) {
+				return false;
 			}
 		}
-		// Check if the number of arguments expected match the number of terms
-		else if (expectedSortArgs.length == terms.length) {
+		return true;
+	}
 
-			// Check if the sort symbols are the same
-			for (int i = 0; i < terms.length; i++) {
-				final SMTSortSymbol argSort = terms[i].getSort();
-				final SMTSortSymbol expectedSortArg = expectedSortArgs[i];
-
-				// If one of the expected sorts are polymorphic, ignore it
-				if (expectedSortArg instanceof SMTPolymorphicSortSymbol) {
-					continue;
-				}
-				if (argSort instanceof SMTPolymorphicSortSymbol) {
-					continue;
-				}
-
-				if (!expectedSortArg.equals(argSort)) {
-					throw incompatiblePredicateRankException(symbol, terms);
-				}
-			}
-			return;
+	private static boolean verifyNonAssociativeRank(
+			final SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
+		if (expectedSortArgs.length != terms.length) {
+			return false;
 		}
-		throw incompatiblePredicateRankException(symbol, terms);
+		for (int i = 0; i < terms.length; i++) {
+			if (!expectedSortArgs[i].isCompatibleWith(terms[i].getSort())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -112,8 +109,8 @@ class SMTAtom extends SMTFormula {
 	 * @see #verifyPredicateRank(SMTPredicateSymbol, SMTTerm[])
 	 */
 	protected static IllegalArgumentException incompatiblePredicateRankException(
-			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args) {
-		final StringBuilder sb = new StringBuilder();
+			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args,
+			final StringBuilder sb) {
 		sb.append("Arguments of function symbol: ");
 		sb.append(expectedSymbol);
 		sb.append(": ");

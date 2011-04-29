@@ -504,14 +504,6 @@ public abstract class SMTSignature {
 		}
 	}
 
-	public SMTPredicateSymbol addPredicateSymbol(final String name,
-			final SMTSortSymbol[] argSorts) {
-		final SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
-				argSorts, !SMTSymbol.PREDEFINED);
-		preds.add(symbol);
-		return symbol;
-	}
-
 	public void toString(final StringBuilder sb) {
 		logicSection(sb);
 		extrasortsSection(sb);

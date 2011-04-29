@@ -71,15 +71,15 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * is done.
  */
 public class SMTThroughPP extends TranslatorV1_2 {
-	public SMTThroughPP(final String solver) {
-		super(solver);
-	}
+
+	final Map<String, Type> monadicSets = new HashMap<String, Type>();
 
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignaturePP signature;
+
 	/**
 	 * In order to translate memberships, the approach implemented in this class
 	 * defines some new predicates. <code>msTypeMap</code> is a map between each
@@ -94,6 +94,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	// FIXME Seems to be unsafe, to be deleted if possible
 	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
+
+	public SMTThroughPP(final String solver) {
+		super(solver);
+	}
 
 	/**
 	 * This is the public translation method
@@ -189,12 +193,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * PP translation
 		 */
 		final PPProof ppProof = ppTranslation(hypotheses, goal);
+		@SuppressWarnings("deprecation")
 		final List<Predicate> ppTranslatedHypotheses = ppProof
 				.getTranslatedHypotheses();
+		@SuppressWarnings("deprecation")
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		final SMTLogic logic = determineLogic();
 
+		
+		
+		
 		/**
 		 * SMT translation
 		 */
@@ -260,8 +269,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		predicate.accept(this);
 		return getSMTFormula();
 	}
-
-	Map<String, Type> monadicSets = new HashMap<String, Type>();
 
 	/**
 	 * This method builds the SMT-LIB signature of a sequent given as its set of
@@ -683,10 +690,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
 					final SMTSortSymbol[] argSorts = { leftTerm.getSort() };
 
-					// FIXME Check if there is already defined a predicate
-					// before creating a new one.
+					// FIXME Check the behavior of this method
 					final SMTPredicateSymbol predSymbol = signature
-							.addPredicateSymbol(rightSet.getName(), argSorts);
+							.addNewPredicateSymbol(rightSet.getName(), argSorts);
 
 					msTypeMap.put(leftType, predSymbol);
 

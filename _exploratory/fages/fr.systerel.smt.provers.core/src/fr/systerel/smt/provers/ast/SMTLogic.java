@@ -398,9 +398,4 @@ public class SMTLogic {
 		throw new IllegalArgumentException(
 				"The Int sort is not declared in the signature of this benchmark");
 	}
-
-	public SMTSymbol getIntegerOneSortCst() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

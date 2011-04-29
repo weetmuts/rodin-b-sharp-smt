@@ -431,7 +431,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 */
 	@Test
 	@Ignore("Expected true, but it was false")
-	public void testCh7Conc29() {
+	public void testCh7Conc29_AltErgo() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -440,7 +440,55 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("n ≥ 1");
 
-		doTest("ch7_conc29", hyps,
+		doTest("ch7_conc29_altErgo", hyps,
+				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Expected true, but it was false")
+	public void testCh7Conc29_Z3() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+
+		doTest("ch7_conc29_z3", hyps,
+				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("The solver returns unknown")
+	public void testCh7Conc29_cvc3() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+
+		doTest("ch7_conc29_cvc3", hyps,
+				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Segmentation Fault of the Solver")
+	public void testCh7Conc29_verit() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"D", "ℙ(D)", "d", "D");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+
+		doTest("ch7_conc29_verit", hyps,
 				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
@@ -740,4 +788,72 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
+	@Test
+	public void testch910_ring_6() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("itv ∈ P → (P → ℙ(P))");
+		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
+	}
+
+	@Test
+	public void testch910_ring_6_simple() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch910_ring_6_simple", hyps, "itv ∈ P → (P → ℙ(P))", te, VALID);
+	}
+
+	@Test
+	public void testch910_ring_6_pp() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch910_ring_6_pp",
+				hyps,
+				"(∀x,x0·x ↦ x0∈itv⇒x∈P∧(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))∧(∀x,x1,x2·x ↦ x1∈x0∧x ↦ x2∈x0⇒x1=x2)∧(∀x·x∈P⇒(∃x1·x ↦ x1∈x0)))∧(∀x,x0,x1·x ↦ x0∈itv∧x ↦ x1∈itv⇒x0=x1)∧(∀x·x∈P⇒(∃x0·x ↦ x0∈itv))",
+				te, VALID);
+	}
+
+	@Test
+	public void testch910_ring_6_pp_simple() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch910_ring_6_pp_simple",
+				hyps,
+				"(∀x,x0·x ↦ x0∈itv⇒x∈P∧(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))∧(∀x,x1,x2·x ↦ x1∈x0∧x ↦ x2∈x0⇒x1=x2)∧(∀x·x∈P⇒(∃x1·x ↦ x1∈x0)))",
+				te, VALID);
+	}
+
+	@Test
+	public void testch910_ring_6_pp_smaller() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch910_ring_6_pp_smaller", hyps,
+				"(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))", te, VALID);
+	}
+
+	@Test
+	public void testch910_ring_6_pp_mini() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
+				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch910_ring_6_pp_mini", hyps,
+				"(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))", te, VALID);
+	}
 }

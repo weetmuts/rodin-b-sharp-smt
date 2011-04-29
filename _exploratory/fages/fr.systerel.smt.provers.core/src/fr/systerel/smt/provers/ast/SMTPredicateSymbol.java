@@ -29,17 +29,17 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 */
 	final private SMTSortSymbol[] argSorts;
 
-	final private boolean acceptsAnInfiniteNumberOfArgs;
+	final private boolean isAssociative;
 
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
-		acceptsAnInfiniteNumberOfArgs = false;
+		isAssociative = false;
 	}
 
-	public boolean acceptsAnInfiniteNumberOfArgs() {
-		return acceptsAnInfiniteNumberOfArgs;
+	public boolean isAssociative() {
+		return isAssociative;
 	}
 
 	public SMTSortSymbol[] getArgSorts() {
@@ -51,7 +51,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 			final boolean acceptsAnInfiniteNumberOfArgs) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
-		this.acceptsAnInfiniteNumberOfArgs = acceptsAnInfiniteNumberOfArgs;
+		this.isAssociative = acceptsAnInfiniteNumberOfArgs;
 	}
 
 	public boolean isPropositional() {

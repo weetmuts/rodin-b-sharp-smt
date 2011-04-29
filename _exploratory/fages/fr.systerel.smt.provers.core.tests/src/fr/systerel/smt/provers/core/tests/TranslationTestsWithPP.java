@@ -171,7 +171,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (s ?x) (s ?y)))");
+				"(forall (?x R) (?y R) (and (s ?x) (s_0 ?y)))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -197,7 +197,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (s ?x) (s ?y)))");
+				"(exists (?x R) (?y R) (and (s ?x) (s_0 ?y)))");
 	}
 
 	/**
@@ -320,7 +320,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 
 	@Test
-	@Ignore("The Int set is not implemented")
+	@Ignore("The int set is not yet implemented")
+	// TODO: Implement the Int set for the pp approach
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
