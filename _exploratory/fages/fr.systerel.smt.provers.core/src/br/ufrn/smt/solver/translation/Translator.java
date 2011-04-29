@@ -21,7 +21,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTNode;
@@ -56,16 +55,7 @@ public abstract class Translator implements ISimpleVisitor {
 
 	public static boolean DEBUG = false;
 
-	protected final SMTFactory sf;
 	protected SMTNode<?> smtNode;
-
-	protected Translator() {
-		sf = SMTFactory.getDefault();
-	}
-
-	protected Translator(final SMTFactory sf) {
-		this.sf = sf;
-	}
 
 	/**
 	 * This is the translation method. An Event-B sequent is given to this

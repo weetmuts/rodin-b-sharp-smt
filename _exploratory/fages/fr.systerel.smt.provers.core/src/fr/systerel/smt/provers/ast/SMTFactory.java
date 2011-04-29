@@ -15,14 +15,12 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
 
 import java.math.BigInteger;
 
-import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
-public final class SMTFactory {
-	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactory();
+public abstract class SMTFactory {
 
 	public final static SMTTerm[] EMPTY_TERM = {};
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
@@ -63,68 +61,9 @@ public final class SMTFactory {
 	public final static SMTQuantifierSymbol EXISTS = SMTQuantifierSymbol.EXISTS;
 	public final static SMTQuantifierSymbol FORALL = SMTQuantifierSymbol.FORALL;
 
-	/**
-	 * Returns the default instance of the factory.
-	 * 
-	 * @return the single instance of this class
-	 */
-	public static SMTFactory getDefault() {
-		return DEFAULT_INSTANCE;
-	}
-
-	/**
-	 * This method is used by the Extended SMT-LIB.
-	 * 
-	 * @param atomicExpression
-	 * @param signature
-	 */
-	public static String getSMTAtomicExpressionFormat(
-			final String atomicExpression, final SMTSignatureVerit signature) {
-		if (atomicExpression.equals("\u2124")) { // INTEGER
-			return "Int";
-		} else if (atomicExpression.equals("\u2115")) { // NATURAL
-			signature.addMacro(SMTMacroFactory.NAT_MACRO);
-			return "Nat";
-		} else if (atomicExpression.equals("\u2124" + 1)) {
-			return "Int1";
-		} else if (atomicExpression.equals("\u2115" + 1)) {
-			signature.addMacro(SMTMacroFactory.NAT1_MACRO);
-			return "Nat1";
-		} else if (atomicExpression.equals("BOOL")) {
-			return "Bool";
-		} else {
-			return signature.freshCstName(atomicExpression);
-		}
-	}
-
-	public static SMTSortSymbol makeVeriTSortSymbol(
-			final String sortSymbolName, final SMTSignatureVerit signature) {
-		final String symbolName = getSMTAtomicExpressionFormat(sortSymbolName,
-				signature);
-		return new SMTSortSymbol(symbolName, false);
-	}
-
 	public static SMTSortSymbol makeSortSymbol(final String symbolName,
 			final boolean predefined) {
 		return new SMTSortSymbol(symbolName, predefined);
-	}
-
-	public SMTPredicateSymbol makeVeriTPredSymbol(final String predName,
-			final SMTSortSymbol symbol) {
-		final SMTSortSymbol[] symbols = { symbol };
-		return new SMTPredicateSymbol(predName, symbols, !SMTSymbol.PREDEFINED);
-	}
-
-	public static SMTSortSymbol makePairSortSymbol(
-			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
-
-		final StringBuffer sb = new StringBuffer();
-		sb.append("(Pair ");
-		sb.append(sourceSymbol.toString());
-		sb.append(" ");
-		sb.append(targetSymbol.toString());
-		sb.append(")");
-		return new SMTSortSymbol(sb.toString(), false);
 	}
 
 	/**
@@ -137,15 +76,11 @@ public final class SMTFactory {
 		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
-	public static SMTFormula makeDistinct(final SMTTerm[] args) {
-		return new SMTAtom(DISTINCT, args);
-	}
-
 	/**
 	 * The SMT-LIB language doesn't define a <code>NOTEQUAL</code> symbol. Thus
 	 * we use <code>EQUAL</code> and <code>NOT</code> symbols to build it.
 	 */
-	public SMTFormula makeNotEqual(final SMTTerm[] args) {
+	public static SMTFormula makeNotEqual(final SMTTerm[] args) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
 		final SMTFormula[] argsT = { new SMTAtom(
@@ -230,11 +165,11 @@ public final class SMTFactory {
 	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
 	 * XOR, IFF}
 	 */
-	public SMTFormula makeNot(final SMTFormula[] formula) {
+	public static SMTFormula makeNot(final SMTFormula[] formula) {
 		return new SMTConnectiveFormula(NOT, formula);
 	}
 
-	public SMTFormula makeImplies(final SMTFormula[] formulas) {
+	public static SMTFormula makeImplies(final SMTFormula[] formulas) {
 		return new SMTConnectiveFormula(IMPLIES, formulas);
 	}
 
@@ -242,11 +177,11 @@ public final class SMTFactory {
 		return new SMTConnectiveFormula(ITE_FORMULA, formulas);
 	}
 
-	public SMTFormula makeAnd(final SMTFormula[] formulas) {
+	public static SMTFormula makeAnd(final SMTFormula[] formulas) {
 		return new SMTConnectiveFormula(AND, formulas);
 	}
 
-	public SMTFormula makeOr(final SMTFormula[] formulas) {
+	public static SMTFormula makeOr(final SMTFormula[] formulas) {
 		return new SMTConnectiveFormula(OR, formulas);
 	}
 
@@ -254,7 +189,7 @@ public final class SMTFactory {
 		return new SMTConnectiveFormula(XOR, formulas);
 	}
 
-	public SMTFormula makeIff(final SMTFormula[] formulas) {
+	public static SMTFormula makeIff(final SMTFormula[] formulas) {
 		return new SMTConnectiveFormula(IFF, formulas);
 	}
 
@@ -265,7 +200,7 @@ public final class SMTFactory {
 	 *            the value for this numeral
 	 * @return the newly created numeral
 	 */
-	public SMTNumeral makeNumeral(final BigInteger value) {
+	public static SMTNumeral makeNumeral(final BigInteger value) {
 		return new SMTNumeral(value);
 	}
 
@@ -376,21 +311,6 @@ public final class SMTFactory {
 		return new SMTAtom(predicateSymbol, args);
 	}
 
-	public static SMTFormula makeMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args) {
-		return new SMTVeriTAtom(macroSymbol, args);
-	}
-
-	/**
-	 * FIXME: Remake this commentary this method makes a new predicate extended
-	 * SMT-LIB macro atom.
-	 * 
-	 */
-	public SMTFormula makeVeriTMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args) {
-		return new SMTVeriTAtom(macroSymbol, args);
-	}
-
 	/**
 	 * this method makes a new constant symbol
 	 * 
@@ -406,33 +326,6 @@ public final class SMTFactory {
 	}
 
 	/**
-	 * this method makes a VeriT term. The difference between normal terms and
-	 * VeriT terms is that VeriT terms can accept predicate symbols instead of
-	 * function symbols. This happens when predicates are used as arguments of
-	 * macros, which in this case, the predicates is used with no arguments and
-	 * macros are in the terms level.
-	 * 
-	 * @param smtSymbol
-	 *            the symbol of the term
-	 * @param signature
-	 *            used to check the rank of the term
-	 * @return a new SMT term with the symbol
-	 */
-	public SMTTerm makeVeriTConstantTerm(final SMTSymbol smtSymbol,
-			final SMTSignature signature) {
-		if (smtSymbol instanceof SMTPredicateSymbol) {
-			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol);
-
-		} else if (smtSymbol instanceof SMTFunctionSymbol) {
-			return makeFunApplication((SMTFunctionSymbol) smtSymbol,
-					EMPTY_TERM, signature);
-		} else {
-			throw new IllegalArgumentException(
-					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");
-		}
-	}
-
-	/**
 	 * this method makes a propositional atom.
 	 * 
 	 * @param predicateSymbol
@@ -444,61 +337,6 @@ public final class SMTFactory {
 	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			final SMTSignature signature) {
 		return makeAtom(predicateSymbol, EMPTY_TERM, signature);
-	}
-
-	/**
-	 * This method converts verit SMT-TERM into formulas. These terms must be of
-	 * sort Bool, predefined in VeriT.
-	 * 
-	 * @param terms
-	 *            the terms
-	 * @return the formulas from the terms
-	 */
-	public SMTFormula[] convertVeritTermsIntoFormulas(final SMTTerm[] terms) {
-		final SMTFormula[] formulas = new SMTFormula[terms.length];
-		int i = 0;
-		for (final SMTTerm term : terms) {
-			if (!term.getSort().toString().equals(SMTSymbol.BOOL_SORT)) {
-				throw new IllegalArgumentException(
-						"VeriT translation does not accept equal operator under terms with different operators");
-			} else {
-				if (term instanceof SMTFunApplication) {
-					final SMTFunApplication function = (SMTFunApplication) term;
-					final SMTSortSymbol[] sortSymbols = new SMTSortSymbol[function.args.length];
-					for (int j = 0; j < function.args.length; j++) {
-						sortSymbols[j] = function.args[j].getSort();
-					}
-					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.name, sortSymbols, !PREDEFINED);
-					final SMTAtom atom = new SMTAtom(predicateSymbol,
-							EMPTY_TERM);
-					formulas[i] = atom;
-				} else {
-					throw new IllegalArgumentException(
-							"Conversion from terms to formula in VeriT shall happen only if all arguments of the terms are functions and their return types are boolean");
-				}
-			}
-			++i;
-		}
-		return formulas;
-	}
-
-	/**
-	 * This method creates a function application.
-	 * 
-	 * @param operatorSymbol
-	 *            the symbol of the function application
-	 * @param args
-	 *            the arguments of the application
-	 * @param signature
-	 *            the signature for checking the rank
-	 * @return a new SMT term with the symbol and the arguments
-	 */
-	public SMTTerm makeVeriTTermOperatorApplication(
-			final SMTFunctionSymbol operatorSymbol, final SMTTerm[] args,
-			final SMTSignature signature) {
-		signature.verifyFunctionSignature(operatorSymbol);
-		return new SMTFunApplication(operatorSymbol, args);
 	}
 
 	/**

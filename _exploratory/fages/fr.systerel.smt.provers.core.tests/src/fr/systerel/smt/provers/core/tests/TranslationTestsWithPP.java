@@ -183,7 +183,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 				base.getPredicate(), null);
 		// System.out.println("Predicate " + p);
 		testTranslationV1_2(p,
-				"(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))",
+				"(forall (?x R) (?x_0 R) (and (s ?x) (s_0 ?x_0)))",
 				"twice same decl", "verit");
 	}
 

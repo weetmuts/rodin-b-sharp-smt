@@ -32,6 +32,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVar;
@@ -191,10 +192,10 @@ public abstract class TranslatorV1_2 extends Translator {
 		final SMTFormula[] children = smtFormulas(predicate.getChildren());
 		switch (predicate.getTag()) {
 		case Formula.LAND:
-			smtNode = sf.makeAnd(children);
+			smtNode = SMTFactory.makeAnd(children);
 			break;
 		case Formula.LOR:
-			smtNode = sf.makeOr(children);
+			smtNode = SMTFactory.makeOr(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -210,10 +211,10 @@ public abstract class TranslatorV1_2 extends Translator {
 				predicate.getRight());
 		switch (predicate.getTag()) {
 		case Formula.LIMP:
-			smtNode = sf.makeImplies(children);
+			smtNode = SMTFactory.makeImplies(children);
 			break;
 		case Formula.LEQV:
-			smtNode = sf.makeIff(children);
+			smtNode = SMTFactory.makeIff(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -230,7 +231,7 @@ public abstract class TranslatorV1_2 extends Translator {
 				.getChild()) };
 		switch (predicate.getTag()) {
 		case Formula.NOT:
-			smtNode = sf.makeNot(children);
+			smtNode = SMTFactory.makeNot(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -242,7 +243,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 */
 	@Override
 	public void visitIntegerLiteral(final IntegerLiteral expression) {
-		smtNode = sf.makeNumeral(expression.getValue());
+		smtNode = SMTFactory.makeNumeral(expression.getValue());
 	}
 
 }

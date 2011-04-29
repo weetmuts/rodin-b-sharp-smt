@@ -53,6 +53,7 @@ import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
@@ -95,8 +96,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	// FIXME Seems to be unsafe, to be deleted if possible
 	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
+	final private SMTFactoryPP sf;
+
 	public SMTThroughPP(final String solver) {
 		super(solver);
+		this.sf = SMTFactoryPP.getInstance();
 	}
 
 	/**
@@ -201,9 +205,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final SMTLogic logic = determineLogic();
 
-		
-		
-		
 		/**
 		 * SMT translation
 		 */
@@ -637,7 +638,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.NOTEQUAL: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeNotEqual(children);
+			smtNode = SMTFactory.makeNotEqual(children);
 		}
 			break;
 		case Formula.LT: {

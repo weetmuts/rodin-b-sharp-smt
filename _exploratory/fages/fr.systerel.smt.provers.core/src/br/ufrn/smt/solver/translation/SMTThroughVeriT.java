@@ -11,11 +11,8 @@
 package br.ufrn.smt.solver.translation;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
-import static fr.systerel.smt.provers.ast.SMTFactory.makeDistinct;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeMacroTerm;
-import static fr.systerel.smt.provers.ast.SMTFactory.makePairSortSymbol;
-import static fr.systerel.smt.provers.ast.SMTFactory.makeVeriTSortSymbol;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BCOMP;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BINTER;
@@ -104,6 +101,7 @@ import org.eventb.core.ast.expanders.Expanders;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
@@ -136,30 +134,24 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	private static final SMTTerm[] EMPTY_TERM = {};
 
-	public SMTThroughVeriT(final String solver) {
-		super(solver);
-	}
-
 	/**
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
 	protected SMTSignatureVerit signature;
 
-	// TODO Use this commentary later when printing the point
-	/**
-	 * This variable is used to control if it's necessary to print a point ( . )
-	 * after declaration of variables in a existencial predicate. The point is
-	 * necessary when the predicate being translated is inside a macro (it can
-	 * be produced by set intension translation rules of lambda abstraction
-	 * translation rules)
-	 */
-
 	/**
 	 * This boolean is used to check if it's necessary to add the polymorphic
 	 * sort Pair and the polymorphic function pair in the signature.
 	 */
 	private boolean insertPairDecl = false;
+
+	final private SMTFactoryVeriT sf;
+
+	public SMTThroughVeriT(final String solver) {
+		super(solver);
+		this.sf = SMTFactoryVeriT.getInstance();
+	}
 
 	/**
 	 * This is the public translation method
@@ -226,8 +218,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} else {
 			SMTSortSymbol sortSymbol = typeMap.get(type);
 			if (sortSymbol == null) {
-				sortSymbol = SMTFactory.makeVeriTSortSymbol(type.toString(),
-						signature);
+				sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
+						type.toString(), signature);
 				signature.addSort(sortSymbol);
 				typeMap.put(type, sortSymbol);
 			}
@@ -246,7 +238,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				parentType.getSource(), parentType);
 		final SMTSortSymbol targetSymbol = parseOneOfPairTypes(
 				parentType.getTarget(), parentType);
-		return makePairSortSymbol(sourceSymbol, targetSymbol);
+		return SMTFactoryVeriT.makePairSortSymbol(sourceSymbol, targetSymbol);
 	}
 
 	@Override
@@ -402,7 +394,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				if (baseType instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) baseType);
 				} else {
-					sortSymbol = SMTFactory.makeVeriTSortSymbol(
+					sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
 							baseType.toString(), signature);
 					signature.addSort(sortSymbol);
 					typeMap.put(baseType, sortSymbol);
@@ -414,7 +406,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				if (type instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) type);
 				} else {
-					sortSymbol = makeVeriTSortSymbol(type.toString(), signature);
+					sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
+							type.toString(), signature);
 					signature.addSort(sortSymbol);
 					typeMap.put(type, sortSymbol);
 				}
@@ -437,7 +430,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
 		final SMTSortSymbol right = translateTypeName(type.getRight());
-		return makePairSortSymbol(left, right);
+		return SMTFactoryVeriT.makePairSortSymbol(left, right);
 	}
 
 	/**
@@ -512,7 +505,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KPRED:
 			// Making x
 			x = signature.freshCstName("x");
-			xSort = makePairSortSymbol(Ints.getInt(), Ints.getInt());
+			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
+					Ints.getInt());
 
 			new SMTFunctionSymbol(x, EMPTY_SORT, xSort, !ASSOCIATIVE,
 					!PREDEFINED);
@@ -520,7 +514,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Making 1
 			b = BigInteger.ONE;
-			plusOrMinusUmNumeral = sf.makeNumeral(b);
+			plusOrMinusUmNumeral = SMTFactory.makeNumeral(b);
 
 			// Making x + 1
 			plusOrMinusChildren = new SMTTerm[2];
@@ -564,7 +558,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KSUCC:
 			// Making x
 			x = signature.freshCstName("x");
-			xSort = makePairSortSymbol(Ints.getInt(), Ints.getInt());
+			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
+					Ints.getInt());
 
 			new SMTFunctionSymbol(x, EMPTY_SORT, xSort, !ASSOCIATIVE,
 					!PREDEFINED);
@@ -572,7 +567,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Making 1
 			b = BigInteger.ONE;
-			plusOrMinusUmNumeral = sf.makeNumeral(b);
+			plusOrMinusUmNumeral = SMTFactory.makeNumeral(b);
 
 			// Making x + 1
 			plusOrMinusChildren = new SMTTerm[2];
@@ -911,12 +906,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTVar[] vars = { var };
 
 		// making the moreOrEqual terms
-		final SMTTerm numeralZero = sf.makeNumeral(BigInteger.ZERO);
-		final SMTTerm numeralOne = sf.makeNumeral(BigInteger.ONE);
+		final SMTTerm numeralZero = SMTFactory.makeNumeral(BigInteger.ZERO);
+		final SMTTerm numeralOne = SMTFactory.makeNumeral(BigInteger.ONE);
 		final SMTTerm[] moreOrEqualTerms = { var, numeralZero };
 
 		// making the moreOrEqual formula
-		final SMTFormula impliesFstArgument = sf.makeNotEqual(moreOrEqualTerms);
+		final SMTFormula impliesFstArgument = SMTFactory.makeNotEqual(moreOrEqualTerms);
 
 		// making the expn fun application
 		final SMTTerm[] expnTerms = { var, numeralZero };
@@ -933,7 +928,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula[] impliesArgs = { impliesFstArgument,
 				impliesSndArgument };
 
-		return sf.makeForAll(vars, sf.makeImplies(impliesArgs));
+		return sf.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
 	}
 
 	/**
@@ -965,7 +960,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private SMTFormula makeImpliesFormula(final SMTFormula greaterThan,
 			final SMTFormula equalFormula) {
 		final SMTFormula[] formulas = { greaterThan, equalFormula };
-		return sf.makeImplies(formulas);
+		return SMTFactory.makeImplies(formulas);
 	}
 
 	private SMTFormula makeEqualFormula(final SMTTerm expnAppl1,
@@ -987,14 +982,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	private SMTTerm makeMinus(final SMTTerm nVar, final BigInteger numeral) {
-		final SMTTerm[] terms = { nVar, sf.makeNumeral(numeral) };
+		final SMTTerm[] terms = { nVar, SMTFactory.makeNumeral(numeral) };
 		return sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
 				.getOperator(SMTOperator.MINUS), terms, signature);
 	}
 
 	private SMTFormula makeGreaterThan(final SMTTerm nVar,
 			final BigInteger numeral) {
-		final SMTTerm[] terms = { nVar, sf.makeNumeral(numeral) };
+		final SMTTerm[] terms = { nVar, SMTFactory.makeNumeral(numeral) };
 		return sf.makeGreaterThan((SMTPredicateSymbol) signature.getLogic()
 				.getOperator(SMTOperator.GT), terms, signature);
 	}
@@ -1014,7 +1009,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTVar[] vars = { var };
 
 		// making the moreOrEqual terms
-		final SMTTerm numeralZero = sf.makeNumeral(BigInteger.ZERO);
+		final SMTTerm numeralZero = SMTFactory.makeNumeral(BigInteger.ZERO);
 		final SMTTerm[] moreOrEqualTerms = { var, numeralZero };
 
 		// making the moreOrEqual formula
@@ -1037,7 +1032,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula[] impliesArgs = { impliesFstArgument,
 				impliesSndArgument };
 
-		return sf.makeForAll(vars, sf.makeImplies(impliesArgs));
+		return sf.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
 	}
 
 	/**
@@ -1121,7 +1116,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			if (predicate.getLeft().getType() instanceof BooleanType) {
 				final SMTFormula[] childrenFormulas = sf
 						.convertVeritTermsIntoFormulas(children);
-				smtNode = sf.makeIff(childrenFormulas);
+				smtNode = SMTFactory.makeIff(childrenFormulas);
 			} else {
 				smtNode = makeEqual(children);
 			}
@@ -1135,7 +1130,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.convertVeritTermsIntoFormulas(children);
 				smtNode = sf.makeNotIff(childrenFormulas);
 			} else {
-				smtNode = sf.makeNotEqual(children);
+				smtNode = SMTFactory.makeNotEqual(children);
 			}
 			break;
 		}
@@ -1184,8 +1179,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory
-					.makeMacroAtom(getMacroSymbol(SUBSET), children);
+			smtNode = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(SUBSET),
+					children);
 			break;
 		}
 		case Formula.SUBSETEQ: {
@@ -1193,7 +1188,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeMacroAtom(getMacroSymbol(SUBSETEQ),
+			smtNode = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(SUBSETEQ),
 					children);
 			break;
 		}
@@ -1202,10 +1197,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory
-					.makeMacroAtom(getMacroSymbol(SUBSET), children);
+			smtNode = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(SUBSET),
+					children);
 			final SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
-			smtNode = sf.makeNot(subsetFormula);
+			smtNode = SMTFactory.makeNot(subsetFormula);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
@@ -1213,10 +1208,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = SMTFactory.makeMacroAtom(getMacroSymbol(SUBSETEQ),
+			smtNode = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(SUBSETEQ),
 					children);
 			final SMTFormula[] subsetFormula = { (SMTFormula) smtNode };
-			smtNode = sf.makeNot(subsetFormula);
+			smtNode = SMTFactory.makeNot(subsetFormula);
 			break;
 		}
 		default: {
@@ -1584,7 +1579,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			minChildrenTerms[0] = mVarTerm;
 
 			// Creating the new assumption (ismin m t) and saving it.
-			final SMTFormula isMinFormula = SMTFactory.makeMacroAtom(
+			final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(
 					isMinSymbol, minChildrenTerms);
 			signature.addAdditionalAssumption(isMinFormula);
 
@@ -1621,7 +1616,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			maxChildrenTerms[0] = mVarTerm;
 
 			// Creating the new assumption (ismax m t) and saving it.
-			final SMTFormula isMaxFormula = SMTFactory.makeMacroAtom(
+			final SMTFormula isMaxFormula = SMTFactoryVeriT.makeMacroAtom(
 					isMaxSymbol, maxChildrenTerms);
 
 			signature.addAdditionalAssumption(isMaxFormula);
@@ -1752,7 +1747,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param newVars
 	 */
 	private void addDistinctAssumption(final List<SMTTerm> newVars) {
-		signature.addAdditionalAssumption(makeDistinct(newVars
+		signature.addAdditionalAssumption(SMTFactoryVeriT.makeDistinct(newVars
 				.toArray(new SMTTerm[newVars.size()])));
 	}
 
