@@ -129,22 +129,19 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            the Xn term
 	 * @param valueTerm
 	 *            the Yn term
-	 * @return The string representation of a element of the pair enumeration
 	 */
-	private void elemToString(final String keyEl, final SMTTerm keyTerm,
+	private void elemToString(final SMTVarSymbol keyEl, final SMTTerm keyTerm,
 			final SMTTerm valueTerm, final StringBuilder sb) {
 		sb.append(OPAR);
 		sb.append("=");
 		sb.append(SPACE);
-		sb.append(keyEl);
+		keyEl.getNameWithQMark(sb);
 		sb.append(SPACE);
 		sb.append(OPAR);
 		sb.append("pair");
 		sb.append(SPACE);
-		// sb.append(keyTerm);
 		keyTerm.toString(sb);
 		sb.append(SPACE);
-		// sb.append(valueTerm);
 		valueTerm.toString(sb);
 		sb.append(CPAR);
 		sb.append(CPAR);
@@ -160,7 +157,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(" . ");
 		if (terms.length == 1) {
 
-			elemToString(key.getNameWithQMark(), terms[0].getArgTerms()[0],
+			elemToString(key, terms[0].getArgTerms()[0],
 					terms[0].getArgTerms()[1], sb);
 			sb.append(CPAR);
 			sb.append(CPAR);
@@ -168,8 +165,8 @@ public class SMTPairEnumMacro extends SMTMacro {
 			sb.append("(or");
 			for (final SMTMacroTerm term : terms) {
 				sb.append("\n\t\t");
-				elemToString(key.getNameWithQMark(), term.getArgTerms()[0],
-						term.getArgTerms()[1], sb);
+				elemToString(key, term.getArgTerms()[0], term.getArgTerms()[1],
+						sb);
 			}
 			sb.append("\n");
 			sb.append(CPAR);

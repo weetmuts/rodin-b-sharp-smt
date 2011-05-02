@@ -86,7 +86,7 @@ public class SMTEnumMacro extends SMTMacro {
 		sb.append(" . ");
 		if (terms.length == 1) {
 			sb.append("(= ");
-			sb.append(assignedVar.getNameWithQMark());
+			assignedVar.getNameWithQMark(sb);
 			sb.append(" ");
 			terms[0].toString(sb);
 			sb.append(")))");
@@ -94,7 +94,7 @@ public class SMTEnumMacro extends SMTMacro {
 			sb.append("(or");
 			for (final SMTTerm term : terms) {
 				sb.append("\n\t\t(= ");
-				sb.append(assignedVar.getNameWithQMark());
+				assignedVar.getNameWithQMark(sb);
 				sb.append(" ");
 				term.toString(sb);
 				sb.append(")");

@@ -33,8 +33,8 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 		return sort;
 	}
 
-	public String getNameWithQMark() {
-		return "?" + name;
+	public void getNameWithQMark(final StringBuilder sb) {
+		sb.append(QVAR + name);
 	}
 
 	@Override
