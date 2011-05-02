@@ -125,8 +125,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return smtB;
 	}
 
+	/**
+	 * This class is used to get all the relational predicates of the hypotheses
+	 * and the goal of the proof. The intention is to extract the sets that will
+	 * be translated to the special case that concerns monadic sets in the PP
+	 * approach.
+	 * 
+	 * @author vitor
+	 * 
+	 */
 	class MemberShipPredicateInspector extends
 			DefaultInspector<RelationalPredicate> {
+
+		/**
+		 * Stores in the accumulator the relational predicates which the tag is
+		 * {@link Formula#IN}
+		 */
 		@Override
 		public void inspect(final RelationalPredicate relPredicate,
 				final IAccumulator<RelationalPredicate> accumulator) {
@@ -136,6 +150,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method extracts all the sets that will be translated in the
+	 * optimized translation for sets, that is, the returned sets complies with
+	 * the following rules:
+	 * 
+	 * <ul>
+	 * <li>The set only occur on the right-hand side of membership predicates;
+	 * <li>No bound variable occurs in the right-hand side of similar membership
+	 * predicates;
+	 * </ul>
+	 * 
+	 * Then these sets are used as operator with one argument, instead of
+	 * creating a fresh predicate where the set is one of the arguments.
+	 * 
+	 * @param hypotheses
+	 *            The hypotheses of the proof
+	 * @param goal
+	 *            THe goal of the proof
+	 * @return All the sets that agree with the restrictions explained above.
+	 */
 	private Map<String, Type> storeMonadicMSPIdentifiers(
 			final List<Predicate> hypotheses, final Predicate goal) {
 		final MemberShipPredicateInspector msp = new MemberShipPredicateInspector();
@@ -623,6 +657,82 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Given a predicate <code>a ∈ s</code>, with <code>a ⦂ S</code> and
+	 * <code>s ⦂ ℙ(S)</code>.
+	 * <p>
+	 * If this predicate is in accordance with the rules of optimization of
+	 * translation sets, the membership is translated to:
+	 * 
+	 * (s a)
+	 * 
+	 * <p>
+	 * else the type of <code>a</code> is mapped to the SMT-LIB predicate:
+	 * <code>(p S PS)</code>.
+	 * 
+	 * @param membershipPredicate
+	 *            The membership predicate that will be translated.
+	 */
+	private void translateMemberShipPredicate(
+			RelationalPredicate membershipPredicate) {
+
+		final Expression left = membershipPredicate.getLeft();
+		final Expression right = membershipPredicate.getRight();
+
+		// Translate monadic sets (special case)
+		if (right instanceof FreeIdentifier) {
+			final FreeIdentifier rightSet = (FreeIdentifier) right;
+			if (monadicSets.containsKey(rightSet.getName())) {
+				final Type leftType = left.getType();
+				final SMTTerm leftTerm = smtTerm(left);
+				final SMTTerm[] argTerms = { leftTerm };
+				// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
+				final SMTSortSymbol[] argSorts = { leftTerm.getSort() };
+
+				// FIXME Check the behavior of this method
+				final SMTPredicateSymbol predSymbol = signature
+						.addNewPredicateSymbol(rightSet.getName(), argSorts);
+
+				msTypeMap.put(leftType, predSymbol);
+
+				smtNode = SMTFactory.makeAtom(predSymbol, argTerms, signature);
+				membershipPredicateTerms.clear();
+				return;
+			}
+		}
+
+		final SMTTerm[] children = smtTerms(left, right);
+
+		if (left.getTag() != Formula.MAPSTO) {
+			membershipPredicateTerms.add(0, children[0]);
+		}
+		membershipPredicateTerms.add(children[1]);
+
+		final int numberOfArguments = membershipPredicateTerms.size();
+		final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
+		for (int i = 0; i < numberOfArguments; i++) {
+			argSorts[i] = membershipPredicateTerms.get(i).getSort();
+		}
+
+		final Type leftType = left.getType();
+
+		SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
+		if (predSymbol == null) {
+			predSymbol = signature.addNewPredicateSymbol(
+					signature.freshPredName(), argSorts);
+			msTypeMap.put(leftType, predSymbol);
+		}
+
+		if (predSymbol == null) {
+			// TODO throw new exception
+		}
+		final SMTTerm[] args = membershipPredicateTerms
+				.toArray(new SMTTerm[numberOfArguments]);
+
+		smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
+		membershipPredicateTerms.clear();
+	}
+
+	/**
 	 * This method translates an Event-B relational predicate into an SMT node.
 	 */
 	@Override
@@ -673,70 +783,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 			break;
 		case Formula.IN:
-			/**
-			 * The predicate is <code>a ∈ s</code> with <code>a ⦂ S</code> and
-			 * <code>s ⦂ ℙ(S)</code>. Then we just need to map the type of
-			 * <code>a</code> to an SMT-LIB predicate : <code>(p S PS)</code>.
-			 */
-			final Expression left = predicate.getLeft();
-			final Expression right = predicate.getRight();
-
-			// Translate monadic sets (special case)
-			if (right instanceof FreeIdentifier) {
-				final FreeIdentifier rightSet = (FreeIdentifier) right;
-				if (monadicSets.containsKey(rightSet.getName())) {
-					final Type leftType = left.getType();
-					final SMTTerm leftTerm = smtTerm(left);
-					final SMTTerm[] argTerms = { leftTerm };
-					// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
-					final SMTSortSymbol[] argSorts = { leftTerm.getSort() };
-
-					// FIXME Check the behavior of this method
-					final SMTPredicateSymbol predSymbol = signature
-							.addNewPredicateSymbol(rightSet.getName(), argSorts);
-
-					msTypeMap.put(leftType, predSymbol);
-
-					smtNode = SMTFactory.makeAtom(predSymbol, argTerms,
-							signature);
-					membershipPredicateTerms.clear();
-					break;
-				}
-			}
-
-			final SMTTerm[] children = smtTerms(left, right);
-
-			if (left.getTag() != Formula.MAPSTO) {
-				membershipPredicateTerms.add(0, children[0]);
-			}
-			membershipPredicateTerms.add(children[1]);
-
-			final int numberOfArguments = membershipPredicateTerms.size();
-			final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
-			for (int i = 0; i < numberOfArguments; i++) {
-				argSorts[i] = membershipPredicateTerms.get(i).getSort();
-			}
-
-			final Type leftType = left.getType();
-
-			SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
-			if (predSymbol == null) {
-				predSymbol = signature.addNewPredicateSymbol(
-						signature.freshPredName(), argSorts);
-				msTypeMap.put(leftType, predSymbol);
-			}
-
-			if (predSymbol == null) {
-				// TODO throw new exception
-			}
-
-			final SMTTerm[] args = membershipPredicateTerms
-					.toArray(new SMTTerm[numberOfArguments]);
-
-			smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
-			membershipPredicateTerms.clear();
+			translateMemberShipPredicate(predicate);
 			break;
 		case Formula.NOTIN:
+			// TODO
 			break;
 		default:
 			/**
