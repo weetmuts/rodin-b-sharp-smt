@@ -179,38 +179,30 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 		msRelPred.addAll(goal.inspect(msp));
 
-		final Set<FreeIdentifier> monadicSetElements = new HashSet<FreeIdentifier>();
-		final Set<Expression> notMSPSets = new HashSet<Expression>();
+		final Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
 
-		Expression left;
+		final Set<Type> boundMSPTypes = new HashSet<Type>();
+
 		Expression right;
-
 		for (final RelationalPredicate predicate : msRelPred) {
-			left = predicate.getLeft();
 			right = predicate.getRight();
 
 			assert right instanceof FreeIdentifier
 					|| right instanceof BoundIdentifier;
 
-			notMSPSets.add(left);
-			if (notMSPSets.contains(right)) {
-				continue;
+			if (right instanceof FreeIdentifier) {
+				FreeIdentifier fr = (FreeIdentifier) right;
+				if (right.getType().getSource() == null) {
+					monadicSetEnv.put(fr.getName(), fr.getType());
+				}
 			} else if (right instanceof BoundIdentifier) {
-				notMSPSets.add(right);
-				continue;
-			} else if (right.getType().getSource() != null) {
-				notMSPSets.add(right);
-				continue;
-			} else {
-				monadicSetElements.add((FreeIdentifier) right);
+				boundMSPTypes.add(((BoundIdentifier) right).getType());
 			}
 		}
-		monadicSetElements.removeAll(notMSPSets);
-
-		final Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
-
-		for (final FreeIdentifier set : monadicSetElements) {
-			monadicSetEnv.put(set.getName(), set.getType());
+		for (String name : monadicSetEnv.keySet()) {
+			if (boundMSPTypes.contains(monadicSetEnv.get(name))) {
+				monadicSetEnv.remove(name);
+			}
 		}
 
 		return monadicSetEnv;

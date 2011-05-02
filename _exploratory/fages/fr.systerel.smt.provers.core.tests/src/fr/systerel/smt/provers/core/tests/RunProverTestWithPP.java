@@ -789,8 +789,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
 	public void testch910_ring_6() {
 		setPreferencesForZ3Test();
 
@@ -799,73 +797,5 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("itv ∈ P → (P → ℙ(P))");
 		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
-	}
-
-	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
-	public void testch910_ring_6_simple() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch910_ring_6_simple", hyps, "itv ∈ P → (P → ℙ(P))", te, VALID);
-	}
-
-	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
-	public void testch910_ring_6_pp() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch910_ring_6_pp",
-				hyps,
-				"(∀x,x0·x ↦ x0∈itv⇒x∈P∧(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))∧(∀x,x1,x2·x ↦ x1∈x0∧x ↦ x2∈x0⇒x1=x2)∧(∀x·x∈P⇒(∃x1·x ↦ x1∈x0)))∧(∀x,x0,x1·x ↦ x0∈itv∧x ↦ x1∈itv⇒x0=x1)∧(∀x·x∈P⇒(∃x0·x ↦ x0∈itv))",
-				te, VALID);
-	}
-
-	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
-	public void testch910_ring_6_pp_simple() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch910_ring_6_pp_simple",
-				hyps,
-				"(∀x,x0·x ↦ x0∈itv⇒x∈P∧(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))∧(∀x,x1,x2·x ↦ x1∈x0∧x ↦ x2∈x0⇒x1=x2)∧(∀x·x∈P⇒(∃x1·x ↦ x1∈x0)))",
-				te, VALID);
-	}
-
-	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
-	public void testch910_ring_6_pp_smaller() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch910_ring_6_pp_smaller", hyps,
-				"(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))", te, VALID);
-	}
-
-	@Test
-	// FIXME Fix this problem. It is related to the monadic sets optimization
-	@Ignore("(P_0 Int): Int does not match: Int NSORT_1")
-	public void testch910_ring_6_pp_mini() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch910_ring_6_pp_mini", hyps,
-				"(∀x,x1·x ↦ x1∈x0⇒x∈P∧(∀x·x∈x1⇒x∈P))", te, VALID);
 	}
 }
