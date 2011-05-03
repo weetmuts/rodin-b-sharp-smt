@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
+import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB
@@ -37,7 +39,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
 				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		defaultLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+				Booleans.getInstance());
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -132,21 +135,23 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * land
 		 */
-		testTranslationV1_2Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∧ (u = v)",
+				"(and (= a b) (iff (TRUE u) (TRUE v)))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (= u v) (= r s))");
+				"(and (= a b) (iff (TRUE u) (TRUE v)) (= r s))");
 		/**
 		 * lor
 		 */
-		testTranslationV1_2Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
+		testTranslationV1_2Default("(a = b) ∨ (u = v)",
+				"(or (= a b) (iff (TRUE u) (TRUE v)))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (= u v) (= r s))");
+				"(or (= a b) (iff (TRUE u) (TRUE v)) (= r s))");
 	}
 
 	/**
@@ -320,13 +325,13 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 
 	@Test
-	@Ignore("The int set is not yet implemented")
-	// TODO: Implement the Int set for the pp approach
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
-		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
-		testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
+		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
+		// TODO: Implement the Int set for the pp approach
+		// testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
+		// testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
 	}
 
 	/**
@@ -341,11 +346,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * "pred-boolequ"
 	 */
 	@Test
-	@Ignore("The boolean set is not yet implemented")
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = v", "(= u v)");
-		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
-		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
+		testTranslationV1_2Default("u = v", "(iff (TRUE u) (TRUE v))");
+		testTranslationV1_2Default("u = TRUE", "(TRUE u)");
+		testTranslationV1_2Default("TRUE = u", "(TRUE u)");
 	}
 
 	/**

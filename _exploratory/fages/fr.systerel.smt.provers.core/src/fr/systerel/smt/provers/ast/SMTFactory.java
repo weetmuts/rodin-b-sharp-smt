@@ -189,7 +189,7 @@ public abstract class SMTFactory {
 		return new SMTConnectiveFormula(XOR, formulas);
 	}
 
-	public static SMTFormula makeIff(final SMTFormula[] formulas) {
+	public static SMTFormula makeIff(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(IFF, formulas);
 	}
 
@@ -268,7 +268,8 @@ public abstract class SMTFactory {
 		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 
-	public SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
+	public static SMTFormula makeForAll(final SMTTerm[] terms,
+			final SMTFormula formula) {
 		return makeSMTQuantifiedFormula(FORALL, terms, formula, false);
 	}
 
@@ -276,7 +277,7 @@ public abstract class SMTFactory {
 		return makeSMTQuantifiedFormula(EXISTS, terms, formula, false);
 	}
 
-	public SMTFormula makeSMTQuantifiedFormula(
+	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTTerm[] terms,
 			final SMTFormula formula, final boolean printPoint) {
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];

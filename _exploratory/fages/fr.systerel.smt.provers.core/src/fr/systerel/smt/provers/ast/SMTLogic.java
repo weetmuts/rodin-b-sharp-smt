@@ -36,7 +36,7 @@ public class SMTLogic {
 	// TODO add fields needed to print a complete logic (language, extensions,
 	// notes)
 
-	public SMTLogic(final String name, final SMTTheory[] theories) {
+	public SMTLogic(final String name, final SMTTheory... theories) {
 		this.name = name;
 		this.theories = theories.clone();
 	}
@@ -387,15 +387,20 @@ public class SMTLogic {
 	public SMTFunctionSymbol getBooleanCste() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof VeritPredefinedTheory) {
-				final SMTSortSymbol boolSort = ((VeritPredefinedTheory) theory)
-						.getBooleanSort();
-				final SMTSortSymbol[] argSorts = {};
-				final SMTFunctionSymbol boolSortFunction = new SMTFunctionSymbol(
-						SMTSymbol.BOOL_SORT, argSorts, boolSort, false, true);
-				return boolSortFunction;
+				return VeritPredefinedTheory.getBoolFunction();
+			} else if (theory instanceof Booleans) {
+				return Booleans.getBoolCste();
 			}
 		}
-		throw new IllegalArgumentException(
-				"The Int sort is not declared in the signature of this benchmark");
+		return null;
+	}
+
+	public SMTPredicateSymbol getTrue() {
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof Booleans) {
+				return Booleans.getTrue();
+			}
+		}
+		return null;
 	}
 }

@@ -215,21 +215,23 @@ public class SMTTheory {
 				SMTSymbol.BOOL_SORT, PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { BOOL };
 
+		private static final SMTSortSymbol[] BOOL_TAB = { BOOL };
 		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL, BOOL };
 
-		private final static SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-				SMTSymbol.EQUAL, BOOL_BOOL_TAB, PREDEFINED);
-		private final static SMTPredicateSymbol[] PREDICATES = { EQUAL };
+		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
+				"TRUE", BOOL_TAB, !PREDEFINED);
 
-		private final static SMTFunctionSymbol TRUE = new SMTFunctionSymbol(
-				"TRUE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
-		private final static SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-				"FALSE", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
+		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
-				SMTSymbol.BOOL_SORT, EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CSTE, TRUE,
-				FALSE };
+				SMTSymbol.BOOL_SORT, EMPTY_SORT, BOOL, !ASSOCIATIVE,
+				!PREDEFINED);
+
+		public static SMTFunctionSymbol getBoolCste() {
+			return BOOL_CSTE;
+		}
+
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CSTE };
 
 		private static final Booleans INSTANCE = new Booleans();
 
@@ -244,6 +246,10 @@ public class SMTTheory {
 		@Override
 		public SMTSortSymbol getBooleanSort() {
 			return BOOL;
+		}
+
+		public static SMTPredicateSymbol getTrue() {
+			return TRUE;
 		}
 	}
 }

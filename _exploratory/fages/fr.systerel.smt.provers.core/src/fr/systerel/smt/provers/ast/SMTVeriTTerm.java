@@ -10,8 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
-
 public class SMTVeriTTerm extends SMTTerm {
 
 	private final SMTPredicateSymbol symbol;
@@ -19,7 +17,7 @@ public class SMTVeriTTerm extends SMTTerm {
 	SMTVeriTTerm(final SMTPredicateSymbol symbol) {
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
-		sort = Booleans.getInstance().getBooleanSort();
+		sort = VeritPredefinedTheory.getInstance().getBooleanSort();
 	}
 
 	@Override

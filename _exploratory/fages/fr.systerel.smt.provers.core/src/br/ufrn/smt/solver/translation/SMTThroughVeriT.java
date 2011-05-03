@@ -192,7 +192,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * returned the solver's own logic.
 	 */
 	@Override
-	protected SMTLogic determineLogic() {
+	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
+			final Predicate goal) {
 		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
 
@@ -346,7 +347,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final List<Predicate> hypotheses, final Predicate goal)
 			throws TranslationException {
 
-		final SMTLogic logic = determineLogic();
+		final SMTLogic logic = determineLogic(hypotheses, goal);
 
 		/**
 		 * SMT translation
@@ -662,19 +663,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(ID), EMPTY_TERM);
 			break;
 		case Formula.TRUE:
-			/**
-			 * TODO Check the rules to see how do implement this.
-			 */
-			// this.smtNode = sf.makePTrue(this.signature); // FIXME Use boolean
-			// value when BOOL_SORT theory implemented
+			// FIXME Use boolean value when BOOL_SORT theory implemented
 			throw new IllegalArgumentException(
 					"TRUE value (TRUE)is not implemented yet");
 		case Formula.FALSE:
-			/**
-			 * TODO Check the rules to see how do implement this.
-			 */
-			// this.smtNode = sf.makePFalse(this.signature); // FIXME Use
-			// boolean value when BOOL_SORT theory implemented
+			// FIXME Use boolean value when BOOL_SORT theory implemented
 			throw new IllegalArgumentException(
 					"false value (FALSE) is not implemented yet");
 		default:
@@ -911,7 +904,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm[] moreOrEqualTerms = { var, numeralZero };
 
 		// making the moreOrEqual formula
-		final SMTFormula impliesFstArgument = SMTFactory.makeNotEqual(moreOrEqualTerms);
+		final SMTFormula impliesFstArgument = SMTFactory
+				.makeNotEqual(moreOrEqualTerms);
 
 		// making the expn fun application
 		final SMTTerm[] expnTerms = { var, numeralZero };
@@ -928,7 +922,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula[] impliesArgs = { impliesFstArgument,
 				impliesSndArgument };
 
-		return sf.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
+		return SMTFactory.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
 	}
 
 	/**
@@ -954,7 +948,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula impliesFormula = makeImpliesFormula(greaterThan,
 				equalFormula);
 
-		return sf.makeForAll(boundIdents, impliesFormula);
+		return SMTFactory.makeForAll(boundIdents, impliesFormula);
 	}
 
 	private SMTFormula makeImpliesFormula(final SMTFormula greaterThan,
@@ -1032,7 +1026,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula[] impliesArgs = { impliesFstArgument,
 				impliesSndArgument };
 
-		return sf.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
+		return SMTFactory.makeForAll(vars, SMTFactory.makeImplies(impliesArgs));
 	}
 
 	/**
@@ -1089,7 +1083,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			smtNode = sf.makeForAll(termChildren, formulaChild);
+			smtNode = SMTFactory.makeForAll(termChildren, formulaChild);
 			break;
 		case Formula.EXISTS:
 			smtNode = sf.makeExists(termChildren, formulaChild);

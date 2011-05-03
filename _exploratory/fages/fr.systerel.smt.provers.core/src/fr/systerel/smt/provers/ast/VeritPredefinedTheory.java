@@ -2,6 +2,7 @@ package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 public class VeritPredefinedTheory extends SMTTheory implements
 		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
@@ -10,7 +11,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final String NAME = "verit_theory";
 
 	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-			SMTSymbol.BOOL_SORT, PREDEFINED);
+			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED);
 
 	private final static SMTSortSymbol INT = new SMTSortSymbol(SMTSymbol.INT,
 			PREDEFINED);
@@ -46,6 +47,13 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
 			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+
+	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
+			SMTMacroSymbol.BOOL_SORT_VERIT, SMTFactory.EMPTY_SORT, BOOL, false, true);
+
+	public static SMTFunctionSymbol getBoolFunction() {
+		return BOOL_FUNCTION;
+	}
 
 	private static final SMTSortSymbol[] SORTS = { BOOL, INT };
 

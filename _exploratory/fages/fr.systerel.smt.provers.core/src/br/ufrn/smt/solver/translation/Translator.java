@@ -74,11 +74,8 @@ public abstract class Translator implements ISimpleVisitor {
 	 * Determines and returns the SMT-LIB logic to use in order to discharge the
 	 * current sequent.
 	 */
-	protected SMTLogic determineLogic() {
-		// TODO implement this method instead of returning the default UFNIA
-		// logic
-		return SMTLogic.SMTLIBUnderlyingLogic.getInstance();
-	}
+	protected abstract SMTLogic determineLogic(
+			final List<Predicate> hypotheses, final Predicate goal);
 
 	/**
 	 * This method extracts the type environment from the Event-B sequent and
