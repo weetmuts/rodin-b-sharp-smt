@@ -70,7 +70,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 * 
 	 */
 	public SMTFormula makeVeriTMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args) {
+			final SMTTerm... args) {
 		return new SMTVeriTAtom(macroSymbol, args);
 	}
 
@@ -93,8 +93,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol);
 
 		} else if (smtSymbol instanceof SMTFunctionSymbol) {
-			return makeFunApplication((SMTFunctionSymbol) smtSymbol,
-					EMPTY_TERM, signature);
+			return makeFunApplication((SMTFunctionSymbol) smtSymbol, signature,
+					EMPTY_TERM);
 		} else {
 			throw new IllegalArgumentException(
 					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");

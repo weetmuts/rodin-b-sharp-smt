@@ -106,7 +106,7 @@ public abstract class SMTFactory {
 	}
 
 	public SMTFormula makeGreaterThan(final SMTPredicateSymbol gt,
-			final SMTTerm[] args, final SMTSignature signature) {
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyPredicateSignature(gt);
 		return new SMTAtom(gt, args);
 	}
@@ -302,13 +302,13 @@ public abstract class SMTFactory {
 	}
 
 	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
-			final SMTTerm[] args, final SMTSignature signature) {
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(functionSymbol);
 		return new SMTFunApplication(functionSymbol, args);
 	}
 
 	public static SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol,
-			final SMTTerm[] args, final SMTSignature signature) {
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyPredicateSignature(predicateSymbol);
 		return new SMTAtom(predicateSymbol, args);
 	}
@@ -324,7 +324,7 @@ public abstract class SMTFactory {
 	 */
 	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
 			final SMTSignature signature) {
-		return makeFunApplication(functionSymbol, EMPTY_TERM, signature);
+		return makeFunApplication(functionSymbol, signature, EMPTY_TERM);
 	}
 
 	/**
@@ -338,7 +338,7 @@ public abstract class SMTFactory {
 	 */
 	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			final SMTSignature signature) {
-		return makeAtom(predicateSymbol, EMPTY_TERM, signature);
+		return makeAtom(predicateSymbol, signature, EMPTY_TERM);
 	}
 
 	/**

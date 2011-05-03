@@ -120,17 +120,17 @@ public class SMTTheory {
 		 **/
 
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.UMINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
-				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.MINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-				SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+				SMTSymbol.DIV, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.PLUS, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-				SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
 				PLUS, MUL, DIV };
 
@@ -224,8 +224,8 @@ public class SMTTheory {
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
-				SMTSymbol.BOOL_SORT, EMPTY_SORT, BOOL, !ASSOCIATIVE,
-				!PREDEFINED);
+				SMTSymbol.BOOL_SORT, BOOL, !ASSOCIATIVE, !PREDEFINED,
+				EMPTY_SORT);
 
 		public static SMTFunctionSymbol getBoolCste() {
 			return BOOL_CSTE;

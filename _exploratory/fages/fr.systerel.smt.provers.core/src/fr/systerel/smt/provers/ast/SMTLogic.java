@@ -376,7 +376,7 @@ public class SMTLogic {
 						.getIntegerSort();
 				final SMTSortSymbol[] argSorts = {};
 				final SMTFunctionSymbol integerSortFunction = new SMTFunctionSymbol(
-						"Int", argSorts, integerSort, false, true);
+						"Int", integerSort, false, true, argSorts);
 				return integerSortFunction;
 			}
 		}

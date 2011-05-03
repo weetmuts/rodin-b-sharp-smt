@@ -388,13 +388,13 @@ public class SMTMacroFactory {
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
-			"pair", PAIR_ARG_SORTS, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED);
+			"pair", PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
 
 	private static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
-			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
+			"fst", FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
 	private static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
-			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
+			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
 			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
@@ -567,8 +567,8 @@ public class SMTMacroFactory {
 				FST_RETURN_SORT };
 
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(fstReturnSorts), equalTerms,
-				signature);
+				new SMTPredicateSymbol.SMTEqual(fstReturnSorts), signature,
+				equalTerms);
 
 		final SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1,
 				forallVarSymbol2 };
@@ -615,8 +615,8 @@ public class SMTMacroFactory {
 		final SMTTerm[] equalTerms = { sndFunAppl, varSymbol2 };
 
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), equalTerms,
-				signature);
+				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), signature,
+				equalTerms);
 
 		final SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1,
 				forallVarSymbol2 };

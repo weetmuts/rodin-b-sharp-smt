@@ -423,8 +423,8 @@ public abstract class SMTSignature {
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
 		final String freshName = freshCstName(name);
-		return new SMTFunctionSymbol(freshName, EMPTY_SORT, sort, !ASSOCIATIVE,
-				!PREDEFINED);
+		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE,
+				!PREDEFINED, EMPTY_SORT);
 	}
 
 	public SMTSortSymbol freshSort() {

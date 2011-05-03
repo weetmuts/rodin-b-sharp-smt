@@ -187,15 +187,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		for (Predicate h : hypotheses) {
 			h.accept(bI);
 			if (bI.isBoolTheory()) {
-				SMTTheory[] theories = { Ints.getInstance(),
-						Booleans.getInstance() };
-				return new SMTLogic(SMTLogic.UNKNOWN, theories);
+				return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+						Booleans.getInstance());
 			}
 		}
 		goal.accept(bI);
 		if (bI.isBoolTheory()) {
-			SMTTheory[] theories = { Ints.getInstance(), Booleans.getInstance() };
-			return new SMTLogic(SMTLogic.UNKNOWN, theories);
+			return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+					Booleans.getInstance());
 		}
 		return SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
@@ -763,17 +762,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (monadicSets.containsKey(rightSet.getName())) {
 				final Type leftType = left.getType();
 				final SMTTerm leftTerm = smtTerm(left);
-				final SMTTerm[] argTerms = { leftTerm };
-				// SMTPredicateSymbol predSymbol = msTypeMap.get(leftType);
-				final SMTSortSymbol[] argSorts = { leftTerm.getSort() };
 
 				// FIXME Check the behavior of this method
 				final SMTPredicateSymbol predSymbol = signature
-						.addNewPredicateSymbol(rightSet.getName(), argSorts);
+						.addNewPredicateSymbol(rightSet.getName(),
+								leftTerm.getSort());
 
 				msTypeMap.put(leftType, predSymbol);
 
-				smtNode = SMTFactory.makeAtom(predSymbol, argTerms, signature);
+				smtNode = SMTFactory.makeAtom(predSymbol, signature, leftTerm);
 				membershipPredicateTerms.clear();
 				return;
 			}
@@ -794,17 +791,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final Type leftType = left.getType();
 
-		SMTPredicateSymbol predSymbol = createPredSymbol(argSorts, leftType);
+		SMTPredicateSymbol predSymbol = createPredSymbol(leftType, argSorts);
 
 		final SMTTerm[] args = membershipPredicateTerms
 				.toArray(new SMTTerm[numberOfArguments]);
 
-		smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
+		smtNode = SMTFactory.makeAtom(predSymbol, signature, args);
 		membershipPredicateTerms.clear();
 	}
 
-	private SMTPredicateSymbol createPredSymbol(final SMTSortSymbol[] argSorts,
-			final Type type) {
+	private SMTPredicateSymbol createPredSymbol(final Type type,
+			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol predSymbol = msTypeMap.get(type);
 		if (predSymbol == null) {
 			predSymbol = signature.addNewPredicateSymbol(
@@ -832,13 +829,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		SMTTerm term = new SMTVar(vs);
 		SMTTerm termBool = sf.makeConstant(signature.getLogic()
 				.getBooleanCste(), signature);
-		SMTTerm[] inArgs = { term, termBool };
 
-		SMTSortSymbol[] argSorts = { boolSort, boolSort };
+		SMTPredicateSymbol predSymbol = createPredSymbol(type, boolSort,
+				boolSort);
 
-		SMTPredicateSymbol predSymbol = createPredSymbol(argSorts, type);
-
-		SMTFormula formula = SMTFactory.makeAtom(predSymbol, inArgs, signature);
+		SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature, term,
+				termBool);
 
 		return SMTFactory.makeForAll(formula, term);
 	}
@@ -979,8 +975,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GT), children,
-					signature);
+					.getLogic().getOperator(SMTOperator.GT), signature,
+					children);
 		}
 			break;
 		case Formula.GE: {
@@ -1015,9 +1011,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		SMTTerm[] termsRight = smtTerms(right);
 
 		SMTFormula leftFor = SMTFactory.makeAtom(
-				signature.getLogic().getTrue(), termsLeft, signature);
+				signature.getLogic().getTrue(), signature, termsLeft);
 		SMTFormula rightFor = SMTFactory.makeAtom(signature.getLogic()
-				.getTrue(), termsRight, signature);
+				.getTrue(), signature, termsRight);
 		smtNode = SMTFactory.makeIff(leftFor, rightFor);
 	}
 
@@ -1027,9 +1023,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					"Predefined literal TRUE cannot happen in both sides of boolean equality");
 		} else {
 			SMTTerm term = smtTerm(expr);
-			SMTTerm[] terms = { term };
 			smtNode = SMTFactory.makeAtom(this.signature.getLogic().getTrue(),
-					terms, signature);
+					signature, term);
 		}
 	}
 
