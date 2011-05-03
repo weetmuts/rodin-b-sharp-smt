@@ -45,6 +45,7 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String OVR = "ovr";
 	public static final String ID = "id";
 	public static final String FCOMP = "fcomp";
+	public static final String BOOL_SORT_VERIT = "Bool";
 
 	public static final String ENUM = "enum";
 	public static final String MOD = "mod";
