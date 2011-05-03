@@ -486,15 +486,15 @@ public abstract class SMTSignature {
 	// <code>this.preds</code> already contains a predicate defined by a name
 	// and a rank before creating the SMTPredicateSymbol to add to the list.
 	public SMTPredicateSymbol addNewPredicateSymbol(final String name,
-			final SMTSortSymbol[] argSorts) {
-		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name, argSorts,
-				!SMTSymbol.PREDEFINED);
+			final SMTSortSymbol... argSorts) {
+		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
+				!SMTSymbol.PREDEFINED, argSorts);
 		boolean successfullyAdded = preds.add(symbol);
 		if (successfullyAdded) {
 			return symbol;
 		} else {
 			symbol = new SMTPredicateSymbol(freshName(getSymbolNames(preds),
-					name), argSorts, !SMTSymbol.PREDEFINED);
+					name), !SMTSymbol.PREDEFINED, argSorts);
 			successfullyAdded = preds.add(symbol);
 			if (successfullyAdded) {
 				return symbol;

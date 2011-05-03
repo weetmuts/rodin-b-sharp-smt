@@ -49,9 +49,9 @@ public abstract class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", EMPTY_SORT, PREDEFINED);
+			"true", PREDEFINED, EMPTY_SORT);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", EMPTY_SORT, PREDEFINED);
+			"false", PREDEFINED, EMPTY_SORT);
 	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
 			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true);
 
@@ -70,7 +70,7 @@ public abstract class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public static SMTFormula makeEqual(final SMTTerm[] args) {
+	public static SMTFormula makeEqual(final SMTTerm... args) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
 		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
@@ -80,7 +80,7 @@ public abstract class SMTFactory {
 	 * The SMT-LIB language doesn't define a <code>NOTEQUAL</code> symbol. Thus
 	 * we use <code>EQUAL</code> and <code>NOT</code> symbols to build it.
 	 */
-	public static SMTFormula makeNotEqual(final SMTTerm[] args) {
+	public static SMTFormula makeNotEqual(final SMTTerm... args) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
 		final SMTFormula[] argsT = { new SMTAtom(
@@ -88,7 +88,7 @@ public abstract class SMTFactory {
 		return makeNot(argsT);
 	}
 
-	public SMTFormula makeNotIff(final SMTFormula[] args) {
+	public SMTFormula makeNotIff(final SMTFormula... args) {
 		final SMTFormula[] formulas = { makeIff(args) };
 		return makeNot(formulas);
 	}
@@ -120,43 +120,43 @@ public abstract class SMTFactory {
 	/**
 	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
 	 */
-	public SMTTerm makePlus(final SMTFunctionSymbol plus, final SMTTerm[] args,
-			final SMTSignature signature) {
+	public SMTTerm makePlus(final SMTFunctionSymbol plus,
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(plus);
 		return new SMTFunApplication(plus, args);
 	}
 
-	public SMTTerm makeExpn(final SMTFunctionSymbol expn, final SMTTerm[] args,
-			final SMTSignature signature) {
+	public SMTTerm makeExpn(final SMTFunctionSymbol expn,
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(expn);
 		return new SMTFunApplication(expn, args);
 	}
 
 	public SMTTerm makeMinus(final SMTFunctionSymbol minus,
-			final SMTTerm[] args, final SMTSignature signature) {
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(minus);
 		return new SMTFunApplication(minus, args);
 	}
 
-	public SMTTerm makeMul(final SMTFunctionSymbol mul, final SMTTerm[] args,
-			final SMTSignature signature) {
+	public SMTTerm makeMul(final SMTFunctionSymbol mul,
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(mul);
 		return new SMTFunApplication(mul, args);
 	}
 
 	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macro,
-			final SMTTerm[] args) {
+			final SMTTerm... args) {
 		return new SMTMacroTerm(macro, args);
 	}
 
 	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
-			final SMTTerm[] arg, final SMTSignature signature) {
+			final SMTSignature signature, final SMTTerm... arg) {
 		signature.verifyFunctionSignature(uminus);
 		return new SMTFunApplication(uminus, arg);
 	}
 
-	public SMTTerm makeDiv(final SMTFunctionSymbol div, final SMTTerm[] args,
-			final SMTSignature signature) {
+	public SMTTerm makeDiv(final SMTFunctionSymbol div,
+			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(div);
 		return new SMTFunApplication(div, args);
 	}
@@ -165,27 +165,27 @@ public abstract class SMTFactory {
 	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
 	 * XOR, IFF}
 	 */
-	public static SMTFormula makeNot(final SMTFormula[] formula) {
+	public static SMTFormula makeNot(final SMTFormula... formula) {
 		return new SMTConnectiveFormula(NOT, formula);
 	}
 
-	public static SMTFormula makeImplies(final SMTFormula[] formulas) {
+	public static SMTFormula makeImplies(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(IMPLIES, formulas);
 	}
 
-	public SMTFormula makeIfThenElse(final SMTFormula[] formulas) {
+	public SMTFormula makeIfThenElse(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(ITE_FORMULA, formulas);
 	}
 
-	public static SMTFormula makeAnd(final SMTFormula[] formulas) {
+	public static SMTFormula makeAnd(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(AND, formulas);
 	}
 
-	public static SMTFormula makeOr(final SMTFormula[] formulas) {
+	public static SMTFormula makeOr(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(OR, formulas);
 	}
 
-	public SMTFormula makeXor(final SMTFormula[] formulas) {
+	public SMTFormula makeXor(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(XOR, formulas);
 	}
 
@@ -268,18 +268,19 @@ public abstract class SMTFactory {
 		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 
-	public static SMTFormula makeForAll(final SMTTerm[] terms,
-			final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(FORALL, terms, formula, false);
+	public static SMTFormula makeForAll(final SMTFormula formula,
+			final SMTTerm... terms) {
+		return makeSMTQuantifiedFormula(FORALL, formula, terms);
 	}
 
-	public SMTFormula makeExists(final SMTTerm[] terms, final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(EXISTS, terms, formula, false);
+	public SMTFormula makeExists(final SMTFormula formula,
+			final SMTTerm... terms) {
+		return makeSMTQuantifiedFormula(EXISTS, formula, terms);
 	}
 
 	public static SMTFormula makeSMTQuantifiedFormula(
-			final SMTQuantifierSymbol qSymbol, final SMTTerm[] terms,
-			final SMTFormula formula, final boolean printPoint) {
+			final SMTQuantifierSymbol qSymbol, final SMTFormula formula,
+			final SMTTerm... terms) {
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];

@@ -32,7 +32,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	final private boolean isAssociative;
 
 	public SMTPredicateSymbol(final String symbolName,
-			final SMTSortSymbol argSorts[], final boolean predefined) {
+			final boolean predefined, final SMTSortSymbol... argSorts) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
@@ -147,8 +147,8 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	}
 
 	public static class SMTEqual extends SMTPredicateSymbol {
-		public SMTEqual(final SMTSortSymbol sort[]) {
-			super(EQUAL, sort, PREDEFINED);
+		public SMTEqual(final SMTSortSymbol... sort) {
+			super(EQUAL, PREDEFINED, sort);
 		}
 	}
 }

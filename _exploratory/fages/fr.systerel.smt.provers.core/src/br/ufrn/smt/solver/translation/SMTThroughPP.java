@@ -612,11 +612,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (tag) {
 		case Formula.PLUS:
 			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.PLUS), children, signature);
+					.getOperator(SMTOperator.PLUS), signature, children);
 			break;
 		case Formula.MUL:
 			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MUL), children, signature);
+					.getOperator(SMTOperator.MUL), signature, children);
 			break;
 		default:
 			/**
@@ -670,7 +670,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.MINUS:
 			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MINUS), children, signature);
+					.getOperator(SMTOperator.MINUS), signature, children);
 			break;
 		case Formula.MAPSTO:
 
@@ -684,7 +684,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			break;
 		case Formula.DIV:
 			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), children, signature);
+					.getOperator(SMTOperator.DIV), signature, children);
 			break;
 		case Formula.MOD:
 			throw new IllegalArgumentException(
@@ -833,7 +833,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		SMTTerm termBool = sf.makeConstant(signature.getLogic()
 				.getBooleanCste(), signature);
 		SMTTerm[] inArgs = { term, termBool };
-		SMTTerm[] forallArgs = { term };
 
 		SMTSortSymbol[] argSorts = { boolSort, boolSort };
 
@@ -841,7 +840,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		SMTFormula formula = SMTFactory.makeAtom(predSymbol, inArgs, signature);
 
-		return SMTFactory.makeForAll(forallArgs, formula);
+		return SMTFactory.makeForAll(formula, term);
 	}
 
 	/**
@@ -1044,7 +1043,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.UMINUS), children, signature);
+					.getOperator(SMTOperator.UMINUS), signature, children);
 			break;
 		default:
 			/**
@@ -1124,10 +1123,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			smtNode = SMTFactory.makeForAll(termChildren, formulaChild);
+			smtNode = SMTFactory.makeForAll(formulaChild, termChildren);
 			break;
 		case Formula.EXISTS:
-			smtNode = sf.makeExists(termChildren, formulaChild);
+			smtNode = sf.makeExists(formulaChild, termChildren);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());

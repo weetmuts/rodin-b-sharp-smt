@@ -128,7 +128,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 						sortSymbols[j] = function.args[j].getSort();
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.name, sortSymbols, !PREDEFINED);
+							function.symbol.name, !PREDEFINED, sortSymbols);
 					final SMTAtom atom = new SMTAtom(predicateSymbol,
 							EMPTY_TERM);
 					formulas[i] = atom;
@@ -170,7 +170,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public SMTPredicateSymbol makeVeriTPredSymbol(final String predName,
 			final SMTSortSymbol symbol) {
 		final SMTSortSymbol[] symbols = { symbol };
-		return new SMTPredicateSymbol(predName, symbols, !SMTSymbol.PREDEFINED);
+		return new SMTPredicateSymbol(predName, !SMTSymbol.PREDEFINED, symbols);
 	}
 
 }

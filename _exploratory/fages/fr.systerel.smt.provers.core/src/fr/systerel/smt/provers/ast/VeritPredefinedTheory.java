@@ -24,16 +24,16 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			POLYMORPHIC };
 
 	private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-			SMTSymbol.EQUAL, POLYMORPHIC_PAIRS, PREDEFINED);
+			SMTSymbol.EQUAL, PREDEFINED, POLYMORPHIC_PAIRS);
 
 	private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-			SMTSymbol.LT, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.LT, PREDEFINED, INT_INT_TAB);
 	private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-			SMTSymbol.LE, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.LE, PREDEFINED, INT_INT_TAB);
 	private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-			SMTSymbol.GT, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.GT, PREDEFINED, INT_INT_TAB);
 	private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-			SMTSymbol.GE, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.GE, PREDEFINED, INT_INT_TAB);
 
 	private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
 			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
@@ -49,7 +49,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
-			SMTMacroSymbol.BOOL_SORT_VERIT, SMTFactory.EMPTY_SORT, BOOL, false, true);
+			SMTMacroSymbol.BOOL_SORT_VERIT, SMTFactory.EMPTY_SORT, BOOL, false,
+			true);
 
 	public static SMTFunctionSymbol getBoolFunction() {
 		return BOOL_FUNCTION;
