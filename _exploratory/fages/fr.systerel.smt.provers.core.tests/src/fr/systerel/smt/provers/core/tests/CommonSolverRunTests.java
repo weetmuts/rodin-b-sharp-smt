@@ -1,7 +1,6 @@
 package fr.systerel.smt.provers.core.tests;
 
 import org.eventb.core.seqprover.IProofMonitor;
-
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
 
@@ -105,5 +104,4 @@ public class CommonSolverRunTests extends AbstractTests {
 	protected void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
 	}
-
 }

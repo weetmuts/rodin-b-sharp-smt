@@ -1379,7 +1379,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						false);
 
 				final SMTPairEnumMacro macro = SMTMacroFactory
-						.makePairEnumerationMacro(macroName, var, children,
+						.makePairEnumerationMacro( macroName, var, children,
 								signature);
 				signature.addMacro(macro);
 			} else {

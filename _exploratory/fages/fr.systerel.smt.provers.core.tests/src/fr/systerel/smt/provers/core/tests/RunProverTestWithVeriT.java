@@ -950,6 +950,17 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Type ℙ(ℙ(S×S×ℤ)): Sets of sets are not supported yet")
+	public void testDynamicStableLSR_081014_50() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "l", "S × S");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("dynamicStableLSR_081014_50", hyps,
+				"dom({l} × {S × S × {0}}) = {l}", te, VALID);
+	}
+
+	@Test
 	@Ignore("error : DAG_new: unable to determine sort")
 	public void testAllBehaviorOfAllMacrosTogether() {
 		setPreferencesForZ3Test();

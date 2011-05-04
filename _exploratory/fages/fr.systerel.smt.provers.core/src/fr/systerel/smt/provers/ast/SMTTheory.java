@@ -212,7 +212,7 @@ public class SMTTheory {
 		private static final String BOOLS = "Bools";
 
 		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-				SMTSymbol.BOOL_SORT, PREDEFINED);
+				SMTSymbol.BOOL_SORT, !PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { BOOL };
 
 		private static final SMTSortSymbol[] BOOL_TAB = { BOOL };

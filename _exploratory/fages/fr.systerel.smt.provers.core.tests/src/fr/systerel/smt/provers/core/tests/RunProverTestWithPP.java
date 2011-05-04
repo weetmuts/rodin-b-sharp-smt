@@ -798,4 +798,18 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		hyps.add("itv ∈ P → (P → ℙ(P))");
 		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
 	}
+
+	@Test
+	public void testLinearSort29() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
+				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("r ∈ 1 ‥ m → BOOL");
+		hyps.add("x ∈ 1 ‥ m");
+		hyps.add("j+1 ∈ dom(f)");
+		doTest("ch910_ring_6", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})", te, VALID);
+
+	}
 }

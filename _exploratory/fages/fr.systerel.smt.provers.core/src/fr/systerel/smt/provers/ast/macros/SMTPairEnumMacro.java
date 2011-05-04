@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast.macros;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import fr.systerel.smt.provers.ast.SMTFunApplication;
 import fr.systerel.smt.provers.ast.SMTMacroTerm;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
@@ -80,7 +81,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            details.
 	 */
 	SMTPairEnumMacro(final String macroName, final SMTVarSymbol key,
-			final SMTMacroTerm[] terms, final int precedence) {
+			final SMTTerm[] terms, final int precedence) {
 		super(macroName, precedence);
 		this.key = key;
 		this.terms = terms;
@@ -106,7 +107,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 * The terms that contains the two values for each maplet. See
 	 * {@link SMTPairEnumMacro} for more details.
 	 */
-	private final SMTMacroTerm[] terms;
+	private final SMTTerm[] terms;
 
 	@Override
 	public String toString() {
@@ -147,6 +148,19 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(CPAR);
 	}
 
+	private SMTTerm getArgTerm(SMTTerm term, int index) {
+		if (term instanceof SMTMacroTerm) {
+			SMTMacroTerm mT = (SMTMacroTerm) term;
+			return mT.getArgs()[index];
+		} else if (term instanceof SMTFunApplication) {
+			SMTFunApplication fA = (SMTFunApplication) term;
+			return fA.getArgs()[index];
+		} else {
+			// FIXME: This statement should never be reached
+			return null;
+		}
+	}
+
 	@Override
 	public void toString(final StringBuilder sb) {
 		sb.append(OPAR);
@@ -157,16 +171,15 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(" . ");
 		if (terms.length == 1) {
 
-			elemToString(key, terms[0].getArgTerms()[0],
-					terms[0].getArgTerms()[1], sb);
+			elemToString(key, getArgTerm(terms[0], 0), getArgTerm(terms[0], 1),
+					sb);
 			sb.append(CPAR);
 			sb.append(CPAR);
 		} else {
 			sb.append("(or");
-			for (final SMTMacroTerm term : terms) {
+			for (final SMTTerm term : terms) {
 				sb.append("\n\t\t");
-				elemToString(key, term.getArgTerms()[0], term.getArgTerms()[1],
-						sb);
+				elemToString(key, getArgTerm(term, 0), getArgTerm(term, 1), sb);
 			}
 			sb.append("\n");
 			sb.append(CPAR);

@@ -65,7 +65,6 @@ import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunApplication;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
-import fr.systerel.smt.provers.ast.SMTMacroTerm;
 import fr.systerel.smt.provers.ast.SMTPolymorphicSortSymbol;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTQuantifierSymbol;
@@ -455,13 +454,7 @@ public class SMTMacroFactory {
 			final String macroName, final SMTVarSymbol varName1,
 			final SMTTerm[] terms, final SMTSignatureVerit signature) {
 		addPairMacroSortAndFunInSignature(signature);
-
-		final SMTMacroTerm[] macroTerms = new SMTMacroTerm[terms.length];
-		for (int i = 0; i < macroTerms.length; i++) {
-			macroTerms[i] = (SMTMacroTerm) terms[i];
-		}
-
-		return new SMTPairEnumMacro(macroName, varName1, macroTerms, 1);
+		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
 
 	public static SMTEnumMacro makeEnumMacro(final String macroName,

@@ -18,7 +18,7 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 public class SMTMacroTerm extends SMTTerm {
 
 	private final SMTMacroSymbol macroSymbol;
-	SMTTerm[] argTerms;
+	SMTTerm[] args;
 
 	@Override
 	public void toString(final StringBuilder builder) {
@@ -27,7 +27,7 @@ public class SMTMacroTerm extends SMTTerm {
 		} else {
 			builder.append(OPAR);
 			builder.append(macroSymbol.name);
-			for (final SMTTerm term : argTerms) {
+			for (final SMTTerm term : args) {
 				builder.append(SPACE);
 				term.toString(builder);
 			}
@@ -38,18 +38,18 @@ public class SMTMacroTerm extends SMTTerm {
 	public SMTMacroTerm(final SMTMacroSymbol macro, final SMTTerm[] argTerms,
 			final SMTSortSymbol returnSort) {
 		macroSymbol = macro;
-		this.argTerms = argTerms;
+		this.args = argTerms;
 		sort = returnSort;
 	}
 
 	public SMTMacroTerm(final SMTMacroSymbol macro, final SMTTerm[] argTerms) {
 		macroSymbol = macro;
-		this.argTerms = argTerms;
+		this.args = argTerms;
 		sort = macro.getReturnSort();
 	}
 
-	public SMTTerm[] getArgTerms() {
-		return argTerms;
+	public SMTTerm[] getArgs() {
+		return args;
 	}
 
 }

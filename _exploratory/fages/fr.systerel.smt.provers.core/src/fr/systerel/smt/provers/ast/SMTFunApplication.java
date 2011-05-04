@@ -21,6 +21,10 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * 
  */
 public class SMTFunApplication extends SMTTerm {
+	public SMTTerm[] getArgs() {
+		return args;
+	}
+
 	final SMTFunctionSymbol symbol;
 	final SMTTerm[] args;
 
