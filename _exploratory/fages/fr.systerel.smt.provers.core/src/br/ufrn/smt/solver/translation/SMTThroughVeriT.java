@@ -131,8 +131,6 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  */
 public class SMTThroughVeriT extends TranslatorV1_2 {
 
-	private static final SMTTerm[] EMPTY_TERM = {};
-
 	/**
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -474,7 +472,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		signature.addMacro(macro);
 		final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
 				VeritPredefinedTheory.getInstance().getBooleanSort());
-		smtNode = makeMacroTerm(macroSymbol, EMPTY_TERM);
+		smtNode = makeMacroTerm(macroSymbol);
 	}
 
 	/**
@@ -524,7 +522,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Making Int
 			intS = SMTMacroFactory.getMacroSymbol(INTEGER);
-			intT = makeMacroTerm(intS, EMPTY_TERM);
+			intT = makeMacroTerm(intS);
 			addPredefinedMacroInSignature(INTEGER, signature);
 
 			// making (x in Int)
@@ -564,7 +562,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Making Int
 			intS = SMTMacroFactory.getMacroSymbol(INTEGER);
-			intT = makeMacroTerm(intS, EMPTY_TERM);
+			intT = makeMacroTerm(intS);
 			addPredefinedMacroInSignature(INTEGER, signature);
 
 			// making (x in Int)
@@ -580,19 +578,17 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.INTEGER:
 			addPredefinedMacroInSignature(INTEGER, signature);
 
-			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(INTEGER),
-					EMPTY_TERM);
+			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(INTEGER));
 			break;
 		case Formula.NATURAL:
 			addPredefinedMacroInSignature(NAT, signature);
 
-			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(NAT), EMPTY_TERM);
+			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(NAT));
 			break;
 		case Formula.NATURAL1:
 			addPredefinedMacroInSignature(NAT1, signature);
 
-			smtNode = SMTFactory
-					.makeMacroTerm(getMacroSymbol(NAT1), EMPTY_TERM);
+			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(NAT1));
 			break;
 		case Formula.BOOL:
 			throw new IllegalArgumentException(
@@ -606,8 +602,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			} else {
 				addPredefinedMacroInSignature(EMPTY, signature);
 
-				smtNode = SMTFactory.makeMacroTerm(
-						SMTMacroFactory.getMacroSymbol(EMPTY), EMPTY_TERM);
+				smtNode = SMTFactory.makeMacroTerm(SMTMacroFactory
+						.getMacroSymbol(EMPTY));
 			}
 			break;
 		case Formula.KPRJ1_GEN:
@@ -625,7 +621,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.KID_GEN:
 			addPredefinedMacroInSignature(ID, signature);
 
-			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(ID), EMPTY_TERM);
+			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(ID));
 			break;
 		case Formula.TRUE:
 			// FIXME Use boolean value when BOOL_SORT theory implemented
@@ -1393,7 +1389,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			}
 			final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
 					VeritPredefinedTheory.getInstance().getBooleanSort());
-			smtNode = SMTFactory.makeMacroTerm(symbol, EMPTY_TERM);
+			smtNode = SMTFactory.makeMacroTerm(symbol);
 		}
 	}
 

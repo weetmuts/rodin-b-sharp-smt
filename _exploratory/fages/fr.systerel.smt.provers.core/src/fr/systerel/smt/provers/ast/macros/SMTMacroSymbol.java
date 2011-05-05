@@ -102,8 +102,8 @@ public class SMTMacroSymbol extends SMTSymbol {
 	 * @param predefined
 	 *            If it's predefined
 	 */
-	SMTMacroSymbol(final String symbolName, final SMTSortSymbol[] argSorts,
-			final SMTSortSymbol returnSort, final boolean predefined) {
+	SMTMacroSymbol(final String symbolName, final SMTSortSymbol returnSort,
+			final boolean predefined, final SMTSortSymbol... argSorts) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts;
 		this.returnSort = returnSort;
