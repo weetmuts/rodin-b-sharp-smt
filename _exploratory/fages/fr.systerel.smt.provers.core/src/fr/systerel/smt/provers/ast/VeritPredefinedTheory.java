@@ -1,9 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vitor Alcantara de Almeida - Implementation
+ *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
+/**
+ * This class implements the Theories used by VeriT.
+ **/
 public class VeritPredefinedTheory extends SMTTheory implements
 		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
 		ISMTBooleanSort {
@@ -49,8 +62,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 
 	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
-			SMTMacroSymbol.BOOL_SORT_VERIT, BOOL, false, true,
-			SMTFactory.EMPTY_SORT);
+			SMTMacroSymbol.BOOL_SORT_VERIT, BOOL, false, true);
 
 	public static SMTFunctionSymbol getBoolFunction() {
 		return BOOL_FUNCTION;
@@ -137,10 +149,17 @@ public class VeritPredefinedTheory extends SMTTheory implements
 		return GE;
 	}
 
+	/**
+	 * 
+	 * @return the pair sorts {Int,Int}
+	 */
 	public static SMTSortSymbol[] getIntIntTab() {
 		return INT_INT_TAB;
 	}
 
+	/**
+	 * returns the exponential symbol
+	 */
 	@Override
 	public SMTSymbol getExpn() {
 		return EXPN;

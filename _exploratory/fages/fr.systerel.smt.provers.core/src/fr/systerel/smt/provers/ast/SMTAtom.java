@@ -26,7 +26,7 @@ class SMTAtom extends SMTFormula {
 	 * @param symbol
 	 * @param terms
 	 */
-	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm terms[]) {
+	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm... terms) {
 		verifyPredicateRank(symbol, terms);
 		predicate = symbol;
 		this.terms = terms.clone();

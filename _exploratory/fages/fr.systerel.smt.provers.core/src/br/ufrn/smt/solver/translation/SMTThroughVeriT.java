@@ -10,7 +10,6 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
-import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeMacroTerm;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
@@ -504,8 +503,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
 					Ints.getInt());
 
-			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED,
-					EMPTY_SORT);
+			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
 			xFun = sf.makeVar(x, Ints.getInt());
 
 			// Making 1
@@ -545,8 +543,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
 					Ints.getInt());
 
-			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED,
-					EMPTY_SORT);
+			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
 			xFun = sf.makeVar(x, Ints.getInt());
 
 			// Making 1
@@ -1379,7 +1376,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						false);
 
 				final SMTPairEnumMacro macro = SMTMacroFactory
-						.makePairEnumerationMacro( macroName, var, children,
+						.makePairEnumerationMacro(macroName, var, children,
 								signature);
 				signature.addMacro(macro);
 			} else {
@@ -1420,7 +1417,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final String fVarName = signature.freshCstName("card_f");
 
 			final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(
-					kVarName, Ints.getInt(), false, false, EMPTY_SORT);
+					kVarName, Ints.getInt(), false, false);
 
 			final Type type = expression.getChild().getType();
 			SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1491,7 +1488,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the constant 'm'
 			final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(
-					mVarName, Ints.getInt(), false, false, EMPTY_SORT);
+					mVarName, Ints.getInt(), false, false);
 			signature.addConstant(mVarSymbol);
 
 			// Creating the macro operator 'ismin'
@@ -1499,7 +1496,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the term 'm'
 			final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
-					signature, SMTFactory.EMPTY_TERM);
+					signature);
 
 			// Adding the term 'm' to the other children
 			final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
@@ -1528,7 +1525,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the constant 'm'
 			final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(
-					mVarName, Ints.getInt(), false, false, EMPTY_SORT);
+					mVarName, Ints.getInt(), false, false);
 			signature.addConstant(mVarSymbol);
 
 			// Creating the macro operator 'ismax'
@@ -1536,7 +1533,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// Creating the term 'm'
 			final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
-					signature, SMTFactory.EMPTY_TERM);
+					signature);
 
 			// Adding the term 'm' to the other children
 			final SMTTerm[] maxChildrenTerms = new SMTTerm[children.length + 1];
@@ -1692,9 +1689,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the constant 'p'
 		final SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,
-				!PREDEFINED, EMPTY_SORT);
+				!PREDEFINED);
 		final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
-				Ints.getInt(), false, false, EMPTY_SORT);
+				Ints.getInt(), false, false);
 
 		final Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1717,8 +1714,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		signature.addAdditionalAssumption(finiteFormula);
 
-		final SMTFormula pFormula = SMTFactory.makeAtom(pVarSymbol, signature,
-				SMTFactory.EMPTY_TERM);
+		final SMTFormula pFormula = SMTFactory.makeAtom(pVarSymbol, signature);
 
 		smtNode = pFormula;
 	}

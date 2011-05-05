@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.LOGIC;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
@@ -424,7 +423,7 @@ public abstract class SMTSignature {
 			final SMTSortSymbol sort) {
 		final String freshName = freshCstName(name);
 		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE,
-				!PREDEFINED, EMPTY_SORT);
+				!PREDEFINED);
 	}
 
 	public SMTSortSymbol freshSort() {

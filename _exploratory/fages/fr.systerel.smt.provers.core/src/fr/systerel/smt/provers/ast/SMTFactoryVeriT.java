@@ -93,8 +93,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol);
 
 		} else if (smtSymbol instanceof SMTFunctionSymbol) {
-			return makeFunApplication((SMTFunctionSymbol) smtSymbol, signature,
-					EMPTY_TERM);
+			return makeFunApplication((SMTFunctionSymbol) smtSymbol, signature);
 		} else {
 			throw new IllegalArgumentException(
 					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");
@@ -129,8 +128,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
 							function.symbol.name, !PREDEFINED, sortSymbols);
-					final SMTAtom atom = new SMTAtom(predicateSymbol,
-							EMPTY_TERM);
+					final SMTAtom atom = new SMTAtom(predicateSymbol);
 					formulas[i] = atom;
 				} else {
 					throw new IllegalArgumentException(

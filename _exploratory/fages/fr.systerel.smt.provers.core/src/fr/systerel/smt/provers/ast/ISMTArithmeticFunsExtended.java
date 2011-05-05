@@ -6,25 +6,28 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     YGU (Systerel) - initial API and implementation
- *     Vitor - Implementation
+ *		Vitor - Implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
 /**
  * This interface is meant to be implemented by SMTLogic or SMTTheory instances
  * which define arithmetic SMTFunctionSymbol which string representations are
- * the SMT-LIB symbols "+", "*", "-".
+ * the SMT-LIB symbols "÷", "expn".
  */
-
-/**
- * The linear Presburger arithmetic logic given as example in The SMT-LIB
- * Standard V1.2 could not be defined with this interface because its signature
- * is more restrictive: {0, s, +, <}. But this is not a problem as far as such
- * logics will not be used.
- **/
 public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
+
+	/**
+	 * returns the division function symbol
+	 * 
+	 * @return the division function symbol
+	 */
 	public SMTSymbol getDiv();
 
+	/**
+	 * returns the exponentiation function symbol
+	 * 
+	 * @return the exponentiation function symbol
+	 */
 	public SMTSymbol getExpn();
 }

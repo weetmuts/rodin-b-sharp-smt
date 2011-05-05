@@ -22,10 +22,6 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
  */
 public abstract class SMTFactory {
 
-	public final static SMTTerm[] EMPTY_TERM = {};
-	public final static SMTSortSymbol[] EMPTY_SORT = {};
-	public final static SMTPredicateSymbol[] EMPTY_PREDICATE = {};
-
 	public final static String OPAR = "(";
 	public final static String CPAR = ")";
 	public final static String SPACE = " ";
@@ -49,9 +45,9 @@ public abstract class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", PREDEFINED, EMPTY_SORT);
+			"true", PREDEFINED);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", PREDEFINED, EMPTY_SORT);
+			"false", PREDEFINED);
 	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
 			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true);
 
@@ -292,12 +288,12 @@ public abstract class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return makeSMTQuantifiedFormula(qSymbol, qVars, formula);
+		return makeSMTQuantifiedFormula(qSymbol, formula, qVars);
 	}
 
 	public static SMTFormula makeSMTQuantifiedFormula(
-			final SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
-			final SMTFormula formula) {
+			final SMTQuantifierSymbol qSymbol, final SMTFormula formula,
+			final SMTVarSymbol... qVars) {
 		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
@@ -324,7 +320,7 @@ public abstract class SMTFactory {
 	 */
 	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
 			final SMTSignature signature) {
-		return makeFunApplication(functionSymbol, signature, EMPTY_TERM);
+		return makeFunApplication(functionSymbol, signature);
 	}
 
 	/**
@@ -338,7 +334,7 @@ public abstract class SMTFactory {
 	 */
 	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			final SMTSignature signature) {
-		return makeAtom(predicateSymbol, signature, EMPTY_TERM);
+		return makeAtom(predicateSymbol, signature);
 	}
 
 	/**
@@ -350,7 +346,7 @@ public abstract class SMTFactory {
 	 */
 	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macroSymbol,
 			final SMTSortSymbol returnSort) {
-		return makeMacroTerm(macroSymbol, EMPTY_TERM);
+		return makeMacroTerm(macroSymbol);
 	}
 
 }

@@ -17,11 +17,31 @@ package fr.systerel.smt.provers.ast;
  */
 public interface ISMTArithmeticPreds {
 
+	/**
+	 * returns the predicate < (less than)
+	 * 
+	 * @return the predicate < (less than)
+	 */
 	public SMTPredicateSymbol getLessThan();
 
+	/**
+	 * returns the predicate <= (less or equal than)
+	 * 
+	 * @return the predicate <= (less or equal than)
+	 */
 	public SMTPredicateSymbol getLessEqual();
 
+	/**
+	 * returns the predicate > (greater than)
+	 * 
+	 * @return the predicate > (greater than)
+	 */
 	public SMTPredicateSymbol getGreaterThan();
 
+	/**
+	 * returns the predicate >= (greater equal than)
+	 * 
+	 * @return the predicate >= (greater equal than)
+	 */
 	public SMTPredicateSymbol getGreaterEqual();
 }

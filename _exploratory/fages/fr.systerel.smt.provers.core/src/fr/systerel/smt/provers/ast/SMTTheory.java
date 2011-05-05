@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import static fr.systerel.smt.provers.ast.SMTFactory.EMPTY_SORT;
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
@@ -224,8 +223,7 @@ public class SMTTheory {
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
-				SMTSymbol.BOOL_SORT, BOOL, !ASSOCIATIVE, !PREDEFINED,
-				EMPTY_SORT);
+				SMTSymbol.BOOL_SORT, BOOL, !ASSOCIATIVE, !PREDEFINED);
 
 		public static SMTFunctionSymbol getBoolCste() {
 			return BOOL_CSTE;
