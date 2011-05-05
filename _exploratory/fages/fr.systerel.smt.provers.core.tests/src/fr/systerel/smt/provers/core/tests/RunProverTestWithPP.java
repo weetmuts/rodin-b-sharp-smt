@@ -394,43 +394,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 */
 	@Test
 	@Ignore("Expected true, but it was false")
-	public void testCh7LikeSimple() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("ch7_likeSimple", hyps, "{1 ↦ {0 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
-				te, VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 */
-	@Test
-	@Ignore("Expected true, but it was false")
-	public void testCh7LikeConc() {
-		setPreferencesForAltErgoTest();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1");
-
-		doTest("ch7_likeconc", hyps,
-				"{1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)", te, VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 */
-	@Test
-	@Ignore("Expected true, but it was false")
 	public void testCh7Conc29_AltErgo() {
 		setPreferencesForAltErgoTest();
 

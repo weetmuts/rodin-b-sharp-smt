@@ -37,7 +37,7 @@ public class SMTFunApplication extends SMTTerm {
 	 *            the terms of the function
 	 */
 	public SMTFunApplication(final SMTFunctionSymbol symbol,
-			final SMTTerm terms[]) {
+			final SMTTerm... terms) {
 		verifyFunctionRank(symbol, terms);
 		this.symbol = symbol;
 		args = terms.clone();

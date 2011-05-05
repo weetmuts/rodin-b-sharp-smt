@@ -59,6 +59,7 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunApplication;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
@@ -110,9 +111,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	private boolean usesTruePred = false;
 
-	public boolean isUsesTruePred() {
-		return usesTruePred;
-	}
+	SMTTerm intSetTerm = null;
+
+	private SMTFormula intAxiom;
 
 	public void setUsesTruePred(boolean usesTruePred) {
 		this.usesTruePred = usesTruePred;
@@ -369,10 +370,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			clearFormula();
 			translatedAssumptions.add(translate(hypothesis));
 		}
-
 		// translates the goal
 		clearFormula();
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
+
+		if (this.intAxiom != null) {
+			translatedAssumptions.add(0, intAxiom);
+		}
 
 		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
 				smtFormula);
@@ -509,7 +513,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				 */
 				final SMTFunctionSymbol smtConstant;
 				if (!varMap.containsKey(varName)) {
-					if (checkIfPredSymbol(varName, varType, smtSortSymbol)) {
+					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
+						final SMTPredicateSymbol predSymbol = signature
+								.addNewPredicateSymbol(varName);
+						varMap.put(varName, predSymbol);
 						continue;
 					} else {
 						smtConstant = signature.freshConstant(varName,
@@ -571,23 +578,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	}
 
-	/**
-	 * @param name
-	 * @param type
-	 * @param sort
-	 */
-	private boolean checkIfPredSymbol(final String name, Type type,
-			final SMTSortSymbol sort) {
-		if (type instanceof BooleanType) {
-			for (SMTTheory theories : signature.getLogic().getTheories()) {
-				if (theories instanceof Booleans) {
-					if (!usesTruePred) {
-						final SMTPredicateSymbol predSymbol = signature
-								.addNewPredicateSymbol(name);
-						varMap.put(name, predSymbol);
+	private boolean isBoolTheoryAndDoesNotUseTruePred(Type type) {
+		if (!usesTruePred) {
+			if (type instanceof BooleanType) {
+				for (SMTTheory theories : signature.getLogic().getTheories()) {
+					if (theories instanceof Booleans) {
 						return true;
 					}
-
 				}
 			}
 		}
@@ -715,8 +712,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			// FIXME this uses a set theory
-			// smtNode = sf.makeInteger(signature.getLogic().getIntegerCste());
+			if (this.intSetTerm == null) {
+				SMTFunctionSymbol intSymbol = this.signature.freshConstant(
+						"int", signature.getLogic().getIntegerSort());
+				signature.addConstant(intSymbol);
+				this.intSetTerm = new SMTFunApplication(intSymbol);
+				this.intAxiom = generateIntegerAxiom(expression.getType(),
+						intSetTerm);
+				smtNode = intSetTerm;
+			} else {
+				smtNode = intSetTerm;
+			}
 			break;
 		case Formula.BOOL:
 			assert actualPredicate != null;
@@ -725,9 +731,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					signature);
 			break;
 		case Formula.TRUE:
-			// FIXME this is the boolean value true
-			// smtNode = sf.makeAtom(signature.getLogic().getTrue(), args,
-			// signature) akeTrue(signature.getLogic().getTrue());
+			// This case is never reached because it is translated in its parent
+			// node.
 			break;
 		default:
 			// TODO check that it's true for KPRED, KSUCC, KPRJ1_GEN, KPRJ2_GEN,
@@ -892,6 +897,30 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 		assert predSymbol != null;
 		return predSymbol;
+	}
+
+	/**
+	 * Generate the translated SMT-LIB formula for this Event-B predicate:
+	 * 
+	 * <code>∀x·x ∈ ℤ</code>
+	 * 
+	 * @param type
+	 * @return The SMTFormula corresponding to the translation of the Event-B
+	 *         predicate shown above
+	 */
+	private SMTFormula generateIntegerAxiom(Type type, SMTTerm intSet) {
+		String symbolName = signature.freshCstName("x");
+		SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
+
+		SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort, !PREDEFINED);
+		SMTTerm term = new SMTVar(vs);
+
+		SMTPredicateSymbol predSymbol = createPredSymbol(type, intSort, intSort);
+
+		SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature, term,
+				intSet);
+
+		return SMTFactory.makeForAll(formula, term);
 	}
 
 	/**

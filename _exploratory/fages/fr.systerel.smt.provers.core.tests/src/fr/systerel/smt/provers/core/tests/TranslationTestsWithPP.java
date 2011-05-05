@@ -336,9 +336,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
 		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
-		// TODO: Implement the Int set for the pp approach
-		// testTranslationV1_2Default("a↦ℤ↦BOOL ∈ X", "(MS a Int Bool X)");
-		// testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a Int AZ)");
+	}
+
+	@Test
+	public void testPredInInt() {
+		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS_0 a int AZ)");
 	}
 
 	/**
