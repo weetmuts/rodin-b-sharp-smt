@@ -544,31 +544,19 @@ public class SMTMacroFactory {
 		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
 		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
 
-		final SMTTerm[] pairTerms = { varSymbol1, varSymbol2 };
-
 		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, pairTerms);
-
-		final SMTTerm[] fstTerms = { pairFunAppl };
+				PAIR_SYMBOL, varSymbol1, varSymbol2);
 
 		final SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
-				fstTerms);
-
-		final SMTTerm[] equalTerms = { fstFunAppl, varSymbol1 };
-
-		final SMTSortSymbol[] fstReturnSorts = { FST_RETURN_SORT,
-				FST_RETURN_SORT };
+				pairFunAppl);
 
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(fstReturnSorts), signature,
-				equalTerms);
-
-		final SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1,
-				forallVarSymbol2 };
+				new SMTPredicateSymbol.SMTEqual(FST_RETURN_SORT,
+						FST_RETURN_SORT), signature, fstFunAppl, varSymbol1);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						forallVarSymbols, equalAtom);
+						equalAtom, forallVarSymbol1, forallVarSymbol2);
 
 		return quantifiedFormula;
 	}
@@ -595,28 +583,19 @@ public class SMTMacroFactory {
 		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
 		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
 
-		final SMTTerm[] pairTerms = { varSymbol1, varSymbol2 };
-
 		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, pairTerms);
-
-		final SMTTerm[] fstTerms = { pairFunAppl };
+				PAIR_SYMBOL, varSymbol1, varSymbol2);
 
 		final SMTFunApplication sndFunAppl = new SMTFunApplication(SND_SYMBOL,
-				fstTerms);
-
-		final SMTTerm[] equalTerms = { sndFunAppl, varSymbol2 };
+				pairFunAppl);
 
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
 				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), signature,
-				equalTerms);
-
-		final SMTVarSymbol[] forallVarSymbols = { forallVarSymbol1,
-				forallVarSymbol2 };
+				sndFunAppl, varSymbol2);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						forallVarSymbols, equalAtom);
+						equalAtom, forallVarSymbol1, forallVarSymbol2);
 
 		return quantifiedFormula;
 	}
