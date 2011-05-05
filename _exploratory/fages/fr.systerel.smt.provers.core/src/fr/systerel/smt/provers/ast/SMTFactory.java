@@ -201,14 +201,6 @@ public abstract class SMTFactory {
 	}
 
 	/**
-	 * Creates a new boolean.
-	 */
-	// TODO When BOOL_SORT theory implemented
-	/*
-	 * public SMTBoolean makeBoolean() { return new SMTBoolean(); }
-	 */
-
-	/**
 	 * Creates a new ITE_FORMULA term.
 	 * 
 	 * @param formula

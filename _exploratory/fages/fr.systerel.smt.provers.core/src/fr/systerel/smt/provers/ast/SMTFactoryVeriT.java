@@ -1,6 +1,13 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vitor Alcantara de Almeida - initial API and implementation
+ *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
@@ -8,45 +15,78 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
- * @author vitor
- * 
+ * This class stores methods used to make extended SMT-LIB elements. This class
+ * is used only in the VeriT translation approach
  */
 final public class SMTFactoryVeriT extends SMTFactory {
+	/**
+	 * An instance of the Factory
+	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
+	/**
+	 * Returns the instance of the factory
+	 * 
+	 * @return the instance of the factory
+	 */
 	public static SMTFactoryVeriT getInstance() {
 		return DEFAULT_INSTANCE;
 	}
 
 	/**
-	 * This method is used by the Extended SMT-LIB.
+	 * This method returns the translation of an Event-B String
 	 * 
 	 * @param atomicExpression
+	 *            The event-B string
 	 * @param signature
+	 *            the signature used to get a new constant name or to add macros
+	 *            to the signature (it's necessary to define a macro for some
+	 *            Event-B strings)
 	 */
 	public static String getSMTAtomicExpressionFormat(
 			final String atomicExpression, final SMTSignatureVerit signature) {
 		if (atomicExpression.equals("\u2124")) { // INTEGER
-			return "Int";
+			return SMTSymbol.INT;
 		} else if (atomicExpression.equals("\u2115")) { // NATURAL
 			signature.addMacro(SMTMacroFactory.NAT_MACRO);
-			return "Nat";
+			return SMTMacroSymbol.NAT;
 		} else if (atomicExpression.equals("\u2124" + 1)) {
-			return "Int1";
+			return SMTMacroSymbol.INT1;
 		} else if (atomicExpression.equals("\u2115" + 1)) {
 			signature.addMacro(SMTMacroFactory.NAT1_MACRO);
-			return "Nat1";
+			return SMTMacroSymbol.NAT1;
 		} else if (atomicExpression.equals("BOOL")) {
-			return "Bool";
+			return SMTMacroSymbol.BOOL_SORT_VERIT;
 		} else {
 			return signature.freshCstName(atomicExpression);
 		}
 	}
 
+	/**
+	 * makes and returns a SMT formula which the operator is distinct.
+	 * 
+	 * @param args
+	 *            The arguments of the formula
+	 * @return a new SMT formula
+	 */
 	public static SMTFormula makeDistinct(final SMTTerm[] args) {
 		return new SMTAtom(DISTINCT, args);
 	}
 
+	/**
+	 * Creates and return a pair sort symbol. The string representation of a
+	 * pair sort symbol is:
+	 * <p>
+	 * (Pair A B)
+	 * <p>
+	 * where A and B are two SMT sort symbols
+	 * 
+	 * @param sourceSymbol
+	 *            The first sort symbol
+	 * @param targetSymbol
+	 *            The second sort symbol
+	 * @return A pair sort symbol
+	 */
 	public static SMTSortSymbol makePairSortSymbol(
 			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
 
@@ -59,17 +99,16 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return new SMTSortSymbol(sb.toString(), false);
 	}
 
-	public static SMTFormula makeMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args) {
-		return new SMTVeriTAtom(macroSymbol, args);
-	}
-
 	/**
-	 * FIXME: Remake this commentary this method makes a new predicate extended
-	 * SMT-LIB macro atom.
+	 * This method creates and returns a macro atom.
 	 * 
+	 * @param macroSymbol
+	 *            the symbol of the atom
+	 * @param args
+	 *            the args of the atom
+	 * @return a macro atom
 	 */
-	public SMTFormula makeVeriTMacroAtom(final SMTMacroSymbol macroSymbol,
+	public static SMTFormula makeMacroAtom(final SMTMacroSymbol macroSymbol,
 			final SMTTerm... args) {
 		return new SMTVeriTAtom(macroSymbol, args);
 	}
@@ -158,17 +197,33 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return new SMTFunApplication(operatorSymbol, args);
 	}
 
-	public static SMTSortSymbol makeVeriTSortSymbol(
-			final String sortSymbolName, final SMTSignatureVerit signature) {
-		final String symbolName = getSMTAtomicExpressionFormat(sortSymbolName,
-				signature);
+	/**
+	 * This method creates and returns a new SMT sort symbol
+	 * 
+	 * @param name
+	 *            the name of the sort
+	 * @param signature
+	 *            the signature used to create a fresh name for the symbol
+	 * @return a new sort symbol
+	 */
+	public static SMTSortSymbol makeVeriTSortSymbol(final String name,
+			final SMTSignatureVerit signature) {
+		final String symbolName = getSMTAtomicExpressionFormat(name, signature);
 		return new SMTSortSymbol(symbolName, false);
 	}
 
-	public SMTPredicateSymbol makeVeriTPredSymbol(final String predName,
-			final SMTSortSymbol symbol) {
-		final SMTSortSymbol[] symbols = { symbol };
-		return new SMTPredicateSymbol(predName, !SMTSymbol.PREDEFINED, symbols);
+	/**
+	 * This method creates and returns a new SMT predicate symbol
+	 * 
+	 * @param name
+	 *            the name of the predicate
+	 * @param sort
+	 *            the sort of the first argument of the predicate
+	 * @return a new predicate symbol
+	 */
+	public SMTPredicateSymbol makeVeriTPredSymbol(final String name,
+			final SMTSortSymbol sort) {
+		return new SMTPredicateSymbol(name, !SMTSymbol.PREDEFINED, sort);
 	}
 
 }

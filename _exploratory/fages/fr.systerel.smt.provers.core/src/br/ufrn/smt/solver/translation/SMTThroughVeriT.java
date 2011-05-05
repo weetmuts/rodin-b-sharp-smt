@@ -143,6 +143,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private boolean insertPairDecl = false;
 
+	/**
+	 * An instance of the SMTFactoryVeriT
+	 */
 	final private SMTFactoryVeriT sf;
 
 	public SMTThroughVeriT(final String solver) {
@@ -527,7 +530,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			// making (x in Int)
 			addPredefinedMacroInSignature(IN, signature);
-			inFormula = sf.makeVeriTMacroAtom(getMacroSymbol(IN), xFun, intT);
+			inFormula = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(IN), xFun,
+					intT);
 
 			macroName = signature.freshCstName(SMTMacroSymbol.PRED);
 
@@ -568,7 +572,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			// making (x in Int)
 			addPredefinedMacroInSignature(IN, signature);
 
-			inFormula = sf.makeVeriTMacroAtom(getMacroSymbol(IN), xFun, intT);
+			inFormula = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(IN), xFun,
+					intT);
 
 			macroName = signature.freshCstName(SMTMacroSymbol.SUCC);
 
@@ -1110,7 +1115,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeVeriTMacroAtom(getMacroSymbol(IN), children);
+			smtNode = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(IN),
+					children);
 			break;
 		}
 

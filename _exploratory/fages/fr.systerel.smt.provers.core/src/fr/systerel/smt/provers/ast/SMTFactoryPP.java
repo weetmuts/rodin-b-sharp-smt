@@ -1,11 +1,18 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vitor Alcantara de Almeida - initial API and implementation
+ *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
 /**
- * @author vitor
- * 
+ * This class stores methods used to make SMT-LIB elements. This class is used
+ * only in the PP translation approach
  */
 public class SMTFactoryPP extends SMTFactory {
 	private final static SMTFactoryPP DEFAULT_INSTANCE = new SMTFactoryPP();
