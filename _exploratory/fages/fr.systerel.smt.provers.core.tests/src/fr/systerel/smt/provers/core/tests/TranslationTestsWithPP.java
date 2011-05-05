@@ -43,10 +43,16 @@ public class TranslationTestsWithPP extends AbstractTests {
 				Booleans.getInstance());
 	}
 
+	private void testTranslationV1_2(ITypeEnvironment te, String ppPredStr,
+			String expectedSMTNode, boolean usesTrue) {
+		testTranslationV1_2_Ver(te, ppPredStr, expectedSMTNode,
+				defaultFailMessage, usesTrue);
+	}
+
 	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
 		testTranslationV1_2_Ver(defaultTe, ppPredStr, expectedSMTNode,
-				defaultFailMessage);
+				defaultFailMessage, false);
 	}
 
 	/**
@@ -64,8 +70,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	private static void testTranslationV1_2_Ver(
 			final ITypeEnvironment iTypeEnv, final String ppPredStr,
-			final String expectedSMTNode, final String failMessage)
-			throws AssertionError {
+			final String expectedSMTNode, final String failMessage,
+			boolean usesTrue) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
@@ -74,7 +80,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(ppPred);
 
-		testTranslationV1_2(ppPred, expectedSMTNode, failMessage, "verit");
+		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
+				"verit", usesTrue);
 	}
 
 	/**
@@ -87,11 +94,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2(final Predicate ppPred,
-			final String expectedSMTNode, final String failMessage,
-			final String solver) {
+	private static void testTranslationV1_2(SMTLogic logic,
+			final Predicate ppPred, final String expectedSMTNode,
+			final String failMessage, final String solver, boolean usesBool) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(defaultLogic, ppPred, solver).toString(
+		SMTThroughPP.translate(logic, ppPred, solver, usesBool).toString(
 				actualSMTNode, false);
 
 		System.out
@@ -136,22 +143,22 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * land
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v)",
-				"(and (= a b) (iff (TRUE u) (TRUE v)))");
+				"(and (= a b) (iff u v))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff (TRUE u) (TRUE v)) (= r s))");
+				"(and (= a b) (iff u v) (= r s))");
 		/**
 		 * lor
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v)",
-				"(or (= a b) (iff (TRUE u) (TRUE v)))");
+				"(or (= a b) (iff u v))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff (TRUE u) (TRUE v)) (= r s))");
+				"(or (= a b) (iff u v) (= r s))");
 	}
 
 	/**
@@ -187,9 +194,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
 				base.getPredicate(), null);
 		// System.out.println("Predicate " + p);
-		testTranslationV1_2(p,
+		testTranslationV1_2(defaultLogic, p,
 				"(forall (?x R) (?x_0 R) (and (s ?x) (s_0 ?x_0)))",
-				"twice same decl", "verit");
+				"twice same decl", "verit", false);
 	}
 
 	@Test
@@ -347,9 +354,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = v", "(iff (TRUE u) (TRUE v))");
-		testTranslationV1_2Default("u = TRUE", "(TRUE u)");
-		testTranslationV1_2Default("TRUE = u", "(TRUE u)");
+		testTranslationV1_2Default("u = v", "(iff u v)");
+		testTranslationV1_2Default("u = TRUE", "u");
+		testTranslationV1_2Default("TRUE = u", "u");
 	}
 
 	/**
@@ -358,5 +365,13 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testPredIdentEqu() {
 		testTranslationV1_2Default("p = q", "(= p q)");
+	}
+
+	@Test
+	public void testTRUELit() {
+		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(BOOL)", "x",
+				"BOOL");
+
+		testTranslationV1_2(te, "x ∈ f", "(f x)", true);
 	}
 }

@@ -809,7 +809,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		hyps.add("r ∈ 1 ‥ m → BOOL");
 		hyps.add("x ∈ 1 ‥ m");
 		hyps.add("j+1 ∈ dom(f)");
-		doTest("ch910_ring_6", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})", te, VALID);
-
+		doTest("linear_sort_29", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})", te, VALID);
 	}
 }
