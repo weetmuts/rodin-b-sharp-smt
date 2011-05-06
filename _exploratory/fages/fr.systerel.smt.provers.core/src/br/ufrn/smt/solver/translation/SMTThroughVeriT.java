@@ -13,7 +13,6 @@ package br.ufrn.smt.solver.translation;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeMacroTerm;
-import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BCOMP;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BINTER;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.BUNION;
@@ -569,7 +568,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
 				Ints.getInt());
 
-		new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
 		SMTTerm xFun = sf.makeVar(x, Ints.getInt());
 
 		// Making 1
@@ -631,26 +629,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature);
 			break;
 		case Formula.EXPN:
-			/**
-			 * Translation of exponentiation:
-			 * 
-			 * forall x n . n > 0 => exp(x, n) = x * exp(x, n-1)
-			 * 
-			 * forall x . x ≠ 0 => exp(x, 0) = 1
-			 * 
-			 * forall n . n > 0 => exp(0, n) = 0
-			 */
-
-			signature.addConstant((SMTFunctionSymbol) VeritPredefinedTheory
-					.getInstance().getExpn());
-
-			signature.addAdditionalAssumption(makeZeroCaseOfExpnAxioms());
-			signature.addAdditionalAssumption(makeOneCaseOfExpnAxioms());
-			signature.addAdditionalAssumption(makeRecursionCaseOfExpnAxioms());
-
-			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), signature, children);
-			break;
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate exponential operator to SMT-LIB yet");
 		case Formula.UPTO:
 			smtNode = SMTFactory.makeMacroTerm(
 					getMacroSymbol(RANGE_INTEGER, signature), children);
@@ -731,12 +711,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.DPROD:
-			// FIXME There is no implementation for DPROD in Verit SMT-LIB
 			throw new IllegalArgumentException(
 					"Operator direct product (DPROD) is not implemented yet");
 
 		case Formula.PPROD:
-			// FIXME There is no implementation for PPROD in Verit SMT-LIB
 			throw new IllegalArgumentException(
 					"Operator parallel product (PPROD) is not implemented yet");
 
@@ -751,7 +729,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.FUNIMAGE:
-			// FIXME There is no implementation for FUNIMAGE in Verit SMT-LIB
 			throw new IllegalArgumentException(
 					"function application (FUNIMAGE) is not implemented yet");
 
@@ -767,138 +744,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
-	}
-
-	/**
-	 * forall x . x ≠ 0 => exp(x, 0) = 1
-	 * 
-	 * @return the one case base formula
-	 */
-	private SMTFormula makeOneCaseOfExpnAxioms() {
-		// TODO Refactor
-		// addPredefinedMacroInSignature(NOT_EQUAL, signature);
-
-		// making the boundIdentifier
-		final String symbolName = signature.freshCstName("x");
-		final SMTVarSymbol varSymbol = new SMTVarSymbol(symbolName,
-				VeritPredefinedTheory.getInt(), !PREDEFINED);
-		final SMTVar var = new SMTVar(varSymbol);
-
-		// making the moreOrEqual terms
-		final SMTTerm numeralZero = SMTFactory.makeNumeral(BigInteger.ZERO);
-		final SMTTerm numeralOne = SMTFactory.makeNumeral(BigInteger.ONE);
-
-		// making the moreOrEqual formula
-		final SMTFormula impliesFstArgument = SMTFactory.makeNotEqual(var,
-				numeralZero);
-
-		// making the expn fun application
-		final SMTTerm[] equalTerms = {
-				sf.makeFunApplication((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.EXPN), signature, var,
-						numeralZero), numeralOne };
-
-		// making the Equal formula
-		final SMTFormula impliesSndArgument = makeEqual(equalTerms);
-
-		// making the implies formula
-		return SMTFactory.makeForAll(
-				SMTFactory.makeImplies(impliesFstArgument, impliesSndArgument),
-				var);
-	}
-
-	/**
-	 * forall x n . n > 0 => exp(x, n) = x * exp(x, n-1)
-	 * 
-	 * @return the recursion case base formula
-	 */
-	private SMTFormula makeRecursionCaseOfExpnAxioms() {
-		// TODO: Refactor
-		final String n = signature.freshCstName("n");
-		final String x = signature.freshCstName("x");
-
-		final SMTTerm nVar = sf.makeVar(n, VeritPredefinedTheory.getInt());
-		final SMTTerm xVar = sf.makeVar(x, VeritPredefinedTheory.getInt());
-
-		final SMTFormula greaterThan = makeGreaterThan(nVar, BigInteger.ZERO);
-		final SMTTerm expnAppl1 = makeExpnAppl(xVar, nVar);
-		final SMTTerm nMinusOne = makeMinus(nVar, BigInteger.ONE);
-		final SMTTerm expnAppl2 = makeExpnAppl(xVar, nMinusOne);
-		final SMTTerm multTerm = makeMul(xVar, expnAppl2);
-		final SMTFormula equalFormula = makeEqualFormula(expnAppl1, multTerm);
-		final SMTFormula impliesFormula = makeImpliesFormula(greaterThan,
-				equalFormula);
-
-		return SMTFactory.makeForAll(impliesFormula, nVar, xVar);
-	}
-
-	private SMTFormula makeImpliesFormula(final SMTFormula greaterThan,
-			final SMTFormula equalFormula) {
-		return SMTFactory.makeImplies(greaterThan, equalFormula);
-	}
-
-	private SMTFormula makeEqualFormula(final SMTTerm expnAppl1,
-			final SMTTerm multTerm) {
-		return makeEqual(expnAppl1, multTerm);
-	}
-
-	private SMTTerm makeMul(final SMTTerm xVar, final SMTTerm expnAppl2) {
-		return sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-				.getOperator(SMTOperator.EXPN), signature, xVar, expnAppl2);
-	}
-
-	private SMTTerm makeExpnAppl(final SMTTerm xVar, final SMTTerm nVar) {
-		return sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-				.getOperator(SMTOperator.EXPN), signature, xVar, nVar);
-	}
-
-	private SMTTerm makeMinus(final SMTTerm nVar, final BigInteger numeral) {
-		return sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-				.getOperator(SMTOperator.MINUS), signature, nVar, SMTFactory
-				.makeNumeral(numeral));
-	}
-
-	private SMTFormula makeGreaterThan(final SMTTerm nVar,
-			final BigInteger numeral) {
-		return sf.makeGreaterThan((SMTPredicateSymbol) signature.getLogic()
-				.getOperator(SMTOperator.GT), signature, nVar, SMTFactory
-				.makeNumeral(numeral));
-	}
-
-	/**
-	 * forall n . n > 0 => exp(0, n) = 0
-	 * 
-	 * @return the zero case base formula
-	 */
-	private SMTFormula makeZeroCaseOfExpnAxioms() {
-		// TODO: Refactor
-		// making the boundIdentifier
-		final String symbolName = signature.freshCstName("n");
-		final SMTVarSymbol varSymbol = new SMTVarSymbol(symbolName,
-				VeritPredefinedTheory.getInt(), !PREDEFINED);
-		final SMTVar var = new SMTVar(varSymbol);
-
-		// making the moreOrEqual terms
-		final SMTTerm numeralZero = SMTFactory.makeNumeral(BigInteger.ZERO);
-
-		// making the moreOrEqual formula
-		final SMTFormula impliesFstArgument = sf.makeGreaterThan(
-				(SMTPredicateSymbol) signature.getLogic().getOperator(
-						SMTOperator.GT), signature, var, numeralZero);
-
-		// making the expn fun application
-		final SMTTerm[] equalTerms = {
-				sf.makeFunApplication((SMTFunctionSymbol) signature.getLogic()
-						.getOperator(SMTOperator.EXPN), signature, numeralZero,
-						var), numeralZero };
-
-		// making the Equal formula
-		final SMTFormula impliesSndArgument = makeEqual(equalTerms);
-
-		// making the implies formula
-		return SMTFactory.makeForAll(
-				SMTFactory.makeImplies(impliesFstArgument, impliesSndArgument),
-				var);
 	}
 
 	/**
@@ -1118,7 +963,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = translatePACO(BINTER, expression, expressions);
 			break;
 		case Formula.FCOMP:
-			// FIXME Refactor
 			smtNode = translatePACO(FCOMP, expression, expressions);
 			break;
 		case Formula.BCOMP:
@@ -1179,7 +1023,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitBoolExpression(final BoolExpression expression) {
-		// TODO Implement rule 21
 		throw new IllegalArgumentException(
 				"'Translation of Boolean Expression is not implemented yet");
 	}
