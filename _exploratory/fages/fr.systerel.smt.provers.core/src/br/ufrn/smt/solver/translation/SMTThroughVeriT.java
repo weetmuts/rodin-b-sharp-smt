@@ -29,8 +29,6 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ID;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.IN;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INTEGER;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INV;
-import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMAX;
-import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ISMIN;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.MAPSTO;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT1;
@@ -107,6 +105,7 @@ import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTNumeral;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -1446,83 +1445,17 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.KMIN: {
-			// TODO Refactor
-
-			// Creating ismin macro and add it to the signature
-			addPredefinedMacroInSignature(ISMIN, signature);
-
-			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
-			final String mVarName = signature.freshCstName("ismin_var");
-
-			// Creating the constant 'm'
-			final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(
-					mVarName, Ints.getInt(), false, false);
-			signature.addConstant(mVarSymbol);
-
-			// Creating the macro operator 'ismin'
-			final SMTMacroSymbol isMinSymbol = getMacroSymbol(ISMIN);
-
-			// Creating the term 'm'
-			final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
-					signature);
-
-			// Adding the term 'm' to the other children
-			final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
-			for (int i = 0; i < children.length; i++) {
-				minChildrenTerms[i + 1] = children[i];
-			}
-			minChildrenTerms[0] = mVarTerm;
-
-			// Creating the new assumption (ismin m t) and saving it.
-			final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(
-					isMinSymbol, minChildrenTerms);
-			signature.addAdditionalAssumption(isMinFormula);
-
-			smtNode = mVarTerm;
-
+			smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN, "ismin_var",
+					children);
 			break;
 		}
 		case Formula.KMAX: {
-			// TODO Refactor
-
-			// Creating ismax macro and adding it to the signature
-			addPredefinedMacroInSignature(ISMAX, signature);
-
-			// Creating the name for the 'm' variable in SMT-LIB (rule 22)
-			final String mVarName = signature.freshCstName("ismax_var");
-
-			// Creating the constant 'm'
-			final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(
-					mVarName, Ints.getInt(), false, false);
-			signature.addConstant(mVarSymbol);
-
-			// Creating the macro operator 'ismax'
-			final SMTMacroSymbol isMaxSymbol = getMacroSymbol(ISMAX);
-
-			// Creating the term 'm'
-			final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol,
-					signature);
-
-			// Adding the term 'm' to the other children
-			final SMTTerm[] maxChildrenTerms = new SMTTerm[children.length + 1];
-			for (int i = 0; i < children.length; i++) {
-				maxChildrenTerms[i + 1] = children[i];
-			}
-			maxChildrenTerms[0] = mVarTerm;
-
-			// Creating the new assumption (ismax m t) and saving it.
-			final SMTFormula isMaxFormula = SMTFactoryVeriT.makeMacroAtom(
-					isMaxSymbol, maxChildrenTerms);
-
-			signature.addAdditionalAssumption(isMaxFormula);
-
-			smtNode = mVarTerm;
-
+			smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX, "ismax_var",
+					children);
 			break;
 		}
 		case Formula.CONVERSE:
 			addPredefinedMacroInSignature(INV, signature);
-
 			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(INV), children);
 			break;
 		case Formula.UNMINUS:
@@ -1533,6 +1466,43 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalTagException(expression.getTag());
 		}
 		}
+	}
+
+	/**
+	 * @param children
+	 */
+	private SMTTerm translateKMINorKMAX(SMTVeriTOperator operator,
+			String constantName, final SMTTerm[] children) {
+		// Creating ismin macro and add it to the signature
+		addPredefinedMacroInSignature(operator, signature);
+
+		// Creating the name for the 'm' variable in SMT-LIB (rule 22)
+		final String mVarName = signature.freshCstName(constantName);
+
+		// Creating the constant 'm'
+		final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
+				Ints.getInt(), false, false);
+		signature.addConstant(mVarSymbol);
+
+		// Creating the macro operator 'ismin'
+		final SMTMacroSymbol opSymbol = getMacroSymbol(operator);
+
+		// Creating the term 'm'
+		final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol, signature);
+
+		// Adding the term 'm' to the other children
+		final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+		for (int i = 0; i < children.length; i++) {
+			minChildrenTerms[i + 1] = children[i];
+		}
+		minChildrenTerms[0] = mVarTerm;
+
+		// Creating the new assumption (ismin m t) and saving it.
+		final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(opSymbol,
+				minChildrenTerms);
+		signature.addAdditionalAssumption(isMinFormula);
+
+		return mVarTerm;
 	}
 
 	/**
