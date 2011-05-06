@@ -1107,100 +1107,53 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MUL), signature, children);
 			break;
 		case Formula.BUNION:
-			// FIXME Refactor
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BUNION, signature), children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BUNION, signature), children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactory.makeMacroTerm(
-							getMacroSymbol(BUNION, signature), macroTerm,
-							smtTerm(expressions[i]));
-				}
-
-			}
-			smtNode = macroTerm;
+			smtNode = translateFCOMPorBCOMPorOVR(BUNION, expression,
+					expressions);
 			break;
 		case Formula.BINTER:
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BINTER, signature), children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BINTER, signature), children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactory.makeMacroTerm(
-							getMacroSymbol(BINTER, signature), macroTerm,
-							smtTerm(expressions[i]));
-				}
-
-			}
-			smtNode = macroTerm;
+			smtNode = translateFCOMPorBCOMPorOVR(BINTER, expression,
+					expressions);
 			break;
 		case Formula.FCOMP:
 			// FIXME Refactor
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(FCOMP, signature), children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(FCOMP, signature), children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactory.makeMacroTerm(
-							getMacroSymbol(FCOMP, signature), macroTerm,
-							smtTerm(expressions[i]));
-				}
-
-			}
-			smtNode = macroTerm;
+			smtNode = translateFCOMPorBCOMPorOVR(FCOMP, expression, expressions);
 			break;
 		case Formula.BCOMP:
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BCOMP, signature), children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(BCOMP, signature), children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactory.makeMacroTerm(
-							getMacroSymbol(BCOMP, signature), macroTerm,
-							smtTerm(expressions[i]));
-				}
-
-			}
-			smtNode = macroTerm;
+			smtNode = translateFCOMPorBCOMPorOVR(BCOMP, expression, expressions);
 			break;
 		case Formula.OVR:
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(OVR, signature), children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactory.makeMacroTerm(
-						getMacroSymbol(OVR, signature), children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactory.makeMacroTerm(
-							getMacroSymbol(OVR, signature), macroTerm,
-							smtTerm(expressions[i]));
-				}
-
-			}
-			smtNode = macroTerm;
+			smtNode = translateFCOMPorBCOMPorOVR(OVR, expression, expressions);
 			break;
 		default:
 			throw new IllegalTagException(tag);
 		}
+	}
+
+	/**
+	 * @param expression
+	 * @param expressions
+	 */
+	private SMTTerm translateFCOMPorBCOMPorOVR(SMTVeriTOperator operator,
+			final AssociativeExpression expression,
+			final Expression[] expressions) {
+		SMTTerm[] children;
+		SMTTerm macroTerm;
+		if (expressions.length == 2) {
+			children = smtTerms(expression.getChildren());
+			macroTerm = SMTFactory.makeMacroTerm(
+					getMacroSymbol(operator, signature), children);
+		} else {
+			children = smtTerms(expressions[0], expressions[1]);
+			macroTerm = SMTFactory.makeMacroTerm(
+					getMacroSymbol(operator, signature), children);
+			for (int i = 2; i < expressions.length; i++) {
+				macroTerm = SMTFactory.makeMacroTerm(
+						getMacroSymbol(operator, signature), macroTerm,
+						smtTerm(expressions[i]));
+			}
+
+		}
+		return macroTerm;
 	}
 
 	/**
