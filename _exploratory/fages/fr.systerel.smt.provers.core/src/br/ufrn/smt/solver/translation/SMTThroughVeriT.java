@@ -204,17 +204,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * FIXME: Remake this commmentary
-	 * 
-	 * 1: if the type is a CartesianProduct Type, the same CartesianProduct
-	 * translating rules are applied again on it. 2: if the type is a BaseType,
-	 * throws an {@link IllegalArgumentException}. Default: It translates and
-	 * return the type.
+	 * This method is called by {@link #parsePairTypes(Type)} to translate each
+	 * type of the product type.
 	 * 
 	 * @param type
-	 *            The type of the variable
-	 * @return the translated {@link SMTSortSymbol} of one of the types of a
-	 *         CartesianProduct Type.
+	 *            one type of the product type
+	 * @param parentType
+	 *            the product type that holds this type
+	 * @return the translated sort of the event-B type
 	 */
 	private SMTSortSymbol parseOneOfPairTypes(final Type type,
 			final Type parentType) {
@@ -238,13 +235,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * This method translates a ProductType. It translates both the source and
 	 * the target types.
 	 * 
+	 * @param type
+	 *            the ProductType type
 	 * @return The translated sort symbol from productType.
 	 */
-	private SMTSortSymbol parsePairTypes(final Type parentType) {
+	private SMTSortSymbol parsePairTypes(final Type type) {
 		final SMTSortSymbol sourceSymbol = parseOneOfPairTypes(
-				parentType.getSource(), parentType);
+				type.getSource(), type);
 		final SMTSortSymbol targetSymbol = parseOneOfPairTypes(
-				parentType.getTarget(), parentType);
+				type.getTarget(), type);
 		return SMTFactoryVeriT.makePairSortSymbol(sourceSymbol, targetSymbol);
 	}
 
@@ -463,19 +462,37 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		smtNode = null;
 	}
 
+	/**
+	 * Given the elements of a comprehension set, this method creates the macro
+	 * corresponding to the comprehension set and returns the macro term that
+	 * represents the CSET macro.
+	 * 
+	 * @param macroName
+	 *            the name of the macro
+	 * @param formulaChild
+	 *            the formula of the comprehension set
+	 * @param expressionTerm
+	 *            the translated expression of the comprehension set
+	 * @param expressionSort
+	 *            the sort of the expression of the comprehension set
+	 * @param termChildren
+	 *            the bound identifiers of the comprehension set
+	 * @return the macro term of the translated comprehension set
+	 */
 	private SMTTerm translateQuantifiedExpression(final String macroName,
-			final SMTFormula formulaChild, final SMTTerm[] expressionTerm,
-			final SMTSortSymbol expressionSymbol, final SMTTerm... termChildren) {
+			final SMTFormula formulaChild, final SMTTerm expressionTerm,
+			final SMTSortSymbol expressionSort, final SMTTerm... termChildren) {
+
 		// obtaining fresh name for the variables
 		final String lambdaName = signature.freshCstName(SMTMacroSymbol.ELEM);
 
 		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
-				expressionSymbol, false);
+				expressionSort, false);
 
 		// Creating the macro
 		final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
 				macroName, termChildren, lambdaVar, formulaChild,
-				expressionTerm[0], signature);
+				expressionTerm, signature);
 
 		signature.addMacro(macro);
 		final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
@@ -508,9 +525,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.NATURAL1:
 			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(NAT1, signature));
 			break;
-		case Formula.BOOL:
-			throw new IllegalArgumentException(
-					"Sort BOOL is not implemented yet");
 		case Formula.EMPTYSET:
 			if (expression.getType().getSource() instanceof ProductType
 					|| expression.getType().getTarget() instanceof ProductType) {
@@ -522,27 +536,22 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						.getMacroSymbol(EMPTY, signature));
 			}
 			break;
-		case Formula.KPRJ1_GEN:
-			/*
-			 * TODO Check rule and implement it
-			 */
-			throw new IllegalArgumentException(
-					"prj1 (KPRJ1_GEN) is not implemented yet");
-		case Formula.KPRJ2_GEN:
-			/*
-			 * TODO Check rule and implement it
-			 */
-			throw new IllegalArgumentException(
-					"prj2 (KPRJ2_GEN) is not implemented yet");
 		case Formula.KID_GEN:
 			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(ID, signature));
 			break;
+		case Formula.BOOL:
+			throw new IllegalArgumentException(
+					"Sort BOOL is not implemented yet");
+		case Formula.KPRJ1_GEN:
+			throw new IllegalArgumentException(
+					"prj1 (KPRJ1_GEN) is not implemented yet");
+		case Formula.KPRJ2_GEN:
+			throw new IllegalArgumentException(
+					"prj2 (KPRJ2_GEN) is not implemented yet");
 		case Formula.TRUE:
-			// FIXME Use boolean value when BOOL_SORT theory implemented
 			throw new IllegalArgumentException(
 					"TRUE value (TRUE)is not implemented yet");
 		case Formula.FALSE:
-			// FIXME Use boolean value when BOOL_SORT theory implemented
 			throw new IllegalArgumentException(
 					"false value (FALSE) is not implemented yet");
 		default:
@@ -588,8 +597,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		String macroName = signature.freshCstName(macroSymbol);
 
-		return translateQuantifiedExpression(macroName, inFormula, mapstoTerm,
-				xSort, xFun);
+		return translateQuantifiedExpression(macroName, inFormula,
+				mapstoTerm[0], xSort, xFun);
 	}
 
 	/**
@@ -1023,47 +1032,44 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.IN: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactoryVeriT.makeMacroAtom(
-					getMacroSymbol(IN, signature), children);
+			smtNode = translateRelationalPredicateMacro(IN, predicate);
 			break;
 		}
-
 		case Formula.SUBSET: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactoryVeriT.makeMacroAtom(
-					getMacroSymbol(SUBSET, signature), children);
+			smtNode = translateRelationalPredicateMacro(SUBSET, predicate);
 			break;
 		}
 		case Formula.SUBSETEQ: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactoryVeriT.makeMacroAtom(
-					getMacroSymbol(SUBSETEQ, signature), children);
+			smtNode = translateRelationalPredicateMacro(SUBSETEQ, predicate);
 			break;
 		}
 		case Formula.NOTSUBSET: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactoryVeriT.makeMacroAtom(
-					getMacroSymbol(SUBSET, signature), children);
-			smtNode = SMTFactory.makeNot((SMTFormula) smtNode);
+			SMTFormula subset = translateRelationalPredicateMacro(SUBSET,
+					predicate);
+			smtNode = SMTFactory.makeNot(subset);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactoryVeriT.makeMacroAtom(
-					getMacroSymbol(SUBSETEQ, signature), children);
-			smtNode = SMTFactory.makeNot((SMTFormula) smtNode);
+			SMTFormula subseteq = translateRelationalPredicateMacro(SUBSETEQ,
+					predicate);
+			smtNode = SMTFactory.makeNot(subseteq);
 			break;
 		}
 		default: {
 			throw new IllegalTagException(predicate.getTag());
 		}
 		}
+	}
+
+	/**
+	 * @param predicate
+	 */
+	private SMTFormula translateRelationalPredicateMacro(
+			SMTVeriTOperator operator, final RelationalPredicate predicate) {
+		final SMTTerm[] children = smtTerms(predicate.getLeft(),
+				predicate.getRight());
+		return SMTFactoryVeriT.makeMacroAtom(
+				getMacroSymbol(operator, signature), children);
 	}
 
 	@Override
@@ -1094,7 +1100,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm[] children;
 		final Expression[] expressions = expression.getChildren();
 		final int tag = expression.getTag();
-		SMTTerm macroTerm;
 		switch (tag) {
 		case Formula.PLUS:
 			children = smtTerms(expressions);
@@ -1107,22 +1112,20 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MUL), signature, children);
 			break;
 		case Formula.BUNION:
-			smtNode = translateFCOMPorBCOMPorOVR(BUNION, expression,
-					expressions);
+			smtNode = translatePACO(BUNION, expression, expressions);
 			break;
 		case Formula.BINTER:
-			smtNode = translateFCOMPorBCOMPorOVR(BINTER, expression,
-					expressions);
+			smtNode = translatePACO(BINTER, expression, expressions);
 			break;
 		case Formula.FCOMP:
 			// FIXME Refactor
-			smtNode = translateFCOMPorBCOMPorOVR(FCOMP, expression, expressions);
+			smtNode = translatePACO(FCOMP, expression, expressions);
 			break;
 		case Formula.BCOMP:
-			smtNode = translateFCOMPorBCOMPorOVR(BCOMP, expression, expressions);
+			smtNode = translatePACO(BCOMP, expression, expressions);
 			break;
 		case Formula.OVR:
-			smtNode = translateFCOMPorBCOMPorOVR(OVR, expression, expressions);
+			smtNode = translatePACO(OVR, expression, expressions);
 			break;
 		default:
 			throw new IllegalTagException(tag);
@@ -1130,10 +1133,24 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * This method is used to translate PACOs:
+	 * 
+	 * <ul>
+	 * <li>Polyadic
+	 * <li>Associative
+	 * <li>Commutative
+	 * <li>Operators
+	 * </ul>
+	 * 
+	 * @param operator
+	 *            the operator
 	 * @param expression
+	 *            the expression
 	 * @param expressions
+	 *            the children expressions
+	 * @return the translated SMTTerm
 	 */
-	private SMTTerm translateFCOMPorBCOMPorOVR(SMTVeriTOperator operator,
+	private SMTTerm translatePACO(SMTVeriTOperator operator,
 			final AssociativeExpression expression,
 			final Expression[] expressions) {
 		SMTTerm[] children;
@@ -1189,7 +1206,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Translate a comprehension set
+	 * 
 	 * @param expression
+	 *            the quantified expression
+	 * @return the macro term of the translated comprehension set
 	 */
 	private SMTTerm translateCSET(final QuantifiedExpression expression) {
 		// Translating the children
@@ -1204,7 +1225,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final String macroName = signature.freshCstName(SMTMacroSymbol.CSET);
 		return translateQuantifiedExpression(macroName, formulaChild,
-				expressionTerm, expressionSymbol, termChildren);
+				expressionTerm[0], expressionSymbol, termChildren);
 	}
 
 	/**
@@ -1300,26 +1321,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 			break;
 		}
-		case Formula.POW: {
-			// TODO Implement this translation
-			throw new IllegalArgumentException(
-					"It's not possible yet to translate  PowerSet unary expression (POW) to SMT-LIB yet");
-		}
-		case Formula.POW1: {
-			// TODO Implement this translationTODO
-			throw new IllegalArgumentException(
-					"It's not possible yet to translate  PowerSet1 unary expression (POW1) to SMT-LIB yet");
-		}
-		case Formula.KUNION: {
-			// TODO Implement this translationTODO
-			throw new IllegalArgumentException(
-					"It's not possible yet to translate generalized union (KUNION) to SMT-LIB yet");
-		}
-		case Formula.KINTER: {
-			// TODO Implement this translationTODO
-			throw new IllegalArgumentException(
-					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");
-		}
 		case Formula.KDOM:
 			smtNode = SMTFactory.makeMacroTerm(getMacroSymbol(DOM, signature),
 					children);
@@ -1347,6 +1348,22 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
 					.getOperator(SMTOperator.UMINUS), signature, children);
 			break;
+		case Formula.POW: {
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate  PowerSet unary expression (POW) to SMT-LIB yet");
+		}
+		case Formula.POW1: {
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate  PowerSet1 unary expression (POW1) to SMT-LIB yet");
+		}
+		case Formula.KUNION: {
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate generalized union (KUNION) to SMT-LIB yet");
+		}
+		case Formula.KINTER: {
+			throw new IllegalArgumentException(
+					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");
+		}
 		default: {
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -1536,7 +1553,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitExtendedExpression(final ExtendedExpression expression) {
-		// TODO Auto-generated method stub
 		throw new IllegalArgumentException(
 				"It's not possible yet to translate extended expressionto SMT-LIB yet");
 
@@ -1544,7 +1560,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
-		// TODO Auto-generated method stub
 		throw new IllegalArgumentException(
 				"It's not possible yet to translate extended predicate to SMT-LIB yet");
 
