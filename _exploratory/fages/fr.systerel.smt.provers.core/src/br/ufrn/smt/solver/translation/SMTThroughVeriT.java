@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     YGU (Systerel) - initial API and implementation
+ *     Vitor Alcantara de Almeida - implementation
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
@@ -127,7 +128,14 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
- * 
+ * This class implements the transalation from Event-B predicates to Extended
+ * SMT-LIB formulas.
+ * <p>
+ * The Extended SMT-LIB formulas contains macros and other elements that does
+ * not belong to the standard SMT-LIB and is accepted only by the VeriT solver
+ * which pre-process these formulas to the standard SMT-LIB.
+ * <p>
+ * The SMT-LIB version of the translation is 1.2
  */
 public class SMTThroughVeriT extends TranslatorV1_2 {
 
@@ -270,8 +278,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			translateTypeName(varType);
 		}
 		// Checking if it's necessary to add the sort and function pair and if
-		// it
-		// was not already inserted.
+		// it was not already inserted.
 		if (insertPairDecl) {
 			addPairSortAndFunctions();
 		}
@@ -458,7 +465,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		smtNode = null;
 	}
 
-	private void translateQuantifiedExpression(final String macroName,
+	private SMTTerm translateQuantifiedExpression(final String macroName,
 			final SMTFormula formulaChild, final SMTTerm[] expressionTerm,
 			final SMTSortSymbol expressionSymbol, final SMTTerm... termChildren) {
 		// obtaining fresh name for the variables
@@ -475,7 +482,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		signature.addMacro(macro);
 		final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
 				VeritPredefinedTheory.getInstance().getBooleanSort());
-		smtNode = makeMacroTerm(macroSymbol);
+		return makeMacroTerm(macroSymbol);
 	}
 
 	/**
@@ -484,101 +491,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitAtomicExpression(final AtomicExpression expression) {
-
-		final String x;
-		final SMTTerm xFun;
-		final SMTSortSymbol xSort;
-		final BigInteger b;
-		final SMTNumeral plusOrMinusUmNumeral;
-		final SMTTerm plusOrMinusTerm;
-		final SMTTerm[] mapstoTerm;
-		final SMTMacroSymbol intS;
-		final SMTTerm intT;
-		final SMTFormula inFormula;
-		final String macroName;
-
 		switch (expression.getTag()) {
 		case Formula.KPRED:
-			// Making x
-			x = signature.freshCstName("x");
-			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
-					Ints.getInt());
-
-			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
-			xFun = sf.makeVar(x, Ints.getInt());
-
-			// Making 1
-			b = BigInteger.ONE;
-			plusOrMinusUmNumeral = SMTFactory.makeNumeral(b);
-
-			// Making x + 1
-			plusOrMinusTerm = sf.makeMinus((SMTFunctionSymbol) signature
-					.getLogic().getOperator(SMTOperator.MINUS), signature,
-					xFun, plusOrMinusUmNumeral);
-
-			// Making x |-> x + 1
-			addPredefinedMacroInSignature(MAPSTO, signature);
-
-			mapstoTerm = new SMTTerm[1];
-			mapstoTerm[0] = SMTFactory.makeMacroTerm(getMacroSymbol(MAPSTO),
-					xFun, plusOrMinusTerm);
-
-			// Making Int
-			intS = SMTMacroFactory.getMacroSymbol(INTEGER);
-			intT = makeMacroTerm(intS);
-			addPredefinedMacroInSignature(INTEGER, signature);
-
-			// making (x in Int)
-			addPredefinedMacroInSignature(IN, signature);
-			inFormula = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(IN), xFun,
-					intT);
-
-			macroName = signature.freshCstName(SMTMacroSymbol.PRED);
-
-			translateQuantifiedExpression(macroName, inFormula, mapstoTerm,
-					xSort, xFun);
+			smtNode = translateKPREDorKSUCC(SMTOperator.MINUS,
+					SMTMacroSymbol.PRED);
 			break;
 		case Formula.KSUCC:
-
-			// Making x
-			x = signature.freshCstName("x");
-			xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
-					Ints.getInt());
-
-			new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
-			xFun = sf.makeVar(x, Ints.getInt());
-
-			// Making 1
-			b = BigInteger.ONE;
-			plusOrMinusUmNumeral = SMTFactory.makeNumeral(b);
-
-			// Making x + 1
-			plusOrMinusTerm = sf.makePlus((SMTFunctionSymbol) signature
-					.getLogic().getOperator(SMTOperator.PLUS), signature, xFun,
-					plusOrMinusUmNumeral);
-
-			// Making x |-> x + 1
-			addPredefinedMacroInSignature(MAPSTO, signature);
-
-			mapstoTerm = new SMTTerm[1];
-			mapstoTerm[0] = SMTFactory.makeMacroTerm(getMacroSymbol(MAPSTO),
-					xFun, plusOrMinusTerm);
-
-			// Making Int
-			intS = SMTMacroFactory.getMacroSymbol(INTEGER);
-			intT = makeMacroTerm(intS);
-			addPredefinedMacroInSignature(INTEGER, signature);
-
-			// making (x in Int)
-			addPredefinedMacroInSignature(IN, signature);
-
-			inFormula = SMTFactoryVeriT.makeMacroAtom(getMacroSymbol(IN), xFun,
-					intT);
-
-			macroName = signature.freshCstName(SMTMacroSymbol.SUCC);
-
-			translateQuantifiedExpression(macroName, inFormula, mapstoTerm,
-					xSort, xFun);
+			smtNode = translateKPREDorKSUCC(SMTOperator.PLUS,
+					SMTMacroSymbol.SUCC);
 			break;
 		case Formula.INTEGER:
 			addPredefinedMacroInSignature(INTEGER, signature);
@@ -639,6 +559,51 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private SMTTerm translateKPREDorKSUCC(SMTOperator operator,
+			String macroSymbol) {
+		// Making x
+		String x = signature.freshCstName("x");
+		SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
+				Ints.getInt());
+
+		new SMTFunctionSymbol(x, xSort, !ASSOCIATIVE, !PREDEFINED);
+		SMTTerm xFun = sf.makeVar(x, Ints.getInt());
+
+		// Making 1
+		SMTNumeral plusOrMinusUmNumeral = SMTFactory
+				.makeNumeral(BigInteger.ONE);
+
+		// Making x + 1
+		SMTTerm plusOrMinusTerm = sf.makeMinus((SMTFunctionSymbol) signature
+				.getLogic().getOperator(operator), signature, xFun,
+				plusOrMinusUmNumeral);
+
+		// Making x |-> x + 1
+		addPredefinedMacroInSignature(MAPSTO, signature);
+
+		SMTTerm[] mapstoTerm = new SMTTerm[1];
+		mapstoTerm[0] = SMTFactory.makeMacroTerm(getMacroSymbol(MAPSTO), xFun,
+				plusOrMinusTerm);
+
+		// Making Int
+		SMTMacroSymbol intS = SMTMacroFactory.getMacroSymbol(INTEGER);
+		SMTTerm intT = makeMacroTerm(intS);
+		addPredefinedMacroInSignature(INTEGER, signature);
+
+		// making (x in Int)
+		addPredefinedMacroInSignature(IN, signature);
+		SMTFormula inFormula = SMTFactoryVeriT.makeMacroAtom(
+				getMacroSymbol(IN), xFun, intT);
+
+		String macroName = signature.freshCstName(macroSymbol);
+
+		return translateQuantifiedExpression(macroName, inFormula, mapstoTerm,
+				xSort, xFun);
 	}
 
 	/**
@@ -1318,27 +1283,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitQuantifiedExpression(final QuantifiedExpression expression) {
-		// FIXME Refactor this method
 		switch (expression.getTag()) {
 		case Formula.CSET:
-
-			// Translating the children
-			final SMTTerm[] termChildren = smtTerms(expression
-					.getBoundIdentDecls());
-			final SMTFormula formulaChild = smtFormula(expression
-					.getPredicate());
-			final SMTTerm[] expressionTerm = smtTerms(expression
-					.getExpression());
-
-			// obtaining the expression type
-			SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
-			if (expressionSymbol == null) {
-				expressionSymbol = translateTypeName(expression.getType());
-			}
-			final String macroName = signature
-					.freshCstName(SMTMacroSymbol.CSET);
-			translateQuantifiedExpression(macroName, formulaChild,
-					expressionTerm, expressionSymbol, termChildren);
+			smtNode = translateCSET(expression);
 			break;
 		case Formula.QUNION:
 			throw new IllegalArgumentException(
@@ -1349,6 +1296,25 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
+	}
+
+	/**
+	 * @param expression
+	 */
+	private SMTTerm translateCSET(final QuantifiedExpression expression) {
+		// Translating the children
+		final SMTTerm[] termChildren = smtTerms(expression.getBoundIdentDecls());
+		final SMTFormula formulaChild = smtFormula(expression.getPredicate());
+		final SMTTerm[] expressionTerm = smtTerms(expression.getExpression());
+
+		// obtaining the expression type
+		SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
+		if (expressionSymbol == null) {
+			expressionSymbol = translateTypeName(expression.getType());
+		}
+		final String macroName = signature.freshCstName(SMTMacroSymbol.CSET);
+		return translateQuantifiedExpression(macroName, formulaChild,
+				expressionTerm, expressionSymbol, termChildren);
 	}
 
 	/**

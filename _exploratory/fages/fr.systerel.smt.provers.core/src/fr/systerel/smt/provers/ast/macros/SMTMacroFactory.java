@@ -323,9 +323,9 @@ public class SMTMacroFactory {
 	private static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_INJECTION, POLYMORPHIC, !PREDEFINED, POLYMORPHIC_PAIRS);
 	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
-			POLYMORPHIC, !PREDEFINED,POLYMORPHICS);
+			POLYMORPHIC, !PREDEFINED, POLYMORPHICS);
 	private static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
-			POLYMORPHIC, !PREDEFINED,POLYMORPHICS);
+			POLYMORPHIC, !PREDEFINED, POLYMORPHICS);
 	private static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
 			POLYMORPHIC, !PREDEFINED);
 	private static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
@@ -459,7 +459,7 @@ public class SMTMacroFactory {
 	}
 
 	public static SMTEnumMacro makeEnumMacro(final String macroName,
-			final SMTVarSymbol varName, final SMTTerm[] terms) {
+			final SMTVarSymbol varName, final SMTTerm... terms) {
 
 		return new SMTEnumMacro(macroName, varName, terms, 0);
 	}

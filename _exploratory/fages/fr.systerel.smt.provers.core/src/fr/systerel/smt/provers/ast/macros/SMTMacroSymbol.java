@@ -85,7 +85,6 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String RANGE = "ran";
 	public static final String NOT_EQUAL = "neq";
 	public static final String BCOMP = "bcomp";
-	public static final String INT1 = "Int1";
 
 	private final SMTSortSymbol[] argSorts;
 	private final SMTSortSymbol returnSort;

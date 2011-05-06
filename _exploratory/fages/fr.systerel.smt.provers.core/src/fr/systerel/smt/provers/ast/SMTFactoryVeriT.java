@@ -50,8 +50,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		} else if (atomicExpression.equals("\u2115")) { // NATURAL
 			signature.addMacro(SMTMacroFactory.NAT_MACRO);
 			return SMTMacroSymbol.NAT;
-		} else if (atomicExpression.equals("\u2124" + 1)) {
-			return SMTMacroSymbol.INT1;
 		} else if (atomicExpression.equals("\u2115" + 1)) {
 			signature.addMacro(SMTMacroFactory.NAT1_MACRO);
 			return SMTMacroSymbol.NAT1;
@@ -147,7 +145,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 *            the terms
 	 * @return the formulas from the terms
 	 */
-	public SMTFormula[] convertVeritTermsIntoFormulas(final SMTTerm[] terms) {
+	public SMTFormula[] convertVeritTermsIntoFormulas(final SMTTerm... terms) {
 		final SMTFormula[] formulas = new SMTFormula[terms.length];
 		int i = 0;
 		for (final SMTTerm term : terms) {
