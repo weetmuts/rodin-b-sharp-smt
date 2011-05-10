@@ -11,7 +11,6 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
-import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.LOGIC;
 import static fr.systerel.smt.provers.ast.SMTSymbol.THEORY;
@@ -36,21 +35,27 @@ public class SMTLogic {
 	// TODO add fields needed to print a complete logic (language, extensions,
 	// notes)
 
+	/**
+	 * Constructs a new SMTLogic
+	 * 
+	 * @param name
+	 *            the name of the SMTLogic
+	 * @param theories
+	 *            the theories used in the logic
+	 **/
 	public SMTLogic(final String name, final SMTTheory... theories) {
 		this.name = name;
 		this.theories = theories.clone();
 	}
 
-	// TODO could be factorised with benchmarkCmdOpening and may be some other
-	// similar methods
-	private void logicCmdOpening(final StringBuilder sb) {
-		sb.append(OPAR);
-		sb.append(LOGIC);
-		sb.append(SPACE);
-		sb.append(name);
-		sb.append("\n");
-	}
-
+	/**
+	 * appends the string representation of the theories section to the String
+	 * Builder.
+	 * 
+	 * @param sb
+	 *            the builder that will receive the string representation of the
+	 *            theories section.
+	 */
 	private void theoriesSection(final StringBuilder sb) {
 		for (final SMTTheory theory : theories) {
 			sb.append(" :");
@@ -61,14 +66,30 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * returns the name of the logic.
+	 * 
+	 * @return the name of the logic.
+	 */
 	public final String getName() {
 		return name;
 	}
 
+	/**
+	 * returns the used theories of this logic.
+	 * 
+	 * @return the used theories of this logic.
+	 */
 	public final SMTTheory[] getTheories() {
 		return theories.clone();
 	}
 
+	/**
+	 * returns the defined sorts of all the included theories of the instance of
+	 * the logic.
+	 * 
+	 * @return the sorts as explained above.
+	 */
 	public final List<SMTSortSymbol> getSorts() {
 		final List<SMTSortSymbol> sorts = new ArrayList<SMTSortSymbol>();
 		for (final SMTTheory theory : theories) {
@@ -77,6 +98,12 @@ public class SMTLogic {
 		return sorts;
 	}
 
+	/**
+	 * returns the defined predicates of all the included theories of the
+	 * instance of the logic.
+	 * 
+	 * @return the predicates as explained above.
+	 */
 	public final List<SMTPredicateSymbol> getPredicates() {
 		final List<SMTPredicateSymbol> predicates = new ArrayList<SMTPredicateSymbol>();
 		for (final SMTTheory theory : theories) {
@@ -85,6 +112,12 @@ public class SMTLogic {
 		return predicates;
 	}
 
+	/**
+	 * returns the defined functions of all the included theories of the
+	 * instance of the logic.
+	 * 
+	 * @return the functions as explained above.
+	 */
 	public final List<SMTFunctionSymbol> getFunctions() {
 		final List<SMTFunctionSymbol> functions = new ArrayList<SMTFunctionSymbol>();
 		for (final SMTTheory theory : theories) {
@@ -93,6 +126,12 @@ public class SMTLogic {
 		return functions;
 	}
 
+	/**
+	 * returns the integer sort if the logic contains a theory that defines the
+	 * integer sort, otherwise it returns null.
+	 * 
+	 * @return the integer sort as defined above.
+	 */
 	public final SMTSortSymbol getIntegerSort() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof ISMTIntegerSort) {
@@ -102,18 +141,28 @@ public class SMTLogic {
 		return null;
 	}
 
+	/**
+	 * returns the boolean sort if the logic contains a theory that defines the
+	 * boolean sort, otherwise it returns null.
+	 * 
+	 * @return the boolean sort as defined above.
+	 */
 	public SMTSortSymbol getBooleanSort() {
-		// for (final SMTTheory theory : theories) {
-		// if (theory instanceof ISMTBooleanSort) {
-		// return ((ISMTBooleanSort) theory).getBooleanSort();
-		// }
-		// }
-
-		// FIXME: It's temporary, just for verification of function and
-		// predicate ranks! It's necessary to add the Boolean Theory later.
-		return Booleans.getInstance().getBooleanSort();
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof ISMTBooleanSort) {
+				return ((ISMTBooleanSort) theory).getBooleanSort();
+			}
+		}
+		return null;
 	}
 
+	/**
+	 * Given the operator value, it returns the corresponding SMT symbol.
+	 * 
+	 * @param operator
+	 *            the operator code
+	 * @return the corresponding SMT Symbol
+	 */
 	public final SMTSymbol getOperator(final SMTOperator operator) {
 		switch (operator) {
 		case GE:
@@ -199,8 +248,14 @@ public class SMTLogic {
 		return builder.toString();
 	}
 
+	/**
+	 * Appends in the StringBuilder a string representation of this logic.
+	 * 
+	 * @param sb
+	 *            the StringBuilder that will receive the string representation.
+	 */
 	public void toString(final StringBuilder sb) {
-		logicCmdOpening(sb);
+		SMTBenchmark.smtCmdOpening(sb, LOGIC, name);
 		theoriesSection(sb);
 		sb.append(CPAR);
 	}
@@ -268,8 +323,17 @@ public class SMTLogic {
 				SMTMacroSymbol.RANGE), NOT_EQUAL(SMTMacroSymbol.NOT_EQUAL), BCOMP(
 				SMTMacroSymbol.BCOMP), INTEGER(SMTMacroSymbol.INT);
 
+		/**
+		 * The symbol string.
+		 */
 		private String symbol;
 
+		/**
+		 * THe Constructor of the enumeration
+		 * 
+		 * @param symbol
+		 *            the String value of the operator.
+		 */
 		SMTVeriTOperator(final String symbol) {
 			this.symbol = symbol;
 		}
@@ -306,27 +370,44 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * This class represents the SMT underlying logic used by veriT. It differs
+	 * from the standard underlying logic.
+	 */
 	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogic {
 
+		/**
+		 * The theories used by the veriT logic.
+		 */
 		private static final SMTTheory[] THEORIES = { VeritPredefinedTheory
 				.getInstance() };
 
+		/**
+		 * The instance of the underlying logic.
+		 */
 		private static final VeriTSMTLIBUnderlyingLogic INSTANCE = new VeriTSMTLIBUnderlyingLogic();
 
-		protected VeriTSMTLIBUnderlyingLogic() {
+		/**
+		 * The constructor of the logic.
+		 */
+		private VeriTSMTLIBUnderlyingLogic() {
 			super(UNKNOWN, THEORIES);
 		}
 
-		protected VeriTSMTLIBUnderlyingLogic(final String name) {
-			super(name, THEORIES);
-		}
-
+		/**
+		 * returns an instance of the VeriT logic.
+		 * 
+		 * @return an instance of the VeriT logic.
+		 */
 		public static VeriTSMTLIBUnderlyingLogic getInstance() {
 			return INSTANCE;
 		}
 	}
 
-	// FIXME provers seems to be unable to use predefined logics
+	/**
+	 * This class represents the UFNIA logic
+	 * 
+	 */
 	public static class UFNIA extends SMTLIBUnderlyingLogic {
 		private static final String UFNIA = "UFNIA";
 
@@ -341,6 +422,10 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * This class represents the LIA logic
+	 * 
+	 */
 	public static class LIA extends SMTLIBUnderlyingLogic {
 		private static final String LIA = "LIA";
 
@@ -355,6 +440,9 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * This class represents the AUFLIA logic.
+	 */
 	public static class AUFLIA extends SMTLIBUnderlyingLogic {
 		private static final String AUFLIA = "AUFLIA";
 
@@ -369,6 +457,11 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * returns the integer sort constant symbol.
+	 * 
+	 * @return the integer sort constant symbol.
+	 */
 	public SMTFunctionSymbol getIntegerSortCst() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof Ints) {
@@ -384,6 +477,11 @@ public class SMTLogic {
 				"The Int sort is not declared in the signature of this benchmark");
 	}
 
+	/**
+	 * returns the boolean sort constant symbol.
+	 * 
+	 * @return the boolean sort constant symbol.
+	 */
 	public SMTFunctionSymbol getBooleanCste() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof VeritPredefinedTheory) {
@@ -395,6 +493,11 @@ public class SMTLogic {
 		return null;
 	}
 
+	/**
+	 * returns the {@code true} predicate symbol.
+	 * 
+	 * @return the {@code true} predicate symbol.
+	 */
 	public SMTPredicateSymbol getTrue() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof Booleans) {

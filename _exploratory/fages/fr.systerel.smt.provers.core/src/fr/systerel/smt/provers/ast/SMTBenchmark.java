@@ -35,9 +35,10 @@ public class SMTBenchmark {
 	 * Adds the opening format of a benchmark command to the given string
 	 * builder.
 	 */
-	private void benchmarkCmdOpening(final StringBuilder sb) {
+	public static void smtCmdOpening(final StringBuilder sb, String element,
+			String name) {
 		sb.append(OPAR);
-		sb.append(BENCHMARK);
+		sb.append(element);
 		sb.append(SPACE);
 		sb.append(name);
 		sb.append("\n");
@@ -106,7 +107,7 @@ public class SMTBenchmark {
 	 */
 	public void print(final PrintWriter pw) {
 		final StringBuilder sb = new StringBuilder();
-		benchmarkCmdOpening(sb);
+		smtCmdOpening(sb, BENCHMARK, name);
 		signature.toString(sb);
 		sb.append("\n");
 		assumptionsSection(sb);

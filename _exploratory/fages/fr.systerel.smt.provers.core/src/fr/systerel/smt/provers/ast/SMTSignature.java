@@ -25,12 +25,16 @@ import java.util.TreeSet;
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
  * <ul>
- * <li>Explicit (ad-hoc) overloading of function or predicate symbols — by which
- * a symbol could have more than one rank — is allowed.</li>
- * <li>Every variable has a unique sort and no function symbol has distinct
- * ranks of the form <code>s1 ··· sn s</code> and <code>s1 ··· sn s</code>.</li>
- * <li>The sets <code>ΣS</code>, <code>ΣF</code> and <code>ΣP</code> of an
- * SMT-LIB signature are not required to be disjoint.</li>
+ * 
+ * <li><strong>(The actual solvers does not support overloading)</strong>
+ * Explicit (ad-hoc) overloading of function or predicate symbols — by which a
+ * symbol could have more than one rank — is allowed.</li>
+ * <li><strong>TODO: Implement this test: </strong>Every variable has a unique
+ * sort and no function symbol has distinct ranks of the form
+ * <code>s1 ··· sn s</code> and <code>s1 ··· sn s</code>.</li>
+ * <li><strong>(The actual solvers does not support this too)</strong> The sets
+ * <code>ΣS</code>, <code>ΣF</code> and <code>ΣP</code> of an SMT-LIB signature
+ * are not required to be disjoint.</li>
  * <li>It is required for the set of attribute symbols to be disjoint from all
  * the other sets of the language.</li>
  * <li>The symbols <code>assumption</code>, <code>formula</code>,
@@ -53,44 +57,88 @@ import java.util.TreeSet;
 // SMTSignature2_0. This might be necessary if naming rules are not the same in
 // the two versions of the language.
 public abstract class SMTSignature {
+
+	/**
+	 * The logic of the signature
+	 */
 	protected final SMTLogic logic;
 
 	protected final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
 
+	/**
+	 * reserved symbols of the logic
+	 */
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
+	/**
+	 * Predefined attribute symbols
+	 */
 	protected final static String predefinedAttributesSymbols[] = {
 			"assumption", "formula", "status", "logic", "extrasorts",
 			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
 			"definition", THEORY, "language", "extensions", "notes" };
 
+	/**
+	 * attribute symbols of the signature
+	 */
 	protected final Set<String> attributeSymbols = new HashSet<String>(
 			Arrays.asList(predefinedAttributesSymbols));
 
+	/**
+	 * Sorts of the signature
+	 */
 	protected final Set<SMTSortSymbol> sorts = new HashSet<SMTSortSymbol>();
 
+	/**
+	 * predicates of the signature
+	 */
 	protected final Set<SMTPredicateSymbol> preds = new HashSet<SMTPredicateSymbol>();
 
+	/**
+	 * functions of the signature
+	 */
 	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
+	/**
+	 * returns the sorts in the signature
+	 * 
+	 * @return the sorts in the signature
+	 */
 	public Set<SMTSortSymbol> getSorts() {
 		return sorts;
 	}
 
+	/**
+	 * returns the preds in the signature
+	 * 
+	 * @return the preds in the signature
+	 */
 	public Set<SMTPredicateSymbol> getPreds() {
 		return preds;
 	}
 
+	/**
+	 * returns the functions in the signature
+	 * 
+	 * @return the functions in the signature
+	 */
 	public Set<SMTFunctionSymbol> getFuns() {
 		return funs;
 	}
 
+	/**
+	 * Construts a new Signature given the SMT Logic
+	 * 
+	 * @param logic
+	 *            the logic used in the SMTSignature
+	 */
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
 		loadLogicSymbols();
 	}
 
+	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
 		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
@@ -129,6 +177,7 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
+	// TODO: Refactor this method
 	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
 		for (final SMTFunctionSymbol symbol : funs) {
 
@@ -172,6 +221,7 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
+	// TODO: Refactor this method
 	private static IllegalArgumentException makeIncompatibleFunctionsException(
 			final SMTFunctionSymbol actualFunctionSymbol,
 			final SMTFunctionSymbol expectedSymbol) {
@@ -195,6 +245,7 @@ public abstract class SMTSignature {
 		return new IllegalArgumentException(sb.toString());
 	}
 
+	// TODO: Refactor this method
 	private static String makeIncompatiblePredicatesExceptionMessage(
 			final SMTPredicateSymbol actualPredicateSymbol,
 			final SMTPredicateSymbol expectedPredSymbol) {
@@ -218,6 +269,11 @@ public abstract class SMTSignature {
 		return sb.toString();
 	}
 
+	/**
+	 * This method returns a set with the reserved symbols and keywords
+	 * 
+	 * @return the reserved symbols and keyboards.
+	 */
 	private static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
 				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
@@ -260,6 +316,10 @@ public abstract class SMTSignature {
 		return sb.toString();
 	}
 
+	/**
+	 * Adds in the signature the predicates, functions and sort symbols from the
+	 * loaded logic
+	 */
 	private void loadLogicSymbols() {
 		sorts.addAll(logic.getSorts());
 		preds.addAll(logic.getPredicates());
@@ -362,10 +422,27 @@ public abstract class SMTSignature {
 		return freshName.toString();
 	}
 
+	/**
+	 * Returns the logic used by the signature
+	 * 
+	 * @return the logic of the signature
+	 */
 	public SMTLogic getLogic() {
 		return logic;
 	}
 
+	/**
+	 * gets a function symbol according to the parameters. Otherwise, it returns
+	 * null.
+	 * 
+	 * @param name
+	 *            the name of the function symbol.
+	 * @param argSorts
+	 *            the sorts of the arguments.
+	 * @param resultSort
+	 *            the result sort of the function symbol.
+	 * @return the function symbol.
+	 */
 	public SMTFunctionSymbol getFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
 		for (final SMTFunctionSymbol fun : funs) {
@@ -376,6 +453,16 @@ public abstract class SMTSignature {
 		return null;
 	}
 
+	/**
+	 * gets a predicate symbol according to the parameters. Otherwise, it
+	 * returns null.
+	 * 
+	 * @param name
+	 *            the name of the predicate symbol.
+	 * @param argSorts
+	 *            the argument sorts.
+	 * @return the predicate symbol.
+	 */
 	public SMTPredicateSymbol getPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
 		for (final SMTPredicateSymbol pred : preds) {
@@ -391,6 +478,11 @@ public abstract class SMTSignature {
 	 */
 	protected final static String MS_PREDICATE_NAME = "MS";
 
+	/**
+	 * returns a fresh predicate name.
+	 * 
+	 * @return a fresh predicate name.
+	 */
 	public String freshPredName() {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
@@ -399,6 +491,14 @@ public abstract class SMTSignature {
 		return freshName(names, MS_PREDICATE_NAME);
 	}
 
+	/**
+	 * returns a fresh constante name.
+	 * 
+	 * @param the
+	 *            base name for the new constant name.
+	 * @return {@code name} if there is no element defined with the same name,
+	 *         {@code name} + a numeral otherwise.
+	 */
 	public String freshCstName(final String name) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
@@ -411,6 +511,16 @@ public abstract class SMTSignature {
 		}
 	}
 
+	/**
+	 * Returns a fresh symbol name.
+	 * 
+	 * @param symbolNames
+	 *            the reserved symbol names.
+	 * @param name
+	 *            the base name for the fresh name. That is, the fresh name can
+	 *            be the same string or the same string + a numeral.
+	 * @return a fresh name.
+	 */
 	public String freshSymbolName(final Set<String> symbolNames,
 			final String name) {
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
@@ -420,12 +530,26 @@ public abstract class SMTSignature {
 		}
 	}
 
+	/**
+	 * Creates and returns a fresh constant
+	 * 
+	 * @param name
+	 *            the name of the fresh constant.
+	 * @param sort
+	 *            the sort of the fresh constant.
+	 * @return a fresh function symbol.
+	 */
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
 		final String freshName = freshCstName(name);
 		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE, !PREDEFINED);
 	}
 
+	/**
+	 * returns a fresh sort.
+	 * 
+	 * @return a fresh sort.
+	 */
 	public SMTSortSymbol freshSort() {
 		return freshSort(NEW_SORT_NAME);
 	}
@@ -450,6 +574,13 @@ public abstract class SMTSignature {
 		return freshSort;
 	}
 
+	/**
+	 * Appends to the StringBuilder the string representation of the logic
+	 * section
+	 * 
+	 * @param sb
+	 *            the StringBuilder
+	 */
 	private void logicSection(final StringBuilder sb) {
 		sb.append(" :logic ");
 		sb.append(logic.getName());
@@ -465,26 +596,50 @@ public abstract class SMTSignature {
 		}
 	}
 
+	/**
+	 * Appends to the StringBuilder the string representation of the extrapreds
+	 * section
+	 * 
+	 * @param sb
+	 */
 	private void extrapredsSection(final StringBuilder sb) {
 		if (!preds.isEmpty()) {
 			extraSection(sb, preds, "extrapreds");
 		}
 	}
 
+	/**
+	 * Appends to the StringBuilder the string representation of the extrafuns
+	 * section
+	 * 
+	 * @param sb
+	 */
 	private void extrafunsSection(final StringBuilder sb) {
 		if (!funs.isEmpty()) {
 			extraSection(sb, funs, "extrafuns");
 		}
 	}
 
+	/**
+	 * Add a constant to the signature.
+	 * 
+	 * @param constant
+	 *            the constant.
+	 */
 	public void addConstant(final SMTFunctionSymbol constant) {
 		funs.add(constant);
 	}
 
-	// TODO This method could be improved by calling a method which tells if
-	// <code>this.preds</code> already contains a predicate defined by a name
-	// and a rank before creating the SMTPredicateSymbol to add to the list.
-	public SMTPredicateSymbol addNewPredicateSymbol(final String name,
+	/**
+	 * adds a predicate symbol to the signature
+	 * 
+	 * @param name
+	 *            the name of the predicate symbol
+	 * @param argSorts
+	 *            the sort arguments.
+	 * @return the just added predicate symbol to the signature
+	 */
+	public SMTPredicateSymbol addPredicateSymbol(final String name,
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
 				!SMTSymbol.PREDEFINED, argSorts);
@@ -503,6 +658,12 @@ public abstract class SMTSignature {
 		}
 	}
 
+	/**
+	 * Appends to the StringBuilder the string representation of the signature
+	 * 
+	 * @param sb
+	 *            the StringBuilder
+	 */
 	public void toString(final StringBuilder sb) {
 		logicSection(sb);
 		extrasortsSection(sb);

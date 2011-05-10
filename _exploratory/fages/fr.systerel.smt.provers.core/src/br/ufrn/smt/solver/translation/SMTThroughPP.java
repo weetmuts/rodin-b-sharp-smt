@@ -537,7 +537,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				if (!varMap.containsKey(varName)) {
 					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
 						final SMTPredicateSymbol predSymbol = signature
-								.addNewPredicateSymbol(varName);
+								.addPredicateSymbol(varName);
 						varMap.put(varName, predSymbol);
 						continue;
 					} else {
@@ -894,7 +894,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 				// FIXME Check the behavior of this method
 				final SMTPredicateSymbol predSymbol = signature
-						.addNewPredicateSymbol(rightSet.getName(),
+						.addPredicateSymbol(rightSet.getName(),
 								leftTerm.getSort());
 
 				msTypeMap.put(leftType, predSymbol);
@@ -933,7 +933,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol predSymbol = msTypeMap.get(type);
 		if (predSymbol == null) {
-			predSymbol = signature.addNewPredicateSymbol(
+			predSymbol = signature.addPredicateSymbol(
 					signature.freshPredName(), argSorts);
 			msTypeMap.put(type, predSymbol);
 		}
