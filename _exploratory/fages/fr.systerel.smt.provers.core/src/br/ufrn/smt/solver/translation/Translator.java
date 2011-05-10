@@ -13,9 +13,6 @@ package br.ufrn.smt.solver.translation;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eventb.core.ast.BoundIdentDecl;
-import org.eventb.core.ast.DefaultInspector;
-import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
@@ -31,14 +28,6 @@ import fr.systerel.smt.provers.ast.SMTSymbol;
  * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
-
-	class SMTBoundIdentDeclTypeInspector extends DefaultInspector<Type> {
-		@Override
-		public void inspect(final BoundIdentDecl decl,
-				final IAccumulator<Type> accumulator) {
-			accumulator.add(decl.getType());
-		}
-	}
 
 	/**
 	 * typeMap is a map between Event-B types encountered during the translation
@@ -62,8 +51,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * method as hypotheses and goal. Must be called by a public static method.
 	 */
 	protected abstract SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal)
-			throws TranslationException;
+			final List<Predicate> hypotheses, final Predicate goal);
 
 	/**
 	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
@@ -95,6 +83,9 @@ public abstract class Translator implements ISimpleVisitor {
 		}
 	}
 
+	/**
+	 * Clears the formula
+	 */
 	protected void clearFormula() {
 		smtNode = null;
 	}

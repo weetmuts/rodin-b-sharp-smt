@@ -31,7 +31,6 @@ import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
-import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 
 /**
@@ -40,6 +39,7 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
  * 
  */
 public class SmtProverCall extends XProverCall {
+
 	private static final String RES = "res";
 	private static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	private static final String VERIT_TEMP_FILE = "_prep";
@@ -53,6 +53,12 @@ public class SmtProverCall extends XProverCall {
 
 	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
 
+	/**
+	 * Delete the file and all its children (if it is a folder)
+	 * 
+	 * @param file
+	 *            the file to be deleted
+	 */
 	public static void deleteFile(final File file) {
 		if (file.isFile()) {
 			file.delete();
@@ -65,10 +71,17 @@ public class SmtProverCall extends XProverCall {
 		}
 	}
 
-	public static void cleanSMTFolder(final File file) {
-		if (file.exists()) {
-			if (file.isDirectory()) {
-				final File[] children = file.listFiles();
+	/**
+	 * This method cleans the output folder of the SMT-LIB, that is, deletes all
+	 * children of the SMT folder.
+	 * 
+	 * @param smtFolder
+	 *            the SMT Folder
+	 */
+	public static void cleanSMTFolder(final File smtFolder) {
+		if (smtFolder.exists()) {
+			if (smtFolder.isDirectory()) {
+				final File[] children = smtFolder.listFiles();
 				for (final File child : children) {
 					deleteFile(child);
 				}
@@ -81,6 +94,9 @@ public class SmtProverCall extends XProverCall {
 	 */
 	private final String proverName;
 
+	/**
+	 * The UI preferences of the SMT plugin
+	 */
 	private final SMTPreferences smtUiPreferences;
 
 	/**
@@ -113,6 +129,16 @@ public class SmtProverCall extends XProverCall {
 				+ SMT_LIB_FILE_EXTENSION;
 	}
 
+	/**
+	 * makes the output folder for SMT files.
+	 * 
+	 * @param cleanSmtFolder
+	 *            If the folder already exists and it has content inside, this
+	 *            boolean then is used to check if the content must be deleted
+	 *            or not before new proof.
+	 * 
+	 * @return the path string of the created directory
+	 */
 	public static String mkTranslationDir(final boolean cleanSmtFolder) {
 		final String returnString;
 		File f = new File(TRANSLATION_PATH);
@@ -144,8 +170,14 @@ public class SmtProverCall extends XProverCall {
 		return returnString;
 	}
 
-	private static PrintWriter openSMTFileWriter(final File smtFile,
-			final String fileName) {
+	/**
+	 * Create a new PrintWriter given the file.
+	 * 
+	 * @param smtFile
+	 *            the SMT file which will be the output of the translation
+	 * @return the PrintWriter that points to the SMT file.
+	 */
+	private static PrintWriter openSMTFileWriter(final File smtFile) {
 		try {
 			final PrintWriter smtFileWriter = new PrintWriter(
 					new BufferedWriter(new FileWriter(smtFile)));
@@ -161,10 +193,6 @@ public class SmtProverCall extends XProverCall {
 			se.getMessage();
 			return null;
 		}
-	}
-
-	private static void closeSMTFileWriter(final PrintWriter smtFileWriter) {
-		smtFileWriter.close();
 	}
 
 	/**
@@ -242,15 +270,20 @@ public class SmtProverCall extends XProverCall {
 				 * SMT lib v2.0
 				 */
 			}
-		} catch (final TranslationException t) {
-			throw new IllegalArgumentException(t);
 		} catch (final IOException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
-	public List<String> smtTranslationThroughPP() throws TranslationException,
-			PreProcessingException, IOException {
+	/**
+	 * Execute translation of Event-B predicates using the PP approach.
+	 * 
+	 * @return the list of argumetns
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 */
+	public List<String> smtTranslationThroughPP()
+			throws PreProcessingException, IOException {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
 						.getId());
@@ -258,7 +291,7 @@ public class SmtProverCall extends XProverCall {
 	}
 
 	public List<String> smtTranslationThroughVeriT()
-			throws TranslationException, PreProcessingException, IOException {
+			throws PreProcessingException, IOException {
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtUiPreferences.getSolver().getId());
@@ -373,10 +406,9 @@ public class SmtProverCall extends XProverCall {
 			ioe.getMessage();
 			return null;
 		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(
-				preProcessedSMTFile, benchmark.getName());
+		final PrintWriter smtFileWriter = openSMTFileWriter(preProcessedSMTFile);
 		benchmark.print(smtFileWriter);
-		closeSMTFileWriter(smtFileWriter);
+		smtFileWriter.close();
 		return preProcessedSMTFile;
 
 	}
@@ -391,13 +423,13 @@ public class SmtProverCall extends XProverCall {
 			ioe.getMessage();
 			return null;
 		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(smtFile,
-				benchmark.getName());
+		final PrintWriter smtFileWriter = openSMTFileWriter(smtFile);
 		benchmark.print(smtFileWriter);
-		closeSMTFileWriter(smtFileWriter);
+		smtFileWriter.close();
 		return smtFile;
 	}
 
+	// TODO Re-do this comment
 	/**
 	 * Performs Rodin PO to SMT translation: First, translate to predicate
 	 * calculus, then translate to SMT with macros, eventually pre-processing
@@ -405,10 +437,9 @@ public class SmtProverCall extends XProverCall {
 	 * 
 	 * @throws PreProcessingException
 	 * @throws IOException
-	 * @throws TranslationException
 	 */
 	private List<String> smtTranslation(final SMTBenchmark benchmark)
-			throws PreProcessingException, IOException, TranslationException {
+			throws PreProcessingException, IOException {
 		if (translationFolder == null) {
 			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}

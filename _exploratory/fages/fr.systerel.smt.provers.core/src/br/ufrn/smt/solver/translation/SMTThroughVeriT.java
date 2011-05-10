@@ -169,12 +169,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            the goal of the Event-B sequent
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
-	 * @throws TranslationException
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final String solver)
-			throws TranslationException {
+			final Predicate goal, final String solver) {
 		final SMTBenchmark smtB = new SMTThroughVeriT(solver).translate(
 				lemmaName, hypotheses, goal);
 		return smtB;
@@ -346,8 +344,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal)
-			throws TranslationException {
+			final List<Predicate> hypotheses, final Predicate goal) {
 
 		final SMTLogic logic = determineLogic(hypotheses, goal);
 

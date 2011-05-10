@@ -18,7 +18,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Exec;
-import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 /**
@@ -113,8 +112,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (final TranslationException t) {
-			fail(t.getMessage());
 		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
 		} catch (final IllegalArgumentException iae) {

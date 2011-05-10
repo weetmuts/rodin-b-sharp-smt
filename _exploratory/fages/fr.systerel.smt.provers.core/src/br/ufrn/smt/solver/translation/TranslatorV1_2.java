@@ -39,30 +39,54 @@ import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
- * This class is a translator from Event-B syntax into SMT-LIB syntax.
+ * This class is a translator from Event-B syntax into SMT-LIB version 1.2
+ * syntax.
  */
 public abstract class TranslatorV1_2 extends Translator {
 
+	/**
+	 * The target solver of the translation. It is used to check which
+	 * translation must be used depending of the solver
+	 */
 	String solver;
 
+	/**
+	 * Constructs the translator with the solver
+	 * 
+	 * @param solver
+	 *            the target solver of the translated SMT-LIB file
+	 */
 	public TranslatorV1_2(final String solver) {
 		this.solver = solver;
 	}
 
 	/**
-	 * TODO Finish this comment When the translator finishes translating a
-	 * quantified predicate, it deletes all the bound identifiers of that
-	 * predicate. In nested quantified predicates, the translator must delete
-	 * the bound identifier declarations inside
+	 * When the translator finishes translating a quantified predicate, it
+	 * deletes all the bound identifiers of that predicate. In nested quantified
+	 * predicates, the translator must delete the bound identifier declarations
+	 * inside.
 	 */
 	protected Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
 
+	/**
+	 * This variable stores the name of bound identifiers of the actual
+	 * predicate being translated.
+	 */
 	protected List<String> boundIdentifiers = new ArrayList<String>();
+
+	/**
+	 * This variable maps names to SMT bound variables.
+	 */
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
 	 * benchmark's signature, that is, free identifiers and given types.
+	 * 
+	 * @param typeEnvironment
+	 *            The type environment that will store the predicates.
+	 * @param predicate
+	 *            the predicate on which its type environment will be extracted.
 	 */
 	private static void extractPredicateTypenv(
 			final ITypeEnvironment typeEnvironment, final Predicate predicate) {
@@ -74,7 +98,19 @@ public abstract class TranslatorV1_2 extends Translator {
 		}
 	}
 
+	/**
+	 * This class is used to store the type of all the BoundIdentDecls from the
+	 * predicate
+	 * 
+	 * @author vitor
+	 * 
+	 */
 	class BidTypeInspector extends DefaultInspector<Type> {
+
+		/**
+		 * This method stores in the accumlator the type of the actual
+		 * BoundIdentDecl
+		 */
 		@Override
 		public void inspect(final BoundIdentDecl decl,
 				final IAccumulator<Type> accumulator) {

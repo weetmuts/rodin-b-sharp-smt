@@ -136,12 +136,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the goal of the Event-B sequent
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
-	 * @throws TranslationException
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final String solver)
-			throws TranslationException {
+			final Predicate goal, final String solver) {
 		final SMTBenchmark smtB = new SMTThroughPP(solver, null).translate(
 				lemmaName, hypotheses, goal);
 		return smtB;
@@ -346,12 +344,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This is the translation method for the ppTrans approach of SMT
 	 * translation.
 	 * 
-	 * @throws TranslationException
 	 */
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal)
-			throws TranslationException {
+			final List<Predicate> hypotheses, final Predicate goal) {
 
 		/**
 		 * PP translation
@@ -384,12 +380,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param logic
 	 *            the used logic
 	 * @return the SMTBenchmark of the translation
-	 * @throws TranslationException
 	 */
 	private SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> ppTranslatedHypotheses,
-			final Predicate ppTranslatedGoal, final SMTLogic logic)
-			throws TranslationException {
+			final Predicate ppTranslatedGoal, final SMTLogic logic) {
 		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
 
 		// translates each hypothesis
@@ -456,10 +450,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	/**
 	 * This method translates the given actualPredicate into an SMT Formula.
 	 * 
-	 * @throws TranslationException
 	 */
-	private SMTFormula translate(final Predicate predicate)
-			throws TranslationException {
+	private SMTFormula translate(final Predicate predicate) {
 		this.actualPredicate = predicate;
 		predicate.accept(this);
 		return getSMTFormula();

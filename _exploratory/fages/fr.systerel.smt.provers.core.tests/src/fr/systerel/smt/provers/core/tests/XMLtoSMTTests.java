@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 
 import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.SMTSolver;
-import br.ufrn.smt.solver.translation.TranslationException;
 import fr.systerel.decert.LemmaParser;
 import fr.systerel.smt.provers.core.tests.utils.LemmaData;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
@@ -175,8 +174,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (final TranslationException t) {
-			fail(t.getMessage());
 		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
 		} catch (final IllegalArgumentException iae) {
@@ -197,8 +194,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (final TranslationException t) {
-			fail(t.getMessage());
 		} catch (final IOException ioe) {
 			fail(ioe.getMessage());
 		} catch (final IllegalArgumentException iae) {
