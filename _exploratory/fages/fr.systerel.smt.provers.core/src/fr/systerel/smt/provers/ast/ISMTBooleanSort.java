@@ -10,6 +10,15 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+/**
+ * This is the interface for boolean sort
+ */
 public interface ISMTBooleanSort {
+
+	/**
+	 * returns the boolean sort.
+	 * 
+	 * @return the boolean sort.
+	 */
 	public SMTSortSymbol getBooleanSort();
 }

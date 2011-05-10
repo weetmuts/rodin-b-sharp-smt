@@ -14,7 +14,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.SMTFunApplication;
-import fr.systerel.smt.provers.ast.SMTMacroTerm;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 

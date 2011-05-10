@@ -25,7 +25,14 @@ public class SMTFunApplication extends SMTTerm {
 		return args;
 	}
 
+	/**
+	 * the function symbol of the term.
+	 */
 	final SMTFunctionSymbol symbol;
+
+	/**
+	 * the arguments of the term.
+	 */
 	final SMTTerm[] args;
 
 	/**
@@ -67,29 +74,6 @@ public class SMTFunApplication extends SMTTerm {
 					incompatibleFunctionRankExceptionMessage(symbol, terms,
 							new StringBuilder()));
 		}
-	}
-
-	private static boolean verifyAssociativeRank(
-			final SMTSortSymbol expectedSortArg, final SMTTerm[] terms) {
-		for (final SMTTerm term : terms) {
-			if (!term.getSort().isCompatibleWith(expectedSortArg)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private static boolean verifyNonAssociativeRank(
-			final SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
-		if (expectedSortArgs.length != terms.length) {
-			return false;
-		}
-		for (int i = 0; i < terms.length; i++) {
-			if (!expectedSortArgs[i].isCompatibleWith(terms[i].getSort())) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	/**

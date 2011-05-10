@@ -72,29 +72,6 @@ class SMTAtom extends SMTFormula {
 		}
 	}
 
-	private static boolean verifyAssociativeRank(
-			final SMTSortSymbol expectedSortArg, final SMTTerm[] terms) {
-		for (final SMTTerm term : terms) {
-			if (!term.getSort().isCompatibleWith(expectedSortArg)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private static boolean verifyNonAssociativeRank(
-			final SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
-		if (expectedSortArgs.length != terms.length) {
-			return false;
-		}
-		for (int i = 0; i < terms.length; i++) {
-			if (!expectedSortArgs[i].isCompatibleWith(terms[i].getSort())) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/**
 	 * Constructs a string message that explains the error if the rank of the
 	 * symbol is not compatible with its arguments, and returns an

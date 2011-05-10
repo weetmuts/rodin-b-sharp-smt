@@ -10,6 +10,15 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+/**
+ * This is the interface for boolean sort
+ */
 public interface ISMTIntegerSort {
+
+	/**
+	 * returns the integer sort.
+	 * 
+	 * @return the integer sort.
+	 */
 	public SMTSortSymbol getIntegerSort();
 }

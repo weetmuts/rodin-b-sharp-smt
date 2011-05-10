@@ -17,6 +17,11 @@ package fr.systerel.smt.provers.ast;
 public class SMTFactoryPP extends SMTFactory {
 	private final static SMTFactoryPP DEFAULT_INSTANCE = new SMTFactoryPP();
 
+	/**
+	 * returns the instance of {@link SMTFactoryPP}
+	 * 
+	 * @return the instance of {@link SMTFactoryPP}
+	 */
 	public static SMTFactoryPP getInstance() {
 		return DEFAULT_INSTANCE;
 	}

@@ -17,13 +17,10 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import java.util.Arrays;
 
 /**
- * 
+ * This class represents SMT function symbols.
  */
 public class SMTFunctionSymbol extends SMTSymbol implements
 		Comparable<SMTFunctionSymbol> {
-	public boolean isAssociative() {
-		return associative;
-	}
 
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). It was chosen
@@ -37,6 +34,15 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	final private boolean associative;
 
 	public static final boolean ASSOCIATIVE = true;
+
+	/**
+	 * returns true if the function symbol is associative, false otherwise.
+	 * 
+	 * @return true if the function symbol is associative, false otherwise.
+	 */
+	public boolean isAssociative() {
+		return associative;
+	}
 
 	/**
 	 * Constructs a new SMT function symbol
@@ -70,14 +76,43 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		return argSorts.length == 0;
 	}
 
+	/**
+	 * returns the expected argument sorts.
+	 * 
+	 * @return the expected argument sorts.
+	 */
 	public SMTSortSymbol[] getArgSorts() {
 		return argSorts;
 	}
 
+	/**
+	 * returns the result sort.
+	 * 
+	 * @return the result sort.
+	 */
 	public SMTSortSymbol getResultSort() {
 		return resultSort;
 	}
 
+	/**
+	 * returns true if the argument sorts of this predicate symbol is equal
+	 * {@code argSorts2}, false otherwise.
+	 * 
+	 * @param argSorts2
+	 *            the list of sort symbols.
+	 * @return true if they are equal, false otherwise
+	 */
+
+	/**
+	 * returns true if the argument sorts and the result sort of this function
+	 * symbol are equal {@code argSorts2} and {@code resultSort2} respectively.
+	 * 
+	 * @param argSorts2
+	 *            the list of argument sort symbols.
+	 * @param resultSort2
+	 *            the result sort
+	 * @return true if they are equal, false otherwise
+	 */
 	public boolean hasRank(final SMTSortSymbol[] argSorts2,
 			final SMTSortSymbol resultSort2) {
 		return Arrays.equals(argSorts, argSorts2)

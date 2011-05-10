@@ -16,6 +16,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
 import java.math.BigInteger;
 
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
@@ -266,6 +267,17 @@ public abstract class SMTFactory {
 		return makeSMTQuantifiedFormula(EXISTS, formula, terms);
 	}
 
+	/**
+	 * This method creates and returns a SMT quantified formula.
+	 * 
+	 * @param qSymbol
+	 *            the quantifier symbol
+	 * @param formula
+	 *            the subformula of the quantifier formula
+	 * @param terms
+	 *            the terms that contains the bound identifier symbols
+	 * @return the SMT quantified formula
+	 */
 	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTFormula formula,
 			final SMTTerm... terms) {

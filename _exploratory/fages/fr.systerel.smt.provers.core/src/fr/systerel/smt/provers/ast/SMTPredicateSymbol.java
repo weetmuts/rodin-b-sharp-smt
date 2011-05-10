@@ -100,10 +100,10 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 
 	/**
 	 * returns true if the argument sorts of this predicate symbol is equal
-	 * {@code argSorts2}
+	 * {@code argSorts2}, false otherwise.
 	 * 
 	 * @param argSorts2
-	 *            the list of predicate sort symbols.
+	 *            the list of sort symbols.
 	 * @return true if they are equal, false otherwise
 	 */
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
