@@ -17,7 +17,7 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import java.util.Arrays;
 
 /**
- * 
+ * This class represents SMT Predicate Symbols. *
  */
 public class SMTPredicateSymbol extends SMTSymbol implements
 		Comparable<SMTPredicateSymbol> {
@@ -29,8 +29,21 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 */
 	final private SMTSortSymbol[] argSorts;
 
+	/**
+	 * True if the predicate is associative, false otherwise.
+	 */
 	final private boolean isAssociative;
 
+	/**
+	 * Constructs a new predicate symbol.
+	 * 
+	 * @param symbolName
+	 *            The name of the symbol
+	 * @param predefined
+	 *            true if it's predefined, false otherwise
+	 * @param argSorts
+	 *            the expected sorts of the arguments.
+	 */
 	public SMTPredicateSymbol(final String symbolName,
 			final boolean predefined, final SMTSortSymbol... argSorts) {
 		super(symbolName, predefined);
@@ -38,26 +51,61 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		isAssociative = false;
 	}
 
+	/**
+	 * return true if it's associative, false otherwise.
+	 * 
+	 * @return true if it's associative, false otherwise.
+	 */
 	public boolean isAssociative() {
 		return isAssociative;
 	}
 
+	/**
+	 * return a list with the expected sorts of the arguments.
+	 * 
+	 * @return a list with the expected sorts of the arguments.
+	 */
 	public SMTSortSymbol[] getArgSorts() {
 		return argSorts;
 	}
 
+	/**
+	 * Constructs a new predicate symbol. *
+	 * 
+	 * @param symbolName
+	 *            The name of the symbol
+	 * @param argSorts
+	 *            the expected sorts of the arguments.
+	 * @param predefined
+	 *            true if it's predefined, false otherwise
+	 * @param isAssociative
+	 *            true if the predicate is associative, false otherwise
+	 */
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined,
-			final boolean acceptsAnInfiniteNumberOfArgs) {
+			final boolean isAssociative) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
-		this.isAssociative = acceptsAnInfiniteNumberOfArgs;
+		this.isAssociative = isAssociative;
 	}
 
+	/**
+	 * returns true if the predicate symbol is propositional, false otherwise.
+	 * 
+	 * @return true if the predicate symbol is propositional, false otherwise.
+	 */
 	public boolean isPropositional() {
 		return argSorts.length == 0;
 	}
 
+	/**
+	 * returns true if the argument sorts of this predicate symbol is equal
+	 * {@code argSorts2}
+	 * 
+	 * @param argSorts2
+	 *            the list of predicate sort symbols.
+	 * @return true if they are equal, false otherwise
+	 */
 	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
 		return Arrays.equals(argSorts, argSorts2);
 	}
@@ -103,13 +151,6 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		}
 	}
 
-	public boolean equals(final SMTPredicateSymbol symbol) {
-		if (compareTo(symbol) == 0) {
-			return true;
-		}
-		return false;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -123,29 +164,9 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * This class represents the predicate symbol equals (=)
 	 */
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final SMTPredicateSymbol other = (SMTPredicateSymbol) obj;
-		if (!Arrays.equals(argSorts, other.argSorts)) {
-			return false;
-		}
-		return true;
-	}
-
 	public static class SMTEqual extends SMTPredicateSymbol {
 		public SMTEqual(final SMTSortSymbol... sort) {
 			super(EQUAL, PREDEFINED, sort);

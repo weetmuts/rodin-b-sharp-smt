@@ -16,14 +16,24 @@ import static fr.systerel.smt.provers.ast.SMTFactory.POINT;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
 /**
- * @author guyot
- * 
+ * This class is used to represent formulas which the operator is {@code FORALL}
+ * or {@code EXISTS}.
  */
 public class SMTQuantifiedFormula extends SMTFormula {
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
 
+	/**
+	 * Constructs a new SMT quantified formula
+	 * 
+	 * @param quantifier
+	 *            the quantifier symbol (FORALL or EXISTS)
+	 * @param qVars
+	 *            the bound vars of the formula
+	 * @param formula
+	 *            the bound formula
+	 */
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
 			final SMTVarSymbol[] qVars, final SMTFormula formula) {
 		this.quantifier = quantifier;

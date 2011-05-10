@@ -76,12 +76,23 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTFunctionSymbol[] FUNCTIONS = { DIV, UMINUS, MINUS,
 			PLUS, MUL };
 
+	/**
+	 * Constructs the veriT predefined theory
+	 */
 	protected VeritPredefinedTheory() {
 		super(NAME, SORTS, PREDICATES, FUNCTIONS);
 	}
 
+	/**
+	 * Instance of the VeriT Predefined Theory
+	 */
 	private static final VeritPredefinedTheory INSTANCE = new VeritPredefinedTheory();
 
+	/**
+	 * returns the instance of veriT predefined theory
+	 * 
+	 * @return the instance of veriT predefined theory
+	 */
 	public static VeritPredefinedTheory getInstance() {
 		return INSTANCE;
 	}
@@ -89,14 +100,6 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	@Override
 	public SMTSortSymbol getBooleanSort() {
 		return BOOL;
-	}
-
-	public static SMTSortSymbol getInt() {
-		return INT;
-	}
-
-	public static SMTSortSymbol[] getIntTab() {
-		return INT_TAB;
 	}
 
 	@Override

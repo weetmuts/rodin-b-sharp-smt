@@ -15,5 +15,5 @@ package fr.systerel.smt.provers.ast;
  * Tree).
  */
 public abstract class SMTNode<T extends SMTNode<T>> {
-
+	// Do nothing
 }

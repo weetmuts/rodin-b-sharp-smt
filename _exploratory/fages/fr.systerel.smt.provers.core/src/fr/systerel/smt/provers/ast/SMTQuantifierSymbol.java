@@ -14,14 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * This class represents SMT quantifier symbols
  */
 public enum SMTQuantifierSymbol {
 	EXISTS("exists"), //
 	FORALL("forall");
 
+	/**
+	 * the symbol string
+	 */
 	private String symbol;
 
+	/**
+	 * Constructs a new SMT quantifier symbol
+	 * 
+	 * @param symbol
+	 *            the symbol string
+	 */
 	private SMTQuantifierSymbol(final String symbol) {
 		this.symbol = symbol;
 	}
@@ -31,6 +40,11 @@ public enum SMTQuantifierSymbol {
 		return symbol;
 	}
 
+	/**
+	 * returns a list with the quantifier symbols
+	 * 
+	 * @return a list with the quantifier symbols
+	 */
 	public static final List<String> getQuantifierSymbols() {
 		final SMTQuantifierSymbol[] smtQuantifiers = SMTQuantifierSymbol
 				.values();

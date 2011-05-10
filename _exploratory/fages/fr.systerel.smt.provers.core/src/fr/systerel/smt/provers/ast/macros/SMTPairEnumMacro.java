@@ -148,6 +148,17 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(CPAR);
 	}
 
+	/**
+	 * Returns the argument in the position <code>index</code> of the arg terms.
+	 * The term must be an instanceof {@link SMTMacroTerm} or
+	 * {@link SMTFunApplication}
+	 * 
+	 * @param term
+	 *            the term.
+	 * @param index
+	 *            the index of the argument
+	 * @return the term argument in the position index
+	 */
 	private SMTTerm getArgTerm(SMTTerm term, int index) {
 		if (term instanceof SMTMacroTerm) {
 			SMTMacroTerm mT = (SMTMacroTerm) term;

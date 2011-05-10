@@ -89,18 +89,16 @@ public class SMTMacroSymbol extends SMTSymbol {
 	private final SMTSortSymbol[] argSorts;
 	private final SMTSortSymbol returnSort;
 
-	// FIXME: Remake this commentary
 	/**
-	 * 
-	 * 
-	 * Creates a new macro symbol.
 	 * 
 	 * @param symbolName
 	 *            The string representation of the symbol
-	 * @param argSorts
-	 *            The expected sorts of the arguments
+	 * @param returnSort
+	 *            The return sort of the macro symbol
 	 * @param predefined
 	 *            If it's predefined
+	 * @param argSorts
+	 *            The expected sorts of the arguments
 	 */
 	SMTMacroSymbol(final String symbolName, final SMTSortSymbol returnSort,
 			final boolean predefined, final SMTSortSymbol... argSorts) {
@@ -109,14 +107,20 @@ public class SMTMacroSymbol extends SMTSymbol {
 		this.returnSort = returnSort;
 	}
 
-	public SMTSortSymbol[] getArgSorts() {
-		return argSorts;
-	}
-
+	/**
+	 * gets the return sort
+	 * 
+	 * @return the return sort
+	 */
 	public SMTSortSymbol getReturnSort() {
 		return returnSort;
 	}
 
+	/**
+	 * returns true if the symbol is propositional, and false otherwise.
+	 * 
+	 * @return true if it's propositional, false otherwise.
+	 */
 	public boolean isPropositional() {
 		return argSorts.length == 0;
 	}

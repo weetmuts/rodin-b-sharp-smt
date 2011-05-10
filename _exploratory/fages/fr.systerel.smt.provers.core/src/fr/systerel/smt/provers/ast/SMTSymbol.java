@@ -11,7 +11,7 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- *
+ * This class stores predefined SMT Symbols
  */
 public abstract class SMTSymbol {
 	protected final String name;
@@ -40,15 +40,33 @@ public abstract class SMTSymbol {
 	public static final String DIV = "divi";
 	public static final String EXPN = "expn";
 
+	/**
+	 * Constructs a new instance of SMTSymbol
+	 * 
+	 * @param symbolName
+	 *            the name of the symbol
+	 * @param predefined
+	 *            true if it's predefined, false otherwise
+	 */
 	protected SMTSymbol(final String symbolName, final boolean predefined) {
 		name = symbolName;
 		this.predefined = predefined;
 	}
 
+	/**
+	 * returns the name of the symbol
+	 * 
+	 * @return the name of the symbol
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * returns true if it's predefined, false otherwise.
+	 * 
+	 * @return true if it's predefined, false otherwise.
+	 */
 	public boolean isPredefined() {
 		return predefined;
 	}
@@ -58,8 +76,15 @@ public abstract class SMTSymbol {
 		return name;
 	}
 
-	public void toString(final StringBuilder buffer) {
-		buffer.append(toString());
+	/**
+	 * Prints into the StringBuilder the string representation of the SMT term.
+	 * 
+	 * @param builder
+	 *            the StringBuilder that will store the string representation of
+	 *            the SMTTerm.
+	 */
+	public void toString(final StringBuilder builder) {
+		builder.append(toString());
 	}
 
 	/*

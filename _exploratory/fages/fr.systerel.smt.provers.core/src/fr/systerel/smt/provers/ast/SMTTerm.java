@@ -16,8 +16,20 @@ package fr.systerel.smt.provers.ast;
 public abstract class SMTTerm extends SMTNode<SMTTerm> {
 	protected SMTSortSymbol sort;
 
+	/**
+	 * Prints into the stringbuilder the string representation of the SMT term.
+	 * 
+	 * @param builder
+	 *            the StringBuilder that will store the string representation of
+	 *            the SMTTerm.
+	 */
 	public abstract void toString(StringBuilder builder);
 
+	/**
+	 * Returns the sort of the SMT term.
+	 * 
+	 * @return the sort of the SMT term.
+	 */
 	public SMTSortSymbol getSort() {
 		return sort;
 	}

@@ -93,8 +93,9 @@ public abstract class SMTSignature {
 
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
-		if (predicateSymbol.equals(SMTFactory.PTRUE)
-				|| predicateSymbol.equals(SMTFactory.PFALSE)) {
+		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
+				|| predicateSymbol.getName()
+						.equals(SMTFactory.PFALSE.getName())) {
 			return;
 		}
 		for (final SMTPredicateSymbol predSymbol : preds) {
@@ -422,8 +423,7 @@ public abstract class SMTSignature {
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
 		final String freshName = freshCstName(name);
-		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE,
-				!PREDEFINED);
+		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE, !PREDEFINED);
 	}
 
 	public SMTSortSymbol freshSort() {
