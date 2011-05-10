@@ -29,9 +29,9 @@ import java.util.TreeSet;
  * <li><strong>(The actual solvers does not support overloading)</strong>
  * Explicit (ad-hoc) overloading of function or predicate symbols — by which a
  * symbol could have more than one rank — is allowed.</li>
- * <li><strong>TODO: Implement this test: </strong>Every variable has a unique
- * sort and no function symbol has distinct ranks of the form
- * <code>s1 ··· sn s</code> and <code>s1 ··· sn s</code>.</li>
+ * <li><strong>(DONE) </strong>Every variable has a unique sort and no function
+ * symbol has distinct ranks of the form <code>s1 ··· sn s</code> and
+ * <code>s1 ··· sn s</code>.</li>
  * <li><strong>(The actual solvers does not support this too)</strong> The sets
  * <code>ΣS</code>, <code>ΣF</code> and <code>ΣP</code> of an SMT-LIB signature
  * are not required to be disjoint.</li>
@@ -138,43 +138,52 @@ public abstract class SMTSignature {
 		loadLogicSymbols();
 	}
 
+	public static boolean verifyRank(final SMTSortSymbol[] expectedSortArgs,
+			final SMTSortSymbol[] sorts) {
+		if (expectedSortArgs.length != sorts.length) {
+			return false;
+		}
+		for (int i = 0; i < sorts.length; i++) {
+			if (!expectedSortArgs[i].isCompatibleWith(sorts[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
-		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
-				|| predicateSymbol.getName()
-						.equals(SMTFactory.PFALSE.getName())) {
+		if (isPTRUEorPFALSE(predicateSymbol))
 			return;
-		}
 		for (final SMTPredicateSymbol predSymbol : preds) {
 
 			// Verify if the predicates have the same name
 			if (predicateSymbol.getName().equals(predSymbol.getName())) {
 
-				final SMTSortSymbol[] argSorts = predicateSymbol.getArgSorts();
-				final SMTSortSymbol[] expectedArgSorts = predSymbol
-						.getArgSorts();
-
-				// Verify if the number of arguments are the same
-				if (expectedArgSorts.length == argSorts.length) {
-
-					// Verify each argument sort
-					for (int i = 0; i < expectedArgSorts.length; i++) {
-						if (expectedArgSorts[i] instanceof SMTPolymorphicSortSymbol) {
-							continue;
-						}
-						if (!expectedArgSorts[i].equals(argSorts[i])) {
-							throw new IllegalArgumentException(
-									makeIncompatiblePredicatesExceptionMessage(
-											predicateSymbol, predSymbol));
-						}
-					}
-					return;
+				if (!verifyRank(predicateSymbol.getArgSorts(),
+						predSymbol.getArgSorts())) {
+					throw new IllegalArgumentException(
+							makeIncompatiblePredicatesExceptionMessage(
+									predicateSymbol, predSymbol));
 				}
+				return;
 			}
 		}
 		throw new IllegalArgumentException("Predicate " + predicateSymbol
 				+ " is not declared in the signature.");
+	}
+
+	/**
+	 * @param predicateSymbol
+	 */
+	private boolean isPTRUEorPFALSE(final SMTPredicateSymbol predicateSymbol) {
+		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
+				|| predicateSymbol.getName()
+						.equals(SMTFactory.PFALSE.getName())) {
+			return true;
+		}
+		return false;
 	}
 
 	// TODO: Refactor this method

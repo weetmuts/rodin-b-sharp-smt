@@ -49,7 +49,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @return true if, for each argument, its sort is the same of the expected
 	 *         sort for its parameter index
 	 */
-	protected static boolean verifyNonAssociativeRank(
+	public static boolean verifyNonAssociativeRank(
 			final SMTSortSymbol[] expectedSortArgs, final SMTTerm[] terms) {
 		if (expectedSortArgs.length != terms.length) {
 			return false;
