@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * This class represents SMT Theories
  */
 public class SMTTheory {
 	private final String name;

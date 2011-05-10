@@ -124,4 +124,9 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public boolean isPropositional() {
 		return argSorts.length == 0;
 	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(this.toString());
+	}
 }

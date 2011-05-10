@@ -38,4 +38,9 @@ public class SMTSortSymbol extends SMTSymbol implements
 		}
 		return equals(other);
 	}
+
+	@Override
+	public void toString(StringBuilder builder) {
+		builder.append(this.toString());
+	}
 }

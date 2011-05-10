@@ -83,9 +83,7 @@ public abstract class SMTSymbol {
 	 *            the StringBuilder that will store the string representation of
 	 *            the SMTTerm.
 	 */
-	public void toString(final StringBuilder builder) {
-		builder.append(toString());
-	}
+	public abstract void toString(final StringBuilder builder);
 
 	/*
 	 * (non-Javadoc)

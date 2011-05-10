@@ -151,6 +151,16 @@ public abstract class SMTSignature {
 		return true;
 	}
 
+	protected static boolean verifyAssociativeRank(
+			final SMTSortSymbol expectedSortArg, final SMTSortSymbol[] sorts) {
+		for (final SMTSortSymbol sort : sorts) {
+			if (!sort.isCompatibleWith(expectedSortArg)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
@@ -186,7 +196,6 @@ public abstract class SMTSignature {
 		return false;
 	}
 
-	// TODO: Refactor this method
 	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
 		for (final SMTFunctionSymbol symbol : funs) {
 
@@ -196,34 +205,18 @@ public abstract class SMTSignature {
 				final SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
 				final SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
 
-				// Verify if the function is associative. If yes, all the
-				// arguments of the sort of functionSymbol shall be the same.
+				final boolean wellSorted;
 				if (symbol.isAssociative()) {
-					for (final SMTSortSymbol argSort : argSorts) {
-						if (!argSort.equals(expectedArgSorts[0])) {
-							throw makeIncompatibleFunctionsException(
-									functionSymbol, symbol);
-						}
-					}
-					return;
+					wellSorted = verifyAssociativeRank(expectedArgSorts[0],
+							argSorts);
+				} else {
+					wellSorted = verifyRank(expectedArgSorts, argSorts);
 				}
-
-				// If it's not associative, verify if the number of arguments
-				// are the same
-				if (expectedArgSorts.length == argSorts.length) {
-
-					// Verify each argument sort
-					for (int i = 0; i < expectedArgSorts.length; i++) {
-						if (expectedArgSorts[i] instanceof SMTPolymorphicSortSymbol) {
-							continue;
-						}
-						if (!expectedArgSorts[i].equals(argSorts[i])) {
-							throw makeIncompatibleFunctionsException(
-									functionSymbol, symbol);
-						}
-					}
-					return;
+				if (!wellSorted) {
+					throw makeIncompatibleFunctionsException(functionSymbol,
+							symbol);
 				}
+				return;
 			}
 		}
 		throw new IllegalArgumentException("Function " + functionSymbol
@@ -235,23 +228,30 @@ public abstract class SMTSignature {
 			final SMTFunctionSymbol actualFunctionSymbol,
 			final SMTFunctionSymbol expectedSymbol) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("Arguments of function symbol: ");
+		sb.append("Sorts of function symbol: ");
 		sb.append(expectedSymbol);
 		sb.append(": ");
 		String sep = "";
+		sep = printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
+				" does not match: ");
+		printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
+				" in the declaration of function in the signature.");
+		return new IllegalArgumentException(sb.toString());
+	}
+
+	private static String printFunctionSortsInTheBuilder(
+			final SMTFunctionSymbol expectedSymbol, final StringBuilder sb,
+			String sep, String message) {
 		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
-		sb.append(" does not match the arguments: ");
-		for (final SMTSortSymbol arg : actualFunctionSymbol.getArgSorts()) {
-			sb.append(sep);
-			sep = " ";
-			arg.toString(sb);
-		}
-		sb.append(" in the declaration of function in the signature.");
-		return new IllegalArgumentException(sb.toString());
+
+		sb.append(sep);
+		expectedSymbol.getResultSort().toString(sb);
+		sb.append(message);
+		return sep;
 	}
 
 	// TODO: Refactor this method
@@ -259,23 +259,27 @@ public abstract class SMTSignature {
 			final SMTPredicateSymbol actualPredicateSymbol,
 			final SMTPredicateSymbol expectedPredSymbol) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("Terms of function symbol: ");
+		sb.append("Sorts of function symbol: ");
 		sb.append(expectedPredSymbol);
 		sb.append(": ");
 		String sep = "";
+		sep = printPredicateSortsInTheBuilder(expectedPredSymbol, sb, sep,
+				" does not match: ");
+		printPredicateSortsInTheBuilder(expectedPredSymbol, sb, sep,
+				" in the declaration of predicate in the signature.");
+		return sb.toString();
+	}
+
+	private static String printPredicateSortsInTheBuilder(
+			final SMTPredicateSymbol expectedPredSymbol,
+			final StringBuilder sb, String sep, String message) {
 		for (final SMTSortSymbol expectedArg : expectedPredSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
 			expectedArg.toString(sb);
 		}
-		sb.append(" does not match: ");
-		for (final SMTSortSymbol arg : actualPredicateSymbol.getArgSorts()) {
-			sb.append(sep);
-			sep = " ";
-			arg.toString(sb);
-		}
-		sb.append(" in the declaration of predicate in the signature.");
-		return sb.toString();
+		sb.append(message);
+		return sep;
 	}
 
 	/**
