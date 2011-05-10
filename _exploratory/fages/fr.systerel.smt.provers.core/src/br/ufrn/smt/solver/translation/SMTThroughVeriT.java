@@ -420,7 +420,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Check if type is set of set.
+	 * 
 	 * @param type
+	 *            the type of the set.
+	 * @param parentType
+	 *            the parent type of type. It's used for exception output string
 	 */
 	private void checkIfIsSetOfSet(final Type type, final Type parentType) {
 		if (type.getSource() != null || type.getBaseType() != null) {
@@ -429,6 +434,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * translate ProductType types
+	 * 
+	 * @param type
+	 *            the ProductType
+	 * @return the translated SMT sort symbol
+	 */
 	private SMTSortSymbol translateProductType(final ProductType type) {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
@@ -437,7 +449,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Check if the product type is set of set
+	 * 
 	 * @param type
+	 *            the product type
 	 */
 	private void checkIfIsSetOfSet(final ProductType type) {
 		checkIfIsSetOfSet(type.getLeft(), type);
@@ -613,6 +628,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), signature, children);
 			break;
 		case Formula.DIV:
+
 			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
 					.getOperator(SMTOperator.DIV), signature, children);
 			break;

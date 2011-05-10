@@ -148,90 +148,106 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * This class checks if the hypotheses or the goal has elements of the
+	 * boolean theory
+	 * 
+	 * @author vitor
+	 * 
+	 */
+	class BoolTheoryVisitor extends DefaultVisitor {
+
+		private boolean boolTheory = false;
+		private boolean usesTruePredicate = false;
+
+		boolean usesTruePred() {
+			return usesTruePredicate;
+		}
+
+		/**
+		 * 
+		 * @return true if at least one hypothesis or the goal has boolean
+		 *         theory elements.
+		 */
+		public boolean isBoolTheory() {
+			return boolTheory;
+		}
+
+		@Override
+		public boolean visitBOUND_IDENT_DECL(BoundIdentDecl ident) {
+			if (ident.getType() instanceof BooleanType) {
+				boolTheory = true;
+				usesTruePredicate = true;
+				return false;
+			}
+			return true;
+		}
+
+		/**
+		 * If one of the predicates has a BOOL set, set <code>boolTheory</code>
+		 * <i>true</i> and stop visiting.
+		 */
+		@Override
+		public boolean visitBOOL(AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+
+		@Override
+		public boolean enterIN(RelationalPredicate pred) {
+			if (pred.getLeft().getType() instanceof BooleanType
+					|| pred.getRight().getType() instanceof BooleanType) {
+				usesTruePredicate = true;
+				boolTheory = true;
+				return false;
+			}
+			return true;
+		}
+
+		/**
+		 * If one of the predicates has a TRUE constant, set
+		 * <code>boolTheory</code> <i>true</i> and stop visiting.
+		 */
+		@Override
+		public boolean visitTRUE(AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+	}
+
+	/**
 	 * This method determines the used logic.
 	 */
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
-
-		/**
-		 * This class checks if the hypotheses or the goal has elements of the
-		 * boolean theory
-		 * 
-		 * @author vitor
-		 * 
-		 */
-		class BoolTheoryVisitor extends DefaultVisitor {
-
-			private boolean boolTheory = false;
-			private boolean usesTruePredicate = false;
-
-			boolean usesTruePred() {
-				return usesTruePredicate;
-			}
-
-			/**
-			 * 
-			 * @return true if at least one hypothesis or the goal has boolean
-			 *         theory elements.
-			 */
-			public boolean isBoolTheory() {
-				return boolTheory;
-			}
-
-			@Override
-			public boolean visitBOUND_IDENT_DECL(BoundIdentDecl ident) {
-				if (ident.getType() instanceof BooleanType) {
-					boolTheory = true;
-					usesTruePredicate = true;
-					return false;
-				}
-				return true;
-			}
-
-			/**
-			 * If one of the predicates has a BOOL set, set
-			 * <code>boolTheory</code> <i>true</i> and stop visiting.
-			 */
-			@Override
-			public boolean visitBOOL(AtomicExpression expr) {
-				boolTheory = true;
-				return true;
-			}
-
-			@Override
-			public boolean enterIN(RelationalPredicate pred) {
-				if (pred.getLeft().getType() instanceof BooleanType
-						|| pred.getRight().getType() instanceof BooleanType) {
-					usesTruePredicate = true;
-					boolTheory = true;
-					return false;
-				}
-				return true;
-			}
-
-			/**
-			 * If one of the predicates has a TRUE constant, set
-			 * <code>boolTheory</code> <i>true</i> and stop visiting.
-			 */
-			@Override
-			public boolean visitTRUE(AtomicExpression expr) {
-				boolTheory = true;
-				return true;
-			}
-		}
 		final BoolTheoryVisitor bI = new BoolTheoryVisitor();
+		return determineLogic(hypotheses, goal, bI);
+	}
+
+	/**
+	 * determines the logic
+	 * 
+	 * @param hypotheses
+	 *            the hypotheses
+	 * @param goal
+	 *            the goal
+	 * @param boolVisitor
+	 *            the visitor that checked for boolean symbols in the predicates
+	 * @return the logic that will be used in the benchmark
+	 */
+	private SMTLogic determineLogic(final List<Predicate> hypotheses,
+			final Predicate goal, final BoolTheoryVisitor boolVisitor) {
 		for (Predicate h : hypotheses) {
-			h.accept(bI);
-			if (bI.isBoolTheory() && bI.usesTruePred()) {
+			h.accept(boolVisitor);
+			if (boolVisitor.isBoolTheory() && boolVisitor.usesTruePred()) {
 				usesTruePred = true;
 				return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 						Booleans.getInstance());
 			}
 		}
-		goal.accept(bI);
-		if (bI.isBoolTheory()) {
-			if (bI.usesTruePred()) {
+		goal.accept(boolVisitor);
+		if (boolVisitor.isBoolTheory()) {
+			if (boolVisitor.usesTruePred()) {
 				usesTruePred = true;
 				return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 						Booleans.getInstance());
@@ -354,6 +370,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * SMT translation
 		 */
 		// translates the signature
+		return translate(lemmaName, ppTranslatedHypotheses, ppTranslatedGoal,
+				logic);
+	}
+
+	/**
+	 * @param lemmaName
+	 *            the name of the lemma
+	 * @param ppTranslatedHypotheses
+	 *            the PP translated hypotheses
+	 * @param ppTranslatedGoal
+	 *            the PP translated goal
+	 * @param logic
+	 *            the used logic
+	 * @return the SMTBenchmark of the translation
+	 * @throws TranslationException
+	 */
+	private SMTBenchmark translate(final String lemmaName,
+			final List<Predicate> ppTranslatedHypotheses,
+			final Predicate ppTranslatedGoal, final SMTLogic logic)
+			throws TranslationException {
 		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
 
 		// translates each hypothesis
@@ -391,7 +427,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			@Override
 			public boolean isCanceled() {
-				// TODO Auto-generated method stub
 				return false;
 			}
 		});
@@ -416,11 +451,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
-	}
-
-	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, final String solver) {
-		return translate(logic, predicate, solver, false);
 	}
 
 	/**
@@ -541,7 +571,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			}
 		}
+		translatedBoundIdentTypes(hypotheses, goal);
 
+	}
+
+	/**
+	 * Translate the type of the bound identifiers
+	 * 
+	 * @param hypotheses
+	 *            the hypotheses
+	 * @param goal
+	 *            the goal
+	 */
+	private void translatedBoundIdentTypes(final List<Predicate> hypotheses,
+			final Predicate goal) {
 		final List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
 
 		final Iterator<Type> bIterator = biTypes.iterator();
@@ -575,9 +618,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				}
 			}
 		}
-
 	}
 
+	/**
+	 * This method is used to check if the symbol must be added as predicate or
+	 * a function symbol.
+	 * 
+	 * @param type
+	 * @return true if the type is of sort Bool and the actual translation is
+	 *         not using the TRUE pred symbol. Otherwise returns false
+	 */
 	private boolean isBoolTheoryAndDoesNotUseTruePred(Type type) {
 		if (!usesTruePred) {
 			if (type instanceof BooleanType) {

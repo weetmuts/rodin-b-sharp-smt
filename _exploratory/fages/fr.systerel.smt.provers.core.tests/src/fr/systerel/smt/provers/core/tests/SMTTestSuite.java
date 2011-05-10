@@ -8,6 +8,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses(value = { TranslationTestsWithPP.class,
 		TranslationTestsWithVeriT.class, RunProverTestWithPP.class,
 		RunProverTestWithVeriT.class })
-public class SMTSuiteTests {
+public class SMTTestSuite {
 	// Just for tests
 }

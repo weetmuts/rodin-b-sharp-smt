@@ -123,26 +123,25 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
+	@Ignore("ERROR: line 4 column 42: could not find sort symbol 'Pair'.")
 	public void testRule20() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(λx· ∀y·y ∈ ℕ ∧ x > y ∣ x+x) = ∅");
+		// hyps.add("(λx· ∀y·y ∈ ℕ ∧ x > y ∣ x+x) = ∅");
 
-		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) = ∅", te, VALID);
+		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) ≠ ∅", te, VALID);
 	}
 
 	@Test
 	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
 	public void testRule20ManyForalls() {
-		// FIXME: Implement methods to print point inside a macro
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
 		doTest("rule20_many_foralls", hyps,
-				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅", te,
+				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) ≠ ∅", te,
 				VALID);
 	}
 
@@ -655,6 +654,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("error : pre_process: results is not FOL")
 	public void testRule16() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
@@ -791,14 +791,14 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	@Ignore("error : DAG_new: unable to determine sort")
-	public void test() {
+	public void testSet() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}");
 
-		doTest("rule19", hyps, "{0,1,2,3,4} = A", te, VALID);
+		doTest("testSet", hyps, "{0,1,2,3,4} = A", te, VALID);
 	}
 
 	@Test

@@ -392,7 +392,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test(timeout = 10000)
+	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
 		switch (SOLVER) {
 		case ALT_ERGO:
@@ -422,7 +422,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test(timeout = 10000)
+	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
 		switch (SOLVER) {
 		case ALT_ERGO:
