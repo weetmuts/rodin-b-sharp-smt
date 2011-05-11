@@ -24,8 +24,8 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
-	 * is possible to associate a predicate predicate to the empty sequence
-	 * rank, denoting that the predicate is a propositional predicate.
+	 * is possible to associate a predicate to the empty sequence rank, denoting
+	 * that the predicate is a propositional predicate.
 	 */
 	final private SMTSortSymbol[] argSorts;
 
@@ -70,7 +70,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	}
 
 	/**
-	 * Constructs a new predicate symbol. *
+	 * Constructs a new predicate symbol.
 	 * 
 	 * @param symbolName
 	 *            The name of the symbol

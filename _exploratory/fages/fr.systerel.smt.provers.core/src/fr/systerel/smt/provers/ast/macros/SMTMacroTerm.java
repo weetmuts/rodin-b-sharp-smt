@@ -46,6 +46,10 @@ public class SMTMacroTerm extends SMTTerm {
 		}
 	}
 
+	public SMTMacroSymbol getMacroSymbol() {
+		return macroSymbol;
+	}
+
 	/**
 	 * Constructs a new macro term.
 	 * 

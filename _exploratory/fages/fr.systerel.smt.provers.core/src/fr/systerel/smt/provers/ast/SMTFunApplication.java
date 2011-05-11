@@ -21,9 +21,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * 
  */
 public class SMTFunApplication extends SMTTerm {
-	public SMTTerm[] getArgs() {
-		return args;
-	}
 
 	/**
 	 * the function symbol of the term.
@@ -34,6 +31,14 @@ public class SMTFunApplication extends SMTTerm {
 	 * the arguments of the term.
 	 */
 	final SMTTerm[] args;
+
+	public SMTFunctionSymbol getSymbol() {
+		return symbol;
+	}
+
+	public SMTTerm[] getArgs() {
+		return args;
+	}
 
 	/**
 	 * Constructs a new function application.

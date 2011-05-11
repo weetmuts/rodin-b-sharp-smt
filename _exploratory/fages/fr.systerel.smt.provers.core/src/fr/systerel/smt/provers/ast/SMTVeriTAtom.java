@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     YGU (Systerel) - initial API and implementation
+ *     Vitor - Implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
@@ -16,11 +16,20 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
- * This class represents an SMTAtom
+ * TODO: Comment this class
  */
 class SMTVeriTAtom extends SMTFormula {
-	final SMTMacroSymbol predicate;
+
+	final SMTMacroSymbol predicateSymbol;
 	final SMTTerm[] terms;
+
+	public SMTMacroSymbol getPredicate() {
+		return predicateSymbol;
+	}
+
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
 
 	/**
 	 * 
@@ -29,17 +38,17 @@ class SMTVeriTAtom extends SMTFormula {
 	 */
 	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[]) {
 		// TODO: Create a verification method for macros
-		predicate = symbol;
+		predicateSymbol = symbol;
 		this.terms = terms.clone();
 	}
 
 	@Override
 	public void toString(final StringBuilder builder, final boolean printPoint) {
-		if (predicate.isPropositional()) {
-			builder.append(predicate.name);
+		if (predicateSymbol.isPropositional()) {
+			builder.append(predicateSymbol.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(predicate.name);
+			builder.append(predicateSymbol.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder);

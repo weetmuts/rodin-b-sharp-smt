@@ -27,8 +27,8 @@ import java.util.TreeSet;
  * <ul>
  * 
  * <li><strong>(The actual solvers does not support overloading)</strong>
- * Explicit (ad-hoc) overloading of function or predicate symbols — by which a
- * symbol could have more than one rank — is allowed.</li>
+ * Explicit (ad-hoc) overloading of function or predicateSymbol symbols — by
+ * which a symbol could have more than one rank — is allowed.</li>
  * <li><strong>(DONE) </strong>Every variable has a unique sort and no function
  * symbol has distinct ranks of the form <code>s1 ··· sn s</code> and
  * <code>s1 ··· sn s</code>.</li>
@@ -507,8 +507,8 @@ public abstract class SMTSignature {
 	/**
 	 * returns a fresh constante name.
 	 * 
-	 * @param the
-	 *            base name for the new constant name.
+	 * @param name
+	 *            the base name for the new constant name.
 	 * @return {@code name} if there is no element defined with the same name,
 	 *         {@code name} + a numeral otherwise.
 	 */
@@ -682,5 +682,75 @@ public abstract class SMTSignature {
 		extrasortsSection(sb);
 		extrapredsSection(sb);
 		extrafunsSection(sb);
+	}
+
+	public void removeUnusedSymbols(Set<SMTFunctionSymbol> funs1,
+			Set<SMTPredicateSymbol> preds1, Set<SMTSortSymbol> sorts1) {
+
+		Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(funs1);
+		Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(preds1);
+		Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(sorts1);
+
+		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
+				&& unusedSortSymbols.isEmpty()) {
+			return;
+		}
+		removeUnusedSymbols(funs1, preds1, sorts1);
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * @param sorts1
+	 * @return
+	 */
+	private Set<SMTSortSymbol> removeUnusedSorts(Set<SMTSortSymbol> sorts1) {
+		Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
+		for (SMTSortSymbol symbol : sorts1) {
+			if (!sorts1.contains(symbol)) {
+				unusedSortSymbols.add(symbol);
+				sorts1.remove(symbol);
+			}
+		}
+		sorts1.removeAll(unusedSortSymbols);
+		return unusedSortSymbols;
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * @param preds1
+	 * @return
+	 */
+	private Set<SMTPredicateSymbol> removeUnusedPreds(
+			Set<SMTPredicateSymbol> preds1) {
+		Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
+		for (SMTPredicateSymbol symbol : preds1) {
+			if (!preds1.contains(symbol)) {
+				unusedPredicateSymbols.add(symbol);
+				preds1.remove(symbol);
+			}
+		}
+		preds1.removeAll(unusedPredicateSymbols);
+		return unusedPredicateSymbols;
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * @param funs1
+	 * @return
+	 */
+	private Set<SMTFunctionSymbol> removeUnusedFunctions(
+			Set<SMTFunctionSymbol> funs1) {
+		Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
+		for (SMTFunctionSymbol symbol : funs1) {
+			if (!funs1.contains(symbol)) {
+				unusedFunctionSymbols.add(symbol);
+				funs1.remove(symbol);
+			}
+		}
+		funs1.removeAll(unusedFunctionSymbols);
+		return unusedFunctionSymbols;
 	}
 }

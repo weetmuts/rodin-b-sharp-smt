@@ -14,6 +14,10 @@ public class SMTVeriTTerm extends SMTTerm {
 
 	private final SMTPredicateSymbol symbol;
 
+	public SMTPredicateSymbol getSymbol() {
+		return symbol;
+	}
+	
 	SMTVeriTTerm(final SMTPredicateSymbol symbol) {
 		this.symbol = symbol;
 		// VeriT uses Bool sort.

@@ -46,6 +46,18 @@ public final class SMTITETerm extends SMTTerm {
 		this.fTerm = fTerm;
 	}
 
+	public SMTFormula getFormula() {
+		return formula;
+	}
+
+	public SMTTerm gettTerm() {
+		return tTerm;
+	}
+
+	public SMTTerm getfTerm() {
+		return fTerm;
+	}
+
 	@Override
 	public SMTSortSymbol getSort() {
 		return tTerm.getSort();

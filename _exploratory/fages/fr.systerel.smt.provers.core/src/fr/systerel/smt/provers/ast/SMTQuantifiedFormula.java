@@ -20,9 +20,22 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * or {@code EXISTS}.
  */
 public class SMTQuantifiedFormula extends SMTFormula {
+
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
+
+	public SMTQuantifierSymbol getQuantifier() {
+		return quantifier;
+	}
+
+	public SMTVarSymbol[] getqVars() {
+		return qVars;
+	}
+
+	public SMTFormula getFormula() {
+		return formula;
+	}
 
 	/**
 	 * Constructs a new SMT quantified formula

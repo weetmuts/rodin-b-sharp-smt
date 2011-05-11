@@ -22,6 +22,22 @@ public class SMTVeritCardFormula extends SMTFormula {
 	private final SMTFunctionSymbol fArgument;
 	private final SMTTerm[] terms;
 
+	public SMTMacroSymbol getCardSymbol() {
+		return cardSymbol;
+	}
+
+	public SMTFunctionSymbol getkArgument() {
+		return kArgument;
+	}
+
+	public SMTFunctionSymbol getfArgument() {
+		return fArgument;
+	}
+
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
+
 	/**
 	 * TODO Comment this
 	 * 

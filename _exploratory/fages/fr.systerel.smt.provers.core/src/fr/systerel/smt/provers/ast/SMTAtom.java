@@ -18,8 +18,17 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  * This class represents an SMTAtom
  */
 class SMTAtom extends SMTFormula {
-	final SMTPredicateSymbol predicate;
+
+	final SMTPredicateSymbol predicateSymbol;
 	final SMTTerm[] terms;
+
+	public SMTPredicateSymbol getPredicate() {
+		return predicateSymbol;
+	}
+
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
 
 	/**
 	 * 
@@ -28,17 +37,17 @@ class SMTAtom extends SMTFormula {
 	 */
 	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm... terms) {
 		verifyPredicateRank(symbol, terms);
-		predicate = symbol;
+		predicateSymbol = symbol;
 		this.terms = terms.clone();
 	}
 
 	@Override
 	public void toString(final StringBuilder builder, final boolean printPoint) {
-		if (predicate.isPropositional()) {
-			builder.append(predicate.name);
+		if (predicateSymbol.isPropositional()) {
+			builder.append(predicateSymbol.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(predicate.name);
+			builder.append(predicateSymbol.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder);

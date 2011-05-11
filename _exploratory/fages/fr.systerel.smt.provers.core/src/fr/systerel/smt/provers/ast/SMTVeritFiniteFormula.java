@@ -15,6 +15,7 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
+//TODO: Comment this class
 public class SMTVeritFiniteFormula extends SMTFormula {
 
 	private final SMTMacroSymbol finitePred;
@@ -22,6 +23,26 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 	private final SMTFunctionSymbol kArgument;
 	private final SMTFunctionSymbol fArgument;
 	private final SMTTerm[] terms;
+
+	public SMTMacroSymbol getFinitePred() {
+		return finitePred;
+	}
+
+	public SMTPredicateSymbol getpArgument() {
+		return pArgument;
+	}
+
+	public SMTFunctionSymbol getkArgument() {
+		return kArgument;
+	}
+
+	public SMTFunctionSymbol getfArgument() {
+		return fArgument;
+	}
+
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
 
 	public SMTVeritFiniteFormula(final SMTMacroSymbol finitePredSymbol,
 			final SMTPredicateSymbol pArgument,

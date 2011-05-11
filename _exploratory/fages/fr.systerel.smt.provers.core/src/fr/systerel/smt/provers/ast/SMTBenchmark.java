@@ -17,7 +17,12 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 
 /**
  * This class builds an SMT-LIB SMTBenchmark
@@ -30,6 +35,168 @@ public class SMTBenchmark {
 	private final SMTSignature signature;
 	private final List<SMTFormula> assumptions;
 	private final SMTFormula goal;
+
+	private final Set<SMTFunctionSymbol> funSet = new HashSet<SMTFunctionSymbol>();
+	private final Set<SMTPredicateSymbol> predSet = new HashSet<SMTPredicateSymbol>();
+	private final Set<SMTSortSymbol> sortSet = new HashSet<SMTSortSymbol>();
+	private final Set<SMTMacroSymbol> macroSet = new HashSet<SMTMacroSymbol>();
+
+	private void getUsedSymbols() {
+		for (SMTFormula assumption : assumptions) {
+			getUsedSymbols(assumption);
+		}
+		getUsedSymbols(goal);
+	}
+
+	private void getUsedSymbols(SMTVeritFiniteFormula vff) {
+		funSet.add(vff.getfArgument());
+		funSet.add(vff.getkArgument());
+		predSet.add(vff.getpArgument());
+		macroSet.add(vff.getFinitePred());
+
+		SMTTerm[] terms = vff.getTerms();
+		for (SMTTerm term : terms) {
+			getUsedSymbols(term);
+		}
+	}
+
+	private void getUsedSymbols(SMTFunApplication fa) {
+		sortSet.add(fa.getSort());
+		funSet.add(fa.getSymbol());
+	}
+
+	private void getUsedSymbols(SMTITETerm ite) {
+		sortSet.add(ite.getSort());
+		getUsedSymbols(ite.getFormula());
+		getUsedSymbols(ite.getfTerm());
+		getUsedSymbols(ite.gettTerm());
+	}
+
+	private void getUsedSymbols(SMTMacroTerm mt) {
+		for (SMTTerm term : mt.getArgs()) {
+			getUsedSymbols(term);
+		}
+		macroSet.add(mt.getMacroSymbol());
+		sortSet.add(mt.getSort());
+	}
+
+	private void getUsedSymbols(SMTNumeral num) {
+		// Do nothing
+	}
+
+	private void getUsedSymbols(SMTVar var) {
+		sortSet.add(var.getSort());
+	}
+
+	private void getUsedSymbols(SMTVeriTTerm var) {
+		sortSet.add(var.getSort());
+		predSet.add(var.getSymbol());
+	}
+
+	private void getUsedSymbols(SMTTerm term) {
+
+		if (term instanceof SMTFunApplication) {
+			SMTFunApplication fa = (SMTFunApplication) term;
+			getUsedSymbols(fa);
+
+		} else if (term instanceof SMTITETerm) {
+			SMTITETerm ite = (SMTITETerm) term;
+			getUsedSymbols(ite);
+
+		} else if (term instanceof SMTMacroTerm) {
+			SMTMacroTerm mt = (SMTMacroTerm) term;
+			getUsedSymbols(mt);
+
+		} else if (term instanceof SMTNumeral) {
+			SMTNumeral num = (SMTNumeral) term;
+			getUsedSymbols(num);
+
+		} else if (term instanceof SMTVar) {
+			SMTVar var = (SMTVar) term;
+			getUsedSymbols(var);
+
+		} else if (term instanceof SMTVeriTTerm) {
+			SMTVeriTTerm vt = (SMTVeriTTerm) term;
+			getUsedSymbols(vt);
+
+		} else {
+			// This part should never be reached
+			throw new IllegalArgumentException("The term is: "
+					+ term.getClass().toString());
+		}
+	}
+
+	private void getUsedSymbols(SMTVeritCardFormula vcf) {
+		macroSet.add(vcf.getCardSymbol());
+		funSet.add(vcf.getfArgument());
+		funSet.add(vcf.getkArgument());
+
+		SMTTerm[] terms = vcf.getTerms();
+		for (SMTTerm term : terms) {
+			getUsedSymbols(term);
+		}
+	}
+
+	private void getUsedSymbols(SMTVeriTAtom va) {
+		macroSet.add(va.getPredicate());
+
+		SMTTerm[] terms = va.getTerms();
+		for (SMTTerm term : terms) {
+			getUsedSymbols(term);
+		}
+	}
+
+	private void getUsedSymbols(SMTQuantifiedFormula qf) {
+		getUsedSymbols(qf.getFormula());
+	}
+
+	private void getUsedSymbols(SMTFormula formula) {
+		if (formula instanceof SMTAtom) {
+			SMTAtom atom = (SMTAtom) formula;
+			getUsedSymbols(atom);
+
+		} else if (formula instanceof SMTConnectiveFormula) {
+			SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
+			getUsedSymbols(con);
+
+		} else if (formula instanceof SMTQuantifiedFormula) {
+			SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
+			getUsedSymbols(qf);
+
+		} else if (formula instanceof SMTVeriTAtom) {
+			SMTVeriTAtom va = (SMTVeriTAtom) formula;
+			getUsedSymbols(va);
+
+		} else if (formula instanceof SMTVeritCardFormula) {
+			SMTVeritCardFormula vcf = (SMTVeritCardFormula) formula;
+			getUsedSymbols(vcf);
+
+		} else if (formula instanceof SMTVeritFiniteFormula) {
+			SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) formula;
+			getUsedSymbols(vff);
+
+		} else {
+			// This part should never be reached
+			throw new IllegalArgumentException("The formula is: "
+					+ formula.getClass().toString());
+		}
+	}
+
+	private void getUsedSymbols(SMTConnectiveFormula con) {
+		SMTFormula[] formulas = con.getFormulas();
+		for (SMTFormula formula : formulas) {
+			getUsedSymbols(formula);
+		}
+	}
+
+	private void getUsedSymbols(SMTAtom atom) {
+		predSet.add(atom.getPredicate());
+
+		SMTTerm[] terms = atom.getTerms();
+		for (SMTTerm term : terms) {
+			getUsedSymbols(term);
+		}
+	}
 
 	/**
 	 * Adds the opening format of a benchmark command to the given string
@@ -91,6 +258,8 @@ public class SMTBenchmark {
 		this.signature = signature;
 		this.assumptions = assumptions;
 		this.goal = goal;
+		getUsedSymbols();
+		signature.removeUnusedSymbols(funSet, predSet, sortSet);
 	}
 
 	/**
