@@ -17,7 +17,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,189 +38,174 @@ public class SMTBenchmark {
 	public void removeUnusedSymbols() {
 		final Set<SMTSymbol> symbols = new HashSet<SMTSymbol>();
 		for (final SMTFormula assumption : assumptions) {
-			symbols.addAll(getUsedSymbols(assumption));
+			getUsedSymbols(assumption, symbols);
 		}
-		symbols.addAll(getUsedSymbols(goal));
+		getUsedSymbols(goal, symbols);
 		signature.removeUnusedSymbols(symbols);
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTVeritFiniteFormula vff) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(vff.getfArgument());
-		symbol.add(vff.getkArgument());
-		symbol.add(vff.getpArgument());
-		symbol.add(vff.getFinitePred());
+	private void getUsedSymbols(final SMTVeritFiniteFormula vff,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(vff.getfArgument());
+		symbols.add(vff.getkArgument());
+		symbols.add(vff.getpArgument());
+		symbols.add(vff.getFinitePred());
 
 		final SMTTerm[] terms = vff.getTerms();
 		for (final SMTTerm term : terms) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTFunApplication fa) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(fa.getSort());
-		symbol.add(fa.getSymbol());
+	private void getUsedSymbols(final SMTFunApplication fa,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(fa.getSort());
+		symbols.add(fa.getSymbol());
 		final SMTTerm[] terms = fa.getArgs();
 		for (final SMTTerm term : terms) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTITETerm ite) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(ite.getSort());
-		symbol.addAll(getUsedSymbols(ite.getFormula()));
-		symbol.addAll(getUsedSymbols(ite.getfTerm()));
-		symbol.addAll(getUsedSymbols(ite.gettTerm()));
-		return symbol;
+	private void getUsedSymbols(final SMTITETerm ite,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(ite.getSort());
+		getUsedSymbols(ite.getFormula(), symbols);
+		getUsedSymbols(ite.getfTerm(), symbols);
+		getUsedSymbols(ite.gettTerm(), symbols);
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTMacroTerm mt) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
+	private void getUsedSymbols(final SMTMacroTerm mt,
+			final Set<SMTSymbol> symbols) {
 		for (final SMTTerm term : mt.getArgs()) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		symbol.add(mt.getMacroSymbol());
-		symbol.add(mt.getSort());
-		return symbol;
+		symbols.add(mt.getMacroSymbol());
+		symbols.add(mt.getSort());
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTNumeral num) {
-		return new HashSet<SMTSymbol>(Arrays.asList(num.getSort()));
+	private void getUsedSymbols(final SMTNumeral num,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(num.getSort());
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTVar var) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(var.getSort());
-		return symbol;
+	private void getUsedSymbols(final SMTVar var, final Set<SMTSymbol> symbols) {
+		symbols.add(var.getSort());
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTVeriTTerm var) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(var.getSort());
-		symbol.add(var.getSymbol());
-		return symbol;
+	private void getUsedSymbols(final SMTVeriTTerm var,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(var.getSort());
+		symbols.add(var.getSymbol());
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTTerm term) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
+	private void getUsedSymbols(final SMTTerm term, final Set<SMTSymbol> symbols) {
 		if (term instanceof SMTFunApplication) {
 			final SMTFunApplication fa = (SMTFunApplication) term;
-			symbol.addAll(getUsedSymbols(fa));
+			getUsedSymbols(fa, symbols);
 
 		} else if (term instanceof SMTITETerm) {
 			final SMTITETerm ite = (SMTITETerm) term;
-			symbol.addAll(getUsedSymbols(ite));
+			getUsedSymbols(ite, symbols);
 
 		} else if (term instanceof SMTMacroTerm) {
 			final SMTMacroTerm mt = (SMTMacroTerm) term;
-			symbol.addAll(getUsedSymbols(mt));
+			getUsedSymbols(mt, symbols);
 
 		} else if (term instanceof SMTNumeral) {
 			final SMTNumeral num = (SMTNumeral) term;
-			symbol.addAll(getUsedSymbols(num));
+			getUsedSymbols(num, symbols);
 
 		} else if (term instanceof SMTVar) {
 			final SMTVar var = (SMTVar) term;
-			symbol.addAll(getUsedSymbols(var));
+			getUsedSymbols(var, symbols);
 
 		} else if (term instanceof SMTVeriTTerm) {
 			final SMTVeriTTerm vt = (SMTVeriTTerm) term;
-			symbol.addAll(getUsedSymbols(vt));
+			getUsedSymbols(vt, symbols);
 
 		} else {
 			// This part should never be reached
 			throw new IllegalArgumentException("The term is: "
 					+ term.getClass().toString());
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTVeritCardFormula vcf) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(vcf.getCardSymbol());
-		symbol.add(vcf.getfArgument());
-		symbol.add(vcf.getkArgument());
+	private void getUsedSymbols(final SMTVeritCardFormula vcf,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(vcf.getCardSymbol());
+		symbols.add(vcf.getfArgument());
+		symbols.add(vcf.getkArgument());
 
 		final SMTTerm[] terms = vcf.getTerms();
 		for (final SMTTerm term : terms) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTVeriTAtom va) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(va.getPredicate());
+	private void getUsedSymbols(final SMTVeriTAtom va,
+			final Set<SMTSymbol> symbols) {
+		symbols.add(va.getPredicate());
 
 		final SMTTerm[] terms = va.getTerms();
 		for (final SMTTerm term : terms) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTQuantifiedFormula qf) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.addAll(getUsedSymbols(qf.getFormula()));
-		return symbol;
+	private void getUsedSymbols(final SMTQuantifiedFormula qf,
+			final Set<SMTSymbol> symbols) {
+		getUsedSymbols(qf.getFormula(), symbols);
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTFormula formula) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
+	private void getUsedSymbols(final SMTFormula formula,
+			final Set<SMTSymbol> symbols) {
 		if (formula instanceof SMTAtom) {
 			final SMTAtom atom = (SMTAtom) formula;
-			symbol.addAll(getUsedSymbols(atom));
+			getUsedSymbols(atom, symbols);
 
 		} else if (formula instanceof SMTConnectiveFormula) {
 			final SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
-			symbol.addAll(getUsedSymbols(con));
+			getUsedSymbols(con, symbols);
 
 		} else if (formula instanceof SMTQuantifiedFormula) {
 			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
-			symbol.addAll(getUsedSymbols(qf));
+			getUsedSymbols(qf, symbols);
 
 		} else if (formula instanceof SMTVeriTAtom) {
 			final SMTVeriTAtom va = (SMTVeriTAtom) formula;
-			symbol.addAll(getUsedSymbols(va));
+			getUsedSymbols(va, symbols);
 
 		} else if (formula instanceof SMTVeritCardFormula) {
 			final SMTVeritCardFormula vcf = (SMTVeritCardFormula) formula;
-			symbol.addAll(getUsedSymbols(vcf));
+			getUsedSymbols(vcf, symbols);
 
 		} else if (formula instanceof SMTVeritFiniteFormula) {
 			final SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) formula;
-			symbol.addAll(getUsedSymbols(vff));
+			getUsedSymbols(vff, symbols);
 
 		} else {
 			// This part should never be reached
 			throw new IllegalArgumentException("The formula is: "
 					+ formula.getClass().toString());
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTConnectiveFormula con) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
+	private void getUsedSymbols(final SMTConnectiveFormula con,
+			final Set<SMTSymbol> symbols) {
 		final SMTFormula[] formulas = con.getFormulas();
 		for (final SMTFormula formula : formulas) {
-			symbol.addAll(getUsedSymbols(formula));
+			getUsedSymbols(formula, symbols);
 		}
-		return symbol;
 	}
 
-	private Set<SMTSymbol> getUsedSymbols(final SMTAtom atom) {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
-		symbol.add(atom.getPredicate());
+	private void getUsedSymbols(final SMTAtom atom, final Set<SMTSymbol> symbols) {
+		symbols.add(atom.getPredicate());
 
 		final SMTTerm[] terms = atom.getTerms();
 		for (final SMTTerm term : terms) {
-			symbol.addAll(getUsedSymbols(term));
+			getUsedSymbols(term, symbols);
 		}
-		return symbol;
 	}
 
 	/**

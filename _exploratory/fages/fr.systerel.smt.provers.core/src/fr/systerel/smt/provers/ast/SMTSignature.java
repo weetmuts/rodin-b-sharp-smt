@@ -706,7 +706,7 @@ public abstract class SMTSignature {
 	 * @param usedSorts
 	 * @return
 	 */
-	private Set<SMTSortSymbol> removeUnusedSorts(
+	protected Set<SMTSortSymbol> removeUnusedSorts(
 			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
 
@@ -734,7 +734,7 @@ public abstract class SMTSignature {
 	 * @param usedPreds
 	 * @return
 	 */
-	private Set<SMTPredicateSymbol> removeUnusedPreds(
+	protected Set<SMTPredicateSymbol> removeUnusedPreds(
 			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
 		for (final SMTPredicateSymbol symbol : preds) {
@@ -753,7 +753,7 @@ public abstract class SMTSignature {
 	 * @param usedFuns
 	 * @return
 	 */
-	private Set<SMTFunctionSymbol> removeUnusedFunctions(
+	protected Set<SMTFunctionSymbol> removeUnusedFunctions(
 			final Set<SMTFunctionSymbol> usedFuns) {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
 		for (final SMTFunctionSymbol symbol : funs) {
