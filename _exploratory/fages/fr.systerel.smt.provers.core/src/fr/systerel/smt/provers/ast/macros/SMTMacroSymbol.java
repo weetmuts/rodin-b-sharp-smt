@@ -126,7 +126,7 @@ public class SMTMacroSymbol extends SMTSymbol {
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		builder.append(this.toString());
 	}
 }

@@ -914,7 +914,7 @@ public class SMTMacroFactory {
 	 * @return the macro symbol associated with the operator
 	 */
 	public static final SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperator operator, SMTSignatureVerit signature) {
+			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		addPredefinedMacroInSignature(operator, signature);
 		switch (operator) {
 		case BUNION: {

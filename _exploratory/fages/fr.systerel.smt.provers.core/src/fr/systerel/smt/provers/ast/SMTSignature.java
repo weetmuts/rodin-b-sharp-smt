@@ -164,8 +164,9 @@ public abstract class SMTSignature {
 	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
-		if (isPTRUEorPFALSE(predicateSymbol))
+		if (isPTRUEorPFALSE(predicateSymbol)) {
 			return;
+		}
 		for (final SMTPredicateSymbol predSymbol : preds) {
 
 			// Verify if the predicates have the same name
@@ -241,7 +242,7 @@ public abstract class SMTSignature {
 
 	private static String printFunctionSortsInTheBuilder(
 			final SMTFunctionSymbol expectedSymbol, final StringBuilder sb,
-			String sep, String message) {
+			String sep, final String message) {
 		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
@@ -272,7 +273,7 @@ public abstract class SMTSignature {
 
 	private static String printPredicateSortsInTheBuilder(
 			final SMTPredicateSymbol expectedPredSymbol,
-			final StringBuilder sb, String sep, String message) {
+			final StringBuilder sb, String sep, final String message) {
 		for (final SMTSortSymbol expectedArg : expectedPredSymbol.getArgSorts()) {
 			sb.append(sep);
 			sep = " ";
@@ -684,12 +685,13 @@ public abstract class SMTSignature {
 		extrafunsSection(sb);
 	}
 
-	public void removeUnusedSymbols(Set<SMTFunctionSymbol> funs1,
-			Set<SMTPredicateSymbol> preds1, Set<SMTSortSymbol> sorts1) {
+	public void removeUnusedSymbols(final Set<SMTFunctionSymbol> funs1,
+			final Set<SMTPredicateSymbol> preds1,
+			final Set<SMTSortSymbol> sorts1) {
 
-		Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(funs1);
-		Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(preds1);
-		Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(sorts1);
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(funs1);
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(preds1);
+		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(sorts1);
 
 		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
 				&& unusedSortSymbols.isEmpty()) {
@@ -704,9 +706,9 @@ public abstract class SMTSignature {
 	 * @param sorts1
 	 * @return
 	 */
-	private Set<SMTSortSymbol> removeUnusedSorts(Set<SMTSortSymbol> sorts1) {
-		Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
-		for (SMTSortSymbol symbol : sorts1) {
+	private Set<SMTSortSymbol> removeUnusedSorts(final Set<SMTSortSymbol> sorts1) {
+		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
+		for (final SMTSortSymbol symbol : sorts1) {
 			if (!sorts1.contains(symbol)) {
 				unusedSortSymbols.add(symbol);
 				sorts1.remove(symbol);
@@ -723,9 +725,9 @@ public abstract class SMTSignature {
 	 * @return
 	 */
 	private Set<SMTPredicateSymbol> removeUnusedPreds(
-			Set<SMTPredicateSymbol> preds1) {
-		Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
-		for (SMTPredicateSymbol symbol : preds1) {
+			final Set<SMTPredicateSymbol> preds1) {
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
+		for (final SMTPredicateSymbol symbol : preds1) {
 			if (!preds1.contains(symbol)) {
 				unusedPredicateSymbols.add(symbol);
 				preds1.remove(symbol);
@@ -742,9 +744,9 @@ public abstract class SMTSignature {
 	 * @return
 	 */
 	private Set<SMTFunctionSymbol> removeUnusedFunctions(
-			Set<SMTFunctionSymbol> funs1) {
-		Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
-		for (SMTFunctionSymbol symbol : funs1) {
+			final Set<SMTFunctionSymbol> funs1) {
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
+		for (final SMTFunctionSymbol symbol : funs1) {
 			if (!funs1.contains(symbol)) {
 				unusedFunctionSymbols.add(symbol);
 				funs1.remove(symbol);

@@ -115,14 +115,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	private SMTFormula intAxiom;
 
-	public void setUsesTruePred(boolean usesTruePred) {
+	public void setUsesTruePred(final boolean usesTruePred) {
 		this.usesTruePred = usesTruePred;
 	}
 
-	public SMTThroughPP(final String solver, Predicate predicate) {
+	public SMTThroughPP(final String solver, final Predicate predicate) {
 		super(solver);
-		this.sf = SMTFactoryPP.getInstance();
-		this.actualPredicate = predicate;
+		sf = SMTFactoryPP.getInstance();
+		actualPredicate = predicate;
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		@Override
-		public boolean visitBOUND_IDENT_DECL(BoundIdentDecl ident) {
+		public boolean visitBOUND_IDENT_DECL(final BoundIdentDecl ident) {
 			if (ident.getType() instanceof BooleanType) {
 				boolTheory = true;
 				usesTruePredicate = true;
@@ -185,13 +185,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * <i>true</i> and stop visiting.
 		 */
 		@Override
-		public boolean visitBOOL(AtomicExpression expr) {
+		public boolean visitBOOL(final AtomicExpression expr) {
 			boolTheory = true;
 			return true;
 		}
 
 		@Override
-		public boolean enterIN(RelationalPredicate pred) {
+		public boolean enterIN(final RelationalPredicate pred) {
 			if (pred.getLeft().getType() instanceof BooleanType
 					|| pred.getRight().getType() instanceof BooleanType) {
 				usesTruePredicate = true;
@@ -206,7 +206,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * <code>boolTheory</code> <i>true</i> and stop visiting.
 		 */
 		@Override
-		public boolean visitTRUE(AtomicExpression expr) {
+		public boolean visitTRUE(final AtomicExpression expr) {
 			boolTheory = true;
 			return true;
 		}
@@ -235,7 +235,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal, final BoolTheoryVisitor boolVisitor) {
-		for (Predicate h : hypotheses) {
+		for (final Predicate h : hypotheses) {
 			h.accept(boolVisitor);
 			if (boolVisitor.isBoolTheory() && boolVisitor.usesTruePred()) {
 				usesTruePred = true;
@@ -323,7 +323,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					|| right instanceof BoundIdentifier;
 
 			if (right instanceof FreeIdentifier) {
-				FreeIdentifier fr = (FreeIdentifier) right;
+				final FreeIdentifier fr = (FreeIdentifier) right;
 				if (right.getType().getSource() == null) {
 					monadicSetEnv.put(fr.getName(), fr.getType());
 				}
@@ -331,7 +331,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				boundMSPTypes.add(((BoundIdentifier) right).getType());
 			}
 		}
-		for (String name : monadicSetEnv.keySet()) {
+		for (final String name : monadicSetEnv.keySet()) {
 			if (boundMSPTypes.contains(monadicSetEnv.get(name))) {
 				monadicSetEnv.remove(name);
 			}
@@ -389,9 +389,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
-		for (SMTTheory t : signature.getLogic().getTheories()) {
+		for (final SMTTheory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
-				translatedAssumptions.add(this.generateBoolAxiom(FormulaFactory
+				translatedAssumptions.add(generateBoolAxiom(FormulaFactory
 						.getDefault().makeBooleanType()));
 			}
 		}
@@ -404,7 +404,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		clearFormula();
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
 
-		if (this.intAxiom != null) {
+		if (intAxiom != null) {
 			translatedAssumptions.add(0, intAxiom);
 		}
 
@@ -438,7 +438,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, final String solver, boolean usesTruePred) {
+			final Predicate predicate, final String solver,
+			final boolean usesTruePred) {
 		final SMTThroughPP translator = new SMTThroughPP(solver, predicate);
 		translator.setUsesTruePred(usesTruePred);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
@@ -452,7 +453,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 */
 	private SMTFormula translate(final Predicate predicate) {
-		this.actualPredicate = predicate;
+		actualPredicate = predicate;
 		predicate.accept(this);
 		return getSMTFormula();
 	}
@@ -554,7 +555,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 						signature.addConstant(smtConstant);
 					}
 				} else {
-					SMTSymbol s = varMap.get(varName);
+					final SMTSymbol s = varMap.get(varName);
 					if (s instanceof SMTFunctionSymbol) {
 						smtConstant = (SMTFunctionSymbol) s;
 						signature.addConstant(smtConstant);
@@ -620,10 +621,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @return true if the type is of sort Bool and the actual translation is
 	 *         not using the TRUE pred symbol. Otherwise returns false
 	 */
-	private boolean isBoolTheoryAndDoesNotUseTruePred(Type type) {
+	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
 		if (!usesTruePred) {
 			if (type instanceof BooleanType) {
-				for (SMTTheory theories : signature.getLogic().getTheories()) {
+				for (final SMTTheory theories : signature.getLogic()
+						.getTheories()) {
 					if (theories instanceof Booleans) {
 						return true;
 					}
@@ -754,12 +756,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			if (this.intSetTerm == null) {
-				SMTFunctionSymbol intSymbol = this.signature.freshConstant(
+			if (intSetTerm == null) {
+				final SMTFunctionSymbol intSymbol = signature.freshConstant(
 						"int", signature.getLogic().getIntegerSort());
 				signature.addConstant(intSymbol);
-				this.intSetTerm = new SMTFunApplication(intSymbol);
-				this.intAxiom = generateIntegerAxiom(expression.getType(),
+				intSetTerm = new SMTFunApplication(intSymbol);
+				intAxiom = generateIntegerAxiom(expression.getType(),
 						intSetTerm);
 				smtNode = intSetTerm;
 			} else {
@@ -880,7 +882,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            The membership actualPredicate that will be translated.
 	 */
 	private void translateMemberShipPredicate(
-			RelationalPredicate membershipPredicate) {
+			final RelationalPredicate membershipPredicate) {
 
 		final Expression left = membershipPredicate.getLeft();
 		final Expression right = membershipPredicate.getRight();
@@ -920,7 +922,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final Type leftType = left.getType();
 
-		SMTPredicateSymbol predSymbol = createPredSymbol(leftType, argSorts);
+		final SMTPredicateSymbol predSymbol = createPredSymbol(leftType,
+				argSorts);
 
 		final SMTTerm[] args = membershipPredicateTerms
 				.toArray(new SMTTerm[numberOfArguments]);
@@ -950,17 +953,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @return The SMTFormula corresponding to the translation of the Event-B
 	 *         predicate shown above
 	 */
-	private SMTFormula generateIntegerAxiom(Type type, SMTTerm intSet) {
-		String symbolName = signature.freshCstName("x");
-		SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
+	private SMTFormula generateIntegerAxiom(final Type type,
+			final SMTTerm intSet) {
+		final String symbolName = signature.freshCstName("x");
+		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
 
-		SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort, !PREDEFINED);
-		SMTTerm term = new SMTVar(vs);
+		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort,
+				!PREDEFINED);
+		final SMTTerm term = new SMTVar(vs);
 
-		SMTPredicateSymbol predSymbol = createPredSymbol(type, intSort, intSort);
+		final SMTPredicateSymbol predSymbol = createPredSymbol(type, intSort,
+				intSort);
 
-		SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature, term,
-				intSet);
+		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
+				term, intSet);
 
 		return SMTFactory.makeForAll(formula, term);
 	}
@@ -974,20 +980,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @return The SMTFormula corresponding to the translation of the Event-B
 	 *         predicate shown above
 	 */
-	private SMTFormula generateBoolAxiom(Type type) {
-		String symbolName = signature.freshCstName("x");
-		SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
+	private SMTFormula generateBoolAxiom(final Type type) {
+		final String symbolName = signature.freshCstName("x");
+		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 
-		SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort, !PREDEFINED);
-		SMTTerm term = new SMTVar(vs);
-		SMTTerm termBool = sf.makeConstant(signature.getLogic()
+		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
+				!PREDEFINED);
+		final SMTTerm term = new SMTVar(vs);
+		final SMTTerm termBool = sf.makeConstant(signature.getLogic()
 				.getBooleanCste(), signature);
 
-		SMTPredicateSymbol predSymbol = createPredSymbol(type, boolSort,
+		final SMTPredicateSymbol predSymbol = createPredSymbol(type, boolSort,
 				boolSort);
 
-		SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature, term,
-				termBool);
+		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
+				term, termBool);
 
 		return SMTFactory.makeForAll(formula, term);
 	}
@@ -1005,7 +1012,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	class BoolSetVisitor extends DefaultVisitor {
 
 		private RelationalPredicate inPred;
-		private AtomicExpression atExpr;
+		private final AtomicExpression atExpr;
 
 		/**
 		 * Constructor that stores an atomic expresion which the tag is
@@ -1013,7 +1020,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * 
 		 * @param atExpr
 		 */
-		public BoolSetVisitor(AtomicExpression atExpr) {
+		public BoolSetVisitor(final AtomicExpression atExpr) {
 			assert atExpr.getTag() == Formula.BOOL;
 			this.atExpr = atExpr;
 		}
@@ -1022,7 +1029,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		/**
 		 * This method just stores the relational actualPredicate
 		 */
-		public boolean enterIN(RelationalPredicate pred) {
+		public boolean enterIN(final RelationalPredicate pred) {
 			inPred = pred;
 			return true;
 		}
@@ -1038,7 +1045,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * </ul>
 		 */
 		@Override
-		public boolean enterMAPSTO(BinaryExpression expr) {
+		public boolean enterMAPSTO(final BinaryExpression expr) {
 			assert atExpr != null;
 			if (expr.getLeft().equals(atExpr) || expr.getRight().equals(atExpr)) {
 				if (inPred.getLeft().equals(expr)) {
@@ -1064,10 +1071,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param atomicExpression
 	 *            The BOOL set atomic expression
 	 */
-	private void checkBoolSet(Predicate pred, AtomicExpression atomicExpression) {
-		for (SMTTheory theory : signature.getLogic().getTheories()) {
+	private void checkBoolSet(final Predicate pred,
+			final AtomicExpression atomicExpression) {
+		for (final SMTTheory theory : signature.getLogic().getTheories()) {
 			if (theory instanceof Booleans) {
-				BoolSetVisitor bv = new BoolSetVisitor(atomicExpression);
+				final BoolSetVisitor bv = new BoolSetVisitor(atomicExpression);
 				pred.accept(bv);
 				return;
 			}
@@ -1159,21 +1167,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param left
 	 * @param right
 	 */
-	private SMTFormula translateTruePredWithId(Expression left, Expression right) {
-		SMTFormula leftFor = translateTruePred(left);
-		SMTFormula rightFor = translateTruePred(right);
+	private SMTFormula translateTruePredWithId(final Expression left,
+			final Expression right) {
+		final SMTFormula leftFor = translateTruePred(left);
+		final SMTFormula rightFor = translateTruePred(right);
 
 		return SMTFactory.makeIff(leftFor, rightFor);
 	}
 
-	private SMTFormula translateTruePred(Expression expr) {
+	private SMTFormula translateTruePred(final Expression expr) {
 		if (expr.getTag() == Formula.TRUE) {
 			throw new IllegalArgumentException(
 					"Predefined literal TRUE cannot happen in both sides of boolean equality");
 		} else {
 			if (usesTruePred) {
-				SMTTerm term = smtTerm(expr);
-				return SMTFactory.makeAtom(this.signature.getLogic().getTrue(),
+				final SMTTerm term = smtTerm(expr);
+				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
 						signature, term);
 			}
 		}
@@ -1251,7 +1260,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitFreeIdentifier(final FreeIdentifier expression) {
-		SMTSymbol symbol = varMap.get(expression.getName());
+		final SMTSymbol symbol = varMap.get(expression.getName());
 
 		if (symbol instanceof SMTFunctionSymbol) {
 			smtNode = sf.makeConstant((SMTFunctionSymbol) symbol, signature);

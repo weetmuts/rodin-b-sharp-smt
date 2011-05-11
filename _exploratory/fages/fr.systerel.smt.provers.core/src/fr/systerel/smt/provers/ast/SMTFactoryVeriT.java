@@ -149,11 +149,11 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTFormula[] formulas = new SMTFormula[terms.length];
 		int i = 0;
 		for (final SMTTerm term : terms) {
-			if ((!term
+			if (!term
 					.getSort()
 					.toString()
 					.equals(VeritPredefinedTheory.getInstance()
-							.getBooleanSort().toString()))) {
+							.getBooleanSort().toString())) {
 				throw new IllegalArgumentException(
 						"VeriT translation does not accept equal operator under terms with different operators");
 			} else {

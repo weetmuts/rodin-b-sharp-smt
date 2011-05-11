@@ -60,7 +60,7 @@ public class SMTMacroTerm extends SMTTerm {
 	 */
 	public SMTMacroTerm(final SMTMacroSymbol macro, final SMTTerm[] argTerms) {
 		macroSymbol = macro;
-		this.args = argTerms;
+		args = argTerms;
 		sort = macro.getReturnSort();
 	}
 

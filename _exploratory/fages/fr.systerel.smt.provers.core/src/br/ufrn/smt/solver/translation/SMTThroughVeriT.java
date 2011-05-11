@@ -155,7 +155,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	public SMTThroughVeriT(final String solver) {
 		super(solver);
-		this.sf = SMTFactoryVeriT.getInstance();
+		sf = SMTFactoryVeriT.getInstance();
 	}
 
 	/**
@@ -573,39 +573,39 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * 
 	 */
-	private SMTTerm translateKPREDorKSUCC(SMTOperator operator,
-			String macroSymbol) {
+	private SMTTerm translateKPREDorKSUCC(final SMTOperator operator,
+			final String macroSymbol) {
 		// Making x
-		String x = signature.freshCstName("x");
-		SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(Ints.getInt(),
-				Ints.getInt());
+		final String x = signature.freshCstName("x");
+		final SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(
+				Ints.getInt(), Ints.getInt());
 
-		SMTTerm xFun = sf.makeVar(x, Ints.getInt());
+		final SMTTerm xFun = sf.makeVar(x, Ints.getInt());
 
 		// Making 1
-		SMTNumeral plusOrMinusUmNumeral = SMTFactory
+		final SMTNumeral plusOrMinusUmNumeral = SMTFactory
 				.makeNumeral(BigInteger.ONE);
 
 		// Making x + 1
-		SMTTerm plusOrMinusTerm = sf.makeMinus((SMTFunctionSymbol) signature
-				.getLogic().getOperator(operator), signature, xFun,
-				plusOrMinusUmNumeral);
+		final SMTTerm plusOrMinusTerm = sf.makeMinus(
+				(SMTFunctionSymbol) signature.getLogic().getOperator(operator),
+				signature, xFun, plusOrMinusUmNumeral);
 
 		// Making x |-> x + 1
-		SMTTerm[] mapstoTerm = new SMTTerm[1];
+		final SMTTerm[] mapstoTerm = new SMTTerm[1];
 		mapstoTerm[0] = SMTFactory.makeMacroTerm(
 				getMacroSymbol(MAPSTO, signature), xFun, plusOrMinusTerm);
 
 		// Making Int
-		SMTMacroSymbol intS = SMTMacroFactory
-				.getMacroSymbol(INTEGER, signature);
-		SMTTerm intT = makeMacroTerm(intS);
+		final SMTMacroSymbol intS = SMTMacroFactory.getMacroSymbol(INTEGER,
+				signature);
+		final SMTTerm intT = makeMacroTerm(intS);
 
 		// making (x in Int)
-		SMTFormula inFormula = SMTFactoryVeriT.makeMacroAtom(
+		final SMTFormula inFormula = SMTFactoryVeriT.makeMacroAtom(
 				getMacroSymbol(IN, signature), xFun, intT);
 
-		String macroName = signature.freshCstName(macroSymbol);
+		final String macroName = signature.freshCstName(macroSymbol);
 
 		return translateQuantifiedExpression(macroName, inFormula,
 				mapstoTerm[0], xSort, xFun);
@@ -902,14 +902,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.NOTSUBSET: {
-			SMTFormula subset = translateRelationalPredicateMacro(SUBSET,
+			final SMTFormula subset = translateRelationalPredicateMacro(SUBSET,
 					predicate);
 			smtNode = SMTFactory.makeNot(subset);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
-			SMTFormula subseteq = translateRelationalPredicateMacro(SUBSETEQ,
-					predicate);
+			final SMTFormula subseteq = translateRelationalPredicateMacro(
+					SUBSETEQ, predicate);
 			smtNode = SMTFactory.makeNot(subseteq);
 			break;
 		}
@@ -923,7 +923,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param predicate
 	 */
 	private SMTFormula translateRelationalPredicateMacro(
-			SMTVeriTOperator operator, final RelationalPredicate predicate) {
+			final SMTVeriTOperator operator, final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
 		return SMTFactoryVeriT.makeMacroAtom(
@@ -1007,7 +1007,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            the children expressions
 	 * @return the translated SMTTerm
 	 */
-	private SMTTerm translatePACO(SMTVeriTOperator operator,
+	private SMTTerm translatePACO(final SMTVeriTOperator operator,
 			final AssociativeExpression expression,
 			final Expression[] expressions) {
 		SMTTerm[] children;
@@ -1229,8 +1229,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * @param children
 	 */
-	private SMTTerm translateKMINorKMAX(SMTVeriTOperator operator,
-			String constantName, final SMTTerm[] children) {
+	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
+			final String constantName, final SMTTerm[] children) {
 		// Creating the name for the 'm' variable in SMT-LIB (rule 22)
 		final String mVarName = signature.freshCstName(constantName);
 

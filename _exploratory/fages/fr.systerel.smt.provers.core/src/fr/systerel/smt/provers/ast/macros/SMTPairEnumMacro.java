@@ -158,12 +158,12 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            the index of the argument
 	 * @return the term argument in the position index
 	 */
-	private SMTTerm getArgTerm(SMTTerm term, int index) {
+	private SMTTerm getArgTerm(final SMTTerm term, final int index) {
 		if (term instanceof SMTMacroTerm) {
-			SMTMacroTerm mT = (SMTMacroTerm) term;
+			final SMTMacroTerm mT = (SMTMacroTerm) term;
 			return mT.getArgs()[index];
 		} else if (term instanceof SMTFunApplication) {
-			SMTFunApplication fA = (SMTFunApplication) term;
+			final SMTFunApplication fA = (SMTFunApplication) term;
 			return fA.getArgs()[index];
 		} else {
 			// FIXME: This statement should never be reached

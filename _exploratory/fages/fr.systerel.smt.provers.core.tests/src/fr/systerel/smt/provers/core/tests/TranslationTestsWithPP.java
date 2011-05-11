@@ -43,8 +43,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 				Booleans.getInstance());
 	}
 
-	private void testTranslationV1_2(ITypeEnvironment te, String ppPredStr,
-			String expectedSMTNode, boolean usesTrue) {
+	private void testTranslationV1_2(final ITypeEnvironment te,
+			final String ppPredStr, final String expectedSMTNode,
+			final boolean usesTrue) {
 		testTranslationV1_2_Ver(te, ppPredStr, expectedSMTNode,
 				defaultFailMessage, usesTrue);
 	}
@@ -71,7 +72,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	private static void testTranslationV1_2_Ver(
 			final ITypeEnvironment iTypeEnv, final String ppPredStr,
 			final String expectedSMTNode, final String failMessage,
-			boolean usesTrue) throws AssertionError {
+			final boolean usesTrue) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
@@ -94,9 +95,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2(SMTLogic logic,
+	private static void testTranslationV1_2(final SMTLogic logic,
 			final Predicate ppPred, final String expectedSMTNode,
-			final String failMessage, final String solver, boolean usesBool) {
+			final String failMessage, final String solver,
+			final boolean usesBool) {
 		final StringBuilder actualSMTNode = new StringBuilder();
 		SMTThroughPP.translate(logic, ppPred, solver, usesBool).toString(
 				actualSMTNode, false);

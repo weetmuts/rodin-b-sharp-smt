@@ -40,7 +40,7 @@ public class SMTSortSymbol extends SMTSymbol implements
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		builder.append(this.toString());
 	}
 }

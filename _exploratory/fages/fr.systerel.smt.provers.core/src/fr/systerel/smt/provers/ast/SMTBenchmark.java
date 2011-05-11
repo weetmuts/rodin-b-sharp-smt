@@ -42,81 +42,81 @@ public class SMTBenchmark {
 	private final Set<SMTMacroSymbol> macroSet = new HashSet<SMTMacroSymbol>();
 
 	private void getUsedSymbols() {
-		for (SMTFormula assumption : assumptions) {
+		for (final SMTFormula assumption : assumptions) {
 			getUsedSymbols(assumption);
 		}
 		getUsedSymbols(goal);
 	}
 
-	private void getUsedSymbols(SMTVeritFiniteFormula vff) {
+	private void getUsedSymbols(final SMTVeritFiniteFormula vff) {
 		funSet.add(vff.getfArgument());
 		funSet.add(vff.getkArgument());
 		predSet.add(vff.getpArgument());
 		macroSet.add(vff.getFinitePred());
 
-		SMTTerm[] terms = vff.getTerms();
-		for (SMTTerm term : terms) {
+		final SMTTerm[] terms = vff.getTerms();
+		for (final SMTTerm term : terms) {
 			getUsedSymbols(term);
 		}
 	}
 
-	private void getUsedSymbols(SMTFunApplication fa) {
+	private void getUsedSymbols(final SMTFunApplication fa) {
 		sortSet.add(fa.getSort());
 		funSet.add(fa.getSymbol());
 	}
 
-	private void getUsedSymbols(SMTITETerm ite) {
+	private void getUsedSymbols(final SMTITETerm ite) {
 		sortSet.add(ite.getSort());
 		getUsedSymbols(ite.getFormula());
 		getUsedSymbols(ite.getfTerm());
 		getUsedSymbols(ite.gettTerm());
 	}
 
-	private void getUsedSymbols(SMTMacroTerm mt) {
-		for (SMTTerm term : mt.getArgs()) {
+	private void getUsedSymbols(final SMTMacroTerm mt) {
+		for (final SMTTerm term : mt.getArgs()) {
 			getUsedSymbols(term);
 		}
 		macroSet.add(mt.getMacroSymbol());
 		sortSet.add(mt.getSort());
 	}
 
-	private void getUsedSymbols(SMTNumeral num) {
+	private void getUsedSymbols(final SMTNumeral num) {
 		// Do nothing
 	}
 
-	private void getUsedSymbols(SMTVar var) {
+	private void getUsedSymbols(final SMTVar var) {
 		sortSet.add(var.getSort());
 	}
 
-	private void getUsedSymbols(SMTVeriTTerm var) {
+	private void getUsedSymbols(final SMTVeriTTerm var) {
 		sortSet.add(var.getSort());
 		predSet.add(var.getSymbol());
 	}
 
-	private void getUsedSymbols(SMTTerm term) {
+	private void getUsedSymbols(final SMTTerm term) {
 
 		if (term instanceof SMTFunApplication) {
-			SMTFunApplication fa = (SMTFunApplication) term;
+			final SMTFunApplication fa = (SMTFunApplication) term;
 			getUsedSymbols(fa);
 
 		} else if (term instanceof SMTITETerm) {
-			SMTITETerm ite = (SMTITETerm) term;
+			final SMTITETerm ite = (SMTITETerm) term;
 			getUsedSymbols(ite);
 
 		} else if (term instanceof SMTMacroTerm) {
-			SMTMacroTerm mt = (SMTMacroTerm) term;
+			final SMTMacroTerm mt = (SMTMacroTerm) term;
 			getUsedSymbols(mt);
 
 		} else if (term instanceof SMTNumeral) {
-			SMTNumeral num = (SMTNumeral) term;
+			final SMTNumeral num = (SMTNumeral) term;
 			getUsedSymbols(num);
 
 		} else if (term instanceof SMTVar) {
-			SMTVar var = (SMTVar) term;
+			final SMTVar var = (SMTVar) term;
 			getUsedSymbols(var);
 
 		} else if (term instanceof SMTVeriTTerm) {
-			SMTVeriTTerm vt = (SMTVeriTTerm) term;
+			final SMTVeriTTerm vt = (SMTVeriTTerm) term;
 			getUsedSymbols(vt);
 
 		} else {
@@ -126,53 +126,53 @@ public class SMTBenchmark {
 		}
 	}
 
-	private void getUsedSymbols(SMTVeritCardFormula vcf) {
+	private void getUsedSymbols(final SMTVeritCardFormula vcf) {
 		macroSet.add(vcf.getCardSymbol());
 		funSet.add(vcf.getfArgument());
 		funSet.add(vcf.getkArgument());
 
-		SMTTerm[] terms = vcf.getTerms();
-		for (SMTTerm term : terms) {
+		final SMTTerm[] terms = vcf.getTerms();
+		for (final SMTTerm term : terms) {
 			getUsedSymbols(term);
 		}
 	}
 
-	private void getUsedSymbols(SMTVeriTAtom va) {
+	private void getUsedSymbols(final SMTVeriTAtom va) {
 		macroSet.add(va.getPredicate());
 
-		SMTTerm[] terms = va.getTerms();
-		for (SMTTerm term : terms) {
+		final SMTTerm[] terms = va.getTerms();
+		for (final SMTTerm term : terms) {
 			getUsedSymbols(term);
 		}
 	}
 
-	private void getUsedSymbols(SMTQuantifiedFormula qf) {
+	private void getUsedSymbols(final SMTQuantifiedFormula qf) {
 		getUsedSymbols(qf.getFormula());
 	}
 
-	private void getUsedSymbols(SMTFormula formula) {
+	private void getUsedSymbols(final SMTFormula formula) {
 		if (formula instanceof SMTAtom) {
-			SMTAtom atom = (SMTAtom) formula;
+			final SMTAtom atom = (SMTAtom) formula;
 			getUsedSymbols(atom);
 
 		} else if (formula instanceof SMTConnectiveFormula) {
-			SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
+			final SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
 			getUsedSymbols(con);
 
 		} else if (formula instanceof SMTQuantifiedFormula) {
-			SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
+			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
 			getUsedSymbols(qf);
 
 		} else if (formula instanceof SMTVeriTAtom) {
-			SMTVeriTAtom va = (SMTVeriTAtom) formula;
+			final SMTVeriTAtom va = (SMTVeriTAtom) formula;
 			getUsedSymbols(va);
 
 		} else if (formula instanceof SMTVeritCardFormula) {
-			SMTVeritCardFormula vcf = (SMTVeritCardFormula) formula;
+			final SMTVeritCardFormula vcf = (SMTVeritCardFormula) formula;
 			getUsedSymbols(vcf);
 
 		} else if (formula instanceof SMTVeritFiniteFormula) {
-			SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) formula;
+			final SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) formula;
 			getUsedSymbols(vff);
 
 		} else {
@@ -182,18 +182,18 @@ public class SMTBenchmark {
 		}
 	}
 
-	private void getUsedSymbols(SMTConnectiveFormula con) {
-		SMTFormula[] formulas = con.getFormulas();
-		for (SMTFormula formula : formulas) {
+	private void getUsedSymbols(final SMTConnectiveFormula con) {
+		final SMTFormula[] formulas = con.getFormulas();
+		for (final SMTFormula formula : formulas) {
 			getUsedSymbols(formula);
 		}
 	}
 
-	private void getUsedSymbols(SMTAtom atom) {
+	private void getUsedSymbols(final SMTAtom atom) {
 		predSet.add(atom.getPredicate());
 
-		SMTTerm[] terms = atom.getTerms();
-		for (SMTTerm term : terms) {
+		final SMTTerm[] terms = atom.getTerms();
+		for (final SMTTerm term : terms) {
 			getUsedSymbols(term);
 		}
 	}
@@ -202,8 +202,8 @@ public class SMTBenchmark {
 	 * Adds the opening format of a benchmark command to the given string
 	 * builder.
 	 */
-	public static void smtCmdOpening(final StringBuilder sb, String element,
-			String name) {
+	public static void smtCmdOpening(final StringBuilder sb,
+			final String element, final String name) {
 		sb.append(OPAR);
 		sb.append(element);
 		sb.append(SPACE);
