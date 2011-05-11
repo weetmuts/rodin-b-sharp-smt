@@ -370,7 +370,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		final SMTBenchmark benchmark = new SMTBenchmark(lemmaName, signature,
 				translatedAssumptions, smtFormula);
-		signature.removeUnusedSymbols(benchmark.getUsedSymbols());
+		benchmark.removeUnusedSymbols();
 		return benchmark;
 	}
 

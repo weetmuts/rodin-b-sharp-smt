@@ -36,13 +36,13 @@ public class SMTBenchmark {
 	private final List<SMTFormula> assumptions;
 	private final SMTFormula goal;
 
-	public Set<SMTSymbol> getUsedSymbols() {
-		final Set<SMTSymbol> symbol = new HashSet<SMTSymbol>();
+	public void removeUnusedSymbols() {
+		final Set<SMTSymbol> symbols = new HashSet<SMTSymbol>();
 		for (final SMTFormula assumption : assumptions) {
-			symbol.addAll(getUsedSymbols(assumption));
+			symbols.addAll(getUsedSymbols(assumption));
 		}
-		symbol.addAll(getUsedSymbols(goal));
-		return symbol;
+		symbols.addAll(getUsedSymbols(goal));
+		signature.removeUnusedSymbols(symbols);
 	}
 
 	private Set<SMTSymbol> getUsedSymbols(final SMTVeritFiniteFormula vff) {
@@ -284,7 +284,6 @@ public class SMTBenchmark {
 		this.signature = signature;
 		this.assumptions = assumptions;
 		this.goal = goal;
-		getUsedSymbols();
 	}
 
 	/**
