@@ -367,8 +367,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		clearFormula();
 		final SMTFormula smtFormula = translate(goal);
 		translatedAssumptions.addAll(signature.getAdditionalAssumptions());
-		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
-				smtFormula);
+
+		final SMTBenchmark benchmark = new SMTBenchmark(lemmaName, signature,
+				translatedAssumptions, smtFormula);
+		signature.removeUnusedSymbols(benchmark.getUsedSymbols());
+		return benchmark;
 	}
 
 	/**

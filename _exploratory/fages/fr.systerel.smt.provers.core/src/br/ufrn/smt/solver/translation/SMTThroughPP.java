@@ -408,8 +408,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			translatedAssumptions.add(0, intAxiom);
 		}
 
-		return new SMTBenchmark(lemmaName, signature, translatedAssumptions,
-				smtFormula);
+		final SMTBenchmark benchmark = new SMTBenchmark(lemmaName, signature,
+				translatedAssumptions, smtFormula);
+		signature.removeUnusedSymbols(benchmark.getUsedSymbols());
+		return benchmark;
 	}
 
 	/**

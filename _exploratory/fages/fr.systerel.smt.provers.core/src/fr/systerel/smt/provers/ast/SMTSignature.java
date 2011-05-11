@@ -685,7 +685,7 @@ public abstract class SMTSignature {
 		extrafunsSection(sb);
 	}
 
-	public void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
+	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
 			final Set<SMTPredicateSymbol> usedPreds,
 			final Set<SMTSortSymbol> usedSorts) {
 
@@ -764,5 +764,25 @@ public abstract class SMTSignature {
 		}
 		funs.removeAll(unusedFunctionSymbols);
 		return unusedFunctionSymbols;
+	}
+
+	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
+		// TODO Auto-generated method stub
+		final Set<SMTFunctionSymbol> funSymbols = new HashSet<SMTFunctionSymbol>();
+		final Set<SMTPredicateSymbol> predSymbols = new HashSet<SMTPredicateSymbol>();
+		final Set<SMTSortSymbol> sortSymbols = new HashSet<SMTSortSymbol>();
+
+		for (final SMTSymbol symbol : symbols) {
+			if (symbol instanceof SMTFunctionSymbol) {
+				funSymbols.add((SMTFunctionSymbol) symbol);
+			} else if (symbol instanceof SMTPredicateSymbol) {
+				predSymbols.add((SMTPredicateSymbol) symbol);
+			} else if (symbol instanceof SMTSortSymbol) {
+				sortSymbols.add((SMTSortSymbol) symbol);
+			}
+			// TODO Test for macros. macros must show only in the
+			// SMTSignatureVeriT
+		}
+		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols);
 	}
 }
