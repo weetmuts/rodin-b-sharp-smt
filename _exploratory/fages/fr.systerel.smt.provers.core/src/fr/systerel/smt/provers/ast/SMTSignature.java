@@ -685,74 +685,84 @@ public abstract class SMTSignature {
 		extrafunsSection(sb);
 	}
 
-	public void removeUnusedSymbols(final Set<SMTFunctionSymbol> funs1,
-			final Set<SMTPredicateSymbol> preds1,
-			final Set<SMTSortSymbol> sorts1) {
+	public void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
+			final Set<SMTPredicateSymbol> usedPreds,
+			final Set<SMTSortSymbol> usedSorts) {
 
-		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(funs1);
-		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(preds1);
-		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(sorts1);
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
+		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
 
 		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
 				&& unusedSortSymbols.isEmpty()) {
 			return;
 		}
-		removeUnusedSymbols(funs1, preds1, sorts1);
+		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
 	}
 
 	/**
 	 * TODO
 	 * 
-	 * @param sorts1
+	 * @param usedSorts
 	 * @return
 	 */
-	private Set<SMTSortSymbol> removeUnusedSorts(final Set<SMTSortSymbol> sorts1) {
+	private Set<SMTSortSymbol> removeUnusedSorts(
+			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
-		for (final SMTSortSymbol symbol : sorts1) {
-			if (!sorts1.contains(symbol)) {
+
+		for (final SMTFunctionSymbol fun : funs) {
+			usedSorts.add(fun.getResultSort());
+			usedSorts.addAll(Arrays.asList(fun.getArgSorts()));
+		}
+		for (final SMTPredicateSymbol pred : preds) {
+			usedSorts.addAll(Arrays.asList(pred.getArgSorts()));
+		}
+
+		for (final SMTSortSymbol symbol : sorts) {
+			if (!usedSorts.contains(symbol)) {
 				unusedSortSymbols.add(symbol);
-				sorts1.remove(symbol);
+				usedSorts.remove(symbol);
 			}
 		}
-		sorts1.removeAll(unusedSortSymbols);
+		sorts.removeAll(unusedSortSymbols);
 		return unusedSortSymbols;
 	}
 
 	/**
 	 * TODO
 	 * 
-	 * @param preds1
+	 * @param usedPreds
 	 * @return
 	 */
 	private Set<SMTPredicateSymbol> removeUnusedPreds(
-			final Set<SMTPredicateSymbol> preds1) {
+			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
-		for (final SMTPredicateSymbol symbol : preds1) {
-			if (!preds1.contains(symbol)) {
+		for (final SMTPredicateSymbol symbol : preds) {
+			if (!usedPreds.contains(symbol)) {
 				unusedPredicateSymbols.add(symbol);
-				preds1.remove(symbol);
+				usedPreds.remove(symbol);
 			}
 		}
-		preds1.removeAll(unusedPredicateSymbols);
+		preds.removeAll(unusedPredicateSymbols);
 		return unusedPredicateSymbols;
 	}
 
 	/**
 	 * TODO
 	 * 
-	 * @param funs1
+	 * @param usedFuns
 	 * @return
 	 */
 	private Set<SMTFunctionSymbol> removeUnusedFunctions(
-			final Set<SMTFunctionSymbol> funs1) {
+			final Set<SMTFunctionSymbol> usedFuns) {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
-		for (final SMTFunctionSymbol symbol : funs1) {
-			if (!funs1.contains(symbol)) {
+		for (final SMTFunctionSymbol symbol : funs) {
+			if (!usedFuns.contains(symbol)) {
 				unusedFunctionSymbols.add(symbol);
-				funs1.remove(symbol);
+				usedFuns.remove(symbol);
 			}
 		}
-		funs1.removeAll(unusedFunctionSymbols);
+		funs.removeAll(unusedFunctionSymbols);
 		return unusedFunctionSymbols;
 	}
 }

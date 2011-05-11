@@ -14,6 +14,8 @@ import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 
+import java.util.Arrays;
+
 /**
  * This class represents function application.
  * 
@@ -126,4 +128,16 @@ public class SMTFunApplication extends SMTTerm {
 			builder.append(CPAR);
 		}
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("SMTFunApplication [symbol=");
+		builder.append(symbol);
+		builder.append(", args=");
+		builder.append(Arrays.toString(args));
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

@@ -63,6 +63,10 @@ public class SMTBenchmark {
 	private void getUsedSymbols(final SMTFunApplication fa) {
 		sortSet.add(fa.getSort());
 		funSet.add(fa.getSymbol());
+		final SMTTerm[] terms = fa.getArgs();
+		for (final SMTTerm term : terms) {
+			getUsedSymbols(term);
+		}
 	}
 
 	private void getUsedSymbols(final SMTITETerm ite) {
