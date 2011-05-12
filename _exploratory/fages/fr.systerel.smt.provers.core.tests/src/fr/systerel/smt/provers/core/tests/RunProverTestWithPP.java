@@ -606,6 +606,23 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				te, VALID);
 	}
 
+	public void testTypEnv() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
+				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("h ∈ S →  (S × S →  ℕ)");
+		hyps.add("n ∈ dom(h)");
+		hyps.add("m ↦ n ∈ dom(h(n))");
+		hyps.add("h(n){m ↦ n ↦ (h(n))(m ↦ n)+1} ∈ S × S →  ℕ");
+
+		doTest("DynamicStableLSR_081014_15_z3", hyps,
+				"h {n ↦ h(n){m ↦ n ↦ (h(n))(m ↦ n)+1}} ∈ S ⇸ (S × S →  ℕ)",
+				te, VALID);
+	}
+
 	@Test
 	@Ignore("Takes more than 10 seconds to return a result")
 	public void testDynamicStableLSR_081014_15WithAltErgo() {

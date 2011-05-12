@@ -278,18 +278,38 @@ public class SmtProverCall extends XProverCall {
 	/**
 	 * Execute translation of Event-B predicates using the PP approach.
 	 * 
-	 * @return the list of argumetns
+	 * @return the list of arguments
 	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
 	public List<String> smtTranslationThroughPP()
 			throws PreProcessingException, IOException {
+		return smtTranslation(translateToBenchmarkThroughPP());
+	}
+
+	/**
+	 * Execute translation of Event-B predicates using the PP approach.
+	 * 
+	 * @return the list of arguments
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 */
+	public SMTBenchmark translateToBenchmarkThroughPP()
+			throws PreProcessingException, IOException {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
 						.getId());
-		return smtTranslation(benchmark);
+		return benchmark;
 	}
 
+	/**
+	 * Execute translation of Event-B predicates using the VeriT pre-processing
+	 * approach.
+	 * 
+	 * @return
+	 * @throws PreProcessingException
+	 * @throws IOException
+	 */
 	public List<String> smtTranslationThroughVeriT()
 			throws PreProcessingException, IOException {
 		final SMTBenchmark benchmark = SMTThroughVeriT

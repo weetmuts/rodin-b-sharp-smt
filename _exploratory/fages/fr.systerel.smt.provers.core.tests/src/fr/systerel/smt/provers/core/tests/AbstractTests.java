@@ -13,8 +13,12 @@ package fr.systerel.smt.provers.core.tests;
 
 import static org.eventb.core.ast.LanguageVersion.V2;
 import static org.eventb.core.ast.tests.AbstractTests.parseType;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
@@ -23,6 +27,11 @@ import org.eventb.core.ast.ITypeCheckResult;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
+
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
+import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
+import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSortSymbol;
 
 public abstract class AbstractTests {
 
@@ -66,5 +75,103 @@ public abstract class AbstractTests {
 	 */
 	public static void assertTypeChecked(final Formula<?> formula) {
 		assertTrue("Formula is not typed: " + formula, formula.isTypeChecked());
+	}
+
+	private static String typeEnvironmentSortsFail(final Set<String> expectedSorts, final Set<SMTSortSymbol> sorts) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("The translated sorts wasn't the expected ones. The expected sorts are:");
+		for (final String expectedSort : expectedSorts) {
+			sb.append("\n");
+			sb.append(expectedSort);
+		}
+		sb.append("\nBut the translated sorts were:");
+		for (final SMTSortSymbol sortSymbol : sorts) {
+			sb.append("\n");
+			sb.append(sortSymbol.toString());
+		}
+		sb.append("\n");
+		return sb.toString();
+	}
+
+	public static void testTypeEnvironmentSorts(final Set<String> expectedSorts, final SMTSignature signature) {
+	
+		final Set<SMTSortSymbol> sortSymbols = signature.getSorts();
+		final Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
+		final String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
+		assertEquals(sb.toString(), expectedSorts.size(), sortSymbols.size());
+	
+		while (iterator.hasNext()) {
+			assertTrue(sb, expectedSorts.contains(iterator.next().toString()));
+		}
+	}
+
+	private static String typeEnvironmentPredicatesFail(final Set<String> expectedPredicates,
+			final Set<SMTPredicateSymbol> predicates) {
+				final StringBuilder sb = new StringBuilder();
+				sb.append("The translated predicates wasn't the expected ones. The expected predicates are:");
+				for (final String expectedPredicate : expectedPredicates) {
+					sb.append("\n");
+					sb.append(expectedPredicate);
+				}
+				sb.append("\nBut the translated predicates were:");
+				for (final SMTPredicateSymbol predicateSymbol : predicates) {
+					if (!predicateSymbol.isPredefined()) {
+						sb.append("\n");
+						predicateSymbol.toString(sb);
+					}
+				}
+				sb.append("\n");
+				return sb.toString();
+			}
+
+	public static void testTypeEnvironmentPreds(final Set<String> expectedPredicates, final SMTSignature signature) {
+		final Set<SMTPredicateSymbol> predicateSymbols = signature.getPreds();
+		final Iterator<SMTPredicateSymbol> iterator = predicateSymbols
+				.iterator();
+		final String sb = typeEnvironmentPredicatesFail(expectedPredicates,
+				predicateSymbols);
+	
+		while (iterator.hasNext()) {
+			final SMTPredicateSymbol pS = iterator.next();
+			if (!pS.isPredefined()) {
+				final StringBuilder builder = new StringBuilder();
+				pS.toString(builder);
+				assertTrue(sb, expectedPredicates.contains(builder.toString()));
+			}
+		}
+	}
+
+	private static String typeEnvironmentFunctionsFail(final Set<String> expectedFunctions, final Set<SMTFunctionSymbol> functions) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("The translated functions wasn't the expected ones. The expected functions are:");
+		for (final String expectedFunction : expectedFunctions) {
+			sb.append("\n");
+			sb.append(expectedFunction);
+		}
+		sb.append("\nBut the translated functions were:");
+		for (final SMTFunctionSymbol fSymbol : functions) {
+			if (!fSymbol.isPredefined()) {
+				sb.append("\n");
+				fSymbol.toString(sb);
+			}
+		}
+		sb.append("\n");
+		return sb.toString();
+	}
+
+	public static void testTypeEnvironmentFuns(final Set<String> expectedFunctions, final SMTSignature signature) {
+		final Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
+		final Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
+		final String sb = typeEnvironmentFunctionsFail(expectedFunctions,
+				functionSymbols);
+	
+		while (iterator.hasNext()) {
+			final SMTFunctionSymbol fS = iterator.next();
+			if (!fS.isPredefined()) {
+				final StringBuilder builder = new StringBuilder();
+				fS.toString(builder);
+				assertTrue(sb, expectedFunctions.contains(builder.toString()));
+			}
+		}
 	}
 }

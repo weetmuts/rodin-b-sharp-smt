@@ -35,6 +35,10 @@ public class SMTBenchmark {
 	private final List<SMTFormula> assumptions;
 	private final SMTFormula goal;
 
+	public SMTSignature getSignature() {
+		return signature;
+	}
+
 	public void removeUnusedSymbols() {
 		final Set<SMTSymbol> symbols = new HashSet<SMTSymbol>();
 		for (final SMTFormula assumption : assumptions) {

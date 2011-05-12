@@ -5,7 +5,9 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.Formula;
@@ -18,6 +20,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Exec;
+import br.ufrn.smt.solver.translation.PreProcessingException;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 /**
@@ -119,6 +124,83 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		}
 	}
 
+	private void doTTeTest(final String lemmaName,
+			final List<String> inputHyps, final String inputGoal,
+			final ITypeEnvironment te, final Set<String> expectedFuns,
+			final Set<String> expectedPreds, final Set<String> expectedSorts) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
+
+		for (final String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, te));
+		}
+
+		final Predicate goal = parse(inputGoal, te);
+
+		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
+				expectedSorts);
+	}
+
+	private void doTeTest(final String lemmaName,
+			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
+			final Set<String> expectedFuns, final Set<String> expectedPreds,
+			final Set<String> expectedSorts) throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate predicate : parsedHypothesis) {
+			assertTypeChecked(predicate);
+		}
+
+		// Create an instance of SmtProversCall
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+				parsedGoal, MONITOR, preferences, lemmaName) {
+			@Override
+			public String displayMessage() {
+				return "SMT";
+			}
+		};
+
+		try {
+			final SMTBenchmark benchmark = smtProverCall
+					.translateToBenchmarkThroughPP();
+
+			final SMTSignature signature = benchmark.getSignature();
+
+			TranslationTestsWithVeriT.testTypeEnvironmentSorts(expectedSorts,
+					signature);
+			TranslationTestsWithVeriT.testTypeEnvironmentFuns(expectedFuns,
+					signature);
+			TranslationTestsWithVeriT.testTypeEnvironmentPreds(expectedPreds,
+					signature);
+
+		} catch (final PreProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testTePlusSort() {
+		setPreferencesForZ3Test();
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("g ∈ e");
+
+		final Set<String> expectedSorts = new HashSet<String>();
+		expectedSorts.add("S");
+
+		final Set<String> expectedFuns = new HashSet<String>();
+		expectedFuns.add("(g S)");
+
+		final Set<String> expectedPreds = new HashSet<String>();
+		expectedPreds.add("(e S)");
+		expectedPreds.add("(f S)");
+
+		doTTeTest("tetestSort", hyps, "g ∈ f", pow_te, expectedFuns,
+				expectedPreds, expectedSorts);
+	}
+
 	@Test
 	@Ignore("ERROR: line 4 column 42: could not find sort symbol 'Pair'.")
 	public void testRule20() {
@@ -150,7 +232,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 
 		doTest("rule20_macro_inside_macro", hyps,
-				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
+				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) ≠ ∅", te, VALID);
 	}
 
 	/**
@@ -171,7 +253,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not ")
 	public void testSolverCallBelong1() {
 		// Set preferences to test with VeriT
 		setPreferencesForVeriTTest();
