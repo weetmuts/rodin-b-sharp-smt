@@ -709,21 +709,23 @@ public abstract class SMTSignature {
 	protected Set<SMTSortSymbol> removeUnusedSorts(
 			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
+		final Set<SMTSortSymbol> declUsedSorts = new HashSet<SMTSortSymbol>();
 
 		for (final SMTFunctionSymbol fun : funs) {
-			usedSorts.add(fun.getResultSort());
-			usedSorts.addAll(Arrays.asList(fun.getArgSorts()));
+			declUsedSorts.add(fun.getResultSort());
+			declUsedSorts.addAll(Arrays.asList(fun.getArgSorts()));
 		}
+
 		for (final SMTPredicateSymbol pred : preds) {
-			usedSorts.addAll(Arrays.asList(pred.getArgSorts()));
+			declUsedSorts.addAll(Arrays.asList(pred.getArgSorts()));
 		}
 
 		for (final SMTSortSymbol symbol : sorts) {
-			if (!usedSorts.contains(symbol)) {
+			if (!usedSorts.contains(symbol) && !declUsedSorts.contains(symbol)) {
 				unusedSortSymbols.add(symbol);
-				usedSorts.remove(symbol);
 			}
 		}
+
 		sorts.removeAll(unusedSortSymbols);
 		return unusedSortSymbols;
 	}
@@ -740,7 +742,6 @@ public abstract class SMTSignature {
 		for (final SMTPredicateSymbol symbol : preds) {
 			if (!usedPreds.contains(symbol)) {
 				unusedPredicateSymbols.add(symbol);
-				usedPreds.remove(symbol);
 			}
 		}
 		preds.removeAll(unusedPredicateSymbols);
@@ -759,7 +760,6 @@ public abstract class SMTSignature {
 		for (final SMTFunctionSymbol symbol : funs) {
 			if (!usedFuns.contains(symbol)) {
 				unusedFunctionSymbols.add(symbol);
-				usedFuns.remove(symbol);
 			}
 		}
 		funs.removeAll(unusedFunctionSymbols);
@@ -780,8 +780,6 @@ public abstract class SMTSignature {
 			} else if (symbol instanceof SMTSortSymbol) {
 				sortSymbols.add((SMTSortSymbol) symbol);
 			}
-			// TODO Test for macros. macros must show only in the
-			// SMTSignatureVeriT
 		}
 		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols);
 	}
