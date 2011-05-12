@@ -1,9 +1,20 @@
 package fr.systerel.smt.provers.core.tests;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.translation.PreProcessingException;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 public class CommonSolverRunTests extends AbstractTests {
 
@@ -104,5 +115,59 @@ public class CommonSolverRunTests extends AbstractTests {
 
 	protected void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
+	}
+
+	protected void doTTeTest(final String lemmaName,
+			final List<String> inputHyps, final String inputGoal,
+			final ITypeEnvironment te, final Set<String> expectedFuns,
+			final Set<String> expectedPreds, final Set<String> expectedSorts) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
+
+		for (final String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, te));
+		}
+
+		final Predicate goal = parse(inputGoal, te);
+
+		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
+				expectedSorts);
+	}
+
+	private void doTeTest(final String lemmaName,
+			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
+			final Set<String> expectedFuns, final Set<String> expectedPreds,
+			final Set<String> expectedSorts) throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate predicate : parsedHypothesis) {
+			assertTypeChecked(predicate);
+		}
+
+		// Create an instance of SmtProversCall
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+				parsedGoal, MONITOR, preferences, lemmaName) {
+			@Override
+			public String displayMessage() {
+				return "SMT";
+			}
+		};
+
+		try {
+			final SMTBenchmark benchmark = smtProverCall
+					.translateToBenchmarkThroughPP();
+
+			final SMTSignature signature = benchmark.getSignature();
+
+			AbstractTests.testTypeEnvironmentSorts(expectedSorts, signature);
+			AbstractTests.testTypeEnvironmentFuns(expectedFuns, signature);
+			AbstractTests.testTypeEnvironmentPreds(expectedPreds, signature);
+
+		} catch (final PreProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

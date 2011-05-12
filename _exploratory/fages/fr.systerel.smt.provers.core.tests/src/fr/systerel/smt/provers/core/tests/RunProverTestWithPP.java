@@ -5,7 +5,9 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
@@ -132,6 +134,30 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		// perform test
 		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
+	}
+
+	@Test
+	public void testCallBelong1XtraSortXtraFun() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "a", "A", "c", "BOOL");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("g ∈ e");
+
+		final Set<String> expectedSorts = new HashSet<String>();
+		expectedSorts.add("S");
+
+		final Set<String> expectedFuns = new HashSet<String>();
+		expectedFuns.add("(g S)");
+
+		final Set<String> expectedPreds = new HashSet<String>();
+		expectedPreds.add("(e S)");
+		expectedPreds.add("(f S)");
+
+		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
+				expectedPreds, expectedSorts);
 	}
 
 	/**
