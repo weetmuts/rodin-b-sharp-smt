@@ -118,6 +118,14 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 		this.expression = expression;
 	}
 
+	public SMTFormula getFormula() {
+		return formula;
+	}
+
+	public SMTTerm getExpression() {
+		return expression;
+	}
+
 	/**
 	 * Retrieve the lambda variable.
 	 * 

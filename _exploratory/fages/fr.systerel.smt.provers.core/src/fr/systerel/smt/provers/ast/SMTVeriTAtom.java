@@ -56,4 +56,18 @@ class SMTVeriTAtom extends SMTFormula {
 			builder.append(CPAR);
 		}
 	}
+
+	@Override
+	public String toString() {
+		if (predicateSymbol.isPropositional()) {
+			return predicateSymbol.getName();
+		} else {
+			String s = OPAR + predicateSymbol.getName();
+			for (final SMTTerm term : terms) {
+				s += SPACE + term;
+			}
+			s += CPAR;
+			return s;
+		}
+	}
 }

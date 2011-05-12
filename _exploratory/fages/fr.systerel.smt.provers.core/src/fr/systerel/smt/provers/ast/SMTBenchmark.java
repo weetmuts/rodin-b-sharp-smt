@@ -21,7 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
+import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTPredefinedMacro;
+import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
 /**
  * This class builds an SMT-LIB SMTBenchmark
@@ -45,7 +50,61 @@ public class SMTBenchmark {
 			getUsedSymbols(assumption, symbols);
 		}
 		getUsedSymbols(goal, symbols);
+
+		if (signature instanceof SMTSignatureVerit) {
+			final SMTSignatureVerit signatureV = (SMTSignatureVerit) signature;
+			final Set<SMTMacro> macros = signatureV.getMacros();
+			for (final SMTMacro macro : macros) {
+				getUsedSymbols(macro, symbols);
+			}
+		}
 		signature.removeUnusedSymbols(symbols);
+	}
+
+	private void getUsedSymbols(final SMTMacro macro,
+			final Set<SMTSymbol> symbols) {
+		if (macro instanceof SMTEnumMacro) {
+			final SMTEnumMacro em = (SMTEnumMacro) macro;
+			getUsedSymbols(em, symbols);
+		} else if (macro instanceof SMTPairEnumMacro) {
+			final SMTPairEnumMacro pem = (SMTPairEnumMacro) macro;
+			getUsedSymbols(pem, symbols);
+		} else if (macro instanceof SMTPredefinedMacro) {
+			final SMTPredefinedMacro pm = (SMTPredefinedMacro) macro;
+			getUsedSymbols(pm, symbols);
+		} else if (macro instanceof SMTSetComprehensionMacro) {
+			final SMTSetComprehensionMacro scm = (SMTSetComprehensionMacro) macro;
+			getUsedSymbols(scm, symbols);
+		} else {
+			// This part should never be reached
+			throw new IllegalArgumentException("The class of the macro is: "
+					+ macro.getClass().toString() + ", which is not recognized");
+		}
+	}
+
+	private void getUsedSymbols(final SMTEnumMacro macro,
+			final Set<SMTSymbol> symbols) {
+		for (final SMTTerm term : macro.getTerms()) {
+			getUsedSymbols(term, symbols);
+		}
+	}
+
+	private void getUsedSymbols(final SMTPairEnumMacro macro,
+			final Set<SMTSymbol> symbols) {
+		for (final SMTTerm term : macro.getTerms()) {
+			getUsedSymbols(term, symbols);
+		}
+	}
+
+	private void getUsedSymbols(final SMTPredefinedMacro macro,
+			final Set<SMTSymbol> symbols) {
+		// Do nothing
+	}
+
+	private void getUsedSymbols(final SMTSetComprehensionMacro macro,
+			final Set<SMTSymbol> symbols) {
+		getUsedSymbols(macro.getExpression(), symbols);
+		getUsedSymbols(macro.getFormula(), symbols);
 	}
 
 	private void getUsedSymbols(final SMTVeritFiniteFormula vff,

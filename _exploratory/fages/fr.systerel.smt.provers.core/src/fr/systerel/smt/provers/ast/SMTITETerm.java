@@ -75,4 +75,10 @@ public final class SMTITETerm extends SMTTerm {
 		fTerm.toString(builder);
 		builder.append(CPAR);
 	}
+
+	@Override
+	public String toString() {
+		return OPAR + ITE_TERM + SPACE + formula + SPACE + tTerm + SPACE
+				+ fTerm + CPAR;
+	}
 }

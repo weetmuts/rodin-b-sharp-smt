@@ -30,6 +30,10 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
+	public SortedSet<SMTMacro> getMacros() {
+		return macros;
+	}
+
 	private boolean isFstAndSndAssumptionsAdded = false;
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
@@ -59,9 +63,9 @@ public class SMTSignatureVerit extends SMTSignature {
 		super(logic);
 	}
 
-	public int getMacroLength() {
-		return macros.size();
-	}
+	// public int getMacroLength() {
+	// return macros.size();
+	// }
 
 	public void addMacro(final SMTMacro macro) {
 		// FIXME: The set should take care of unique elements. This comparison
@@ -189,38 +193,7 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	@Override
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
-		// TODO Auto-generated method stub
-		final Set<SMTFunctionSymbol> funSymbols = new HashSet<SMTFunctionSymbol>();
-		final Set<SMTPredicateSymbol> predSymbols = new HashSet<SMTPredicateSymbol>();
-		final Set<SMTSortSymbol> sortSymbols = new HashSet<SMTSortSymbol>();
-
-		for (final SMTSymbol symbol : symbols) {
-			if (symbol instanceof SMTFunctionSymbol) {
-				funSymbols.add((SMTFunctionSymbol) symbol);
-			} else if (symbol instanceof SMTPredicateSymbol) {
-				predSymbols.add((SMTPredicateSymbol) symbol);
-			} else if (symbol instanceof SMTSortSymbol) {
-				sortSymbols.add((SMTSortSymbol) symbol);
-			}
-			// TODO Test for macros. macros must show only in the
-			// SMTSignatureVeriT
-		}
-		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols);
-	}
-
-	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
-			final Set<SMTPredicateSymbol> usedPreds,
-			final Set<SMTSortSymbol> usedSorts) {
-
-		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
-		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
-		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
-
-		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
-				&& unusedSortSymbols.isEmpty()) {
-			return;
-		}
-		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
+		// TODO Implement this method (take care with pair function and sort)
 	}
 
 }

@@ -29,4 +29,9 @@ public class SMTVeriTTerm extends SMTTerm {
 		builder.append(symbol.name);
 	}
 
+	@Override
+	public String toString() {
+		return symbol.name;
+	}
+
 }

@@ -97,6 +97,10 @@ public class SMTPairEnumMacro extends SMTMacro {
 		return key;
 	}
 
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
+
 	/**
 	 * It's the ?f variable as described in {@link SMTPairEnumMacro}
 	 */

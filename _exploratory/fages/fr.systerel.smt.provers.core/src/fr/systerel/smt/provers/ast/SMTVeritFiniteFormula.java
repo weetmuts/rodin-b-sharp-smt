@@ -70,7 +70,16 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 		builder.append(SPACE);
 		builder.append(kArgument.name);
 		builder.append(CPAR);
+	}
 
+	@Override
+	public String toString() {
+		String s = OPAR + finitePred.name + SPACE + pArgument.name;
+		for (final SMTTerm term : terms) {
+			s += SPACE + term;
+		}
+		s += SPACE + fArgument.name + SPACE + kArgument.name + CPAR;
+		return s;
 	}
 
 }

@@ -396,6 +396,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			if (sortSymbol == null) {
 				if (baseType instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) baseType);
+					addPairSortAndFunctions();
+					typeMap.put(baseType, sortSymbol);
 				} else {
 					sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
 							baseType.toString(), signature);
@@ -444,7 +446,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private SMTSortSymbol translateProductType(final ProductType type) {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
+		typeMap.put(type.getLeft(), left);
 		final SMTSortSymbol right = translateTypeName(type.getRight());
+		typeMap.put(type.getLeft(), right);
 		return SMTFactoryVeriT.makePairSortSymbol(left, right);
 	}
 
@@ -1072,10 +1076,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @return the macro term of the translated comprehension set
 	 */
 	private SMTTerm translateCSET(final QuantifiedExpression expression) {
+		boundIdentifiersMarker.push(boundIdentifiers.size());
+
 		// Translating the children
 		final SMTTerm[] termChildren = smtTerms(expression.getBoundIdentDecls());
 		final SMTFormula formulaChild = smtFormula(expression.getPredicate());
-		final SMTTerm[] expressionTerm = smtTerms(expression.getExpression());
+
+		final Expression qExp = expression.getExpression();
+
+		final SMTTerm[] expressionTerm = smtTerms(qExp);
 
 		// obtaining the expression type
 		SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
@@ -1083,6 +1092,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			expressionSymbol = translateTypeName(expression.getType());
 		}
 		final String macroName = signature.freshCstName(SMTMacroSymbol.CSET);
+
+		final int top = boundIdentifiersMarker.pop();
+		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
+
 		return translateQuantifiedExpression(macroName, formulaChild,
 				expressionTerm[0], expressionSymbol, termChildren);
 	}

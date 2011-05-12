@@ -165,31 +165,13 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
 		doTest("rule20_macro_inside_macro", hyps,
-				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) ≠ ∅", te, VALID);
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	@Ignore("Type ℙ(ℤ×ℙ(ℤ)): Sets of sets are not supported yet")
-	public void testDifferentForallPlusSimple() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("differentForallPlusSimple", hyps, "{1 ↦ {0}} ∈ {1} → {{0}}",
-				te, VALID);
+				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
 	}
 
 	@Test

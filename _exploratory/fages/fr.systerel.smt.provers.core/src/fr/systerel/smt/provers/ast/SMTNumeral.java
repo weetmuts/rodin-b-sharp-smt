@@ -51,4 +51,19 @@ public final class SMTNumeral extends SMTTerm {
 			builder.append(value.abs());
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		if (value.signum() < 0) {
+			return OPAR + SMTTheory.Ints.getInstance().getUMinus().getName()
+					+ SPACE + value.abs() + CPAR;
+		} else {
+			return value.abs().toString();
+		}
+	}
 }

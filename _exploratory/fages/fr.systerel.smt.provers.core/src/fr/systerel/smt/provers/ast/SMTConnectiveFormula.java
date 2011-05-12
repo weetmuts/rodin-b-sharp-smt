@@ -49,4 +49,15 @@ public class SMTConnectiveFormula extends SMTFormula {
 		}
 		builder.append(CPAR);
 	}
+
+	@Override
+	public String toString() {
+		String s = OPAR + connective;
+		for (final SMTFormula formula : formulas) {
+			s += SPACE + formula;
+		}
+		s += CPAR;
+		return s;
+	}
+
 }

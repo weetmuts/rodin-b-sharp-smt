@@ -137,6 +137,16 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testRule20MacroInsideMacro() {
+		setPreferencesForZ3Test();
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("rule20_macro_inside_macro", hyps,
+				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
+	}
+
+	@Test
 	public void testCallBelong1XtraSortXtraFun() {
 		setPreferencesForZ3Test();
 

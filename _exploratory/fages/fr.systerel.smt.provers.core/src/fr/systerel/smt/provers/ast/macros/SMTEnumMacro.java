@@ -26,6 +26,16 @@ import fr.systerel.smt.provers.ast.SMTVarSymbol;
 public class SMTEnumMacro extends SMTMacro {
 
 	/**
+	 * The assigned variable of the enumeration macro.
+	 */
+	private final SMTVarSymbol assignedVar;
+
+	/**
+	 * They represent the elements of the enumeration.
+	 */
+	private final SMTTerm[] terms;
+
+	/**
 	 * Constructs a new macro with the name, the assigned variable, the terms of
 	 * the enumeration and the precedence.
 	 * 
@@ -46,6 +56,10 @@ public class SMTEnumMacro extends SMTMacro {
 		this.terms = terms;
 	}
 
+	public SMTTerm[] getTerms() {
+		return terms;
+	}
+
 	/**
 	 * Retrieves the assigned variable
 	 * 
@@ -54,16 +68,6 @@ public class SMTEnumMacro extends SMTMacro {
 	public SMTVarSymbol getAssignedVar() {
 		return assignedVar;
 	}
-
-	/**
-	 * The assigned variable of the enumeration macro.
-	 */
-	private final SMTVarSymbol assignedVar;
-
-	/**
-	 * They represent the elements of the enumeration.
-	 */
-	private final SMTTerm[] terms;
 
 	@Override
 	public String toString() {

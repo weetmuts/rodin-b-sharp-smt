@@ -685,7 +685,7 @@ public abstract class SMTSignature {
 		extrafunsSection(sb);
 	}
 
-	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
+	protected void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
 			final Set<SMTPredicateSymbol> usedPreds,
 			final Set<SMTSortSymbol> usedSorts) {
 
@@ -700,12 +700,6 @@ public abstract class SMTSignature {
 		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param usedSorts
-	 * @return
-	 */
 	protected Set<SMTSortSymbol> removeUnusedSorts(
 			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
@@ -730,12 +724,7 @@ public abstract class SMTSignature {
 		return unusedSortSymbols;
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param usedPreds
-	 * @return
-	 */
+	
 	protected Set<SMTPredicateSymbol> removeUnusedPreds(
 			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
@@ -748,12 +737,6 @@ public abstract class SMTSignature {
 		return unusedPredicateSymbols;
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param usedFuns
-	 * @return
-	 */
 	protected Set<SMTFunctionSymbol> removeUnusedFunctions(
 			final Set<SMTFunctionSymbol> usedFuns) {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
@@ -767,7 +750,6 @@ public abstract class SMTSignature {
 	}
 
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
-		// TODO Auto-generated method stub
 		final Set<SMTFunctionSymbol> funSymbols = new HashSet<SMTFunctionSymbol>();
 		final Set<SMTPredicateSymbol> predSymbols = new HashSet<SMTPredicateSymbol>();
 		final Set<SMTSortSymbol> sortSymbols = new HashSet<SMTSortSymbol>();

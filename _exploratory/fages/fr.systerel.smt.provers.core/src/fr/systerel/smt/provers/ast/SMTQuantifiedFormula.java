@@ -75,4 +75,14 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		}
 		builder.append(CPAR);
 	}
+
+	@Override
+	public String toString() {
+		String s = OPAR + quantifier;
+		for (final SMTVarSymbol qVar : qVars) {
+			s += SPACE + qVar;
+		}
+		s += SPACE + formula + CPAR;
+		return s;
+	}
 }

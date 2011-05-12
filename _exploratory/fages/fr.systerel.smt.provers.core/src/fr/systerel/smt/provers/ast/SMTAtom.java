@@ -56,6 +56,20 @@ class SMTAtom extends SMTFormula {
 		}
 	}
 
+	@Override
+	public String toString() {
+		if (predicateSymbol.isPropositional()) {
+			return predicateSymbol.getName();
+		} else {
+			String s = OPAR + predicateSymbol.getName();
+			for (final SMTTerm term : terms) {
+				s += SPACE + term.toString();
+			}
+			s += CPAR;
+			return s;
+		}
+	}
+
 	/**
 	 * This method verifies if the real arguments match in sort, order and
 	 * number the expected arguments.
