@@ -116,13 +116,12 @@ public class SMTPreferences {
 			final String prepropath) {
 		final List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
 		if (selectedSolverIndex == -1) {
-			solver = null;
+			throw new IllegalArgumentException("There is no selected solver");
 		} else if (selectedSolverIndex < solvers.size()) {
 			solver = solvers.get(selectedSolverIndex);
 		} else {
 			solver = null;
 		}
-
 		usingPrepro = usingprepro;
 		preproPath = prepropath;
 	}

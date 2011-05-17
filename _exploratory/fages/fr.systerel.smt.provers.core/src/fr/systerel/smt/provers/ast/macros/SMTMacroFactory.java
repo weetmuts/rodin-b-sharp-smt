@@ -177,11 +177,11 @@ public class SMTMacroFactory {
 			1);
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_FUNCTION,
-			"(lambda (?x13 ('s Bool)) (?y0  ('s Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) .  (and ((rel ?x13 ?y0) ?r4) (funp ?r4))))",
+			"(lambda (?x13 ('s Bool)) (?y0  ('t Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) .  (and ((rel ?x13 ?y0) ?r4) (funp ?r4))))",
 			2);
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_FUNCTION,
-			"(lambda (?x14 ('s Bool)) (?y2 ('s Bool)) . (lambda (?r5 ((Pair 's 't) Bool)) . (and ((pfun ?x14 ?y2) ?r5) (totp ?x14 ?r5))))",
+			"(lambda (?x14 ('s Bool)) (?y2 ('t Bool)) . (lambda (?r5 ((Pair 's 't) Bool)) . (and ((pfun ?x14 ?y2) ?r5) (totp ?x14 ?r5))))",
 			3);
 	public static final SMTPredefinedMacro NAT_MACRO = new SMTPredefinedMacro(
 			NAT, "(lambda (?x15 Int) . (<= 0 ?x15))", 0);
@@ -262,7 +262,7 @@ public class SMTMacroFactory {
 	// Using the totp (total property) to define this macro
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
 			TOTAL_RELATION,
-			"(lambda (?x27 ('s Bool)) (?r29 ((Pair 's 't) Bool)) . (forall (?p24 (Pair 's 't)) . (= (?r29 ?p24) (?x27 (fst ?p24)))))",
+			"(lambda (?x27 ('s Bool)) (?r29 ((Pair 's 't) Bool)) . (forall (?p24 (Pair 's 't)) . (iff (?r29 ?p24) (?x27 (fst ?p24)))))",
 			1);
 	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
 			RANGE,

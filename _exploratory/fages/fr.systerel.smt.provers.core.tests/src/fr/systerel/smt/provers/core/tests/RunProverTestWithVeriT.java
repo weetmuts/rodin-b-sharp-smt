@@ -142,25 +142,22 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("ERROR: line 4 column 42: could not find sort symbol 'Pair'.")
 	public void testRule20() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("(λx· ∀y·y ∈ ℕ ∧ x > y ∣ x+x) = ∅");
 
 		doTest("rule20", hyps, "(λx·x>0 ∣ x+x) ≠ ∅", te, VALID);
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
 	public void testRule20ManyForalls() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("rule20_many_foralls", hyps,
-				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) ≠ ∅", te,
+		doTest("rule20_many_foralls_verit", hyps,
+				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅", te,
 				VALID);
 	}
 
@@ -186,8 +183,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
 	}
 
+	// This test is to see if it's handling the U sort ok
 	@Test
-	@Ignore("Verit is producing sort (Pair (Pair 2)), which is not being recognized by other solvers")
 	public void testSolverCallSimpleUWithVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -201,7 +198,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Verit is producing sort (Pair (Pair 2)), which is not being recognized by other solvers")
 	public void testSolverCallSimpleUWithAltErgo() {
 		setPreferencesForAltErgoTest();
 
@@ -215,7 +211,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Verit is producing sort (Pair (Pair 2)), which is not being recognized by other solvers")
 	public void testSolverCallSimpleUWithCVC3() {
 		setPreferencesForCvc3Test();
 
@@ -226,26 +221,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 		// perform test
 		doTest("simpleU_cvc3", hyps, "⊤", te, VALID);
-	}
-
-	@Test
-	@Ignore("Type S×T×U: Sets of sets are not supported yet")
-	public void testSolverCallBelong3() {
-		// Set preferences to test with VeriT
-		setPreferencesForVeriTTest();
-
-		final ITypeEnvironment te = mTypeEnvironment(
-				//
-				"a", "S", "b", "T", "d", "U", "A", "ℙ(S)", "r", "S ↔ T", "s",
-				"(S × T) ↔ U");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
-		hyps.add("a↦b ∈ r");
-		hyps.add("a↦b↦d ∈ s");
-
-		// perform test
-		doTest("belong_3", hyps, "⊤", te, VALID);
 	}
 
 	@Test
@@ -352,6 +327,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("quick_sort1", hyps, "x = k", te, VALID);
 	}
 
+	// Last test in Thursday 12 mai 2011
 	@Test
 	@Ignore("Error: error : DAG_new: unable to determine sort")
 	public void testIntInRelation() {
@@ -362,7 +338,24 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("int_in_relation", hyps, "f ∈ ℤ ⇸  D", te, VALID);
+		doTest("int_in_relation", hyps, "ℤ ⇸  D = ℤ ⇸  D", te, VALID);
+	}
+
+	/**
+	 * ch915_bin.10 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'nonlinear_arith' theory
+	 */
+	@Test
+	@Ignore("Division is uninterpreted, so the solver is returning sat")
+	public void testCh915Bin10() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n ≥ 1");
+		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
 	}
 
 	/**
@@ -392,7 +385,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'basic_set' theory
 	 */
 	@Test
-	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not ")
 	public void testBepiColombo1() {
 		setPreferencesForAltErgoTest();
 
@@ -409,36 +401,19 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	/**
-	 * ch915_bin.10 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'nonlinear_arith' theory
-	 */
-	@Test
-	@Ignore("Division is uninterpreted, so the solver is returning sat")
-	public void testCh915Bin10() {
-		setPreferencesForAltErgoTest();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"n", "ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n ≥ 1");
-		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
-	}
-
-	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
-	public void testCh7LikeEvenSimpler() {
+	@Test(timeout = 3000)
+	@Ignore("It is unknown if z3 finishes processing this or not")
+	public void testCh7LikeEvenSimplerZ3() {
 		setPreferencesForZ3Test();
 		// setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
+		doTest("ch7_likeEvenSimplerz3", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}
 
 	/**
@@ -447,7 +422,23 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
+	// @Ignore("error : DAG_new: unable to determine sort")
+	public void testCh7LikeEvenSimplerAltErgo() {
+		setPreferencesForAltErgoTest();
+		// setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+		doTest("ch7_likeEvenSimplerAltErgo", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
+	}
+
+	/**
+	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
+	 * 'full_set_theory' theory
+	 * 
+	 */
+	@Test
+	@Ignore("problems with the = operator in the totp macro")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForZ3Test();
 
@@ -461,84 +452,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 				!VALID);
 	}
 
-	/**
-	 * 
-	 */
 	@Test
-	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
-	public void testDifferentForall() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ {1} → ({0} →  D)", te,
-				VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 */
-	@Test
-	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
-	public void testCh7LikeSimple() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("ch7_likeSimple", hyps, "{1 ↦ {0 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
-				te, VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 */
-	@Test
-	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
-	public void testCh7LikeConc() {
-		setPreferencesForAltErgoTest();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1");
-
-		doTest("ch7_likeconc", hyps,
-				"{1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)", te, VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 */
-	@Test
-	@Ignore("Type ℙ(ℙ(ℤ×ℙ(ℤ×D))): Sets of sets are not supported yet")
-	public void testCh7Conc29() {
-		setPreferencesForAltErgoTest();
-
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n ≥ 1");
-
-		doTest("ch7_conc29", hyps,
-				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
-				te, VALID);
-	}
-
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
+	//@Ignore("returning sat instead of unsat")
 	public void testBepiColombo3Mini() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -550,10 +467,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Ignore("Takes too much time with AltErgo")
 	@Test
+	@Ignore("Expected true, but it was false")
 	public void testBepiColombo3Medium() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -566,9 +483,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
 	public void testBepiColombo3Medium2() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -590,9 +506,9 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
+	@Ignore("Expected true, but it was false")
 	public void testBepiColombo3() {
-		setPreferencesForVeriTTest();
+		// setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -605,6 +521,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	// TODO: Check this later
 	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule14() {
 		setPreferencesForZ3Test();
