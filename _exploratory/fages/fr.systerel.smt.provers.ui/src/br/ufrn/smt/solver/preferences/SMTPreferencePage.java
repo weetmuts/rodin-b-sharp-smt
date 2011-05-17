@@ -115,6 +115,9 @@ public class SMTPreferencePage extends PreferencePage implements
 		/*****************************************/
 		fModel = SMTPreferencesStore.CreateModel(preferences);
 		selectedSolverIndex = getPreferenceStore().getInt("solverindex");//$NON-NLS-1$
+		if (selectedSolverIndex == -1) {
+			UIUtils.showError(Messages.SmtProversCall_no_selected_solver);
+		}
 		setDescription("SMTTacticProvider-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
 
 	}

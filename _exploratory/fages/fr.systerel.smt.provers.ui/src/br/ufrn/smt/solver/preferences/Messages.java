@@ -18,7 +18,7 @@ public class Messages extends NLS {
 
 	public static String SMTPreferencePage2_MandatoryFieldsInSolverDetails;
 
-	public static String SMTPreferencesStore_1;
+	public static String SmtProversCall_no_selected_solver;
 	public static String SmtProversCall_no_defined_solver_path;
 	public static String SmtProversCall_preprocessor_path_not_defined;
 	public static String SmtProversCall_SMT_file_does_not_exist;
