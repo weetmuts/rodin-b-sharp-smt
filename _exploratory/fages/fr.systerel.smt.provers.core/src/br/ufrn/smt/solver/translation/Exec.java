@@ -23,30 +23,6 @@ import java.util.List;
  */
 public class Exec {
 
-	public static void execProgram(final List<String> args,
-			final StringBuilder outputBuilder) throws IOException {
-		String ln;
-		/**
-		 * Executes the command with args in a new process
-		 */
-		final ProcessBuilder pb = new ProcessBuilder(args);
-		pb.redirectErrorStream(true);
-
-		final Process p = pb.start();
-
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
-				p.getInputStream()));
-
-		/**
-		 * Reads input and error streams and writes content into the buffer to
-		 * be returned
-		 */
-		while ((ln = br.readLine()) != null) {
-			outputBuilder.append("\n");
-			outputBuilder.append(ln);
-		}
-	}
-
 	/**
 	 * This method starts a process with the arguments and returns it. The error
 	 * stream is redirect to the output stream in the returned process.
@@ -90,5 +66,6 @@ public class Exec {
 			outputBuilder.append("\n");
 			outputBuilder.append(ln);
 		}
+
 	}
 }

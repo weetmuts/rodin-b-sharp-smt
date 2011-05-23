@@ -368,7 +368,7 @@ public class SmtProverCall extends XProverCall {
 		final StringBuilder sb = new StringBuilder();
 		final Process p = Exec.startProcess(args);
 
-		Exec.execProgram(p, sb, proofMonitor);
+		Exec.execProgram(p, sb);
 		resultOfSolver = sb.toString().trim();
 
 		/**
@@ -512,7 +512,7 @@ public class SmtProverCall extends XProverCall {
 
 		proofMonitor.setTask("Running SMT-Solver");
 
-		Exec.execProgram(p, sb, super.proofMonitor);
+		Exec.execProgram(p, sb);
 		resultOfSolver = sb.toString().trim();
 
 		proofMonitor.setTask("Processing result file from SMT-Solver");
