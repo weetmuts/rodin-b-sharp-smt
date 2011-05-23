@@ -25,6 +25,7 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
+import org.eventb.core.seqprover.xprover.XProverReasoner;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.Exec;
@@ -53,41 +54,7 @@ public class SmtProverCall extends XProverCall {
 
 	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
 
-	/**
-	 * Delete the file and all its children (if it is a folder)
-	 * 
-	 * @param file
-	 *            the file to be deleted
-	 */
-	public static void deleteFile(final File file) {
-		if (file.isFile()) {
-			file.delete();
-		} else {
-			final File[] childFiles = file.listFiles();
-			for (final File childFile : childFiles) {
-				deleteFile(childFile);
-			}
-			file.delete();
-		}
-	}
-
-	/**
-	 * This method cleans the output folder of the SMT-LIB, that is, deletes all
-	 * children of the SMT folder.
-	 * 
-	 * @param smtFolder
-	 *            the SMT Folder
-	 */
-	public static void cleanSMTFolder(final File smtFolder) {
-		if (smtFolder.exists()) {
-			if (smtFolder.isDirectory()) {
-				final File[] children = smtFolder.listFiles();
-				for (final File child : children) {
-					deleteFile(child);
-				}
-			}
-		}
-	}
+	final List<Process> activeProcesses = new ArrayList<Process>();
 
 	/**
 	 * Name of the called external SMT prover
@@ -127,6 +94,42 @@ public class SmtProverCall extends XProverCall {
 	private String smtFilePath(final String fileName) {
 		return translationFolder + File.separatorChar + fileName
 				+ SMT_LIB_FILE_EXTENSION;
+	}
+
+	/**
+	 * Delete the file and all its children (if it is a folder)
+	 * 
+	 * @param file
+	 *            the file to be deleted
+	 */
+	public static void deleteFile(final File file) {
+		if (file.isFile()) {
+			file.delete();
+		} else {
+			final File[] childFiles = file.listFiles();
+			for (final File childFile : childFiles) {
+				deleteFile(childFile);
+			}
+			file.delete();
+		}
+	}
+
+	/**
+	 * This method cleans the output folder of the SMT-LIB, that is, deletes all
+	 * children of the SMT folder.
+	 * 
+	 * @param smtFolder
+	 *            the SMT Folder
+	 */
+	public static void cleanSMTFolder(final File smtFolder) {
+		if (smtFolder.exists()) {
+			if (smtFolder.isDirectory()) {
+				final File[] children = smtFolder.listFiles();
+				for (final File child : children) {
+					deleteFile(child);
+				}
+			}
+		}
 	}
 
 	/**
@@ -368,6 +371,8 @@ public class SmtProverCall extends XProverCall {
 		final StringBuilder sb = new StringBuilder();
 		final Process p = Exec.startProcess(args);
 
+		activeProcesses.add(p);
+
 		Exec.execProgram(p, sb);
 		resultOfSolver = sb.toString().trim();
 
@@ -500,6 +505,7 @@ public class SmtProverCall extends XProverCall {
 	public void callProver(final List<String> args) throws IOException,
 			IllegalArgumentException {
 		final Process p = Exec.startProcess(args);
+		activeProcesses.add(p);
 		callProver(p, args);
 	}
 
@@ -534,6 +540,39 @@ public class SmtProverCall extends XProverCall {
 		 * Check Solver Result
 		 */
 		checkResult(resultOfSolver);
+	}
+
+	@Override
+	public final boolean isCancelled() {
+		if (proofMonitor != null && proofMonitor.isCanceled()) {
+			if (XProverReasoner.DEBUG) {
+				System.out
+						.println("External prover has been cancelled by proof monitor");
+			}
+
+			for (Process p : activeProcesses) {
+				p.destroy();
+			}
+			activeProcesses.clear();
+
+			return true;
+		}
+		if (task != null && task.isCancelled()) {
+			if (XProverReasoner.DEBUG) {
+				System.out
+						.println("External prover has been cancelled by timeout");
+			}
+			for (Process p : activeProcesses) {
+				p.destroy();
+			}
+			activeProcesses.clear();
+
+			return true;
+		}
+		if (XProverReasoner.DEBUG) {
+			System.out.println("External prover has not been cancelled yet");
+		}
+		return false;
 	}
 
 	/**
