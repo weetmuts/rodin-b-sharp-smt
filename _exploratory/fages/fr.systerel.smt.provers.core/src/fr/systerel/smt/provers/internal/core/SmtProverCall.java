@@ -25,7 +25,6 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
-import org.eventb.core.seqprover.xprover.XProverReasoner;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.Exec;
@@ -623,13 +622,8 @@ public class SmtProverCall extends XProverCall {
 	 */
 	@Override
 	public synchronized void cleanup() {
-		/*
-		 * if (iFile != null) { if (iFile.delete()) { iFile = null; } else {
-		 * System.out
-		 * .println(Messages.SmtProversCall_file_could_not_be_deleted); } } if
-		 * (oFile != null) { if (oFile.delete()) { oFile = null; } else {
-		 * System.out
-		 * .println(Messages.SmtProversCall_file_could_not_be_deleted); } }
-		 */
+		for (final Process p : activeProcesses) {
+			p.destroy();
+		}
 	}
 }
