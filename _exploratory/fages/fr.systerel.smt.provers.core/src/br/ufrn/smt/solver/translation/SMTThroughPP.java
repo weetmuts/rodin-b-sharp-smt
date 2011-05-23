@@ -56,6 +56,7 @@ import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTBenchmarkPP;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
@@ -408,8 +409,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			translatedAssumptions.add(0, intAxiom);
 		}
 
-		final SMTBenchmark benchmark = new SMTBenchmark(lemmaName, signature,
-				translatedAssumptions, smtFormula);
+		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
+				signature, translatedAssumptions, smtFormula);
 		benchmark.removeUnusedSymbols();
 		return benchmark;
 	}

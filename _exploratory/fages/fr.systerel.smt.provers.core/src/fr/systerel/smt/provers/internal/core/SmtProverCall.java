@@ -306,7 +306,6 @@ public class SmtProverCall extends XProverCall {
 	 * Execute translation of Event-B predicates using the VeriT pre-processing
 	 * approach.
 	 * 
-	 * @return
 	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
@@ -367,7 +366,9 @@ public class SmtProverCall extends XProverCall {
 		args.add(preprocessedFile.getPath());
 
 		final StringBuilder sb = new StringBuilder();
-		Exec.execProgram(args, sb);
+		final Process p = Exec.startProcess(args);
+
+		Exec.execProgram(p, sb, proofMonitor);
 		resultOfSolver = sb.toString().trim();
 
 		/**
@@ -508,8 +509,14 @@ public class SmtProverCall extends XProverCall {
 		 * Launch solver and get back solver result
 		 */
 		final StringBuilder sb = new StringBuilder();
-		Exec.execProgram(p, sb);
+
+		proofMonitor.setTask("Running SMT-Solver");
+
+		Exec.execProgram(p, sb, super.proofMonitor);
 		resultOfSolver = sb.toString().trim();
+
+		proofMonitor.setTask("Processing result file from SMT-Solver");
+
 		/**
 		 * Set up result file
 		 */

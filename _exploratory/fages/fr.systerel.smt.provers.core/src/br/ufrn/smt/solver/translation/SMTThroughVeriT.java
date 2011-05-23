@@ -96,6 +96,7 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.expanders.Expanders;
 
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTBenchmarkVeriT;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
@@ -368,8 +369,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula smtFormula = translate(goal);
 		translatedAssumptions.addAll(signature.getAdditionalAssumptions());
 
-		final SMTBenchmark benchmark = new SMTBenchmark(lemmaName, signature,
-				translatedAssumptions, smtFormula);
+		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,
+				signature, translatedAssumptions, smtFormula);
 		benchmark.removeUnusedSymbols();
 		return benchmark;
 	}
