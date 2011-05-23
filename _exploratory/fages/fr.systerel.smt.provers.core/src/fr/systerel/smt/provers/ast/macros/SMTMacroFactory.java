@@ -522,6 +522,12 @@ public class SMTMacroFactory {
 		signature.setFstAndSndAssumptionsAdded(true);
 	}
 
+	public static void addPairEqualityAxiomsInSignature(
+			final SMTSignatureVerit signature) {
+		addFstAndSndFunctionsInSignature(signature);
+		signature.addPairEqualityAxiom(createPairEqualityAxiom());
+	}
+
 	/**
 	 * This method creates the auxiliar assumption:
 	 * 
@@ -577,9 +583,9 @@ public class SMTMacroFactory {
 	 */
 	private static SMTFormula createSndAssumption(final SMTSignature signature) {
 		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
-				FST_PAIR_ARG_NAME, FST_RETURN_SORT, PREDEFINED);
+				FST_PAIR_ARG_NAME, FST_RETURN_SORT, !PREDEFINED);
 		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
-				SND_PAIR_ARG_NAME, SND_RETURN_SORT, PREDEFINED);
+				SND_PAIR_ARG_NAME, SND_RETURN_SORT, !PREDEFINED);
 
 		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
 		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
@@ -597,6 +603,50 @@ public class SMTMacroFactory {
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
 						equalAtom, forallVarSymbol1, forallVarSymbol2);
+
+		return quantifiedFormula;
+	}
+
+	public static SMTFormula createPairEqualityAxiom() {
+
+		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT,
+				!PREDEFINED);
+		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT,
+				!PREDEFINED);
+
+		final SMTVar pairVar1 = new SMTVar(pSymbol1);
+		final SMTVar pairVar2 = new SMTVar(pSymbol2);
+
+		final SMTFormula equalsFormula = SMTFactory.makeEqual(pairVar1,
+				pairVar2);
+
+		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(FST_SYMBOL,
+				pairVar1);
+
+		final SMTFunApplication fstFunAppl2 = new SMTFunApplication(FST_SYMBOL,
+				pairVar2);
+
+		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(fstFunAppl1,
+				fstFunAppl2);
+
+		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(SND_SYMBOL,
+				pairVar1);
+
+		final SMTFunApplication sndFunAppl2 = new SMTFunApplication(SND_SYMBOL,
+				pairVar2);
+
+		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(sndFunAppl1,
+				sndFunAppl2);
+
+		final SMTFormula andFormula = SMTFactory.makeAnd(subEqualsFormula1,
+				subEqualsFormula2);
+
+		final SMTFormula impliesFormula = SMTFactory.makeImplies(equalsFormula,
+				andFormula);
+
+		final SMTFormula quantifiedFormula = SMTFactory
+				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
+						impliesFormula, pairVar1, pairVar2);
 
 		return quantifiedFormula;
 	}
