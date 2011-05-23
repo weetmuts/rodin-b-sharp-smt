@@ -522,7 +522,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	// TODO: Check this later
-	@Ignore("error : DAG_new: unable to determine sort")
+	@Ignore("error : line 16, function ?r7 is not declared")
 	public void testRule14() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "p", "S",
@@ -571,21 +571,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : pre_process: results is not FOL")
-	public void testRule16() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
-				"c", "ℤ", "a", "ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)");
-
-		doTest("rule16", hyps,
-				"((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c ≠ 0)", te,
-				VALID);
-	}
-
-	@Test
 	public void testRule16NotEqual() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
@@ -595,33 +580,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		hyps.add("(a = 1) ∧ (b = 2)");
 
 		doTest("rule16_not_equal", hyps, "(a ∗ b ≠ 0)", te, VALID);
-	}
-
-	@Test
-	@Ignore("Z3 Message: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
-	public void testRule15SetMinusUnionInter() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(A ∖ A) ⊂ (A ∪ A)");
-
-		doTest("rule15_setminus_union_inter", hyps, "(A ∩ A) ⊂ (A ∪ A)", te,
-				VALID);
-	}
-
-	@Test
-	@Ignore("Z3 MESSAGE: ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
-	public void testRule15() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "A", "ℙ(ℤ)",
-				"b", "ℤ", "c", "ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(a ∈ A) ∧ (A ⊆ A)");
-		hyps.add("(a < b ∧ b > c) ⇒ a = c");
-		doTest("rule15", hyps, "(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)", te,
-				VALID);
 	}
 
 	@Test
@@ -668,7 +626,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair Int Int) mismatch")
 	public void testRule15CartesianProductAndIntegerRange() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
@@ -681,7 +638,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 's and (Pair Int Int) mismatch")
+	@Ignore("error : Sort PairPairIntInt't and Int mismatch.")
 	public void testRule15RestrictionsAndSubstractions() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
@@ -704,18 +661,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		hyps.add("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
 
 		doTest("rule18", hyps, "{a∣a ≥ 0} = A", te, VALID);
-	}
-
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
-	public void testSet() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}");
-
-		doTest("testSet", hyps, "{0,1,2,3,4} = A", te, VALID);
 	}
 
 	@Test
@@ -747,30 +692,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
-	}
-
-	/**
-	 * Check if this is a right way to translate
-	 */
-	@Test
-	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not recognized by the solvers")
-	public void testKSucc() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("test_succ", hyps, "x = succ", te, VALID);
-
-	}
-
-	@Test
-	@Ignore("Verit is producing the sort (Pair (Pair 2)) in the post-processed file, which is not recognized by the solvers")
-	public void testPredSuccMacro() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("testpred_succ_macro", hyps, "x =(λx·x∈ℤ ∣x+1)", te, VALID);
 	}
 
 	/**
@@ -828,18 +749,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Type ℤ×ℙ(ℤ×ℙ(ℤ)): Sets of sets are not supported yet")
-	public void testch910_ring_6() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
-				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("itv ∈ P → (P → ℙ(P))");
-		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
-	}
-
-	@Test
 	@Ignore("Sort BOOL is not implemented yet")
 	public void testLinearSort29() {
 		setPreferencesForZ3Test();
@@ -854,7 +763,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't and (Pair S S) mismatch.")
 	public void testDynamicStableLSR_081014_20() {
 		setPreferencesForZ3Test();
 
@@ -864,69 +772,5 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		hyps.add("¬ k = m ↦ n");
 		hyps.add("k ∈ P ∪ {m ↦ n} ∪ (Q ∖ {m ↦ n})");
 		doTest("dynamicStableLSR_081014_20", hyps, "k ∈ P ∪ Q", te, VALID);
-	}
-
-	@Test
-	@Ignore("Type ℙ(ℙ(S×S×ℤ)): Sets of sets are not supported yet")
-	public void testDynamicStableLSR_081014_50() {
-		setPreferencesForZ3Test();
-
-		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "l", "S × S");
-		final List<String> hyps = new ArrayList<String>();
-		doTest("dynamicStableLSR_081014_50", hyps,
-				"dom({l} × {S × S × {0}}) = {l}", te, VALID);
-	}
-
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
-	public void testAllBehaviorOfAllMacrosTogether() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "p", "S",
-				"q", "S", "r", "ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)",
-				"AB", "ℤ ↔ ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("card({1,2,3}) = card({1,2,3})");
-		hyps.add("finite({1,2,3})");
-		hyps.add("max({2,3}) = max({2,3})");
-		hyps.add("{0,1,2,3,4} = A");
-		hyps.add("{a∣a ≥ 0} = A");
-		hyps.add("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}");
-		hyps.add("min({2,3}) = min({2,3})");
-		hyps.add("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
-		hyps.add("(A ◁ AB) = (A ◁ AB)");
-		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
-		hyps.add("(AB ▷ A) = (AB ▷ A)");
-		hyps.add("(AB ⩥ A) = (AB ⩥ A)");
-		hyps.add("(a ‥ a) = (a ‥ a)");
-		hyps.add("(AB × AB) = (AB × AB)");
-		hyps.add("(AB \ue103 AB) = (AB \ue103 AB)");
-		hyps.add("(AB \u003b AB) = (AB \u003b AB)");
-		hyps.add("AB ∈ (A⤖A)");
-		hyps.add("AB ∈ (A↔A)");
-		hyps.add("AB ∈ (A→A)");
-		hyps.add("AB ∈ (A⇸A)");
-		hyps.add("AB ∈ (A↣A)");
-		hyps.add("AB ∈ (A⤔A)");
-		hyps.add("AB ∈ (A↠A)");
-		hyps.add("AB ∈ (A⤀A)");
-		hyps.add("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)");
-		hyps.add("(a ∈ A) ∧ (A ⊆ A)");
-		hyps.add("(a < b ∧ b > c) ⇒ a = c");
-		hyps.add("(A ∖ A) ⊂ (A ∪ A)");
-		hyps.add("(A ∩ A) ⊂ (A ∪ A)");
-		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∨ (a + b + c = b) ∨  (a ∗ b ∗ c = 0)");
-		hyps.add("((A ∩ A) ⊂ (A ∪ A)) ∧ (a + b + c = b) ∧  (a ∗ b ∗ c = 0)");
-		hyps.add("∀x·x∈s");
-		hyps.add("∀x,y·x∈s∧y∈s");
-		hyps.add("∃x·x∈s");
-		hyps.add("∃x,y·x∈s∧y∈s");
-		hyps.add("b ∈ ran(AB)");
-		hyps.add("AB = (AB)∼");
-		hyps.add("\u00ac(p = q)");
-		hyps.add("a = (−b)");
-		hyps.add("AB = id");
-		hyps.add("a ∈ dom(AB)");
-
-		doTest("all_macros_together", hyps, "⊤", te, VALID);
 	}
 }

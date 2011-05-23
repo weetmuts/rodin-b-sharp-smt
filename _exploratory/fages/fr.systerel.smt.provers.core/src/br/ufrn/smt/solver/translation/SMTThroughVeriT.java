@@ -829,10 +829,33 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(predicate.getTag());
 		}
-
 		final int top = boundIdentifiersMarker.pop();
 
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
+	}
+
+	public static boolean isPairType(final Type type) {
+		if (type instanceof ProductType) {
+			return true;
+		}
+		if (type.getBaseType() != null) {
+			return isPairType(type.getBaseType());
+		}
+		return false;
+	}
+
+	private SMTFormula translateEqual(final RelationalPredicate predicate) {
+		final SMTTerm[] children = smtTerms(predicate.getLeft(),
+				predicate.getRight());
+		final Type leftType = predicate.getLeft().getType();
+		if (leftType instanceof BooleanType) {
+			final SMTFormula[] childrenFormulas = sf
+					.convertVeritTermsIntoFormulas(children);
+			return SMTFactory.makeIff(childrenFormulas);
+		} else if (isPairType(leftType)) {
+			SMTMacroFactory.addPairEqualityAxiomsInSignature(signature);
+		}
+		return makeEqual(children);
 	}
 
 	/**
@@ -842,37 +865,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		switch (predicate.getTag()) {
-		case Formula.EQUAL: {
-
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			final Type leftType = predicate.getLeft().getType();
-
-			if (leftType instanceof BooleanType) {
-				final SMTFormula[] childrenFormulas = sf
-						.convertVeritTermsIntoFormulas(children);
-				smtNode = SMTFactory.makeIff(childrenFormulas);
-			} else {
-				if (leftType instanceof ProductType
-						|| leftType.getSource() != null) {
-					SMTMacroFactory.addPairEqualityAxiomsInSignature(signature);
-				}
-				smtNode = makeEqual(children);
-			}
+		case Formula.EQUAL:
+			smtNode = translateEqual(predicate);
 			break;
-		}
-		case Formula.NOTEQUAL: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			if (predicate.getLeft().getType() instanceof BooleanType) {
-				final SMTFormula[] childrenFormulas = sf
-						.convertVeritTermsIntoFormulas(children);
-				smtNode = sf.makeNotIff(childrenFormulas);
-			} else {
-				smtNode = SMTFactory.makeNotEqual(children);
-			}
+
+		case Formula.NOTEQUAL:
+			smtNode = SMTFactory.makeNot(translateEqual(predicate));
 			break;
-		}
+
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());

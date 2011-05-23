@@ -157,21 +157,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentSorts(expectedSorts, signature);
 	}
 
-	/*
-	 * The purpose of this test is to show that sets of sets are not supported.
-	 */
-	@Test
-	@Ignore("Not yet implemented")
-	public void testTypeEnvironmenSortErrorTe() {
-		setSignatureForTestsVerit(errorTe);
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts
-				.add("AZ (Something. The purpose of this test is to show that sets of sets are not supported.");
-
-		testTypeEnvironmentSorts(expectedSorts, signature);
-	}
-
 	/**
 	 * Testing rules 4, 5 and 6
 	 */
@@ -614,7 +599,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
-	@Ignore("Type ℙ(ℙ(ℤ×ℤ)): Sets of sets are not supported yet")
 	public void testRule15Functions() {
 
 		testTranslationV1_2Default("AB ∈ (A↔A)", "(in AB (rel A A))");
