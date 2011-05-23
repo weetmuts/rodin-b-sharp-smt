@@ -145,7 +145,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 		doTest("rule20_macro_inside_macro", hyps,
 				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
 	}
-	
+
 	@Test
 	public void testRule20ManyForalls() {
 		setPreferencesForZ3Test();

@@ -842,13 +842,20 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.EQUAL: {
+
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			if (predicate.getLeft().getType() instanceof BooleanType) {
+			final Type leftType = predicate.getLeft().getType();
+
+			if (leftType instanceof BooleanType) {
 				final SMTFormula[] childrenFormulas = sf
 						.convertVeritTermsIntoFormulas(children);
 				smtNode = SMTFactory.makeIff(childrenFormulas);
 			} else {
+				if (leftType instanceof ProductType
+						|| leftType.getSource() != null) {
+					SMTMacroFactory.addPairEqualityAxiomsInSignature(signature);
+				}
 				smtNode = makeEqual(children);
 			}
 			break;

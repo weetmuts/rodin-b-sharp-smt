@@ -35,6 +35,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	private boolean isFstAndSndAssumptionsAdded = false;
+	private boolean isPairEqualityAxiomAdded = false;
 
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
 	private final SMTMacroFactory ms = new SMTMacroFactory();
@@ -54,6 +55,13 @@ public class SMTSignatureVerit extends SMTSignature {
 		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
 	}
 
+	public void addPairEqualityAxiom(final SMTFormula formula) {
+		if (!isPairEqualityAxiomAdded) {
+			isPairEqualityAxiomAdded = true;
+			additionalAssumptions.add(formula);
+		}
+	}
+
 	public void setAdditionalAssumptions(
 			final Set<SMTFormula> additionalAssumptions) {
 		this.additionalAssumptions = additionalAssumptions;
@@ -62,10 +70,6 @@ public class SMTSignatureVerit extends SMTSignature {
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
 	}
-
-	// public int getMacroLength() {
-	// return macros.size();
-	// }
 
 	public void addMacro(final SMTMacro macro) {
 		// FIXME: The set should take care of unique elements. This comparison

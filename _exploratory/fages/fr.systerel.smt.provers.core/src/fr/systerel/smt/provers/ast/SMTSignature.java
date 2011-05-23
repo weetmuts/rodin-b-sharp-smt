@@ -724,7 +724,6 @@ public abstract class SMTSignature {
 		return unusedSortSymbols;
 	}
 
-	
 	protected Set<SMTPredicateSymbol> removeUnusedPreds(
 			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();

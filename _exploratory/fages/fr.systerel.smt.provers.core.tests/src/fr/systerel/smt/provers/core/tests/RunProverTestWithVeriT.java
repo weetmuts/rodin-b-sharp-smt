@@ -453,7 +453,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	//@Ignore("returning sat instead of unsat")
+	// @Ignore("returning sat instead of unsat")
 	public void testBepiColombo3Mini() {
 		setPreferencesForZ3Test();
 
