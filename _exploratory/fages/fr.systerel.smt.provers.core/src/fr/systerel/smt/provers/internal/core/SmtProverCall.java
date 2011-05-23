@@ -542,39 +542,6 @@ public class SmtProverCall extends XProverCall {
 		checkResult(resultOfSolver);
 	}
 
-	@Override
-	public final boolean isCancelled() {
-		if (proofMonitor != null && proofMonitor.isCanceled()) {
-			if (XProverReasoner.DEBUG) {
-				System.out
-						.println("External prover has been cancelled by proof monitor");
-			}
-
-			for (Process p : activeProcesses) {
-				p.destroy();
-			}
-			activeProcesses.clear();
-
-			return true;
-		}
-		if (task != null && task.isCancelled()) {
-			if (XProverReasoner.DEBUG) {
-				System.out
-						.println("External prover has been cancelled by timeout");
-			}
-			for (Process p : activeProcesses) {
-				p.destroy();
-			}
-			activeProcesses.clear();
-
-			return true;
-		}
-		if (XProverReasoner.DEBUG) {
-			System.out.println("External prover has not been cancelled yet");
-		}
-		return false;
-	}
-
 	/**
 	 * Set up input arguments for solver.
 	 * 
