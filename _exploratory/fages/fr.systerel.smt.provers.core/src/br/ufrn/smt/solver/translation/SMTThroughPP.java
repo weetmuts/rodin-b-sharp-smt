@@ -39,6 +39,7 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IAccumulator;
+import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.LiteralPredicate;
@@ -52,6 +53,8 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
+import org.eventb.internal.core.seqprover.eventbExtensions.rewriters.AutoRewriterImpl;
+import org.eventb.internal.core.seqprover.eventbExtensions.rewriters.AutoRewrites.Level;
 import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
@@ -81,6 +84,8 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * to reduce an Event-B sequent to Predicate Calculus. Then the SMT translation
  * is done.
  */
+// TODO check if it is possible to use AutoRewriterImpl without warnings
+@SuppressWarnings("restriction")
 public class SMTThroughPP extends TranslatorV1_2 {
 
 	final Map<String, Type> monadicSets = new HashMap<String, Type>();
@@ -342,6 +347,35 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Rewrites the predicate using a basic auto-rewriter of Event-B. The
+	 * rewriting is done until the fixpoint is reached.
+	 */
+	private Predicate recursiveAutoRewrite(Predicate pred) {
+		final FormulaFactory ff = FormulaFactory.getDefault();
+		final IFormulaRewriter rewriter = new AutoRewriterImpl(ff, Level.L2);
+
+		Predicate resultPred;
+		resultPred = pred.rewrite(rewriter);
+		while (resultPred != pred) {
+			pred = resultPred;
+			resultPred = pred.rewrite(rewriter);
+		}
+		return resultPred;
+	}
+
+	/**
+	 * Rewrites the predicates using a basic auto-rewriter for the Event-B
+	 * sequent prover.
+	 */
+	private List<Predicate> recursiveAutoRewriteAll(final List<Predicate> preds) {
+		final List<Predicate> rewritedPreds = new ArrayList<Predicate>();
+		for (Predicate pred : preds) {
+			rewritedPreds.add(recursiveAutoRewrite(pred));
+		}
+		return rewritedPreds;
+	}
+
+	/**
 	 * This is the translation method for the ppTrans approach of SMT
 	 * translation.
 	 * 
@@ -360,15 +394,23 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		@SuppressWarnings("deprecation")
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
-		final SMTLogic logic = determineLogic(ppTranslatedHypotheses,
-				ppTranslatedGoal);
+		/**
+		 * PP auto-rewriting
+		 */
+		final List<Predicate> ppRewritedHypotheses = recursiveAutoRewriteAll(ppTranslatedHypotheses);
+		final Predicate ppRewritedGoal = recursiveAutoRewrite(ppTranslatedGoal);
+
+		/**
+		 * Logic auto-configuration
+		 */
+		final SMTLogic logic = determineLogic(ppRewritedHypotheses,
+				ppRewritedGoal);
 
 		/**
 		 * SMT translation
 		 */
 		// translates the signature
-		return translate(lemmaName, ppTranslatedHypotheses, ppTranslatedGoal,
-				logic);
+		return translate(lemmaName, ppRewritedHypotheses, ppRewritedGoal, logic);
 	}
 
 	/**

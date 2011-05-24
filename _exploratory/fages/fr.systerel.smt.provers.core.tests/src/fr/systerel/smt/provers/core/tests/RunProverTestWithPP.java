@@ -112,7 +112,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("Expected true, but it was false")
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForZ3Test();
 
@@ -122,6 +121,161 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		doTest("differentForallPlusSimple", hyps, "{1 ↦ {0}} ∈ {1} → {{0}}",
 				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple00() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple00", hyps, "{0 ↦ {0}} ∈ {0} → {{0}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple01() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple01", hyps, "{0 ↦ {1}} ∈ {0} → {{1}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple11() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple11", hyps, "{1 ↦ {1}} ∈ {1} → {{1}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple12() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple12", hyps, "{1 ↦ {2}} ∈ {1} → {{2}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple32() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple32", hyps, "{3 ↦ {2}} ∈ {3} → {{2}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple30() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple30", hyps, "{3 ↦ {0}} ∈ {3} → {{0}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple1y() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple1y", hyps, "{1 ↦ {y}} ∈ {1} → {{y}}",
+				arith_te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimple3y() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimple3y", hyps, "{3 ↦ {y}} ∈ {3} → {{y}}",
+				arith_te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimplex1() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimplex1", hyps, "{x ↦ {1}} ∈ {x} → {{1}}",
+				arith_te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimplex2() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimplex2", hyps, "{x ↦ {2}} ∈ {x} → {{2}}",
+				arith_te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testDifferentForallPlusSimplexy() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("differentForallPlusSimplexy", hyps, "{x ↦ {y}} ∈ {x} → {{y}}",
+				arith_te, VALID);
 	}
 
 	@Test
@@ -419,7 +573,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("Expected true, but it was false")
+	//@Ignore("Expected true, but it was false")
 	public void testDifferentForall() {
 		setPreferencesForZ3Test();
 
@@ -437,7 +591,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
-	@Ignore("Expected true, but it was false")
+	//@Ignore("Expected true, but it was false")
 	public void testCh7Conc29_AltErgo() {
 		setPreferencesForAltErgoTest();
 
