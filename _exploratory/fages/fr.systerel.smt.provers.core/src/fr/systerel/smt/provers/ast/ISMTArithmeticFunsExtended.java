@@ -30,4 +30,6 @@ public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
 	 * @return the exponentiation function symbol
 	 */
 	public SMTSymbol getExpn();
+
+	public SMTSymbol getMod();
 }

@@ -400,6 +400,21 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo1", hyps, "{a,b,c} = {c,a,b}", te, VALID);
 	}
 
+	@Test
+	@Ignore("error : pre_process: results is not FOL")
+	public void testSubSet() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"S", "ℙ(S)", "a", "S", "b", "S");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("S={a,b}");
+		hyps.add("¬ a=b");
+
+		doTest("subset", hyps, "{a} ⊂ {a,b}", te, VALID);
+	}
+
 	/**
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
@@ -438,7 +453,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("problems with the = operator in the totp macro")
+	@Ignore("Problem: macro containing another macro")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForZ3Test();
 
@@ -496,6 +511,19 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo3Medium2", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
+	@Test
+	@Ignore("error : pre_process: results is not FOL")
+	public void testRelation() {
+		setPreferencesForZ3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"TC", "ℙ(ℤ)", "TM", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("relation", hyps, "TC ↔ TM = TC ↔ TM", te, VALID);
+	}
+
 	/**
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
@@ -518,24 +546,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		hyps.add("TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
 
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
-	}
-
-	@Test
-	// TODO: Check this later
-	@Ignore("error : line 16, function ?r7 is not declared")
-	public void testRule14() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "p", "S",
-				"q", "S", "a", "ℤ", "b", "ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("AB = (AB)∼");
-		hyps.add("\u00ac(p = q)");
-		hyps.add("a = (−b)");
-		hyps.add("AB = id");
-		hyps.add("a ∈ dom(AB)");
-
-		doTest("rule14", hyps, "b ∈ ran(AB)", te, VALID);
 	}
 
 	@Test

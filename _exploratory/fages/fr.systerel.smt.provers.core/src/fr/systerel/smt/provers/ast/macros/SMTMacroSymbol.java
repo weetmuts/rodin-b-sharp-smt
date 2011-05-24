@@ -89,6 +89,12 @@ public class SMTMacroSymbol extends SMTSymbol {
 	private final SMTSortSymbol[] argSorts;
 	private final SMTSortSymbol returnSort;
 
+	// Symbols used for predefined macros:
+
+	public static final String SUBSET_VAR_1 = "?" + SUBSET + "_v1";
+	public static final String SUBSET_VAR_2 = "?" + SUBSET + "_v2";
+	public static final String SUBSET_VAR_3 = "?" + SUBSET + "_v3";
+
 	/**
 	 * 
 	 * @param symbolName

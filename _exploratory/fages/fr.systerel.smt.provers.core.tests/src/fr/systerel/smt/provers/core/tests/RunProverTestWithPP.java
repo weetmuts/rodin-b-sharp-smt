@@ -573,7 +573,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	//@Ignore("Expected true, but it was false")
+	// @Ignore("Expected true, but it was false")
 	public void testDifferentForall() {
 		setPreferencesForZ3Test();
 
@@ -591,7 +591,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test
-	//@Ignore("Expected true, but it was false")
+	// @Ignore("Expected true, but it was false")
 	public void testCh7Conc29_AltErgo() {
 		setPreferencesForAltErgoTest();
 

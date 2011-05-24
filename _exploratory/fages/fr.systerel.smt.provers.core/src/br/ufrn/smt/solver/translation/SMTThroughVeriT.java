@@ -644,14 +644,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTFunctionSymbol VERIT_MOD = new SMTFunctionSymbol(
 					SMTMacroSymbol.MOD, Ints.getInt(), false, false,
 					Ints.getIntIntTab());
-
 			signature.addConstant(VERIT_MOD);
 			smtNode = sf.makeVeriTTermOperatorApplication(VERIT_MOD, children,
 					signature);
 			break;
 		case Formula.EXPN:
-			throw new IllegalArgumentException(
-					"It's not possible yet to translate exponential operator to SMT-LIB yet");
+			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.EXPN), signature, children);
+			break;
 		case Formula.UPTO:
 			smtNode = SMTFactory.makeMacroTerm(
 					getMacroSymbol(RANGE_INTEGER, signature), children);

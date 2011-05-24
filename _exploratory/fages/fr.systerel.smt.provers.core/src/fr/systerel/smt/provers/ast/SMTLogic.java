@@ -228,15 +228,21 @@ public class SMTLogic {
 					return ((ISMTArithmeticFunsExtended) theory).getDiv();
 				}
 			}
-			break;
+			return null;
 		case EXPN:
 			for (final SMTTheory theory : theories) {
 				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFunsExtended) theory).getExpn();
 				}
 			}
-			break;
-
+			return null;
+		case MOD:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getMod();
+				}
+			}
+			return null;
 		}
 		return null;
 	}
@@ -266,7 +272,8 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), EXPN(SMTSymbol.EXPN);
+				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), EXPN(SMTSymbol.EXPN), MOD(
+				SMTSymbol.MOD);
 
 		private String symbol;
 

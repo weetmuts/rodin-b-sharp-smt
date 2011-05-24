@@ -15,14 +15,14 @@ package fr.systerel.smt.provers.ast;
  * only in the PP translation approach
  */
 public class SMTFactoryPP extends SMTFactory {
-	private final static SMTFactoryPP DEFAULT_INSTANCE = new SMTFactoryPP();
+	private final static SMTFactory DEFAULT_INSTANCE = new SMTFactoryPP();
 
 	/**
 	 * returns the instance of {@link SMTFactoryPP}
 	 * 
 	 * @return the instance of {@link SMTFactoryPP}
 	 */
-	public static SMTFactoryPP getInstance() {
+	public static SMTFactory getInstance() {
 		return DEFAULT_INSTANCE;
 	}
 }

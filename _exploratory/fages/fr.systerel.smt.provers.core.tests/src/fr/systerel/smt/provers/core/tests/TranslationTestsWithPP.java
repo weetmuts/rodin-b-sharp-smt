@@ -16,7 +16,6 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
@@ -280,21 +279,20 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
-	// (expected = IllegalArgumentException.class)
-	@Ignore("Not yet implemented")
+	// @Ignore("Not yet implemented")
 	public void testArithExprBinopUnsupported() { // TODO Add exponential binop
 		/**
 		 * expn
 		 */
-		testTranslationV1_2Default("a ^ b = c", "(= (^ a b) c)");
+		testTranslationV1_2Default("a ^ b = c", "(= (expn a b) c)");
 		/**
 		 * div
 		 */
-		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		testTranslationV1_2Default("a ÷ b = c", "(= (divi a b) c)");
 		/**
 		 * mod
 		 */
-		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
+		testTranslationV1_2Default("a mod b = c", "(= (mod a b) c)");
 	}
 
 	/**

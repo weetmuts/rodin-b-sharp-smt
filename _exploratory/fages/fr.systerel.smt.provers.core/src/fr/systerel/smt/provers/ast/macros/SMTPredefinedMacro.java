@@ -111,6 +111,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	public void toString(final StringBuilder sb) {
 		sb.append("(");
 		sb.append(super.getMacroName());
+		sb.append(" ");
 		sb.append(body);
 		sb.append(")");
 	}

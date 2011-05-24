@@ -60,6 +60,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
 			SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+	private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
+			SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 
 	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, BOOL, false, true);
@@ -73,8 +75,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE, GT,
 			GE };
 
-	private static final SMTFunctionSymbol[] FUNCTIONS = { DIV, UMINUS, MINUS,
-			PLUS, MUL };
+	private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS, PLUS,
+			MUL };
 
 	/**
 	 * Constructs the veriT predefined theory
@@ -166,6 +168,11 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	@Override
 	public SMTSymbol getExpn() {
 		return EXPN;
+	}
+
+	@Override
+	public SMTSymbol getMod() {
+		return MOD;
 	}
 
 }

@@ -111,7 +111,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	// FIXME Seems to be unsafe, to be deleted if possible
 	protected List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
-	final private SMTFactoryPP sf;
+	final private SMTFactory sf;
 
 	private Predicate actualPredicate;
 
@@ -369,7 +369,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private List<Predicate> recursiveAutoRewriteAll(final List<Predicate> preds) {
 		final List<Predicate> rewritedPreds = new ArrayList<Predicate>();
-		for (Predicate pred : preds) {
+		for (final Predicate pred : preds) {
 			rewritedPreds.add(recursiveAutoRewrite(pred));
 		}
 		return rewritedPreds;
@@ -862,11 +862,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					.getOperator(SMTOperator.DIV), signature, children);
 			break;
 		case Formula.MOD:
-			throw new IllegalArgumentException(
-					"The operation \'modulo\' is not supported yet");
+			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MOD), signature, children);
+			break;
 		case Formula.EXPN:
-			throw new IllegalArgumentException(
-					"The operation \'exponential\' is not supported yet");
+			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.EXPN), signature, children);
+			break;
 		default:
 			/**
 			 * REL, TREL, SREL, STREL, PFUN, TFUN, PINJ, TINJ, PSUR, TSUR, TBIJ,

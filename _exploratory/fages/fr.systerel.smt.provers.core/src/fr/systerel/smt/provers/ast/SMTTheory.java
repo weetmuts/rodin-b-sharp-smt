@@ -130,6 +130,8 @@ public class SMTTheory {
 				SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
 				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
+				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
 				PLUS, MUL, DIV };
 
@@ -203,6 +205,11 @@ public class SMTTheory {
 		@Override
 		public SMTSymbol getExpn() {
 			return EXPN;
+		}
+
+		@Override
+		public SMTSymbol getMod() {
+			return MOD;
 		}
 
 	}

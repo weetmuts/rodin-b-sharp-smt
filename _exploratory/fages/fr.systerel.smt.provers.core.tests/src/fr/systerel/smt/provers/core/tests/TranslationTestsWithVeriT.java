@@ -347,7 +347,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
-	@Ignore("Not yet implemented")
+	// @Ignore("Not yet implemented")
 	public void testArithExprBinopExponentialUnsupported() {
 		/**
 		 * expn
@@ -356,12 +356,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * div
 		 */
-		testTranslationV1_2Default("a ÷ b = c", "(= (/ a b) c)");
+		testTranslationV1_2Default("a ÷ b = c", "(= (divi a b) c)");
 
 		/**
 		 * mod
 		 */
-		testTranslationV1_2Default("a mod b = c", "(= (% a b) c)");
+		testTranslationV1_2Default("a mod b = c", "(= (mod a b) c)");
 	}
 
 	@Test
@@ -709,14 +709,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule25() {
 		testTranslationV1_2Default("card({1,2,3}) = card({1,2,3})",
 				"(= card_k card_k_0)");
-	}
-
-	@Test
-	@Ignore("Type ℙ(ℙ(S×R)): Sets of sets are not supported yet")
-	public void testCDIS_2() {
-		testTranslationV1_2(cdisTe, "f{x ↦ y} ∈ S ⇸  R",
-				"(in (ovr f_0 enum_0) (pfun S_0 R_0))", defaultFailMessage,
-				VERIT.toString());
 	}
 
 	@Test

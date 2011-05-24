@@ -125,6 +125,7 @@ public abstract class SMTFactory {
 
 	public SMTTerm makeExpn(final SMTFunctionSymbol expn,
 			final SMTSignature signature, final SMTTerm... args) {
+		signature.addConstant(expn);
 		signature.verifyFunctionSignature(expn);
 		return new SMTFunApplication(expn, args);
 	}
@@ -154,8 +155,16 @@ public abstract class SMTFactory {
 
 	public SMTTerm makeDiv(final SMTFunctionSymbol div,
 			final SMTSignature signature, final SMTTerm... args) {
+		signature.addConstant(div);
 		signature.verifyFunctionSignature(div);
 		return new SMTFunApplication(div, args);
+	}
+
+	public SMTTerm makeMod(final SMTFunctionSymbol mod,
+			final SMTSignature signature, final SMTTerm... args) {
+		signature.addConstant(mod);
+		signature.verifyFunctionSignature(mod);
+		return new SMTFunApplication(mod, args);
 	}
 
 	/**
