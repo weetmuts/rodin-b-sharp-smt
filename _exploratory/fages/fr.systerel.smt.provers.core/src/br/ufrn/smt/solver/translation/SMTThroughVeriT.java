@@ -642,7 +642,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			 * It's added the function ((mod Int Int Int)) in the signature
 			 */
 			final SMTFunctionSymbol VERIT_MOD = new SMTFunctionSymbol(
-					SMTMacroSymbol.MOD, Ints.getInt(), false, false,
+					SMTSymbol.MOD, Ints.getInt(), false, false,
 					Ints.getIntIntTab());
 			signature.addConstant(VERIT_MOD);
 			smtNode = sf.makeVeriTTermOperatorApplication(VERIT_MOD, children,

@@ -470,7 +470,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("returning sat instead of unsat")
 	public void testBepiColombo3Mini() {
 		setPreferencesForZ3Test();
 
@@ -529,16 +528,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	/**
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
-	 * 
-	 * The testBepiColombo3 doesn't run forever. It's because the alt-ergo
-	 * solver takes too much time to prove. The translation is very fast, and
-	 * the other solvers prove this problem in a much shorter time.
-	 * 
 	 */
 	@Test
-	@Ignore("Expected true, but it was false")
 	public void testBepiColombo3() {
-		// setPreferencesForZ3Test();
+		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -668,7 +661,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Expected true, but it was false")
+	// @Ignore("Expected true, but it was false")
 	public void testRule24() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -679,7 +672,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Expected true, but it was false")
+	// @Ignore("Expected true, but it was false")
 	public void testRule25() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
