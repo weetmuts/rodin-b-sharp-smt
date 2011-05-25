@@ -2,7 +2,7 @@
  * Copyright (c)
  *     
  *******************************************************************************/
-package fr.systerel.smt.provers.core.tests;
+package fr.systerel.smt.provers.core.tests.unit;
 
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static org.eventb.core.ast.Formula.FORALL;
@@ -23,6 +23,7 @@ import org.junit.Test;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
  * Ensure that translation to veriT extended version of SMT-LIB is correct

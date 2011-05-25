@@ -20,19 +20,20 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Exec;
+import br.ufrn.smt.solver.translation.SMTSolver;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
-/**
- * This class contains acceptance tests of the plugin using veriT preprocessing.
- * 
- * @author Vitor Alcantara
- * 
- */
-public class RunProverTestWithVeriT extends CommonSolverRunTests {
+public class SolverPerfWithVeriT extends CommonSolverRunTests {
+	private final SMTSolver solver;
+
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
+
+	public SolverPerfWithVeriT(SMTSolver solver) {
+		this.solver = solver;
+	}
 
 	@BeforeClass
 	public static void cleanSMTFolder() {
@@ -123,7 +124,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testTePlusSort() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
 
@@ -143,7 +145,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule20() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
@@ -153,7 +156,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
 	public void testRule20ManyForalls() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
@@ -165,7 +169,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
 	public void testRule20MacroInsideMacro() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
@@ -175,8 +180,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallBelong1() {
-		// Set preferences to test with VeriT
-		setPreferencesForVeriTTest();
+		setPreferencesForSolverTest(solver);
+		
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
@@ -188,7 +193,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	// This test is to see if it's handling the U sort ok
 	@Test
 	public void testSolverCallSimpleUWithVeriT() {
-		setPreferencesForVeriTTest();
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
@@ -201,7 +206,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallSimpleUWithAltErgo() {
-		setPreferencesForAltErgoTest();
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
@@ -214,8 +219,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallSimpleUWithCVC3() {
-		setPreferencesForCvc3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -227,9 +232,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithVeriT() {
-		// Set preferences to test with VeriT
-		setPreferencesForVeriTTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
@@ -240,9 +244,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithCvc3() {
-		// Set preferences to test with Cvc3
-		setPreferencesForCvc3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
@@ -254,17 +257,16 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test(timeout = 5000)
 	@Ignore("Expn is not working")
 	public void testExpn() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		doTest("expn", hyps, "x ^ y = z", arith_te, VALID);
 	}
 
 	@Test
 	public void testSolverCallWithZ3() {
-		// Set preferences to test with Z3
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
@@ -275,9 +277,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithAltErgo() {
-		// Set preferences to test with Alt-Ergo
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
 		hyps.add("y < z");
@@ -292,8 +293,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testCh8CircArbiter1() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"a1", "ℤ", "r1", "ℤ");
 
@@ -313,8 +314,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testQuickSort1() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"k", "ℤ", "n", "ℤ", "x", "ℤ");
 
@@ -333,8 +334,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("Error: error : DAG_new: unable to determine sort")
 	public void testIntInRelation() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)", "f",
 				"ℙ(ℤ × D)", "n", "ℤ", "r", "ℤ");
 
@@ -350,8 +351,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("Division is uninterpreted, so the solver is returning sat")
 	public void testCh915Bin10() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
@@ -366,8 +367,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testBoschSwitch1() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
 
@@ -388,8 +389,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testBepiColombo1() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
 
@@ -405,8 +406,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : pre_process: results is not FOL")
 	public void testSubSet() {
-		setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S");
 
@@ -425,9 +426,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("It is unknown if z3 finishes processing this or not")
 	public void testCh7LikeEvenSimplerZ3() {
-		setPreferencesForZ3Test();
-		// setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 		doTest("ch7_likeEvenSimplerz3", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
@@ -438,12 +438,11 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test
+	@Test(timeout=3000)
 	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeEvenSimplerAltErgo() {
-		setPreferencesForAltErgoTest();
-		// setPreferencesForAltErgoTest();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 		doTest("ch7_likeEvenSimplerAltErgo", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
@@ -457,8 +456,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("Problem: macro containing another macro")
 	public void testCh7LikeMoreSimpleYet() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
@@ -471,8 +470,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testBepiColombo3Mini() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -486,8 +485,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("Expected true, but it was false")
 	public void testBepiColombo3Medium() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -498,10 +497,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test
+	@Test(timeout=3000)
 	public void testBepiColombo3Medium2() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -515,8 +514,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : pre_process: results is not FOL")
 	public void testRelation() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℙ(ℤ)", "TM", "ℙ(ℤ)");
 
@@ -529,10 +528,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
 	 */
-	@Test
+	@Test(timeout=3000)
 	public void testBepiColombo3() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -545,7 +544,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testExistsRule17() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -556,7 +556,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testForallRule17() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -577,7 +578,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule16NotEqual() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
 				"c", "ℤ", "a", "ℤ");
 
@@ -590,7 +592,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15RelationOverridingCompANdComposition() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -603,7 +606,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15BackwardComposition() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -614,7 +618,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15CartesianProductAndIntegerRange() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -626,7 +631,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15RestrictionsAndSubstractions() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
@@ -638,9 +644,10 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		doTest("rule15_res_subs", hyps, "(AB ⩥ A) = (AB ⩥ A)", te, VALID);
 	}
 
-	@Test
+	@Test(timeout=3000)
 	public void testRule18() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "b", "ℤ", "A",
 				"ℙ(ℤ)");
 
@@ -652,7 +659,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule22and23() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("min({2,3}) = min({2,3})");
@@ -663,7 +671,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Expected true, but it was false")
 	public void testRule24() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
@@ -674,7 +683,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Expected true, but it was false")
 	public void testRule25() {
-		setPreferencesForZ3Test();
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
@@ -687,8 +697,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("error : line 10, constant - is not declared")
 	public void testPred() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		doTest("testpred_pred", hyps, "x = pred", te, VALID);
@@ -696,8 +706,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testDistinctForSingleton() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("A = {1,2,3}");
@@ -707,8 +717,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testDistinct() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("A = {1,2,3,4}");
@@ -717,8 +727,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSimplerDistinct() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("A = {1,2,3}");
@@ -727,8 +737,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testIntSet() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		doTest("intsettest", hyps, "A ⊆ ℤ", te, VALID);
@@ -738,8 +748,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	@Test
 	@Ignore("Sort BOOL is not implemented yet")
 	public void testLinearSort29() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
 				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");
 		final List<String> hyps = new ArrayList<String>();
@@ -751,8 +761,8 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testDynamicStableLSR_081014_20() {
-		setPreferencesForZ3Test();
-
+		setPreferencesForSolverTest(solver);
+		
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "P",
 				"ℙ(S × S)", "Q", "ℙ(S × S)", "k", "S × S", "m", "S", "n", "S");
 		final List<String> hyps = new ArrayList<String>();

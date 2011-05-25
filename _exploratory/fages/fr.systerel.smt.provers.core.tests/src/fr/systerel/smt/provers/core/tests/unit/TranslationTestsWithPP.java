@@ -2,7 +2,7 @@
  * Copyright (c)
  *     
  *******************************************************************************/
-package fr.systerel.smt.provers.core.tests;
+package fr.systerel.smt.provers.core.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +22,7 @@ import br.ufrn.smt.solver.translation.SMTThroughPP;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
+import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB

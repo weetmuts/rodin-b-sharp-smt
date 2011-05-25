@@ -12,6 +12,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.PreProcessingException;
+import br.ufrn.smt.solver.translation.SMTSolver;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
@@ -115,6 +116,23 @@ public class CommonSolverRunTests extends AbstractTests {
 
 	protected void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
+	}
+	
+	protected void setPreferencesForSolverTest(final SMTSolver solver) {
+		switch (solver) {
+		case ALT_ERGO:
+			setPreferencesForAltErgoTest();
+			break;
+		case CVC3:
+			setPreferencesForCvc3Test();
+			break;
+		case VERIT:
+			setPreferencesForVeriTTest();
+			break;
+		case Z3:
+			setPreferencesForZ3Test();
+			break;
+		}
 	}
 
 	protected void doTTeTest(final String lemmaName,
