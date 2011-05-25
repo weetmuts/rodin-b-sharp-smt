@@ -223,11 +223,11 @@ public class SMTMacroFactory {
 			1);
 	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_RESTRICTION,
-			"(lambda (?r24 ((Pair 's 't) Bool))(?s3 ('s Bool)) . (lambda (?p20 (Pair 's 't)) . (and (?r24 ?p20)(?s3 (fst ?p20)))))",
+			"(lambda (?s3 ('s Bool))(?r24 ((Pair 's 't) Bool)) . (lambda (?p20 (Pair 's 't)) . (and (?r24 ?p20)(?s3 (fst ?p20)))))",
 			1);
 	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_SUBSTRACTION,
-			"(lambda (?r25 ((Pair 's 't) Bool))(?s4 ('s Bool)) . (lambda (?p21 (Pair 's 't)) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))",
+			"(lambda (?s4 ('s Bool))(?r25 ((Pair 's 't) Bool)) . (lambda (?p21 (Pair 's 't)) . (and (?r25 ?p21)(not (?s4 (fst ?p21))))))",
 			1);
 	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
 			RELATIONAL_IMAGE,

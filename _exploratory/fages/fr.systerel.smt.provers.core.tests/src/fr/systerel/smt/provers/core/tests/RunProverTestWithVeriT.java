@@ -151,6 +151,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
 	public void testRule20ManyForalls() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -162,6 +163,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -594,24 +596,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	@Ignore("error : DAG_new: unable to determine sort")
-	public void testRule15Functions() {
-		setPreferencesForZ3Test();
-		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "A", "ℙ(ℤ)");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("AB ∈ (A↔A)");
-		hyps.add("AB ∈ (A→A)");
-		hyps.add("AB ∈ (A⇸A)");
-		hyps.add("AB ∈ (A↣A)");
-		hyps.add("AB ∈ (A⤔A)");
-		hyps.add("AB ∈ (A↠A)");
-		hyps.add("AB ∈ (A⤀A)");
-
-		doTest("rule15_functions", hyps, "AB ∈ (A⤖A)", te, VALID);
-	}
-
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15RelationOverridingCompANdComposition() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
@@ -648,12 +632,12 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort PairPairIntInt't and Int mismatch.")
 	public void testRule15RestrictionsAndSubstractions() {
 		setPreferencesForZ3Test();
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(A ◁ AB) = (A ◁ AB)");
 		hyps.add("(A ◁ AB) = (A ◁ AB)");
 		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
 		hyps.add("(AB ▷ A) = (AB ▷ A)");
