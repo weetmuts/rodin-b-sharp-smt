@@ -11,33 +11,24 @@ import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.SMTSolver;
-
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 public class SolverPerfWithPP extends CommonSolverRunTests {
 	private final SMTSolver solver;
-	
+
 	public SolverPerfWithPP(final SMTSolver solver) {
 		this.solver = solver;
 	}
-	
+
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
-
-	@BeforeClass
-	public static void cleanSMTFolder() {
-		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SmtProverCall
-					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
-		}
-	}
 
 	/**
 	 * Parses the given sequent in the given type environment and launch the
@@ -99,7 +90,11 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughPP());
-			smtProverCall.callProver(smtArgs);
+
+			final Process p = Exec.startProcess(smtArgs);
+			activeProcesses.add(p);
+			smtProverCall.callProver(p, smtArgs);
+			
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
@@ -293,7 +288,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
-		
+
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
@@ -304,7 +299,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test
 	public void testRule20ManyForalls() {
 		setPreferencesForSolverTest(solver);
-		
+
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
@@ -573,7 +568,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test(timeout=3000)
+	@Test(timeout = 3000)
 	public void testBepiColombo3Medium() {
 		setPreferencesForSolverTest(solver);
 
@@ -611,7 +606,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * the other solvers prove this problem in a much shorter time.
 	 * 
 	 */
-	@Test(timeout=3000)
+	@Test(timeout = 3000)
 	@Ignore("Segmentation Fault with VeriT")
 	public void testBepiColombo3() {
 		setPreferencesForSolverTest(solver);
@@ -626,7 +621,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test(timeout=3000)
+	@Test(timeout = 3000)
 	public void testDynamicStableLSR_081014_15() {
 		setPreferencesForSolverTest(solver);
 
@@ -645,10 +640,10 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	//@Ignore("division is uninterpreted, so the verit returned sat")
-	//@Ignore("z3 uses the symbol div as division. And it does not have the same properties as in Event-B")
-	//@Ignore("division is uninterpreted, so the cvc3 returned sat")
-	//@Ignore("division is uninterpreted, so the alt-ergo returned sat")
+	// @Ignore("division is uninterpreted, so the verit returned sat")
+	// @Ignore("z3 uses the symbol div as division. And it does not have the same properties as in Event-B")
+	// @Ignore("division is uninterpreted, so the cvc3 returned sat")
+	// @Ignore("division is uninterpreted, so the alt-ergo returned sat")
 	public void testExactDivision() {
 		setPreferencesForSolverTest(solver);
 
@@ -733,7 +728,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
 	}
 
-	@Test(timeout=3000)
+	@Test(timeout = 3000)
 	public void testLinearSort29() {
 		setPreferencesForSolverTest(solver);
 

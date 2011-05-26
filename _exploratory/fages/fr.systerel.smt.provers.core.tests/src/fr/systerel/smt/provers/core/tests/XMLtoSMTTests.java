@@ -26,8 +26,6 @@ import java.util.List;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -63,21 +61,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * The chosen solver for the tests
 	 */
 	private final SMTSolver SOLVER = SMTSolver.Z3;
-
-	@BeforeClass
-	public static void cleanSMTFolder() {
-		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SmtProverCall
-					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
-		}
-	}
-
-	@After
-	public void finalizeSolverProcess() {
-		if (solverProcess != null) {
-			solverProcess.destroy();
-		}
-	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
@@ -169,8 +152,11 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughVeriT());
-			super.solverProcess = Exec.startProcess(smtArgs);
-			smtProverCall.callProver(super.solverProcess, smtArgs);
+
+			final Process p = Exec.startProcess(smtArgs);
+			activeProcesses.add(p);
+			smtProverCall.callProver(p, smtArgs);
+
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
@@ -189,8 +175,11 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughPP());
-			super.solverProcess = Exec.startProcess(smtArgs);
-			smtProverCall.callProver(super.solverProcess, smtArgs);
+
+			final Process p = Exec.startProcess(smtArgs);
+			activeProcesses.add(p);
+			smtProverCall.callProver(p, smtArgs);
+
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());

@@ -8,6 +8,8 @@ import java.util.Set;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.junit.After;
+import org.junit.BeforeClass;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -24,9 +26,25 @@ public class CommonSolverRunTests extends AbstractTests {
 
 	public static String smtFolder;
 
-	protected Process solverProcess;
+	protected final List<Process> activeProcesses = new ArrayList<Process>();
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
+
+	/**
+	 * In linux: '/home/username/bin/'
+	 */
+	protected static final String BIN_PATH = System.getProperty("user.home")
+			+ System.getProperty("file.separator") + "bin"
+			+ System.getProperty("file.separator");
+	/**
+	 * H |- ¬ G is UNSAT, so H |- G is VALID
+	 */
+	protected static boolean VALID = true;
+	/**
+	 * H |- ¬ G is SAT, so H |- G is NOT VALID
+	 */
+	protected static boolean NOT_VALID = false;
+	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
 
 	/**
 	 * A ProofMonitor is necessary for SmtProverCall instances creation.
@@ -53,21 +71,20 @@ public class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	/**
-	 * In linux: '/home/username/bin/'
-	 */
-	protected static final String BIN_PATH = System.getProperty("user.home")
-			+ System.getProperty("file.separator") + "bin"
-			+ System.getProperty("file.separator");
-	/**
-	 * H |- ¬ G is UNSAT, so H |- G is VALID
-	 */
-	protected static boolean VALID = true;
-	/**
-	 * H |- ¬ G is SAT, so H |- G is NOT VALID
-	 */
-	protected static boolean NOT_VALID = false;
-	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
+	@BeforeClass
+	public static void cleanSMTFolder() {
+		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
+			CommonSolverRunTests.smtFolder = SmtProverCall
+					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
+		}
+	}
+
+	@After
+	public void finalizeSolverProcess() {
+		for (final Process p : activeProcesses) {
+			p.destroy();
+		}
+	}
 
 	/**
 	 * Sets plugin preferences with the given solver preferences

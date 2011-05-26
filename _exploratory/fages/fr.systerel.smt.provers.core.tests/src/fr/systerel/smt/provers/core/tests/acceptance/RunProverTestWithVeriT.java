@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Exec;
@@ -28,21 +26,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
-
-	@BeforeClass
-	public static void cleanSMTFolder() {
-		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SmtProverCall
-					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
-		}
-	}
-
-	@After
-	public void finalizeSolverProcess() {
-		if (solverProcess != null) {
-			solverProcess.destroy();
-		}
-	}
 
 	/**
 	 * Parses the given sequent in the given type environment and launch the
@@ -104,8 +87,11 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 		try {
 			final List<String> smtArgs = new ArrayList<String>(
 					smtProverCall.smtTranslationThroughVeriT());
-			super.solverProcess = Exec.startProcess(smtArgs);
-			smtProverCall.callProver(super.solverProcess, smtArgs);
+
+			final Process p = Exec.startProcess(smtArgs);
+			activeProcesses.add(p);
+			smtProverCall.callProver(p, smtArgs);
+
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
