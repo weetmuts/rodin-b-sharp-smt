@@ -1,5 +1,9 @@
 package fr.systerel.smt.provers.core.tests;
 
+import static br.ufrn.smt.solver.translation.SMTSolver.ALT_ERGO;
+import static br.ufrn.smt.solver.translation.SMTSolver.CVC3;
+import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
+import static br.ufrn.smt.solver.translation.SMTSolver.Z3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -26,7 +30,6 @@ import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
 
-	private static final String VERIT = "verit";
 	protected SMTPreferences preferences;
 
 	public static String smtFolder;
@@ -34,13 +37,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected final List<Process> activeProcesses = new ArrayList<Process>();
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
-
-	/**
-	 * In linux: '/home/username/bin/'
-	 */
-	protected static final String BIN_PATH = System.getProperty("user.home")
-			+ System.getProperty("file.separator") + "bin"
-			+ System.getProperty("file.separator");
 	/**
 	 * H |- ¬ G is UNSAT, so H |- G is VALID
 	 */
@@ -50,6 +46,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
+
+	/**
+	 * In linux: '/home/username/bin/'
+	 */
+	private static final void binPathToString(final StringBuilder sb) {
+		final String separator = System.getProperty("file.separator");
+		sb.append(System.getProperty("user.home"));
+		sb.append(separator);
+		sb.append("bin");
+		sb.append(separator);
+	}
 
 	/**
 	 * A ProofMonitor is necessary for SmtProverCall instances creation.
@@ -67,12 +74,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		@Override
 		public void setCanceled(final boolean value) {
-			// nothing to do
+			// Nothing do to
 		}
 
 		@Override
 		public void setTask(final String name) {
-			// nothing to do
+			// Nothing do to
 		}
 	}
 
@@ -103,41 +110,54 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
-		final String solverPath;
+		final StringBuilder solverPath = new StringBuilder();
+		final StringBuilder veritBinPath = new StringBuilder();
 
 		if (OS.startsWith("Windows")) {
-			solverPath = BIN_PATH + solverBinaryName + ".exe";
+			binPathToString(solverPath);
+			solverPath.append(solverBinaryName);
+			solverPath.append(".exe");
 		} else {
-			solverPath = BIN_PATH + solverBinaryName;
+			binPathToString(solverPath);
+			solverPath.append(solverBinaryName);
 		}
 
-		final SolverDetail sd = new SolverDetail(solverBinaryName, solverPath,
-				solverArgs, isSMTV1_2Compatible, isSMTV2_0Compatible);
-		preferences = new SMTPreferences(sd, true, BIN_PATH + VERIT);
+		binPathToString(veritBinPath);
+		VERIT.toString(veritBinPath);
+
+		final SolverDetail sd = new SolverDetail(solverBinaryName,
+				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
+				isSMTV2_0Compatible);
+		preferences = new SMTPreferences(sd, true, veritBinPath.toString());
 	}
 
 	protected void setPreferencesForVeriTTest() {
-		setSolverPreferences(VERIT, "", true, false);
+		setSolverPreferences(VERIT.toString(), "", true, false);
 	}
 
 	protected void setPreferencesForCvc3Test() {
-		setSolverPreferences("cvc3", "-lang smt", true, false);
+		setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
 
 	}
 
 	protected void setPreferencesForZ3Test() {
-		String solver = "z3";
+		final StringBuilder binaryName = new StringBuilder();
+		final String separator = System.getProperty("file.separator");
 		if (System.getProperty("os.name").startsWith("Windows")) {
-			solver = "bin" + System.getProperty("file.separator") + solver
-					+ System.getProperty("file.separator") + "bin"
-					+ System.getProperty("file.separator") + "z3";
+			binaryName.append("bin");
+			binaryName.append(separator);
+			Z3.toString(binaryName);
+			binaryName.append(separator);
+			binaryName.append("bin");
+			binaryName.append(separator);
 		}
+		Z3.toString(binaryName);
 
-		setSolverPreferences(solver, "", true, false);
+		setSolverPreferences(binaryName.toString(), "", true, false);
 	}
 
 	protected void setPreferencesForAltErgoTest() {
-		setSolverPreferences("alt-ergo", "", true, false);
+		setSolverPreferences(ALT_ERGO.toString(), "", true, false);
 	}
 
 	protected void setPreferencesForSolverTest(final SMTSolver solver) {
@@ -225,7 +245,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 						smtProverCall.smtTranslationThroughVeriT());
 				break;
 
-			default:
+			default: // USING_PP
 				smtArgs = new ArrayList<String>(
 						smtProverCall.smtTranslationThroughPP());
 				break;
