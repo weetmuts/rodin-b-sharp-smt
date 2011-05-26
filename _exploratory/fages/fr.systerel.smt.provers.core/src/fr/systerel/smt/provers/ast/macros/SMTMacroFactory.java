@@ -251,7 +251,7 @@ public class SMTMacroFactory {
 			1);
 	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
 			CARD,
-			"(lambda (?t3 ('s Bool)) (?f4 ('s Int)) (?k1 Int) . (and (forall (?x26 's) . (implies (in ?x26 ?t3)(in (?f4 ?x26)(range 1 ?k1))))(forall (?x26 's)(?y1 's) . (implies (and (in ?x26 ?t3) (in ?y1 ?t3))(iff(= ?x26 ?y1) (= (?f4 ?x26)(?f4 ?y1)))))))",
+			"(lambda (?t3 ('s Bool)) (?f4 ('s Int)) (?k1 Int) . (and (forall (?i3 Int) . (implies (in ?i3 (range 1 ?k1))(exists (?et 's) . (and (in ?et ?t3) (= (?f4 ?et) ?i3)))))(forall (?et 's) . (implies (in ?et ?t3) (in (?f4 ?et) (range 1 ?k1))))(forall (?e1 's) (?e2 's) . (implies (and (in ?e1 ?t3) (in ?e2 ?t3) (= (?f4 ?e1) (?f4 ?e2))) (= ?e1 ?e2)))))",
 			1);
 	private static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
 			FUNP,
@@ -641,8 +641,8 @@ public class SMTMacroFactory {
 		final SMTFormula andFormula = SMTFactory.makeAnd(subEqualsFormula1,
 				subEqualsFormula2);
 
-		final SMTFormula impliesFormula = SMTFactory.makeImplies(equalsFormula,
-				andFormula);
+		final SMTFormula impliesFormula = SMTFactory.makeImplies(andFormula,
+				equalsFormula);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
