@@ -747,9 +747,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * arguments are well-formed.
 		 */
 		else {
-			// FIXME Check that this case really should not be reached, if it is
-			// right, delete this case, otherwise, add an exception or implement
-			// this case.
+			//FIXME add an exception "EventBTypeMisFormed"
 			return null;
 		}
 	}

@@ -11,9 +11,9 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.core.tests;
 
-import static org.junit.Assert.assertEquals;
+import static br.ufrn.smt.solver.translation.SMTTranslationApproach.USING_PP;
+import static br.ufrn.smt.solver.translation.SMTTranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,11 +34,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.SMTSolver;
 import fr.systerel.decert.LemmaParser;
 import fr.systerel.smt.provers.core.tests.utils.LemmaData;
-import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
 /**
  * This class is used to make tests with XML files. It's a parameterized tests
@@ -129,140 +126,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * The path of the output folder where to store the generated SMT files.
 	 */
 	private final static String SMTFolder = "/u/vitor/rodin_xml_tmp_files/smt";
-
-	/**
-	 * Test if the result of the proof of lemma is equal to the
-	 * 'expectedSolverResult' argument
-	 * 
-	 * @param lemmaName
-	 *            the name of the lemma
-	 * @param parsedHypothesis
-	 *            the hypotheses
-	 * @param parsedGoal
-	 *            the goal
-	 * @param expectedSolverResult
-	 *            it is compared to the result of the SMT-Solver proof
-	 * @throws IllegalArgumentException
-	 */
-	private void doTestWithVeriT(final String lemmaName,
-			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
-			final boolean expectedSolverResult) throws IllegalArgumentException {
-		final SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
-				parsedHypothesis, parsedGoal);
-		try {
-			final List<String> smtArgs = new ArrayList<String>(
-					smtProverCall.smtTranslationThroughVeriT());
-
-			final Process p = Exec.startProcess(smtArgs);
-			activeProcesses.add(p);
-			smtProverCall.callProver(p, smtArgs);
-
-			assertEquals(
-					"The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
-		} catch (final IOException ioe) {
-			fail(ioe.getMessage());
-		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
-		}
-	}
-
-	private void doTestWithPP(final String lemmaName,
-			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
-			final boolean expectedSolverResult) throws IllegalArgumentException {
-		final SmtProverCall smtProverCall = createSMTProverCall(lemmaName,
-				parsedHypothesis, parsedGoal);
-		try {
-			final List<String> smtArgs = new ArrayList<String>(
-					smtProverCall.smtTranslationThroughPP());
-
-			final Process p = Exec.startProcess(smtArgs);
-			activeProcesses.add(p);
-			smtProverCall.callProver(p, smtArgs);
-
-			assertEquals(
-					"The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
-		} catch (final IOException ioe) {
-			fail(ioe.getMessage());
-		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
-		}
-	}
-
-	/**
-	 * Assert that the hypotheses and goal are type checked and returns a new
-	 * {@link SmtProverCall}.
-	 * 
-	 * @param lemmaName
-	 *            the name of the lemma
-	 * @param parsedHypothesis
-	 *            the hypotheses
-	 * @param parsedGoal
-	 *            the goal
-	 * @return a new {@link SmtProverCall}
-	 * @throws IllegalArgumentException
-	 */
-	private SmtProverCall createSMTProverCall(final String lemmaName,
-			final List<Predicate> parsedHypothesis, final Predicate parsedGoal)
-			throws IllegalArgumentException {
-		// Type check goal and hypotheses
-		assertTypeChecked(parsedGoal);
-		for (final Predicate predicate : parsedHypothesis) {
-			assertTypeChecked(predicate);
-		}
-
-		// Create an instance of SmtProversCall
-		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
-				parsedGoal, MONITOR, preferences, lemmaName) {
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-		};
-		return smtProverCall;
-	}
-
-	/**
-	 * Parses the given sequent in the given type environment and launch the
-	 * test with the such produced 'Predicate' instances
-	 * 
-	 * @param inputHyps
-	 *            list of the sequent hypothesis written in Event-B syntax
-	 * @param inputGoal
-	 *            the sequent goal written in Event-B syntax
-	 * @param te
-	 *            the given type environment
-	 * @param expectedSolverResult
-	 *            the result expected to be produced by the solver call
-	 */
-	private void doTestWithVeriT(final String lemmaName,
-			final List<String> inputHyps, final String inputGoal,
-			final ITypeEnvironment te, final boolean expectedSolverResult) {
-		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-
-		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, te));
-		}
-
-		final Predicate goal = parse(inputGoal, te);
-
-		doTestWithVeriT(lemmaName, hypotheses, goal, expectedSolverResult);
-	}
-
-	private void doTestWithPP(final String lemmaName,
-			final List<String> inputHyps, final String inputGoal,
-			final ITypeEnvironment te, final boolean expectedSolverResult) {
-		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-
-		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, te));
-		}
-
-		final Predicate goal = parse(inputGoal, te);
-
-		doTestWithPP(lemmaName, hypotheses, goal, expectedSolverResult);
-	}
 
 	/**
 	 * Asserts that the given formula is typed.
@@ -378,19 +241,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		switch (SOLVER) {
-		case ALT_ERGO:
-			setPreferencesForAltErgoTest();
-			break;
-		case CVC3:
-			setPreferencesForCvc3Test();
-		case VERIT:
-			setPreferencesForVeriTTest();
-		case Z3:
-			setPreferencesForZ3Test();
-		default:
-			break;
-		}
+		setPreferencesForSolverTest(SOLVER);
+
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
@@ -399,7 +251,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			System.out.println("Testing lemma: " + name + ".\n");
 		}
 		name = name + "vt";
-		doTestWithVeriT(name, data.getHypotheses(), data.getGoal(),
+		doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
 				data.getTe(), VALID);
 	}
 
@@ -408,19 +260,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
-		switch (SOLVER) {
-		case ALT_ERGO:
-			setPreferencesForAltErgoTest();
-			break;
-		case CVC3:
-			setPreferencesForCvc3Test();
-		case VERIT:
-			setPreferencesForVeriTTest();
-		case Z3:
-			setPreferencesForZ3Test();
-		default:
-			break;
-		}
+		setPreferencesForSolverTest(SOLVER);
+
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
@@ -429,7 +270,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			System.out.println("Testing lemma: " + name + ".\n");
 		}
 		name = name + "pp";
-		doTestWithPP(name, data.getHypotheses(), data.getGoal(), data.getTe(),
-				VALID);
+		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+				data.getTe(), VALID);
 	}
 }

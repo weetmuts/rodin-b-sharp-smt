@@ -1,5 +1,8 @@
 package fr.systerel.smt.provers.core.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +16,15 @@ import org.junit.BeforeClass;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTSolver;
+import br.ufrn.smt.solver.translation.SMTTranslationApproach;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
 
-public class CommonSolverRunTests extends AbstractTests {
+public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private static final String VERIT = "verit";
 	protected SMTPreferences preferences;
@@ -134,7 +139,7 @@ public class CommonSolverRunTests extends AbstractTests {
 	protected void setPreferencesForAltErgoTest() {
 		setSolverPreferences("alt-ergo", "", true, false);
 	}
-	
+
 	protected void setPreferencesForSolverTest(final SMTSolver solver) {
 		switch (solver) {
 		case ALT_ERGO:
@@ -149,6 +154,94 @@ public class CommonSolverRunTests extends AbstractTests {
 		case Z3:
 			setPreferencesForZ3Test();
 			break;
+		}
+	}
+
+	/**
+	 * Parses the given sequent in the given type environment and launch the
+	 * test with the such produced 'Predicate' instances
+	 * 
+	 * @param inputHyps
+	 *            list of the sequent hypothesis written in Event-B syntax
+	 * @param inputGoal
+	 *            the sequent goal written in Event-B syntax
+	 * @param te
+	 *            the given type environment
+	 * @param expectedSolverResult
+	 *            the result expected to be produced by the solver call
+	 */
+	protected void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
+
+		for (final String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, te));
+		}
+
+		final Predicate goal = parse(inputGoal, te);
+
+		doTest(translationApproach, lemmaName, hypotheses, goal,
+				expectedSolverResult);
+	}
+
+	/**
+	 * First, calls the translation of the given sequent (hypothesis and goal
+	 * 'Predicate' instances) into SMT-LIB syntax, and then calls the SMT
+	 * prover. The test is successful if the solver returns the expected result.
+	 * 
+	 * @param parsedHypothesis
+	 *            list of the sequent hypothesis (Predicate instances)
+	 * @param parsedGoal
+	 *            sequent goal (Predicate instance)
+	 * @param expectedSolverResult
+	 *            the result expected to be produced by the solver call
+	 */
+	protected void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<Predicate> parsedHypothesis,
+			final Predicate parsedGoal, final boolean expectedSolverResult)
+			throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate predicate : parsedHypothesis) {
+			assertTypeChecked(predicate);
+		}
+
+		// Create an instance of SmtProversCall
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+				parsedGoal, MONITOR, preferences, lemmaName) {
+			@Override
+			public String displayMessage() {
+				return "SMT";
+			}
+		};
+
+		try {
+			final List<String> smtArgs;
+			switch (translationApproach) {
+			case USING_VERIT:
+				smtArgs = new ArrayList<String>(
+						smtProverCall.smtTranslationThroughVeriT());
+				break;
+
+			default:
+				smtArgs = new ArrayList<String>(
+						smtProverCall.smtTranslationThroughPP());
+				break;
+			}
+
+			final Process p = Exec.startProcess(smtArgs);
+			activeProcesses.add(p);
+			smtProverCall.callProver(p, smtArgs);
+
+			assertEquals(
+					"The result of the SMT prover wasn't the expected one.",
+					expectedSolverResult, smtProverCall.isValid());
+		} catch (final IOException ioe) {
+			fail(ioe.getMessage());
+		} catch (final IllegalArgumentException iae) {
+			fail(iae.getMessage());
 		}
 	}
 
