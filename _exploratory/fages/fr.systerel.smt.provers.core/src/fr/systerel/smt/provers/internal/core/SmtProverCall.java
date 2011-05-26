@@ -588,7 +588,8 @@ public class SmtProverCall extends XProverCall {
 			throw new IllegalArgumentException(proverName + " could not parse "
 					+ lemmaName + ".smt. See " + lemmaName
 					+ ".res for more details.");
-		} else if (solverResult.contains("unsat")) {
+		} else if (solverResult.contains("unsat")
+				&& !solverResult.contains("unknown")) {
 			valid = true;
 		} else if (solverResult.contains("sat")) {
 			valid = false;
