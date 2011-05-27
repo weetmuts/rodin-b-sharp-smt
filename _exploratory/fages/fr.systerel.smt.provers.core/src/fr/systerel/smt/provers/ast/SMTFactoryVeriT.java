@@ -11,7 +11,6 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
-import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 
@@ -40,19 +39,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	}
 
 	/**
-	 * Creates a extended SMT-LIB macro term with no arguments.
-	 * 
-	 * @param macroSymbol
-	 *            the symbol of the term
-	 * @return a new smt term with the macro symbol.
-	 */
-	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macroSymbol,
-			final SMTSortSymbol returnSort) {
-		return makeMacroTerm(macroSymbol);
-	}
-
-
-	/**
 	 * This method returns the translation of an Event-B String
 	 * 
 	 * @param atomicExpression
@@ -66,12 +52,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			final String atomicExpression, final SMTSignatureVerit signature) {
 		if (atomicExpression.equals("\u2124")) { // INTEGER
 			return SMTSymbol.INT;
-		} else if (atomicExpression.equals("\u2115")) { // NATURAL
-			signature.addMacro(SMTMacroFactory.NAT_MACRO);
-			return SMTMacroSymbol.NAT;
-		} else if (atomicExpression.equals("\u2115" + 1)) {
-			signature.addMacro(SMTMacroFactory.NAT1_MACRO);
-			return SMTMacroSymbol.NAT1;
 		} else if (atomicExpression.equals("BOOL")) {
 			return SMTMacroSymbol.BOOL_SORT_VERIT;
 		} else {
@@ -158,7 +138,11 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 	/**
 	 * This method converts verit SMT-TERM into formulas. These terms must be of
-	 * sort Bool, predefined in VeriT.
+	 * sort Bool.
+	 * 
+	 * This method is used when the terms being compared are of Bool type. Then,
+	 * the "=" operator is substituted by "iff" operator and the terms are
+	 * converted into "veriT formulas".
 	 * 
 	 * @param terms
 	 *            the terms

@@ -25,7 +25,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithVeriT(SMTSolver solver) {
+	public SolverPerfWithVeriT(final SMTSolver solver) {
 		this.solver = solver;
 	}
 

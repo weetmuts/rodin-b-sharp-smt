@@ -1270,7 +1270,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTMacroSymbol opSymbol = getMacroSymbol(operator, signature);
 
 		// Creating the term 'm'
-		final SMTTerm mVarTerm = sf.makeFunApplication(mVarSymbol, signature);
+		final SMTTerm mVarTerm = SMTFactory.makeFunApplication(mVarSymbol,
+				signature);
 
 		// Adding the term 'm' to the other children
 		final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
