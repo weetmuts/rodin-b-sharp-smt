@@ -75,8 +75,8 @@ public class SMTPredefinedMacro extends SMTMacro {
 		for (int i = 0; i < body.length(); i++) {
 			if (body.charAt(i) == '?') {
 				for (int j = i + 1; j < body.length(); j++) {
-					// if (body.charAt(j) == ' ' || ) {
-					if (!Character.isLetterOrDigit(body.charAt(j)) && body.charAt(j) != '_'  ) {
+					if (!Character.isLetterOrDigit(body.charAt(j))
+							&& body.charAt(j) != '_') {
 						++i;
 						getQSymbols().add(body.substring(i, j));
 						++j;

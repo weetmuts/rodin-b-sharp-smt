@@ -178,7 +178,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTestsVerit(defaultTe);
 		final Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(r_0 R)");
+		expectedPredicates.add("(r R)");
 		expectedPredicates.add("(s R)");
 		expectedPredicates.add("(A Int)");
 		expectedPredicates.add("(AB (Pair Int Int))");
@@ -195,8 +195,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTestsVerit(defaultTe);
 		final Set<String> expectedFunctions = new HashSet<String>();
 
-		expectedFunctions.add("(p_0 S)");
-		expectedFunctions.add("(q_0 S)");
+		expectedFunctions.add("(p S)");
+		expectedFunctions.add("(q S)");
 		expectedFunctions.add("(a Int)");
 		expectedFunctions.add("(b Int)");
 		expectedFunctions.add("(c Int)");
@@ -225,7 +225,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff u v) (= r_0 s))");
+				"(and (= a b) (iff u v) (= r s))");
 		/**
 		 * lor
 		 */
@@ -235,7 +235,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff u v) (= r_0 s))");
+				"(or (= a b) (iff u v) (= r s))");
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testPredSetEqu() {
-		testTranslationV1_2Default("r = s", "(= r_0 s)");
+		testTranslationV1_2Default("r = s", "(= r s)");
 	}
 
 	/**
@@ -440,7 +440,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testPredIdentEqu() {
-		testTranslationV1_2Default("p = q", "(= p_0 q_0)");
+		testTranslationV1_2Default("p = q", "(= p q)");
 	}
 
 	@Test
@@ -450,7 +450,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"ℙ(S × S)", "Q", "ℙ(S × S)", "k", "S × S", "m", "S", "n", "S");
 
 		testTranslationV1_2VerDefaultSolver(te, "¬ k = m ↦ n",
-				"(not (= k (pair m_0 n)))");
+				"(not (= k (pair m n)))");
 	}
 
 	@Test
@@ -463,7 +463,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		/**
 		 * not
 		 */
-		testTranslationV1_2Default("\u00ac(p = q)", "(not (= p_0 q_0))");
+		testTranslationV1_2Default("\u00ac(p = q)", "(not (= p q))");
 
 		/**
 		 * uminus
@@ -730,4 +730,53 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("A = ℤ", "(= A Int)");
 	}
 
+	@Test
+	public void testNatSet() {
+		testTranslationV1_2Default("ℕ ⊂ ℤ", "(subset Nat Int)");
+	}
+
+	@Test
+	public void testNat1Set() {
+		testTranslationV1_2Default("ℕ1 ⊂ ℤ", "(subset Nat1 Int)");
+	}
+
+	@Test
+	public void testTREL() {
+		// Total Relation
+		testTranslationV1_2Default("r  s = r  s", "(= (totp r s) (totp r s))");
+	}
+
+	@Test
+	public void testSREL() {
+		// Surjective Relation
+		testTranslationV1_2Default("r  s = r  s", "(= (surp r s) (surp r s))");
+	}
+
+	@Test
+	public void testTSREL() {
+		// Total Surjective Relation
+		testTranslationV1_2Default("r  s = r  s",
+				"(= (totsurp r s) (totsurp r s))");
+	}
+
+	@Test
+	public void testRelimage() {
+		// Relimage
+		testTranslationV1_2Default("AB[A] = AB[A]", "(= (img AB A) (img AB A))");
+
+		testTranslationV1_2Default("AB[{1}] =  AB[{1}]",
+				"(= (img AB enum_0) (img AB enum_1))");
+	}
+
+	@Test
+	public void testNotSubset() {
+		// Relimage
+		testTranslationV1_2Default("ℕ ⊄ ℤ", "(not (subset Nat Int))");
+	}
+
+	@Test
+	public void testNotSubseteq() {
+		// Relimage
+		testTranslationV1_2Default("ℕ ⊈ ℤ", "(not (subseteq Nat Int))");
+	}
 }
