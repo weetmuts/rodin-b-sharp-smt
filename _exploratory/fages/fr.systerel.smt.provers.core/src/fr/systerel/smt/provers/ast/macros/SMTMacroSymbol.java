@@ -134,4 +134,5 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public void toString(final StringBuilder builder) {
 		builder.append(this.toString());
 	}
+
 }
