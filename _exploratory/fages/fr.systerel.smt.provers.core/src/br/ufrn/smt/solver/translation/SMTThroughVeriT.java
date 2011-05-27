@@ -1513,7 +1513,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitExtendedExpression(final ExtendedExpression expression) {
 		throw new IllegalArgumentException(
-				"It's not possible yet to translate extended expressionto SMT-LIB yet");
+				"It's not possible yet to translate extended expression to SMT-LIB yet");
 
 	}
 

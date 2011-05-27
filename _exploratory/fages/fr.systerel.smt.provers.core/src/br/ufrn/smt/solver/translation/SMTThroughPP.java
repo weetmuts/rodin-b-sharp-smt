@@ -63,7 +63,6 @@ import fr.systerel.smt.provers.ast.SMTBenchmarkPP;
 import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
-import fr.systerel.smt.provers.ast.SMTFunApplication;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
@@ -121,14 +120,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	private SMTFormula intAxiom;
 
-	public void setUsesTruePred(final boolean usesTruePred) {
-		this.usesTruePred = usesTruePred;
-	}
-
 	public SMTThroughPP(final String solver, final Predicate predicate) {
 		super(solver);
 		sf = SMTFactoryPP.getInstance();
 		actualPredicate = predicate;
+	}
+
+	public void setUsesTruePred(final boolean usesTruePred) {
+		this.usesTruePred = usesTruePred;
+	}
+
+	/**
+	 * @param actualPredicate the actualPredicate to set
+	 */
+	public void setActualPredicate(Predicate actualPredicate) {
+		this.actualPredicate = actualPredicate;
 	}
 
 	/**
@@ -497,12 +503,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, final String solver,
+			Predicate predicate, final String solver,
 			final boolean usesTruePred) {
-		final SMTThroughPP translator = new SMTThroughPP(solver, predicate);
+		final SMTThroughPP translator = new SMTThroughPP(solver, null);
+		predicate = translator.recursiveAutoRewrite(predicate);
+		translator.setActualPredicate(predicate);
 		translator.setUsesTruePred(usesTruePred);
-		translator.translateSignature(logic, new ArrayList<Predicate>(0),
-				predicate);
+		translator.translateSignature(logic, new ArrayList<Predicate>(0), predicate);
 		predicate.accept(translator);
 		return translator.getSMTFormula();
 	}
@@ -913,7 +920,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
 				!PREDEFINED);
 		final SMTTerm term = new SMTVar(vs);
-		final SMTTerm termBool = sf.makeConstant(signature.getLogic()
+		final SMTTerm termBool = SMTFactory.makeConstant(signature.getLogic()
 				.getBooleanCste(), signature);
 
 		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
@@ -1334,7 +1341,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTSymbol symbol = varMap.get(expression.getName());
 
 		if (symbol instanceof SMTFunctionSymbol) {
-			smtNode = sf.makeConstant((SMTFunctionSymbol) symbol, signature);
+			smtNode = SMTFactory.makeConstant((SMTFunctionSymbol) symbol,
+					signature);
 			return;
 		}
 		smtNode = SMTFactory.makeAtom((SMTPredicateSymbol) symbol, signature);

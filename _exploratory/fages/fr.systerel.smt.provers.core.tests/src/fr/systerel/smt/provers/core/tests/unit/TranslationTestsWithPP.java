@@ -5,17 +5,14 @@
 package fr.systerel.smt.provers.core.tests.unit;
 
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
-import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
@@ -38,9 +35,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
-				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
-				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL",
-				"int", "S", "SPZ", "S ↔ ℙ(ℤ)");
+				"ℙ(R)", "s", "ℙ(R)", "RR", "r ↔ s", "a", "ℤ", "A", "ℙ(ℤ)",
+				"AB", "ℤ ↔ ℤ", "AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u",
+				"BOOL", "v", "BOOL", "int", "S", "SPZ", "S ↔ ℙ(ℤ)");
 		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
@@ -186,20 +183,25 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * forall (multiple identifiers)
 		 */
-		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (s ?x) (s ?y)))");
+		testTranslationV1_2Default("∀x,y·x↦y∈RR",
+				"(forall (?x r) (?y s) (MS ?x ?y RR))");
 		/**
 		 * forall (multiple identifiers)
 		 */
-		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
-				"∀x,y·x∈s ∧ y∈s", defaultTe);
-		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
-		bids[1] = bids[0];
-		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
-				base.getPredicate(), null);
-		testTranslationV1_2(defaultLogic, p,
-				"(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))",
-				"twice same decl", VERIT.toString(), false);
+		/*
+		 * final QuantifiedPredicate base = (QuantifiedPredicate) parse(
+		 * "∀x,y·x∈s ∧ y∈s", defaultTe); final BoundIdentDecl[] bids =
+		 * base.getBoundIdentDecls(); bids[1] = bids[0]; final Predicate p =
+		 * ff.makeQuantifiedPredicate(FORALL, bids, base.getPredicate(), null);
+		 * testTranslationV1_2(defaultLogic, p,
+		 * "(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))", "twice same decl",
+		 * VERIT.toString(), false);
+		 */
+		/**
+		 * bound set
+		 */
+		testTranslationV1_2Default("∃ x ⦂ ℤ, X ⦂ ℙ(ℤ) · x ∈ X",
+				"(exists (?x Int) (?X NSORT) (MS ?x ?X))");
 	}
 
 	@Test
@@ -242,7 +244,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * equal (integer numbers)
 		 */
-		testTranslationV1_2Default("42 = 42", "(= 42 42)");
+		testTranslationV1_2Default("42 − 1 + 1 = 42", "(= (+ (- 42 1) 1) 42)");
 		/**
 		 * notequal
 		 */
@@ -378,5 +380,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 				"BOOL");
 
 		testTranslationV1_2(te, "x ∈ f", "(f x)", true);
+	}
+
+	@Test
+	public void testSimplifications() {
+		testTranslationV1_2Default(
+				"((a = b) ∧ (u = v) ∧ (a = b)) ∧ ((u = v) ∧ (a = b))",
+				"(and (= a b) (iff u v))");
 	}
 }
