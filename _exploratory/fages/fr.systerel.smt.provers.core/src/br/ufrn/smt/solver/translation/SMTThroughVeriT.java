@@ -539,10 +539,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature));
 			break;
 		case Formula.NATURAL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT, signature));
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT,
+					signature));
 			break;
 		case Formula.NATURAL1:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT1, signature));
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT1,
+					signature));
 			break;
 		case Formula.EMPTYSET:
 			if (expression.getType().getSource() instanceof ProductType
@@ -556,7 +558,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.KID_GEN:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID, signature));
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID,
+					signature));
 			break;
 		case Formula.BOOL:
 			throw new IllegalArgumentException(
@@ -1117,8 +1120,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// FIXME: Refactor this method
 		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
-			smtNode = SMTFactoryVeriT
-					.makeMacroTerm(getMacroSymbol(EMPTY, signature));
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(EMPTY,
+					signature));
 		} else {
 			children = smtTerms(expression.getMembers());
 			final String macroName = signature
@@ -1202,8 +1205,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.KDOM:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(DOM, signature),
-					children);
+			smtNode = SMTFactoryVeriT.makeMacroTerm(
+					getMacroSymbol(DOM, signature), children);
 			break;
 		case Formula.KRAN: {
 			smtNode = SMTFactoryVeriT.makeMacroTerm(
@@ -1221,8 +1224,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		}
 		case Formula.CONVERSE:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(INV, signature),
-					children);
+			smtNode = SMTFactoryVeriT.makeMacroTerm(
+					getMacroSymbol(INV, signature), children);
 			break;
 		case Formula.UNMINUS:
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
