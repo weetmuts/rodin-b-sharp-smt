@@ -1,8 +1,8 @@
 package br.ufrn.smt.solver.translation;
 
 public enum SMTTranslationApproach {
-	USING_PP("SMT translation using PP approach"),
-	USING_VERIT("SMT translation using VeriT approach");
+	USING_PP("SMT translation using PP approach"), USING_VERIT(
+			"SMT translation using VeriT approach");
 
 	private String name;
 
