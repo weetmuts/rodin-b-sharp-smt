@@ -1312,6 +1312,48 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * There are two different ways to translate multiple predicates.
+	 * 
+	 * <ol>
+	 * <li>
+	 * <li>1st: The sets are all singletons. In that case, the translation is
+	 * done as follows:
+	 * <p>
+	 * 
+	 * <ol>
+	 * <li>translate each expression E0 ·· En</li>
+	 * <li>create n fresh variables X, that Xn = sort of smt(Et), where 0 ≤ t ≤
+	 * n</li>
+	 * <li>add n assumptions:
+	 * 
+	 * <p>
+	 * asumption (+) (= X1 smt(E1))
+	 * <p>
+	 * ·
+	 * <p>
+	 * ·
+	 * <p>
+	 * ·
+	 * <p>
+	 * asumption (+) (= Xn smt(En))
+	 * <p>
+	 * (It’s added no assumption for E0)</li>
+	 * <li>add more two assumptions:
+	 * <ul>
+	 * <li>assumption (+) (distinct X1 ... Xn)</li>
+	 * <li>assumption (+) (= smt(E0) (union Xn ... Xn))</li>
+	 * </ol>
+	 * </li>
+	 * 
+	 * <p>
+	 * </li>
+	 * <li>
+	 * 2nd: There is at least one set which is not singleton. In this case, the
+	 * predicate is expanded to a predicate with simpler mathematical operators
+	 * and the translated. This expansion is already implemented in Rodin.</li>
+	 * </ol>
+	 */
 	@Override
 	public void visitMultiplePredicate(final MultiplePredicate predicate) {
 		final Expression[] expressions = predicate.getChildren();
@@ -1338,11 +1380,23 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			newVars.add(addEqualAssumption(x, expressions[i].getType(), expTerm));
 		}
 		addDistinctAssumption(newVars);
-		setNodeWithUnionAssumption(newVars, e0);
+		smtNode = createUnionAssumptionForParition(newVars, e0);
 	}
 
-	private void setNodeWithUnionAssumption(final List<SMTTerm> newVars,
-			final SMTTerm e0) {
+	/**
+	 * Create and return the assumption:
+	 * <p>
+	 * (= smt(E0) (union Xn ... Xn))
+	 * 
+	 * @param newVars
+	 *            the terms Xn ... Xn
+	 * @param e0
+	 *            the term E0
+	 * @return the assumption as described above
+	 * @see #visitMultiplePredicate(MultiplePredicate)
+	 */
+	private SMTFormula createUnionAssumptionForParition(
+			final List<SMTTerm> newVars, final SMTTerm e0) {
 		assert !newVars.isEmpty();
 		SMTTerm unionTerm;
 		if (newVars.size() == 1) {
@@ -1357,9 +1411,24 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						newVars.get(i));
 			}
 		}
-		smtNode = makeEqual(e0, unionTerm);
+		return makeEqual(e0, unionTerm);
 	}
 
+	/**
+	 * Create and add the assumption:
+	 * 
+	 * <p>
+	 * (= Xn smt(En))
+	 * 
+	 * @param x
+	 *            The name of the nth-term x
+	 * @param type
+	 *            the type of the term x.
+	 * @param e0
+	 *            the term smt(En)
+	 * @return the assumption as described above
+	 * @see #visitMultiplePredicate(MultiplePredicate)
+	 */
 	private SMTTerm addEqualAssumption(final String x, final Type type,
 			final SMTTerm e0) {
 		SMTSortSymbol sort = typeMap.get(type);
@@ -1378,8 +1447,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Creates and returns the assumption:
+	 * 
+	 * <p>
+	 * assumption (+) (distinct X1 ... Xn)
 	 * 
 	 * @param newVars
+	 *            the terms X1 ... Xn
+	 * @see #visitMultiplePredicate(MultiplePredicate)
 	 */
 	private void addDistinctAssumption(final List<SMTTerm> newVars) {
 		signature.addAdditionalAssumption(SMTFactoryVeriT.makeDistinct(newVars

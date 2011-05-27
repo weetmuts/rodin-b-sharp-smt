@@ -779,4 +779,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		// Relimage
 		testTranslationV1_2Default("ℕ ⊈ ℤ", "(not (subseteq Nat Int))");
 	}
+
+	@Test
+	public void testPartition() {
+
+		testTranslationV1_2Default("partition(A,{1,2},{3,4})",
+				"(and (= A enum_0) (= (inter enum_1 enum_2) emptyset))");
+	}
+
+	@Test
+	public void testPartition1Set() {
+
+		testTranslationV1_2Default("partition(A,{1})", "(= A set)");
+	}
+
 }
