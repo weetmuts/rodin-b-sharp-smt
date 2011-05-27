@@ -26,8 +26,6 @@ public abstract class SMTFactory {
 	public final static String QVAR = "?";
 	public final static String POINT = ".";
 
-	public final static String ITE_TERM = "ite";
-
 	/**
 	 * Connective symbols
 	 */
@@ -166,24 +164,12 @@ public abstract class SMTFactory {
 		return new SMTConnectiveFormula(IMPLIES, formulas);
 	}
 
-	public SMTFormula makeIfThenElse(final SMTFormula... formulas) {
-		throw new IllegalArgumentException(
-				" The translation of Event-B predicates does not generate If-Then-Else formulas");
-		// return new SMTConnectiveFormula(ITE_FORMULA, formulas);
-	}
-
 	public static SMTFormula makeAnd(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(AND, formulas);
 	}
 
 	public static SMTFormula makeOr(final SMTFormula... formulas) {
 		return new SMTConnectiveFormula(OR, formulas);
-	}
-
-	public SMTFormula makeXor(final SMTFormula... formulas) {
-		throw new IllegalArgumentException(
-				" The translation of Event-B predicates does not generate Xor formulas");
-		// return new SMTConnectiveFormula(XOR, formulas);
 	}
 
 	public static SMTFormula makeIff(final SMTFormula... formulas) {
@@ -199,24 +185,6 @@ public abstract class SMTFactory {
 	 */
 	public static SMTNumeral makeNumeral(final BigInteger value) {
 		return new SMTNumeral(value);
-	}
-
-	/**
-	 * Creates a new ITE_FORMULA term.
-	 * 
-	 * @param formula
-	 *            a SMT formula
-	 * @param tTerm
-	 *            an SMT term
-	 * @param fTerm
-	 *            an SMT term
-	 * @return the newly created ITE_FORMULA term
-	 */
-	public SMTITETerm makeITETerm(final SMTFormula formula,
-			final SMTTerm tTerm, final SMTTerm fTerm) {
-		// return new SMTITETerm(formula, tTerm, fTerm);
-		throw new IllegalArgumentException(
-				" The translation of Event-B predicates does not generate ITE terms");
 	}
 
 	/**

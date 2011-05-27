@@ -169,10 +169,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			final SMTFunApplication fa = (SMTFunApplication) term;
 			getUsedSymbols(fa, symbols);
 
-		} else if (term instanceof SMTITETerm) {
-			final SMTITETerm ite = (SMTITETerm) term;
-			getUsedSymbols(ite, symbols);
-
 		} else if (term instanceof SMTNumeral) {
 			final SMTNumeral num = (SMTNumeral) term;
 			getUsedSymbols(num, symbols);
@@ -193,14 +189,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			throw new IllegalArgumentException("The term is: "
 					+ term.getClass().toString());
 		}
-	}
-
-	protected void getUsedSymbols(final SMTITETerm ite,
-			final Set<SMTSymbol> symbols) {
-		symbols.add(ite.getSort());
-		getUsedSymbols(ite.getFormula(), symbols);
-		getUsedSymbols(ite.getfTerm(), symbols);
-		getUsedSymbols(ite.gettTerm(), symbols);
 	}
 
 	protected void getUsedSymbols(final SMTFunApplication fa,
