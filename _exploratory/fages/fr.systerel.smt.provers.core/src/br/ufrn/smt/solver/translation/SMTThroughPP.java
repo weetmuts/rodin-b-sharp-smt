@@ -283,7 +283,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            The goal of the sequent
 	 * @return All the sets to be translated into monadic membership predicates
 	 */
-	private Map<String, Type> extractMonadicSetsMap (
+	private Map<String, Type> extractMonadicSetsMap(
 			final List<Predicate> hypotheses, final Predicate goal) {
 
 		/**
@@ -315,14 +315,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		final MemberShipPredicateInspector membershipPredicateInspector = new MemberShipPredicateInspector();
 		final List<RelationalPredicate> membershipPredicates = new ArrayList<RelationalPredicate>();
-		
+
 		for (final Predicate predicate : hypotheses) {
-			membershipPredicates.addAll(predicate.inspect(membershipPredicateInspector));
+			membershipPredicates.addAll(predicate
+					.inspect(membershipPredicateInspector));
 		}
 		membershipPredicates.addAll(goal.inspect(membershipPredicateInspector));
 
 		/**
-		 * Extraction of all membership right-hand side free variables 
+		 * Extraction of all membership right-hand side free variables
 		 */
 		final Map<String, Type> monadicSetsMap = new HashMap<String, Type>();
 		final Set<Type> boundSetsTypes = new HashSet<Type>();
@@ -343,7 +344,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				boundSetsTypes.add(((BoundIdentifier) right).getType());
 			}
 		}
-		
+
 		/**
 		 * Removal of all bounded variables from the map of monadic sets.
 		 */
@@ -1071,7 +1072,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				final SMTFunctionSymbol intSymbol = signature.freshConstant(
 						"int", signature.getLogic().getIntegerSort());
 				signature.addConstant(intSymbol);
-				intSetTerm = new SMTFunApplication(intSymbol);
+				intSetTerm = SMTFactory.makeInteger(intSymbol, signature);
 				intAxiom = generateIntegerAxiom(expression.getType(),
 						intSetTerm);
 				smtNode = intSetTerm;

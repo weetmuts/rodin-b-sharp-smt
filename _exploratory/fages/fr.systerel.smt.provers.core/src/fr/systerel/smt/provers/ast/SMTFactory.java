@@ -82,11 +82,6 @@ public abstract class SMTFactory {
 		return makeNot(argsT);
 	}
 
-	public SMTFormula makeNotIff(final SMTFormula... args) {
-		final SMTFormula[] formulas = { makeIff(args) };
-		return makeNot(formulas);
-	}
-
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
 			final SMTTerm[] args, final SMTSignature signature) {
 		signature.verifyPredicateSignature(lt);
@@ -172,7 +167,9 @@ public abstract class SMTFactory {
 	}
 
 	public SMTFormula makeIfThenElse(final SMTFormula... formulas) {
-		return new SMTConnectiveFormula(ITE_FORMULA, formulas);
+		throw new IllegalArgumentException(
+				" The translation of Event-B predicates does not generate If-Then-Else formulas");
+		// return new SMTConnectiveFormula(ITE_FORMULA, formulas);
 	}
 
 	public static SMTFormula makeAnd(final SMTFormula... formulas) {
@@ -184,7 +181,9 @@ public abstract class SMTFactory {
 	}
 
 	public SMTFormula makeXor(final SMTFormula... formulas) {
-		return new SMTConnectiveFormula(XOR, formulas);
+		throw new IllegalArgumentException(
+				" The translation of Event-B predicates does not generate Xor formulas");
+		// return new SMTConnectiveFormula(XOR, formulas);
 	}
 
 	public static SMTFormula makeIff(final SMTFormula... formulas) {
@@ -215,7 +214,9 @@ public abstract class SMTFactory {
 	 */
 	public SMTITETerm makeITETerm(final SMTFormula formula,
 			final SMTTerm tTerm, final SMTTerm fTerm) {
-		return new SMTITETerm(formula, tTerm, fTerm);
+		// return new SMTITETerm(formula, tTerm, fTerm);
+		throw new IllegalArgumentException(
+				" The translation of Event-B predicates does not generate ITE terms");
 	}
 
 	/**
@@ -229,22 +230,7 @@ public abstract class SMTFactory {
 		return makePropAtom(PFALSE, signature);
 	}
 
-	/**
-	 * Creates a new boolean constant. {FALSE, TRUE}
-	 * 
-	 * @param trueLogicConstant
-	 */
-	public SMTTerm makeTrue(final SMTFunctionSymbol trueLogicConstant,
-			final SMTSignature signature) {
-		return makeConstant(trueLogicConstant, signature);
-	}
-
-	public SMTTerm makeFalse(final SMTFunctionSymbol falseLogicConstant,
-			final SMTSignature signature) {
-		return makeConstant(falseLogicConstant, signature);
-	}
-
-	public SMTTerm makeInteger(final SMTFunctionSymbol integerCste,
+	public static SMTTerm makeInteger(final SMTFunctionSymbol integerCste,
 			final SMTSignature signature) {
 		return makeConstant(integerCste, signature);
 	}
@@ -302,7 +288,8 @@ public abstract class SMTFactory {
 		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
-	public SMTTerm makeFunApplication(final SMTFunctionSymbol functionSymbol,
+	public static SMTTerm makeFunApplication(
+			final SMTFunctionSymbol functionSymbol,
 			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(functionSymbol);
 		return new SMTFunApplication(functionSymbol, args);
@@ -323,7 +310,7 @@ public abstract class SMTFactory {
 	 *            the signature used to check the rank
 	 * @return a new term with the function symbol
 	 */
-	public SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
+	public static SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
 			final SMTSignature signature) {
 		return makeFunApplication(functionSymbol, signature);
 	}
