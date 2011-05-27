@@ -39,7 +39,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ",
-				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
+				"AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL",
+				"int", "S", "SPZ", "S ↔ ℙ(ℤ)");
 		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
@@ -342,6 +343,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testPredInInt() {
 		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS_0 a int AZ)");
+		testTranslationV1_2Default("int↦ℤ ∈ SPZ", "(MS_0 int int_0 SPZ)");
 	}
 
 	/**
