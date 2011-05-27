@@ -12,7 +12,7 @@ public enum SMTSolver {
 	private final String solver_name;
 
 	private SMTSolver(final String name) {
-		this.solver_name = name;
+		solver_name = name;
 	}
 
 	@Override
