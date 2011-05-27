@@ -263,9 +263,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method extracts all the sets that will be translated in the
-	 * optimized translation for sets, that is, the returned sets complies with
-	 * the following rules:
+	 * This method extracts all the sets that will be translated in optimized
+	 * membership predicates, that is, the sets complying with the following
+	 * rules:
 	 * 
 	 * <ul>
 	 * <li>The set only occur on the right-hand side of membership predicates;
@@ -274,22 +274,22 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * </ul>
 	 * 
 	 * Then these sets are used as operator with one argument, instead of
-	 * creating a fresh actualPredicate where the set is one of the arguments.
+	 * creating a fresh membership predicate where the set is one of the
+	 * arguments.
 	 * 
 	 * @param hypotheses
-	 *            The hypotheses of the proof
+	 *            The hypotheses of the sequent
 	 * @param goal
-	 *            THe goal of the proof
-	 * @return All the sets that agree with the restrictions explained above.
+	 *            The goal of the sequent
+	 * @return All the sets to be translated into monadic membership predicates
 	 */
-	private Map<String, Type> storeMonadicMSPIdentifiers(
+	private Map<String, Type> extractMonadicSetsMap (
 			final List<Predicate> hypotheses, final Predicate goal) {
 
 		/**
 		 * This class is used to get all the relational predicates of the
 		 * hypotheses and the goal of the proof. The intention is to extract the
-		 * sets that will be translated to the special case that concerns
-		 * monadic sets in the PP approach.
+		 * sets that will be translated into monadic membership predicates
 		 * 
 		 * @author vitor
 		 * 
@@ -310,40 +310,53 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 		}
 
-		final MemberShipPredicateInspector msp = new MemberShipPredicateInspector();
-		final List<RelationalPredicate> msRelPred = new ArrayList<RelationalPredicate>();
-		for (final Predicate p : hypotheses) {
-			msRelPred.addAll(p.inspect(msp));
+		/**
+		 * Extraction of all membership predicates from hypotheses and goal
+		 */
+		final MemberShipPredicateInspector membershipPredicateInspector = new MemberShipPredicateInspector();
+		final List<RelationalPredicate> membershipPredicates = new ArrayList<RelationalPredicate>();
+		
+		for (final Predicate predicate : hypotheses) {
+			membershipPredicates.addAll(predicate.inspect(membershipPredicateInspector));
 		}
-		msRelPred.addAll(goal.inspect(msp));
+		membershipPredicates.addAll(goal.inspect(membershipPredicateInspector));
 
-		final Map<String, Type> monadicSetEnv = new HashMap<String, Type>();
-
-		final Set<Type> boundMSPTypes = new HashSet<Type>();
-
+		/**
+		 * Extraction of all membership right-hand side free variables 
+		 */
+		final Map<String, Type> monadicSetsMap = new HashMap<String, Type>();
+		final Set<Type> boundSetsTypes = new HashSet<Type>();
 		Expression right;
-		for (final RelationalPredicate pred : msRelPred) {
-			right = pred.getRight();
+
+		for (final RelationalPredicate membershipPredicate : membershipPredicates) {
+			right = membershipPredicate.getRight();
 
 			assert right instanceof FreeIdentifier
 					|| right instanceof BoundIdentifier;
 
 			if (right instanceof FreeIdentifier) {
-				final FreeIdentifier fr = (FreeIdentifier) right;
+				final FreeIdentifier rightSet = (FreeIdentifier) right;
 				if (right.getType().getSource() == null) {
-					monadicSetEnv.put(fr.getName(), fr.getType());
+					monadicSetsMap.put(rightSet.getName(), rightSet.getType());
 				}
 			} else if (right instanceof BoundIdentifier) {
-				boundMSPTypes.add(((BoundIdentifier) right).getType());
+				boundSetsTypes.add(((BoundIdentifier) right).getType());
 			}
 		}
-		for (final String name : monadicSetEnv.keySet()) {
-			if (boundMSPTypes.contains(monadicSetEnv.get(name))) {
-				monadicSetEnv.remove(name);
+		
+		/**
+		 * Removal of all bounded variables from the map of monadic sets.
+		 */
+		for (final String name : monadicSetsMap.keySet()) {
+			if (boundSetsTypes.contains(monadicSetsMap.get(name))) {
+				monadicSetsMap.remove(name);
 			}
 		}
 
-		return monadicSetEnv;
+		/**
+		 * monadicSetsMap is a mapping from sets to their types
+		 */
+		return monadicSetsMap;
 	}
 
 	/**
@@ -525,7 +538,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
-		monadicSets.putAll(storeMonadicMSPIdentifiers(hypotheses, goal));
+		monadicSets.putAll(extractMonadicSetsMap(hypotheses, goal));
 
 		/**
 		 * For each membership of the type environment,
@@ -766,6 +779,261 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Given a actualPredicate <code>a ∈ s</code>, with <code>a ⦂ S</code> and
+	 * <code>s ⦂ ℙ(S)</code>.
+	 * <p>
+	 * If this actualPredicate is in accordance with the rules of optimization
+	 * of translation sets, the membership is translated to:
+	 * 
+	 * (s a)
+	 * 
+	 * <p>
+	 * else the type of <code>a</code> is mapped to the SMT-LIB actualPredicate:
+	 * <code>(p S PS)</code>.
+	 * 
+	 * @param membershipPredicate
+	 *            The membership actualPredicate that will be translated.
+	 */
+	private void translateMemberShipPredicate(
+			final RelationalPredicate membershipPredicate) {
+
+		final Expression left = membershipPredicate.getLeft();
+		final Expression right = membershipPredicate.getRight();
+
+		// Translate monadic sets (special case)
+		if (right instanceof FreeIdentifier) {
+			final FreeIdentifier rightSet = (FreeIdentifier) right;
+			if (monadicSets.containsKey(rightSet.getName())) {
+				translateInMonadicMembershipPredicate(left, rightSet);
+				return;
+			}
+		}
+
+		translateInClassicMembershipPredicate(left, right);
+	}
+
+	private void translateInClassicMembershipPredicate(final Expression left,
+			final Expression right) {
+		final SMTTerm[] children = smtTerms(left, right);
+
+		if (left.getTag() != Formula.MAPSTO) {
+			membershipPredicateTerms.add(0, children[0]);
+		}
+		membershipPredicateTerms.add(children[1]);
+
+		final int numberOfArguments = membershipPredicateTerms.size();
+		final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
+		for (int i = 0; i < numberOfArguments; i++) {
+			argSorts[i] = membershipPredicateTerms.get(i).getSort();
+		}
+
+		final Type leftType = left.getType();
+
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
+				leftType, argSorts);
+
+		final SMTTerm[] args = membershipPredicateTerms
+				.toArray(new SMTTerm[numberOfArguments]);
+
+		smtNode = SMTFactory.makeAtom(predSymbol, signature, args);
+		membershipPredicateTerms.clear();
+	}
+
+	private void translateInMonadicMembershipPredicate(
+			final Expression leftExpression, final FreeIdentifier rightSet) {
+		final Type leftType = leftExpression.getType();
+		final SMTTerm leftTerm = smtTerm(leftExpression);
+		SMTPredicateSymbol monadicMembershipPredicate = msTypeMap.get(leftType);
+
+		if (monadicMembershipPredicate == null) {
+			// FIXME Check the behavior of this method
+			monadicMembershipPredicate = signature.addPredicateSymbol(
+					rightSet.getName(), leftTerm.getSort());
+			msTypeMap.put(leftExpression.getType(), monadicMembershipPredicate);
+		}
+
+		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate, signature,
+				leftTerm);
+		membershipPredicateTerms.clear();
+	}
+
+	private SMTPredicateSymbol createMembershipPredicateSymbol(final Type type,
+			final SMTSortSymbol... argSorts) {
+		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
+		if (membershipPredicateSymbol == null) {
+			membershipPredicateSymbol = signature.addPredicateSymbol(
+					signature.freshMembershipPredicateName(), argSorts);
+			msTypeMap.put(type, membershipPredicateSymbol);
+		}
+		assert membershipPredicateSymbol != null;
+		return membershipPredicateSymbol;
+	}
+
+	/**
+	 * Generate the translated SMT-LIB formula for this Event-B predicate:
+	 * 
+	 * <code>∀x·x ∈ ℤ</code>
+	 * 
+	 * @param type
+	 * @return The SMTFormula corresponding to the translation of the Event-B
+	 *         predicate shown above
+	 */
+	private SMTFormula generateIntegerAxiom(final Type type,
+			final SMTTerm intSet) {
+		final String symbolName = signature.freshCstName("x");
+		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
+
+		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort,
+				!PREDEFINED);
+		final SMTTerm term = new SMTVar(vs);
+
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
+				type, intSort, intSort);
+
+		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
+				term, intSet);
+
+		return SMTFactory.makeForAll(formula, term);
+	}
+
+	/**
+	 * Generate the translated SMT-LIB formula for this Event-B predicate:
+	 * 
+	 * <code>∀x·x ∈ BOOL</code>
+	 * 
+	 * @param type
+	 * @return The SMTFormula corresponding to the translation of the Event-B
+	 *         predicate shown above
+	 */
+	private SMTFormula generateBoolAxiom(final Type type) {
+		final String symbolName = signature.freshCstName("x");
+		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
+
+		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
+				!PREDEFINED);
+		final SMTTerm term = new SMTVar(vs);
+		final SMTTerm termBool = sf.makeConstant(signature.getLogic()
+				.getBooleanCste(), signature);
+
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
+				type, boolSort, boolSort);
+
+		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
+				term, termBool);
+
+		return SMTFactory.makeForAll(formula, term);
+	}
+
+	/**
+	 * This class visits a actualPredicate and checks if the actualPredicate
+	 * agrees with the following rule:
+	 * <p>
+	 * The predeﬁned set BOOL can only occur in a maplet expression in the
+	 * left-hand side of a membership actualPredicate.
+	 * 
+	 * @see SMTThroughPP#checkBoolSet(Predicate, AtomicExpression)
+	 * @author vitor
+	 */
+	class BoolSetVisitor extends DefaultVisitor {
+
+		private RelationalPredicate inPred;
+		private final AtomicExpression atExpr;
+
+		/**
+		 * Constructor that stores an atomic expresion which the tag is
+		 * <code>BOOL</code>.
+		 * 
+		 * @param atExpr
+		 */
+		public BoolSetVisitor(final AtomicExpression atExpr) {
+			assert atExpr.getTag() == Formula.BOOL;
+			this.atExpr = atExpr;
+		}
+
+		@Override
+		/**
+		 * This method just stores the relational actualPredicate
+		 */
+		public boolean enterIN(final RelationalPredicate pred) {
+			inPred = pred;
+			return true;
+		}
+
+		/**
+		 * This method checks, for each MAPSTO expression:
+		 * <ul>
+		 * <li>If the left or the right of the binary expression correspond to
+		 * the stored atomicExpression
+		 * <li>If so, check if the parent of the MAPSTO expression is a
+		 * membership actualPredicate. If not, throws an exception
+		 * <li>else keep traversing the actualPredicate
+		 * </ul>
+		 */
+		@Override
+		public boolean enterMAPSTO(final BinaryExpression expr) {
+			assert atExpr != null;
+			if (expr.getLeft().equals(atExpr) || expr.getRight().equals(atExpr)) {
+				if (inPred.getLeft().equals(expr)) {
+					return false;
+				} else {
+					throw new IllegalArgumentException(
+							" The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
+				}
+			} else {
+				return true;
+			}
+		}
+	}
+
+	/**
+	 * This method check if the BOOL set expression is in accordance with the
+	 * Bool theory rule, for the PP approach, that concerns the BOOL set.
+	 * 
+	 * @see BoolSetVisitor
+	 * 
+	 * @param pred
+	 *            The actual hypothesis (or goal) being traversed.
+	 * @param atomicExpression
+	 *            The BOOL set atomic expression
+	 */
+	private void checkBoolSet(final Predicate pred,
+			final AtomicExpression atomicExpression) {
+		for (final SMTTheory theory : signature.getLogic().getTheories()) {
+			if (theory instanceof Booleans) {
+				final BoolSetVisitor bv = new BoolSetVisitor(atomicExpression);
+				pred.accept(bv);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * @param left
+	 * @param right
+	 */
+	private SMTFormula translateTruePredWithId(final Expression left,
+			final Expression right) {
+		final SMTFormula leftFor = translateTruePred(left);
+		final SMTFormula rightFor = translateTruePred(right);
+
+		return SMTFactory.makeIff(leftFor, rightFor);
+	}
+
+	private SMTFormula translateTruePred(final Expression expr) {
+		if (expr.getTag() == Formula.TRUE) {
+			throw new IllegalArgumentException(
+					"Predefined literal TRUE cannot happen in both sides of boolean equality");
+		} else {
+			if (usesTruePred) {
+				final SMTTerm term = smtTerm(expr);
+				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
+						signature, term);
+			}
+		}
+		return smtFormula(expr);
+	}
+
+	/**
 	 * This method translates an Event-B associative expression into an SMT
 	 * node.
 	 */
@@ -911,234 +1179,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Given a actualPredicate <code>a ∈ s</code>, with <code>a ⦂ S</code> and
-	 * <code>s ⦂ ℙ(S)</code>.
-	 * <p>
-	 * If this actualPredicate is in accordance with the rules of optimization
-	 * of translation sets, the membership is translated to:
-	 * 
-	 * (s a)
-	 * 
-	 * <p>
-	 * else the type of <code>a</code> is mapped to the SMT-LIB actualPredicate:
-	 * <code>(p S PS)</code>.
-	 * 
-	 * @param membershipPredicate
-	 *            The membership actualPredicate that will be translated.
-	 */
-	private void translateMemberShipPredicate(
-			final RelationalPredicate membershipPredicate) {
-
-		final Expression left = membershipPredicate.getLeft();
-		final Expression right = membershipPredicate.getRight();
-
-		// Translate monadic sets (special case)
-		if (right instanceof FreeIdentifier) {
-			final FreeIdentifier rightSet = (FreeIdentifier) right;
-			if (monadicSets.containsKey(rightSet.getName())) {
-				translateInMonadicMembershipPredicate(left, rightSet);
-				return;
-			}
-		}
-
-		translateInClassicMembershipPredicate(left, right);
-	}
-
-	private void translateInClassicMembershipPredicate(final Expression left,
-			final Expression right) {
-		final SMTTerm[] children = smtTerms(left, right);
-
-		if (left.getTag() != Formula.MAPSTO) {
-			membershipPredicateTerms.add(0, children[0]);
-		}
-		membershipPredicateTerms.add(children[1]);
-
-		final int numberOfArguments = membershipPredicateTerms.size();
-		final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
-		for (int i = 0; i < numberOfArguments; i++) {
-			argSorts[i] = membershipPredicateTerms.get(i).getSort();
-		}
-
-		final Type leftType = left.getType();
-
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(leftType,
-				argSorts);
-
-		final SMTTerm[] args = membershipPredicateTerms
-				.toArray(new SMTTerm[numberOfArguments]);
-
-		smtNode = SMTFactory.makeAtom(predSymbol, signature, args);
-		membershipPredicateTerms.clear();
-	}
-
-	private void translateInMonadicMembershipPredicate(
-			final Expression leftExpression, final FreeIdentifier rightSet) {
-		final Type leftType = leftExpression.getType();
-		final SMTTerm leftTerm = smtTerm(leftExpression);
-		SMTPredicateSymbol monadicMembershipPredicate = msTypeMap.get(leftType);
-
-		if (monadicMembershipPredicate == null) {
-			// FIXME Check the behavior of this method
-			monadicMembershipPredicate = signature.addPredicateSymbol(rightSet.getName(),
-					leftTerm.getSort());
-			msTypeMap.put(leftExpression.getType(), monadicMembershipPredicate);
-		}
-
-		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate, signature, leftTerm);
-		membershipPredicateTerms.clear();
-	}
-
-	private SMTPredicateSymbol createMembershipPredicateSymbol(final Type type,
-			final SMTSortSymbol... argSorts) {
-		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
-		if (membershipPredicateSymbol == null) {
-			membershipPredicateSymbol = signature.addPredicateSymbol(
-					signature.freshMembershipPredicateName(), argSorts);
-			msTypeMap.put(type, membershipPredicateSymbol);
-		}
-		assert membershipPredicateSymbol != null;
-		return membershipPredicateSymbol;
-	}
-
-	/**
-	 * Generate the translated SMT-LIB formula for this Event-B predicate:
-	 * 
-	 * <code>∀x·x ∈ ℤ</code>
-	 * 
-	 * @param type
-	 * @return The SMTFormula corresponding to the translation of the Event-B
-	 *         predicate shown above
-	 */
-	private SMTFormula generateIntegerAxiom(final Type type,
-			final SMTTerm intSet) {
-		final String symbolName = signature.freshCstName("x");
-		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
-
-		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort,
-				!PREDEFINED);
-		final SMTTerm term = new SMTVar(vs);
-
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(type, intSort,
-				intSort);
-
-		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
-				term, intSet);
-
-		return SMTFactory.makeForAll(formula, term);
-	}
-
-	/**
-	 * Generate the translated SMT-LIB formula for this Event-B predicate:
-	 * 
-	 * <code>∀x·x ∈ BOOL</code>
-	 * 
-	 * @param type
-	 * @return The SMTFormula corresponding to the translation of the Event-B
-	 *         predicate shown above
-	 */
-	private SMTFormula generateBoolAxiom(final Type type) {
-		final String symbolName = signature.freshCstName("x");
-		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
-
-		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
-				!PREDEFINED);
-		final SMTTerm term = new SMTVar(vs);
-		final SMTTerm termBool = sf.makeConstant(signature.getLogic()
-				.getBooleanCste(), signature);
-
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(type, boolSort,
-				boolSort);
-
-		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
-				term, termBool);
-
-		return SMTFactory.makeForAll(formula, term);
-	}
-
-	/**
-	 * This class visits a actualPredicate and checks if the actualPredicate
-	 * agrees with the following rule:
-	 * <p>
-	 * The predeﬁned set BOOL can only occur in a maplet expression in the
-	 * left-hand side of a membership actualPredicate.
-	 * 
-	 * @see SMTThroughPP#checkBoolSet(Predicate, AtomicExpression)
-	 * @author vitor
-	 */
-	class BoolSetVisitor extends DefaultVisitor {
-
-		private RelationalPredicate inPred;
-		private final AtomicExpression atExpr;
-
-		/**
-		 * Constructor that stores an atomic expresion which the tag is
-		 * <code>BOOL</code>.
-		 * 
-		 * @param atExpr
-		 */
-		public BoolSetVisitor(final AtomicExpression atExpr) {
-			assert atExpr.getTag() == Formula.BOOL;
-			this.atExpr = atExpr;
-		}
-
-		@Override
-		/**
-		 * This method just stores the relational actualPredicate
-		 */
-		public boolean enterIN(final RelationalPredicate pred) {
-			inPred = pred;
-			return true;
-		}
-
-		/**
-		 * This method checks, for each MAPSTO expression:
-		 * <ul>
-		 * <li>If the left or the right of the binary expression correspond to
-		 * the stored atomicExpression
-		 * <li>If so, check if the parent of the MAPSTO expression is a
-		 * membership actualPredicate. If not, throws an exception
-		 * <li>else keep traversing the actualPredicate
-		 * </ul>
-		 */
-		@Override
-		public boolean enterMAPSTO(final BinaryExpression expr) {
-			assert atExpr != null;
-			if (expr.getLeft().equals(atExpr) || expr.getRight().equals(atExpr)) {
-				if (inPred.getLeft().equals(expr)) {
-					return false;
-				} else {
-					throw new IllegalArgumentException(
-							" The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
-				}
-			} else {
-				return true;
-			}
-		}
-	}
-
-	/**
-	 * This method check if the BOOL set expression is in accordance with the
-	 * Bool theory rule, for the PP approach, that concerns the BOOL set.
-	 * 
-	 * @see BoolSetVisitor
-	 * 
-	 * @param pred
-	 *            The actual hypothesis (or goal) being traversed.
-	 * @param atomicExpression
-	 *            The BOOL set atomic expression
-	 */
-	private void checkBoolSet(final Predicate pred,
-			final AtomicExpression atomicExpression) {
-		for (final SMTTheory theory : signature.getLogic().getTheories()) {
-			if (theory instanceof Booleans) {
-				final BoolSetVisitor bv = new BoolSetVisitor(atomicExpression);
-				pred.accept(bv);
-				return;
-			}
-		}
-	}
-
-	/**
 	 * This method translates an Event-B relational actualPredicate into an SMT
 	 * node.
 	 */
@@ -1217,32 +1257,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 */
 			throw new IllegalTagException(tag);
 		}
-	}
-
-	/**
-	 * @param left
-	 * @param right
-	 */
-	private SMTFormula translateTruePredWithId(final Expression left,
-			final Expression right) {
-		final SMTFormula leftFor = translateTruePred(left);
-		final SMTFormula rightFor = translateTruePred(right);
-
-		return SMTFactory.makeIff(leftFor, rightFor);
-	}
-
-	private SMTFormula translateTruePred(final Expression expr) {
-		if (expr.getTag() == Formula.TRUE) {
-			throw new IllegalArgumentException(
-					"Predefined literal TRUE cannot happen in both sides of boolean equality");
-		} else {
-			if (usesTruePred) {
-				final SMTTerm term = smtTerm(expr);
-				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
-						signature, term);
-			}
-		}
-		return smtFormula(expr);
 	}
 
 	/**
