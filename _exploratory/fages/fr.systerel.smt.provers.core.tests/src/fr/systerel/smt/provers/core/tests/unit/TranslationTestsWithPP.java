@@ -4,6 +4,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.core.tests.unit;
 
+import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -82,7 +83,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		hypothesis.add(ppPred);
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
-				"verit", usesTrue);
+				VERIT.toString(), usesTrue);
 	}
 
 	/**
@@ -185,7 +186,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (s ?x) (s_0 ?y)))");
+				"(forall (?x R) (?y R) (and (s ?x) (s ?y)))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -195,10 +196,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 		bids[1] = bids[0];
 		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
 				base.getPredicate(), null);
-		// System.out.println("Predicate " + p);
 		testTranslationV1_2(defaultLogic, p,
-				"(forall (?x R) (?x_0 R) (and (s ?x) (s_0 ?x_0)))",
-				"twice same decl", "verit", false);
+				"(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))",
+				"twice same decl", VERIT.toString(), false);
 	}
 
 	@Test
@@ -211,7 +211,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (s ?x) (s_0 ?y)))");
+				"(exists (?x R) (?y R) (and (s ?x) (s ?y)))");
 	}
 
 	/**

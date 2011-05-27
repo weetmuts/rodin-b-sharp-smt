@@ -15,9 +15,6 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.POLYMORPHICS;
 
 import java.math.BigInteger;
 
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
-import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
-
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
  */
@@ -140,11 +137,6 @@ public abstract class SMTFactory {
 			final SMTSignature signature, final SMTTerm... args) {
 		signature.verifyFunctionSignature(mul);
 		return new SMTFunApplication(mul, args);
-	}
-
-	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macro,
-			final SMTTerm... args) {
-		return new SMTMacroTerm(macro, args);
 	}
 
 	public SMTTerm makeUMinus(final SMTFunctionSymbol uminus,
@@ -349,17 +341,4 @@ public abstract class SMTFactory {
 			final SMTSignature signature) {
 		return makeAtom(predicateSymbol, signature);
 	}
-
-	/**
-	 * Creates a extended SMT-LIB macro term with no arguments.
-	 * 
-	 * @param macroSymbol
-	 *            the symbol of the term
-	 * @return a new smt term with the macro symbol.
-	 */
-	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macroSymbol,
-			final SMTSortSymbol returnSort) {
-		return makeMacroTerm(macroSymbol);
-	}
-
 }

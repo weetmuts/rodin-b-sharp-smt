@@ -67,6 +67,11 @@ public abstract class SMTSignature {
 	private final static String NEW_SORT_NAME = "NSORT";
 
 	/**
+	 * This constant is used to name membership predicates.
+	 */
+	protected final static String MS_PREDICATE_NAME = "MS";
+
+	/**
 	 * reserved symbols of the logic
 	 */
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
@@ -488,16 +493,11 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * This constant is used to name membership predicates.
-	 */
-	protected final static String MS_PREDICATE_NAME = "MS";
-
-	/**
 	 * returns a fresh predicate name.
 	 * 
 	 * @return a fresh predicate name.
 	 */
-	public String freshPredName() {
+	public String freshMembershipPredicateName() {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(preds));

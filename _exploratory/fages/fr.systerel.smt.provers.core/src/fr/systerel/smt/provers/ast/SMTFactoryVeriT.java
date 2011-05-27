@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
+import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
@@ -32,6 +33,24 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static SMTFactoryVeriT getInstance() {
 		return DEFAULT_INSTANCE;
 	}
+
+	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macro,
+			final SMTTerm... args) {
+		return new SMTMacroTerm(macro, args);
+	}
+
+	/**
+	 * Creates a extended SMT-LIB macro term with no arguments.
+	 * 
+	 * @param macroSymbol
+	 *            the symbol of the term
+	 * @return a new smt term with the macro symbol.
+	 */
+	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macroSymbol,
+			final SMTSortSymbol returnSort) {
+		return makeMacroTerm(macroSymbol);
+	}
+
 
 	/**
 	 * This method returns the translation of an Event-B String

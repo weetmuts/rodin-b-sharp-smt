@@ -609,7 +609,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			}
 		}
-		translatedBoundIdentTypes(hypotheses, goal);
+		translateBoundIdentTypes(hypotheses, goal);
 
 	}
 
@@ -621,7 +621,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param goal
 	 *            the goal
 	 */
-	private void translatedBoundIdentTypes(final List<Predicate> hypotheses,
+	private void translateBoundIdentTypes(final List<Predicate> hypotheses,
 			final Predicate goal) {
 		final List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
 
@@ -747,7 +747,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * arguments are well-formed.
 		 */
 		else {
-			//FIXME add an exception "EventBTypeMisFormed"
+			// FIXME add an exception "EventBTypeMisFormed"
 			return null;
 		}
 	}
@@ -936,22 +936,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
 			if (monadicSets.containsKey(rightSet.getName())) {
-				final Type leftType = left.getType();
-				final SMTTerm leftTerm = smtTerm(left);
-
-				// FIXME Check the behavior of this method
-				final SMTPredicateSymbol predSymbol = signature
-						.addPredicateSymbol(rightSet.getName(),
-								leftTerm.getSort());
-
-				msTypeMap.put(leftType, predSymbol);
-
-				smtNode = SMTFactory.makeAtom(predSymbol, signature, leftTerm);
-				membershipPredicateTerms.clear();
+				translateInMonadicMembershipPredicate(left, rightSet);
 				return;
 			}
 		}
 
+		translateInClassicMembershipPredicate(left, right);
+	}
+
+	private void translateInClassicMembershipPredicate(final Expression left,
+			final Expression right) {
 		final SMTTerm[] children = smtTerms(left, right);
 
 		if (left.getTag() != Formula.MAPSTO) {
@@ -967,7 +961,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final Type leftType = left.getType();
 
-		final SMTPredicateSymbol predSymbol = createPredSymbol(leftType,
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(leftType,
 				argSorts);
 
 		final SMTTerm[] args = membershipPredicateTerms
@@ -977,16 +971,33 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		membershipPredicateTerms.clear();
 	}
 
-	private SMTPredicateSymbol createPredSymbol(final Type type,
-			final SMTSortSymbol... argSorts) {
-		SMTPredicateSymbol predSymbol = msTypeMap.get(type);
-		if (predSymbol == null) {
-			predSymbol = signature.addPredicateSymbol(
-					signature.freshPredName(), argSorts);
-			msTypeMap.put(type, predSymbol);
+	private void translateInMonadicMembershipPredicate(
+			final Expression leftExpression, final FreeIdentifier rightSet) {
+		final Type leftType = leftExpression.getType();
+		final SMTTerm leftTerm = smtTerm(leftExpression);
+		SMTPredicateSymbol monadicMembershipPredicate = msTypeMap.get(leftType);
+
+		if (monadicMembershipPredicate == null) {
+			// FIXME Check the behavior of this method
+			monadicMembershipPredicate = signature.addPredicateSymbol(rightSet.getName(),
+					leftTerm.getSort());
+			msTypeMap.put(leftExpression.getType(), monadicMembershipPredicate);
 		}
-		assert predSymbol != null;
-		return predSymbol;
+
+		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate, signature, leftTerm);
+		membershipPredicateTerms.clear();
+	}
+
+	private SMTPredicateSymbol createMembershipPredicateSymbol(final Type type,
+			final SMTSortSymbol... argSorts) {
+		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
+		if (membershipPredicateSymbol == null) {
+			membershipPredicateSymbol = signature.addPredicateSymbol(
+					signature.freshMembershipPredicateName(), argSorts);
+			msTypeMap.put(type, membershipPredicateSymbol);
+		}
+		assert membershipPredicateSymbol != null;
+		return membershipPredicateSymbol;
 	}
 
 	/**
@@ -1007,7 +1018,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				!PREDEFINED);
 		final SMTTerm term = new SMTVar(vs);
 
-		final SMTPredicateSymbol predSymbol = createPredSymbol(type, intSort,
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(type, intSort,
 				intSort);
 
 		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
@@ -1035,7 +1046,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm termBool = sf.makeConstant(signature.getLogic()
 				.getBooleanCste(), signature);
 
-		final SMTPredicateSymbol predSymbol = createPredSymbol(type, boolSort,
+		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(type, boolSort,
 				boolSort);
 
 		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
