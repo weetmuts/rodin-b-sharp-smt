@@ -157,23 +157,14 @@ public class SMTSignatureVerit extends SMTSignature {
 		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
-
-		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
-			return freshName(names, NEW_SYMBOL_NAME);
-		} else {
-			return freshName(names, name);
-		}
+		
+		return freshSymbolName(names, name);
 	}
 
 	@Override
 	public void toString(final StringBuilder sb) {
 		super.toString(sb);
 		extramacrosSection(sb);
-	}
-
-	@Override
-	public Set<SMTSortSymbol> getSorts() {
-		return sorts;
 	}
 
 	public void addSort(final SMTSortSymbol sort) {

@@ -61,20 +61,20 @@ public abstract class SMTSignature {
 	/**
 	 * The logic of the signature
 	 */
-	protected final SMTLogic logic;
+	private final SMTLogic logic;
 
-	protected final static String NEW_SYMBOL_NAME = "NSYMB";
+	private final static String NEW_SYMBOL_NAME = "NSYMB";
 	private final static String NEW_SORT_NAME = "NSORT";
 
 	/**
 	 * reserved symbols of the logic
 	 */
-	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
+	private final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
 	/**
 	 * Predefined attribute symbols
 	 */
-	protected final static String predefinedAttributesSymbols[] = {
+	private final static String predefinedAttributesSymbols[] = {
 			"assumption", "formula", "status", "logic", "extrasorts",
 			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
 			"definition", THEORY, "language", "extensions", "notes" };
@@ -82,7 +82,7 @@ public abstract class SMTSignature {
 	/**
 	 * attribute symbols of the signature
 	 */
-	protected final Set<String> attributeSymbols = new HashSet<String>(
+	private final Set<String> attributeSymbols = new HashSet<String>(
 			Arrays.asList(predefinedAttributesSymbols));
 
 	/**
@@ -101,33 +101,6 @@ public abstract class SMTSignature {
 	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
 	/**
-	 * returns the sorts in the signature
-	 * 
-	 * @return the sorts in the signature
-	 */
-	public Set<SMTSortSymbol> getSorts() {
-		return sorts;
-	}
-
-	/**
-	 * returns the preds in the signature
-	 * 
-	 * @return the preds in the signature
-	 */
-	public Set<SMTPredicateSymbol> getPreds() {
-		return preds;
-	}
-
-	/**
-	 * returns the functions in the signature
-	 * 
-	 * @return the functions in the signature
-	 */
-	public Set<SMTFunctionSymbol> getFuns() {
-		return funs;
-	}
-
-	/**
 	 * Construts a new Signature given the SMT Logic
 	 * 
 	 * @param logic
@@ -138,90 +111,16 @@ public abstract class SMTSignature {
 		loadLogicSymbols();
 	}
 
-	public static boolean verifyRank(final SMTSortSymbol[] expectedSortArgs,
-			final SMTSortSymbol[] sorts) {
-		if (expectedSortArgs.length != sorts.length) {
-			return false;
-		}
-		for (int i = 0; i < sorts.length; i++) {
-			if (!expectedSortArgs[i].isCompatibleWith(sorts[i])) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	protected static boolean verifyAssociativeRank(
-			final SMTSortSymbol expectedSortArg, final SMTSortSymbol[] sorts) {
-		for (final SMTSortSymbol sort : sorts) {
-			if (!sort.isCompatibleWith(expectedSortArg)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// TODO Refactor this method
-	public void verifyPredicateSignature(
-			final SMTPredicateSymbol predicateSymbol) {
-		if (isPTRUEorPFALSE(predicateSymbol)) {
-			return;
-		}
-		for (final SMTPredicateSymbol predSymbol : preds) {
-
-			// Verify if the predicates have the same name
-			if (predicateSymbol.getName().equals(predSymbol.getName())) {
-
-				if (!verifyRank(predicateSymbol.getArgSorts(),
-						predSymbol.getArgSorts())) {
-					throw new IllegalArgumentException(
-							makeIncompatiblePredicatesExceptionMessage(
-									predicateSymbol, predSymbol));
-				}
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Predicate " + predicateSymbol
-				+ " is not declared in the signature.");
-	}
-
 	/**
 	 * @param predicateSymbol
 	 */
-	private boolean isPTRUEorPFALSE(final SMTPredicateSymbol predicateSymbol) {
+	private static boolean isPTRUEorPFALSE(final SMTPredicateSymbol predicateSymbol) {
 		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
 				|| predicateSymbol.getName()
 						.equals(SMTFactory.PFALSE.getName())) {
 			return true;
 		}
 		return false;
-	}
-
-	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
-		for (final SMTFunctionSymbol symbol : funs) {
-
-			// Verify if the predicates have the same name
-			if (functionSymbol.getName().equals(symbol.getName())) {
-
-				final SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
-				final SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
-
-				final boolean wellSorted;
-				if (symbol.isAssociative()) {
-					wellSorted = verifyAssociativeRank(expectedArgSorts[0],
-							argSorts);
-				} else {
-					wellSorted = verifyRank(expectedArgSorts, argSorts);
-				}
-				if (!wellSorted) {
-					throw makeIncompatibleFunctionsException(functionSymbol,
-							symbol);
-				}
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Function " + functionSymbol
-				+ " is not declared in the signature.");
 	}
 
 	// TODO: Refactor this method
@@ -284,102 +183,6 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * This method returns a set with the reserved symbols and keywords
-	 * 
-	 * @return the reserved symbols and keyboards.
-	 */
-	private static Set<String> getReservedSymbolsAndKeywords() {
-		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
-						"distinct", "false", "flet", "if_then_else", "iff",
-						"implies", "ite", "let", LOGIC, "not", "or", "sat",
-						THEORY, "true", "unknown", "unsat", "xor"));
-		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
-				.getConnectiveSymbols())
-				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
-						.getQuantifierSymbols())) {
-			// TODO throw new exception
-		}
-		return new HashSet<String>(reservedSymbolsAndKeywords);
-	}
-
-	/**
-	 * This method is used to get the symbol names already in use from a set of
-	 * SMT-LIB symbols
-	 */
-	protected static Set<String> getSymbolNames(
-			final Set<? extends SMTSymbol> symbols) {
-		final Set<String> symbolNames = new HashSet<String>();
-		for (final SMTSymbol symbol : symbols) {
-			symbolNames.add(symbol.getName());
-		}
-		return symbolNames;
-	}
-
-	/**
-	 * Returns a string containing as much space characters as needed to indent
-	 * the next line according to the length of the name of the section
-	 */
-	private static String sectionIndentation(final String sectionName) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("\n");
-		for (int i = 0; i < sectionName.length(); i++) {
-			sb.append(" ");
-		}
-		sb.append("    ");
-		return sb.toString();
-	}
-
-	/**
-	 * Adds in the signature the predicates, functions and sort symbols from the
-	 * loaded logic
-	 */
-	private void loadLogicSymbols() {
-		sorts.addAll(logic.getSorts());
-		preds.addAll(logic.getPredicates());
-		funs.addAll(logic.getFunctions());
-	}
-
-	/**
-	 * This method appends the string representation of the given SMT-LIB
-	 * section by appending the string representation of each SMT-LIB symbols
-	 * that is not predefined in the current logic. It doesn't modify the buffer
-	 * if the set contains only predefined symbols.
-	 * 
-	 * @param <T>
-	 *            The type of SMT-LIB symbols to append to the buffer.
-	 * @param sb
-	 *            the buffer to complete.
-	 * @param elements
-	 *            the symbols to append to the buffer.
-	 * @param sectionName
-	 *            the name of the SMT-LIB section this buffer represents.
-	 */
-	protected static <T extends SMTSymbol> void extraSection(
-			final StringBuilder sb, final Set<T> elements,
-			final String sectionName) {
-		final String eltSep = sectionIndentation(sectionName);
-		boolean emptySection = true;
-		final StringBuilder sectionStarting = new StringBuilder();
-		sectionStarting.append(" :");
-		sectionStarting.append(sectionName);
-		sectionStarting.append(" (");
-		String separator = sectionStarting.toString();
-		final TreeSet<T> sortedElements = new TreeSet<T>(elements);
-		for (final T element : sortedElements) {
-			if (!element.isPredefined()) {
-				sb.append(separator);
-				element.toString(sb);
-				separator = eltSep;
-				emptySection = false;
-			}
-		}
-		if (!emptySection) {
-			sb.append(")\n");
-		}
-	}
-
-	/**
 	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
 	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
 	 * number , incremented as much as needed. If the symbol name already exists
@@ -388,7 +191,7 @@ public abstract class SMTSignature {
 	 */
 	// TODO check which prover needs the "\'" simplification, and document it
 	// here
-	protected static String freshName(final Set<String> symbols,
+	private static String freshName(final Set<String> symbols,
 			final String name) {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
@@ -436,13 +239,100 @@ public abstract class SMTSignature {
 		return freshName.toString();
 	}
 
+	private static boolean verifyAssociativeRank(
+			final SMTSortSymbol expectedSortArg, final SMTSortSymbol[] sorts) {
+		for (final SMTSortSymbol sort : sorts) {
+			if (!sort.isCompatibleWith(expectedSortArg)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean verifyRank(final SMTSortSymbol[] expectedSortArgs,
+			final SMTSortSymbol[] sorts) {
+		if (expectedSortArgs.length != sorts.length) {
+			return false;
+		}
+		for (int i = 0; i < sorts.length; i++) {
+			if (!expectedSortArgs[i].isCompatibleWith(sorts[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
-	 * Returns the logic used by the signature
-	 * 
-	 * @return the logic of the signature
+	 * Returns a string containing as much space characters as needed to indent
+	 * the next line according to the length of the name of the section
 	 */
-	public SMTLogic getLogic() {
-		return logic;
+	private static String sectionIndentation(final String sectionName) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		for (int i = 0; i < sectionName.length(); i++) {
+			sb.append(" ");
+		}
+		sb.append("    ");
+		return sb.toString();
+	}
+
+	/**
+	 * This method appends the string representation of the given SMT-LIB
+	 * section by appending the string representation of each SMT-LIB symbols
+	 * that is not predefined in the current logic. It doesn't modify the buffer
+	 * if the set contains only predefined symbols.
+	 * 
+	 * @param <T>
+	 *            The type of SMT-LIB symbols to append to the buffer.
+	 * @param sb
+	 *            the buffer to complete.
+	 * @param elements
+	 *            the symbols to append to the buffer.
+	 * @param sectionName
+	 *            the name of the SMT-LIB section this buffer represents.
+	 */
+	private static <T extends SMTSymbol> void extraSection(
+			final StringBuilder sb, final Set<T> elements,
+			final String sectionName) {
+		final String eltSep = sectionIndentation(sectionName);
+		boolean emptySection = true;
+		final StringBuilder sectionStarting = new StringBuilder();
+		sectionStarting.append(" :");
+		sectionStarting.append(sectionName);
+		sectionStarting.append(" (");
+		String separator = sectionStarting.toString();
+		final TreeSet<T> sortedElements = new TreeSet<T>(elements);
+		for (final T element : sortedElements) {
+			if (!element.isPredefined()) {
+				sb.append(separator);
+				element.toString(sb);
+				separator = eltSep;
+				emptySection = false;
+			}
+		}
+		if (!emptySection) {
+			sb.append(")\n");
+		}
+	}
+
+	/**
+	 * This method returns a set with the reserved symbols and keywords
+	 * 
+	 * @return the reserved symbols and keyboards.
+	 */
+	private static Set<String> getReservedSymbolsAndKeywords() {
+		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
+				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
+						"distinct", "false", "flet", "if_then_else", "iff",
+						"implies", "ite", "let", LOGIC, "not", "or", "sat",
+						THEORY, "true", "unknown", "unsat", "xor"));
+		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
+				.getConnectiveSymbols())
+				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
+						.getQuantifierSymbols())) {
+			// TODO throw new exception
+		}
+		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}
 
 	/**
@@ -457,7 +347,7 @@ public abstract class SMTSignature {
 	 *            the result sort of the function symbol.
 	 * @return the function symbol.
 	 */
-	public SMTFunctionSymbol getFunctionSymbol(final String name,
+	private SMTFunctionSymbol getFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
 		for (final SMTFunctionSymbol fun : funs) {
 			if (fun.name.equals(name) && fun.hasRank(argSorts, resultSort)) {
@@ -477,7 +367,7 @@ public abstract class SMTSignature {
 	 *            the argument sorts.
 	 * @return the predicate symbol.
 	 */
-	public SMTPredicateSymbol getPredicateSymbol(final String name,
+	private SMTPredicateSymbol getPredicateSymbol(final String name,
 			final SMTSortSymbol[] argSorts) {
 		for (final SMTPredicateSymbol pred : preds) {
 			if (pred.name.equals(name) && pred.hasRank(argSorts)) {
@@ -487,12 +377,136 @@ public abstract class SMTSignature {
 		return null;
 	}
 
-	public String freshSymbolName(final String name) {
-		final Set<String> names = new HashSet<String>();
-		names.addAll(getSymbolNames(funs));
-		names.addAll(getSymbolNames(sorts));
-		names.addAll(getSymbolNames(preds));
-		return freshSymbolName(names, name);
+	/**
+	 * Appends to the StringBuilder the string representation of the logic
+	 * section
+	 * 
+	 * @param sb
+	 *            the StringBuilder
+	 */
+	private void logicSection(final StringBuilder sb) {
+		sb.append(" :logic ");
+		sb.append(logic.getName());
+		sb.append("\n");
+	}
+
+	/**
+	 * One sort per line. May add a comment beside.
+	 */
+	private void extrasortsSection(final StringBuilder sb) {
+		if (!sorts.isEmpty()) {
+			extraSection(sb, sorts, "extrasorts");
+		}
+	}
+
+	/**
+	 * Appends to the StringBuilder the string representation of the extrapreds
+	 * section
+	 * 
+	 * @param sb
+	 */
+	private void extrapredsSection(final StringBuilder sb) {
+		if (!preds.isEmpty()) {
+			extraSection(sb, preds, "extrapreds");
+		}
+	}
+
+	/**
+	 * Appends to the StringBuilder the string representation of the extrafuns
+	 * section
+	 * 
+	 * @param sb
+	 */
+	private void extrafunsSection(final StringBuilder sb) {
+		if (!funs.isEmpty()) {
+			extraSection(sb, funs, "extrafuns");
+		}
+	}
+
+	/**
+	 * Adds in the signature the predicates, functions and sort symbols from the
+	 * loaded logic
+	 */
+	private void loadLogicSymbols() {
+		sorts.addAll(logic.getSorts());
+		preds.addAll(logic.getPredicates());
+		funs.addAll(logic.getFunctions());
+	}
+
+	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
+			final Set<SMTPredicateSymbol> usedPreds,
+			final Set<SMTSortSymbol> usedSorts) {
+
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
+		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
+
+		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
+				&& unusedSortSymbols.isEmpty()) {
+			return;
+		}
+		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
+	}
+
+	private Set<SMTSortSymbol> removeUnusedSorts(
+			final Set<SMTSortSymbol> usedSorts) {
+		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
+		final Set<SMTSortSymbol> declUsedSorts = new HashSet<SMTSortSymbol>();
+
+		for (final SMTFunctionSymbol fun : funs) {
+			declUsedSorts.add(fun.getResultSort());
+			declUsedSorts.addAll(Arrays.asList(fun.getArgSorts()));
+		}
+
+		for (final SMTPredicateSymbol pred : preds) {
+			declUsedSorts.addAll(Arrays.asList(pred.getArgSorts()));
+		}
+
+		for (final SMTSortSymbol symbol : sorts) {
+			if (!usedSorts.contains(symbol) && !declUsedSorts.contains(symbol)) {
+				unusedSortSymbols.add(symbol);
+			}
+		}
+
+		sorts.removeAll(unusedSortSymbols);
+		return unusedSortSymbols;
+	}
+
+	private Set<SMTPredicateSymbol> removeUnusedPreds(
+			final Set<SMTPredicateSymbol> usedPreds) {
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
+		for (final SMTPredicateSymbol symbol : preds) {
+			if (!usedPreds.contains(symbol)) {
+				unusedPredicateSymbols.add(symbol);
+			}
+		}
+		preds.removeAll(unusedPredicateSymbols);
+		return unusedPredicateSymbols;
+	}
+
+	private Set<SMTFunctionSymbol> removeUnusedFunctions(
+			final Set<SMTFunctionSymbol> usedFuns) {
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
+		for (final SMTFunctionSymbol symbol : funs) {
+			if (!usedFuns.contains(symbol)) {
+				unusedFunctionSymbols.add(symbol);
+			}
+		}
+		funs.removeAll(unusedFunctionSymbols);
+		return unusedFunctionSymbols;
+	}
+
+	/**
+	 * This method is used to get the symbol names already in use from a set of
+	 * SMT-LIB symbols
+	 */
+	protected static Set<String> getSymbolNames(
+			final Set<? extends SMTSymbol> symbols) {
+		final Set<String> symbolNames = new HashSet<String>();
+		for (final SMTSymbol symbol : symbols) {
+			symbolNames.add(symbol.getName());
+		}
+		return symbolNames;
 	}
 
 	/**
@@ -505,13 +519,108 @@ public abstract class SMTSignature {
 	 *            be the same string or the same string + a numeral.
 	 * @return a fresh name.
 	 */
-	public String freshSymbolName(final Set<String> symbolNames,
+	protected String freshSymbolName(final Set<String> symbolNames,
 			final String name) {
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
 			return freshName(symbolNames, NEW_SYMBOL_NAME);
 		} else {
 			return freshName(symbolNames, name);
 		}
+	}
+
+	/**
+	 * returns the sorts in the signature
+	 * 
+	 * @return the sorts in the signature
+	 */
+	public Set<SMTSortSymbol> getSorts() {
+		return sorts;
+	}
+
+	/**
+	 * returns the preds in the signature
+	 * 
+	 * @return the preds in the signature
+	 */
+	public Set<SMTPredicateSymbol> getPreds() {
+		return preds;
+	}
+
+	/**
+	 * returns the functions in the signature
+	 * 
+	 * @return the functions in the signature
+	 */
+	public Set<SMTFunctionSymbol> getFuns() {
+		return funs;
+	}
+
+	/**
+	 * Returns the logic used by the signature
+	 * 
+	 * @return the logic of the signature
+	 */
+	public SMTLogic getLogic() {
+		return logic;
+	}
+
+	// TODO Refactor this method
+	public void verifyPredicateSignature(
+			final SMTPredicateSymbol predicateSymbol) {
+		if (isPTRUEorPFALSE(predicateSymbol)) {
+			return;
+		}
+		for (final SMTPredicateSymbol predSymbol : preds) {
+
+			// Verify if the predicates have the same name
+			if (predicateSymbol.getName().equals(predSymbol.getName())) {
+
+				if (!verifyRank(predicateSymbol.getArgSorts(),
+						predSymbol.getArgSorts())) {
+					throw new IllegalArgumentException(
+							makeIncompatiblePredicatesExceptionMessage(
+									predicateSymbol, predSymbol));
+				}
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Predicate " + predicateSymbol
+				+ " is not declared in the signature.");
+	}
+
+	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
+		for (final SMTFunctionSymbol symbol : funs) {
+
+			// Verify if the predicates have the same name
+			if (functionSymbol.getName().equals(symbol.getName())) {
+
+				final SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
+				final SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
+
+				final boolean wellSorted;
+				if (symbol.isAssociative()) {
+					wellSorted = verifyAssociativeRank(expectedArgSorts[0],
+							argSorts);
+				} else {
+					wellSorted = verifyRank(expectedArgSorts, argSorts);
+				}
+				if (!wellSorted) {
+					throw makeIncompatibleFunctionsException(functionSymbol,
+							symbol);
+				}
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Function " + functionSymbol
+				+ " is not declared in the signature.");
+	}
+
+	public String freshSymbolName(final String name) {
+		final Set<String> names = new HashSet<String>();
+		names.addAll(getSymbolNames(funs));
+		names.addAll(getSymbolNames(sorts));
+		names.addAll(getSymbolNames(preds));
+		return freshSymbolName(names, name);
 	}
 
 	/**
@@ -559,52 +668,6 @@ public abstract class SMTSignature {
 		 */
 		sorts.add(freshSort);
 		return freshSort;
-	}
-
-	/**
-	 * Appends to the StringBuilder the string representation of the logic
-	 * section
-	 * 
-	 * @param sb
-	 *            the StringBuilder
-	 */
-	private void logicSection(final StringBuilder sb) {
-		sb.append(" :logic ");
-		sb.append(logic.getName());
-		sb.append("\n");
-	}
-
-	/**
-	 * One sort per line. May add a comment beside.
-	 */
-	private void extrasortsSection(final StringBuilder sb) {
-		if (!sorts.isEmpty()) {
-			extraSection(sb, sorts, "extrasorts");
-		}
-	}
-
-	/**
-	 * Appends to the StringBuilder the string representation of the extrapreds
-	 * section
-	 * 
-	 * @param sb
-	 */
-	private void extrapredsSection(final StringBuilder sb) {
-		if (!preds.isEmpty()) {
-			extraSection(sb, preds, "extrapreds");
-		}
-	}
-
-	/**
-	 * Appends to the StringBuilder the string representation of the extrafuns
-	 * section
-	 * 
-	 * @param sb
-	 */
-	private void extrafunsSection(final StringBuilder sb) {
-		if (!funs.isEmpty()) {
-			extraSection(sb, funs, "extrafuns");
-		}
 	}
 
 	/**
@@ -657,69 +720,6 @@ public abstract class SMTSignature {
 		extrasortsSection(sb);
 		extrapredsSection(sb);
 		extrafunsSection(sb);
-	}
-
-	protected void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
-			final Set<SMTPredicateSymbol> usedPreds,
-			final Set<SMTSortSymbol> usedSorts) {
-
-		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
-		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
-		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
-
-		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
-				&& unusedSortSymbols.isEmpty()) {
-			return;
-		}
-		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
-	}
-
-	protected Set<SMTSortSymbol> removeUnusedSorts(
-			final Set<SMTSortSymbol> usedSorts) {
-		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
-		final Set<SMTSortSymbol> declUsedSorts = new HashSet<SMTSortSymbol>();
-
-		for (final SMTFunctionSymbol fun : funs) {
-			declUsedSorts.add(fun.getResultSort());
-			declUsedSorts.addAll(Arrays.asList(fun.getArgSorts()));
-		}
-
-		for (final SMTPredicateSymbol pred : preds) {
-			declUsedSorts.addAll(Arrays.asList(pred.getArgSorts()));
-		}
-
-		for (final SMTSortSymbol symbol : sorts) {
-			if (!usedSorts.contains(symbol) && !declUsedSorts.contains(symbol)) {
-				unusedSortSymbols.add(symbol);
-			}
-		}
-
-		sorts.removeAll(unusedSortSymbols);
-		return unusedSortSymbols;
-	}
-
-	protected Set<SMTPredicateSymbol> removeUnusedPreds(
-			final Set<SMTPredicateSymbol> usedPreds) {
-		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
-		for (final SMTPredicateSymbol symbol : preds) {
-			if (!usedPreds.contains(symbol)) {
-				unusedPredicateSymbols.add(symbol);
-			}
-		}
-		preds.removeAll(unusedPredicateSymbols);
-		return unusedPredicateSymbols;
-	}
-
-	protected Set<SMTFunctionSymbol> removeUnusedFunctions(
-			final Set<SMTFunctionSymbol> usedFuns) {
-		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
-		for (final SMTFunctionSymbol symbol : funs) {
-			if (!usedFuns.contains(symbol)) {
-				unusedFunctionSymbols.add(symbol);
-			}
-		}
-		funs.removeAll(unusedFunctionSymbols);
-		return unusedFunctionSymbols;
 	}
 
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
