@@ -131,7 +131,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * @param actualPredicate the actualPredicate to set
+	 * @param actualPredicate
+	 *            the actualPredicate to set
 	 */
 	public void setActualPredicate(Predicate actualPredicate) {
 		this.actualPredicate = actualPredicate;
@@ -503,15 +504,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			Predicate predicate, final String solver,
-			final boolean usesTruePred) {
+			Predicate predicate, final String solver, final boolean usesTruePred) {
 		final SMTThroughPP translator = new SMTThroughPP(solver, null);
 		predicate = translator.recursiveAutoRewrite(predicate);
 		translator.setActualPredicate(predicate);
 		translator.setUsesTruePred(usesTruePred);
-		translator.translateSignature(logic, new ArrayList<Predicate>(0), predicate);
-		predicate.accept(translator);
-		return translator.getSMTFormula();
+		translator.translateSignature(logic, new ArrayList<Predicate>(0),
+				predicate);
+		return translator.translate(predicate);
+	}
+
+	public static SMTLogic determineLogic(Predicate goalPredicate) {
+		final SMTThroughPP translator = new SMTThroughPP(null, null);
+		goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
+		return translator.determineLogic(new ArrayList<Predicate>(0), goalPredicate);
 	}
 
 	/**
