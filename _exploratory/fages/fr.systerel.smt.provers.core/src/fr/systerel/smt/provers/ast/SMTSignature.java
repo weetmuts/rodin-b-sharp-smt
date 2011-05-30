@@ -74,10 +74,10 @@ public abstract class SMTSignature {
 	/**
 	 * Predefined attribute symbols
 	 */
-	private final static String predefinedAttributesSymbols[] = {
-			"assumption", "formula", "status", "logic", "extrasorts",
-			"extrafuns", "extrapreds", "funs", "preds", "axioms", "sorts",
-			"definition", THEORY, "language", "extensions", "notes" };
+	private final static String predefinedAttributesSymbols[] = { "assumption",
+			"formula", "status", "logic", "extrasorts", "extrafuns",
+			"extrapreds", "funs", "preds", "axioms", "sorts", "definition",
+			THEORY, "language", "extensions", "notes" };
 
 	/**
 	 * attribute symbols of the signature
@@ -109,18 +109,6 @@ public abstract class SMTSignature {
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
 		loadLogicSymbols();
-	}
-
-	/**
-	 * @param predicateSymbol
-	 */
-	private static boolean isPTRUEorPFALSE(final SMTPredicateSymbol predicateSymbol) {
-		if (predicateSymbol.getName().equals(SMTFactory.PTRUE.getName())
-				|| predicateSymbol.getName()
-						.equals(SMTFactory.PFALSE.getName())) {
-			return true;
-		}
-		return false;
 	}
 
 	// TODO: Refactor this method
@@ -191,8 +179,7 @@ public abstract class SMTSignature {
 	 */
 	// TODO check which prover needs the "\'" simplification, and document it
 	// here
-	private static String freshName(final Set<String> symbols,
-			final String name) {
+	private static String freshName(final Set<String> symbols, final String name) {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
 
@@ -567,7 +554,7 @@ public abstract class SMTSignature {
 	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
-		if (isPTRUEorPFALSE(predicateSymbol)) {
+		if (predicateSymbol.isPTRUEorPFALSE()) {
 			return;
 		}
 		for (final SMTPredicateSymbol predSymbol : preds) {

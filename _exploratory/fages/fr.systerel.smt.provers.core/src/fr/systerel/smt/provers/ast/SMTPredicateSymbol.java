@@ -115,6 +115,14 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		return Arrays.equals(argSorts, argSorts2);
 	}
 
+	public boolean isPTRUEorPFALSE() {
+		if (name.equals(SMTFactory.PTRUE.getName())
+				|| name.equals(SMTFactory.PFALSE.getName())) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
