@@ -213,20 +213,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private SMTSortSymbol parseOneOfPairTypes(final Type type,
 			final Type parentType) {
-		if (type.getBaseType() != null || type.getSource() != null) {
-			throw new IllegalArgumentException(", Type "
-					+ parentType.toString()
-					+ ": Sets of sets are not supported yet");
-		} else {
-			SMTSortSymbol sortSymbol = typeMap.get(type);
-			if (sortSymbol == null) {
-				sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
-						type.toString(), signature);
-				signature.addSort(sortSymbol);
-				typeMap.put(type, sortSymbol);
-			}
-			return sortSymbol;
+		checkIfIsSetOfSet(type, parentType);
+		SMTSortSymbol sortSymbol = typeMap.get(type);
+		if (sortSymbol == null) {
+			sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(type.toString(),
+					signature);
+			signature.addSort(sortSymbol);
+			typeMap.put(type, sortSymbol);
 		}
+		return sortSymbol;
 	}
 
 	/**
@@ -461,15 +456,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private void checkIfIsSetOfSet(final ProductType type) {
 		checkIfIsSetOfSet(type.getLeft(), type);
-		if (type.getLeft() instanceof ProductType) {
-			throw new IllegalArgumentException("Type " + type.toString()
-					+ ": Sets of sets are not supported yet");
-		}
 		checkIfIsSetOfSet(type.getRight(), type);
-		if (type.getRight() instanceof ProductType) {
-			throw new IllegalArgumentException("Type " + type.toString()
-					+ ": Sets of sets are not supported yet");
-		}
 	}
 
 	/**
@@ -547,15 +534,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature));
 			break;
 		case Formula.EMPTYSET:
-			if (expression.getType().getSource() instanceof ProductType
-					|| expression.getType().getTarget() instanceof ProductType) {
-				throw new IllegalArgumentException("Type: "
-						+ expression.getType().toString()
-						+ ": power set of power set is not supported yet");
-			} else {
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactory
-						.getMacroSymbol(EMPTY, signature));
-			}
+			smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactory
+					.getMacroSymbol(EMPTY, signature));
 			break;
 		case Formula.KID_GEN:
 			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID,
