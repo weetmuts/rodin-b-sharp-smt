@@ -517,7 +517,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public static SMTLogic determineLogic(Predicate goalPredicate) {
 		final SMTThroughPP translator = new SMTThroughPP(null, null);
 		goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
-		return translator.determineLogic(new ArrayList<Predicate>(0), goalPredicate);
+		return translator.determineLogic(new ArrayList<Predicate>(0),
+				goalPredicate);
 	}
 
 	/**
@@ -610,21 +611,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				if (!varMap.containsKey(varName)) {
 					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
 						final SMTPredicateSymbol predSymbol = signature
-								.addPredicateSymbol(varName);
+								.freshPredicateSymbol(varName);
 						varMap.put(varName, predSymbol);
 						continue;
 					} else {
-						smtConstant = signature.freshConstant(varName,
-								smtSortSymbol);
-						varMap.put(varName, smtConstant);
-
 						/**
 						 * adds the typing item (<code>x ⦂ S</code>) to the
 						 * signature as a constant (<code>extrafuns</code>
 						 * SMT-LIB section, with a sort but no argument:
 						 * <code>(x S)</code>).
 						 */
-						signature.addConstant(smtConstant);
+						smtConstant = signature.freshConstant(varName,
+								smtSortSymbol);
+						varMap.put(varName, smtConstant);
 					}
 				} else {
 					final SMTSymbol s = varMap.get(varName);
@@ -861,7 +860,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		if (monadicMembershipPredicate == null) {
 			// FIXME Check the behavior of this method
-			monadicMembershipPredicate = signature.addPredicateSymbol(
+			monadicMembershipPredicate = signature.freshPredicateSymbol(
 					rightSet.getName(), leftTerm.getSort());
 			msTypeMap.put(leftExpression.getType(), monadicMembershipPredicate);
 		}
@@ -875,8 +874,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
 		if (membershipPredicateSymbol == null) {
-			membershipPredicateSymbol = signature.addPredicateSymbol(
-					signature.freshMembershipPredicateName(), argSorts);
+			membershipPredicateSymbol = signature.freshPredicateSymbol(
+					SMTPredicateSymbol.MS_PREDICATE_NAME, argSorts);
 			msTypeMap.put(type, membershipPredicateSymbol);
 		}
 		assert membershipPredicateSymbol != null;
@@ -894,7 +893,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private SMTFormula generateIntegerAxiom(final Type type,
 			final SMTTerm intSet) {
-		final String symbolName = signature.freshCstName("x");
+		final String symbolName = signature.freshSymbolName("x");
 		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
 
 		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort,
@@ -920,7 +919,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *         predicate shown above
 	 */
 	private SMTFormula generateBoolAxiom(final Type type) {
-		final String symbolName = signature.freshCstName("x");
+		final String symbolName = signature.freshSymbolName("x");
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 
 		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
@@ -986,7 +985,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		@Override
 		public boolean enterMAPSTO(final BinaryExpression expr) {
 			assert atomicExpression != null;
-			if (expr.getLeft().equals(atomicExpression) || expr.getRight().equals(atomicExpression)) {
+			if (expr.getLeft().equals(atomicExpression)
+					|| expr.getRight().equals(atomicExpression)) {
 				if (membershipPredicate.getLeft().equals(expr)) {
 					return false;
 				} else {
@@ -1084,7 +1084,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (intSetTerm == null) {
 				final SMTFunctionSymbol intSymbol = signature.freshConstant(
 						"int", signature.getLogic().getIntegerSort());
-				signature.addConstant(intSymbol);
 				intSetTerm = SMTFactory.makeInteger(intSymbol, signature);
 				intAxiom = generateIntegerAxiom(expression.getType(),
 						intSetTerm);
@@ -1308,15 +1307,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
 
-		final Set<String> symbolNames = new HashSet<String>();
-		for (final SMTSymbol function : varMap.values()) {
-			symbolNames.add(function.getName());
-		}
-		for (final SMTVar var : qVarMap.values()) {
-			symbolNames.add(var.getSymbol().getName());
-		}
-		final String smtVarName = signature.freshSymbolName(symbolNames,
-				varName);
+		final String smtVarName = signature.freshSymbolName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
 		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {

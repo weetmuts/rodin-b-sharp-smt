@@ -27,12 +27,17 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * is possible to associate a predicate to the empty sequence rank, denoting
 	 * that the predicate is a propositional predicate.
 	 */
-	final private SMTSortSymbol[] argSorts;
+	private final SMTSortSymbol[] argSorts;
 
 	/**
 	 * True if the predicate is associative, false otherwise.
 	 */
-	final private boolean isAssociative;
+	private final boolean isAssociative;
+
+	/**
+	 * This constant is used to name membership predicates.
+	 */
+	public final static String MS_PREDICATE_NAME = "MS";
 
 	/**
 	 * Constructs a new predicate symbol.

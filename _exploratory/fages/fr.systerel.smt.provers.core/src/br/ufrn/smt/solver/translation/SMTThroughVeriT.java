@@ -299,7 +299,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTSortSymbol sort) {
 		final SMTFunctionSymbol smtConstant;
 		smtConstant = signature.freshConstant(varName, sort);
-		signature.addConstant(smtConstant);
 		varMap.put(varName, smtConstant);
 	}
 
@@ -316,7 +315,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 			final SMTSortSymbol sort = translateTypeName(varType);
 			final String varName = iter.getName();
-			final String freshVarName = signature.freshCstName(varName);
+			final String freshVarName = signature.freshSymbolName(varName);
 			if (varType.getSource() != null || varType.getBaseType() != null) {
 				translatePredSymbol(varName, freshVarName, sort);
 			} else {
@@ -490,7 +489,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTSortSymbol expressionSort, final SMTTerm... termChildren) {
 
 		// obtaining fresh name for the variables
-		final String lambdaName = signature.freshCstName(SMTMacroSymbol.ELEM);
+		final String lambdaName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
 
 		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
 				expressionSort, false);
@@ -567,7 +566,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private SMTTerm translateKPREDorKSUCC(final SMTOperator operator,
 			final String macroSymbol) {
 		// Making x
-		final String x = signature.freshCstName("x");
+		final String x = signature.freshSymbolName("x");
 		final SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(
 				Ints.getInt(), Ints.getInt());
 
@@ -596,7 +595,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula inFormula = SMTFactoryVeriT.makeMacroAtom(
 				getMacroSymbol(IN, signature), xFun, intT);
 
-		final String macroName = signature.freshCstName(macroSymbol);
+		final String macroName = signature.freshSymbolName(macroSymbol);
 
 		return translateQuantifiedExpression(macroName, inFormula,
 				mapstoTerm[0], xSort, xFun);
@@ -758,16 +757,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
-
-		final Set<String> symbolNames = new HashSet<String>();
-		for (final SMTSymbol function : varMap.values()) {
-			symbolNames.add(function.getName());
-		}
-		for (final SMTVar var : qVarMap.values()) {
-			symbolNames.add(var.getSymbol().getName());
-		}
-		final String smtVarName = signature.freshSymbolName(symbolNames,
-				varName);
+		
+		final String smtVarName = signature.freshSymbolName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
 		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
@@ -1091,7 +1082,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (expressionSymbol == null) {
 			expressionSymbol = translateTypeName(expression.getType());
 		}
-		final String macroName = signature.freshCstName(SMTMacroSymbol.CSET);
+		final String macroName = signature.freshSymbolName(SMTMacroSymbol.CSET);
 
 		final int top = boundIdentifiersMarker.pop();
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
@@ -1141,8 +1132,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translateSetExtension(final SetExtension expression) {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
-		final String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
-		final String varName = signature.freshCstName(SMTMacroSymbol.ELEM);
+		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
+		final String varName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
 
 		final Type setExtensionType = expression.getMembers()[0].getType();
 		if (setExtensionType instanceof ProductType) {
@@ -1295,8 +1286,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTTerm[] children) {
 		// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
 		// 25)
-		final String kVarName = signature.freshCstName("card_k");
-		final String fVarName = signature.freshCstName("card_f");
+		final String kVarName = signature.freshSymbolName("card_k");
+		final String fVarName = signature.freshSymbolName("card_f");
 
 		final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
 				Ints.getInt(), false, false);
@@ -1352,7 +1343,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
 			final String constantName, final SMTTerm[] children) {
 		// Creating the name for the 'm' variable in SMT-LIB (rule 22)
-		final String mVarName = signature.freshCstName(constantName);
+		final String mVarName = signature.freshSymbolName(constantName);
 
 		// Creating the constant 'm'
 		final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
@@ -1567,9 +1558,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(predicate.getExpression());
 		// Creating the name for the 'p','f' and 'k' variables in SMT-LIB (rule
 		// 24)
-		final String pVarName = signature.freshCstName("finite_p");
-		final String kVarName = signature.freshCstName("finite_k");
-		final String fVarName = signature.freshCstName("finite_f");
+		final String pVarName = signature.freshSymbolName("finite_p");
+		final String kVarName = signature.freshSymbolName("finite_k");
+		final String fVarName = signature.freshSymbolName("finite_f");
 
 		// Creating the constant 'p'
 		final SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,

@@ -67,11 +67,6 @@ public abstract class SMTSignature {
 	private final static String NEW_SORT_NAME = "NSORT";
 
 	/**
-	 * This constant is used to name membership predicates.
-	 */
-	protected final static String MS_PREDICATE_NAME = "MS";
-
-	/**
 	 * reserved symbols of the logic
 	 */
 	protected final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
@@ -492,37 +487,12 @@ public abstract class SMTSignature {
 		return null;
 	}
 
-	/**
-	 * returns a fresh predicate name.
-	 * 
-	 * @return a fresh predicate name.
-	 */
-	public String freshMembershipPredicateName() {
-		final Set<String> names = new HashSet<String>();
-		names.addAll(getSymbolNames(funs));
-		names.addAll(getSymbolNames(preds));
-		names.addAll(getSymbolNames(sorts));
-		return freshName(names, MS_PREDICATE_NAME);
-	}
-
-	/**
-	 * returns a fresh constante name.
-	 * 
-	 * @param name
-	 *            the base name for the new constant name.
-	 * @return {@code name} if there is no element defined with the same name,
-	 *         {@code name} + a numeral otherwise.
-	 */
-	public String freshCstName(final String name) {
+	public String freshSymbolName(final String name) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
-		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
-			return freshName(names, NEW_SYMBOL_NAME);
-		} else {
-			return freshName(names, name);
-		}
+		return freshSymbolName(names, name);
 	}
 
 	/**
@@ -555,8 +525,11 @@ public abstract class SMTSignature {
 	 */
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
-		final String freshName = freshCstName(name);
-		return new SMTFunctionSymbol(freshName, sort, !ASSOCIATIVE, !PREDEFINED);
+		final String freshName = freshSymbolName(name);
+		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
+				freshName, sort, !ASSOCIATIVE, !PREDEFINED);
+		funs.add(freshConstant);
+		return freshConstant;
 	}
 
 	/**
@@ -653,16 +626,17 @@ public abstract class SMTSignature {
 	 *            the sort arguments.
 	 * @return the just added predicate symbol to the signature
 	 */
-	public SMTPredicateSymbol addPredicateSymbol(final String name,
+	public SMTPredicateSymbol freshPredicateSymbol(final String name,
 			final SMTSortSymbol... argSorts) {
-		SMTPredicateSymbol symbol = new SMTPredicateSymbol(name,
+		final String freshName = freshSymbolName(name);
+		SMTPredicateSymbol symbol = new SMTPredicateSymbol(freshName,
 				!SMTSymbol.PREDEFINED, argSorts);
 		boolean successfullyAdded = preds.add(symbol);
 		if (successfullyAdded) {
 			return symbol;
 		} else {
 			symbol = new SMTPredicateSymbol(freshName(getSymbolNames(preds),
-					name), !SMTSymbol.PREDEFINED, argSorts);
+					freshName), !SMTSymbol.PREDEFINED, argSorts);
 			successfullyAdded = preds.add(symbol);
 			if (successfullyAdded) {
 				return symbol;

@@ -140,7 +140,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	@Override
-	public String freshCstName(final String name) {
+	public String freshSymbolName(final String name) {
 		return freshCstName(name, null);
 	}
 

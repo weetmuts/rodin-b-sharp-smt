@@ -55,7 +55,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		} else if (atomicExpression.equals("BOOL")) {
 			return SMTMacroSymbol.BOOL_SORT_VERIT;
 		} else {
-			return signature.freshCstName(atomicExpression);
+			return signature.freshSymbolName(atomicExpression);
 		}
 	}
 
