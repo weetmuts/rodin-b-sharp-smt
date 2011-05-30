@@ -16,22 +16,29 @@ import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 public class LogicTestsWithPP extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
-	private static final SMTLogic defaultBoolLogic;
+	private static final SMTLogic smtLibUnderlyingLogic;
+	private static final SMTLogic boolLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
-		defaultBoolLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+		boolLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
+		smtLibUnderlyingLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
-			final String ppPredStr) {
+			final String ppPredStr, final SMTLogic expectedSMTLogic) {
 		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv);
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(goalPredicate));
 
 		final SMTLogic logic = SMTThroughPP.determineLogic(goalPredicate);
 
-		assertEquals("", defaultBoolLogic.toString(), logic.toString());
+		assertEquals("", expectedSMTLogic.toString(), logic.toString());
+	}
+
+	@Test
+	public void testInt() {
+		testLogic(defaultTe, "a = 1", smtLibUnderlyingLogic);
 	}
 
 	@Test
@@ -41,24 +48,25 @@ public class LogicTestsWithPP extends AbstractTests {
 		 * br.ufrn.smt.solver.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitTRUE(AtomicExpression)
 		 */
-		testLogic(defaultTe, "TRUE = p");
+		testLogic(defaultTe, "TRUE = p", boolLogic);
 		/**
 		 * Reaches
 		 * br.ufrn.smt.solver.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOOL(AtomicExpression)
 		 */
-		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X");
+		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", boolLogic);
 		/**
 		 * Reaches
 		 * br.ufrn.smt.solver.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOUND_IDENT_DECL(BoundIdentDecl)
 		 */
-		testLogic(defaultTe, "∀ x ⦂ ℤ, X ⦂ ℙ(ℤ), P ⦂ BOOL · (x ∈ X ⇒ P = TRUE)");
+		testLogic(defaultTe,
+				"∀ x ⦂ ℤ, X ⦂ ℙ(ℤ), P ⦂ BOOL · (x ∈ X ⇒ P = TRUE)", boolLogic);
 		/**
 		 * Reaches
 		 * br.ufrn.smt.solver.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * enterIN(RelationalPredicate)
 		 */
-		testLogic(defaultTe, "p ∈ P");
+		testLogic(defaultTe, "p ∈ P", boolLogic);
 	}
 }
