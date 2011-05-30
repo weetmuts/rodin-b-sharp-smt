@@ -1210,44 +1210,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitUnaryExpression(final UnaryExpression expression) {
-		// FIXME Refactor this method
 		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.KCARD: {
-			// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
-			// 25)
-			final String kVarName = signature.freshCstName("card_k");
-			final String fVarName = signature.freshCstName("card_f");
-
-			final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(
-					kVarName, Ints.getInt(), false, false);
-
-			final Type type = expression.getChild().getType();
-			SMTSortSymbol expressionSort = typeMap.get(type);
-			if (expressionSort == null) {
-				expressionSort = translateTypeName(type);
-			}
-			final SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(
-					fVarName, Ints.getInt(), false, false, expressionSort);
-
-			signature.addConstant(kVarSymbol);
-			signature.addConstant(fVarSymbol);
-
-			// Creating the macro operator 'finite'
-			final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD, signature);
-
-			// Creating the new assumption (card p t k f) and saving it.
-			final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
-					fVarSymbol, kVarSymbol, children);
-
-			signature.addAdditionalAssumption(cardFormula);
-
-			final SMTTerm kTerm = sf.makeVeriTConstantTerm(kVarSymbol,
-					signature);
-
-			smtNode = kTerm;
-
+			translateCardinality(expression, children);
 			break;
 		}
 		case Formula.KDOM:
@@ -1303,6 +1270,80 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalTagException(expression.getTag());
 		}
 		}
+	}
+
+	/**
+	 * Translates the cardinality operator.
+	 * 
+	 * It creates three fresh symbols: k, f and p, where:
+	 * 
+	 * <ul>
+	 * <li>k has type Int and is added as function</li>
+	 * <li>f has type Int and one argument of type 's and is added as function</li>
+	 * <ul>
+	 * 
+	 * It is created and added an assumption: (card t f k), where t is the
+	 * actual expression from card(t) being translated, and card(t) is
+	 * translated to k.
+	 * 
+	 * @param expression
+	 *            the cardinality expression
+	 * @param children
+	 *            the children of the expression
+	 */
+	private void translateCardinality(final UnaryExpression expression,
+			final SMTTerm[] children) {
+		// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
+		// 25)
+		final String kVarName = signature.freshCstName("card_k");
+		final String fVarName = signature.freshCstName("card_f");
+
+		final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
+				Ints.getInt(), false, false);
+
+		final Type type = expression.getChild().getType();
+		SMTSortSymbol expressionSort = typeMap.get(type);
+		if (expressionSort == null) {
+			expressionSort = translateTypeName(type);
+		}
+		final SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName,
+				Ints.getInt(), false, false, expressionSort);
+
+		translateCardPart2(children, kVarSymbol, fVarSymbol);
+	}
+
+	/**
+	 * Given the children, the var k and the var f, this method creates the card
+	 * formula, adds it to the signature, and changes the smt node to be the
+	 * macro symbol of it.
+	 * 
+	 * @param children
+	 *            the children of the cardinality expression
+	 * @param kVarSymbol
+	 *            the k var symbol
+	 * @param fVarSymbol
+	 *            the f var symbol
+	 * 
+	 * @see #translateCardinality(UnaryExpression, SMTTerm[])
+	 */
+	private void translateCardPart2(final SMTTerm[] children,
+			final SMTFunctionSymbol kVarSymbol,
+			final SMTFunctionSymbol fVarSymbol) {
+		signature.addConstant(kVarSymbol);
+		signature.addConstant(fVarSymbol);
+
+		// Creating the macro operator 'finite'
+		final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD, signature);
+
+		// Creating the new assumption (card p t k f) and saving it.
+		final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
+				fVarSymbol, kVarSymbol, children);
+
+		signature.addAdditionalAssumption(cardFormula);
+
+		final SMTTerm kTerm = sf.makeVeriTConstantTerm(kVarSymbol, signature);
+
+		smtNode = kTerm;
 	}
 
 	/**
