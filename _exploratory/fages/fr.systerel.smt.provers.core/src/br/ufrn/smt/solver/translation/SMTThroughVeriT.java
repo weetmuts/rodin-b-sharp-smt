@@ -1103,49 +1103,106 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	/**
 	 * This method translates an Event-B bool setextension expression into an
 	 * Extended SMT node.
+	 * 
+	 * It is translated in the following way:
+	 * 
+	 * for a set defined as: {a1,a2,...,an}, it is translated to:
+	 * 
+	 * <p>
+	 * (enum (lambda (?elem Z) . (or (= ?elem a1) (= ?elem a2) ... (= ?elem an)
+	 * )))
+	 * 
+	 * <p>
+	 * for a set defined as: {a1↦b1,a2↦b2,...,an↦bn}, it is translated to:
+	 * 
+	 * <p>
+	 * (enum (lambda (?elem (Pair X Y)) . (or (= ?elem (pair a1 b1)) (= ?elem
+	 * (pair a2 b2)) ... (= ?elem (pair an bn)) )))
+	 * 
 	 */
 	@Override
 	public void visitSetExtension(final SetExtension expression) {
-		// FIXME: Refactor this method
-		SMTTerm[] children = {};
 		if (expression.getChildCount() == 0) {
 			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(EMPTY,
 					signature));
 		} else {
-			children = smtTerms(expression.getMembers());
-			final String macroName = signature
-					.freshCstName(SMTMacroSymbol.ENUM);
-			final String varName = signature.freshCstName(SMTMacroSymbol.ELEM);
-
-			final Type setExtensionType = expression.getMembers()[0].getType();
-			if (setExtensionType instanceof ProductType) {
-
-				final SMTSortSymbol pairSort = parsePairTypes(expression
-						.getType());
-
-				final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort,
-						false);
-
-				final SMTPairEnumMacro macro = SMTMacroFactory
-						.makePairEnumerationMacro(macroName, var, children,
-								signature);
-				signature.addMacro(macro);
-			} else {
-				SMTSortSymbol sortSymbol = typeMap.get(expression.getType());
-				if (sortSymbol == null) {
-					sortSymbol = translateTypeName(expression.getType());
-				}
-				final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol,
-						false);
-
-				final SMTEnumMacro macro = makeEnumMacro(macroName, var,
-						children);
-				signature.addMacro(macro);
-			}
-			final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
-					VeritPredefinedTheory.getInstance().getBooleanSort());
-			smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
+			translateSetExtension(expression);
 		}
+	}
+
+	/**
+	 * Translate set extension
+	 * 
+	 * @param expression
+	 *            the event-B expression of the set extension
+	 * 
+	 * @see #visitSetExtension(SetExtension)
+	 */
+	private void translateSetExtension(final SetExtension expression) {
+		SMTTerm[] children;
+		children = smtTerms(expression.getMembers());
+		final String macroName = signature.freshCstName(SMTMacroSymbol.ENUM);
+		final String varName = signature.freshCstName(SMTMacroSymbol.ELEM);
+
+		final Type setExtensionType = expression.getMembers()[0].getType();
+		if (setExtensionType instanceof ProductType) {
+			translatePairSet(expression, children, macroName, varName);
+		} else {
+			translateSimpleSet(expression, children, macroName, varName);
+		}
+		final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
+				VeritPredefinedTheory.getInstance().getBooleanSort());
+		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
+	}
+
+	/**
+	 * Translate set extension in the case where the elements are simple
+	 * elements (not maplets)
+	 * 
+	 * @param expression
+	 *            the expression of the set extension
+	 * @param children
+	 *            the children of the expression
+	 * @param macroName
+	 *            the name of the macro
+	 * @param varName
+	 *            the name of the lambda var
+	 */
+	private void translateSimpleSet(final SetExtension expression,
+			final SMTTerm[] children, final String macroName,
+			final String varName) {
+		SMTSortSymbol sortSymbol = typeMap.get(expression.getType());
+		if (sortSymbol == null) {
+			sortSymbol = translateTypeName(expression.getType());
+		}
+		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false);
+
+		final SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
+		signature.addMacro(macro);
+	}
+
+	/**
+	 * Translate set extension in the case where the elements are maplets
+	 * 
+	 * @param expression
+	 *            the expression of the set extension
+	 * @param children
+	 *            the children of the expression
+	 * @param macroName
+	 *            the name of the macro
+	 * @param varName
+	 *            the name of the lambda var
+	 */
+	private void translatePairSet(final SetExtension expression,
+			final SMTTerm[] children, final String macroName,
+			final String varName) {
+		final SMTSortSymbol pairSort = parsePairTypes(expression.getType());
+
+		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false);
+
+		final SMTPairEnumMacro macro = SMTMacroFactory
+				.makePairEnumerationMacro(macroName, var, children, signature);
+		signature.addMacro(macro);
 	}
 
 	/**
