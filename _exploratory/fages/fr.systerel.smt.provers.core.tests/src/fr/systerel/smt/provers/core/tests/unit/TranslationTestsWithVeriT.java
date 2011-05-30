@@ -32,8 +32,7 @@ import fr.systerel.smt.provers.core.tests.AbstractTests;
  * 
  */
 public class TranslationTestsWithVeriT extends AbstractTests {
-	protected static final ITypeEnvironment defaultTe, simpleTe, errorTe,
-			cdisTe;
+	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe;
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	private SMTSignature signature;
@@ -48,8 +47,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		cdisTe = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔  R", "x",
 				"S", "y", "R");
-
-		errorTe = mTypeEnvironment("AZ", "ℤ ↔ ℙ(ℤ)");
 
 		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
@@ -683,8 +680,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
 	}
 
-	@Test
-	@Ignore("Not yet implemented")
+	@Test(expected = IllegalArgumentException.class)
 	public void testRule21() {
 		// FIXME The translation of bool(⊤) is not defined yet
 		testTranslationV1_2Default("bool(⊤) ∈ BOOL",
@@ -770,27 +766,187 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testNotSubset() {
-		// Relimage
 		testTranslationV1_2Default("ℕ ⊄ ℤ", "(not (subset Nat Int))");
 	}
 
 	@Test
 	public void testNotSubseteq() {
-		// Relimage
 		testTranslationV1_2Default("ℕ ⊈ ℤ", "(not (subseteq Nat Int))");
 	}
 
 	@Test
 	public void testPartition() {
-
 		testTranslationV1_2Default("partition(A,{1,2},{3,4})",
 				"(and (= A enum_0) (= (inter enum_1 enum_2) emptyset))");
 	}
 
 	@Test
 	public void testPartition1Set() {
-
 		testTranslationV1_2Default("partition(A,{1})", "(= A set)");
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionSetOfSet() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment("AZ", "ℤ ↔ ℙ(ℤ)");
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "AZ = AZ", "(= AZ AZ)");
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionParsePairTypes() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment("AZ",
+				"ℙ((ℤ ↔ ℤ) ↔ ℤ)");
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "AZ = AZ", "(= AZ AZ)");
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionParsePairTypes2() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment("AZ", "ℤ ↔ (ℤ ↔ ℤ)");
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "AZ = AZ", "(= AZ AZ)");
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionBoolSort() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "BOOL = BOOL",
+				"(= BOOL BOOL)");
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionPRJ1() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "1 ↦ 2 ↦ 1 ∈ prj1",
+				"(= prj1 prj1)");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionPRJ2() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "1 ↦ 2 ↦ 1 ∈ prj2",
+				"(= prj2s prj2)");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionTRUE() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "TRUE ∈ BOOL",
+				"(in TRUE BOOL)");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionFALSE() {
+
+		final ITypeEnvironment errorTe = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(errorTe, "FALSE ∈ BOOL",
+				"(in FALSe BOOL)");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionDPROD() {
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(A)", "B", "A ↔ A");
+
+		testTranslationV1_2VerDefaultSolver(te, "B ⊗ B = B ⊗ B",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionPPROD() {
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(A)", "B", "A ↔ A");
+
+		testTranslationV1_2VerDefaultSolver(te, "B ∥ B = B ∥ B",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionFUNIMAGE() {
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(A)", "B", "ℤ ↔ ℤ",
+				"f", "ℤ");
+
+		testTranslationV1_2VerDefaultSolver(te, "B(f) = B(f)",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionKUNION() {
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te, "union({{1}}) = union({{1}})",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionPOW() {
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te, "ℙ(ℤ) = ℙ(ℤ)",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionPOW1() {
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te, "ℙ1(ℤ) = ℙ1(ℤ)",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionQUNION() {
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te,
+				"( ⋃ x ⦂ ℤ · x ∈ {0,1,2} ∧ x > 0 ∣ {x} ) = {1, 2}",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionQINTER() {
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te,
+				"( ⋂ x ⦂ ℤ · x ∈ {0,1,2} ∧ x > 0 ∣ {x} ) = {}",
+				"(= (dprod A A) (dprod A A))");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionExtendedPredicate() {
+
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te, "bar(5)", "");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionExtendedExpression() {
+
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+
+		testTranslationV1_2VerDefaultSolver(te, "(foo) = (foo)", "");
+	}
 }

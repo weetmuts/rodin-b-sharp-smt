@@ -928,18 +928,27 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				getMacroSymbol(operator, signature), children);
 	}
 
+	/**
+	 * This method is not reached in this translation
+	 */
 	@Override
 	public void visitBecomesEqualTo(final BecomesEqualTo assignment) {
 		throw new IllegalArgumentException(
 				"BecomesEqualTo assignment is not implemented yet");
 	}
 
+	/**
+	 * This method is not reached in this translation
+	 */
 	@Override
 	public void visitBecomesMemberOf(final BecomesMemberOf assignment) {
 		throw new IllegalArgumentException(
 				"BecomesMemberOf assignment is not implemented yet");
 	}
 
+	/**
+	 * This method is not reached in this translation
+	 */
 	@Override
 	public void visitBecomesSuchThat(final BecomesSuchThat assignment) {
 		throw new IllegalArgumentException(
@@ -1219,10 +1228,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalArgumentException(
 					"It's not possible yet to translate  PowerSet1 unary expression (POW1) to SMT-LIB yet");
 		}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
 		case Formula.KUNION: {
 			throw new IllegalArgumentException(
 					"It's not possible yet to translate generalized union (KUNION) to SMT-LIB yet");
 		}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
 		case Formula.KINTER: {
 			throw new IllegalArgumentException(
 					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");

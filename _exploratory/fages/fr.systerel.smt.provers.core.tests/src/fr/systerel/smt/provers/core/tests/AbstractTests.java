@@ -57,7 +57,8 @@ public abstract class AbstractTests {
 	 */
 	public static Predicate parse(final String predicate,
 			final ITypeEnvironment te) {
-		final IParseResult parseResult = ff.parsePredicate(predicate, V2, null);
+		final IParseResult parseResult = te.getFormulaFactory().parsePredicate(
+				predicate, V2, null);
 		assertFalse("Parse error for: " + predicate + "\nProblems: "
 				+ parseResult.getProblems(), parseResult.hasProblem());
 		final Predicate parsedPredicate = parseResult.getParsedPredicate();
