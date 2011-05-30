@@ -950,18 +950,18 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	class BoolSetVisitor extends DefaultVisitor {
 
-		private RelationalPredicate inPred;
-		private final AtomicExpression atExpr;
+		private RelationalPredicate membershipPredicate;
+		private final AtomicExpression atomicExpression;
 
 		/**
 		 * Constructor that stores an atomic expresion which the tag is
 		 * <code>BOOL</code>.
 		 * 
-		 * @param atExpr
+		 * @param expr
 		 */
-		public BoolSetVisitor(final AtomicExpression atExpr) {
-			assert atExpr.getTag() == Formula.BOOL;
-			this.atExpr = atExpr;
+		public BoolSetVisitor(final AtomicExpression expr) {
+			assert expr.getTag() == Formula.BOOL;
+			this.atomicExpression = expr;
 		}
 
 		@Override
@@ -969,7 +969,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * This method just stores the relational actualPredicate
 		 */
 		public boolean enterIN(final RelationalPredicate pred) {
-			inPred = pred;
+			membershipPredicate = pred;
 			return true;
 		}
 
@@ -985,9 +985,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		@Override
 		public boolean enterMAPSTO(final BinaryExpression expr) {
-			assert atExpr != null;
-			if (expr.getLeft().equals(atExpr) || expr.getRight().equals(atExpr)) {
-				if (inPred.getLeft().equals(expr)) {
+			assert atomicExpression != null;
+			if (expr.getLeft().equals(atomicExpression) || expr.getRight().equals(atomicExpression)) {
+				if (membershipPredicate.getLeft().equals(expr)) {
 					return false;
 				} else {
 					throw new IllegalArgumentException(

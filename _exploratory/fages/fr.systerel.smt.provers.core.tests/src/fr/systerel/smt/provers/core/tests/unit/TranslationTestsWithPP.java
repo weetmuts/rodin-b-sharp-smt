@@ -335,6 +335,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
 		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
+		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOL a Y)");
 	}
 
 	@Test
