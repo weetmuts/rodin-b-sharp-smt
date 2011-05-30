@@ -391,7 +391,7 @@ public class SMTMacroFactory {
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
-			"pair", PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
+			MAPSTO, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
 
 	private static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
 			"fst", FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);

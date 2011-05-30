@@ -51,7 +51,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final Set<String> expectedPreds = new HashSet<String>();
 		expectedPreds.add("(e S)");
-		expectedPreds.add("(f S)");
 
 		doTTeTest("tetestSort", hyps, "g ∈ f", pow_te, expectedFuns,
 				expectedPreds, expectedSorts);
