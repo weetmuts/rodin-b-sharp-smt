@@ -422,13 +422,7 @@ public class SMTMacroFactory {
 	public SMTMacroFactory() {
 		for (final SMTPredefinedMacro pMacro : PREDEFINED_MACROS) {
 			for (final String qSymbol : pMacro.getQSymbols()) {
-				if (qSymbols.contains(qSymbol)) {
-					throw new IllegalArgumentException(
-							"Two macros cannot have same lambda variable names. One of the macros which have this problem is: "
-									+ pMacro.toString()
-									+ ". The qSymbol is: "
-									+ qSymbol + ".");
-				}
+				assert !qSymbols.contains(qSymbol);
 			}
 			qSymbols.addAll(pMacro.getQSymbols());
 			qSymbols.add(FST_PAIR_ARG_NAME);
@@ -560,6 +554,32 @@ public class SMTMacroFactory {
 		final SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
 				pairFunAppl);
 
+		return createFstAssumptionPart2(signature, forallVarSymbol1,
+				forallVarSymbol2, varSymbol1, fstFunAppl);
+	}
+
+	/**
+	 * Given the elements (?e 's) , (?f 't), ?e , and (fst (pair ?e ?f)) ?e), it
+	 * creates the final auxiliar assumption.
+	 * 
+	 * @param signature
+	 *            the signature
+	 * @param forallVarSymbol1
+	 *            (?e 's)
+	 * @param forallVarSymbol2
+	 *            (?f 't)
+	 * @param varSymbol1
+	 *            ?e
+	 * @param fstFunAppl
+	 *            (fst (pair ?e ?f)) ?e)
+	 * @return The formula that represents the fst auxiliar function assumption
+	 * 
+	 * @see #createFstAssumption(SMTSignature)
+	 */
+	private static SMTFormula createFstAssumptionPart2(
+			final SMTSignature signature, final SMTVarSymbol forallVarSymbol1,
+			final SMTVarSymbol forallVarSymbol2, final SMTVar varSymbol1,
+			final SMTFunApplication fstFunAppl) {
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
 				new SMTPredicateSymbol.SMTEqual(FST_RETURN_SORT,
 						FST_RETURN_SORT), signature, fstFunAppl, varSymbol1);
@@ -703,10 +723,6 @@ public class SMTMacroFactory {
 			addFstAndSndFunctionsInSignature(signature);
 
 			signature.addMacro(REL_OVR_MACRO);
-			break;
-		}
-		case NOT_EQUAL: {
-			signature.addMacro(NOTEQUAL_MACRO);
 			break;
 		}
 		case EMPTY: {
@@ -1015,8 +1031,6 @@ public class SMTMacroFactory {
 		case TOTAL_SURJECTIVE_RELATION: {
 			return TOTAL_SURJECTIVE_RELATION_SYMBOL;
 		}
-		case NOT_EQUAL:
-			return NOT_EQUAL_SYMBOL;
 		case PARTIAL_FUNCTION: {
 			return PARTIAL_FUNCTION_SYMBOL;
 		}
