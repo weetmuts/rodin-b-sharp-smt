@@ -8,9 +8,6 @@ import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
@@ -77,8 +74,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		// d'entrée
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(ppPred));
-		final List<Predicate> hypothesis = new ArrayList<Predicate>();
-		hypothesis.add(ppPred);
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
 				VERIT.toString(), usesTrue);
