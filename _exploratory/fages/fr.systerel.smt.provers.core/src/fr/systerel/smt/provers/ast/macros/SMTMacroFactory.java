@@ -539,7 +539,6 @@ public class SMTMacroFactory {
 	 * @return The formula that represents the fst auxiliar function assumption
 	 */
 	private static SMTFormula createFstAssumption(final SMTSignature signature) {
-		// TODO Refactor
 		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
 				FST_PAIR_ARG_NAME, FST_RETURN_SORT, PREDEFINED);
 		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
@@ -554,12 +553,12 @@ public class SMTMacroFactory {
 		final SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
 				pairFunAppl);
 
-		return createFstAssumptionPart2(signature, forallVarSymbol1,
+		return createAuxiliarAssumption(signature, forallVarSymbol1,
 				forallVarSymbol2, varSymbol1, fstFunAppl);
 	}
 
 	/**
-	 * Given the elements (?e 's) , (?f 't), ?e , and (fst (pair ?e ?f)) ?e), it
+	 * Given the elements (?e 's) , (?f 't), ?x , and (fun (pair ?e ?f)) ?x), it
 	 * creates the final auxiliar assumption.
 	 * 
 	 * @param signature
@@ -569,20 +568,22 @@ public class SMTMacroFactory {
 	 * @param forallVarSymbol2
 	 *            (?f 't)
 	 * @param varSymbol1
-	 *            ?e
+	 *            ?x
 	 * @param fstFunAppl
-	 *            (fst (pair ?e ?f)) ?e)
-	 * @return The formula that represents the fst auxiliar function assumption
+	 *            (fun (pair ?e ?f)) ?x)
+	 * @return The formula that represents the fst or the snd auxiliar function
+	 *         assumption
 	 * 
 	 * @see #createFstAssumption(SMTSignature)
+	 * @see #createSndAssumption(SMTSignature)
 	 */
-	private static SMTFormula createFstAssumptionPart2(
+	private static SMTFormula createAuxiliarAssumption(
 			final SMTSignature signature, final SMTVarSymbol forallVarSymbol1,
 			final SMTVarSymbol forallVarSymbol2, final SMTVar varSymbol1,
 			final SMTFunApplication fstFunAppl) {
 		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(FST_RETURN_SORT,
-						FST_RETURN_SORT), signature, fstFunAppl, varSymbol1);
+				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), signature,
+				fstFunAppl, varSymbol1);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
@@ -595,7 +596,7 @@ public class SMTMacroFactory {
 	 * This method creates the auxiliar assumption:
 	 * 
 	 * <p>
-	 * (forall (?e 's) (?f 't) (= (snd (pair ?e ?f)) ?e))
+	 * (forall (?e 's) (?f 't) (= (snd (pair ?e ?f)) ?f))
 	 * </p>
 	 * 
 	 * <p>
@@ -619,17 +620,18 @@ public class SMTMacroFactory {
 		final SMTFunApplication sndFunAppl = new SMTFunApplication(SND_SYMBOL,
 				pairFunAppl);
 
-		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), signature,
-				sndFunAppl, varSymbol2);
-
-		final SMTFormula quantifiedFormula = SMTFactory
-				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						equalAtom, forallVarSymbol1, forallVarSymbol2);
-
-		return quantifiedFormula;
+		return createAuxiliarAssumption(signature, forallVarSymbol1,
+				forallVarSymbol2, varSymbol2, sndFunAppl);
 	}
 
+	/**
+	 * Creates the pair equality axiom. It is defined as:
+	 * 
+	 * (forall (?p1 (Pair 's 't)) (?p2 (Pair 's 't)) (implies (= ?p1 ?p2) (and
+	 * (= (fst ?p1) (fst ?p2)) (= (snd ?p1) (snd ?p2)))))
+	 * 
+	 * @return the pair equality axiom
+	 */
 	public static SMTFormula createPairEqualityAxiom() {
 
 		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT,
@@ -675,8 +677,9 @@ public class SMTMacroFactory {
 	}
 
 	/**
+	 * Adds the sort (Pair 's 't) and the funcion (pair 's 't (Pair 's 't)) to
+	 * the signature
 	 * 
-	 * @param signature
 	 */
 	private static void addPairMacroSortAndFunInSignature(
 			final SMTSignatureVerit signature) {
