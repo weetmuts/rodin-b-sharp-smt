@@ -20,7 +20,6 @@ import org.junit.BeforeClass;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.SMTTranslationApproach;
@@ -251,9 +250,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				break;
 			}
 
-			final Process p = Exec.startProcess(smtArgs);
-			activeProcesses.add(p);
-			smtProverCall.callProver(p, smtArgs);
+			smtProverCall.callProver(smtArgs);
 
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",

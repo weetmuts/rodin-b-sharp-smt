@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.translation.Exec;
 import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
@@ -264,6 +264,7 @@ public class SmtProverCall extends XProverCall {
 				 * SMT lib v1.2 TODO: Add option here and in the preferences to
 				 * set the pre-processor: veriT or pptrans.
 				 */
+				proofMonitor.setTask("Translating Event-B proof obligation");
 				final List<String> translatedPOs = smtTranslationThroughPP();
 				callProver(translatedPOs);
 
@@ -347,6 +348,24 @@ public class SmtProverCall extends XProverCall {
 	}
 
 	/**
+	 * Executes the SMT-Solver process and returns the output of it.
+	 * 
+	 * @param args
+	 *            The arguments to build and execute the process
+	 * @return the output of the process
+	 * @throws IOException
+	 */
+	private String execProcess(final List<String> args) throws IOException {
+		final ProcessBuilder pb = new ProcessBuilder(args);
+		pb.redirectErrorStream(true);
+		final Process p = pb.start();
+		activeProcesses.add(p);
+		final ProcessMonitor pm = new ProcessMonitor(null, p, this);
+		final String resultString = new String(pm.output());
+		return resultString;
+	}
+
+	/**
 	 * This method should: call the veriT, produce a simplified version of the
 	 * SMT file without macros, and verify if there is any input error
 	 * 
@@ -367,13 +386,7 @@ public class SmtProverCall extends XProverCall {
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());
 
-		final StringBuilder sb = new StringBuilder();
-		final Process p = Exec.startProcess(args);
-
-		activeProcesses.add(p);
-
-		Exec.execProgram(p, sb);
-		resultOfSolver = sb.toString().trim();
+		resultOfSolver = execProcess(args);
 
 		/**
 		 * Set up temporary result file
@@ -503,22 +516,9 @@ public class SmtProverCall extends XProverCall {
 	 */
 	public void callProver(final List<String> args) throws IOException,
 			IllegalArgumentException {
-		final Process p = Exec.startProcess(args);
-		activeProcesses.add(p);
-		callProver(p, args);
-	}
-
-	public void callProver(final Process p, final List<String> args)
-			throws IOException, IllegalArgumentException {
-		/**
-		 * Launch solver and get back solver result
-		 */
-		final StringBuilder sb = new StringBuilder();
-
 		proofMonitor.setTask("Running SMT-Solver");
 
-		Exec.execProgram(p, sb);
-		resultOfSolver = sb.toString().trim();
+		resultOfSolver = execProcess(args);
 
 		proofMonitor.setTask("Processing result file from SMT-Solver");
 
