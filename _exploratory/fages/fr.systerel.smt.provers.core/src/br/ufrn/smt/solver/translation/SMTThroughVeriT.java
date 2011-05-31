@@ -740,7 +740,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
 
-		final String smtVarName = signature.freshCstName(varName,
+		final String smtVarName = signature.freshQVarName(varName,
 				qVarMap.keySet());
 
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
@@ -792,6 +792,12 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 	}
 
+	/**
+	 * Checks if the type is pair type
+	 * 
+	 * @param type
+	 * @return if type is a pair type
+	 */
 	public static boolean isPairType(final Type type) {
 		if (type instanceof ProductType) {
 			return true;
@@ -802,6 +808,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return false;
 	}
 
+	/**
+	 * Translates the equal (=) operator
+	 * 
+	 * @param predicate
+	 *            the predicate with the equal operator that will be translated
+	 * @return the SMT Formula of the predicate
+	 */
 	private SMTFormula translateEqual(final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
@@ -1066,7 +1079,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (expressionSymbol == null) {
 			expressionSymbol = translateTypeName(expression.getType());
 		}
-		final String macroName = signature.freshSymbolName(SMTMacroSymbol.CSET);
+		final String macroName = signature.freshMacroName(SMTMacroSymbol.CSET);
 
 		final int top = boundIdentifiersMarker.pop();
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
@@ -1116,7 +1129,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translateSetExtension(final SetExtension expression) {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
-		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
+		final String macroName = signature.freshMacroName(SMTMacroSymbol.ENUM);
 		final String varName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
 
 		final Type setExtensionType = expression.getMembers()[0].getType();

@@ -63,7 +63,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * This variable stores additional assumptions produced by the translation
 	 * of min,max, finite and cardinality operators
 	 */
-	private Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
+	private final Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
 
 	/**
 	 * Returns the additional assumptions used for the translation of the
@@ -85,9 +85,11 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	/**
-	 * Gives a fresh sort
+	 * Gives a fresh sort. In this version of veriT, it returns standard names
+	 * for Int or Bool set.
 	 * 
 	 * @param name
+	 *            the name of the fresh sort
 	 */
 	@Override
 	public SMTSortSymbol freshSort(final String name) {
@@ -110,19 +112,31 @@ public class SMTSignatureVerit extends SMTSignature {
 		return freshSort;
 	}
 
+	/**
+	 * return the macros
+	 * 
+	 * @return the macros
+	 */
 	public SortedSet<SMTMacro> getMacros() {
 		return macros;
 	}
 
-	public void setAdditionalAssumptions(
-			final Set<SMTFormula> additionalAssumptions) {
-		this.additionalAssumptions = additionalAssumptions;
-	}
-
+	/**
+	 * Constructs a new instance of the signature
+	 * 
+	 * @param logic
+	 *            the logic of the signature
+	 */
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
 	}
 
+	/**
+	 * Add a macro into the signature
+	 * 
+	 * @param macro
+	 *            the new macro that will be added to the signature
+	 */
 	public void addMacro(final SMTMacro macro) {
 		// FIXME: The set should take care of unique elements. This comparison
 		// should not exist
@@ -136,6 +150,10 @@ public class SMTSignatureVerit extends SMTSignature {
 		macros.add(macro);
 	}
 
+	/**
+	 * 
+	 * @param sb
+	 */
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			sb.append(":extramacros(");
@@ -169,16 +187,9 @@ public class SMTSignatureVerit extends SMTSignature {
 		return macroNames;
 	}
 
-	@Override
-	public String freshSymbolName(final String name) {
-		return freshCstName(name, null);
-	}
-
-	public String freshCstName(final String name, final Set<String> usedNames) {
+	public String freshQVarName(final String name, final Set<String> usedNames) {
 		final Set<String> names = new HashSet<String>();
-		if (usedNames != null) {
-			names.addAll(usedNames);
-		}
+		names.addAll(usedNames);
 		names.addAll(getSymbolNames(funs));
 		names.addAll(getSymbolNames(sorts));
 		names.addAll(getSymbolNames(preds));
@@ -189,6 +200,26 @@ public class SMTSignatureVerit extends SMTSignature {
 		}
 
 		return freshSymbolName(names, name);
+	}
+
+	@Override
+	public String freshSymbolName(final String name) {
+		return freshCstName(name, new HashSet<String>());
+	}
+
+	public String freshMacroName(final String name) {
+		return freshQVarName(name, new HashSet<String>());
+	}
+
+	public String freshCstName(final String name, final Set<String> usedNames) {
+		usedNames.addAll(getSymbolNames(funs));
+		usedNames.addAll(getSymbolNames(sorts));
+		usedNames.addAll(getSymbolNames(preds));
+		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
+			usedNames.add(op.toString());
+		}
+
+		return freshSymbolName(usedNames, name);
 	}
 
 	@Override

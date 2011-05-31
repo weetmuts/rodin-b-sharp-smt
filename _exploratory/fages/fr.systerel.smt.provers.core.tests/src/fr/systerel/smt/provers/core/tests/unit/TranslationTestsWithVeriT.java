@@ -163,8 +163,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		setSignatureForTestsVerit(simpleTe);
 		final Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(e_0 S)");
-		expectedPredicates.add("(f_0 S)");
+		expectedPredicates.add("(e S)");
+		expectedPredicates.add("(f S)");
 		expectedPredicates.add("(AB (Pair Int Int))");
 
 		testTypeEnvironmentPreds(expectedPredicates, signature);
@@ -673,7 +673,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testRule19() {
-		testTranslationV1_2Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,1 ↦ 2}",
+		testTranslationV1_2Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,2 ↦ 3}",
 				"(= enum_0 enum_1)");
 
 		testTranslationV1_2Default("{0,1,2,3,4} = A", "(= enum_0 A)");
