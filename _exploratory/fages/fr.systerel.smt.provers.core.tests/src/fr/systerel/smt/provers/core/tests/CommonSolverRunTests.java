@@ -33,7 +33,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public static String smtFolder;
 
-	protected final List<Process> activeProcesses = new ArrayList<Process>();
+	protected final List<SmtProverCall> smtProverCalls = new ArrayList<SmtProverCall>();
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 	/**
@@ -92,8 +92,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	@After
 	public void finalizeSolverProcess() {
-		for (final Process p : activeProcesses) {
-			p.destroy();
+		for (final SmtProverCall smtProverCall : smtProverCalls) {
+			smtProverCall.cleanup();
 		}
 	}
 
@@ -235,6 +235,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				return "SMT";
 			}
 		};
+		smtProverCalls.add(smtProverCall);
 
 		try {
 			final List<String> smtArgs;
