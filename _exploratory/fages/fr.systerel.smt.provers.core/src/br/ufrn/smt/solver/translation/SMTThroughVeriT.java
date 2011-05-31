@@ -470,8 +470,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTSortSymbol expressionSort, final SMTTerm... termChildren) {
 
 		// obtaining fresh name for the variables
-		final String lambdaName = signature
-				.freshSymbolName(SMTMacroSymbol.ELEM);
+		final String lambdaName = signature.freshQVarName(SMTMacroSymbol.ELEM);
 
 		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
 				expressionSort, false);
@@ -1130,7 +1129,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
 		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
-		final String varName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
+		final String varName = signature.freshQVarName(SMTMacroSymbol.ELEM);
 
 		final Type setExtensionType = expression.getMembers()[0].getType();
 		if (setExtensionType instanceof ProductType) {
