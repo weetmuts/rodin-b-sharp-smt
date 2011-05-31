@@ -59,10 +59,8 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehe
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AtomicExpression;
@@ -281,10 +279,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The name of the variable
 	 */
 	private void translatePredSymbol(final String varName,
-			final String freshVarName, final SMTSortSymbol sort) {
-		final SMTPredicateSymbol predSymbol = new SMTPredicateSymbol(
-				freshVarName, false, sort);
-		signature.addPred(predSymbol);
+			final SMTSortSymbol sort) {
+		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
+				varName, sort);
 		varMap.put(varName, predSymbol);
 		insertPairDecl = true;
 	}
@@ -315,9 +312,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.getType();
 			final SMTSortSymbol sort = translateTypeName(varType);
 			final String varName = iter.getName();
-			final String freshVarName = signature.freshSymbolName(varName);
 			if (varType.getSource() != null || varType.getBaseType() != null) {
-				translatePredSymbol(varName, freshVarName, sort);
+				translatePredSymbol(varName, sort);
 			} else {
 				translateFunSymbol(varName, sort);
 			}
@@ -1460,15 +1456,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final SMTTerm e0 = smtTerm(predicate.getChildren()[0]);
 
-		// Translation of special case where all child sets are singleton
-		final Set<String> usedNames = new HashSet<String>();
 		final List<SMTTerm> newVars = new ArrayList<SMTTerm>();
 		for (int i = 1; i < expressions.length; i++) {
 			final SMTTerm expTerm = smtTerm(expressions[i]);
-
-			final String x = signature.freshCstName("set", usedNames);
-			usedNames.add(x);
-			newVars.add(addEqualAssumption(x, expressions[i].getType(), expTerm));
+			newVars.add(addEqualAssumption("set", expressions[i].getType(),
+					expTerm));
 		}
 		addDistinctAssumption(newVars);
 		smtNode = createUnionAssumptionForParition(newVars, e0);
@@ -1526,13 +1518,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sort == null) {
 			sort = translateTypeName(type);
 		}
-
-		final SMTPredicateSymbol symbol = sf.makeVeriTPredSymbol(x, sort);
-
-		signature.addPred(symbol);
-
+		final SMTPredicateSymbol symbol = signature.freshPredicateSymbol(x,
+				sort);
 		final SMTTerm xTerm = sf.makeVeriTConstantTerm(symbol, signature);
-
 		signature.addAdditionalAssumption(SMTFactory.makeEqual(xTerm, e0));
 		return xTerm;
 	}
@@ -1579,7 +1567,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName,
 				Ints.getInt(), false, false, expressionSort);
 
-		signature.addPred(pVarSymbol);
+		final SMTSortSymbol[] empty = {};
+		signature.freshPredicateSymbol("finite_p", empty);
+
 		signature.addConstant(kVarSymbol);
 		signature.addConstant(fVarSymbol);
 

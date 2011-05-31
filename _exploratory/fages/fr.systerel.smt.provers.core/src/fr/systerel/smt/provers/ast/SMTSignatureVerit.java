@@ -150,10 +150,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		sorts.add(sort);
 	}
 
-	public void addPred(final SMTPredicateSymbol predSymbol) {
-		preds.add(predSymbol);
-	}
-
 	public void addAdditionalAssumption(final SMTFormula formula) {
 		additionalAssumptions.add(formula);
 	}
