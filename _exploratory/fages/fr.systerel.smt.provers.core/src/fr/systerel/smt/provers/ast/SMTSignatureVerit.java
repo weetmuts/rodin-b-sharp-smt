@@ -151,6 +151,8 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	/**
+	 * Appends a string representation of the macros section to the
+	 * stringbuilder
 	 * 
 	 * @param sb
 	 */
@@ -163,13 +165,18 @@ public class SMTSignatureVerit extends SMTSignature {
 			}
 			sb.append("\n)");
 		}
-
 	}
 
-	private static Set<String> getNamesFromMacro(final Set<SMTMacro> macros) {
+	/**
+	 * Calculate and return all the used ?-var names in the macros. It is
+	 * necessary to create fresh ?-vars.
+	 * 
+	 * @param macros
+	 * @return
+	 */
+	private static Set<String> getQNamesFromMacro(final Set<SMTMacro> macros) {
 		final Set<String> macroNames = new HashSet<String>();
 		for (final SMTMacro macro : macros) {
-			macroNames.add(macro.getMacroName());
 			if (macro instanceof SMTEnumMacro) {
 				final SMTEnumMacro enumMacro = (SMTEnumMacro) macro;
 				macroNames.add(enumMacro.getAssignedVar().getName());
@@ -187,34 +194,36 @@ public class SMTSignatureVerit extends SMTSignature {
 		return macroNames;
 	}
 
+	public String freshQVarName(final String name) {
+		return freshQVarName(name, new HashSet<String>());
+	}
+
 	public String freshQVarName(final String name, final Set<String> usedNames) {
 		final Set<String> names = new HashSet<String>();
-		names.addAll(usedNames);
-		names.addAll(getSymbolNames(funs));
-		names.addAll(getSymbolNames(sorts));
-		names.addAll(getSymbolNames(preds));
-		names.addAll(getNamesFromMacro(macros));
 		names.addAll(ms.getqSymbols());
-		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
-			names.add(op.toString());
-		}
-
+		names.addAll(getQNamesFromMacro(macros));
+		names.addAll(usedNames);
 		return freshSymbolName(names, name);
 	}
 
 	@Override
 	public String freshSymbolName(final String name) {
-		return freshCstName(name, new HashSet<String>());
+		return freshSymbolName(name, new HashSet<String>());
 	}
 
-	public String freshMacroName(final String name) {
-		return freshQVarName(name, new HashSet<String>());
+	private Set<String> getMacroNames() {
+		final Set<String> macroNames = new HashSet<String>();
+		for (final SMTMacro macro : macros) {
+			macroNames.add(macro.getMacroName());
+		}
+		return macroNames;
 	}
 
-	public String freshCstName(final String name, final Set<String> usedNames) {
+	public String freshSymbolName(final String name, final Set<String> usedNames) {
 		usedNames.addAll(getSymbolNames(funs));
 		usedNames.addAll(getSymbolNames(sorts));
 		usedNames.addAll(getSymbolNames(preds));
+		usedNames.addAll(getMacroNames());
 		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			usedNames.add(op.toString());
 		}

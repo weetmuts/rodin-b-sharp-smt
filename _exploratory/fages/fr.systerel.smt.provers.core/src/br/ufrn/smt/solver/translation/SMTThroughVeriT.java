@@ -1079,7 +1079,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (expressionSymbol == null) {
 			expressionSymbol = translateTypeName(expression.getType());
 		}
-		final String macroName = signature.freshMacroName(SMTMacroSymbol.CSET);
+		final String macroName = signature.freshSymbolName(SMTMacroSymbol.CSET);
 
 		final int top = boundIdentifiersMarker.pop();
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
@@ -1129,7 +1129,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translateSetExtension(final SetExtension expression) {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
-		final String macroName = signature.freshMacroName(SMTMacroSymbol.ENUM);
+		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
 		final String varName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
 
 		final Type setExtensionType = expression.getMembers()[0].getType();
