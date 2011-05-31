@@ -501,12 +501,6 @@ public class SMTMacroFactory {
 				formula, expression, 1);
 	}
 
-	public static void addPairEqualityAxiomsInSignature(
-			final SMTSignatureVerit signature) {
-		signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
-		signature.addPairEqualityAxiom(createPairEqualityAxiom());
-	}
-
 	/**
 	 * This method creates the auxiliar assumption:
 	 * 

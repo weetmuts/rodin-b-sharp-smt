@@ -811,7 +811,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.convertVeritTermsIntoFormulas(children);
 			return SMTFactory.makeIff(childrenFormulas);
 		} else if (isPairType(leftType)) {
-			SMTMacroFactory.addPairEqualityAxiomsInSignature(signature);
+			signature.addPairEqualityAxioms();
 		}
 		return makeEqual(children);
 	}

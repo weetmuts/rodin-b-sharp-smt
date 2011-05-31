@@ -76,13 +76,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		return additionalAssumptions;
 	}
 
-	public void addPairEqualityAxiom(final SMTFormula formula) {
-		if (!isPairEqualityAxiomAdded) {
-			isPairEqualityAxiomAdded = true;
-			additionalAssumptions.add(formula);
-		}
-	}
-
 	public void addPairSortAndFunction() {
 		if (isPrintPairSortAndPairFunctionAdded == false) {
 			sorts.add(SMTMacroFactory.PAIR_SORT);
@@ -217,6 +210,15 @@ public class SMTSignatureVerit extends SMTSignature {
 			additionalAssumptions
 					.add(SMTMacroFactory.createSndAssumption(this));
 			isFstAndSndAssumptionsAdded = true;
+		}
+	}
+
+	public void addPairEqualityAxioms() {
+		if (!isPairEqualityAxiomAdded) {
+			addFstAndSndAuxiliarAssumptionsAndFunctions();
+			additionalAssumptions
+					.add(SMTMacroFactory.createPairEqualityAxiom());
+			isPairEqualityAxiomAdded = true;
 		}
 	}
 
