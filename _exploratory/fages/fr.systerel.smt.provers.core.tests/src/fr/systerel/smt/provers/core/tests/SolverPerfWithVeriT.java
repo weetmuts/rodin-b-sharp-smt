@@ -592,7 +592,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	// @Ignore("Expected true, but it was false")
 	public void testRule25() {
 		setPreferencesForSolverTest(solver);
