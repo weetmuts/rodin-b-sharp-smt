@@ -391,10 +391,10 @@ public class SMTMacroFactory {
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
 			MAPSTO, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
 
-	private static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
+	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
 			"fst", FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
-	private static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
+	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
 			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
@@ -501,25 +501,9 @@ public class SMTMacroFactory {
 				formula, expression, 1);
 	}
 
-	/**
-	 * This method adds the <code>fst<code> and <code>snd</code> to the
-	 * signature, as well as the assumptions that defines them.
-	 * 
-	 * @param signature
-	 *            The signature that will receive the functions and assumptions
-	 */
-	private static void addFstAndSndFunctionsInSignature(
-			final SMTSignatureVerit signature) {
-		signature.addConstant(FST_SYMBOL);
-		signature.addConstant(SND_SYMBOL);
-		signature.addFstOrSndAuxiliarAssumption(createFstAssumption(signature));
-		signature.addFstOrSndAuxiliarAssumption(createSndAssumption(signature));
-		signature.setFstAndSndAssumptionsAdded(true);
-	}
-
 	public static void addPairEqualityAxiomsInSignature(
 			final SMTSignatureVerit signature) {
-		addFstAndSndFunctionsInSignature(signature);
+		signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 		signature.addPairEqualityAxiom(createPairEqualityAxiom());
 	}
 
@@ -536,7 +520,7 @@ public class SMTMacroFactory {
 	 * 
 	 * @return The formula that represents the fst auxiliar function assumption
 	 */
-	private static SMTFormula createFstAssumption(final SMTSignature signature) {
+	public static SMTFormula createFstAssumption(final SMTSignature signature) {
 		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
 				FST_PAIR_ARG_NAME, FST_RETURN_SORT, PREDEFINED);
 		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
@@ -603,7 +587,7 @@ public class SMTMacroFactory {
 	 * 
 	 * @return The formula that represents the snd auxiliar function assumption
 	 */
-	private static SMTFormula createSndAssumption(final SMTSignature signature) {
+	public static SMTFormula createSndAssumption(final SMTSignature signature) {
 		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
 				FST_PAIR_ARG_NAME, FST_RETURN_SORT, !PREDEFINED);
 		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
@@ -703,14 +687,14 @@ public class SMTMacroFactory {
 		}
 		case FCOMP: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(FCOMP_MACRO);
 			break;
 		}
 		case OVR: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(REL_OVR_MACRO);
 			break;
@@ -744,42 +728,42 @@ public class SMTMacroFactory {
 			break;
 		case RANGE_SUBSTRACTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(RANGE_SUBSTRACTION_MACRO);
 			break;
 		}
 		case RANGE_RESTRICTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(RANGE_RESTRICTION_MACRO);
 			break;
 		}
 		case RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(RELATION_MACRO);
 			break;
 		}
 		case TOTAL_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(TOTAL_RELATION_MACRO);
 			break;
 		}
 		case SURJECTIVE_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(SURJECTIVE_RELATION_MACRO);
 			break;
 		}
 		case TOTAL_SURJECTIVE_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(TOTAL_SURJECTIVE_RELATION_MACRO);
 			break;
@@ -804,7 +788,7 @@ public class SMTMacroFactory {
 		}
 		case ID: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(ID_MACRO);
 			break;
@@ -819,7 +803,7 @@ public class SMTMacroFactory {
 		}
 		case INV: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(INVERSE_MACRO);
 			break;
@@ -877,21 +861,21 @@ public class SMTMacroFactory {
 		}
 		case CARTESIAN_PRODUCT: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(CARTESIAN_PRODUCT_MACRO);
 			break;
 		}
 		case DOMAIN_RESTRICTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(DOMAIN_RESTRICTION_MACRO);
 			break;
 		}
 		case DOMAIN_SUBSTRACTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(DOMAIN_SUBSTRACTION_MACRO);
 			break;
@@ -934,7 +918,7 @@ public class SMTMacroFactory {
 		}
 		case FUNP: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			addFstAndSndFunctionsInSignature(signature);
+			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
 
 			signature.addMacro(FUNP_MACRO);
 			break;

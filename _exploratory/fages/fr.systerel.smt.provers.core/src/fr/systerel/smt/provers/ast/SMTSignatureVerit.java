@@ -31,12 +31,32 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
-	private boolean isPrintPairSortAndPairFunction = false;
+	/**
+	 * This boolean is used to check if it is necessary to add the function pair
+	 * and the sort Pair or not.
+	 */
+	private boolean isPrintPairSortAndPairFunctionAdded = false;
 
+	/**
+	 * This boolean is used to check if it is necessary to add the functions and
+	 * the assumptions of the functions first and snd or not
+	 */
 	private boolean isFstAndSndAssumptionsAdded = false;
+
+	/**
+	 * This boolean is used to check if the axiom of equality of pairs are added
+	 * or not
+	 */
 	private boolean isPairEqualityAxiomAdded = false;
 
+	/**
+	 * this set stores the macros that will be print into the benchmark.
+	 */
 	private final SortedSet<SMTMacro> macros = new TreeSet<SMTMacro>();
+
+	/**
+	 * The factory of macros
+	 */
 	private final SMTMacroFactory ms = new SMTMacroFactory();
 
 	/**
@@ -45,13 +65,15 @@ public class SMTSignatureVerit extends SMTSignature {
 	 */
 	private Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
 
+	/**
+	 * Returns the additional assumptions used for the translation of the
+	 * event-B PO
+	 * 
+	 * @return the additional assumptions used for the translation of the
+	 *         event-B PO
+	 */
 	public Set<SMTFormula> getAdditionalAssumptions() {
 		return additionalAssumptions;
-	}
-
-	public void setFstAndSndAssumptionsAdded(
-			final boolean isFstAndSndAssumptionsAdded) {
-		this.isFstAndSndAssumptionsAdded = isFstAndSndAssumptionsAdded;
 	}
 
 	public void addPairEqualityAxiom(final SMTFormula formula) {
@@ -62,10 +84,10 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	public void addPairSortAndFunction() {
-		if (isPrintPairSortAndPairFunction == false) {
+		if (isPrintPairSortAndPairFunctionAdded == false) {
 			sorts.add(SMTMacroFactory.PAIR_SORT);
 			funs.add(SMTMacroFactory.PAIR_SYMBOL);
-			isPrintPairSortAndPairFunction = true;
+			isPrintPairSortAndPairFunctionAdded = true;
 		}
 	}
 
@@ -186,9 +208,15 @@ public class SMTSignatureVerit extends SMTSignature {
 		additionalAssumptions.add(formula);
 	}
 
-	public void addFstOrSndAuxiliarAssumption(final SMTFormula formula) {
+	public void addFstAndSndAuxiliarAssumptionsAndFunctions() {
 		if (!isFstAndSndAssumptionsAdded) {
-			additionalAssumptions.add(formula);
+			funs.add(SMTMacroFactory.FST_SYMBOL);
+			funs.add(SMTMacroFactory.SND_SYMBOL);
+			additionalAssumptions
+					.add(SMTMacroFactory.createFstAssumption(this));
+			additionalAssumptions
+					.add(SMTMacroFactory.createSndAssumption(this));
+			isFstAndSndAssumptionsAdded = true;
 		}
 	}
 
