@@ -84,28 +84,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		macros.add(macro);
 	}
 
-	public SMTSymbol getSMTSymbol(final String identifierName) {
-		for (final SMTFunctionSymbol functionSymbol : funs) {
-			if (functionSymbol.name.equals(identifierName)) {
-				return functionSymbol;
-			}
-		}
-		for (final SMTPredicateSymbol predicateSymbol : preds) {
-			if (predicateSymbol.name.equals(identifierName)) {
-				return predicateSymbol;
-			}
-		}
-		for (final SMTSortSymbol sortSymbol : sorts) {
-			if (sortSymbol.name.equals(identifierName)) {
-				return sortSymbol;
-			}
-		}
-		throw new IllegalArgumentException(
-				"The translation found a variable with the name: "
-						+ identifierName
-						+ ", which was not translated and saved in the SMTSignature. It should not happen.");
-	}
-
 	private void extramacrosSection(final StringBuilder sb) {
 		if (!macros.isEmpty()) {
 			sb.append(":extramacros(");
@@ -157,7 +135,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.toString());
 		}
-		
+
 		return freshSymbolName(names, name);
 	}
 

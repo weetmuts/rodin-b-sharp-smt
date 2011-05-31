@@ -508,6 +508,11 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		 */
 		testTranslationV1_2Default("∀x,y·x∈s∧y∈s",
 				"(forall (?x R) (?y R) (and (in ?x s) (in ?y s)))");
+
+	}
+
+	@Test
+	public void testForallRule17Part2() {
 		/**
 		 * forall (multiple identifiers)
 		 */

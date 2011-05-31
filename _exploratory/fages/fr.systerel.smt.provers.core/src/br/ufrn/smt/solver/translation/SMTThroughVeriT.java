@@ -489,7 +489,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTSortSymbol expressionSort, final SMTTerm... termChildren) {
 
 		// obtaining fresh name for the variables
-		final String lambdaName = signature.freshSymbolName(SMTMacroSymbol.ELEM);
+		final String lambdaName = signature
+				.freshSymbolName(SMTMacroSymbol.ELEM);
 
 		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
 				expressionSort, false);
@@ -757,8 +758,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
-		
-		final String smtVarName = signature.freshSymbolName(varName);
+
+		final String smtVarName = signature.freshCstName(varName,
+				qVarMap.keySet());
+
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
 		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {

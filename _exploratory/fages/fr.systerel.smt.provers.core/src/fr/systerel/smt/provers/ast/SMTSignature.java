@@ -323,48 +323,6 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * gets a function symbol according to the parameters. Otherwise, it returns
-	 * null.
-	 * 
-	 * @param name
-	 *            the name of the function symbol.
-	 * @param argSorts
-	 *            the sorts of the arguments.
-	 * @param resultSort
-	 *            the result sort of the function symbol.
-	 * @return the function symbol.
-	 */
-	private SMTFunctionSymbol getFunctionSymbol(final String name,
-			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort) {
-		for (final SMTFunctionSymbol fun : funs) {
-			if (fun.name.equals(name) && fun.hasRank(argSorts, resultSort)) {
-				return fun;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * gets a predicate symbol according to the parameters. Otherwise, it
-	 * returns null.
-	 * 
-	 * @param name
-	 *            the name of the predicate symbol.
-	 * @param argSorts
-	 *            the argument sorts.
-	 * @return the predicate symbol.
-	 */
-	private SMTPredicateSymbol getPredicateSymbol(final String name,
-			final SMTSortSymbol[] argSorts) {
-		for (final SMTPredicateSymbol pred : preds) {
-			if (pred.name.equals(name) && pred.hasRank(argSorts)) {
-				return pred;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Appends to the StringBuilder the string representation of the logic
 	 * section
 	 * 
