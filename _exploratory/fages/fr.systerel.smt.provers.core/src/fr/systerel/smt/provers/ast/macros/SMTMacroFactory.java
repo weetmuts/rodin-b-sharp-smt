@@ -295,8 +295,6 @@ public class SMTMacroFactory {
 
 	private static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
 			INT, POLYMORPHIC, !PREDEFINED, EMPTY_SORT);
-	private static final SMTMacroSymbol NOT_EQUAL_SYMBOL = new SMTMacroSymbol(
-			NOT_EQUAL, POLYMORPHIC, !PREDEFINED, POLYMORPHIC_PAIRS);
 	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
 			POLYMORPHIC, !PREDEFINED, CARD_SORTS);
 	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(FINITE,
@@ -451,7 +449,7 @@ public class SMTMacroFactory {
 	public static SMTPairEnumMacro makePairEnumerationMacro(
 			final String macroName, final SMTVarSymbol varName1,
 			final SMTTerm[] terms, final SMTSignatureVerit signature) {
-		addPairMacroSortAndFunInSignature(signature);
+		signature.addPairSortAndFunction();
 		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
 
@@ -486,7 +484,7 @@ public class SMTMacroFactory {
 			final String macroName, final SMTTerm[] terms,
 			final SMTVarSymbol lambdaVar, final SMTFormula formula,
 			final SMTTerm expression, final SMTSignatureVerit signature) {
-		addPairMacroSortAndFunInSignature(signature);
+		signature.addPairSortAndFunction();
 
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
@@ -677,17 +675,6 @@ public class SMTMacroFactory {
 	}
 
 	/**
-	 * Adds the sort (Pair 's 't) and the funcion (pair 's 't (Pair 's 't)) to
-	 * the signature
-	 * 
-	 */
-	private static void addPairMacroSortAndFunInSignature(
-			final SMTSignatureVerit signature) {
-		signature.addSort(PAIR_SORT);
-		signature.addConstant(PAIR_SYMBOL);
-	}
-
-	/**
 	 * Adds a predefined macro and other macros on which it depends on the
 	 * signature
 	 * 
@@ -703,7 +690,7 @@ public class SMTMacroFactory {
 			break;
 		}
 		case PAIR: {
-			addPairMacroSortAndFunInSignature(signature);
+			signature.addPairSortAndFunction();
 			break;
 		}
 		case BUNION: {

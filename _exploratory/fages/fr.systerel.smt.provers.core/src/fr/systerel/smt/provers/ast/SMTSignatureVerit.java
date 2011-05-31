@@ -19,6 +19,7 @@ import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
+import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
@@ -30,9 +31,7 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 // FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
-	public SortedSet<SMTMacro> getMacros() {
-		return macros;
-	}
+	private boolean isPrintPairSortAndPairFunction = false;
 
 	private boolean isFstAndSndAssumptionsAdded = false;
 	private boolean isPairEqualityAxiomAdded = false;
@@ -60,6 +59,44 @@ public class SMTSignatureVerit extends SMTSignature {
 			isPairEqualityAxiomAdded = true;
 			additionalAssumptions.add(formula);
 		}
+	}
+
+	public void addPairSortAndFunction() {
+		if (isPrintPairSortAndPairFunction == false) {
+			sorts.add(SMTMacroFactory.PAIR_SORT);
+			funs.add(SMTMacroFactory.PAIR_SYMBOL);
+			isPrintPairSortAndPairFunction = true;
+		}
+	}
+
+	/**
+	 * Gives a fresh sort
+	 * 
+	 * @param name
+	 */
+	@Override
+	public SMTSortSymbol freshSort(final String name) {
+		final String freshName;
+
+		if (name.equals("\u2124")) { // INTEGER
+			freshName = SMTSymbol.INT;
+		} else if (name.equals("BOOL")) {
+			freshName = SMTMacroSymbol.BOOL_SORT_VERIT;
+		} else {
+			freshName = freshSymbolName(name);
+		}
+		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
+				!SMTSymbol.PREDEFINED);
+		final boolean successfullyAdded = sorts.add(freshSort);
+		if (!successfullyAdded) {
+			// TODO Throw an exception, this case should not be reached because
+			// freshSymbolName should always be successful.
+		}
+		return freshSort;
+	}
+
+	public SortedSet<SMTMacro> getMacros() {
+		return macros;
 	}
 
 	public void setAdditionalAssumptions(
@@ -143,11 +180,6 @@ public class SMTSignatureVerit extends SMTSignature {
 	public void toString(final StringBuilder sb) {
 		super.toString(sb);
 		extramacrosSection(sb);
-	}
-
-	public void addSort(final SMTSortSymbol sort) {
-		assert !sort.name.equals("U");
-		sorts.add(sort);
 	}
 
 	public void addAdditionalAssumption(final SMTFormula formula) {

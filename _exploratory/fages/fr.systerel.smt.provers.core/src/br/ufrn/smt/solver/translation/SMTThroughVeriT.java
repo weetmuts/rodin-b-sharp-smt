@@ -214,9 +214,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		checkIfIsSetOfSet(type, parentType);
 		SMTSortSymbol sortSymbol = typeMap.get(type);
 		if (sortSymbol == null) {
-			sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(type.toString(),
-					signature);
-			signature.addSort(sortSymbol);
+			sortSymbol = signature.freshSort(type.toString());
 			typeMap.put(type, sortSymbol);
 		}
 		return sortSymbol;
@@ -268,7 +266,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// Checking if it's necessary to add the sort and function pair and if
 		// it was not already inserted.
 		if (insertPairDecl) {
-			addPairSortAndFunctions();
+			signature.addPairSortAndFunction();
 		}
 	}
 
@@ -319,18 +317,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			}
 		}
 		if (insertPairDecl) {
-			addPairSortAndFunctions();
+			signature.addPairSortAndFunction();
 		}
 
-	}
-
-	/**
-	 * This method adds the sort (Pair 's 't) and the fun (pair 's 't (Pair 's
-	 * 't)) to the signature
-	 */
-	public void addPairSortAndFunctions() {
-		signature.addSort(SMTMacroFactory.PAIR_SORT);
-		signature.addConstant(SMTMacroFactory.PAIR_SYMBOL);
 	}
 
 	@Override
@@ -387,12 +376,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			if (sortSymbol == null) {
 				if (baseType instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) baseType);
-					addPairSortAndFunctions();
+					signature.addPairSortAndFunction();
 					typeMap.put(baseType, sortSymbol);
 				} else {
-					sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
-							baseType.toString(), signature);
-					signature.addSort(sortSymbol);
+					sortSymbol = signature.freshSort(baseType.toString());
 					typeMap.put(baseType, sortSymbol);
 				}
 			}
@@ -402,9 +389,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				if (type instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) type);
 				} else {
-					sortSymbol = SMTFactoryVeriT.makeVeriTSortSymbol(
-							type.toString(), signature);
-					signature.addSort(sortSymbol);
+					sortSymbol = signature.freshSort(type.toString());
 					typeMap.put(type, sortSymbol);
 				}
 			}
