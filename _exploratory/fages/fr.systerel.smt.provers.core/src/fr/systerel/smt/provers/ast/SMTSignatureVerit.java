@@ -315,7 +315,59 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	@Override
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
-		// TODO Implement this method (take care with pair function and sort)
+		final Set<SMTFunctionSymbol> funSymbols = new HashSet<SMTFunctionSymbol>();
+		final Set<SMTPredicateSymbol> predSymbols = new HashSet<SMTPredicateSymbol>();
+		final Set<SMTSortSymbol> sortSymbols = new HashSet<SMTSortSymbol>();
+		final Set<String> macroSymbols = new HashSet<String>();
+
+		for (final SMTSymbol symbol : symbols) {
+			if (symbol instanceof SMTFunctionSymbol) {
+				funSymbols.add((SMTFunctionSymbol) symbol);
+			} else if (symbol instanceof SMTPredicateSymbol) {
+				predSymbols.add((SMTPredicateSymbol) symbol);
+			} else if (symbol instanceof SMTSortSymbol) {
+				sortSymbols.add((SMTSortSymbol) symbol);
+			} else if (symbol instanceof SMTMacroSymbol) {
+				macroSymbols.add(((SMTMacroSymbol) symbol).getName());
+			}
+		}
+
+		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols, macroSymbols);
 	}
 
+	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
+			final Set<SMTPredicateSymbol> usedPreds,
+			final Set<SMTSortSymbol> usedSorts, final Set<String> usedMacros) {
+
+		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
+		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
+		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
+		final Set<String> unusedMacroSymbols = removeUnusedMacros(usedMacros);
+
+		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
+				&& unusedSortSymbols.isEmpty() && unusedMacroSymbols.isEmpty()) {
+			return;
+		}
+		removeUnusedSymbols(usedFuns, usedPreds, usedSorts, usedMacros);
+
+	}
+
+	private Set<String> removeUnusedMacros(final Set<String> usedMacros) {
+		final Set<String> unusedMacroSymbols = new HashSet<String>();
+		final Set<String> macroNames = getMacroNames();
+
+		for (final String macroName : macroNames) {
+			if (!usedMacros.contains(macroName)) {
+				unusedMacroSymbols.add(macroName);
+			}
+		}
+
+		for (final SMTMacro macro : macros) {
+			if (unusedMacroSymbols.contains(macro.getMacroName())) {
+				macros.remove(macro);
+			}
+		}
+
+		return unusedMacroSymbols;
+	}
 }

@@ -393,7 +393,7 @@ public abstract class SMTSignature {
 		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
 	}
 
-	private Set<SMTSortSymbol> removeUnusedSorts(
+	protected Set<SMTSortSymbol> removeUnusedSorts(
 			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
 		final Set<SMTSortSymbol> declUsedSorts = new HashSet<SMTSortSymbol>();
@@ -417,7 +417,7 @@ public abstract class SMTSignature {
 		return unusedSortSymbols;
 	}
 
-	private Set<SMTPredicateSymbol> removeUnusedPreds(
+	protected Set<SMTPredicateSymbol> removeUnusedPreds(
 			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
 		for (final SMTPredicateSymbol symbol : preds) {
@@ -429,7 +429,7 @@ public abstract class SMTSignature {
 		return unusedPredicateSymbols;
 	}
 
-	private Set<SMTFunctionSymbol> removeUnusedFunctions(
+	protected Set<SMTFunctionSymbol> removeUnusedFunctions(
 			final Set<SMTFunctionSymbol> usedFuns) {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
 		for (final SMTFunctionSymbol symbol : funs) {
@@ -648,6 +648,12 @@ public abstract class SMTSignature {
 		return freshPredicate;
 	}
 
+	/**
+	 * Remove unused symbols
+	 * 
+	 * @param symbols
+	 *            the found symbols in the benchmark
+	 */
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
 		final Set<SMTFunctionSymbol> funSymbols = new HashSet<SMTFunctionSymbol>();
 		final Set<SMTPredicateSymbol> predSymbols = new HashSet<SMTPredicateSymbol>();
