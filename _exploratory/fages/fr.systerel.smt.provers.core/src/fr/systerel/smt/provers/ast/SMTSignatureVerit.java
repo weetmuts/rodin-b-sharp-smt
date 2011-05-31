@@ -76,6 +76,10 @@ public class SMTSignatureVerit extends SMTSignature {
 		return additionalAssumptions;
 	}
 
+	/**
+	 * Adds the sort Pair and the function pair into the signature (it adds only
+	 * once)
+	 */
 	public void addPairSortAndFunction() {
 		if (isPrintPairSortAndPairFunctionAdded == false) {
 			sorts.add(SMTMacroFactory.PAIR_SORT);
@@ -172,7 +176,8 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * necessary to create fresh ?-vars.
 	 * 
 	 * @param macros
-	 * @return
+	 *            the macros that contains the ?-vars to be taken
+	 * @return the ?-vars names
 	 */
 	private static Set<String> getQNamesFromMacro(final Set<SMTMacro> macros) {
 		final Set<String> macroNames = new HashSet<String>();
@@ -194,10 +199,29 @@ public class SMTSignatureVerit extends SMTSignature {
 		return macroNames;
 	}
 
+	/**
+	 * It compares the name with all used names in ?-vars, and then return a
+	 * fresh name
+	 * 
+	 * @param name
+	 *            the name to be compared for fresh name
+	 * @return a fresh name
+	 */
 	public String freshQVarName(final String name) {
 		return freshQVarName(name, new HashSet<String>());
 	}
 
+	/**
+	 * It compares the name with all used names in ?-vars, and then return a
+	 * fresh name
+	 * 
+	 * @param name
+	 *            the name to be compared for fresh name
+	 * @param usedNames
+	 *            other names that will be used in the comparison
+	 * @return a fresh name
+	 * 
+	 */
 	public String freshQVarName(final String name, final Set<String> usedNames) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(ms.getqSymbols());
@@ -211,6 +235,11 @@ public class SMTSignatureVerit extends SMTSignature {
 		return freshSymbolName(name, new HashSet<String>());
 	}
 
+	/**
+	 * Returns a set with all the name of all the macros in the signature.
+	 * 
+	 * @return a set with all the name of all the macros in the signature.
+	 */
 	private Set<String> getMacroNames() {
 		final Set<String> macroNames = new HashSet<String>();
 		for (final SMTMacro macro : macros) {
@@ -219,6 +248,15 @@ public class SMTSignatureVerit extends SMTSignature {
 		return macroNames;
 	}
 
+	/**
+	 * Returns a fresh symbol name. It does not compare with ?-var names.
+	 * 
+	 * @param name
+	 *            the name to be compared for a fresh symbol name
+	 * @param usedNames
+	 *            other names used for the comparison
+	 * @return a fresh symbol name
+	 */
 	public String freshSymbolName(final String name, final Set<String> usedNames) {
 		usedNames.addAll(getSymbolNames(funs));
 		usedNames.addAll(getSymbolNames(sorts));
@@ -237,10 +275,20 @@ public class SMTSignatureVerit extends SMTSignature {
 		extramacrosSection(sb);
 	}
 
+	/**
+	 * Adds an additional assumption to the signature
+	 * 
+	 * @param formula
+	 *            the additional assumption
+	 */
 	public void addAdditionalAssumption(final SMTFormula formula) {
 		additionalAssumptions.add(formula);
 	}
 
+	/**
+	 * Adds the fst and snd functions, as well as their defining assumptions.
+	 * They are added only once.
+	 */
 	public void addFstAndSndAuxiliarAssumptionsAndFunctions() {
 		if (!isFstAndSndAssumptionsAdded) {
 			funs.add(SMTMacroFactory.FST_SYMBOL);
@@ -253,7 +301,10 @@ public class SMTSignatureVerit extends SMTSignature {
 		}
 	}
 
-	public void addPairEqualityAxioms() {
+	/**
+	 * Adds the pair equality axiom. It is added only once.
+	 */
+	public void addPairEqualityAxiom() {
 		if (!isPairEqualityAxiomAdded) {
 			addFstAndSndAuxiliarAssumptionsAndFunctions();
 			additionalAssumptions
