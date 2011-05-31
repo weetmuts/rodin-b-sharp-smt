@@ -45,15 +45,16 @@ public class SmtProverCall extends XProverCall {
 	private static final String VERIT_TEMP_FILE = "_prep";
 	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
-	public static final String TRANSLATION_PATH = System
+	private static final String TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
-	private String translationFolder = null;
 
 	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
 
-	final List<Process> activeProcesses = new ArrayList<Process>();
+	private String translationFolder = null;
+
+	private final List<Process> activeProcesses = new ArrayList<Process>();
 
 	/**
 	 * Name of the called external SMT prover
@@ -89,6 +90,26 @@ public class SmtProverCall extends XProverCall {
 	protected File iFile;
 	protected File oFile;
 	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
+
+	/**
+	 * Creates an instance of this class. Additional computations are: prover
+	 * name and preferences settings.
+	 * 
+	 * @param hypotheses
+	 *            hypotheses of the sequent to discharge
+	 * @param goal
+	 *            goal of the sequent to discharge
+	 * @param pm
+	 *            proof monitor used for cancellation
+	 */
+	protected SmtProverCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final SMTPreferences preferences, final String lemmaName) {
+		super(hypotheses, goal, pm);
+		smtUiPreferences = preferences;
+		this.lemmaName = lemmaName;
+		proverName = preferences.getSolver().getId();
+	}
 
 	private String smtFilePath(final String fileName) {
 		return translationFolder + File.separatorChar + fileName
@@ -195,48 +216,6 @@ public class SmtProverCall extends XProverCall {
 			se.getMessage();
 			return null;
 		}
-	}
-
-	/**
-	 * Creates an instance of this class. Additional computations are: prover
-	 * name and preferences settings.
-	 * 
-	 * @param hypotheses
-	 *            hypotheses of the sequent to discharge
-	 * @param goal
-	 *            goal of the sequent to discharge
-	 * @param pm
-	 *            proof monitor used for cancellation
-	 */
-	public SmtProverCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final SMTPreferences preferences, final String lemmaName) {
-		super(hypotheses, goal, pm);
-		smtUiPreferences = preferences;
-		this.lemmaName = lemmaName;
-		proverName = preferences.getSolver().getId();
-	}
-
-	/**
-	 * Creates an instance of this class. Additional computations are: prover
-	 * name and preferences settings.
-	 * 
-	 * @param hypotheses
-	 *            hypotheses of the sequent to discharge
-	 * @param goal
-	 *            goal of the sequent to discharge
-	 * @param pm
-	 *            proof monitor used for cancellation
-	 */
-	public SmtProverCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final SMTPreferences preferences, final String lemmaName,
-			final String smtFolder) {
-		super(hypotheses, goal, pm);
-		smtUiPreferences = preferences;
-		this.lemmaName = lemmaName;
-		proverName = preferences.getSolver().getId();
-		translationFolder = smtFolder;
 	}
 
 	/**
