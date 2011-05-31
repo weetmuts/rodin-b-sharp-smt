@@ -560,6 +560,16 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
+	/**
+	 * Add a constant to the signature.
+	 * 
+	 * @param constant
+	 *            the constant.
+	 */
+	public void addConstant(final SMTFunctionSymbol constant) {
+		funs.add(constant);
+	}
+
 	public String freshSymbolName(final String name) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
@@ -582,7 +592,11 @@ public abstract class SMTSignature {
 		final String freshName = freshSymbolName(name);
 		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
 				freshName, sort, !ASSOCIATIVE, !PREDEFINED);
-		funs.add(freshConstant);
+		final boolean successfullyAdded = funs.add(freshConstant);
+		if (!successfullyAdded) {
+			// TODO Throw an exception, this case should not be reached because
+			// freshSymbolName should always be successful.
+		}
 		return freshConstant;
 	}
 
@@ -601,28 +615,15 @@ public abstract class SMTSignature {
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		final Set<String> names = new HashSet<String>();
-		names.addAll(getSymbolNames(funs));
-		names.addAll(getSymbolNames(sorts));
-		names.addAll(getSymbolNames(preds));
-		final String freshName = freshName(names, name);
+		final String freshName = freshSymbolName(name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
-		/**
-		 * Tries to put the sort in sorts set.
-		 */
-		sorts.add(freshSort);
+		final boolean successfullyAdded = sorts.add(freshSort);
+		if (!successfullyAdded) {
+			// TODO Throw an exception, this case should not be reached because
+			// freshSymbolName should always be successful.
+		}
 		return freshSort;
-	}
-
-	/**
-	 * Add a constant to the signature.
-	 * 
-	 * @param constant
-	 *            the constant.
-	 */
-	public void addConstant(final SMTFunctionSymbol constant) {
-		funs.add(constant);
 	}
 
 	/**
@@ -637,34 +638,14 @@ public abstract class SMTSignature {
 	public SMTPredicateSymbol freshPredicateSymbol(final String name,
 			final SMTSortSymbol... argSorts) {
 		final String freshName = freshSymbolName(name);
-		SMTPredicateSymbol symbol = new SMTPredicateSymbol(freshName,
-				!SMTSymbol.PREDEFINED, argSorts);
-		boolean successfullyAdded = preds.add(symbol);
-		if (successfullyAdded) {
-			return symbol;
-		} else {
-			symbol = new SMTPredicateSymbol(freshName(getSymbolNames(preds),
-					freshName), !SMTSymbol.PREDEFINED, argSorts);
-			successfullyAdded = preds.add(symbol);
-			if (successfullyAdded) {
-				return symbol;
-			} else {
-				return null;
-			}
+		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
+				freshName, !SMTSymbol.PREDEFINED, argSorts);
+		final boolean successfullyAdded = preds.add(freshPredicate);
+		if (!successfullyAdded) {
+			// TODO Throw an exception, this case should not be reached because
+			// freshSymbolName should always be successful.
 		}
-	}
-
-	/**
-	 * Appends to the StringBuilder the string representation of the signature
-	 * 
-	 * @param sb
-	 *            the StringBuilder
-	 */
-	public void toString(final StringBuilder sb) {
-		logicSection(sb);
-		extrasortsSection(sb);
-		extrapredsSection(sb);
-		extrafunsSection(sb);
+		return freshPredicate;
 	}
 
 	public void removeUnusedSymbols(final Set<SMTSymbol> symbols) {
@@ -682,5 +663,18 @@ public abstract class SMTSignature {
 			}
 		}
 		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols);
+	}
+
+	/**
+	 * Appends to the StringBuilder the string representation of the signature
+	 * 
+	 * @param sb
+	 *            the StringBuilder
+	 */
+	public void toString(final StringBuilder sb) {
+		logicSection(sb);
+		extrasortsSection(sb);
+		extrapredsSection(sb);
+		extrafunsSection(sb);
 	}
 }
