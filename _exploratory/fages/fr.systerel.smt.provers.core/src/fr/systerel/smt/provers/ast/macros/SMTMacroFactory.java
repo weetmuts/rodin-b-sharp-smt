@@ -495,14 +495,14 @@ public class SMTMacroFactory {
 		}
 		case FCOMP: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(FCOMP_MACRO);
 			break;
 		}
 		case OVR: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(REL_OVR_MACRO);
 			break;
@@ -536,42 +536,42 @@ public class SMTMacroFactory {
 			break;
 		case RANGE_SUBSTRACTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RANGE_SUBSTRACTION_MACRO);
 			break;
 		}
 		case RANGE_RESTRICTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RANGE_RESTRICTION_MACRO);
 			break;
 		}
 		case RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RELATION_MACRO);
 			break;
 		}
 		case TOTAL_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(TOTAL_RELATION_MACRO);
 			break;
 		}
 		case SURJECTIVE_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(SURJECTIVE_RELATION_MACRO);
 			break;
 		}
 		case TOTAL_SURJECTIVE_RELATION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(TOTAL_SURJECTIVE_RELATION_MACRO);
 			break;
@@ -596,7 +596,7 @@ public class SMTMacroFactory {
 		}
 		case ID: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(ID_MACRO);
 			break;
@@ -611,7 +611,7 @@ public class SMTMacroFactory {
 		}
 		case INV: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(INVERSE_MACRO);
 			break;
@@ -669,21 +669,21 @@ public class SMTMacroFactory {
 		}
 		case CARTESIAN_PRODUCT: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(CARTESIAN_PRODUCT_MACRO);
 			break;
 		}
 		case DOMAIN_RESTRICTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(DOMAIN_RESTRICTION_MACRO);
 			break;
 		}
 		case DOMAIN_SUBSTRACTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(DOMAIN_SUBSTRACTION_MACRO);
 			break;
@@ -726,7 +726,7 @@ public class SMTMacroFactory {
 		}
 		case FUNP: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
-			signature.addFstAndSndAuxiliarAssumptionsAndFunctions();
+			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(FUNP_MACRO);
 			break;

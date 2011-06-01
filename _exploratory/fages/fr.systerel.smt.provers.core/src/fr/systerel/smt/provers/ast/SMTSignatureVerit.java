@@ -41,13 +41,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * This boolean is used to check if it is necessary to add the functions and
 	 * the assumptions of the functions first and snd or not
 	 */
-	private boolean isFstAndSndAssumptionsAdded = false;
-
-	/**
-	 * This boolean is used to check if the axiom of equality of pairs are added
-	 * or not
-	 */
-	private boolean isPairEqualityAxiomAdded = false;
+	private boolean isFstAndSndFunctionsAdded = false;
 
 	/**
 	 * this set stores the macros that will be print into the benchmark.
@@ -58,23 +52,6 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * The factory of macros
 	 */
 	private final SMTMacroFactory ms = new SMTMacroFactory();
-
-	/**
-	 * This variable stores additional assumptions produced by the translation
-	 * of min,max, finite and cardinality operators
-	 */
-	private final Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
-
-	/**
-	 * Returns the additional assumptions used for the translation of the
-	 * event-B PO
-	 * 
-	 * @return the additional assumptions used for the translation of the
-	 *         event-B PO
-	 */
-	public Set<SMTFormula> getAdditionalAssumptions() {
-		return additionalAssumptions;
-	}
 
 	/**
 	 * Adds the sort Pair and the function pair into the signature (it adds only
@@ -272,40 +249,14 @@ public class SMTSignatureVerit extends SMTSignature {
 	}
 
 	/**
-	 * Adds an additional assumption to the signature
-	 * 
-	 * @param formula
-	 *            the additional assumption
-	 */
-	public void addAdditionalAssumption(final SMTFormula formula) {
-		additionalAssumptions.add(formula);
-	}
-
-	/**
 	 * Adds the fst and snd functions, as well as their defining assumptions.
 	 * They are added only once.
 	 */
-	public void addFstAndSndAuxiliarAssumptionsAndFunctions() {
-		if (!isFstAndSndAssumptionsAdded) {
+	public void addFstAndSndAuxiliarFunctions() {
+		if (!isFstAndSndFunctionsAdded) {
 			funs.add(SMTFactoryVeriT.FST_SYMBOL);
 			funs.add(SMTFactoryVeriT.SND_SYMBOL);
-			additionalAssumptions
-					.add(SMTFactoryVeriT.createFstAssumption(this));
-			additionalAssumptions
-					.add(SMTFactoryVeriT.createSndAssumption(this));
-			isFstAndSndAssumptionsAdded = true;
-		}
-	}
-
-	/**
-	 * Adds the pair equality axiom. It is added only once.
-	 */
-	public void addPairEqualityAxiom() {
-		if (!isPairEqualityAxiomAdded) {
-			addFstAndSndAuxiliarAssumptionsAndFunctions();
-			additionalAssumptions
-					.add(SMTFactoryVeriT.createPairEqualityAxiom());
-			isPairEqualityAxiomAdded = true;
+			isFstAndSndFunctionsAdded = true;
 		}
 	}
 
