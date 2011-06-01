@@ -66,8 +66,8 @@ public class SMTTheory {
 	/**
 	 * This class implements a logic using the SMT-LIB integer theory
 	 */
-	public static class Ints extends SMTTheory implements ISMTArithmeticFuns,
-			ISMTArithmeticPreds, ISMTIntegerSort {
+	public static class Ints extends SMTTheory implements
+			ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort {
 		private static final String INTS = "Ints";
 
 		/**
@@ -122,12 +122,18 @@ public class SMTTheory {
 				SMTSymbol.UMINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_INT_TAB);
+		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
+				SMTSymbol.DIV, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 				SMTSymbol.PLUS, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
+		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
+				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
+				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
-				PLUS, MUL };
+				PLUS, MUL, DIV, MOD, EXPN };
 
 		/**
 		 * The sole instance of the integer theory
@@ -168,6 +174,11 @@ public class SMTTheory {
 		}
 
 		@Override
+		public SMTSymbol getDiv() {
+			return DIV;
+		}
+
+		@Override
 		public SMTPredicateSymbol getLessThan() {
 			return LT;
 		}
@@ -190,6 +201,17 @@ public class SMTTheory {
 		public static SMTSortSymbol[] getIntIntTab() {
 			return INT_INT_TAB;
 		}
+
+		@Override
+		public SMTSymbol getExpn() {
+			return EXPN;
+		}
+
+		@Override
+		public SMTSymbol getMod() {
+			return MOD;
+		}
+
 	}
 
 	public static class Booleans extends SMTTheory implements ISMTBooleanSort {

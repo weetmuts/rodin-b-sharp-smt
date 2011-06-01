@@ -568,6 +568,19 @@ public abstract class SMTSignature {
 		return freshSymbolName(names, name);
 	}
 
+	public SMTFunctionSymbol freshFunctionSymbol(final String name,
+			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
+		final String freshName = freshSymbolName(name);
+		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
+				freshName, returnSort, !ASSOCIATIVE, !PREDEFINED, argSorts);
+		final boolean successfullyAdded = funs.add(freshConstant);
+		if (!successfullyAdded) {
+			// TODO Throw an exception, this case should not be reached because
+			// freshSymbolName should always be successful.
+		}
+		return freshConstant;
+	}
+
 	/**
 	 * Creates and returns a fresh constant
 	 * 
@@ -580,19 +593,6 @@ public abstract class SMTSignature {
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
 		return freshFunctionSymbol(name, new SMTSortSymbol[0], sort);
-	}
-
-	public SMTFunctionSymbol freshFunctionSymbol(final String name,
-			final SMTSortSymbol[] argSorts, final SMTSortSymbol sort) {
-		final String freshName = freshSymbolName(name);
-		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
-				freshName, sort, !ASSOCIATIVE, !PREDEFINED, argSorts);
-		final boolean successfullyAdded = funs.add(freshConstant);
-		if (!successfullyAdded) {
-			// TODO Throw an exception, this case should not be reached because
-			// freshSymbolName should always be successful.
-		}
-		return freshConstant;
 	}
 
 	/**

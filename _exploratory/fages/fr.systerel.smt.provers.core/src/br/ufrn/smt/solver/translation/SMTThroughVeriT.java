@@ -594,28 +594,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), signature, children);
 			break;
 		case Formula.DIV:
-			SMTFunctionSymbol div = (SMTFunctionSymbol) varMap.get("divi");
-			if (div == null) {
-				div = signature.freshFunctionSymbol("divi",
-						Ints.getIntIntTab(), Ints.getInt());
-			}
-			smtNode = sf.makeDiv(div, signature, children);
+			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.DIV), signature, children);
 			break;
 		case Formula.MOD:
-			SMTFunctionSymbol mod = (SMTFunctionSymbol) varMap.get("mod");
-			if (mod == null) {
-				mod = signature.freshFunctionSymbol("mod", Ints.getIntIntTab(),
-						Ints.getInt());
-			}
-			smtNode = sf.makeMod(mod, signature, children);
+			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MOD), signature, children);
 			break;
 		case Formula.EXPN:
-			SMTFunctionSymbol expn = (SMTFunctionSymbol) varMap.get("expn");
-			if (expn == null) {
-				expn = signature.freshFunctionSymbol("expn",
-						Ints.getIntIntTab(), Ints.getInt());
-			}
-			smtNode = sf.makeExpn(expn, signature, children);
+			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.EXPN), signature, children);
 			break;
 		case Formula.UPTO:
 			smtNode = SMTFactoryVeriT.makeMacroTerm(

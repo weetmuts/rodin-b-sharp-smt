@@ -135,6 +135,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		expectedFunctions.add("(g S)");
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
+		expectedFunctions.add("(expn Int Int Int)");
+		expectedFunctions.add("(mod Int Int Int)");
+		expectedFunctions.add("(divi Int Int Int)");
 
 		testTypeEnvironmentFuns(expectedFunctions, signature);
 	}
@@ -199,6 +202,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(u Bool)");
 		expectedFunctions.add("(v Bool)");
 		expectedFunctions.add("(pair 's 't (Pair 's 't))");
+		expectedFunctions.add("(expn Int Int Int)");
+		expectedFunctions.add("(mod Int Int Int)");
+		expectedFunctions.add("(divi Int Int Int)");
 
 		testTypeEnvironmentFuns(expectedFunctions, signature);
 	}
