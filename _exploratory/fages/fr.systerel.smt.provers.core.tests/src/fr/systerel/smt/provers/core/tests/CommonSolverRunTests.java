@@ -20,13 +20,11 @@ import org.junit.BeforeClass;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.SMTTranslationApproach;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.internal.core.SmtProverCall;
-
 
 public abstract class CommonSolverRunTests extends AbstractTests {
 
@@ -309,9 +307,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			AbstractTests.testTypeEnvironmentFuns(expectedFuns, signature);
 			AbstractTests.testTypeEnvironmentPreds(expectedPreds, signature);
 
-		} catch (final PreProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

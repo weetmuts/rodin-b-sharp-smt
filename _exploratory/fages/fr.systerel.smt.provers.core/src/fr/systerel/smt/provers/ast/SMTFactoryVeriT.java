@@ -319,7 +319,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			++i;
 		}
 		return formulas;
-		
+
 	}
 
 	/**

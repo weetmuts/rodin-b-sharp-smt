@@ -823,7 +823,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		public BoolSetVisitor(final AtomicExpression expr) {
 			assert expr.getTag() == Formula.BOOL;
 			atomicExpression = expr;
-			
+
 		}
 
 		@Override

@@ -16,7 +16,6 @@ package fr.systerel.smt.provers.ast;
  * the SMT-LIB symbols "÷", "expn".
  */
 public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
-	
 
 	/**
 	 * returns the division function symbol

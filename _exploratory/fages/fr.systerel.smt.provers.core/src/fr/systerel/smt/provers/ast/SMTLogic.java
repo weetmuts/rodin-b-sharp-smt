@@ -46,7 +46,7 @@ public class SMTLogic {
 	public SMTLogic(final String name, final SMTTheory... theories) {
 		this.name = name;
 		this.theories = theories.clone();
-		
+
 	}
 
 	/**
