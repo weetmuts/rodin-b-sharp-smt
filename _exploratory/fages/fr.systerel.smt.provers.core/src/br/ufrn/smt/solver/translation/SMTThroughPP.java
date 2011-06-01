@@ -811,46 +811,54 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	class BoolSetVisitor extends DefaultVisitor {
 
-		/**
-		 * This class is used to check if a expression contains the MAPSTO
-		 * operator
-		 * 
-		 * @author vitor
-		 * 
-		 */
-		class MapstoVisitor extends DefaultVisitor {
-
-			boolean hasMapsto = false;
-
-			@Override
-			public boolean enterMAPSTO(final BinaryExpression expr) {
-				hasMapsto = true;
-				return false;
-			}
-		}
+		private RelationalPredicate membershipPredicate;
+		private final AtomicExpression atomicExpression;
 
 		/**
-		 * Constructor that checks if the tag of the atomic expression is
+		 * Constructor that stores an atomic expresion which the tag is
 		 * <code>BOOL</code>.
 		 * 
 		 * @param expr
 		 */
 		public BoolSetVisitor(final AtomicExpression expr) {
 			assert expr.getTag() == Formula.BOOL;
+			atomicExpression = expr;
+			
 		}
 
 		@Override
 		/**
-		 * This method checks if the right side of the relation predicate (which the operator is membership) contains Mapsto.
+		 * This method just stores the relational actualPredicate
 		 */
 		public boolean enterIN(final RelationalPredicate pred) {
-			final MapstoVisitor mv = new MapstoVisitor();
-			pred.getRight().accept(mv);
-			if (mv.hasMapsto) {
-				throw new IllegalArgumentException(
-						"The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
-			}
+			membershipPredicate = pred;
 			return true;
+		}
+
+		/**
+		 * This method checks, for each MAPSTO expression:
+		 * <ul>
+		 * <li>If the left or the right of the binary expression correspond to
+		 * the stored atomicExpression
+		 * <li>If so, check if the parent of the MAPSTO expression is a
+		 * membership actualPredicate. If not, throws an exception
+		 * <li>else keep traversing the actualPredicate
+		 * </ul>
+		 */
+		@Override
+		public boolean enterMAPSTO(final BinaryExpression expr) {
+			assert atomicExpression != null;
+			if (expr.getLeft().equals(atomicExpression)
+					|| expr.getRight().equals(atomicExpression)) {
+				if (membershipPredicate.getLeft().equals(expr)) {
+					return false;
+				} else {
+					throw new IllegalArgumentException(
+							" The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
+				}
+			} else {
+				return true;
+			}
 		}
 	}
 
@@ -1150,28 +1158,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.DIV:
-			SMTFunctionSymbol div = (SMTFunctionSymbol) varMap.get("divi");
-			if (div == null) {
-				div = signature.freshFunctionSymbol("divi",
-						Ints.getIntIntTab(), Ints.getInt());
-			}
-			smtNode = sf.makeDiv(div, signature, children);
+			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.DIV), signature, children);
 			break;
 		case Formula.MOD:
-			SMTFunctionSymbol mod = (SMTFunctionSymbol) varMap.get("mod");
-			if (mod == null) {
-				mod = signature.freshFunctionSymbol("mod", Ints.getIntIntTab(),
-						Ints.getInt());
-			}
-			smtNode = sf.makeMod(mod, signature, children);
+			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.MOD), signature, children);
 			break;
 		case Formula.EXPN:
-			SMTFunctionSymbol expn = (SMTFunctionSymbol) varMap.get("expn");
-			if (expn == null) {
-				expn = signature.freshFunctionSymbol("expn",
-						Ints.getIntIntTab(), Ints.getInt());
-			}
-			smtNode = sf.makeExpn(expn, signature, children);
+			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+					.getOperator(SMTOperator.EXPN), signature, children);
 			break;
 		default:
 			/**
