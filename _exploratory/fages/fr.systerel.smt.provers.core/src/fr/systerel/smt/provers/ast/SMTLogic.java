@@ -32,6 +32,9 @@ public class SMTLogic {
 	private final String name;
 	private final SMTTheory[] theories;
 
+	// TODO add fields needed to print a complete logic (language, extensions,
+	// notes)
+
 	/**
 	 * Constructs a new SMTLogic
 	 * 
@@ -43,6 +46,7 @@ public class SMTLogic {
 	public SMTLogic(final String name, final SMTTheory... theories) {
 		this.name = name;
 		this.theories = theories.clone();
+		
 	}
 
 	/**
@@ -193,29 +197,50 @@ public class SMTLogic {
 			return null;
 		case MINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getMinus();
 				}
 			}
 			return null;
 		case MUL:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getMul();
 				}
 			}
 			return null;
 		case PLUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getPlus();
 				}
 			}
 			return null;
 		case UMINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
 					return ((ISMTArithmeticFuns) theory).getUMinus();
+				}
+			}
+			return null;
+		case DIV:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getDiv();
+				}
+			}
+			return null;
+		case EXPN:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getExpn();
+				}
+			}
+			return null;
+		case MOD:
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof ISMTArithmeticFunsExtended) {
+					return ((ISMTArithmeticFunsExtended) theory).getMod();
 				}
 			}
 			return null;
@@ -248,7 +273,8 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS);
+				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), EXPN(SMTSymbol.EXPN), MOD(
+				SMTSymbol.MOD);
 
 		private String symbol;
 
@@ -279,7 +305,8 @@ public class SMTLogic {
 		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
 				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(
 				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
-				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), DIV(
+				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
 				SMTMacroSymbol.RELATION), TOTAL_RELATION(
