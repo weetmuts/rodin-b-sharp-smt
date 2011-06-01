@@ -82,8 +82,8 @@ public class SMTSignatureVerit extends SMTSignature {
 	 */
 	public void addPairSortAndFunction() {
 		if (isPrintPairSortAndPairFunctionAdded == false) {
-			sorts.add(SMTMacroFactory.PAIR_SORT);
-			funs.add(SMTMacroFactory.PAIR_SYMBOL);
+			sorts.add(SMTFactoryVeriT.PAIR_SORT);
+			funs.add(SMTFactoryVeriT.PAIR_SYMBOL);
 			isPrintPairSortAndPairFunctionAdded = true;
 		}
 	}
@@ -108,11 +108,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		}
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
-		final boolean successfullyAdded = sorts.add(freshSort);
-		if (!successfullyAdded) {
-			// TODO Throw an exception, this case should not be reached because
-			// freshSymbolName should always be successful.
-		}
+		sorts.add(freshSort);
 		return freshSort;
 	}
 
@@ -291,12 +287,12 @@ public class SMTSignatureVerit extends SMTSignature {
 	 */
 	public void addFstAndSndAuxiliarAssumptionsAndFunctions() {
 		if (!isFstAndSndAssumptionsAdded) {
-			funs.add(SMTMacroFactory.FST_SYMBOL);
-			funs.add(SMTMacroFactory.SND_SYMBOL);
+			funs.add(SMTFactoryVeriT.FST_SYMBOL);
+			funs.add(SMTFactoryVeriT.SND_SYMBOL);
 			additionalAssumptions
-					.add(SMTMacroFactory.createFstAssumption(this));
+					.add(SMTFactoryVeriT.createFstAssumption(this));
 			additionalAssumptions
-					.add(SMTMacroFactory.createSndAssumption(this));
+					.add(SMTFactoryVeriT.createSndAssumption(this));
 			isFstAndSndAssumptionsAdded = true;
 		}
 	}
@@ -308,7 +304,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		if (!isPairEqualityAxiomAdded) {
 			addFstAndSndAuxiliarAssumptionsAndFunctions();
 			additionalAssumptions
-					.add(SMTMacroFactory.createPairEqualityAxiom());
+					.add(SMTFactoryVeriT.createPairEqualityAxiom());
 			isPairEqualityAxiomAdded = true;
 		}
 	}

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
-import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.VeritPredefinedTheory.POLYMORPHIC;
@@ -60,18 +59,12 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
-import fr.systerel.smt.provers.ast.SMTFunApplication;
-import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTPolymorphicSortSymbol;
-import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
-import fr.systerel.smt.provers.ast.SMTQuantifierSymbol;
-import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
-import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTVar;
@@ -87,11 +80,6 @@ import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
  * 
  */
 public class SMTMacroFactory {
-
-	private static final String SND_PAIR_ARG_NAME = "e";
-	private static final String FST_PAIR_ARG_NAME = "f";
-	private static final String FST_PAIR_SORT_NAME = "'s";
-	private static final String SND_PAIR_SORT_NAME = "'t";
 
 	public static SMTSortSymbol[] EMPTY_SORT = {};
 
@@ -374,29 +362,6 @@ public class SMTMacroFactory {
 	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
 			POLYMORPHIC, !PREDEFINED);
 
-	public static SMTSortSymbol PAIR_SORT = SMTFactory.makeSortSymbol(
-			"(Pair 's 't)", !PREDEFINED);
-
-	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
-
-	private static final SMTSortSymbol FST_RETURN_SORT = SMTFactory
-			.makeSortSymbol(FST_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
-
-	private static final SMTSortSymbol SND_RETURN_SORT = SMTFactory
-			.makeSortSymbol(SND_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
-
-	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
-			SND_RETURN_SORT };
-
-	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
-			MAPSTO, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
-
-	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
-			"fst", FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
-
-	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
-			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
-
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
 			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
 			SUBSET_MACRO, SUBSETEQ_MACRO, RANGE_INTEGER_MACRO,
@@ -423,8 +388,8 @@ public class SMTMacroFactory {
 				assert !qSymbols.contains(qSymbol);
 			}
 			qSymbols.addAll(pMacro.getQSymbols());
-			qSymbols.add(FST_PAIR_ARG_NAME);
-			qSymbols.add(SND_PAIR_ARG_NAME);
+			qSymbols.add(SMTFactoryVeriT.FST_PAIR_ARG_NAME);
+			qSymbols.add(SMTFactoryVeriT.SND_PAIR_ARG_NAME);
 		}
 	}
 
@@ -499,157 +464,6 @@ public class SMTMacroFactory {
 		}
 		return new SMTSetComprehensionMacro(macroName, qVars, lambdaVar,
 				formula, expression, 1);
-	}
-
-	/**
-	 * This method creates the auxiliar assumption:
-	 * 
-	 * <p>
-	 * <code>(forall (?e 's) (?f 't) (= (fst (pair ?e ?f)) ?e))</code>
-	 * </p>
-	 * 
-	 * <p>
-	 * that defines the <code>fst</code> function
-	 * </p>
-	 * 
-	 * @return The formula that represents the fst auxiliar function assumption
-	 */
-	public static SMTFormula createFstAssumption(final SMTSignature signature) {
-		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
-				FST_PAIR_ARG_NAME, FST_RETURN_SORT, PREDEFINED);
-		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
-				SND_PAIR_ARG_NAME, SND_RETURN_SORT, PREDEFINED);
-
-		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
-		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
-
-		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, varSymbol1, varSymbol2);
-
-		final SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
-				pairFunAppl);
-
-		return createAuxiliarAssumption(signature, forallVarSymbol1,
-				forallVarSymbol2, varSymbol1, fstFunAppl);
-	}
-
-	/**
-	 * Given the elements (?e 's) , (?f 't), ?x , and (fun (pair ?e ?f)) ?x), it
-	 * creates the final auxiliar assumption.
-	 * 
-	 * @param signature
-	 *            the signature
-	 * @param forallVarSymbol1
-	 *            (?e 's)
-	 * @param forallVarSymbol2
-	 *            (?f 't)
-	 * @param varSymbol1
-	 *            ?x
-	 * @param fstFunAppl
-	 *            (fun (pair ?e ?f)) ?x)
-	 * @return The formula that represents the fst or the snd auxiliar function
-	 *         assumption
-	 * 
-	 * @see #createFstAssumption(SMTSignature)
-	 * @see #createSndAssumption(SMTSignature)
-	 */
-	private static SMTFormula createAuxiliarAssumption(
-			final SMTSignature signature, final SMTVarSymbol forallVarSymbol1,
-			final SMTVarSymbol forallVarSymbol2, final SMTVar varSymbol1,
-			final SMTFunApplication fstFunAppl) {
-		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(POLYMORPHIC_PAIRS), signature,
-				fstFunAppl, varSymbol1);
-
-		final SMTFormula quantifiedFormula = SMTFactory
-				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						equalAtom, forallVarSymbol1, forallVarSymbol2);
-
-		return quantifiedFormula;
-	}
-
-	/**
-	 * This method creates the auxiliar assumption:
-	 * 
-	 * <p>
-	 * (forall (?e 's) (?f 't) (= (snd (pair ?e ?f)) ?f))
-	 * </p>
-	 * 
-	 * <p>
-	 * that defines the <code>snd</code> function
-	 * </p>
-	 * 
-	 * @return The formula that represents the snd auxiliar function assumption
-	 */
-	public static SMTFormula createSndAssumption(final SMTSignature signature) {
-		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
-				FST_PAIR_ARG_NAME, FST_RETURN_SORT, !PREDEFINED);
-		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
-				SND_PAIR_ARG_NAME, SND_RETURN_SORT, !PREDEFINED);
-
-		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
-		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
-
-		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, varSymbol1, varSymbol2);
-
-		final SMTFunApplication sndFunAppl = new SMTFunApplication(SND_SYMBOL,
-				pairFunAppl);
-
-		return createAuxiliarAssumption(signature, forallVarSymbol1,
-				forallVarSymbol2, varSymbol2, sndFunAppl);
-	}
-
-	/**
-	 * Creates the pair equality axiom. It is defined as:
-	 * 
-	 * (forall (?p1 (Pair 's 't)) (?p2 (Pair 's 't)) (implies (= ?p1 ?p2) (and
-	 * (= (fst ?p1) (fst ?p2)) (= (snd ?p1) (snd ?p2)))))
-	 * 
-	 * @return the pair equality axiom
-	 */
-	public static SMTFormula createPairEqualityAxiom() {
-
-		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT,
-				!PREDEFINED);
-		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT,
-				!PREDEFINED);
-
-		final SMTVar pairVar1 = new SMTVar(pSymbol1);
-		final SMTVar pairVar2 = new SMTVar(pSymbol2);
-
-		final SMTFormula equalsFormula = SMTFactory.makeEqual(pairVar1,
-				pairVar2);
-
-		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(FST_SYMBOL,
-				pairVar1);
-
-		final SMTFunApplication fstFunAppl2 = new SMTFunApplication(FST_SYMBOL,
-				pairVar2);
-
-		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(fstFunAppl1,
-				fstFunAppl2);
-
-		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(SND_SYMBOL,
-				pairVar1);
-
-		final SMTFunApplication sndFunAppl2 = new SMTFunApplication(SND_SYMBOL,
-				pairVar2);
-
-		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(sndFunAppl1,
-				sndFunAppl2);
-
-		final SMTFormula andFormula = SMTFactory.makeAnd(subEqualsFormula1,
-				subEqualsFormula2);
-
-		final SMTFormula impliesFormula = SMTFactory.makeImplies(andFormula,
-				equalsFormula);
-
-		final SMTFormula quantifiedFormula = SMTFactory
-				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						impliesFormula, pairVar1, pairVar2);
-
-		return quantifiedFormula;
 	}
 
 	/**
