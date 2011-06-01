@@ -811,53 +811,46 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	class BoolSetVisitor extends DefaultVisitor {
 
-		private RelationalPredicate membershipPredicate;
-		private final AtomicExpression atomicExpression;
+		/**
+		 * This class is used to check if a expression contains the MAPSTO
+		 * operator
+		 * 
+		 * @author vitor
+		 * 
+		 */
+		class MapstoVisitor extends DefaultVisitor {
+
+			boolean hasMapsto = false;
+
+			@Override
+			public boolean enterMAPSTO(final BinaryExpression expr) {
+				hasMapsto = true;
+				return false;
+			}
+		}
 
 		/**
-		 * Constructor that stores an atomic expresion which the tag is
+		 * Constructor that checks if the tag of the atomic expression is
 		 * <code>BOOL</code>.
 		 * 
 		 * @param expr
 		 */
 		public BoolSetVisitor(final AtomicExpression expr) {
 			assert expr.getTag() == Formula.BOOL;
-			atomicExpression = expr;
 		}
 
 		@Override
 		/**
-		 * This method just stores the relational actualPredicate
+		 * This method checks if the right side of the relation predicate (which the operator is membership) contains Mapsto.
 		 */
 		public boolean enterIN(final RelationalPredicate pred) {
-			membershipPredicate = pred;
-			return true;
-		}
-
-		/**
-		 * This method checks, for each MAPSTO expression:
-		 * <ul>
-		 * <li>If the left or the right of the binary expression correspond to
-		 * the stored atomicExpression
-		 * <li>If so, check if the parent of the MAPSTO expression is a
-		 * membership actualPredicate. If not, throws an exception
-		 * <li>else keep traversing the actualPredicate
-		 * </ul>
-		 */
-		@Override
-		public boolean enterMAPSTO(final BinaryExpression expr) {
-			assert atomicExpression != null;
-			if (expr.getLeft().equals(atomicExpression)
-					|| expr.getRight().equals(atomicExpression)) {
-				if (membershipPredicate.getLeft().equals(expr)) {
-					return false;
-				} else {
-					throw new IllegalArgumentException(
-							" The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
-				}
-			} else {
-				return true;
+			final MapstoVisitor mv = new MapstoVisitor();
+			pred.getRight().accept(mv);
+			if (mv.hasMapsto) {
+				throw new IllegalArgumentException(
+						"The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
 			}
+			return true;
 		}
 	}
 
