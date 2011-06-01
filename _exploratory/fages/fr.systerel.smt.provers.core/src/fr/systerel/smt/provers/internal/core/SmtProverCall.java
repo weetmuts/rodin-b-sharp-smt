@@ -28,7 +28,6 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.translation.PreProcessingException;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
@@ -261,11 +260,9 @@ public class SmtProverCall extends XProverCall {
 	 * Execute translation of Event-B predicates using the PP approach.
 	 * 
 	 * @return the list of arguments
-	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
-	public List<String> smtTranslationThroughPP()
-			throws PreProcessingException, IOException {
+	public List<String> smtTranslationThroughPP() throws IOException {
 		return smtTranslation(translateToBenchmarkThroughPP());
 	}
 
@@ -273,11 +270,9 @@ public class SmtProverCall extends XProverCall {
 	 * Execute translation of Event-B predicates using the PP approach.
 	 * 
 	 * @return the list of arguments
-	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
-	public SMTBenchmark translateToBenchmarkThroughPP()
-			throws PreProcessingException, IOException {
+	public SMTBenchmark translateToBenchmarkThroughPP() throws IOException {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
 						.getId());
@@ -288,11 +283,9 @@ public class SmtProverCall extends XProverCall {
 	 * Execute translation of Event-B predicates using the VeriT pre-processing
 	 * approach.
 	 * 
-	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
-	public List<String> smtTranslationThroughVeriT()
-			throws PreProcessingException, IOException {
+	public List<String> smtTranslationThroughVeriT() throws IOException {
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtUiPreferences.getSolver().getId());
@@ -452,11 +445,10 @@ public class SmtProverCall extends XProverCall {
 	 * calculus, then translate to SMT with macros, eventually pre-processing
 	 * macros.
 	 * 
-	 * @throws PreProcessingException
 	 * @throws IOException
 	 */
 	private List<String> smtTranslation(final SMTBenchmark benchmark)
-			throws PreProcessingException, IOException {
+			throws IOException {
 		if (translationFolder == null) {
 			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
