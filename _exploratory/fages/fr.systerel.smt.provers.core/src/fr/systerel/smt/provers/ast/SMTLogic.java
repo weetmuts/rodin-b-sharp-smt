@@ -32,9 +32,6 @@ public class SMTLogic {
 	private final String name;
 	private final SMTTheory[] theories;
 
-	// TODO add fields needed to print a complete logic (language, extensions,
-	// notes)
-
 	/**
 	 * Constructs a new SMTLogic
 	 * 
@@ -196,50 +193,29 @@ public class SMTLogic {
 			return null;
 		case MINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getMinus();
 				}
 			}
 			return null;
 		case MUL:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getMul();
 				}
 			}
 			return null;
 		case PLUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getPlus();
 				}
 			}
 			return null;
 		case UMINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getUMinus();
-				}
-			}
-			return null;
-		case DIV:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getDiv();
-				}
-			}
-			return null;
-		case EXPN:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getExpn();
-				}
-			}
-			return null;
-		case MOD:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getMod();
 				}
 			}
 			return null;
@@ -272,8 +248,7 @@ public class SMTLogic {
 	public static enum SMTOperator {
 		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
 				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), DIV(SMTSymbol.DIV), EXPN(SMTSymbol.EXPN), MOD(
-				SMTSymbol.MOD);
+				SMTSymbol.UMINUS);
 
 		private String symbol;
 
@@ -304,8 +279,7 @@ public class SMTLogic {
 		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
 				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(
 				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
-				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), DIV(
-				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
+				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), RANGE_SUBSTRACTION(
 				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
 				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
 				SMTMacroSymbol.RELATION), TOTAL_RELATION(

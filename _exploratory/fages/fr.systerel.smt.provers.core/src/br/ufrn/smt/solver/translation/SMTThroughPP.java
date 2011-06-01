@@ -1157,16 +1157,28 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.DIV:
-			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), signature, children);
+			SMTFunctionSymbol div = (SMTFunctionSymbol) varMap.get("divi");
+			if (div == null) {
+				div = signature.freshFunctionSymbol("divi",
+						Ints.getIntIntTab(), Ints.getInt());
+			}
+			smtNode = sf.makeDiv(div, signature, children);
 			break;
 		case Formula.MOD:
-			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MOD), signature, children);
+			SMTFunctionSymbol mod = (SMTFunctionSymbol) varMap.get("mod");
+			if (mod == null) {
+				mod = signature.freshFunctionSymbol("mod", Ints.getIntIntTab(),
+						Ints.getInt());
+			}
+			smtNode = sf.makeMod(mod, signature, children);
 			break;
 		case Formula.EXPN:
-			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), signature, children);
+			SMTFunctionSymbol expn = (SMTFunctionSymbol) varMap.get("expn");
+			if (expn == null) {
+				expn = signature.freshFunctionSymbol("expn",
+						Ints.getIntIntTab(), Ints.getInt());
+			}
+			smtNode = sf.makeExpn(expn, signature, children);
 			break;
 		default:
 			/**

@@ -560,16 +560,6 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
-	/**
-	 * Add a constant to the signature.
-	 * 
-	 * @param constant
-	 *            the constant.
-	 */
-	public void addConstant(final SMTFunctionSymbol constant) {
-		funs.add(constant);
-	}
-
 	public String freshSymbolName(final String name) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
@@ -589,9 +579,14 @@ public abstract class SMTSignature {
 	 */
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
+		return freshFunctionSymbol(name, new SMTSortSymbol[0], sort);
+	}
+
+	public SMTFunctionSymbol freshFunctionSymbol(final String name,
+			final SMTSortSymbol[] argSorts, final SMTSortSymbol sort) {
 		final String freshName = freshSymbolName(name);
 		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
-				freshName, sort, !ASSOCIATIVE, !PREDEFINED);
+				freshName, sort, !ASSOCIATIVE, !PREDEFINED, argSorts);
 		final boolean successfullyAdded = funs.add(freshConstant);
 		if (!successfullyAdded) {
 			// TODO Throw an exception, this case should not be reached because

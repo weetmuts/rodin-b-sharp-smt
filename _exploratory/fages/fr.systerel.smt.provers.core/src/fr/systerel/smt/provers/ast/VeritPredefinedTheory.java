@@ -18,7 +18,7 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
  * This class implements the Theories used by VeriT.
  **/
 public class VeritPredefinedTheory extends SMTTheory implements
-		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
+		ISMTArithmeticFuns, ISMTArithmeticPreds, ISMTIntegerSort,
 		ISMTBooleanSort {
 
 	private static final String NAME = "verit_theory";
@@ -52,17 +52,10 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.UMINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_TAB);
 	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 			SMTSymbol.MINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_INT_TAB);
-	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-			SMTSymbol.DIV, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 	private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
 			SMTSymbol.PLUS, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 			SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
-	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-			SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
-	private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-			SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
-
 	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, BOOL, false, true);
 
@@ -130,11 +123,6 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	}
 
 	@Override
-	public SMTSymbol getDiv() {
-		return DIV;
-	}
-
-	@Override
 	public SMTPredicateSymbol getLessThan() {
 		return LT;
 	}
@@ -161,18 +149,4 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	public static SMTSortSymbol[] getIntIntTab() {
 		return INT_INT_TAB;
 	}
-
-	/**
-	 * returns the exponential symbol
-	 */
-	@Override
-	public SMTSymbol getExpn() {
-		return EXPN;
-	}
-
-	@Override
-	public SMTSymbol getMod() {
-		return MOD;
-	}
-
 }

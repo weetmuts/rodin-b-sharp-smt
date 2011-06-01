@@ -37,9 +37,6 @@ public abstract class SMTSymbol {
 	public static final String U_SORT = "U";
 
 	public static final boolean PREDEFINED = true;
-	public static final String DIV = "divi";
-	public static final String EXPN = "expn";
-	public static final String MOD = "mod";
 
 	/**
 	 * Constructs a new instance of SMTSymbol

@@ -51,7 +51,6 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_INJECT
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_RELATION;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_SURJECTION;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION;
-import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
@@ -108,7 +107,6 @@ import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
-import fr.systerel.smt.provers.ast.SMTSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTVar;
@@ -596,24 +594,28 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					.getOperator(SMTOperator.MINUS), signature, children);
 			break;
 		case Formula.DIV:
-
-			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), signature, children);
+			SMTFunctionSymbol div = (SMTFunctionSymbol) varMap.get("divi");
+			if (div == null) {
+				div = signature.freshFunctionSymbol("divi",
+						Ints.getIntIntTab(), Ints.getInt());
+			}
+			smtNode = sf.makeDiv(div, signature, children);
 			break;
 		case Formula.MOD:
-			/**
-			 * It's added the function ((mod Int Int Int)) in the signature
-			 */
-			final SMTFunctionSymbol VERIT_MOD = new SMTFunctionSymbol(
-					SMTSymbol.MOD, Ints.getInt(), false, false,
-					Ints.getIntIntTab());
-			signature.addConstant(VERIT_MOD);
-			smtNode = sf.makeVeriTTermOperatorApplication(VERIT_MOD, children,
-					signature);
+			SMTFunctionSymbol mod = (SMTFunctionSymbol) varMap.get("mod");
+			if (mod == null) {
+				mod = signature.freshFunctionSymbol("mod", Ints.getIntIntTab(),
+						Ints.getInt());
+			}
+			smtNode = sf.makeMod(mod, signature, children);
 			break;
 		case Formula.EXPN:
-			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), signature, children);
+			SMTFunctionSymbol expn = (SMTFunctionSymbol) varMap.get("expn");
+			if (expn == null) {
+				expn = signature.freshFunctionSymbol("expn",
+						Ints.getIntIntTab(), Ints.getInt());
+			}
+			smtNode = sf.makeExpn(expn, signature, children);
 			break;
 		case Formula.UPTO:
 			smtNode = SMTFactoryVeriT.makeMacroTerm(
@@ -1282,19 +1284,17 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTTerm[] children) {
 		// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
 		// 25)
-		final String kVarName = signature.freshSymbolName("card_k");
-		final String fVarName = signature.freshSymbolName("card_f");
-
-		final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
-				Ints.getInt(), false, false);
+		final SMTFunctionSymbol kVarSymbol = signature.freshConstant("card_k",
+				Ints.getInt());
 
 		final Type type = expression.getChild().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
 		if (expressionSort == null) {
 			expressionSort = translateTypeName(type);
 		}
-		final SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName,
-				Ints.getInt(), false, false, expressionSort);
+		final SMTSortSymbol[] es = { expressionSort };
+		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
+				"card_f", es, Ints.getInt());
 
 		translateCardPart2(children, kVarSymbol, fVarSymbol);
 	}
@@ -1316,8 +1316,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translateCardPart2(final SMTTerm[] children,
 			final SMTFunctionSymbol kVarSymbol,
 			final SMTFunctionSymbol fVarSymbol) {
-		signature.addConstant(kVarSymbol);
-		signature.addConstant(fVarSymbol);
 
 		// Creating the macro operator 'finite'
 		final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD, signature);
@@ -1338,13 +1336,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
 			final String constantName, final SMTTerm[] children) {
-		// Creating the name for the 'm' variable in SMT-LIB (rule 22)
-		final String mVarName = signature.freshSymbolName(constantName);
 
 		// Creating the constant 'm'
-		final SMTFunctionSymbol mVarSymbol = new SMTFunctionSymbol(mVarName,
-				Ints.getInt(), false, false);
-		signature.addConstant(mVarSymbol);
+		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
+				constantName, Ints.getInt());
 
 		// Creating the macro operator 'ismin'
 		final SMTMacroSymbol opSymbol = getMacroSymbol(operator, signature);
@@ -1544,31 +1539,23 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitSimplePredicate(final SimplePredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getExpression());
-		// Creating the name for the 'p','f' and 'k' variables in SMT-LIB (rule
-		// 24)
-		final String pVarName = signature.freshSymbolName("finite_p");
-		final String kVarName = signature.freshSymbolName("finite_k");
-		final String fVarName = signature.freshSymbolName("finite_f");
 
 		// Creating the constant 'p'
-		final SMTPredicateSymbol pVarSymbol = new SMTPredicateSymbol(pVarName,
-				!PREDEFINED);
-		final SMTFunctionSymbol kVarSymbol = new SMTFunctionSymbol(kVarName,
-				Ints.getInt(), false, false);
+		final SMTSortSymbol[] empty = {};
+		final SMTPredicateSymbol pVarSymbol = signature.freshPredicateSymbol(
+				"finite_p", empty);
+
+		final SMTFunctionSymbol kVarSymbol = signature.freshConstant(
+				"finite_k", Ints.getInt());
 
 		final Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
 		if (expressionSort == null) {
 			expressionSort = translateTypeName(type);
 		}
-		final SMTFunctionSymbol fVarSymbol = new SMTFunctionSymbol(fVarName,
-				Ints.getInt(), false, false, expressionSort);
-
-		final SMTSortSymbol[] empty = {};
-		signature.freshPredicateSymbol("finite_p", empty);
-
-		signature.addConstant(kVarSymbol);
-		signature.addConstant(fVarSymbol);
+		final SMTSortSymbol[] es = { expressionSort };
+		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
+				"finite_f", es, Ints.getInt());
 
 		// Creating the macro operator 'finite'
 		final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE, signature);
