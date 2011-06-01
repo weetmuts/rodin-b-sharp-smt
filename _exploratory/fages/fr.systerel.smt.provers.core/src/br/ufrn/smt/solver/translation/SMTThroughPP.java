@@ -112,7 +112,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * in the translation process.
 	 */
 	// FIXME Seems to be unsafe, to be deleted if possible
-	private List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
+	private final List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
 	// FIXME remove this field
 	private Predicate actualPredicate;
@@ -147,7 +147,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param actualPredicate
 	 *            the actualPredicate to set
 	 */
-	private void setActualPredicate(Predicate actualPredicate) {
+	private void setActualPredicate(final Predicate actualPredicate) {
 		this.actualPredicate = actualPredicate;
 	}
 
@@ -822,7 +822,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		public BoolSetVisitor(final AtomicExpression expr) {
 			assert expr.getTag() == Formula.BOOL;
-			this.atomicExpression = expr;
+			atomicExpression = expr;
 		}
 
 		@Override
@@ -978,14 +978,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 								smtSortSymbol);
 						varMap.put(varName, smtConstant);
 					}
-				} else {
-					final SMTSymbol s = varMap.get(varName);
-					if (s instanceof SMTFunctionSymbol) {
-						smtConstant = (SMTFunctionSymbol) s;
-						signature.addConstant(smtConstant);
-					}
 				}
-
 			}
 		}
 		translateBoundIdentTypes(hypotheses, goal);
