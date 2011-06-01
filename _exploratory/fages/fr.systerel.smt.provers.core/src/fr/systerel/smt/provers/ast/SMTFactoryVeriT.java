@@ -319,6 +319,25 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			++i;
 		}
 		return formulas;
+		
+	}
+
+	/**
+	 * This method creates a function application.
+	 * 
+	 * @param operatorSymbol
+	 *            the symbol of the function application
+	 * @param args
+	 *            the arguments of the application
+	 * @param signature
+	 *            the signature for checking the rank
+	 * @return a new SMT term with the symbol and the arguments
+	 */
+	public SMTTerm makeVeriTTermOperatorApplication(
+			final SMTFunctionSymbol operatorSymbol, final SMTTerm[] args,
+			final SMTSignature signature) {
+		signature.verifyFunctionSignature(operatorSymbol);
+		return new SMTFunApplication(operatorSymbol, args);
 	}
 
 	/**
