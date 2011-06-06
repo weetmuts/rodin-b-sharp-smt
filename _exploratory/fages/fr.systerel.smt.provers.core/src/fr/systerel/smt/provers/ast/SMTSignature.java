@@ -378,6 +378,16 @@ public abstract class SMTSignature {
 		funs.addAll(logic.getFunctions());
 	}
 
+	/**
+	 * Remove unused symbols from signature
+	 * 
+	 * @param usedFuns
+	 *            used functions
+	 * @param usedPreds
+	 *            used predicates
+	 * @param usedSorts
+	 *            used sorts
+	 */
 	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
 			final Set<SMTPredicateSymbol> usedPreds,
 			final Set<SMTSortSymbol> usedSorts) {
@@ -393,6 +403,13 @@ public abstract class SMTSignature {
 		removeUnusedSymbols(usedFuns, usedPreds, usedSorts);
 	}
 
+	/**
+	 * Remove unused sorts from signature.
+	 * 
+	 * @param usedSorts
+	 *            used sorts
+	 * @return a list with unused sorts
+	 */
 	protected Set<SMTSortSymbol> removeUnusedSorts(
 			final Set<SMTSortSymbol> usedSorts) {
 		final Set<SMTSortSymbol> unusedSortSymbols = new HashSet<SMTSortSymbol>();
@@ -417,6 +434,13 @@ public abstract class SMTSignature {
 		return unusedSortSymbols;
 	}
 
+	/**
+	 * Remove unused predicates from signature
+	 * 
+	 * @param usedPreds
+	 *            used predicates
+	 * @return unused predicates
+	 */
 	protected Set<SMTPredicateSymbol> removeUnusedPreds(
 			final Set<SMTPredicateSymbol> usedPreds) {
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = new HashSet<SMTPredicateSymbol>();
@@ -429,6 +453,13 @@ public abstract class SMTSignature {
 		return unusedPredicateSymbols;
 	}
 
+	/**
+	 * Remove unused functions from signature
+	 * 
+	 * @param usedFuns
+	 *            used functions
+	 * @return unused functions
+	 */
 	protected Set<SMTFunctionSymbol> removeUnusedFunctions(
 			final Set<SMTFunctionSymbol> usedFuns) {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = new HashSet<SMTFunctionSymbol>();
@@ -509,6 +540,13 @@ public abstract class SMTSignature {
 		return logic;
 	}
 
+	/**
+	 * /** checks if the actual predicate symbol has the same rank of the
+	 * function stored in the signature.
+	 * 
+	 * @param predicateSymbol
+	 *            the predicate symbol that will be checked.
+	 */
 	// TODO Refactor this method
 	public void verifyPredicateSignature(
 			final SMTPredicateSymbol predicateSymbol) {
@@ -533,6 +571,13 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
+	/**
+	 * checks if the actual function symbol has the same rank of the function
+	 * stored in the signature.
+	 * 
+	 * @param functionSymbol
+	 *            the function symbol that will be checked.
+	 */
 	public void verifyFunctionSignature(final SMTFunctionSymbol functionSymbol) {
 		for (final SMTFunctionSymbol symbol : funs) {
 
@@ -560,6 +605,14 @@ public abstract class SMTSignature {
 				+ " is not declared in the signature.");
 	}
 
+	/**
+	 * Returns a fresh symbol name. The checked symbols for adding the new
+	 * symbol are funs, sorts and preds.
+	 * 
+	 * @param name
+	 *            a base name for a fresh symbol name
+	 * @return a fresh symbol name
+	 */
 	public String freshSymbolName(final String name) {
 		final Set<String> names = new HashSet<String>();
 		names.addAll(getSymbolNames(funs));
@@ -568,6 +621,18 @@ public abstract class SMTSignature {
 		return freshSymbolName(names, name);
 	}
 
+	/**
+	 * Returns a fresh function symbol.
+	 * 
+	 * @param name
+	 *            a name for the fresh symbol. It creates a fresh name for the
+	 *            function.
+	 * @param argSorts
+	 *            the argument sorts of the function
+	 * @param returnSort
+	 *            the return sort of the function
+	 * @return a fresh function symbol.
+	 */
 	public SMTFunctionSymbol freshFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
 		final String freshName = freshSymbolName(name);
