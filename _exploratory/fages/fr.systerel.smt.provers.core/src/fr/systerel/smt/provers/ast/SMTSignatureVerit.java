@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     YGU (Systerel) - initial API and implementation
+ *     Vitor Alcantara de Almeida - implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
@@ -282,6 +283,18 @@ public class SMTSignatureVerit extends SMTSignature {
 		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols, macroSymbols);
 	}
 
+	/**
+	 * Remove unused symbols from signature
+	 * 
+	 * @param usedFuns
+	 *            unused function symbols
+	 * @param usedPreds
+	 *            unused predicate symbols
+	 * @param usedSorts
+	 *            unused sort symbols
+	 * @param usedMacros
+	 *            unused macro symbols
+	 */
 	private void removeUnusedSymbols(final Set<SMTFunctionSymbol> usedFuns,
 			final Set<SMTPredicateSymbol> usedPreds,
 			final Set<SMTSortSymbol> usedSorts, final Set<String> usedMacros) {
@@ -299,6 +312,13 @@ public class SMTSignatureVerit extends SMTSignature {
 
 	}
 
+	/**
+	 * remove unused macro symbols from signature
+	 * 
+	 * @param usedMacros
+	 *            used macro symbols
+	 * @return unused macro symbols
+	 */
 	private Set<String> removeUnusedMacros(final Set<String> usedMacros) {
 		final Set<String> unusedMacroSymbols = new HashSet<String>();
 		final Set<String> macroNames = getMacroNames();
