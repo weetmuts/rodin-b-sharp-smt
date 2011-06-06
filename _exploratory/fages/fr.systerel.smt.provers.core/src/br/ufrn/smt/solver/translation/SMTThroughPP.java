@@ -115,9 +115,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private final List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
 	// FIXME remove this field
-	private Predicate actualPredicate;
-
-	// FIXME remove this field
 	private boolean usesTruePred = false;
 
 	// FIXME remove this field
@@ -131,24 +128,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 * @param solver
 	 *            Solver which will be used to discharge the sequent
-	 * @param predicate
 	 */
-	public SMTThroughPP(final String solver, final Predicate predicate) {
+	public SMTThroughPP(final String solver) {
 		super(solver);
 		sf = SMTFactoryPP.getInstance();
-		actualPredicate = predicate;
 	}
 
 	private void setUsesTruePred(final boolean usesTruePred) {
 		this.usesTruePred = usesTruePred;
-	}
-
-	/**
-	 * @param actualPredicate
-	 *            the actualPredicate to set
-	 */
-	private void setActualPredicate(final Predicate actualPredicate) {
-		this.actualPredicate = actualPredicate;
 	}
 
 	/**
@@ -565,28 +552,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method check if the BOOL set expression is in accordance with the
-	 * Bool theory rule, for the PP approach, that concerns the BOOL set.
-	 * 
-	 * @see BoolSetVisitor
-	 * 
-	 * @param pred
-	 *            The actual hypothesis (or goal) being traversed.
-	 * @param boolSetExpression
-	 *            The BOOL set atomic expression
-	 */
-	private void checkBoolSet(final Predicate pred,
-			final AtomicExpression boolSetExpression) {
-		for (final SMTTheory theory : signature.getLogic().getTheories()) {
-			if (theory instanceof Booleans) {
-				final BoolSetVisitor bv = new BoolSetVisitor(boolSetExpression);
-				pred.accept(bv);
-				return;
-			}
-		}
-	}
-
-	/**
 	 * @param left
 	 * @param right
 	 */
@@ -683,7 +648,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 */
 	private SMTFormula translate(final Predicate predicate) {
-		actualPredicate = predicate;
 		predicate.accept(this);
 		return getSMTFormula();
 	}
@@ -797,71 +761,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			boolTheory = true;
 			return true;
 		}
-	}
-
-	/**
-	 * This class visits a actualPredicate and checks if the actualPredicate
-	 * agrees with the following rule:
-	 * <p>
-	 * The predeﬁned set BOOL can only occur in a maplet expression in the
-	 * left-hand side of a membership actualPredicate.
-	 * 
-	 * @see SMTThroughPP#checkBoolSet(Predicate, AtomicExpression)
-	 * @author vitor
-	 */
-	class BoolSetVisitor extends DefaultVisitor {
-
-		private RelationalPredicate membershipPredicate;
-		private final AtomicExpression boolSetExpression;
-
-		/**
-		 * Constructor that stores an atomic expresion which the tag is
-		 * <code>BOOL</code>.
-		 * 
-		 * @param expr
-		 */
-		public BoolSetVisitor(final AtomicExpression expr) {
-			assert expr.getTag() == Formula.BOOL;
-			boolSetExpression = expr;
-
-		}
-
-		@Override
-		/**
-		 * This method just stores the relational actualPredicate
-		 */
-		public boolean enterIN(final RelationalPredicate pred) {
-			membershipPredicate = pred;
-			return true;
-		}
-
-		/**
-		 * This method checks, for each MAPSTO expression:
-		 * <ul>
-		 * <li>If the left or the right of the binary expression correspond to
-		 * the stored boolSetExpression
-		 * <li>If so, check if the parent of the MAPSTO expression is a
-		 * membership actualPredicate. If not, throws an exception
-		 * <li>else keep traversing the actualPredicate
-		 * </ul>
-		 */
-		@Override
-		public boolean enterMAPSTO(final BinaryExpression expr) {
-			assert boolSetExpression != null;
-			if (expr.getLeft().equals(boolSetExpression)
-					|| expr.getRight().equals(boolSetExpression)) {
-				if (membershipPredicate.getLeft().contains(
-						boolSetExpression.getSourceLocation())) {
-					return false;
-				} else {
-					throw new IllegalArgumentException(
-							" The predeﬁned set BOOL can only occur in a maplet expression in the left-hand side of a membership actualPredicate.");
-				}
-			} else {
-				return true;
-			}
-		}
-
 	}
 
 	/**
@@ -1041,8 +940,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
 			final Predicate goal, final String solver) {
-		final SMTBenchmark smtB = new SMTThroughPP(solver, null).translate(
-				lemmaName, hypotheses, goal);
+		final SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
+				hypotheses, goal);
 		return smtB;
 	}
 
@@ -1051,9 +950,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
 			Predicate predicate, final String solver, final boolean usesTruePred) {
-		final SMTThroughPP translator = new SMTThroughPP(solver, null);
+		final SMTThroughPP translator = new SMTThroughPP(solver);
 		predicate = translator.recursiveAutoRewrite(predicate);
-		translator.setActualPredicate(predicate);
 		translator.setUsesTruePred(usesTruePred);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
@@ -1064,7 +962,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the logic determination
 	 */
 	public static SMTLogic determineLogic(Predicate goalPredicate) {
-		final SMTThroughPP translator = new SMTThroughPP(null, null);
+		final SMTThroughPP translator = new SMTThroughPP(null);
 		goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
 		return translator.determineLogic(new ArrayList<Predicate>(0),
 				goalPredicate);
@@ -1116,8 +1014,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.BOOL:
-			assert actualPredicate != null;
-			checkBoolSet(actualPredicate, expression);
 			smtNode = sf.makeBool(signature.getLogic().getBooleanCste(),
 					signature);
 			break;
@@ -1210,7 +1106,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			smtNode = sf.makePFalse(signature);
 			break;
 		default:
-			throw new IllegalTagException(actualPredicate.getTag());
+			throw new IllegalTagException(pred.getTag());
 		}
 	}
 
