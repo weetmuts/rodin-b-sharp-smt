@@ -37,14 +37,14 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
-	public static SMTSortSymbol PAIR_SORT = SMTFactory.makeSortSymbol(
-			"(Pair 's 't)", !PREDEFINED);
+	public static SMTSortSymbol PAIR_SORT = SMTFactory
+			.makePolymorphicSortSymbol("(Pair 's 't)");
 
-	private static final SMTSortSymbol FST_RETURN_SORT = SMTFactory
-			.makeSortSymbol(FST_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactory
+			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
 
-	private static final SMTSortSymbol SND_RETURN_SORT = SMTFactory
-			.makeSortSymbol(SND_PAIR_SORT_NAME, !SMTSymbol.PREDEFINED);
+	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactory
+			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };

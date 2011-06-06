@@ -381,6 +381,8 @@ public class SmtProverCall extends XProverCall {
 	private void checkPreProcessingResult(final String parentFolder)
 			throws IOException {
 		if (resultOfSolver.contains("(benchmark")) {
+			resultOfSolver = resultOfSolver.substring(resultOfSolver
+					.indexOf("(benchmark"));
 			createPostProcessedFile(parentFolder, "smt");
 			return;
 		} else {

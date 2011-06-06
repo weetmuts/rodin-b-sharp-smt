@@ -53,9 +53,9 @@ public abstract class SMTFactory {
 	public final static SMTQuantifierSymbol EXISTS = SMTQuantifierSymbol.EXISTS;
 	public final static SMTQuantifierSymbol FORALL = SMTQuantifierSymbol.FORALL;
 
-	public static SMTSortSymbol makeSortSymbol(final String symbolName,
-			final boolean predefined) {
-		return new SMTSortSymbol(symbolName, predefined);
+	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
+			final String symbolName) {
+		return new SMTPolymorphicSortSymbol(symbolName);
 	}
 
 	/**

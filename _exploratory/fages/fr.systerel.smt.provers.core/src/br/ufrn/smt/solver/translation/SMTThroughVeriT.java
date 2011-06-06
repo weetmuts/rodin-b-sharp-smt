@@ -480,7 +480,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		signature.addMacro(macro);
 		final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
-				VeritPredefinedTheory.getInstance().getBooleanSort());
+				VeritPredefinedTheory.POLYMORPHIC);
 		return makeMacroTerm(macroSymbol);
 	}
 

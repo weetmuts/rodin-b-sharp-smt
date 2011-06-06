@@ -57,6 +57,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Two different errors."
+			+ "with no args: error : Deep skolemization is not proof producing."
+			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -67,7 +70,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
+	@Ignore("Two different errors."
+			+ "with no args: error : Deep skolemization is not proof producing."
+			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20ManyForalls() {
 		setPreferencesForSolverTest(solver);
 
@@ -80,7 +85,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't cannot be unified with sort ('t Bool)")
+	@Ignore("Two different errors."
+			+ "with no args: error : Deep skolemization is not proof producing."
+			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -166,8 +173,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
 	}
 
-	@Test(timeout = 5000)
-	@Ignore("Expn is not working")
+	@Ignore("Z3 Error: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
 	public void testExpn() {
 		setPreferencesForSolverTest(solver);
 
@@ -244,7 +250,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	// Last test in Thursday 12 mai 2011
 	@Test
-	@Ignore("Error: error : DAG_new: unable to determine sort")
+	// @Ignore("Error: error : DAG_new: unable to determine sort")
 	public void testIntInRelation() {
 		setPreferencesForSolverTest(solver);
 

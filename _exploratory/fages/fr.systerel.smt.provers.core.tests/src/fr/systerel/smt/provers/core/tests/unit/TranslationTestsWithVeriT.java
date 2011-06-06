@@ -397,10 +397,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testAssociativeExpression() {
-
 		testTranslationV1_2Default("s = {}", "(= s emptyset)");
-		// testTranslationV1_2Default("r = \u2205\u2982ℙ(R)", "(= r emptyset");
-
 	}
 
 	/**

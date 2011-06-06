@@ -26,6 +26,10 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 		super("", !PREDEFINED);
 	}
 
+	public SMTPolymorphicSortSymbol(final String symbolName) {
+		super(symbolName, !PREDEFINED);
+	}
+
 	@Override
 	public boolean isCompatibleWith(final SMTSortSymbol other) {
 		return true;

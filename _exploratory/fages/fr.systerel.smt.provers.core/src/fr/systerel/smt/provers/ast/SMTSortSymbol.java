@@ -30,10 +30,12 @@ public class SMTSortSymbol extends SMTSymbol implements
 	 * 
 	 * @param other
 	 *            the other sort to test for compatibility
+	 * 
 	 * @return whether this sort is compatible with the given sort
 	 */
 	public boolean isCompatibleWith(final SMTSortSymbol other) {
-		if (other instanceof SMTPolymorphicSortSymbol) {
+		if (this instanceof SMTPolymorphicSortSymbol
+				|| other instanceof SMTPolymorphicSortSymbol) {
 			return true;
 		}
 		return equals(other);
