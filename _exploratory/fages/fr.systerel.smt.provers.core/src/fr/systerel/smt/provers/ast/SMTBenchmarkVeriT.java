@@ -1,6 +1,13 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2011 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vitor Alcantara de Almeida - implementation
+ *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
@@ -24,8 +31,23 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
  */
 public class SMTBenchmarkVeriT extends SMTBenchmark {
 
+	/**
+	 * The signature of the benchmark
+	 */
 	private final SMTSignatureVerit signature;
 
+	/**
+	 * Constructs a new benchmark.
+	 * 
+	 * @param lemmaName
+	 *            the lema of the benchmark
+	 * @param signature
+	 *            the signature of the benchmark
+	 * @param assumptions
+	 *            the assumptions of the benchmark
+	 * @param goal
+	 *            the goal of the benchmark
+	 */
 	public SMTBenchmarkVeriT(final String lemmaName,
 			final SMTSignatureVerit signature,
 			final List<SMTFormula> assumptions, final SMTFormula goal) {
@@ -38,12 +60,24 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		return signature;
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code var}.
+	 * 
+	 * @param var
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTVeriTTerm var,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(var.getSort());
 		symbols.add(var.getSymbol());
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code vff}.
+	 * 
+	 * @param vff
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTVeritFiniteFormula vff,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(vff.getfArgument());
@@ -57,6 +91,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code va}.
+	 * 
+	 * @param va
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTVeriTAtom va,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(va.getPredicate());
@@ -67,6 +107,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code vcf}.
+	 * 
+	 * @param vcf
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTVeritCardFormula vcf,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(vcf.getCardSymbol());
@@ -79,13 +125,15 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Remove unused symbols from the benchmark
+	 */
 	public void removeUnusedSymbols() {
 		final Set<SMTSymbol> symbols = new HashSet<SMTSymbol>();
 		for (final SMTFormula assumption : assumptions) {
 			getUsedSymbols(assumption, symbols);
 		}
 		getUsedSymbols(goal, symbols);
-
 		final Set<SMTMacro> macros = signature.getMacros();
 		for (final SMTMacro macro : macros) {
 			getUsedSymbols(macro, symbols);
@@ -93,6 +141,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		signature.removeUnusedSymbols(symbols);
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code mt}.
+	 * 
+	 * @param mt
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTMacroTerm mt,
 			final Set<SMTSymbol> symbols) {
 		for (final SMTTerm term : mt.getArgs()) {
@@ -102,6 +156,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		symbols.add(mt.getSort());
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the SMT symbols from {@code macro}.
+	 * 
+	 * @param macro
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTEnumMacro macro,
 			final Set<SMTSymbol> symbols) {
 		for (final SMTTerm term : macro.getTerms()) {
@@ -109,6 +169,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
+	 * 
+	 * @param macro
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTPairEnumMacro macro,
 			final Set<SMTSymbol> symbols) {
 		for (final SMTTerm term : macro.getTerms()) {
@@ -116,17 +182,35 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
+	 * 
+	 * @param macro
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTPredefinedMacro macro,
 			final Set<SMTSymbol> symbols) {
 		// Do nothing
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
+	 * 
+	 * @param macro
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTSetComprehensionMacro macro,
 			final Set<SMTSymbol> symbols) {
 		getUsedSymbols(macro.getExpression(), symbols);
 		getUsedSymbols(macro.getFormula(), symbols);
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
+	 * 
+	 * @param macro
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTMacro macro,
 			final Set<SMTSymbol> symbols) {
 		if (macro instanceof SMTEnumMacro) {
@@ -163,6 +247,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		pw.println(sb.toString());
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code term}.
+	 * 
+	 * @param term
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTTerm term,
 			final Set<SMTSymbol> symbols) {
 		if (term instanceof SMTFunApplication) {
@@ -191,6 +281,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code fa}.
+	 * 
+	 * @param fa
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTFunApplication fa,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(fa.getSort());
@@ -201,6 +297,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code atom}.
+	 * 
+	 * @param atom
+	 * @param symbols
+	 */
 	private void getUsedSymbols(final SMTAtom atom, final Set<SMTSymbol> symbols) {
 		symbols.add(atom.getPredicate());
 
@@ -210,6 +312,13 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from
+	 * {@code formula}.
+	 * 
+	 * @param formula
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTFormula formula,
 			final Set<SMTSymbol> symbols) {
 		if (formula instanceof SMTAtom) {
@@ -243,6 +352,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code con}.
+	 * 
+	 * @param con
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTConnectiveFormula con,
 			final Set<SMTSymbol> symbols) {
 		final SMTFormula[] formulas = con.getFormulas();
@@ -251,6 +366,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Adds to the parameter {@code symbols} the smt symbols from {@code qf}.
+	 * 
+	 * @param qf
+	 * @param symbols
+	 */
 	protected void getUsedSymbols(final SMTQuantifiedFormula qf,
 			final Set<SMTSymbol> symbols) {
 		getUsedSymbols(qf.getFormula(), symbols);

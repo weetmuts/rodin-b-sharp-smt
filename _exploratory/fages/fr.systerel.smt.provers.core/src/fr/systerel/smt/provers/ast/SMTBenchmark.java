@@ -26,7 +26,6 @@ import java.util.Set;
  */
 public abstract class SMTBenchmark {
 	protected final String name;
-	// private final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
 	protected final SMTFormula goal;
 

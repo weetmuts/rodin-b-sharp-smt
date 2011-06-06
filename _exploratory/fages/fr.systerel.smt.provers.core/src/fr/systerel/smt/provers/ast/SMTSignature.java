@@ -527,30 +527,27 @@ public abstract class SMTSignature {
 	 * /** checks if the actual predicate symbol has the same rank of the
 	 * function stored in the signature.
 	 * 
-	 * @param predicateSymbol
+	 * @param symbol
 	 *            the predicate symbol that will be checked.
 	 */
-	// TODO Refactor this method
-	public void verifyPredicateSignature(
-			final SMTPredicateSymbol predicateSymbol) {
-		if (predicateSymbol.isPTRUEorPFALSE()) {
+	public void verifyPredicateSignature(final SMTPredicateSymbol symbol) {
+		if (symbol.isPTRUEorPFALSE()) {
 			return;
 		}
 		for (final SMTPredicateSymbol predSymbol : preds) {
 
 			// Verify if the predicates have the same name
-			if (predicateSymbol.getName().equals(predSymbol.getName())) {
+			if (symbol.getName().equals(predSymbol.getName())) {
 
-				if (!verifyRank(predicateSymbol.getArgSorts(),
-						predSymbol.getArgSorts())) {
+				if (!verifyRank(symbol.getArgSorts(), predSymbol.getArgSorts())) {
 					throw new IllegalArgumentException(
-							makeIncompatibleSymbolExceptionMessage(
-									predicateSymbol, predSymbol));
+							makeIncompatibleSymbolExceptionMessage(symbol,
+									predSymbol));
 				}
 				return;
 			}
 		}
-		throw new IllegalArgumentException("Predicate " + predicateSymbol
+		throw new IllegalArgumentException("Predicate " + symbol
 				+ " is not declared in the signature.");
 	}
 
