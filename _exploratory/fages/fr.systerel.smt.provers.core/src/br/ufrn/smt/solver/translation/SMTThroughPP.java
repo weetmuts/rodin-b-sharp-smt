@@ -1098,7 +1098,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitLiteralPredicate(final LiteralPredicate pred) {
-		switch (pred.getTag()) {
+		final int tag = pred.getTag();
+		switch (tag) {
 		case Formula.BTRUE:
 			smtNode = sf.makePTrue(signature);
 			break;
@@ -1106,7 +1107,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			smtNode = sf.makePFalse(signature);
 			break;
 		default:
-			throw new IllegalTagException(pred.getTag());
+			throw new IllegalTagException(tag);
 		}
 	}
 
