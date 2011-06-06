@@ -112,19 +112,19 @@ public abstract class SMTSignature {
 	}
 
 	// TODO: Refactor this method
-	private static IllegalArgumentException makeIncompatibleFunctionsException(
+	private static String makeIncompatibleFunctionsExceptionMessage(
 			final SMTFunctionSymbol actualFunctionSymbol,
 			final SMTFunctionSymbol expectedSymbol) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Sorts of function symbol: ");
-		sb.append(expectedSymbol);
+		sb.append(actualFunctionSymbol);
 		sb.append(": ");
 		String sep = "";
 		sep = printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
 				" does not match: ");
 		printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
 				" in the declaration of function in the signature.");
-		return new IllegalArgumentException(sb.toString());
+		return sb.toString();
 	}
 
 	private static String printFunctionSortsInTheBuilder(
@@ -595,8 +595,9 @@ public abstract class SMTSignature {
 					wellSorted = verifyRank(expectedArgSorts, argSorts);
 				}
 				if (!wellSorted) {
-					throw makeIncompatibleFunctionsException(functionSymbol,
-							symbol);
+					throw new IllegalArgumentException(
+							makeIncompatibleFunctionsExceptionMessage(
+									functionSymbol, symbol));
 				}
 				return;
 			}
