@@ -572,14 +572,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 * @param pred
 	 *            The actual hypothesis (or goal) being traversed.
-	 * @param atomicExpression
+	 * @param boolSetExpression
 	 *            The BOOL set atomic expression
 	 */
 	private void checkBoolSet(final Predicate pred,
-			final AtomicExpression atomicExpression) {
+			final AtomicExpression boolSetExpression) {
 		for (final SMTTheory theory : signature.getLogic().getTheories()) {
 			if (theory instanceof Booleans) {
-				final BoolSetVisitor bv = new BoolSetVisitor(atomicExpression);
+				final BoolSetVisitor bv = new BoolSetVisitor(boolSetExpression);
 				pred.accept(bv);
 				return;
 			}
@@ -812,7 +812,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	class BoolSetVisitor extends DefaultVisitor {
 
 		private RelationalPredicate membershipPredicate;
-		private final AtomicExpression atomicExpression;
+		private final AtomicExpression boolSetExpression;
 
 		/**
 		 * Constructor that stores an atomic expresion which the tag is
@@ -822,7 +822,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		public BoolSetVisitor(final AtomicExpression expr) {
 			assert expr.getTag() == Formula.BOOL;
-			atomicExpression = expr;
+			boolSetExpression = expr;
 
 		}
 
@@ -839,7 +839,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * This method checks, for each MAPSTO expression:
 		 * <ul>
 		 * <li>If the left or the right of the binary expression correspond to
-		 * the stored atomicExpression
+		 * the stored boolSetExpression
 		 * <li>If so, check if the parent of the MAPSTO expression is a
 		 * membership actualPredicate. If not, throws an exception
 		 * <li>else keep traversing the actualPredicate
@@ -847,10 +847,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		@Override
 		public boolean enterMAPSTO(final BinaryExpression expr) {
-			assert atomicExpression != null;
-			if (expr.getLeft().equals(atomicExpression)
-					|| expr.getRight().equals(atomicExpression)) {
-				if (membershipPredicate.getLeft().equals(expr)) {
+			assert boolSetExpression != null;
+			if (expr.getLeft().equals(boolSetExpression)
+					|| expr.getRight().equals(boolSetExpression)) {
+				if (membershipPredicate.getLeft().contains(
+						boolSetExpression.getSourceLocation())) {
 					return false;
 				} else {
 					throw new IllegalArgumentException(
@@ -860,6 +861,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				return true;
 			}
 		}
+
 	}
 
 	/**
