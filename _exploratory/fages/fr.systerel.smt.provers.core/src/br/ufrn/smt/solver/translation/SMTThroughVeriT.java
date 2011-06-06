@@ -540,10 +540,19 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Method used to translate predecessor or sucessor operators. For
+	 * predecessor, it returns a SMT-LIB version of (λ·x ∈ ℤ ∣ x − 1), and for
+	 * sucessor, it returns a SMT-LIB version of (λ·x ∈ ℤ ∣ x + 1)
 	 * 
+	 * @param operator
+	 *            + or -
+	 * @param macroName
+	 *            the name of this macro
+	 * 
+	 * @return the translated term of predecessor or sucessor
 	 */
 	private SMTTerm translateKPREDorKSUCC(final SMTOperator operator,
-			final String macroSymbol) {
+			final String macroName) {
 		// Making x
 		final String x = signature.freshSymbolName("x");
 		final SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(
@@ -560,6 +569,28 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				(SMTFunctionSymbol) signature.getLogic().getOperator(operator),
 				signature, xFun, plusOrMinusUmNumeral);
 
+		return translateKPREDorKSUCCPart2(macroName, xSort, xFun,
+				plusOrMinusTerm);
+	}
+
+	/**
+	 * translation of predecessor or sucessor operators.
+	 * 
+	 * @param macroName
+	 *            the name of the macro
+	 * @param xSort
+	 *            the sort of x
+	 * @param xFun
+	 *            the function symbol of x
+	 * @param plusOrMinusTerm
+	 *            the term that contains + or -
+	 * @return the translated term of predecessor or sucessor
+	 * 
+	 * @see #translateKPREDorKSUCC(SMTOperator, String)
+	 */
+	private SMTTerm translateKPREDorKSUCCPart2(final String macroName,
+			final SMTSortSymbol xSort, final SMTTerm xFun,
+			final SMTTerm plusOrMinusTerm) {
 		// Making x |-> x + 1
 		final SMTTerm[] mapstoTerm = new SMTTerm[1];
 		mapstoTerm[0] = SMTFactoryVeriT.makeMacroTerm(
@@ -574,9 +605,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTFormula inFormula = SMTFactoryVeriT.makeMacroAtom(
 				getMacroSymbol(IN, signature), xFun, intT);
 
-		final String macroName = signature.freshSymbolName(macroSymbol);
+		final String freshMacroName = signature.freshSymbolName(macroName);
 
-		return translateQuantifiedExpression(macroName, inFormula,
+		return translateQuantifiedExpression(freshMacroName, inFormula,
 				mapstoTerm[0], xSort, xFun);
 	}
 
@@ -712,8 +743,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.MAPSTO:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(MAPSTO, signature), children);
+			signature.addPairSortAndFunction();
+			smtNode = SMTFactory.makeFunApplication(
+					SMTFactoryVeriT.PAIR_SYMBOL, signature, children);
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
