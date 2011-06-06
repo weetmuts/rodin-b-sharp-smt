@@ -111,63 +111,24 @@ public abstract class SMTSignature {
 		loadLogicSymbols();
 	}
 
-	// TODO: Refactor this method
-	private static String makeIncompatibleFunctionsExceptionMessage(
-			final SMTFunctionSymbol actualFunctionSymbol,
-			final SMTFunctionSymbol expectedSymbol) {
+	/**
+	 * Creates and returns a messge describing the exception message. It is used
+	 * when a rank check fails.
+	 * 
+	 * @param actualSymbol
+	 *            the actual symbol
+	 * @param expectedSymbol
+	 *            the expected symbol
+	 * @return the exception message
+	 */
+	private static String makeIncompatibleSymbolExceptionMessage(
+			final SMTSymbol actualSymbol, final SMTSymbol expectedSymbol) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("Sorts of function symbol: ");
-		sb.append(actualFunctionSymbol);
-		sb.append(": ");
-		String sep = "";
-		sep = printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
-				" does not match: ");
-		printFunctionSortsInTheBuilder(expectedSymbol, sb, sep,
-				" in the declaration of function in the signature.");
+		sb.append("Sorts of the actual symbol: ");
+		sb.append(actualSymbol);
+		sb.append(" does not match the expected symbol:");
+		sb.append(expectedSymbol);
 		return sb.toString();
-	}
-
-	private static String printFunctionSortsInTheBuilder(
-			final SMTFunctionSymbol expectedSymbol, final StringBuilder sb,
-			String sep, final String message) {
-		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
-			sb.append(sep);
-			sep = " ";
-			expectedArg.toString(sb);
-		}
-
-		sb.append(sep);
-		expectedSymbol.getResultSort().toString(sb);
-		sb.append(message);
-		return sep;
-	}
-
-	// TODO: Refactor this method
-	private static String makeIncompatiblePredicatesExceptionMessage(
-			final SMTPredicateSymbol actualPredicateSymbol,
-			final SMTPredicateSymbol expectedPredSymbol) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Sorts of function symbol: ");
-		sb.append(expectedPredSymbol);
-		sb.append(": ");
-		String sep = "";
-		sep = printPredicateSortsInTheBuilder(expectedPredSymbol, sb, sep,
-				" does not match: ");
-		printPredicateSortsInTheBuilder(expectedPredSymbol, sb, sep,
-				" in the declaration of predicate in the signature.");
-		return sb.toString();
-	}
-
-	private static String printPredicateSortsInTheBuilder(
-			final SMTPredicateSymbol expectedPredSymbol,
-			final StringBuilder sb, String sep, final String message) {
-		for (final SMTSortSymbol expectedArg : expectedPredSymbol.getArgSorts()) {
-			sb.append(sep);
-			sep = " ";
-			expectedArg.toString(sb);
-		}
-		sb.append(message);
-		return sep;
 	}
 
 	/**
@@ -226,23 +187,45 @@ public abstract class SMTSignature {
 		return freshName.toString();
 	}
 
+	/**
+	 * verify rank of a symbol(function or predicate) , assuming that the symbol
+	 * is associative.
+	 * 
+	 * @param expectedSort
+	 *            the expected sort of all arguments
+	 * @param sorts
+	 *            the actual sorts
+	 * @return true if all the sorts are compatible with the expected sort,
+	 *         false otherwise.
+	 */
 	private static boolean verifyAssociativeRank(
-			final SMTSortSymbol expectedSortArg, final SMTSortSymbol[] sorts) {
+			final SMTSortSymbol expectedSort, final SMTSortSymbol[] sorts) {
 		for (final SMTSortSymbol sort : sorts) {
-			if (!sort.isCompatibleWith(expectedSortArg)) {
+			if (!sort.isCompatibleWith(expectedSort)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private static boolean verifyRank(final SMTSortSymbol[] expectedSortArgs,
+	/**
+	 * verify rank of symbol (function or predicate), assuming that the symbol
+	 * is not associative.
+	 * 
+	 * @param expectedSorts
+	 *            the expected sorts
+	 * @param sorts
+	 *            the actual sorts
+	 * @return if each actual sort is compatible with its respective expected
+	 *         sort.
+	 */
+	private static boolean verifyRank(final SMTSortSymbol[] expectedSorts,
 			final SMTSortSymbol[] sorts) {
-		if (expectedSortArgs.length != sorts.length) {
+		if (expectedSorts.length != sorts.length) {
 			return false;
 		}
 		for (int i = 0; i < sorts.length; i++) {
-			if (!expectedSortArgs[i].isCompatibleWith(sorts[i])) {
+			if (!expectedSorts[i].isCompatibleWith(sorts[i])) {
 				return false;
 			}
 		}
@@ -561,7 +544,7 @@ public abstract class SMTSignature {
 				if (!verifyRank(predicateSymbol.getArgSorts(),
 						predSymbol.getArgSorts())) {
 					throw new IllegalArgumentException(
-							makeIncompatiblePredicatesExceptionMessage(
+							makeIncompatibleSymbolExceptionMessage(
 									predicateSymbol, predSymbol));
 				}
 				return;
@@ -596,7 +579,7 @@ public abstract class SMTSignature {
 				}
 				if (!wellSorted) {
 					throw new IllegalArgumentException(
-							makeIncompatibleFunctionsExceptionMessage(
+							makeIncompatibleSymbolExceptionMessage(
 									functionSymbol, symbol));
 				}
 				return;
