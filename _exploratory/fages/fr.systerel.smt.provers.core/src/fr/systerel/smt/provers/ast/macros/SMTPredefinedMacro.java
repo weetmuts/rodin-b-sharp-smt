@@ -38,7 +38,9 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
-	private final Set<SMTSymbol> usedSymbols = new HashSet<SMTSymbol>();
+	private final SMTSymbol[] usedSymbols;
+
+	private final SMTMacro[] requiredMacros;
 
 	/**
 	 * Initializes the class with the name of the macro, the body text and the
@@ -53,16 +55,21 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 *            details.
 	 */
 	SMTPredefinedMacro(final String macroName, final String bodyText,
-			final int precedence, SMTSymbol... usedSymbols) {
+			final int precedence, final SMTSymbol[] usedSymbols,
+			final SMTMacro[] requiredMacros) {
 		super(macroName, precedence);
 		body = bodyText;
 		collectQSymbols();
-		for (SMTSymbol symbol : usedSymbols) {
-			this.usedSymbols.add(symbol);
-		}
+		this.usedSymbols = usedSymbols;
+		this.requiredMacros = requiredMacros;
 	}
 
-	public Set<SMTSymbol> getUsedSymbols() {
+	/**
+	 * 
+	 * 
+	 * @return the used symbols of this macro
+	 */
+	public SMTSymbol[] getUsedSymbols() {
 		return usedSymbols;
 	}
 
@@ -74,6 +81,14 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 */
 	public Set<String> getQSymbols() {
 		return qSymbols;
+	}
+
+	/**
+	 * 
+	 * @return the required macros of thi macro
+	 */
+	public SMTMacro[] getRequiredMacros() {
+		return requiredMacros;
 	}
 
 	/**

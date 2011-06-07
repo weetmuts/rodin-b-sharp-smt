@@ -255,7 +255,8 @@ public abstract class SMTSignature {
 	}
 
 	private void removeIllegalCharacter(final String name,
-			StringBuilder freshName, final Set<String> additionalReservedNames) {
+			final StringBuilder freshName,
+			final Set<String> additionalReservedNames) {
 		final StringBuilder patch = new StringBuilder();
 		/**
 		 * Arbitrary chosen initial number

@@ -327,8 +327,8 @@ public class SMTLogic {
 				SMTMacroSymbol.ISMAX), FINITE(SMTMacroSymbol.FINITE), CARD(
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
 				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
-				SMTMacroSymbol.RANGE), NOT_EQUAL(SMTMacroSymbol.NOT_EQUAL), BCOMP(
-				SMTMacroSymbol.BCOMP), INTEGER(SMTMacroSymbol.INT);
+				SMTMacroSymbol.RANGE), BCOMP(SMTMacroSymbol.BCOMP), INTEGER(
+				SMTMacroSymbol.INT);
 
 		/**
 		 * The symbol string.

@@ -592,7 +592,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTTerm plusOrMinusTerm) {
 		// Making x |-> x + 1
 		final SMTTerm[] mapstoTerm = new SMTTerm[1];
-		mapstoTerm[0] = SMTFactoryVeriT.makeFunApplication(SMTFactoryVeriT.PAIR_SYMBOL, signature, xFun,plusOrMinusTerm);
+		mapstoTerm[0] = SMTFactory.makeFunApplication(
+				SMTFactoryVeriT.PAIR_SYMBOL, signature, xFun, plusOrMinusTerm);
 
 		// Making Int
 		final SMTMacroSymbol intS = SMTMacroFactory.getMacroSymbol(INTEGER,

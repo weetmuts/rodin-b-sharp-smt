@@ -22,6 +22,7 @@ import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
+import fr.systerel.smt.provers.ast.macros.SMTPredefinedMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
 /**
@@ -280,6 +281,15 @@ public class SMTSignatureVerit extends SMTSignature {
 			}
 		}
 
+		for (final SMTMacro macro : macros) {
+			if (macro instanceof SMTPredefinedMacro) {
+				final SMTPredefinedMacro pmacro = (SMTPredefinedMacro) macro;
+				for (final SMTMacro macroS : pmacro.getRequiredMacros()) {
+					macroSymbols.add(macroS.getMacroName());
+				}
+			}
+		}
+
 		removeUnusedSymbols(funSymbols, predSymbols, sortSymbols, macroSymbols);
 	}
 
@@ -325,6 +335,7 @@ public class SMTSignatureVerit extends SMTSignature {
 
 		for (final String macroName : macroNames) {
 			if (!usedMacros.contains(macroName)) {
+
 				unusedMacroSymbols.add(macroName);
 			}
 		}

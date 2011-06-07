@@ -81,7 +81,6 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String FUNP = "funp";
 	public static final String INJP = "injp";
 	public static final String RANGE = "ran";
-	public static final String NOT_EQUAL = "neq";
 	public static final String BCOMP = "bcomp";
 
 	private final SMTSortSymbol[] argSorts;
