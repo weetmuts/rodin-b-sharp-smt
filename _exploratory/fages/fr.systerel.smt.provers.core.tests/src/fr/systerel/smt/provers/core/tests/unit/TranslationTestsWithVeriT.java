@@ -138,6 +138,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(expn Int Int Int)");
 		expectedFunctions.add("(mod Int Int Int)");
 		expectedFunctions.add("(divi Int Int Int)");
+		expectedFunctions.add("(int Int)"); // used for "ℤ ↔ ℤ"
 
 		testTypeEnvironmentFuns(expectedFunctions, signature);
 	}
@@ -205,6 +206,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(expn Int Int Int)");
 		expectedFunctions.add("(mod Int Int Int)");
 		expectedFunctions.add("(divi Int Int Int)");
+		expectedFunctions.add("(int Int)"); // used for "ℤ ↔ ℤ"
 
 		testTypeEnvironmentFuns(expectedFunctions, signature);
 	}

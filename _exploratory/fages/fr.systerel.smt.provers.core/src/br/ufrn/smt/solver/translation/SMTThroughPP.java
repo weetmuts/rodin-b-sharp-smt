@@ -10,7 +10,8 @@
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
-import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeBool;
+import static fr.systerel.smt.provers.ast.SMTFactory.makeInteger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,6 @@ import fr.systerel.smt.provers.ast.SMTTheory;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTVar;
-import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -116,12 +116,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	// FIXME remove this field
 	private boolean usesTruePred = false;
-
-	// FIXME remove this field
-	private SMTTerm intSetTerm = null;
-
-	// FIXME remove this field
-	private SMTFormula intAxiom;
 
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
@@ -326,12 +320,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            the hypotheses
 	 * @param goal
 	 *            the goal
-	 * @param boolVisitor
-	 *            the visitor that checked for boolean symbols in the predicates
 	 * @return the logic that will be used in the benchmark
 	 */
-	private SMTLogic determineLogic(final List<Predicate> hypotheses,
-			final Predicate goal, final BoolTheoryVisitor boolVisitor) {
+	@Override
+	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
+			final Predicate goal) {
+		final BoolTheoryVisitor boolVisitor = new BoolTheoryVisitor();
+
 		for (final Predicate h : hypotheses) {
 			h.accept(boolVisitor);
 			if (boolVisitor.isBoolTheory() && boolVisitor.usesTruePred()) {
@@ -478,7 +473,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final Type leftType = left.getType();
 
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
+		final SMTPredicateSymbol predSymbol = getMembershipPredicateSymbol(
 				leftType, argSorts);
 
 		final SMTTerm[] args = membershipPredicateTerms
@@ -517,7 +512,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *            SMT sorts of the arguments of the membership predicate.
 	 * @return the needed membership predicate.
 	 */
-	private SMTPredicateSymbol createMembershipPredicateSymbol(final Type type,
+	private SMTPredicateSymbol getMembershipPredicateSymbol(final Type type,
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
 		if (membershipPredicateSymbol == null) {
@@ -582,26 +577,32 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 * <code>∀x·x ∈ ℤ</code>
 	 * 
-	 * @param type
 	 * @return The SMTFormula corresponding to the translation of the Event-B
 	 *         predicate shown above
 	 */
-	private SMTFormula generateIntegerAxiom(final Type type,
-			final SMTTerm intSet) {
-		final String symbolName = signature.freshSymbolName("x");
+	private SMTFormula generateIntegerAxiom() {
+		// gets the event-B integer type
+		final Type integerType = FormulaFactory.getDefault().makeIntegerType();
+
+		// creates the quantified variable with a fresh name
+		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
+		final SMTTerm smtVar = sf.makeVar(varName, intSort);
 
-		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, intSort,
-				!PREDEFINED);
-		final SMTTerm term = new SMTVar(vs);
+		// creates the integer constant
+		final SMTTerm intConstant = SMTFactory.makeConstant(signature
+				.getLogic().getIntegerCst(), signature);
 
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
-				type, intSort, intSort);
+		// gets the membership symbol
+		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
+				integerType, intSort, intSort);
 
-		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
-				term, intSet);
+		// creates the membership formula
+		final SMTFormula membershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, signature, smtVar, intConstant);
 
-		return SMTFactory.makeForAll(formula, term);
+		// returns the quantified formula
+		return SMTFactory.makeForAll(membershipFormula, smtVar);
 	}
 
 	/**
@@ -609,27 +610,32 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 * <code>∀x·x ∈ BOOL</code>
 	 * 
-	 * @param type
 	 * @return The SMTFormula corresponding to the translation of the Event-B
 	 *         predicate shown above
 	 */
-	private SMTFormula generateBoolAxiom(final Type type) {
-		final String symbolName = signature.freshSymbolName("x");
+	private SMTFormula generateBoolAxiom() {
+		// gets the event-B boolean type
+		final Type booleanType = FormulaFactory.getDefault().makeBooleanType();
+
+		// creates the quantified variable with a fresh name
+		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
+		final SMTTerm smtVar = sf.makeVar(varName, boolSort);
 
-		final SMTVarSymbol vs = new SMTVarSymbol(symbolName, boolSort,
-				!PREDEFINED);
-		final SMTTerm term = new SMTVar(vs);
-		final SMTTerm termBool = SMTFactory.makeConstant(signature.getLogic()
-				.getBooleanCste(), signature);
+		// creates the boolean constant
+		final SMTTerm boolConstant = SMTFactory.makeConstant(signature
+				.getLogic().getBooleanCst(), signature);
 
-		final SMTPredicateSymbol predSymbol = createMembershipPredicateSymbol(
-				type, boolSort, boolSort);
+		// gets the membership symbol
+		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
+				booleanType, boolSort, boolSort);
 
-		final SMTFormula formula = SMTFactory.makeAtom(predSymbol, signature,
-				term, termBool);
+		// creates the membership formula
+		final SMTFormula membershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, signature, smtVar, boolConstant);
 
-		return SMTFactory.makeForAll(formula, term);
+		// returns the quantified formula
+		return SMTFactory.makeForAll(membershipFormula, smtVar);
 	}
 
 	/**
@@ -671,10 +677,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
+		if (IntegerOccFinder.foundINTEGER(ppTranslatedHypotheses,
+				ppTranslatedGoal)) {
+			translatedAssumptions.add(generateIntegerAxiom());
+		}
+
 		for (final SMTTheory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
-				translatedAssumptions.add(generateBoolAxiom(FormulaFactory
-						.getDefault().makeBooleanType()));
+				translatedAssumptions.add(generateBoolAxiom());
 			}
 		}
 
@@ -686,14 +696,37 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		clearFormula();
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
 
-		if (intAxiom != null) {
-			translatedAssumptions.add(0, intAxiom);
-		}
-
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
 				signature, translatedAssumptions, smtFormula);
 		benchmark.removeUnusedSymbols();
 		return benchmark;
+	}
+
+	/**
+	 * This class is used to determine if the integer axiom is necessary. That
+	 * is, if an occurrence of event-B INTEGER symbol exists in the sequent.
+	 * 
+	 * @author guyot
+	 * 
+	 */
+	private static class IntegerOccFinder extends DefaultVisitor {
+		private boolean integerFound = false;
+
+		public static boolean foundINTEGER(final List<Predicate> hypotheses,
+				final Predicate goal) {
+			final IntegerOccFinder intsVisitor = new IntegerOccFinder();
+			for (final Predicate hypothesis : hypotheses) {
+				hypothesis.accept(intsVisitor);
+			}
+			goal.accept(intsVisitor);
+			return intsVisitor.integerFound;
+		}
+
+		@Override
+		public boolean visitINTEGER(AtomicExpression expr) {
+			integerFound = true;
+			return false;
+		}
 	}
 
 	/**
@@ -703,10 +736,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @author vitor
 	 * 
 	 */
-	class BoolTheoryVisitor extends DefaultVisitor {
-
+	private class BoolTheoryVisitor extends DefaultVisitor {
 		private boolean boolTheory = false;
 		private boolean usesTruePredicate = false;
+
+		public BoolTheoryVisitor() {
+			super();
+		}
 
 		boolean usesTruePred() {
 			return usesTruePredicate;
@@ -761,16 +797,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			boolTheory = true;
 			return true;
 		}
-	}
-
-	/**
-	 * This method determines the used logic.
-	 */
-	@Override
-	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final BoolTheoryVisitor bI = new BoolTheoryVisitor();
-		return determineLogic(hypotheses, goal, bI);
 	}
 
 	/**
@@ -1002,20 +1028,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			if (intSetTerm == null) {
-				final SMTFunctionSymbol intSymbol = signature.freshConstant(
-						"int", signature.getLogic().getIntegerSort());
-				intSetTerm = SMTFactory.makeInteger(intSymbol, signature);
-				intAxiom = generateIntegerAxiom(expression.getType(),
-						intSetTerm);
-				smtNode = intSetTerm;
-			} else {
-				smtNode = intSetTerm;
-			}
+			smtNode = makeInteger(signature.getLogic().getIntegerCst(),
+					signature);
 			break;
 		case Formula.BOOL:
-			smtNode = sf.makeBool(signature.getLogic().getBooleanCste(),
-					signature);
+			smtNode = makeBool(signature.getLogic().getBooleanCst(), signature);
 			break;
 		case Formula.TRUE:
 			// This case is never reached because it is translated in its parent

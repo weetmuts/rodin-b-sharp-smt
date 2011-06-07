@@ -29,6 +29,7 @@ public class SolversDetailsContentProvider implements
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
 		return ((List<SolverDetail>) inputElement).toArray();

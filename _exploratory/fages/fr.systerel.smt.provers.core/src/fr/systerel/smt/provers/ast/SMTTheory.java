@@ -11,6 +11,7 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.BOOL;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
 import java.util.Arrays;
@@ -73,16 +74,11 @@ public class SMTTheory {
 		/**
 		 * Sorts of the integer theory
 		 */
-		private final static SMTSortSymbol INT = new SMTSortSymbol(
+		private static final SMTSortSymbol INT = new SMTSortSymbol(
 				SMTSymbol.INT, PREDEFINED);
 
-		public static SMTSortSymbol getInt() {
-			return INT;
-		}
-
-		public static SMTSortSymbol[] getIntTab() {
-			return INT_TAB;
-		}
+		private static final SMTFunctionSymbol INT_CST = new SMTFunctionSymbol(
+				SMTSymbol.INT_CST, INT, !ASSOCIATIVE, !PREDEFINED);
 
 		private static final SMTSortSymbol[] SORTS = { INT };
 
@@ -90,8 +86,8 @@ public class SMTTheory {
 		 * Useful unary and binary integer ranks for predicate and function
 		 * declarations
 		 */
-		private final static SMTSortSymbol[] INT_TAB = { INT };
-		private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
+		private static final SMTSortSymbol[] INT_TAB = { INT };
+		private static final SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
 		/**
 		 * Predicates and functions of the integer theory
@@ -132,7 +128,7 @@ public class SMTTheory {
 				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
 				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { UMINUS, MINUS,
+		private static final SMTFunctionSymbol[] FUNCTIONS = { INT_CST, UMINUS, MINUS,
 				PLUS, MUL, DIV, MOD, EXPN };
 
 		/**
@@ -146,6 +142,22 @@ public class SMTTheory {
 
 		public static Ints getInstance() {
 			return INSTANCE;
+		}
+
+		public static SMTSortSymbol getInt() {
+			return INT;
+		}
+
+		public static SMTSortSymbol[] getIntTab() {
+			return INT_TAB;
+		}
+
+		public static SMTSortSymbol[] getIntIntTab() {
+			return INT_INT_TAB;
+		}
+
+		public static SMTFunctionSymbol getIntCst() {
+			return INT_CST;
 		}
 
 		@Override
@@ -198,10 +210,6 @@ public class SMTTheory {
 			return GE;
 		}
 
-		public static SMTSortSymbol[] getIntIntTab() {
-			return INT_INT_TAB;
-		}
-
 		@Override
 		public SMTSymbol getExpn() {
 			return EXPN;
@@ -217,26 +225,23 @@ public class SMTTheory {
 	public static class Booleans extends SMTTheory implements ISMTBooleanSort {
 		private static final String BOOLS = "Bools";
 
-		private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-				SMTSymbol.BOOL_SORT, !PREDEFINED);
-		private static final SMTSortSymbol[] SORTS = { BOOL };
+		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
+				SMTSymbol.BOOL, !PREDEFINED);
+		private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
 
-		private static final SMTSortSymbol[] BOOL_TAB = { BOOL };
-		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL, BOOL };
+		private static final SMTSortSymbol[] BOOL_TAB = { BOOL_SORT };
+		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL_SORT,
+				BOOL_SORT };
 
 		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
 				"TRUE", !PREDEFINED, BOOL_TAB);
 
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
-		private static final SMTFunctionSymbol BOOL_CSTE = new SMTFunctionSymbol(
-				SMTSymbol.BOOL_SORT, BOOL, !ASSOCIATIVE, !PREDEFINED);
+		private static final SMTFunctionSymbol BOOL_CST = new SMTFunctionSymbol(
+				BOOL, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
 
-		public static SMTFunctionSymbol getBoolCste() {
-			return BOOL_CSTE;
-		}
-
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CSTE };
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CST };
 
 		private static final Booleans INSTANCE = new Booleans();
 
@@ -248,13 +253,17 @@ public class SMTTheory {
 			return INSTANCE;
 		}
 
-		@Override
-		public SMTSortSymbol getBooleanSort() {
-			return BOOL;
+		public static SMTFunctionSymbol getBoolCst() {
+			return BOOL_CST;
 		}
 
 		public static SMTPredicateSymbol getTrue() {
 			return TRUE;
+		}
+
+		@Override
+		public SMTSortSymbol getBooleanSort() {
+			return BOOL_SORT;
 		}
 	}
 }

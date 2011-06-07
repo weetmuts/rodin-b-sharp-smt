@@ -469,15 +469,10 @@ public class SMTLogic {
 	 * 
 	 * @return the integer sort constant symbol.
 	 */
-	public SMTFunctionSymbol getIntegerSortCst() {
+	public SMTFunctionSymbol getIntegerCst() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof Ints) {
-				final SMTSortSymbol integerSort = ((Ints) theory)
-						.getIntegerSort();
-				final SMTSortSymbol[] argSorts = {};
-				final SMTFunctionSymbol integerSortFunction = new SMTFunctionSymbol(
-						"Int", integerSort, false, true, argSorts);
-				return integerSortFunction;
+				return Ints.getIntCst();
 			}
 		}
 		throw new IllegalArgumentException(
@@ -489,12 +484,12 @@ public class SMTLogic {
 	 * 
 	 * @return the boolean sort constant symbol.
 	 */
-	public SMTFunctionSymbol getBooleanCste() {
+	public SMTFunctionSymbol getBooleanCst() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof VeritPredefinedTheory) {
 				return VeritPredefinedTheory.getBoolFunction();
 			} else if (theory instanceof Booleans) {
-				return Booleans.getBoolCste();
+				return Booleans.getBoolCst();
 			}
 		}
 		return null;

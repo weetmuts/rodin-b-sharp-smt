@@ -33,7 +33,7 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	 * Constructs a new benchmark.
 	 * 
 	 * @param lemmaName
-	 *            the lema of the benchmark
+	 *            the lemma of the benchmark
 	 * @param signature
 	 *            the signature of the benchmark
 	 * @param assumptions

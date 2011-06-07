@@ -200,7 +200,7 @@ public abstract class SMTFactory {
 		return makeConstant(integerCste, signature);
 	}
 
-	public SMTTerm makeBool(final SMTFunctionSymbol booleanCste,
+	public static SMTTerm makeBool(final SMTFunctionSymbol booleanCste,
 			final SMTSignature signature) {
 		return makeConstant(booleanCste, signature);
 	}
