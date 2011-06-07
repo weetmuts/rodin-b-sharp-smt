@@ -57,9 +57,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Two different errors."
-			+ "with no args: error : Deep skolemization is not proof producing."
-			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -70,9 +67,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Two different errors."
-			+ "with no args: error : Deep skolemization is not proof producing."
-			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20ManyForalls() {
 		setPreferencesForSolverTest(solver);
 
@@ -85,9 +79,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Two different errors."
-			+ "with no args: error : Deep skolemization is not proof producing."
-			+ "with print-simp-and-exit: error : proof_context_get: value out of bounds")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -248,9 +239,39 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("quick_sort1", hyps, "x = k", te, VALID);
 	}
 
-	// Last test in Thursday 12 mai 2011
+	/**
+	 * The test below has several problems:
+	 * <p>
+	 * <ol>
+	 * <li>On veriT's side, the parser for SMT-LIB 1.2 with extensions is not
+	 * robust enough: here it should emit a more meaningful error message.</li>
+	 * 
+	 * <li>On the PO side, there are several problems:
+	 * 
+	 * <ol>
+	 * <li>The definition of macro pfun uses macros rel and tfun. Again, the
+	 * parser does not support macros within macro-definitions. So you have to
+	 * do the expansion and reductions manually for all the macros in the paper
+	 * where this happens. Here we would have: (pfun (lambda (?x13 ('s Bool))
+	 * (?y0 ('t Bool)) . (lambda (?r4 ((Pair 's 't) Bool)) . (and (forall (?p12
+	 * (Pair 's 't)) . (implies (?r4 ?p12) (and (?x13 (fst ?p12)) (?y0 (snd
+	 * ?p12))))) (forall (?pt (Pair 's 't)) (?p0 (Pair 's 't)) . (implies (and
+	 * (?r4 ?pt) (?r4 ?p0)) (implies (= (fst ?pt) (fst ?p0))(= (snd ?pt) (snd
+	 * ?p0)))))))))</li>
+	 * 
+	 * <li>The formula that is to be verified is: (not (= (pfun Int D_0) (pfun
+	 * Int D_0))) Since (pfun Int D_0) is the set of all partial functions from
+	 * Int to D_0, this is not a first-order logic formula; veriT emits the
+	 * following error message: error : pre_process: results is not FOL Note
+	 * that, in that case, it would be possible to rewrite the formula to an
+	 * equi-satisfiable first-order logic formula using skolemization of
+	 * function variables. This is again currently not implemented in veriT.</li>
+	 * </ol>
+	 * </ol>
+	 * 
+	 */
 	@Test
-	// @Ignore("Error: error : DAG_new: unable to determine sort")
+	@Ignore("This test has many problems. See the text above")
 	public void testIntInRelation() {
 		setPreferencesForSolverTest(solver);
 
@@ -588,7 +609,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Expected true, but it was false")
+	@Ignore("Expected true, but it was false")
 	public void testRule24() {
 		setPreferencesForSolverTest(solver);
 
@@ -600,7 +621,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Expected true, but it was false")
 	public void testRule25() {
 		setPreferencesForSolverTest(solver);
 
