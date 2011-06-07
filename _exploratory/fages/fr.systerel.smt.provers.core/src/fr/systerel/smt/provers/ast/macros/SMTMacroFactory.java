@@ -55,6 +55,10 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.PAIR_SORT;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.PAIR_SYMBOL;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.FST_SYMBOL;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.SND_SYMBOL;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -118,12 +122,12 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
 			BCOMP,
 			"(lambda (?BCOMP_0 ((Pair 's 't) Bool)) (?BCOMP_1 ((Pair 't 'u) Bool)) . (fcomp ?BCOMP_1 ?BCOMP_0))",
-			2);
+			2, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 
 	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
 			OVR,
 			"(lambda (?OVR_0 ((Pair 's 't) Bool)) (?OVR_1 ((Pair 's 't) Bool)) . (lambda (?OVR_2 (Pair 's 'u)) . (or (?OVR_1 ?OVR_2) (and (?OVR_0 ?OVR_2)(not(exists (?OVR_3 (Pair 's 't)) . (and (?OVR_1 ?OVR_3)(= (fst ?OVR_3)(fst ?OVR_2)))))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(lambda (?EMPTY_0 't). false)", 0);
 	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
@@ -144,29 +148,29 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			RANGE_SUBSTRACION,
 			"(lambda (?RANGE_SUBSTRACION_0 ((Pair 's 't) Bool))(?RANGE_SUBSTRACION_1 ('t Bool)) . (lambda (?RANGE_SUBSTRACION_2 (Pair 's 't)) . (and (?RANGE_SUBSTRACION_0 ?RANGE_SUBSTRACION_2)(not (?RANGE_SUBSTRACION_1 (snd ?RANGE_SUBSTRACION_2))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro RANGE_RESTRICTION_MACRO = new SMTPredefinedMacro(
 			RANGE_RESTRICTION,
 			"(lambda (?RANGE_RESTRICTION_0 ((Pair 's 't) Bool))(?RANGE_RESTRICTION_1 ('t Bool)) . (lambda (?RANGE_RESTRICTION_2 (Pair 's 't)) . (and (?RANGE_RESTRICTION_0 ?RANGE_RESTRICTION_2)(?RANGE_RESTRICTION_1 (snd ?RANGE_RESTRICTION_2)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
 			"(lambda (?RELATION_0 ('s Bool)) (?RELATION_1 ('s Bool)) . (lambda (?RELATION_2  ((Pair 's 't) Bool)) .  (forall (?RELATION_3 (Pair 's 't)) . (implies (?RELATION_2 ?RELATION_3) (and (?RELATION_0 (fst ?RELATION_3))(?RELATION_1 (snd ?RELATION_3)))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	// Using the surp (surjective property) to define this macro
 	public static final SMTPredefinedMacro SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
 			SURJECTIVE_RELATION,
 			"(lambda (?SURJECTIVE_RELATION_0 ('t Bool)) (?SURJECTIVE_RELATION_1 ((Pair 's 't) Bool))(forall (?SURJECTIVE_RELATION_2 (Pair 's 't)) (= (?SURJECTIVE_RELATION_1 ?SURJECTIVE_RELATION_2) (?SURJECTIVE_RELATION_0 (snd ?SURJECTIVE_RELATION_2)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	// Using the conjunction of surjective relation and total relation macros
 	public static final SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
 			TOTAL_SURJECTIVE_RELATION,
 			"(lambda (?TOTAL_SURJECTIVE_RELATION_0 ('t Bool)) . (?TOTAL_SURJECTIVE_RELATION_1 ((Pair 's 't) Bool))(and (forall (?TOTAL_SURJECTIVE_RELATION_2 (Pair 's 't)) (= (?TOTAL_SURJECTIVE_RELATION_1 ?TOTAL_SURJECTIVE_RELATION_2) (?TOTAL_SURJECTIVE_RELATION_0 (snd ?TOTAL_SURJECTIVE_RELATION_2))))  (forall (?TOTAL_SURJECTIVE_RELATION_3 (Pair 's 't)) (= (?TOTAL_SURJECTIVE_RELATION_1 ?TOTAL_SURJECTIVE_RELATION_3) (?TOTAL_SURJECTIVE_RELATION_0 (fst ?TOTAL_SURJECTIVE_RELATION_3))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_FUNCTION,
 			"(lambda (?PARTIAL_FUNCTION_0 ('s Bool)) (?PARTIAL_FUNCTION_1  ('t Bool)) . (lambda (?PARTIAL_FUNCTION_2 ((Pair 's 't) Bool)) .  (and ((rel ?PARTIAL_FUNCTION_0 ?PARTIAL_FUNCTION_1) ?PARTIAL_FUNCTION_2) (funp ?PARTIAL_FUNCTION_2))))",
-			2);
+			2, PAIR_SORT, PAIR_SYMBOL);
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_FUNCTION,
 			"(lambda (?TOTAL_FUNCTION_0 ('s Bool)) (?TOTAL_FUNCTION_1 ('t Bool)) . (lambda (?TOTAL_FUNCTION_2 ((Pair 's 't) Bool)) . (and ((pfun ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_1) ?TOTAL_FUNCTION_2) (totp ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_2))))",
@@ -178,9 +182,10 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
 			INV,
 			"(lambda (?INV_0 ((Pair 's 't) Bool)) . (lambda (?INV_1 (Pair 's 't)) . (?INV_0 (pair (snd ?INV_1)(fst ?INV_1)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
-			ID, "(lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))", 1);
+			ID, "(lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))",
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
 			DOM,
 			"(lambda (?DOM_0 ((Pair't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 ?DOM_1 ?DOM_2))))",
@@ -188,15 +193,15 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_INJECTION,
 			"(lambda (?PARTIAL_INJECTION_0 ('s Bool)) (?PARTIAL_INJECTION_1 ('s Bool)) . (lambda (?PARTIAL_INJECTION_2 ((Pair 's 't) Bool)) . (and ((pfun ?PARTIAL_INJECTION_0 ?PARTIAL_INJECTION_1) ?PARTIAL_INJECTION_2) (injp ?PARTIAL_INJECTION_2))))",
-			3);
+			3, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_INJECTION,
 			"(lambda (?TOTAL_INJECTION_0 ('s Bool)) . (?TOTAL_INJECTION_1 ('s Bool))(lambda (?TOTAL_INJECTION_2 ((Pair 's 't) Bool)) . (and ((pinj ?TOTAL_INJECTION_0 ?TOTAL_INJECTION_1) ?TOTAL_INJECTION_2) (totp ?TOTAL_INJECTION_0 ?TOTAL_INJECTION_2))))",
-			4);
+			4, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_SURJECTION,
 			"(lambda (?PARTIAL_SURJECTION_0 ('s Bool))(?PARTIAL_SURJECTION_1 ('s Bool)) . (lambda (?PARTIAL_SURJECTION_2 ((Pair 's 't) Bool)) .  (and ((pfun ?PARTIAL_SURJECTION_0 ?PARTIAL_SURJECTION_1) ?PARTIAL_SURJECTION_2) (surp ?PARTIAL_SURJECTION_1 ?PARTIAL_SURJECTION_2))))",
-			3);
+			3, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_SURJECTION,
 			"(lambda (?TOTAL_SURJECTION_0 ('s Bool)) (?TOTAL_SURJECTION_1 ('s Bool))(lambda (?TOTAL_SURJECTION_2 ((Pair 's 't) Bool)) (and ((psur ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_1) ?TOTAL_SURJECTION_2) (totp ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_2))))",
@@ -204,23 +209,23 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro TOTAL_BIJECTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_BIJECTION,
 			"(lambda (?TOTAL_BIJECTION_0 ('s Bool)) (?TOTAL_BIJECTION_1 ('s Bool)) . (lambda (?TOTAL_BIJECTION_2 ((Pair 's 't) Bool)) . (and ((tsur ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1) ?TOTAL_BIJECTION_2) ((tinj ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1)?TOTAL_BIJECTION_2))))",
-			5);
+			5, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = new SMTPredefinedMacro(
 			CARTESIAN_PRODUCT,
 			"(lambda (?CARTESIAN_PRODUCT_0 ('s Bool))(?CARTESIAN_PRODUCT_1 ('t Bool)) . (lambda (?CARTESIAN_PRODUCT_2 (Pair 's 't)) . (and (?CARTESIAN_PRODUCT_0 (fst ?CARTESIAN_PRODUCT_2)) (?CARTESIAN_PRODUCT_1 (snd ?CARTESIAN_PRODUCT_2)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_RESTRICTION,
 			"(lambda (?DOMAIN_RESTRICTION_0 ('s Bool))(?DOMAIN_RESTRICTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_RESTRICTION_2 (Pair 's 't)) . (and (?DOMAIN_RESTRICTION_1 ?DOMAIN_RESTRICTION_2)(?DOMAIN_RESTRICTION_0 (fst ?DOMAIN_RESTRICTION_2)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			DOMAIN_SUBSTRACTION,
 			"(lambda (?DOMAIN_SUBSTRACTION_0 ('s Bool))(?DOMAIN_SUBSTRACTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_SUBSTRACTION_2 (Pair 's 't)) . (and (?DOMAIN_SUBSTRACTION_1 ?DOMAIN_SUBSTRACTION_2)(not (?DOMAIN_SUBSTRACTION_0 (fst ?DOMAIN_SUBSTRACTION_2))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
 			RELATIONAL_IMAGE,
 			"(lambda (?RELATIONAL_IMAGE_0 ((Pair 's 't) Bool)(?RELATIONAL_IMAGE_1 ('s Bool)(lambda (?RELATIONAL_IMAGE_2 't) (exists (?RELATIONAL_IMAGE_3 's)(and (?RELATIONAL_IMAGE_1 ?RELATIONAL_IMAGE_3)(?RELATIONAL_IMAGE_0 (pair ?RELATIONAL_IMAGE_3 ?RELATIONAL_IMAGE_2))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro SETMINUS_MACRO = new SMTPredefinedMacro(
 			SETMINUS,
 			"(lambda (?SETMINUS_0 ('t Bool)) (?SETMINUS_1 ('t Bool)) . (lambda (?SETMINUS_2 't) . (and (?SETMINUS_0 ?SETMINUS_2) (not (?SETMINUS_1 ?SETMINUS_2)))))",
@@ -244,15 +249,16 @@ public class SMTMacroFactory {
 	private static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
 			FUNP,
 			"(lambda (?FUNP_0 ((Pair 's 't )Bool)) . (forall (?FUNP_1 (Pair 's 't))(?FUNP_2 (Pair 's 't)) . (implies (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (implies (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2))))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	private static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
 			INJP,
-			"(lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))", 2);
+			"(lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))", 2,
+			PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	// Using the totp (total property) to define this macro
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
 			TOTAL_RELATION,
 			"(lambda (?TOTAL_RELATION_0 ('s Bool)) (?TOTAL_RELATION_1 ((Pair 's 't) Bool)) . (forall (?TOTAL_RELATION_2 (Pair 's 't)) . (iff (?TOTAL_RELATION_1 ?TOTAL_RELATION_2) (?TOTAL_RELATION_0 (fst ?TOTAL_RELATION_2)))))",
-			1);
+			1, PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL);
 	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
 			RANGE,
 			"(lambda (?RANGE_0 ((Pair 's 't) Bool)) . (lambda (?RANGE_1 't) . (exists (?RANGE_2 's) . (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
@@ -478,13 +484,6 @@ public class SMTMacroFactory {
 	public static void addPredefinedMacroInSignature(
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		switch (operator) {
-		case MAPSTO: {
-			break;
-		}
-		case PAIR: {
-			signature.addPairSortAndFunction();
-			break;
-		}
 		case BUNION: {
 			signature.addMacro(BUNION_MACRO);
 			break;
@@ -494,14 +493,13 @@ public class SMTMacroFactory {
 			break;
 		}
 		case FCOMP: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
-
 			signature.addMacro(FCOMP_MACRO);
 			break;
 		}
 		case OVR: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(REL_OVR_MACRO);
@@ -535,59 +533,56 @@ public class SMTMacroFactory {
 			signature.addMacro(BCOMP_MACRO);
 			break;
 		case RANGE_SUBSTRACTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RANGE_SUBSTRACTION_MACRO);
 			break;
 		}
 		case RANGE_RESTRICTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RANGE_RESTRICTION_MACRO);
 			break;
 		}
 		case RELATION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(RELATION_MACRO);
 			break;
 		}
 		case TOTAL_RELATION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(TOTAL_RELATION_MACRO);
 			break;
 		}
 		case SURJECTIVE_RELATION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(SURJECTIVE_RELATION_MACRO);
 			break;
 		}
 		case TOTAL_SURJECTIVE_RELATION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(TOTAL_SURJECTIVE_RELATION_MACRO);
 			break;
 		}
 		case PARTIAL_FUNCTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.RELATION, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.FUNP, signature);
-
 			signature.addMacro(PARTIAL_FUNCTION_MACRO);
 			break;
 		}
 		case TOTAL_FUNCTION: {
 			addPredefinedMacroInSignature(SMTVeriTOperator.PARTIAL_FUNCTION,
 					signature);
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.TOTAL_RELATION,
 					signature);
 
@@ -595,7 +590,7 @@ public class SMTMacroFactory {
 			break;
 		}
 		case ID: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(ID_MACRO);
@@ -610,7 +605,7 @@ public class SMTMacroFactory {
 			break;
 		}
 		case INV: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(INVERSE_MACRO);
@@ -620,7 +615,6 @@ public class SMTMacroFactory {
 			signature.addMacro(DOM_MACRO);
 		}
 		case PARTIAL_INJECTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.PARTIAL_FUNCTION,
 					signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.INJP, signature);
@@ -638,7 +632,6 @@ public class SMTMacroFactory {
 			break;
 		}
 		case PARTIAL_SURJECTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.PARTIAL_FUNCTION,
 					signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.SURJECTIVE_RELATION,
@@ -648,7 +641,6 @@ public class SMTMacroFactory {
 			break;
 		}
 		case TOTAL_SURJECTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.TOTAL_RELATION,
 					signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.PARTIAL_SURJECTION,
@@ -658,7 +650,6 @@ public class SMTMacroFactory {
 			break;
 		}
 		case TOTAL_BIJECTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.TOTAL_SURJECTION,
 					signature);
 			addPredefinedMacroInSignature(SMTVeriTOperator.TOTAL_INJECTION,
@@ -668,28 +659,28 @@ public class SMTMacroFactory {
 			break;
 		}
 		case CARTESIAN_PRODUCT: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(CARTESIAN_PRODUCT_MACRO);
 			break;
 		}
 		case DOMAIN_RESTRICTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(DOMAIN_RESTRICTION_MACRO);
 			break;
 		}
 		case DOMAIN_SUBSTRACTION: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(DOMAIN_SUBSTRACTION_MACRO);
 			break;
 		}
 		case RELATIONAL_IMAGE: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 
 			signature.addMacro(RELATIONAL_IMAGE_MACRO);
 			break;
@@ -725,7 +716,7 @@ public class SMTMacroFactory {
 			break;
 		}
 		case FUNP: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 			signature.addFstAndSndAuxiliarFunctions();
 
 			signature.addMacro(FUNP_MACRO);
@@ -739,7 +730,7 @@ public class SMTMacroFactory {
 			break;
 		}
 		case RANGE: {
-			addPredefinedMacroInSignature(SMTVeriTOperator.PAIR, signature);
+			signature.addPairSortAndFunction();
 
 			signature.addMacro(RANGE_MACRO);
 			break;

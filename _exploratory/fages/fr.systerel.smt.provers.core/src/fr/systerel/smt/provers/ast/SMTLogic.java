@@ -299,8 +299,7 @@ public class SMTLogic {
 				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
 				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
 				SMTMacroSymbol.SUBSET), RANGE_INTEGER(
-				SMTMacroSymbol.RANGE_INTEGER), PROD(SMTMacroSymbol.PROD), DOM(
-				SMTMacroSymbol.DOM),
+				SMTMacroSymbol.RANGE_INTEGER), DOM(SMTMacroSymbol.DOM),
 		// RAN(SMTMacroSymbol.RAN),
 		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
 				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(

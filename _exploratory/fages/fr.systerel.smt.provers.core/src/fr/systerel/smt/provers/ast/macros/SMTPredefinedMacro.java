@@ -13,6 +13,8 @@ package fr.systerel.smt.provers.ast.macros;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.systerel.smt.provers.ast.SMTSymbol;
+
 /**
  * This class stores the macros that are predefined. They contain only the name
  * and its body. All the macros defined before the translation rules in the
@@ -36,6 +38,8 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
+	private final Set<SMTSymbol> usedSymbols = new HashSet<SMTSymbol>();
+
 	/**
 	 * Initializes the class with the name of the macro, the body text and the
 	 * precedence.
@@ -49,10 +53,17 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 *            details.
 	 */
 	SMTPredefinedMacro(final String macroName, final String bodyText,
-			final int precedence) {
+			final int precedence, SMTSymbol... usedSymbols) {
 		super(macroName, precedence);
 		body = bodyText;
 		collectQSymbols();
+		for (SMTSymbol symbol : usedSymbols) {
+			this.usedSymbols.add(symbol);
+		}
+	}
+
+	public Set<SMTSymbol> getUsedSymbols() {
+		return usedSymbols;
 	}
 
 	/**

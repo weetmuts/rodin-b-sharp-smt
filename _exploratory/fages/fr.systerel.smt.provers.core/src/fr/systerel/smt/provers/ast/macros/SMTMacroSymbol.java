@@ -36,7 +36,6 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String SUBSETEQ = "subseteq";
 	public static final String SUBSET = "subset";
 	public static final String RANGE_INTEGER = "range";
-	public static final String PROD = "prod";
 	public static final String DOM = "dom";
 	public static final String IMG = "img";
 	public static final String DOMR = "domr";

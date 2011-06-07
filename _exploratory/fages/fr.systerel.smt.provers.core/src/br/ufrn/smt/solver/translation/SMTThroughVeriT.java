@@ -28,7 +28,6 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.ID;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.IN;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INTEGER;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.INV;
-import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.MAPSTO;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.NAT1;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.OVR;
@@ -593,8 +592,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final SMTTerm plusOrMinusTerm) {
 		// Making x |-> x + 1
 		final SMTTerm[] mapstoTerm = new SMTTerm[1];
-		mapstoTerm[0] = SMTFactoryVeriT.makeMacroTerm(
-				getMacroSymbol(MAPSTO, signature), xFun, plusOrMinusTerm);
+		mapstoTerm[0] = SMTFactoryVeriT.makeFunApplication(SMTFactoryVeriT.PAIR_SYMBOL, signature, xFun,plusOrMinusTerm);
 
 		// Making Int
 		final SMTMacroSymbol intS = SMTMacroFactory.getMacroSymbol(INTEGER,
