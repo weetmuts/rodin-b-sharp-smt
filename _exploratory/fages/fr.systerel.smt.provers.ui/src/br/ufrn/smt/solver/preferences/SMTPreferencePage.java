@@ -265,6 +265,7 @@ public class SMTPreferencePage extends PreferencePage implements
 						items[i].setForeground(blackColor);
 					}
 				}
+				fTable.refresh();
 			}
 		});
 
@@ -575,6 +576,22 @@ public class SMTPreferencePage extends PreferencePage implements
 
 					// Update table with solver details
 					fTable.refresh();
+
+					if (fTable.getTable().getItemCount() == 1) {
+						// Change color of the selected row
+						final Color blueColor = compOkCancel.getDisplay()
+								.getSystemColor(SWT.COLOR_BLUE);
+						final Color whiteColor = compOkCancel.getDisplay()
+								.getSystemColor(SWT.COLOR_WHITE);
+						final int i = 0;
+						selectedSolverIndex = i;
+
+						final TableItem[] items = fTable.getTable().getItems();
+						items[0].setBackground(blueColor);
+						items[0].setForeground(whiteColor);
+
+						fTable.refresh();
+					}
 
 					// Close the shell
 					shell.close();
