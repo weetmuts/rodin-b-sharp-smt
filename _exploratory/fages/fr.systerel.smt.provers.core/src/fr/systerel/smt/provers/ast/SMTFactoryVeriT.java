@@ -14,7 +14,6 @@ import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.MAPSTO;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
@@ -60,40 +59,15 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
 			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
-	/**
-	 * This variable stores additional assumptions produced by the translation
-	 * of min,max, finite and cardinality operators
-	 */
-	private final Set<SMTFormula> additionalAssumptions = new HashSet<SMTFormula>();
 	private boolean isFstAndSndAssumptionsAdded = false;
 	private boolean isPairEqualityAxiomAdded = false;
-
-	/**
-	 * Returns the additional assumptions used for the translation of the
-	 * event-B PO
-	 * 
-	 * @return the additional assumptions used for the translation of the
-	 *         event-B PO
-	 */
-	public Set<SMTFormula> getAdditionalAssumptions() {
-		return additionalAssumptions;
-	}
-
-	/**
-	 * Adds an additional assumption to the signature
-	 * 
-	 * @param formula
-	 *            the additional assumption
-	 */
-	public void addAdditionalAssumption(final SMTFormula formula) {
-		additionalAssumptions.add(formula);
-	}
 
 	/**
 	 * Adds the fst and snd functions, as well as their defining assumptions.
 	 * They are added only once.
 	 */
 	public void addFstAndSndAuxiliarAssumptions(
+			final Set<SMTFormula> additionalAssumptions,
 			final SMTSignatureVerit signature) {
 		if (!isFstAndSndAssumptionsAdded) {
 			additionalAssumptions.add(createFstAssumption(signature));
@@ -105,7 +79,9 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	/**
 	 * Adds the pair equality axiom. It is added only once.
 	 */
-	public void addPairEqualityAxiom(final SMTSignatureVerit signature) {
+	public void addPairEqualityAxiom(
+			final Set<SMTFormula> additionalAssumptions,
+			final SMTSignatureVerit signature) {
 		if (!isPairEqualityAxiomAdded) {
 			signature.addFstAndSndAuxiliarFunctions();
 			additionalAssumptions.add(createPairEqualityAxiom());

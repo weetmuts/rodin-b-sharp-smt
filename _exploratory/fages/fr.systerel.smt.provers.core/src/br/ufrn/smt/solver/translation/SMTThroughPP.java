@@ -723,7 +723,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		@Override
-		public boolean visitINTEGER(AtomicExpression expr) {
+		public boolean visitINTEGER(final AtomicExpression expr) {
 			integerFound = true;
 			return false;
 		}
