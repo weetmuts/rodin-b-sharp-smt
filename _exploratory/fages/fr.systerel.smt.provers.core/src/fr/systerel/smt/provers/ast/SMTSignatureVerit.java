@@ -197,11 +197,11 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * 
 	 */
 	public String freshQVarName(final String name, final Set<String> usedNames) {
-		final Set<String> names = new HashSet<String>();
-		names.addAll(ms.getqSymbols());
-		names.addAll(getQNamesFromMacro(macros));
-		names.addAll(usedNames);
-		return freshSymbolName(names, name);
+		final Set<String> additionalReservedNames = new HashSet<String>();
+		additionalReservedNames.addAll(ms.getqSymbols());
+		additionalReservedNames.addAll(getQNamesFromMacro(macros));
+		additionalReservedNames.addAll(usedNames);
+		return freshSymbolName(additionalReservedNames, name);
 	}
 
 	@Override

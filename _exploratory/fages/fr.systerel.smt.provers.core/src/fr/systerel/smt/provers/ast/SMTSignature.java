@@ -67,7 +67,7 @@ public abstract class SMTSignature {
 	private final static String NEW_SORT_NAME = "NSORT";
 
 	/**
-	 * reserved symbols of the logic
+	 * reserved symbols and keywords
 	 */
 	private final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
 
@@ -101,6 +101,11 @@ public abstract class SMTSignature {
 	protected final Set<SMTFunctionSymbol> funs = new HashSet<SMTFunctionSymbol>();
 
 	/**
+	 * names of all symbols of the signature
+	 */
+	protected Set<String> names = new HashSet<String>();
+
+	/**
 	 * Construts a new Signature given the SMT Logic
 	 * 
 	 * @param logic
@@ -108,7 +113,27 @@ public abstract class SMTSignature {
 	 */
 	public SMTSignature(final SMTLogic logic) {
 		this.logic = logic;
+		loadReservedAndPredefinedSymbols();
 		loadLogicSymbols();
+	}
+
+	/**
+	 * This method returns a set with the reserved symbols and keywords
+	 * 
+	 * @return the reserved symbols and keyboards.
+	 */
+	private static Set<String> getReservedSymbolsAndKeywords() {
+		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
+				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
+						"distinct", "false", "flet", "if_then_else", "iff",
+						"implies", "ite", "let", LOGIC, "not", "or", "sat",
+						THEORY, "true", "unknown", "unsat", "xor"));
+		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
+				.addAll(SMTConnective.getConnectiveSymbols())
+				&& reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
+						.getQuantifierSymbols());
+		assert successfullyAddedReservedSymbolsAndKeywords;
+		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}
 
 	/**
@@ -129,62 +154,6 @@ public abstract class SMTSignature {
 		sb.append(" does not match the expected symbol:");
 		sb.append(expectedSymbol);
 		return sb.toString();
-	}
-
-	/**
-	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
-	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
-	 * number , incremented as much as needed. If the symbol name already exists
-	 * in the symbols set, a new name is created, that is: original_name + "_" +
-	 * i, where i is incremented as much as needed.
-	 */
-	// TODO check which prover needs the "\'" simplification, and document it
-	// here
-	private static String freshName(final Set<String> symbols, final String name) {
-		int i = 0;
-		final StringBuilder freshName = new StringBuilder(name);
-
-		// To avoid the sort U problem
-		symbols.add("U");
-
-		if (name.contains("\'")) {
-			final StringBuilder patch = new StringBuilder();
-			/**
-			 * Arbitrary chosen initial number
-			 */
-			int discrNumber = name.length() - name.indexOf('\'');
-
-			patch.append("_").append(discrNumber).append("_");
-
-			freshName.setLength(0);
-			freshName.append(name.replaceAll("'", patch.toString()));
-
-			while (symbols.contains(freshName.toString())) {
-				discrNumber = discrNumber + 1;
-
-				patch.setLength(1);
-				patch.append(discrNumber).append("_");
-
-				freshName.setLength(0);
-				freshName.append(name.replaceAll("'", patch.toString()));
-			}
-		}
-
-		final String intermediateName = freshName.toString();
-		/**
-		 * If the set already contains this symbol
-		 */
-		while (symbols.contains(freshName.toString())) {
-			/**
-			 * Sets the buffer content to: name + "_" + i.
-			 */
-			freshName.setLength(intermediateName.length());
-			freshName.append("_").append(i);
-
-			i = i + 1;
-		}
-
-		return freshName.toString();
 	}
 
 	/**
@@ -285,24 +254,65 @@ public abstract class SMTSignature {
 		}
 	}
 
-	/**
-	 * This method returns a set with the reserved symbols and keywords
-	 * 
-	 * @return the reserved symbols and keyboards.
-	 */
-	private static Set<String> getReservedSymbolsAndKeywords() {
-		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
-						"distinct", "false", "flet", "if_then_else", "iff",
-						"implies", "ite", "let", LOGIC, "not", "or", "sat",
-						THEORY, "true", "unknown", "unsat", "xor"));
-		if (!reservedSymbolsAndKeywords.addAll(SMTConnective
-				.getConnectiveSymbols())
-				|| !reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
-						.getQuantifierSymbols())) {
-			// TODO throw new exception
+	private void removeIllegalCharacter(final String name,
+			StringBuilder freshName, final Set<String> additionalReservedNames) {
+		final StringBuilder patch = new StringBuilder();
+		/**
+		 * Arbitrary chosen initial number
+		 */
+		int discrNumber = name.length() - name.indexOf('\'');
+
+		patch.append("_").append(discrNumber).append("_");
+
+		freshName.setLength(0);
+		freshName.append(name.replaceAll("'", patch.toString()));
+
+		while (names.contains(freshName.toString())
+				|| additionalReservedNames.contains(freshName.toString())) {
+			discrNumber = discrNumber + 1;
+
+			patch.setLength(1);
+			patch.append(discrNumber).append("_");
+
+			freshName.setLength(0);
+			freshName.append(name.replaceAll("'", patch.toString()));
 		}
-		return new HashSet<String>(reservedSymbolsAndKeywords);
+	}
+
+	/**
+	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
+	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
+	 * number , incremented as much as needed. If the symbol name already exists
+	 * in the symbols set, a new name is created, that is: original_name + "_" +
+	 * i, where i is incremented as much as needed.
+	 */
+	// TODO check which prover needs the "\'" simplification, and document it
+	// here
+	private String freshName(final Set<String> additionalReservedNames,
+			final String name) {
+		int i = 0;
+		final StringBuilder freshName = new StringBuilder(name);
+
+		if (name.contains("\'")) {
+			removeIllegalCharacter(name, freshName, additionalReservedNames);
+		}
+
+		final String intermediateName = freshName.toString();
+		/**
+		 * If the set already contains this symbol
+		 */
+		while (names.contains(freshName.toString())
+				|| additionalReservedNames.contains(freshName.toString())) {
+			/**
+			 * Sets the buffer content to: name + "_" + i.
+			 */
+			freshName.setLength(intermediateName.length());
+			freshName.append("_").append(i);
+
+			i = i + 1;
+		}
+
+		return freshName.toString();
 	}
 
 	/**
@@ -351,14 +361,23 @@ public abstract class SMTSignature {
 		}
 	}
 
+	private void loadReservedAndPredefinedSymbols() {
+		names.addAll(reservedSymbols);
+		names.addAll(Arrays.asList(predefinedAttributesSymbols));
+		names.add("U"); // predefined sort in alt-ergo and veriT
+	}
+
 	/**
 	 * Adds in the signature the predicates, functions and sort symbols from the
 	 * loaded logic
 	 */
 	private void loadLogicSymbols() {
 		sorts.addAll(logic.getSorts());
+		names.addAll(getSymbolNames(sorts));
 		preds.addAll(logic.getPredicates());
+		names.addAll(getSymbolNames(preds));
 		funs.addAll(logic.getFunctions());
+		names.addAll(getSymbolNames(funs));
 	}
 
 	/**
@@ -480,11 +499,20 @@ public abstract class SMTSignature {
 	 */
 	protected String freshSymbolName(final Set<String> symbolNames,
 			final String name) {
+		final String freshName;
+		/**
+		 * Avoids creating names similar to reserved symbols, predefined symbols
+		 * or keywords
+		 */
 		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
-			return freshName(symbolNames, NEW_SYMBOL_NAME);
+			freshName = freshName(symbolNames, NEW_SYMBOL_NAME);
 		} else {
-			return freshName(symbolNames, name);
+			freshName = freshName(symbolNames, name);
 		}
+
+		names.add(freshName);
+
+		return freshName;
 	}
 
 	/**
@@ -595,11 +623,7 @@ public abstract class SMTSignature {
 	 * @return a fresh symbol name
 	 */
 	public String freshSymbolName(final String name) {
-		final Set<String> names = new HashSet<String>();
-		names.addAll(getSymbolNames(funs));
-		names.addAll(getSymbolNames(sorts));
-		names.addAll(getSymbolNames(preds));
-		return freshSymbolName(names, name);
+		return freshSymbolName(new HashSet<String>(), name);
 	}
 
 	/**
