@@ -100,7 +100,6 @@ import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTNumeral;
@@ -1606,21 +1605,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		throw new IllegalArgumentException(
 				"It's not possible yet to translate extended predicate to SMT-LIB yet");
 
-	}
-
-	/**
-	 * Just for tests.
-	 * 
-	 * @param typeEnvironment
-	 * 
-	 */
-	public static SMTSignature translateSMTSignature(
-			final ITypeEnvironment typeEnvironment, final String solver) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
-		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
-				.getInstance()));
-		translator.translateSignature(typeEnvironment);
-		return translator.getSignature();
 	}
 
 	/**

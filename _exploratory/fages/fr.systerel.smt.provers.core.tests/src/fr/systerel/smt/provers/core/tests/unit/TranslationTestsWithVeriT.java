@@ -22,7 +22,9 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
@@ -62,6 +64,22 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String expectedSMTNode) {
 		testTranslationV1_2(typeEnvironment, ppPredStr, expectedSMTNode,
 				defaultFailMessage, VERIT.toString());
+	}
+
+	/**
+	 * Translate a type environment and returns a signature with it.
+	 * 
+	 * @param typeEnvironment
+	 *            the type environment to be translated
+	 * 
+	 */
+	private static SMTSignature translateTypeEnvironment(
+			final ITypeEnvironment typeEnvironment, final String solver) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
+		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
+				.getInstance()));
+		translator.translateSignature(typeEnvironment);
+		return translator.getSignature();
 	}
 
 	/**
@@ -113,8 +131,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	public void setSignatureForTestsVerit(final ITypeEnvironment typeEnvironment) {
-		signature = SMTThroughVeriT.translateSMTSignature(typeEnvironment,
-				VERIT.toString());
+		signature = translateTypeEnvironment(typeEnvironment, VERIT.toString());
 	}
 
 	private static final String translationMessage(final Predicate ppPred,

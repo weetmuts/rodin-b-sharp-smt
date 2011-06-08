@@ -345,9 +345,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testPredInInt() {
 		/**
-		 * Through these unit tests, the integer axiom is not generated. That's why
-		 * the membership predicate symbol 'MS' is not already in use, and can be expected here.
-		 * TODO Add tests for the integer axiom generation. 
+		 * Through these unit tests, the integer axiom is not generated. That's
+		 * why the membership predicate symbol 'MS' is not already in use, and
+		 * can be expected here. TODO Add tests for the integer axiom
+		 * generation.
 		 */
 		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a int AZ)");
 		testTranslationV1_2Default("int↦ℤ ∈ SPZ", "(MS int_0 int SPZ)");
