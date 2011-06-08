@@ -114,8 +114,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	// FIXME Seems to be unsafe, to be deleted if possible
 	private final List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
-	// FIXME remove this field
-	private boolean usesTruePred = false;
+	private LogicFinder logicFinder;
 
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
@@ -126,10 +125,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public SMTThroughPP(final String solver) {
 		super(solver);
 		sf = SMTFactoryPP.getInstance();
-	}
-
-	private void setUsesTruePred(final boolean usesTruePred) {
-		this.usesTruePred = usesTruePred;
 	}
 
 	/**
@@ -325,23 +320,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		final BoolTheoryVisitor boolVisitor = new BoolTheoryVisitor();
-
-		for (final Predicate h : hypotheses) {
-			h.accept(boolVisitor);
-			if (boolVisitor.isBoolTheory() && boolVisitor.usesTruePred()) {
-				usesTruePred = true;
-				return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
-						Booleans.getInstance());
-			}
-		}
-		goal.accept(boolVisitor);
-		if (boolVisitor.isBoolTheory()) {
-			if (boolVisitor.usesTruePred()) {
-				usesTruePred = true;
-				return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
-						Booleans.getInstance());
-			}
+		assert logicFinder == null;
+		logicFinder = LogicFinder.calculateLogic(hypotheses, goal);
+		if (logicFinder.usesBoolTheory()) {
 			return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 					Booleans.getInstance());
 		}
@@ -533,7 +514,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *         not using the TRUE pred symbol. Otherwise returns false
 	 */
 	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
-		if (!usesTruePred) {
+		if (!logicFinder.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
 				for (final SMTTheory theories : signature.getLogic()
 						.getTheories()) {
@@ -563,7 +544,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			throw new IllegalArgumentException(
 					"Predefined literal TRUE cannot happen in both sides of boolean equality");
 		} else {
-			if (usesTruePred) {
+			if (logicFinder.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
 				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
 						signature, term);
@@ -677,8 +658,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// translates each hypothesis
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
-		if (IntegerOccFinder.foundINTEGER(ppTranslatedHypotheses,
-				ppTranslatedGoal)) {
+		if (logicFinder.foundInteger()) {
 			translatedAssumptions.add(generateIntegerAxiom());
 		}
 
@@ -704,57 +684,37 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	/**
 	 * This class is used to determine if the integer axiom is necessary. That
-	 * is, if an occurrence of event-B INTEGER symbol exists in the sequent.
-	 * 
-	 * @author guyot
-	 * 
-	 */
-	private static class IntegerOccFinder extends DefaultVisitor {
+	 * is, if an occurrence of event-B INTEGER symbol exists in the sequent. It
+	 * also checks if the hypotheses or the goal has elements of the boolean
+	 * theory
+	 **/
+	private static class LogicFinder extends DefaultVisitor {
 		private boolean integerFound = false;
+		private boolean boolTheory = false;
+		private boolean usesTruePredicate = false;
 
-		public static boolean foundINTEGER(final List<Predicate> hypotheses,
-				final Predicate goal) {
-			final IntegerOccFinder intsVisitor = new IntegerOccFinder();
+		public static LogicFinder calculateLogic(
+				final List<Predicate> hypotheses, final Predicate goal) {
+			final LogicFinder logicFinder = new LogicFinder();
 			for (final Predicate hypothesis : hypotheses) {
-				hypothesis.accept(intsVisitor);
+				hypothesis.accept(logicFinder);
 			}
-			goal.accept(intsVisitor);
-			return intsVisitor.integerFound;
+			goal.accept(logicFinder);
+			return logicFinder;
+		}
+
+		public boolean foundInteger() {
+			return integerFound;
+		}
+
+		public boolean usesTruePredicate() {
+			return usesTruePredicate;
 		}
 
 		@Override
 		public boolean visitINTEGER(final AtomicExpression expr) {
 			integerFound = true;
 			return false;
-		}
-	}
-
-	/**
-	 * This class checks if the hypotheses or the goal has elements of the
-	 * boolean theory
-	 * 
-	 * @author vitor
-	 * 
-	 */
-	private class BoolTheoryVisitor extends DefaultVisitor {
-		private boolean boolTheory = false;
-		private boolean usesTruePredicate = false;
-
-		public BoolTheoryVisitor() {
-			super();
-		}
-
-		boolean usesTruePred() {
-			return usesTruePredicate;
-		}
-
-		/**
-		 * 
-		 * @return true if at least one hypothesis or the goal has boolean
-		 *         theory elements.
-		 */
-		boolean isBoolTheory() {
-			return boolTheory;
 		}
 
 		@Override
@@ -797,6 +757,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			boolTheory = true;
 			return true;
 		}
+
+		public boolean usesBoolTheory() {
+			return boolTheory;
+		}
+
 	}
 
 	/**
@@ -827,6 +792,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
+		// assert logicFinder == null;
+		// logicFinder = LogicFinder.calculateLogic(hypotheses, goal);
 		signature = new SMTSignaturePP(logic);
 
 		linkLogicSymbols();
@@ -978,7 +945,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			Predicate predicate, final String solver, final boolean usesTruePred) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		predicate = translator.recursiveAutoRewrite(predicate);
-		translator.setUsesTruePred(usesTruePred);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
 		return translator.translate(predicate);
