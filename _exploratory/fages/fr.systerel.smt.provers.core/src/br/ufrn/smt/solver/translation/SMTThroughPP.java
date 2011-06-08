@@ -384,7 +384,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		/**
-		 * monadicSetsMap is a mapping from sets to their SMT membership predicate symbol
+		 * monadicSetsMap is a mapping from sets to their SMT membership
+		 * predicate symbol
 		 */
 		return setsMap;
 	}
@@ -549,7 +550,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private void translateInMonadicMembershipPredicate(
 			final Expression leftExpression, final FreeIdentifier rightSet) {
 		final SMTTerm leftTerm = smtTerm(leftExpression);
-		SMTPredicateSymbol monadicMembershipPredicate = monadicSetsMap.get(rightSet);
+		SMTPredicateSymbol monadicMembershipPredicate = monadicSetsMap
+				.get(rightSet);
 
 		if (monadicMembershipPredicate == null) {
 			// FIXME Check the behavior of this method
@@ -791,8 +793,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		// assert logicFinder == null;
-		// logicFinder = LogicFinder.calculateLogic(hypotheses, goal);
 		signature = new SMTSignaturePP(logic);
 
 		linkLogicSymbols();
@@ -942,9 +942,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public static SMTFormula translate(final SMTLogic logic,
 			Predicate predicate, final String solver, final boolean usesTruePred) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
+		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		predicate = translator.recursiveAutoRewrite(predicate);
-		translator.translateSignature(logic, new ArrayList<Predicate>(0),
-				predicate);
+		translator.determineLogic(noHypothesis, predicate);
+		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.translate(predicate);
 	}
 
