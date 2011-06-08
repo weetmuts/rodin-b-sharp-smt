@@ -174,7 +174,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s_0 ?x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
