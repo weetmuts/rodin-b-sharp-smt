@@ -174,7 +174,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s ?x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s_0 ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -204,12 +204,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (s ?x))");
+		testTranslationV1_2Default("∃x·x∈s", "(exists (?x R) (s_0 ?x))");
 		/**
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV1_2Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (s ?x) (s ?y)))");
+				"(exists (?x R) (?y R) (and (s_0 ?x) (s_0 ?y)))");
 	}
 
 	/**
@@ -332,7 +332,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
-		testTranslationV1_2Default("a ∈ A", "(A a)");
+		testTranslationV1_2Default("a ∈ A", "(A_0 a)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
 		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
 	}
@@ -385,7 +385,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(BOOL)", "x",
 				"BOOL");
 
-		testTranslationV1_2(te, "x ∈ f", "(f x)", true);
+		testTranslationV1_2(te, "x ∈ f", "(f_0 x)", true);
 	}
 
 	@Test
