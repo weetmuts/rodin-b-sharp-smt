@@ -181,18 +181,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslationV1_2Default("∀x,y·x↦y∈RR",
 				"(forall (?x r) (?y s) (MS ?x ?y RR))");
 		/**
-		 * forall (multiple identifiers)
-		 */
-		/*
-		 * final QuantifiedPredicate base = (QuantifiedPredicate) parse(
-		 * "∀x,y·x∈s ∧ y∈s", defaultTe); final BoundIdentDecl[] bids =
-		 * base.getBoundIdentDecls(); bids[1] = bids[0]; final Predicate p =
-		 * ff.makeQuantifiedPredicate(FORALL, bids, base.getPredicate(), null);
-		 * testTranslationV1_2(defaultLogic, p,
-		 * "(forall (?x R) (?x_0 R) (and (s ?x) (s ?x_0)))", "twice same decl",
-		 * VERIT.toString(), false);
-		 */
-		/**
 		 * bound set
 		 */
 		testTranslationV1_2Default("∃ x ⦂ ℤ, X ⦂ ℙ(ℤ) · x ∈ X",
