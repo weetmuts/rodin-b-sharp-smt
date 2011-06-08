@@ -90,7 +90,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private final SMTFactory sf;
 
-	private LogicFinder logicFinder;
+	private Gatherer gatherer;
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -104,6 +104,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * actualPredicate symbols.
 	 */
 	private final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
+
+	private final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
 	/**
 	 * This list contains the terms of the current membership being translated
 	 * in the translation process.
@@ -128,26 +130,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * also checks if the hypotheses or the goal has elements of the boolean
 	 * theory
 	 **/
-	private static class LogicFinder extends DefaultVisitor {
+	private static class Gatherer extends DefaultVisitor {
 		private boolean integerFound = false;
 		private boolean boolTheory = false;
 		private boolean usesTruePredicate = false;
-		private final Map<FreeIdentifier, SMTPredicateSymbol> setsMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
+		private final Set<FreeIdentifier> sets = new HashSet<FreeIdentifier>();
 		private final Set<Type> boundSetsTypes = new HashSet<Type>();
 
-		public static LogicFinder calculateLogic(
-				final List<Predicate> hypotheses, final Predicate goal) {
-			final LogicFinder logicFinder = new LogicFinder();
+		public static Gatherer traverse(final List<Predicate> hypotheses,
+				final Predicate goal) {
+			final Gatherer gatherer = new Gatherer();
 			for (final Predicate hypothesis : hypotheses) {
-				hypothesis.accept(logicFinder);
+				hypothesis.accept(gatherer);
 			}
-			goal.accept(logicFinder);
-			logicFinder.removeBoundVarsFromMapOfMonadicSets();
-			return logicFinder;
+			goal.accept(gatherer);
+			gatherer.removeBoundVarsFromMapOfMonadicSets();
+			return gatherer;
 		}
 
-		public Map<FreeIdentifier, SMTPredicateSymbol> getSetsMap() {
-			return setsMap;
+		public Set<FreeIdentifier> getSets() {
+			return sets;
 		}
 
 		public boolean foundInteger() {
@@ -190,6 +192,32 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		@Override
 		public boolean enterIN(final RelationalPredicate pred) {
+			gatherSets(pred);
+			return checkBooleanElementsInMembershipPredicate(pred);
+		}
+
+		/**
+		 * If one of the predicates has a TRUE constant, set
+		 * <code>boolTheory</code> <i>true</i> and stop visiting.
+		 */
+		@Override
+		public boolean visitTRUE(final AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+
+		private boolean checkBooleanElementsInMembershipPredicate(
+				final RelationalPredicate pred) {
+			if (pred.getLeft().getType() instanceof BooleanType
+					|| pred.getRight().getType() instanceof BooleanType) {
+				usesTruePredicate = true;
+				boolTheory = true;
+				return false;
+			}
+			return true;
+		}
+
+		private void gatherSets(final RelationalPredicate pred) {
 			/**
 			 * Code for of membership predicate optimization
 			 */
@@ -201,32 +229,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (right instanceof FreeIdentifier) {
 				final FreeIdentifier rightSet = (FreeIdentifier) right;
 				if (right.getType().getSource() == null) {
-					setsMap.put(rightSet, null);
+					sets.add(rightSet);
 				}
 			} else if (right instanceof BoundIdentifier) {
 				boundSetsTypes.add(((BoundIdentifier) right).getType());
 			}
-
-			/**
-			 * Code for boolean checking
-			 */
-			if (pred.getLeft().getType() instanceof BooleanType
-					|| pred.getRight().getType() instanceof BooleanType) {
-				usesTruePredicate = true;
-				boolTheory = true;
-				return false;
-			}
-			return true;
-		}
-
-		/**
-		 * If one of the predicates has a TRUE constant, set
-		 * <code>boolTheory</code> <i>true</i> and stop visiting.
-		 */
-		@Override
-		public boolean visitTRUE(final AtomicExpression expr) {
-			boolTheory = true;
-			return true;
 		}
 
 		/**
@@ -250,9 +257,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			/**
 			 * Removal of all bounded variables from the map of monadic sets.
 			 */
-			for (final FreeIdentifier set : setsMap.keySet()) {
+			for (final FreeIdentifier set : sets) {
 				if (boundSetsTypes.contains(set.getType())) {
-					setsMap.remove(set);
+					sets.remove(set);
 				}
 			}
 		}
@@ -353,8 +360,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		logicFinder = LogicFinder.calculateLogic(hypotheses, goal);
-		if (logicFinder.usesBoolTheory()) {
+		gatherer = Gatherer.traverse(hypotheses, goal);
+		final Set<FreeIdentifier> monadicSetIdentifiers = gatherer.getSets();
+		for (final FreeIdentifier fi : monadicSetIdentifiers) {
+			monadicSetMap.put(fi, null);
+		}
+
+		if (gatherer.usesBoolTheory()) {
 			return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 					Booleans.getInstance());
 		}
@@ -461,7 +473,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// Translate monadic sets (special case)
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
-			if (logicFinder.getSetsMap().containsKey(rightSet)) {
+			if (monadicSetMap.containsKey(rightSet)) {
 				translateInMonadicMembershipPredicate(left, rightSet);
 				return;
 			}
@@ -500,14 +512,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private void translateInMonadicMembershipPredicate(
 			final Expression leftExpression, final FreeIdentifier rightSet) {
 		final SMTTerm leftTerm = smtTerm(leftExpression);
-		SMTPredicateSymbol monadicMembershipPredicate = logicFinder
-				.getSetsMap().get(rightSet);
+		SMTPredicateSymbol monadicMembershipPredicate = monadicSetMap
+				.get(rightSet);
 
 		if (monadicMembershipPredicate == null) {
 			// FIXME Check the behavior of this method
 			monadicMembershipPredicate = signature.freshPredicateSymbol(
 					rightSet.getName(), leftTerm.getSort());
-			logicFinder.getSetsMap().put(rightSet, monadicMembershipPredicate);
+			monadicSetMap.put(rightSet, monadicMembershipPredicate);
 		}
 
 		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate, signature,
@@ -547,7 +559,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 *         not using the TRUE pred symbol. Otherwise returns false
 	 */
 	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
-		if (!logicFinder.usesTruePredicate()) {
+		if (!gatherer.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
 				for (final SMTTheory theories : signature.getLogic()
 						.getTheories()) {
@@ -577,7 +589,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			throw new IllegalArgumentException(
 					"Predefined literal TRUE cannot happen in both sides of boolean equality");
 		} else {
-			if (logicFinder.usesTruePredicate()) {
+			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
 				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
 						signature, term);
@@ -690,7 +702,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
-		if (logicFinder.foundInteger()) {
+		if (gatherer.foundInteger()) {
 			translatedAssumptions.add(generateIntegerAxiom());
 		}
 
@@ -764,7 +776,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			if (logicFinder.getSetsMap().containsKey(iter)) {
+			if (monadicSetMap.containsKey(iter)) {
 				varType = iter.getType().getBaseType();
 				parseConstant = false;
 			}
