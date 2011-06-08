@@ -48,17 +48,7 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * The target solver of the translation. It is used to check which
 	 * translation must be used depending of the solver
 	 */
-	String solver;
-
-	/**
-	 * Constructs the translator with the solver
-	 * 
-	 * @param solver
-	 *            the target solver of the translated SMT-LIB file
-	 */
-	public TranslatorV1_2(final String solver) {
-		this.solver = solver;
-	}
+	protected String solver;
 
 	/**
 	 * When the translator finishes translating a quantified predicate, it
@@ -78,6 +68,16 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * This variable maps names to SMT bound variables.
 	 */
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
+
+	/**
+	 * Constructs the translator with the solver
+	 * 
+	 * @param solver
+	 *            the target solver of the translated SMT-LIB file
+	 */
+	public TranslatorV1_2(final String solver) {
+		this.solver = solver;
+	}
 
 	/**
 	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
@@ -105,7 +105,22 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * @author vitor
 	 * 
 	 */
-	class BidTypeInspector extends DefaultInspector<Type> {
+	protected static class BidTypeInspector extends DefaultInspector<Type> {
+		/**
+		 * This method takes a copy of the BoundIdentDecl types in the
+		 * hypotheses and goal
+		 */
+		public static List<Type> getBoundIDentDeclTypes(
+				final List<Predicate> hypotheses, final Predicate goal) {
+			final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new BidTypeInspector();
+			final List<Type> typesFound = new ArrayList<Type>();
+			for (final Predicate p : hypotheses) {
+				typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
+			}
+			typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
+
+			return typesFound;
+		}
 
 		/**
 		 * This method stores in the accumlator the type of the actual
@@ -116,22 +131,6 @@ public abstract class TranslatorV1_2 extends Translator {
 				final IAccumulator<Type> accumulator) {
 			accumulator.add(decl.getType());
 		}
-	}
-
-	/**
-	 * This method takes a copy of the BoundIdentDecl types in the hypotheses
-	 * and goal
-	 */
-	List<Type> getBoundIDentDeclTypes(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new BidTypeInspector();
-		final List<Type> typesFound = new ArrayList<Type>();
-		for (final Predicate p : hypotheses) {
-			typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
-		}
-		typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
-
-		return typesFound;
 	}
 
 	/**

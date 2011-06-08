@@ -253,7 +253,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				hypotheses, goal);
 		translateSignature(typeEnvironment);
 
-		final List<Type> biTypes = getBoundIDentDeclTypes(hypotheses, goal);
+		final List<Type> biTypes = BidTypeInspector.getBoundIDentDeclTypes(
+				hypotheses, goal);
 		final Iterator<Type> bIterator = biTypes.iterator();
 
 		extractTypeFromBoundIdentDecl(bIterator);

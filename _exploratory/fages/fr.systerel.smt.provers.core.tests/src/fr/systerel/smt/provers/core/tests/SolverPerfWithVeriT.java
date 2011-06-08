@@ -437,7 +437,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testBepiColombo3Medium2() {
 		setPreferencesForSolverTest(solver);
 
@@ -620,7 +620,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testRule25() {
 		setPreferencesForSolverTest(solver);
 
