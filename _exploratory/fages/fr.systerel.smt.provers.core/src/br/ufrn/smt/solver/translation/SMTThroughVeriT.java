@@ -147,12 +147,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	protected SMTSignatureVerit signature;
 
 	/**
-	 * This boolean is used to check if it's necessary to add the polymorphic
-	 * sort Pair and the polymorphic function pair in the signature.
-	 */
-	private boolean insertPairDecl = false;
-
-	/**
 	 * An instance of the SMTFactoryVeriT
 	 */
 	final private SMTFactoryVeriT sf;
@@ -279,11 +273,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Type varType = iter.next();
 			translateTypeName(varType);
 		}
-		// Checking if it's necessary to add the sort and function pair and if
-		// it was not already inserted.
-		if (insertPairDecl) {
-			signature.addPairSortAndFunction();
-		}
 	}
 
 	/**
@@ -297,7 +286,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
 				varName, sort);
 		varMap.put(varName, predSymbol);
-		insertPairDecl = true;
+		signature.addPairSortAndFunction();
 	}
 
 	/**
@@ -332,10 +321,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				translateFunSymbol(varName, sort);
 			}
 		}
-		if (insertPairDecl) {
-			signature.addPairSortAndFunction();
-		}
-
 	}
 
 	@Override
