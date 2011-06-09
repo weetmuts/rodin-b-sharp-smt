@@ -334,8 +334,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * arguments are well-formed.
 		 */
 		else {
-			throw new IllegalArgumentException(
-					Messages.SMTThroughPP_Misformed_EventB_Types);
+			throw new IllegalArgumentException(Messages.Misformed_EventB_Types);
 		}
 	}
 
@@ -1169,7 +1168,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	@Override
 	public void visitSetExtension(final SetExtension expression) {
-		// TODO
+		throw new IllegalArgumentException(
+				Messages.Incompatible_Formula_With_PPTrans_Production);
 	}
 
 	/**
