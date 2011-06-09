@@ -1112,12 +1112,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			smtNode = SMTFactory.makeEqual(children);
 			break;
 		}
-		case Formula.NOTEQUAL: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = SMTFactory.makeNotEqual(children);
-		}
-			break;
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
@@ -1154,7 +1148,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			break;
 		default:
 			/**
-			 * NOTIN, SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
+			 * NOTEQUAL, NOTIN, SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
 			 * produced by ppTrans.
 			 */
 			throw new IllegalTagException(tag);

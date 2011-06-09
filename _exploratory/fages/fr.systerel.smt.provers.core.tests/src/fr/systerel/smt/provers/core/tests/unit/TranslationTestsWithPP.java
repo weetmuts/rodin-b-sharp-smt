@@ -419,6 +419,40 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
+	public void testTRUEPred() {
+		final ITypeEnvironment te = mTypeEnvironment("B", "ℙ(BOOL)", "b",
+				"BOOL", "c", "BOOL");
+
+		/**
+		 * Formulas containing boolean equalities and memberships involving
+		 * boolean values.
+		 */
+		testTranslationV1_2(te, "b = TRUE ∧ b ∈ B", "(and (TRUE b) (B b))");
+		testTranslationV1_2(te, "TRUE = b ∧ b ∈ B", "(and (TRUE b) (B b))");
+		testTranslationV1_2(te, "b = c ∧ b ∈ B",
+				"(and (iff (TRUE b) (TRUE c)) (B b))");
+
+		/**
+		 * Formulas containing boolean equalities and quantified boolean
+		 * variables.
+		 */
+		testTranslationV1_2(te, "b = TRUE ∧ (∀d·d = b)",
+				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
+		testTranslationV1_2(te, "TRUE = b ∧ (∀d·d = b)",
+				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
+		testTranslationV1_2(te, "b = c ∧ (∀d·d = b)",
+				"(and (iff (TRUE b) (TRUE c)) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
+
+		/**
+		 * Boolean equalities without any membership involving boolean values,
+		 * neither quantified boolean variables.
+		 */
+		testTranslationV1_2(te, "b = TRUE", "b");
+		testTranslationV1_2(te, "TRUE = b", "b");
+		testTranslationV1_2(te, "b = c", "(iff b c)");
+	}
+
+	@Test
 	public void testSimplifications() {
 		testTranslationV1_2Default(
 				"((a = b) ∧ (u = v) ∧ (a = b)) ∧ ((u = v) ∧ (a = b))",
