@@ -31,10 +31,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
-		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
-				"ℙ(R)", "s", "ℙ(R)", "RR", "r ↔ s", "a", "ℤ", "A", "ℙ(ℤ)",
-				"AB", "ℤ ↔ ℤ", "AZ", "ℤ ↔ ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "u",
-				"BOOL", "v", "BOOL", "int", "S", "SPZ", "S ↔ ℙ(ℤ)");
+		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
+				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
@@ -167,14 +165,17 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	@Test
 	public void testForall() {
+		final ITypeEnvironment te = mTypeEnvironment("RR", "r ↔ s");
+		te.addAll(defaultTe);
+
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s_0 ?x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
-		testTranslationV1_2Default("∀x,y·x↦y∈RR",
+		testTranslationV1_2(te, "∀x,y·x↦y∈RR",
 				"(forall (?x r) (?y s) (MS ?x ?y RR))");
 		/**
 		 * bound set
@@ -316,9 +317,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
+		te.addAll(defaultTe);
+		
 		testTranslationV1_2Default("a ∈ A", "(A a)");
-		testTranslationV1_2Default("a↦b ∈ AB", "(MS a b AB)");
-		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
+		testTranslationV1_2(te, "a↦b ∈ AB", "(MS a b AB)");
+		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
 	}
 
 	@Test
@@ -328,14 +332,18 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testPredInInt() {
+		final ITypeEnvironment te = mTypeEnvironment("int", "S", "SPZ",
+				"S ↔ ℙ(ℤ)", "AZ", "ℤ ↔ ℙ(ℤ)");
+		te.addAll(defaultTe);
+
 		/**
 		 * Through these unit tests, the integer axiom is not generated. That's
 		 * why the membership predicate symbol 'MS' is not already in use, and
 		 * can be expected here. TODO Add tests for the integer axiom
 		 * generation.
 		 */
-		testTranslationV1_2Default("a↦ℤ ∈ AZ", "(MS a int AZ)");
-		testTranslationV1_2Default("int↦ℤ ∈ SPZ", "(MS int_0 int SPZ)");
+		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a int AZ)");
+		testTranslationV1_2(te, "int↦ℤ ∈ SPZ", "(MS int_0 int SPZ)");
 	}
 
 	/**
@@ -361,7 +369,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	@Test
 	public void testPredIdentEqu() {
-		testTranslationV1_2Default("p = q", "(= p q)");
+		final ITypeEnvironment te = mTypeEnvironment("p", "S", "q", "S");
+
+		testTranslationV1_2(te, "p = q", "(= p q)");
 	}
 
 	@Test
