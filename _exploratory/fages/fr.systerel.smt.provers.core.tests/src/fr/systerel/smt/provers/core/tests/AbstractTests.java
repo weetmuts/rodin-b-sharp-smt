@@ -95,19 +95,6 @@ public abstract class AbstractTests {
 		return sb.toString();
 	}
 
-	public static void testTypeEnvironmentSorts(
-			final Set<String> expectedSorts, final SMTSignature signature) {
-
-		final Set<SMTSortSymbol> sortSymbols = signature.getSorts();
-		final Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
-		final String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
-		assertEquals(sb.toString(), expectedSorts.size(), sortSymbols.size());
-
-		while (iterator.hasNext()) {
-			assertTrue(sb, expectedSorts.contains(iterator.next().toString()));
-		}
-	}
-
 	private static String typeEnvironmentPredicatesFail(
 			final Set<String> expectedPredicates,
 			final Set<SMTPredicateSymbol> predicates) {
@@ -190,8 +177,20 @@ public abstract class AbstractTests {
 		return count;
 	}
 
-	public static void testTypeEnvironmentFuns(
-			final Set<String> expectedFunctions, final SMTSignature signature) {
+	public static void testTypeEnvironmentSorts(SMTSignature signature,
+			final Set<String> expectedSorts, final String predString) {
+		final Set<SMTSortSymbol> sortSymbols = signature.getSorts();
+		final Iterator<SMTSortSymbol> iterator = sortSymbols.iterator();
+		final String sb = typeEnvironmentSortsFail(expectedSorts, sortSymbols);
+		assertEquals(sb.toString(), expectedSorts.size(), sortSymbols.size());
+
+		while (iterator.hasNext()) {
+			assertTrue(sb, expectedSorts.contains(iterator.next().toString()));
+		}
+	}
+
+	public static void testTypeEnvironmentFuns(SMTSignature signature,
+			final Set<String> expectedFunctions, final String predString) {
 		final Set<SMTFunctionSymbol> functionSymbols = signature.getFuns();
 		final Iterator<SMTFunctionSymbol> iterator = functionSymbols.iterator();
 
@@ -206,6 +205,26 @@ public abstract class AbstractTests {
 				final StringBuilder builder = new StringBuilder();
 				fS.toString(builder);
 				assertTrue(sb, expectedFunctions.contains(builder.toString()));
+			}
+		}
+	}
+
+	public static void testTypeEnvironmentPreds(SMTSignature signature,
+			final Set<String> expectedPreds, final String predString) {
+		final Set<SMTPredicateSymbol> predSymbols = signature.getPreds();
+		final Iterator<SMTPredicateSymbol> iterator = predSymbols.iterator();
+
+		final String sb = typeEnvironmentPredicatesFail(expectedPreds,
+				predSymbols);
+		assertEquals(sb.toString(), expectedPreds.size(),
+				numberOfNonPredefinedPredSymbols(predSymbols));
+
+		while (iterator.hasNext()) {
+			final SMTPredicateSymbol fS = iterator.next();
+			if (!fS.isPredefined()) {
+				final StringBuilder builder = new StringBuilder();
+				fS.toString(builder);
+				assertTrue(sb, expectedPreds.contains(builder.toString()));
 			}
 		}
 	}

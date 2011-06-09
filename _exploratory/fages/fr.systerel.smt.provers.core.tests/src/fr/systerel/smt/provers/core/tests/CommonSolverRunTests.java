@@ -303,9 +303,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 			final SMTSignature signature = benchmark.getSignature();
 
-			AbstractTests.testTypeEnvironmentSorts(expectedSorts, signature);
-			AbstractTests.testTypeEnvironmentFuns(expectedFuns, signature);
-			AbstractTests.testTypeEnvironmentPreds(expectedPreds, signature);
+			AbstractTests
+					.testTypeEnvironmentSorts(signature, expectedSorts, "");
+			AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
+			AbstractTests
+					.testTypeEnvironmentPreds(signature, expectedPreds, "");
 
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block

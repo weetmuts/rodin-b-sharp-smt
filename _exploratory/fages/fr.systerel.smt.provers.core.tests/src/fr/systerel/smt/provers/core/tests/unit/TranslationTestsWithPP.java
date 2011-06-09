@@ -33,14 +33,13 @@ import fr.systerel.smt.provers.core.tests.AbstractTests;
  */
 public class TranslationTestsWithPP extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
-	protected static final SMTLogic defaultLogic;
+	public static final SMTLogic defaultLogic;
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
-	private SMTSignature signature;
 
 	private void testTranslationV1_2(final ITypeEnvironment te,
 			final String ppPredStr, final String expectedSMTNode) {
@@ -52,6 +51,32 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final String expectedSMTNode) {
 		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
 				SMTLIB_Translation_Failed);
+	}
+
+	public static void testTypeEnvironmentFuns(SMTLogic logic,
+			ITypeEnvironment te, final Set<String> expectedFunctions,
+			final String predString) {
+		SMTSignature signature = translateTypeEnvironment(logic, te, predString);
+		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
+	}
+
+	public static void testTypeEnvironmentSorts(SMTLogic logic,
+			ITypeEnvironment te, final Set<String> expectedFunctions,
+			final String predString) {
+		SMTSignature signature = translateTypeEnvironment(logic, te, predString);
+		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
+	}
+
+	protected static SMTSignature translateTypeEnvironment(SMTLogic logic,
+			final ITypeEnvironment iTypeEnv, final String ppPredStr)
+			throws AssertionError {
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+
+		assertTrue(
+				TranslationTestsWithPP.producePPTargetSubLanguageError(ppPred),
+				Translator.isInGoal(ppPred));
+
+		return SMTThroughPP.translateTE(logic, ppPred, null);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -105,23 +130,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
-	}
-
-	private static SMTSignature testTranslationV1_2TypeEnvironment(
-			final ITypeEnvironment iTypeEnv, final String ppPredStr)
-			throws AssertionError {
-		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-
-		assertTrue(producePPTargetSubLanguageError(ppPred),
-				Translator.isInGoal(ppPred));
-
-		return testTranslationV1_2TypeEnvironment(defaultLogic, ppPred,
-				VERIT.toString());
-	}
-
-	private static SMTSignature testTranslationV1_2TypeEnvironment(
-			final SMTLogic logic, final Predicate ppPred, final String solver) {
-		return SMTThroughPP.translateTE(logic, ppPred, solver);
 	}
 
 	private static final String translationMessage(final Predicate ppPred,
@@ -426,6 +434,23 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
+	public void testPredefinedAttributesSymbolsSorts() {
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
+				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+
+		final Set<String> expectedSorts = new HashSet<String>();
+
+		expectedSorts.add("NSORT");
+		expectedSorts.add("Int");
+		expectedSorts.add("BOOL");
+		expectedSorts.add("NSORT_0");
+
+		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
+				"implies = ite");
+
+	}
+
+	@Test
 	public void testReservedSymbolsAndKeywords() {
 		final ITypeEnvironment te = mTypeEnvironment("distinct", "false",
 				"NSYMB", "false");
@@ -434,12 +459,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
-	public void testReservedSymbolsSorts() {
+	public void testpredefinedAttributesSymbolsSorts() {
 		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
 				"extrasorts", "logic", "extrafuns", "logic");
 
-		signature = testTranslationV1_2TypeEnvironment(te,
-				"extrasorts = extrafuns");
 		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts.add("NSORT");
@@ -447,7 +470,28 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedSorts.add("BOOL");
 		expectedSorts.add("NSYMB");
 
-		testTypeEnvironmentSorts(expectedSorts, signature);
+		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
+				"extrasorts = extrafuns");
+	}
+
+	@Test
+	public void testpredefinedAttributesSymbolsFuns() {
+		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
+				"extrasorts", "logic", "extrafuns", "logic");
+
+		final Set<String> expectedFuns = new HashSet<String>();
+
+		expectedFuns.add("(BOOL BOOL)");
+		expectedFuns.add("(mod Int Int Int)");
+		expectedFuns.add("(NSYMB_1 NSYMB)");
+		expectedFuns.add("(int Int)");
+		expectedFuns.add("(expn Int Int Int)");
+		expectedFuns.add("(divi Int Int Int)");
+		expectedFuns.add("(NSYMB_2 NSORT)");
+		expectedFuns.add("(NSYMB_0 NSYMB)");
+
+		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns,
+				"extrasorts = extrafuns");
 	}
 
 	@Test
@@ -455,7 +499,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
 				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
 
-		signature = testTranslationV1_2TypeEnvironment(te, "implies = ite");
 		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts.add("NSORT");
@@ -463,7 +506,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedSorts.add("BOOL");
 		expectedSorts.add("NSORT_0");
 
-		testTypeEnvironmentSorts(expectedSorts, signature);
+		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
+				"implies = ite");
 
 	}
 
@@ -471,8 +515,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testReservedSymbolsAndKeywordsFuns() {
 		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
 				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
-
-		signature = testTranslationV1_2TypeEnvironment(te, "implies = ite");
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
@@ -485,6 +527,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedFuns.add("(divi Int Int Int)");
 		expectedFuns.add("(NSYMB NSORT_0)");
 
-		testTypeEnvironmentFuns(expectedFuns, signature);
+		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns, "implies = ite");
 	}
 }
