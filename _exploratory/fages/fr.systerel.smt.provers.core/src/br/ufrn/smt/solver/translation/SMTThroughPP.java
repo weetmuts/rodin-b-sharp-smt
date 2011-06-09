@@ -975,9 +975,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			smtNode = makeBool(signature.getLogic().getBooleanCst(), signature);
 			break;
 		case Formula.TRUE:
-			// This case is never reached because it is translated in its parent
-			// node.
-			break;
+			/**
+			 * This case is never reached because it is translated in its parent
+			 * node.
+			 */
+			throw new IllegalTagException(expression.getTag());
 		default:
 			/**
 			 * NATURAL, NATURAL1, EMPTYSET, KPRED, KSUCC, KPRJ1_GEN, KPRJ2_GEN,
@@ -1135,13 +1137,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.IN:
 			translateMemberShipPredicate(predicate);
 			break;
-		case Formula.NOTIN:
-			// TODO
-			break;
 		default:
 			/**
-			 * SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be produced by
-			 * ppTrans.
+			 * NOTIN, SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
+			 * produced by ppTrans.
 			 */
 			throw new IllegalTagException(tag);
 		}
