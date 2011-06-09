@@ -785,9 +785,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			if (monadicSetsMap.containsKey(iter)) {
-				varType = iter.getType().getBaseType();
-				parseConstant = false;
+			// if (monadicSetsMap.containsKey(iter)) {
+			// if (monadicSetsMap.keySet().contains(iter)) {
+			for (FreeIdentifier monadicSet : monadicSetsMap.keySet()) {
+				if (monadicSet.getName().equals(varName)
+						&& monadicSet.getType().equals(varType)) {
+					varType = iter.getType().getBaseType();
+					parseConstant = false;
+					break;
+				}
 			}
 
 			/**
