@@ -125,11 +125,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This class is used to traverse the Event-B sequent in order to gather some informations needed to proceed with the translation, such as :
-	 * - the appearing of occurrences of the Event-B integer symbol;
-	 * - the appearing of elements of the bool theory;
-	 * - the need for using the True predicate;
-	 * - the list of the sets to be translated into monadic membership predicates. 
+	 * This class is used to traverse the Event-B sequent in order to gather
+	 * some informations needed to proceed with the translation, such as : - the
+	 * appearing of occurrences of the Event-B integer symbol; - the appearing
+	 * of elements of the bool theory; - the need for using the True predicate;
+	 * - the list of the sets to be translated into monadic membership
+	 * predicates.
 	 **/
 	private static class Gatherer extends DefaultVisitor {
 		private boolean integerFound = false;
@@ -908,7 +909,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			Predicate predicate, final String solver, final boolean usesTruePred) {
+			Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		predicate = translator.recursiveAutoRewrite(predicate);

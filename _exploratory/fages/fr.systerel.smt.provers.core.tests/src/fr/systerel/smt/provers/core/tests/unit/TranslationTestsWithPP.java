@@ -40,16 +40,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	private void testTranslationV1_2(final ITypeEnvironment te,
-			final String ppPredStr, final String expectedSMTNode,
-			final boolean usesTrue) {
-		testTranslationV1_2_Ver(te, ppPredStr, expectedSMTNode,
-				defaultFailMessage, usesTrue);
+			final String ppPredStr, final String expectedSMTNode) {
+		testTranslationV1_2(te, ppPredStr, expectedSMTNode, defaultFailMessage);
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
-		testTranslationV1_2_Ver(defaultTe, ppPredStr, expectedSMTNode,
-				defaultFailMessage, false);
+		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
+				defaultFailMessage);
 	}
 
 	/**
@@ -65,10 +63,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2_Ver(
-			final ITypeEnvironment iTypeEnv, final String ppPredStr,
-			final String expectedSMTNode, final String failMessage,
-			final boolean usesTrue) throws AssertionError {
+	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
+			final String ppPredStr, final String expectedSMTNode,
+			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		// TODO adapter et serialiser le message d'erreur sur le predicat
 		// d'entrée
@@ -76,7 +73,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 				Translator.isInGoal(ppPred));
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
-				VERIT.toString(), usesTrue);
+				VERIT.toString());
 	}
 
 	/**
@@ -91,11 +88,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	private static void testTranslationV1_2(final SMTLogic logic,
 			final Predicate ppPred, final String expectedSMTNode,
-			final String failMessage, final String solver,
-			final boolean usesBool) {
+			final String failMessage, final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(logic, ppPred, solver, usesBool).toString(
-				actualSMTNode, false);
+		SMTThroughPP.translate(logic, ppPred, solver).toString(actualSMTNode,
+				false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));
@@ -174,7 +170,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s ?x))");
+		testTranslationV1_2Default("∀x·x∈s", "(forall (?x R) (s_0 ?x))");
 		/**
 		 * forall (multiple identifiers)
 		 */
@@ -373,7 +369,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(BOOL)", "x",
 				"BOOL");
 
-		testTranslationV1_2(te, "x ∈ f", "(f_0 x)", true);
+		testTranslationV1_2(te, "x ∈ f", "(f_0 x)");
 	}
 
 	@Test
