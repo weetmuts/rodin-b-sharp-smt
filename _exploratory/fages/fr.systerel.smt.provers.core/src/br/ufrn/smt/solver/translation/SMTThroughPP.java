@@ -67,6 +67,7 @@ import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
+import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignaturePP;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSymbol;
@@ -770,6 +771,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 
+		translateTypeEnvironment(typeEnvironment);
+		translateBoundIdentTypes(hypotheses, goal);
+	}
+
+	public void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
+
 		/**
 		 * For each membership of the type environment,
 		 */
@@ -784,9 +791,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			// if (monadicSetsMap.containsKey(iter)) {
-			// if (monadicSetsMap.keySet().contains(iter)) {
-			for (FreeIdentifier monadicSet : monadicSetsMap.keySet()) {
+			for (final FreeIdentifier monadicSet : monadicSetsMap.keySet()) {
 				if (monadicSet.getName().equals(varName)
 						&& monadicSet.getType().equals(varType)) {
 					varType = iter.getType().getBaseType();
@@ -849,8 +854,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				}
 			}
 		}
-		translateBoundIdentTypes(hypotheses, goal);
-
 	}
 
 	/**
@@ -921,6 +924,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.translate(predicate);
+	}
+
+	/**
+	 * This method is used only to test the SMT translation
+	 */
+	public static SMTSignature translateTE(final SMTLogic logic,
+			Predicate predicate, final String solver) {
+		final SMTThroughPP translator = new SMTThroughPP(solver);
+		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
+		predicate = translator.recursiveAutoRewrite(predicate);
+		translator.determineLogic(noHypothesis, predicate);
+		translator.translateSignature(logic, noHypothesis, predicate);
+		return translator.getSignature();
 	}
 
 	/**
@@ -1314,5 +1330,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
+	}
+
+	private SMTSignature getSignature() {
+		return signature;
 	}
 }

@@ -78,7 +78,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
 				.getInstance()));
-		translator.translateSignature(typeEnvironment);
+		translator.translateTypeEnvironment(typeEnvironment);
 		return translator.getSignature();
 	}
 
@@ -130,10 +130,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
-	public void setSignatureForTestsVerit(final ITypeEnvironment typeEnvironment) {
-		signature = translateTypeEnvironment(typeEnvironment, VERIT.toString());
-	}
-
 	private static final String translationMessage(final Predicate ppPred,
 			final String smtNode) {
 		final StringBuilder sb = new StringBuilder();
@@ -147,7 +143,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testTypeEnvironmentFunctionSimpleTe() {
-		setSignatureForTestsVerit(simpleTe);
+		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(g S)");
@@ -165,7 +161,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
-		setSignatureForTestsVerit(simpleTe);
+		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts.add("S");
@@ -180,7 +176,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTe() {
-		setSignatureForTestsVerit(simpleTe);
+		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(e S)");
@@ -192,7 +188,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
-		setSignatureForTestsVerit(defaultTe);
+		signature = translateTypeEnvironment(defaultTe, VERIT.toString());
 		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(r R)");
@@ -209,7 +205,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmentFunctionDefaultTe() {
-		setSignatureForTestsVerit(defaultTe);
+		signature = translateTypeEnvironment(defaultTe, VERIT.toString());
 		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(p S)");

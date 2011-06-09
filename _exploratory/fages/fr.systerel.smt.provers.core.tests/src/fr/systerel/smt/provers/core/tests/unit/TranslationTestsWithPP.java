@@ -8,6 +8,9 @@ import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
@@ -15,6 +18,7 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
@@ -36,6 +40,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
+	private SMTSignature signature;
 
 	private void testTranslationV1_2(final ITypeEnvironment te,
 			final String ppPredStr, final String expectedSMTNode) {
@@ -94,6 +99,23 @@ public class TranslationTestsWithPP extends AbstractTests {
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
+	}
+
+	private static SMTSignature testTranslationV1_2TypeEnvironment(
+			final ITypeEnvironment iTypeEnv, final String ppPredStr)
+			throws AssertionError {
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+
+		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
+				Translator.isInGoal(ppPred));
+
+		return testTranslationV1_2TypeEnvironment(defaultLogic, ppPred,
+				VERIT.toString());
+	}
+
+	private static SMTSignature testTranslationV1_2TypeEnvironment(
+			final SMTLogic logic, final Predicate ppPred, final String solver) {
+		return SMTThroughPP.translateTE(logic, ppPred, solver);
 	}
 
 	private static final String translationMessage(final Predicate ppPred,
@@ -319,7 +341,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testPredIn() {
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 		te.addAll(defaultTe);
-		
+
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2(te, "a↦b ∈ AB", "(MS a b AB)");
 		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
@@ -387,5 +409,76 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslationV1_2Default(
 				"((a = b) ∧ (u = v) ∧ (a = b)) ∧ ((u = v) ∧ (a = b))",
 				"(and (= a b) (iff u v))");
+	}
+
+	@Test
+	public void testPredefinedAttributesSymbols() {
+		final ITypeEnvironment te = mTypeEnvironment("assumption", "funs",
+				"formula", "funs");
+
+		testTranslationV1_2(te, "assumption = formula", "(= NSYMB_0 NSYMB_2)");
+	}
+
+	@Test
+	public void testReservedSymbolsAndKeywords() {
+		final ITypeEnvironment te = mTypeEnvironment("distinct", "false",
+				"NSYMB", "false");
+
+		testTranslationV1_2(te, "distinct = flet", "(= NSYMB_2 NSYMB_0)");
+	}
+
+	@Test
+	public void testReservedSymbolsSorts() {
+		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
+				"extrasorts", "logic", "extrafuns", "logic");
+
+		signature = testTranslationV1_2TypeEnvironment(te,
+				"extrasorts = extrafuns");
+		final Set<String> expectedSorts = new HashSet<String>();
+
+		expectedSorts.add("NSORT");
+		expectedSorts.add("Int");
+		expectedSorts.add("BOOL");
+		expectedSorts.add("NSYMB");
+
+		testTypeEnvironmentSorts(expectedSorts, signature);
+	}
+
+	@Test
+	public void testReservedSymbolsAndKeywordsSorts() {
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
+				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+
+		signature = testTranslationV1_2TypeEnvironment(te, "implies = ite");
+		final Set<String> expectedSorts = new HashSet<String>();
+
+		expectedSorts.add("NSORT");
+		expectedSorts.add("Int");
+		expectedSorts.add("BOOL");
+		expectedSorts.add("NSORT_0");
+
+		testTypeEnvironmentSorts(expectedSorts, signature);
+
+	}
+
+	@Test
+	public void testReservedSymbolsAndKeywordsFuns() {
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
+				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+
+		signature = testTranslationV1_2TypeEnvironment(te, "implies = ite");
+
+		final Set<String> expectedFuns = new HashSet<String>();
+
+		expectedFuns.add("(BOOL BOOL)");
+		expectedFuns.add("(NSYMB_0 NSORT_0)");
+		expectedFuns.add("(mod Int Int Int)");
+		expectedFuns.add("(int Int)");
+		expectedFuns.add("(expn Int Int Int)");
+		expectedFuns.add("(NSORT_1 NSORT)");
+		expectedFuns.add("(divi Int Int Int)");
+		expectedFuns.add("(NSYMB NSORT_0)");
+
+		testTypeEnvironmentFuns(expectedFuns, signature);
 	}
 }

@@ -251,7 +251,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		signature = new SMTSignatureVerit(logic);
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
-		translateSignature(typeEnvironment);
+		translateTypeEnvironment(typeEnvironment);
 
 		final List<Type> biTypes = BidTypeInspector.getBoundIDentDeclTypes(
 				hypotheses, goal);
@@ -308,7 +308,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param typeEnvironment
 	 *            The Event-B Type Environment for the translation.
 	 */
-	public void translateSignature(final ITypeEnvironment typeEnvironment) {
+	public void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
 		final IIterator iter = typeEnvironment.getIterator();
 		while (iter.hasNext()) {
 			iter.advance();
