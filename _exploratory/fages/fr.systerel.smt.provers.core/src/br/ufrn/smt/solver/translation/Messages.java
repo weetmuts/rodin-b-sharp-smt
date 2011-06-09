@@ -5,6 +5,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.translation.messages"; //$NON-NLS-1$
 	public static String PreProcessingException_error;
+	public static String SMTThroughPP_Misformed_EventB_Types;
 	public static String TranslatorV1_2_stack_error;
 	public static String Translation_error;
 	static {

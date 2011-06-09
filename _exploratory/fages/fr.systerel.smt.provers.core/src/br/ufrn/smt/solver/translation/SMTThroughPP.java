@@ -334,8 +334,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * arguments are well-formed.
 		 */
 		else {
-			// FIXME add an exception "EventBTypeMisFormed"
-			return null;
+			throw new IllegalArgumentException(
+					Messages.SMTThroughPP_Misformed_EventB_Types);
 		}
 	}
 
@@ -596,7 +596,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private SMTFormula translateTruePred(final Expression expr) {
 		if (expr.getTag() == Formula.TRUE) {
 			throw new IllegalArgumentException(
-					"Predefined literal TRUE cannot happen in both sides of boolean equality");
+					"Predefined literal TRUE cannot happen in both sides of boolean equality"); //$NON-NLS-1$
 		} else {
 			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
@@ -620,7 +620,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Type integerType = FormulaFactory.getDefault().makeIntegerType();
 
 		// creates the quantified variable with a fresh name
-		final String varName = signature.freshSymbolName("x");
+		final String varName = signature.freshSymbolName("x"); //$NON-NLS-1$
 		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
 		final SMTTerm smtVar = sf.makeVar(varName, intSort);
 
@@ -653,7 +653,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Type booleanType = FormulaFactory.getDefault().makeBooleanType();
 
 		// creates the quantified variable with a fresh name
-		final String varName = signature.freshSymbolName("x");
+		final String varName = signature.freshSymbolName("x"); //$NON-NLS-1$
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 		final SMTTerm smtVar = sf.makeVar(varName, boolSort);
 
@@ -979,8 +979,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			// node.
 			break;
 		default:
-			// TODO check that it's true for KPRED, KSUCC, KPRJ1_GEN, KPRJ2_GEN,
-			// KID_GEN tags
 			/**
 			 * NATURAL, NATURAL1, EMPTYSET, KPRED, KSUCC, KPRJ1_GEN, KPRJ2_GEN,
 			 * KID_GEN,FALSE tags cannot be produced by ppTrans.
@@ -1253,7 +1251,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitBecomesEqualTo(final BecomesEqualTo assignment) {
 		throw new IllegalArgumentException(
-				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'becomes equal to' assignments are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1262,7 +1260,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitBecomesMemberOf(final BecomesMemberOf assignment) {
 		throw new IllegalArgumentException(
-				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'becomes member of' assignments are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1271,7 +1269,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitBecomesSuchThat(final BecomesSuchThat assignment) {
 		throw new IllegalArgumentException(
-				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'becomes such that' assignments are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1280,7 +1278,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitQuantifiedExpression(final QuantifiedExpression expression) {
 		throw new IllegalArgumentException(
-				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'Quantified expressions' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1289,7 +1287,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitSimplePredicate(final SimplePredicate predicate) {
 		throw new IllegalArgumentException(
-				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'Simple predicates' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1298,7 +1296,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitMultiplePredicate(final MultiplePredicate predicate) {
 		throw new IllegalArgumentException(
-				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'Multiple predicates' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1307,7 +1305,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitExtendedExpression(final ExtendedExpression expression) {
 		throw new IllegalArgumentException(
-				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'Extended expressions' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 
 	/**
@@ -1316,6 +1314,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(
-				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB.");
+				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
 	}
 }
