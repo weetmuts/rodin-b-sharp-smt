@@ -112,7 +112,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 			throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
-		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
+		assertTrue(producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
 		return testTranslationV1_2TypeEnvironment(defaultLogic, ppPred,
