@@ -5,6 +5,7 @@
 package fr.systerel.smt.provers.core.tests.unit;
 
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
+import static fr.systerel.smt.provers.core.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -33,7 +34,6 @@ import fr.systerel.smt.provers.core.tests.AbstractTests;
 public class TranslationTestsWithPP extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
 	protected static final SMTLogic defaultLogic;
-	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
@@ -44,13 +44,20 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	private void testTranslationV1_2(final ITypeEnvironment te,
 			final String ppPredStr, final String expectedSMTNode) {
-		testTranslationV1_2(te, ppPredStr, expectedSMTNode, defaultFailMessage);
+		testTranslationV1_2(te, ppPredStr, expectedSMTNode,
+				SMTLIB_Translation_Failed);
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
 		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
-				defaultFailMessage);
+				SMTLIB_Translation_Failed);
+	}
+
+	private static String producePPTargetSubLanguageError(
+			final Predicate predicate) {
+		return "\'" + predicate
+				+ "\' is not in the target sub-language of the PP translator.";
 	}
 
 	/**
@@ -70,9 +77,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final String ppPredStr, final String expectedSMTNode,
 			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		// TODO adapter et serialiser le message d'erreur sur le predicat
-		// d'entrée
-		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
+		assertTrue(
+				TranslationTestsWithPP.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
@@ -286,7 +292,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	// @Ignore("Not yet implemented")
-	public void testArithExprBinopUnsupported() { // TODO Add exponential binop
+	public void testArithExprBinopUnsupported() {
 		/**
 		 * expn
 		 */
