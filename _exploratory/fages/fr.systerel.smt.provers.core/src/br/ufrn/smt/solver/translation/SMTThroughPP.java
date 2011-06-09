@@ -525,7 +525,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.get(rightSet);
 
 		if (monadicMembershipPredicate == null) {
-			// FIXME Check the behavior of this method
+			// TODO add tests for this
 			monadicMembershipPredicate = signature.freshPredicateSymbol(
 					rightSet.getName(), leftTerm.getSort());
 			monadicSetsMap.put(rightSet, monadicMembershipPredicate);
@@ -1042,7 +1042,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula pred = smtFormula(expression.getPredicate());
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
-			smtNode = pred; // FIXME Is that right?
+			smtNode = pred;
 			break;
 		default:
 			throw new IllegalTagException(expression.getTag());
