@@ -42,17 +42,14 @@ public class SMTTheory {
 		return name;
 	}
 
-	// FIXME .clone() needed?
 	public List<SMTSortSymbol> getSorts() {
 		return Arrays.asList(sorts);
 	}
 
-	// FIXME .clone() needed?
 	public List<SMTPredicateSymbol> getPredicates() {
 		return Arrays.asList(predicates);
 	}
 
-	// FIXME .clone() needed?
 	public List<SMTFunctionSymbol> getFunctions() {
 		return Arrays.asList(functions);
 	}
