@@ -365,7 +365,7 @@ public abstract class SMTSignature {
 	private void loadReservedAndPredefinedSymbols() {
 		names.addAll(reservedSymbols);
 		names.addAll(Arrays.asList(predefinedAttributesSymbols));
-		names.add("U"); // predefined sort in alt-ergo and veriT
+		names.add("U"); // predefined sort in Empty theory
 	}
 
 	/**
@@ -646,8 +646,9 @@ public abstract class SMTSignature {
 				freshName, returnSort, !ASSOCIATIVE, !PREDEFINED, argSorts);
 		final boolean successfullyAdded = funs.add(freshConstant);
 		if (!successfullyAdded) {
-			// TODO Throw an exception, this case should not be reached because
-			// freshSymbolName should always be successful.
+			throw new IllegalArgumentException(
+					Messages.FreshSymbolCreationFailed
+							+ freshConstant.toString());
 		}
 		return freshConstant;
 	}
@@ -686,8 +687,9 @@ public abstract class SMTSignature {
 				!SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = sorts.add(freshSort);
 		if (!successfullyAdded) {
-			// TODO Throw an exception, this case should not be reached because
-			// freshSymbolName should always be successful.
+			throw new IllegalArgumentException(
+					Messages.FreshSymbolCreationFailed
+							+ freshSort.toString());
 		}
 		return freshSort;
 	}
@@ -708,8 +710,9 @@ public abstract class SMTSignature {
 				freshName, !SMTSymbol.PREDEFINED, argSorts);
 		final boolean successfullyAdded = preds.add(freshPredicate);
 		if (!successfullyAdded) {
-			// TODO Throw an exception, this case should not be reached because
-			// freshSymbolName should always be successful.
+			throw new IllegalArgumentException(
+					Messages.FreshSymbolCreationFailed
+							+ freshPredicate.toString());
 		}
 		return freshPredicate;
 	}
