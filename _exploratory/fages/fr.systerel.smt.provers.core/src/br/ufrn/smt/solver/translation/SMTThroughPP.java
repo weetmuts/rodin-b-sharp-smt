@@ -361,6 +361,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return ppProof;
 	}
 
+	private SMTSignature getSignature() {
+		return signature;
+	}
+
 	/**
 	 * determines the logic
 	 * 
@@ -596,7 +600,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private SMTFormula translateTruePred(final Expression expr) {
 		if (expr.getTag() == Formula.TRUE) {
 			throw new IllegalArgumentException(
-					"Predefined literal TRUE cannot happen in both sides of boolean equality"); //$NON-NLS-1$
+					Messages.TRUE_On_Both_Sides_Of_Boolean_Equality_error);
 		} else {
 			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
@@ -1057,7 +1061,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		/**
 		 * KBOOL cannot be produced by ppTrans.
 		 */
-		throw new IllegalTagException(expression.getTag());
+		throw new IllegalArgumentException(
+				Messages.Incompatible_Formula_With_PPTrans_Production);
 	}
 
 	/**
@@ -1320,9 +1325,5 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(
 				"'Extended predicates' are not compatible with the underlying logic used in this version of SMT-LIB."); //$NON-NLS-1$
-	}
-
-	private SMTSignature getSignature() {
-		return signature;
 	}
 }
