@@ -48,6 +48,24 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	/**
+	 * This is an example where, I think, the monadic optimization of membership
+	 * predicate is unsuccessful without its refinement (axioms to add).
+	 */
+	@Test
+	public void testDifferentForallPlusSimpleMonadic() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("f ∈ ℙ({1} → {{0}})");
+		hyps.add("f ≠ ∅");
+
+		doTest("differentForallPlusSimpleMonadic", hyps, "{1 ↦ {0}} ∈ f", te,
+				VALID);
+	}
+
+	/**
 	 * 
 	 */
 	@Test
@@ -397,7 +415,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
-	@Ignore("AltErgo MESSAGE: unknown (sat)")
+	// @Ignore("AltErgo MESSAGE: unknown (sat)")
+	// TODO : is it possible to give some division behavior rules ?
 	public void testCh915Bin10() {
 		setPreferencesForSolverTest(solver);
 
@@ -585,7 +604,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Division in veriT does not have the same properties as in Event-B")
+	// @Ignore("Division in veriT does not have the same properties as in Event-B")
 	public void testDivisionWithRemainderWithVeriT() {
 		setPreferencesForSolverTest(solver);
 
@@ -600,7 +619,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Division in z3 does not have the same properties as in Event-B")
+	// @Ignore("Division in z3 does not have the same properties as in Event-B")
 	public void testDivisionWithRemainderWithZ3() {
 		setPreferencesForSolverTest(solver);
 
@@ -615,7 +634,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Division in cvc3 does not have the same properties as in Event-B")
+	// @Ignore("Division in cvc3 does not have the same properties as in Event-B")
 	public void testDivisionWithRemainderWithCVC3() {
 		setPreferencesForSolverTest(solver);
 
@@ -630,7 +649,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Division in alt-ergo does not have the same properties as in Event-B")
+	// @Ignore("Division in alt-ergo does not have the same properties as in Event-B")
 	public void testDivisionWithRemainderWithAltErgo() {
 		setPreferencesForSolverTest(solver);
 
