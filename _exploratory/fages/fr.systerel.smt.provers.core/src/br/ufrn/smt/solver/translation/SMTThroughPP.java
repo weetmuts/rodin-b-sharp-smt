@@ -1054,14 +1054,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitBoolExpression(final BoolExpression expression) {
-		final SMTFormula pred = smtFormula(expression.getPredicate());
-		switch (expression.getTag()) {
-		case Formula.KBOOL:
-			smtNode = pred;
-			break;
-		default:
-			throw new IllegalTagException(expression.getTag());
-		}
+		/**
+		 * KBOOL cannot be produced by ppTrans.
+		 */
+		throw new IllegalTagException(expression.getTag());
 	}
 
 	/**
@@ -1148,8 +1144,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			break;
 		default:
 			/**
-			 * NOTEQUAL, NOTIN, SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ cannot be
-			 * produced by ppTrans.
+			 * NOTEQUAL, NOTIN, SUBSET, SUBSETEQ, NOTSUBSET and NOTSUBSETEQ
+			 * cannot be produced by ppTrans.
 			 */
 			throw new IllegalTagException(tag);
 		}
