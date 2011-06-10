@@ -59,6 +59,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
 			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
+	private boolean pairAxiomAdded = false;
+
 	/**
 	 * Adds the fst and snd functions, as well as their defining assumptions.
 	 * They are added only once.
@@ -77,7 +79,11 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			final Set<SMTFormula> additionalAssumptions,
 			final SMTSignatureVerit signature) {
 		signature.addFstAndSndAuxiliarFunctions();
-		additionalAssumptions.add(createPairEqualityAxiom());
+		if (!pairAxiomAdded) {
+			additionalAssumptions.add(createPairEqualityAxiom());
+			pairAxiomAdded = true;
+		}
+
 	}
 
 	/**

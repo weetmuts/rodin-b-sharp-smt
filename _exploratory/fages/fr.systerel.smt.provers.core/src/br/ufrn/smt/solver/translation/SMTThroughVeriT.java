@@ -587,29 +587,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm mapstoTerm = SMTFactory.makeFunApplication(
 				SMTFactoryVeriT.PAIR_SYMBOL, signature, xFun, plusTerm);
 
-		// obtaining fresh name for the variables
-		final String lambdaName = signature.freshQVarName(SMTMacroSymbol.ELEM);
-
-		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName, xSort,
-				false);
-
-		final SMTVar lambda = new SMTVar(lambdaVar);
-
-		final SMTFormula equalFormula = SMTFactory
-				.makeEqual(lambda, mapstoTerm);
-
-		final String freshMacroName = signature.freshSymbolName(macroName);
-
-		final SMTTerm[] xFuns = { xFun };
-
-		// Creating the macro
-		final SMTQuantifiedMacro macro = makeQuantifiedMacro(freshMacroName,
-				xFuns, lambdaVar, equalFormula, signature);
-
-		signature.addMacro(macro);
-		final SMTMacroSymbol macroSymbol = makeMacroSymbol(freshMacroName,
-				VeritPredefinedTheory.POLYMORPHIC);
-		return makeMacroTerm(macroSymbol);
+		return translateKPREDorKSUCCPart2(macroName, xSort, xFun, mapstoTerm);
 
 	}
 
@@ -635,6 +613,20 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm mapstoTerm = SMTFactory.makeFunApplication(
 				SMTFactoryVeriT.PAIR_SYMBOL, signature, plusTerm, xFun);
 
+		return translateKPREDorKSUCCPart2(macroName, xSort, xFun, mapstoTerm);
+
+	}
+
+	/**
+	 * @param macroName
+	 * @param xSort
+	 * @param xFun
+	 * @param mapstoTerm
+	 * @return
+	 */
+	private SMTTerm translateKPREDorKSUCCPart2(final String macroName,
+			final SMTSortSymbol xSort, final SMTTerm xFun,
+			final SMTTerm mapstoTerm) {
 		// obtaining fresh name for the variables
 		final String lambdaName = signature.freshQVarName(SMTMacroSymbol.ELEM);
 
@@ -658,7 +650,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTMacroSymbol macroSymbol = makeMacroSymbol(freshMacroName,
 				VeritPredefinedTheory.POLYMORPHIC);
 		return makeMacroTerm(macroSymbol);
-
 	}
 
 	/**

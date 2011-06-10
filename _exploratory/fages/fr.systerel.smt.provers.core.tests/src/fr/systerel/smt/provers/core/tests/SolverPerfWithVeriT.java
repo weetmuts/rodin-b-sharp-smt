@@ -640,6 +640,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("x = {1 ↦ 2}");
 		doTest("testpred", hyps, "x = pred", te, VALID);
 	}
 
