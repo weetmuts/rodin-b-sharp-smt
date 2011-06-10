@@ -51,6 +51,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final Set<String> expectedPreds = new HashSet<String>();
 		expectedPreds.add("(e S)");
+		expectedPreds.add("(f S)");
 
 		doTTeTest("tetestSort", hyps, "g ∈ f", pow_te, expectedFuns,
 				expectedPreds, expectedSorts);
@@ -620,8 +621,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
 	}
 
-	@Test(timeout = 3000)
-	public void testRule25() {
+	@Test
+	public void testCard() {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -634,13 +635,21 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * Check if this is a right way to translate
 	 */
 	@Test
-	@Ignore("error : line 10, constant - is not declared")
 	public void testPred() {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
 		final List<String> hyps = new ArrayList<String>();
-		doTest("testpred_pred", hyps, "x = pred", te, VALID);
+		doTest("testpred", hyps, "x = pred", te, VALID);
+	}
+
+	@Test
+	public void testSucc() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
+		final List<String> hyps = new ArrayList<String>();
+		doTest("testsucc", hyps, "x = succ", te, VALID);
 	}
 
 	@Test

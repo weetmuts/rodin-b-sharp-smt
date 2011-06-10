@@ -53,23 +53,25 @@ public class TranslationTestsWithPP extends AbstractTests {
 				SMTLIB_Translation_Failed);
 	}
 
-	public static void testTypeEnvironmentFuns(SMTLogic logic,
-			ITypeEnvironment te, final Set<String> expectedFunctions,
+	public static void testTypeEnvironmentFuns(final SMTLogic logic,
+			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		SMTSignature signature = translateTypeEnvironment(logic, te, predString);
+		final SMTSignature signature = translateTypeEnvironment(logic, te,
+				predString);
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
 	}
 
-	public static void testTypeEnvironmentSorts(SMTLogic logic,
-			ITypeEnvironment te, final Set<String> expectedFunctions,
+	public static void testTypeEnvironmentSorts(final SMTLogic logic,
+			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		SMTSignature signature = translateTypeEnvironment(logic, te, predString);
+		final SMTSignature signature = translateTypeEnvironment(logic, te,
+				predString);
 		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
 	}
 
-	protected static SMTSignature translateTypeEnvironment(SMTLogic logic,
-			final ITypeEnvironment iTypeEnv, final String ppPredStr)
-			throws AssertionError {
+	protected static SMTSignature translateTypeEnvironment(
+			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
+			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
 		assertTrue(

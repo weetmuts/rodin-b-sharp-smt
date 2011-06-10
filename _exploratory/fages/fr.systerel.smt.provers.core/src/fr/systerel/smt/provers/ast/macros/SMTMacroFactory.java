@@ -505,8 +505,9 @@ public class SMTMacroFactory {
 	 * Creates a macro from lambda expressions and sets defined in extension.
 	 * 
 	 * This macro created has the following form:
+	 * <p>
 	 * 
-	 * (macroName (lambda (?y s) . (exists (?x1 s1) ... (?xn sn) (and (= y
+	 * (macroName (lambda (?y s) . (exists (?x1 s1) ... (?xn sn) (and (= ?y
 	 * (E(?x1 ... ?xn))) P(?x1..?xn)))))
 	 * 
 	 * @param macroName
@@ -541,6 +542,26 @@ public class SMTMacroFactory {
 		}
 		return new SMTSetComprehensionMacro(macroName, qVars, lambdaVar,
 				formula, expression, 1);
+	}
+
+	public static SMTQuantifiedMacro makeQuantifiedMacro(
+			final String macroName, final SMTTerm[] terms,
+			final SMTVarSymbol lambdaVar, final SMTFormula formula,
+			final SMTSignatureVerit signature) {
+		signature.addPairSortAndFunction();
+
+		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
+		for (int i = 0; i < terms.length; i++) {
+			final SMTTerm term = terms[i];
+			if (term instanceof SMTVar) {
+				final SMTVar var = (SMTVar) term;
+				qVars[i] = var.getSymbol();
+			} else {
+				throw new IllegalArgumentException(
+						"The term should be an SMTVar");
+			}
+		}
+		return new SMTQuantifiedMacro(macroName, qVars, lambdaVar, formula, 1);
 	}
 
 	/**

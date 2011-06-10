@@ -688,8 +688,7 @@ public abstract class SMTSignature {
 		final boolean successfullyAdded = sorts.add(freshSort);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
-					Messages.FreshSymbolCreationFailed
-							+ freshSort.toString());
+					Messages.FreshSymbolCreationFailed + freshSort.toString());
 		}
 		return freshSort;
 	}

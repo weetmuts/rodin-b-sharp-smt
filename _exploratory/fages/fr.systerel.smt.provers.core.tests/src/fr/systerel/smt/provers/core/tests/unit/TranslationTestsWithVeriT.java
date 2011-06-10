@@ -22,9 +22,7 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTLogic;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
-import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
@@ -37,7 +35,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe;
 	protected static final SMTLogic defaultLogic;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
-	private SMTSignature signature;
 
 	static {
 		simpleTe = mTypeEnvironment("e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "AB",
@@ -64,22 +61,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String expectedSMTNode) {
 		testTranslationV1_2(typeEnvironment, ppPredStr, expectedSMTNode,
 				defaultFailMessage, VERIT.toString());
-	}
-
-	/**
-	 * Translate a type environment and returns a signature with it.
-	 * 
-	 * @param typeEnvironment
-	 *            the type environment to be translated
-	 * 
-	 */
-	private static SMTSignature translateTypeEnvironment(
-			final ITypeEnvironment typeEnvironment, final String solver) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
-		translator.setSignature(new SMTSignatureVerit(SMTLIBUnderlyingLogic
-				.getInstance()));
-		translator.translateTypeEnvironment(typeEnvironment);
-		return translator.getSignature();
 	}
 
 	/**
@@ -130,6 +111,37 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
+	public static void testTypeEnvironmentFuns(final SMTLogic logic,
+			final ITypeEnvironment te, final Set<String> expectedFunctions,
+			final String predString) {
+		final SMTSignature signature = translateTypeEnvironment(logic, te,
+				predString);
+		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
+	}
+
+	public static void testTypeEnvironmentSorts(final SMTLogic logic,
+			final ITypeEnvironment te, final Set<String> expectedFunctions,
+			final String predString) {
+		final SMTSignature signature = translateTypeEnvironment(logic, te,
+				predString);
+		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
+	}
+
+	public static void testTypeEnvironmentPreds(final SMTLogic logic,
+			final ITypeEnvironment te, final Set<String> expectedFunctions,
+			final String predString) {
+		final SMTSignature signature = translateTypeEnvironment(logic, te,
+				predString);
+		testTypeEnvironmentPreds(signature, expectedFunctions, predString);
+	}
+
+	protected static SMTSignature translateTypeEnvironment(
+			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
+			final String ppPredStr) throws AssertionError {
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+		return SMTThroughVeriT.translateTE(logic, ppPred, null);
+	}
+
 	private static final String translationMessage(final Predicate ppPred,
 			final String smtNode) {
 		final StringBuilder sb = new StringBuilder();
@@ -143,7 +155,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	@Test
 	public void testTypeEnvironmentFunctionSimpleTe() {
-		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(g S)");
@@ -151,9 +162,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(expn Int Int Int)");
 		expectedFunctions.add("(mod Int Int Int)");
 		expectedFunctions.add("(divi Int Int Int)");
-		expectedFunctions.add("(int Int)"); // used for "ℤ ↔ ℤ"
 
-		testTypeEnvironmentFuns(expectedFunctions, signature);
+		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedFunctions,
+				"g = g");
 	}
 
 	/**
@@ -161,14 +172,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
-		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedSorts = new HashSet<String>();
 
 		expectedSorts.add("S");
 		expectedSorts.add("(Pair 's 't)");
 		expectedSorts.add("Int");
+		expectedSorts.add("Bool");
 
-		testTypeEnvironmentSorts(expectedSorts, signature);
+		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
 
 	/**
@@ -176,19 +187,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTe() {
-		signature = translateTypeEnvironment(simpleTe, VERIT.toString());
 		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(e S)");
 		expectedPredicates.add("(f S)");
 		expectedPredicates.add("(AB (Pair Int Int))");
 
-		testTypeEnvironmentPreds(expectedPredicates, signature);
+		testTypeEnvironmentPreds(defaultLogic, simpleTe, expectedPredicates,
+				"g = g");
 	}
 
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
-		signature = translateTypeEnvironment(defaultTe, VERIT.toString());
 		final Set<String> expectedPredicates = new HashSet<String>();
 
 		expectedPredicates.add("(r R)");
@@ -197,7 +207,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedPredicates.add("(AB (Pair Int Int))");
 		expectedPredicates.add("(S_0 S)");
 
-		testTypeEnvironmentPreds(expectedPredicates, signature);
+		testTypeEnvironmentPreds(defaultLogic, defaultTe, expectedPredicates,
+				"p = p");
 	}
 
 	/**
@@ -205,7 +216,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmentFunctionDefaultTe() {
-		signature = translateTypeEnvironment(defaultTe, VERIT.toString());
 		final Set<String> expectedFunctions = new HashSet<String>();
 
 		expectedFunctions.add("(p S)");
@@ -221,7 +231,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedFunctions.add("(divi Int Int Int)");
 		expectedFunctions.add("(int Int)"); // used for "ℤ ↔ ℤ"
 
-		testTypeEnvironmentFuns(expectedFunctions, signature);
+		testTypeEnvironmentFuns(defaultLogic, defaultTe, expectedFunctions,
+				"p = p");
 	}
 
 	/**
