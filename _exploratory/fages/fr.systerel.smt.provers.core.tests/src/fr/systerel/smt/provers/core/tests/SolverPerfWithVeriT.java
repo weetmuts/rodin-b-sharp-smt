@@ -631,26 +631,22 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
 	}
 
-	/**
-	 * Check if this is a right way to translate
-	 */
 	@Test
 	public void testPred() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
+		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x = {1 ↦ 2}");
-		doTest("testpred", hyps, "x = pred", te, VALID);
+		doTest("testpred", hyps, "2 ↦ 1 ∈ pred", te, VALID);
 	}
 
 	@Test
 	public void testSucc() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("x", "ℙ(ℤ×ℤ)");
+		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		doTest("testsucc", hyps, "x = succ", te, VALID);
+		doTest("testpred", hyps, "1 ↦ 2 ∈ succ", te, VALID);
 	}
 
 	@Test
