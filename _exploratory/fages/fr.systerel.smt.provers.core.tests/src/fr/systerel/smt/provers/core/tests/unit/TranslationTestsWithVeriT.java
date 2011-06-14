@@ -186,14 +186,38 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 * Testing rules 4, 5 and 6
 	 */
 	@Test
-	public void testTypeEnvironmentPredicateSimpleTe() {
+	public void testTypeEnvironmentPredicateSimpleTePreds() {
 		final Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(e S)");
-		expectedPredicates.add("(f S)");
-		expectedPredicates.add("(AB (Pair Int Int))");
+		expectedPredicates.add("(S_0 S)");
 
 		testTypeEnvironmentPreds(defaultLogic, simpleTe, expectedPredicates,
+				"g = g");
+	}
+
+	@Test
+	public void testTypeEnvironmentPredicateSimpleTeSorts() {
+		final Set<String> expectedSorts = new HashSet<String>();
+
+		expectedSorts.add("Bool");
+		expectedSorts.add("(Pair 's 't)");
+		expectedSorts.add("Int");
+		expectedSorts.add("S");
+
+		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
+	}
+
+	@Test
+	public void testTypeEnvironmentPredicateSimpleTeFuns() {
+		final Set<String> expectedPredicates = new HashSet<String>();
+
+		expectedPredicates.add("(pair 's 't (Pair 's 't))");
+		expectedPredicates.add("(mod Int Int Int)");
+		expectedPredicates.add("(g S)");
+		expectedPredicates.add("(expn Int Int Int)");
+		expectedPredicates.add("(divi Int Int Int)");
+
+		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
 	}
 
@@ -201,38 +225,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testTypeEnvironmentPredicateDefaultTe() {
 		final Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(r R)");
-		expectedPredicates.add("(s R)");
-		expectedPredicates.add("(A Int)");
 		expectedPredicates.add("(AB (Pair Int Int))");
-		expectedPredicates.add("(S_0 S)");
 
 		testTypeEnvironmentPreds(defaultLogic, defaultTe, expectedPredicates,
-				"p = p");
-	}
-
-	/**
-	 * Testing rule 8
-	 */
-	@Test
-	public void testTypeEnvironmentFunctionDefaultTe() {
-		final Set<String> expectedFunctions = new HashSet<String>();
-
-		expectedFunctions.add("(p S)");
-		expectedFunctions.add("(q S)");
-		expectedFunctions.add("(a Int)");
-		expectedFunctions.add("(b Int)");
-		expectedFunctions.add("(c Int)");
-		expectedFunctions.add("(u Bool)");
-		expectedFunctions.add("(v Bool)");
-		expectedFunctions.add("(pair 's 't (Pair 's 't))");
-		expectedFunctions.add("(expn Int Int Int)");
-		expectedFunctions.add("(mod Int Int Int)");
-		expectedFunctions.add("(divi Int Int Int)");
-		expectedFunctions.add("(int Int)"); // used for "ℤ ↔ ℤ"
-
-		testTypeEnvironmentFuns(defaultLogic, defaultTe, expectedFunctions,
-				"p = p");
+				"AB = AB");
 	}
 
 	/**
