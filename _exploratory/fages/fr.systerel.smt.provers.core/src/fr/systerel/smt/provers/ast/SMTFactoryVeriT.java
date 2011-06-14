@@ -60,22 +60,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
 	private boolean pairAxiomAdded = false;
-	private boolean fstAndSndAxiomAdded = false;
-
-	/**
-	 * Adds the fst and snd functions, as well as their defining assumptions.
-	 * They are added only once.
-	 */
-	public void addFstAndSndAuxiliarAssumptions(
-			final Set<SMTFormula> additionalAssumptions,
-			final SMTSignatureVerit signature) {
-		if (!fstAndSndAxiomAdded) {
-			additionalAssumptions.add(createFstAssumption(signature));
-			additionalAssumptions.add(createSndAssumption(signature));
-			fstAndSndAxiomAdded = true;
-		}
-
-	}
 
 	/**
 	 * Adds the pair equality axiom. It is added only once.

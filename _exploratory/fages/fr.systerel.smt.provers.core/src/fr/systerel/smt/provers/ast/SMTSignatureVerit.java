@@ -60,7 +60,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * once)
 	 */
 	public void addPairSortAndFunction() {
-		if (isPrintPairSortAndPairFunctionAdded == false) {
+		if (!isPrintPairSortAndPairFunctionAdded) {
 			sorts.add(SMTFactoryVeriT.PAIR_SORT);
 			funs.add(SMTFactoryVeriT.PAIR_SYMBOL);
 			isPrintPairSortAndPairFunctionAdded = true;
