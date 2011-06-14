@@ -71,9 +71,10 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			final SMTSignatureVerit signature) {
 		if (!fstAndSndAxiomAdded) {
 			additionalAssumptions.add(createFstAssumption(signature));
+			additionalAssumptions.add(createSndAssumption(signature));
+			fstAndSndAxiomAdded = true;
 		}
-		additionalAssumptions.add(createSndAssumption(signature));
-		fstAndSndAxiomAdded = true;
+
 	}
 
 	/**
