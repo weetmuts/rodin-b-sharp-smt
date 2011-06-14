@@ -94,31 +94,6 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		return resultSort;
 	}
 
-	/**
-	 * returns true if the argument sorts of this predicate symbol is equal
-	 * {@code argSorts2}, false otherwise.
-	 * 
-	 * @param argSorts2
-	 *            the list of sort symbols.
-	 * @return true if they are equal, false otherwise
-	 */
-
-	/**
-	 * returns true if the argument sorts and the result sort of this function
-	 * symbol are equal {@code argSorts2} and {@code resultSort2} respectively.
-	 * 
-	 * @param argSorts2
-	 *            the list of argument sort symbols.
-	 * @param resultSort2
-	 *            the result sort
-	 * @return true if they are equal, false otherwise
-	 */
-	public boolean hasRank(final SMTSortSymbol[] argSorts2,
-			final SMTSortSymbol resultSort2) {
-		return Arrays.equals(argSorts, argSorts2)
-				&& resultSort.equals(resultSort2);
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
@@ -151,6 +126,8 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 		if (nameComp != 0) {
 			return nameComp;
 		}
+
+		// code currently not reachable
 		if (argSorts.length < symbol.argSorts.length) {
 			return -1;
 		}
