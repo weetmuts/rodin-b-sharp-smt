@@ -254,49 +254,26 @@ public abstract class SMTSignature {
 		}
 	}
 
-	private void removeIllegalCharacter(final String name,
-			final StringBuilder freshName,
-			final Set<String> additionalReservedNames) {
-		final StringBuilder patch = new StringBuilder();
-		/**
-		 * Arbitrary chosen initial number
-		 */
-		int discrNumber = name.length() - name.indexOf('\'');
-
-		patch.append("_").append(discrNumber).append("_");
-
-		freshName.setLength(0);
-		freshName.append(name.replaceAll("'", patch.toString()));
-
-		while (names.contains(freshName.toString())
-				|| additionalReservedNames.contains(freshName.toString())) {
-			discrNumber = discrNumber + 1;
-
-			patch.setLength(1);
-			patch.append(discrNumber).append("_");
-
-			freshName.setLength(0);
-			freshName.append(name.replaceAll("'", patch.toString()));
-		}
-	}
-
 	/**
 	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
 	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
 	 * number , incremented as much as needed. If the symbol name already exists
 	 * in the symbols set, a new name is created, that is: original_name + "_" +
 	 * i, where i is incremented as much as needed.
+	 * 
+	 * Remark about the \' symbol in the solvers:
+	 * 
+	 * The solvers cvc3, veriT and alt-ergo and z3 accepts the symbol, but it
+	 * cannot be the first character of the word
+	 * 
+	 * z3 accepts the symbol and it can be used anywhere in the word (or just
+	 * itself).
+	 * 
 	 */
-	// TODO check which prover needs the "\'" simplification, and document it
-	// here
 	private String freshName(final Set<String> additionalReservedNames,
 			final String name) {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
-
-		if (name.contains("\'")) {
-			removeIllegalCharacter(name, freshName, additionalReservedNames);
-		}
 
 		final String intermediateName = freshName.toString();
 		/**
