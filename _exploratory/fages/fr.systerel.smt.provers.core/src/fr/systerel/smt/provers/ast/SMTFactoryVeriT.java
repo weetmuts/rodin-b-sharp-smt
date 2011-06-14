@@ -16,7 +16,6 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.MAPSTO;
 
 import java.util.Set;
 
-import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 
@@ -87,27 +86,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static SMTTerm makeMacroTerm(final SMTMacroSymbol macro,
 			final SMTTerm... args) {
 		return new SMTMacroTerm(macro, args);
-	}
-
-	/**
-	 * This method returns the translation of an Event-B String
-	 * 
-	 * @param atomicExpression
-	 *            The event-B string
-	 * @param signature
-	 *            the signature used to get a new constant name or to add macros
-	 *            to the signature (it's necessary to define a macro for some
-	 *            Event-B strings)
-	 */
-	public static String getSMTAtomicExpressionFormat(
-			final String atomicExpression, final SMTSignatureVerit signature) {
-		if (atomicExpression.equals("\u2124")) { // INTEGER
-			return SMTSymbol.INT;
-		} else if (atomicExpression.equals("BOOL")) {
-			return SMTMacroSymbol.BOOL_SORT_VERIT;
-		} else {
-			return signature.freshSymbolName(atomicExpression);
-		}
 	}
 
 	/**
@@ -282,153 +260,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		}
 		return formulas;
 
-	}
-
-	/**
-	 * This method creates a function application.
-	 * 
-	 * @param operatorSymbol
-	 *            the symbol of the function application
-	 * @param args
-	 *            the arguments of the application
-	 * @param signature
-	 *            the signature for checking the rank
-	 * @return a new SMT term with the symbol and the arguments
-	 */
-	public SMTTerm makeVeriTTermOperatorApplication(
-			final SMTFunctionSymbol operatorSymbol, final SMTTerm[] args,
-			final SMTSignature signature) {
-		signature.verifyFunctionSignature(operatorSymbol);
-		return new SMTFunApplication(operatorSymbol, args);
-	}
-
-	/**
-	 * This method creates and returns a new SMT sort symbol
-	 * 
-	 * @param name
-	 *            the name of the sort
-	 * @param signature
-	 *            the signature used to create a fresh name for the symbol
-	 * @return a new sort symbol
-	 */
-	public static SMTSortSymbol makeVeriTSortSymbol(final String name,
-			final SMTSignatureVerit signature) {
-		final String symbolName = getSMTAtomicExpressionFormat(name, signature);
-		return new SMTSortSymbol(symbolName, false);
-	}
-
-	/**
-	 * This method creates and returns a new SMT predicate symbol
-	 * 
-	 * @param name
-	 *            the name of the predicate
-	 * @param sort
-	 *            the sort of the first argument of the predicate
-	 * @return a new predicate symbol
-	 */
-	public SMTPredicateSymbol makeVeriTPredSymbol(final String name,
-			final SMTSortSymbol sort) {
-		return new SMTPredicateSymbol(name, !SMTSymbol.PREDEFINED, sort);
-	}
-
-	/**
-	 * Given the elements (?e 's) , (?f 't), ?x , and (fun (pair ?e ?f)) ?x), it
-	 * creates the final auxiliar assumption.
-	 * 
-	 * @param signature
-	 *            the signature
-	 * @param forallVarSymbol1
-	 *            (?e 's)
-	 * @param forallVarSymbol2
-	 *            (?f 't)
-	 * @param varSymbol1
-	 *            ?x
-	 * @param fstFunAppl
-	 *            (fun (pair ?e ?f)) ?x)
-	 * @return The formula that represents the fst or the snd auxiliar function
-	 *         assumption
-	 * 
-	 * @see #createFstAssumption(SMTSignature)
-	 * @see #createSndAssumption(SMTSignature)
-	 */
-	private static SMTFormula createAuxiliarAssumption(
-			final SMTSignature signature, final SMTVarSymbol forallVarSymbol1,
-			final SMTVarSymbol forallVarSymbol2, final SMTVar varSymbol1,
-			final SMTFunApplication fstFunAppl) {
-		final SMTFormula equalAtom = SMTFactory.makeAtom(
-				new SMTPredicateSymbol.SMTEqual(
-						SMTMacroFactory.POLYMORPHIC_PAIRS), signature,
-				fstFunAppl, varSymbol1);
-
-		final SMTFormula quantifiedFormula = SMTFactory
-				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						equalAtom, forallVarSymbol1, forallVarSymbol2);
-
-		return quantifiedFormula;
-	}
-
-	/**
-	 * This method creates the auxiliar assumption:
-	 * 
-	 * <p>
-	 * (forall (?e 's) (?f 't) (= (snd (pair ?e ?f)) ?f))
-	 * </p>
-	 * 
-	 * <p>
-	 * that defines the <code>snd</code> function
-	 * </p>
-	 * 
-	 * @return The formula that represents the snd auxiliar function assumption
-	 */
-	public static SMTFormula createSndAssumption(final SMTSignature signature) {
-		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
-				FST_PAIR_ARG_NAME, FST_RETURN_SORT, !PREDEFINED);
-		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
-				SND_PAIR_ARG_NAME, SND_RETURN_SORT, !PREDEFINED);
-
-		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
-		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
-
-		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, varSymbol1, varSymbol2);
-
-		final SMTFunApplication sndFunAppl = new SMTFunApplication(SND_SYMBOL,
-				pairFunAppl);
-
-		return createAuxiliarAssumption(signature, forallVarSymbol1,
-				forallVarSymbol2, varSymbol2, sndFunAppl);
-	}
-
-	/**
-	 * This method creates the auxiliar assumption:
-	 * 
-	 * <p>
-	 * <code>(forall (?e 's) (?f 't) (= (fst (pair ?e ?f)) ?e))</code>
-	 * </p>
-	 * 
-	 * <p>
-	 * that defines the <code>fst</code> function
-	 * </p>
-	 * 
-	 * @return The formula that represents the fst auxiliar function assumption
-	 */
-	public static SMTFormula createFstAssumption(final SMTSignature signature) {
-		final SMTVarSymbol forallVarSymbol1 = new SMTVarSymbol(
-				FST_PAIR_ARG_NAME, FST_RETURN_SORT, PREDEFINED);
-		final SMTVarSymbol forallVarSymbol2 = new SMTVarSymbol(
-				SND_PAIR_ARG_NAME, SND_RETURN_SORT, PREDEFINED);
-
-		final SMTVar varSymbol1 = new SMTVar(forallVarSymbol1);
-		final SMTVar varSymbol2 = new SMTVar(forallVarSymbol2);
-
-		final SMTFunApplication pairFunAppl = new SMTFunApplication(
-				PAIR_SYMBOL, varSymbol1, varSymbol2);
-
-		final SMTFunApplication fstFunAppl = new SMTFunApplication(FST_SYMBOL,
-				pairFunAppl);
-
-		return createAuxiliarAssumption(signature, forallVarSymbol1,
-				forallVarSymbol2, varSymbol1, fstFunAppl);
 	}
 
 }
