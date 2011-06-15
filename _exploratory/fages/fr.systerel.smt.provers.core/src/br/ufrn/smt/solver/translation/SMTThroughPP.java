@@ -137,7 +137,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		private boolean integerFound = false;
 		private boolean boolTheory = false;
 		private boolean usesTruePredicate = false;
-		private final Set<FreeIdentifier> monadicSets = new HashSet<FreeIdentifier>();
+		private final Set<FreeIdentifier> identsNotForMonadicPreds = new HashSet<FreeIdentifier>();
+		private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
 		private final Set<Type> boundSetsTypes = new HashSet<Type>();
 
 		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
@@ -150,7 +151,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			goal.accept(gatherer);
 
-			gatherer.removeBoundVarsFromMonadicSets();
+			gatherer.removeIdentsFromSetsForMonadicPreds();
 			gatherer.setMonadicSetsMapKeys(monadicSetsMap);
 
 			return gatherer;
@@ -158,7 +159,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		private void setMonadicSetsMapKeys(
 				final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap) {
-			final Iterator<FreeIdentifier> monadicSetsIterator = monadicSets
+			final Iterator<FreeIdentifier> monadicSetsIterator = setsForMonadicPreds
 					.iterator();
 			while (monadicSetsIterator.hasNext()) {
 				monadicSetsMap.put(monadicSetsIterator.next(), null);
@@ -188,7 +189,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (right instanceof FreeIdentifier) {
 				final FreeIdentifier rightSet = (FreeIdentifier) right;
 				if (right.getType().getSource() == null) {
-					monadicSets.add(rightSet);
+					setsForMonadicPreds.add(rightSet);
 				}
 			} else if (right instanceof BoundIdentifier) {
 				boundSetsTypes.add(((BoundIdentifier) right).getType());
@@ -196,9 +197,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		/**
-		 * This method extracts all the monadicSets that will be translated in
-		 * optimized membership predicates, that is, the monadicSets complying
-		 * with the following rules:
+		 * This method extracts all the setsForMonadicPreds that will be
+		 * translated in optimized membership predicates, that is, the
+		 * setsForMonadicPreds complying with the following rules:
 		 * 
 		 * <ul>
 		 * <li>The set only occur on the right-hand side of membership
@@ -207,21 +208,21 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * membership predicates;
 		 * </ul>
 		 * 
-		 * Then these monadicSets are used as operator with one argument,
-		 * instead of creating a fresh membership predicate where the set is one
-		 * of the arguments.
+		 * Then these setsForMonadicPreds are used as operator with one
+		 * argument, instead of creating a fresh membership predicate where the
+		 * set is one of the arguments.
 		 */
-		private void removeBoundVarsFromMonadicSets() {
-
+		private void removeIdentsFromSetsForMonadicPreds() {
 			/**
 			 * Removal of all bounded variables from the map of monadic
-			 * monadicSets.
+			 * setsForMonadicPreds.
 			 */
-			for (final FreeIdentifier set : monadicSets) {
+			for (final FreeIdentifier set : setsForMonadicPreds) {
 				if (boundSetsTypes.contains(set.getType())) {
-					monadicSets.remove(set);
+					identsNotForMonadicPreds.add(set);
 				}
 			}
+			setsForMonadicPreds.removeAll(identsNotForMonadicPreds);
 		}
 
 		public boolean foundInteger() {
@@ -266,6 +267,24 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		public boolean enterIN(final RelationalPredicate pred) {
 			gatherMonadicSets(pred);
 			return checkBooleanElementsInMembershipPredicate(pred);
+		}
+
+		@Override
+		public boolean enterEQUAL(final RelationalPredicate pred) {
+			final Expression right = pred.getRight();
+			final Expression left = pred.getLeft();
+
+			if (right instanceof FreeIdentifier) {
+				final FreeIdentifier rightIdent = (FreeIdentifier) right;
+				identsNotForMonadicPreds.add(rightIdent);
+			}
+
+			if (left instanceof FreeIdentifier) {
+				final FreeIdentifier leftIdent = (FreeIdentifier) left;
+				identsNotForMonadicPreds.add(leftIdent);
+			}
+
+			return true;
 		}
 
 		/**
@@ -466,7 +485,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * <code>s ⦂ ℙ(S)</code>.
 	 * <p>
 	 * If this actualPredicate is in accordance with the rules of optimization
-	 * of translation monadicSets, the membership is translated to:
+	 * of translation setsForMonadicPreds, the membership is translated to:
 	 * 
 	 * (s a)
 	 * 
@@ -483,7 +502,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Expression left = membershipPredicate.getLeft();
 		final Expression right = membershipPredicate.getRight();
 
-		// Translate monadic monadicSets (special case)
+		// Translate monadic setsForMonadicPreds (special case)
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
 			if (monadicSetsMap.containsKey(rightSet)) {

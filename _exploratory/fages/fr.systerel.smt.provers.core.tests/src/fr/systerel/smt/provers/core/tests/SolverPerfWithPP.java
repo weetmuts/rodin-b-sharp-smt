@@ -32,6 +32,21 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				expectedSolverResult);
 	}
 
+	@Test
+	public void testSetsEquality() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("p ∈ ℙ({1})");
+		hyps.add("p ≠ ∅");
+		hyps.add("q ∈ ℙ({1})");
+		hyps.add("q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
 	/**
 	 * 
 	 */
