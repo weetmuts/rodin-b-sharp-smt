@@ -7,6 +7,7 @@ package fr.systerel.smt.provers.core.tests.unit;
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,9 +153,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	private void testContainsAssumptions(final ITypeEnvironment te,
 			final String inputGoal, final List<String> expectedAssumptions) {
+
 		final Predicate goal = parse(inputGoal, te);
 
-		// Type check goal and hypotheses
 		assertTypeChecked(goal);
 
 		final SMTBenchmark benchmark = SMTThroughVeriT
@@ -164,10 +165,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
 				expectedAssumptions.size(), assumptions.size());
-		for (int i = 0; i < assumptions.size(); i++) {
-			assertEquals(expectedAssumptions.get(i), assumptions.get(i)
-					.toString());
+		for (final SMTFormula assumption : assumptions) {
+			assertTrue(assumption.toString(),
+					expectedAssumptions.remove(assumption.toString()));
 		}
+
+		assertTrue(expectedAssumptions.isEmpty());
 	}
 
 	private String assumptionsString(final List<SMTFormula> assumptions) {
@@ -1039,7 +1042,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testContainsMacro(
 				te,
-				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
+				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x	))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
 				expectedCSETMacros);
 	}
 
@@ -1073,6 +1076,19 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				.put("enum_0",
 						"(enum_0 (lambda (?elem (Pair Int Int)) . (or (= ?elem (pair 2 1))(= ?elem (pair 3 2)))))");
 		testContainsMacro(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred", expectedEnumerations);
+	}
+
+	@Test
+	public void testDistinctAssumptions() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(distinct set set_0 set_1)");
+		expectedAssumptions.add("(= set_1 enum_2)");
+		expectedAssumptions.add("(= set_0 enum_1)");
+		expectedAssumptions.add("(= set enum_0)");
+
+		testContainsAssumptions(te, "partition(A,{1},{2},{3})",
+				expectedAssumptions);
 	}
 
 }
