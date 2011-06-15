@@ -1064,4 +1064,15 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedAssumptions.add("(finite finite_p enum_0 finite_f finite_k)");
 		testContainsAssumptions(te, "finite({1,2,3})", expectedAssumptions);
 	}
+
+	@Test
+	public void testPairEnumeration() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
+		expectedEnumerations
+				.put("enum_0",
+						"(enum_0 (lambda (?elem (Pair Int Int)) . (or (= ?elem (pair 2 1))(= ?elem (pair 3 2)))))");
+		testContainsMacro(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred", expectedEnumerations);
+	}
+
 }

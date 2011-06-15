@@ -642,6 +642,16 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("z3: ERROR: line 9 column 66: could not locate id  ?veriT.veriT__35.")
+	public void testPredSet() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> hyps = new ArrayList<String>();
+		doTest("testpredset", hyps, "{2 ↦ 1,3 ↦ 2} ⊂ pred", te, VALID);
+	}
+
+	@Test
 	public void testSucc() {
 		setPreferencesForSolverTest(solver);
 
