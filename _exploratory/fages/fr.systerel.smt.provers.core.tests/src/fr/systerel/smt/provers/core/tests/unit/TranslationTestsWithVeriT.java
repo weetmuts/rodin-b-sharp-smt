@@ -9,8 +9,10 @@ import static org.eventb.core.ast.Formula.FORALL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentDecl;
@@ -21,8 +23,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
+import fr.systerel.smt.provers.ast.SMTSignatureVerit;
+import fr.systerel.smt.provers.ast.macros.SMTMacro;
+import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
@@ -86,6 +92,34 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		hypothesis.add(pred);
 
 		testTranslationV1_2Verit(pred, expectedSMTNode, failMessage, solver);
+	}
+
+	private void testCSETMacro(final ITypeEnvironment te,
+			final String inputGoal, final Map<String, String> expectedCSETMacros) {
+		final Predicate goal = parse(inputGoal, te);
+
+		// Type check goal and hypotheses
+		assertTypeChecked(goal);
+
+		final SMTBenchmark benchmark = SMTThroughVeriT
+				.translateToSmtLibBenchmark("lemma",
+						new ArrayList<Predicate>(), goal, "Z3");
+
+		final SMTSignature signature = benchmark.getSignature();
+		assert signature instanceof SMTSignatureVerit;
+		final SMTSignatureVerit sigverit = (SMTSignatureVerit) signature;
+		final Set<SMTMacro> sets = sigverit.getMacros();
+		for (final SMTMacro macro : sets) {
+			if (macro instanceof SMTSetComprehensionMacro) {
+				final String macroName = macro.getMacroName();
+				assert expectedCSETMacros.keySet().contains(macroName);
+				final String macroBody = expectedCSETMacros.get(macroName);
+				final SMTSetComprehensionMacro setmacro = (SMTSetComprehensionMacro) macro;
+				assertEquals(macroBody, setmacro.toString());
+				expectedCSETMacros.remove(macroName);
+			}
+		}
+		assert expectedCSETMacros.isEmpty();
 	}
 
 	/**
@@ -976,5 +1010,22 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 
 		testTranslationV1_2VerDefaultSolver(te, "(foo) = (foo)", "");
+	}
+
+	/**
+	 * Benchmark tests
+	 */
+	@Test
+	public void testComprehensionSet() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final Map<String, String> expectedCSETMacros = new HashMap<String, String>();
+		expectedCSETMacros
+				.put("cset",
+						"(cset(lambda(?elem (Pair Int Int)) . (exists (?x Int). (and (= ?elem (pair ?x (+ ?x ?x))) (forall (?y Int) .  (and (in ?y Nat) (forall (?z Int) .  (and (in ?z Nat) (= (+ ?z ?y) ?x)))))))))");
+
+		testCSETMacro(
+				te,
+				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
+				expectedCSETMacros);
 	}
 }

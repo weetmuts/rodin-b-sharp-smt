@@ -81,6 +81,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		if (name.equals("\u2124")) { // INTEGER
 			freshName = SMTSymbol.INT;
 		} else if (name.equals("BOOL")) {
+			// unreachable while the Booleans theory is not implemented yet.
 			freshName = SMTMacroSymbol.BOOL_SORT_VERIT;
 		} else {
 			freshName = freshSymbolName(name);

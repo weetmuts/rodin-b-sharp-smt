@@ -75,9 +75,10 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("rule20_many_foralls_verit", hyps,
-				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅", te,
-				VALID);
+		doTest("rule20_many_foralls_verit",
+				hyps,
+				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
+				te, VALID);
 	}
 
 	@Test
