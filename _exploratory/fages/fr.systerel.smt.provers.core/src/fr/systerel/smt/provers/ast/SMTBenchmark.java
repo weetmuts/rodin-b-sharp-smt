@@ -53,6 +53,10 @@ public abstract class SMTBenchmark {
 		sb.append("\n");
 	}
 
+	public List<SMTFormula> getAssumptions() {
+		return assumptions;
+	}
+
 	/**
 	 * Appends the string representation of the assumptions section to the
 	 * string builder

@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
@@ -138,8 +139,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		SMTThroughVeriT.translate(defaultLogic, ppred, solver).toString(
 				actualSMTNode, false);
-
-		System.out.println(translationMessage(ppred, actualSMTNode.toString()));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -149,6 +148,34 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final SMTSignature signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
+	}
+
+	private void testContainsAssumptions(final ITypeEnvironment te,
+			final String inputGoal, final List<String> expectedAssumptions) {
+		final Predicate goal = parse(inputGoal, te);
+
+		// Type check goal and hypotheses
+		assertTypeChecked(goal);
+
+		final SMTBenchmark benchmark = SMTThroughVeriT
+				.translateToSmtLibBenchmark("lemma",
+						new ArrayList<Predicate>(), goal, "Z3");
+
+		final List<SMTFormula> assumptions = benchmark.getAssumptions();
+		assertEquals(assumptionsString(assumptions),
+				expectedAssumptions.size(), assumptions.size());
+		for (int i = 0; i < assumptions.size(); i++) {
+			assertEquals(expectedAssumptions.get(i), assumptions.get(i)
+					.toString());
+		}
+	}
+
+	private String assumptionsString(final List<SMTFormula> assumptions) {
+		String string = "";
+		for (final SMTFormula formula : assumptions) {
+			string += formula.toString() + "\n";
+		}
+		return string;
 	}
 
 	public static void testTypeEnvironmentSorts(final SMTLogic logic,
@@ -172,17 +199,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return SMTThroughVeriT.translateTE(logic, ppPred, null);
-	}
-
-	private static final String translationMessage(final Predicate ppPred,
-			final String smtNode) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("\'");
-		sb.append(ppPred.toString());
-		sb.append("\' was translated in \'");
-		sb.append(smtNode);
-		sb.append("\'");
-		return sb.toString();
 	}
 
 	@Test
@@ -1039,5 +1055,13 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 						"(enum_1 (lambda (?elem_0 Int) . (or (= ?elem_0 1) (= ?elem_0 2) (= ?elem_0 3))))");
 		testContainsMacro(te, "card({1,2,3}) = card({1,2,3})",
 				expectedEnumerations);
+	}
+
+	@Test
+	public void testFiniteAssumptions() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(finite finite_p enum_0 finite_f finite_k)");
+		testContainsAssumptions(te, "finite({1,2,3})", expectedAssumptions);
 	}
 }
