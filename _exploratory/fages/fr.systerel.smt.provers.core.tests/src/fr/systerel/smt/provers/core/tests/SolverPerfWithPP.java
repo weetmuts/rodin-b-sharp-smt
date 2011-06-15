@@ -605,58 +605,16 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test
 	// @Ignore("Division in veriT does not have the same properties as in Event-B")
-	public void testDivisionWithRemainderWithVeriT() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		final List<String> hyps = new ArrayList<String>();
-		final String smtFileName = "div_rem_verit";
-		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
-		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
-		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
-		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
-	}
-
-	@Test
 	// @Ignore("Division in z3 does not have the same properties as in Event-B")
-	public void testDivisionWithRemainderWithZ3() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		final List<String> hyps = new ArrayList<String>();
-		final String smtFileName = "div_rem_Z3";
-		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
-		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
-		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
-		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
-	}
-
-	@Test
 	// @Ignore("Division in cvc3 does not have the same properties as in Event-B")
-	public void testDivisionWithRemainderWithCVC3() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		final List<String> hyps = new ArrayList<String>();
-		final String smtFileName = "div_rem_cvc3";
-		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
-		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
-		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
-		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
-	}
-
-	@Test
 	// @Ignore("Division in alt-ergo does not have the same properties as in Event-B")
-	public void testDivisionWithRemainderWithAltErgo() {
+	public void testDivisionWithRemainder() {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		final String smtFileName = "div__remAltErgo";
+		final String smtFileName = "div_rem";
 		doTest(smtFileName + "_1", hyps, "3 ÷ 2 = 1", te, VALID);
 		doTest(smtFileName + "_2", hyps, "−3 ÷ 2 = −1", te, VALID);
 		doTest(smtFileName + "_3", hyps, "−3 ÷ −2 = 1", te, VALID);
