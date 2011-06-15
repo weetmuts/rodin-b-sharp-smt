@@ -94,8 +94,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Verit(pred, expectedSMTNode, failMessage, solver);
 	}
 
-	private void testCSETMacro(final ITypeEnvironment te,
-			final String inputGoal, final Map<String, String> expectedCSETMacros) {
+	private void testContainsMacro(final ITypeEnvironment te,
+			final String inputGoal, final Map<String, String> expectedMacros) {
 		final Predicate goal = parse(inputGoal, te);
 
 		// Type check goal and hypotheses
@@ -112,14 +112,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		for (final SMTMacro macro : sets) {
 			if (macro instanceof SMTSetComprehensionMacro) {
 				final String macroName = macro.getMacroName();
-				assert expectedCSETMacros.keySet().contains(macroName);
-				final String macroBody = expectedCSETMacros.get(macroName);
+				assert expectedMacros.keySet().contains(macroName);
+				final String macroBody = expectedMacros.get(macroName);
 				final SMTSetComprehensionMacro setmacro = (SMTSetComprehensionMacro) macro;
 				assertEquals(macroBody, setmacro.toString());
-				expectedCSETMacros.remove(macroName);
 			}
 		}
-		assert expectedCSETMacros.isEmpty();
 	}
 
 	/**
@@ -1023,9 +1021,23 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				.put("cset",
 						"(cset(lambda(?elem (Pair Int Int)) . (exists (?x Int). (and (= ?elem (pair ?x (+ ?x ?x))) (forall (?y Int) .  (and (in ?y Nat) (forall (?z Int) .  (and (in ?z Nat) (= (+ ?z ?y) ?x)))))))))");
 
-		testCSETMacro(
+		testContainsMacro(
 				te,
 				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
 				expectedCSETMacros);
+	}
+
+	@Test
+	public void testEnumeration() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
+		expectedEnumerations
+				.put("enum_0",
+						"(enum_0 (lambda (?elem Int) . (or (= ?elem 1)(= ?elem 2)(= ?elem 3))))");
+		expectedEnumerations
+				.put("enum_1",
+						"(enum_1 (lambda (?elem_0 Int) . (or (= ?elem_0 1) (= ?elem_0 2) (= ?elem_0 3))))");
+		testContainsMacro(te, "card({1,2,3}) = card({1,2,3})",
+				expectedEnumerations);
 	}
 }
