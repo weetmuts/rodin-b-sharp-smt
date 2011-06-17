@@ -588,4 +588,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		testTranslateGoalPP(te, "n ≥ 1", "(<= 1 n)");
 	}
+
+	@Test
+	public void testQuantifier() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
+				"(forall (?x Int) (exists (?x_0 Int) (and (= ?x_0 (+ ?x 1)) (S ?x_0))))");
+	}
 }
