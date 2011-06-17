@@ -131,27 +131,27 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	 * Adds to the parameter {@code symbols} the SMT symbols from
 	 * {@code formula}.
 	 * 
-	 * @param formula
+	 * @param smtFormula
 	 * @param symbols
 	 */
-	protected void getUsedSymbols(final SMTFormula formula,
+	protected void getUsedSymbols(final SMTFormula smtFormula,
 			final Set<SMTSymbol> symbols) {
-		if (formula instanceof SMTAtom) {
-			final SMTAtom atom = (SMTAtom) formula;
+		if (smtFormula instanceof SMTAtom) {
+			final SMTAtom atom = (SMTAtom) smtFormula;
 			getUsedSymbols(atom, symbols);
 
-		} else if (formula instanceof SMTConnectiveFormula) {
-			final SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
+		} else if (smtFormula instanceof SMTConnectiveFormula) {
+			final SMTConnectiveFormula con = (SMTConnectiveFormula) smtFormula;
 			getUsedSymbols(con, symbols);
 
-		} else if (formula instanceof SMTQuantifiedFormula) {
-			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
+		} else if (smtFormula instanceof SMTQuantifiedFormula) {
+			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) smtFormula;
 			getUsedSymbols(qf, symbols);
 
 		} else {
 			// This part should never be reached
 			throw new IllegalArgumentException("The formula is: "
-					+ formula.getClass().toString());
+					+ smtFormula.getClass().toString());
 		}
 	}
 
@@ -164,8 +164,8 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	protected void getUsedSymbols(final SMTConnectiveFormula con,
 			final Set<SMTSymbol> symbols) {
 		final SMTFormula[] formulas = con.getFormulas();
-		for (final SMTFormula formula : formulas) {
-			getUsedSymbols(formula, symbols);
+		for (final SMTFormula smtFormula : formulas) {
+			getUsedSymbols(smtFormula, symbols);
 		}
 	}
 

@@ -317,39 +317,39 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	 * Adds to the parameter {@code symbols} the smt symbols from
 	 * {@code formula}.
 	 * 
-	 * @param formula
+	 * @param smtformula
 	 * @param symbols
 	 */
-	protected void getUsedSymbols(final SMTFormula formula,
+	protected void getUsedSymbols(final SMTFormula smtformula,
 			final Set<SMTSymbol> symbols) {
-		if (formula instanceof SMTAtom) {
-			final SMTAtom atom = (SMTAtom) formula;
+		if (smtformula instanceof SMTAtom) {
+			final SMTAtom atom = (SMTAtom) smtformula;
 			getUsedSymbols(atom, symbols);
 
-		} else if (formula instanceof SMTConnectiveFormula) {
-			final SMTConnectiveFormula con = (SMTConnectiveFormula) formula;
+		} else if (smtformula instanceof SMTConnectiveFormula) {
+			final SMTConnectiveFormula con = (SMTConnectiveFormula) smtformula;
 			getUsedSymbols(con, symbols);
 
-		} else if (formula instanceof SMTQuantifiedFormula) {
-			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) formula;
+		} else if (smtformula instanceof SMTQuantifiedFormula) {
+			final SMTQuantifiedFormula qf = (SMTQuantifiedFormula) smtformula;
 			getUsedSymbols(qf, symbols);
 
-		} else if (formula instanceof SMTVeriTAtom) {
-			final SMTVeriTAtom va = (SMTVeriTAtom) formula;
+		} else if (smtformula instanceof SMTVeriTAtom) {
+			final SMTVeriTAtom va = (SMTVeriTAtom) smtformula;
 			getUsedSymbols(va, symbols);
 
-		} else if (formula instanceof SMTVeritCardFormula) {
-			final SMTVeritCardFormula vcf = (SMTVeritCardFormula) formula;
+		} else if (smtformula instanceof SMTVeritCardFormula) {
+			final SMTVeritCardFormula vcf = (SMTVeritCardFormula) smtformula;
 			getUsedSymbols(vcf, symbols);
 
-		} else if (formula instanceof SMTVeritFiniteFormula) {
-			final SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) formula;
+		} else if (smtformula instanceof SMTVeritFiniteFormula) {
+			final SMTVeritFiniteFormula vff = (SMTVeritFiniteFormula) smtformula;
 			getUsedSymbols(vff, symbols);
 
 		} else {
 			// This part should never be reached
 			throw new IllegalArgumentException("The formula is: "
-					+ formula.getClass().toString());
+					+ smtformula.getClass().toString());
 		}
 	}
 
@@ -362,8 +362,8 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	protected void getUsedSymbols(final SMTConnectiveFormula con,
 			final Set<SMTSymbol> symbols) {
 		final SMTFormula[] formulas = con.getFormulas();
-		for (final SMTFormula formula : formulas) {
-			getUsedSymbols(formula, symbols);
+		for (final SMTFormula smtFormula : formulas) {
+			getUsedSymbols(smtFormula, symbols);
 		}
 	}
 
