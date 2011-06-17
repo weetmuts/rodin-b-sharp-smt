@@ -240,7 +240,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		@Override
 		public boolean visitINTEGER(final AtomicExpression expr) {
 			integerFound = true;
-			return false;
+			return true;
 		}
 
 		@Override
@@ -717,49 +717,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * @param lemmaName
-	 *            the name of the lemma
-	 * @param ppTranslatedHypotheses
-	 *            the PP translated hypotheses
-	 * @param ppTranslatedGoal
-	 *            the PP translated goal
-	 * @param logic
-	 *            the used logic
-	 * @return the SMTBenchmark of the translation
-	 */
-	private SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> ppTranslatedHypotheses,
-			final Predicate ppTranslatedGoal, final SMTLogic logic) {
-		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
-
-		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-
-		if (gatherer.foundInteger()) {
-			translatedAssumptions.add(generateIntegerAxiom());
-		}
-
-		for (final SMTTheory t : signature.getLogic().getTheories()) {
-			if (t instanceof Booleans) {
-				translatedAssumptions.add(generateBoolAxiom());
-			}
-		}
-
-		// translates each hypothesis
-		for (final Predicate hypothesis : ppTranslatedHypotheses) {
-			clearFormula();
-			translatedAssumptions.add(translate(hypothesis));
-		}
-		// translates the goal
-		clearFormula();
-		final SMTFormula smtFormula = translate(ppTranslatedGoal);
-
-		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
-				signature, translatedAssumptions, smtFormula);
-		benchmark.removeUnusedSymbols();
-		return benchmark;
-	}
-
-	/**
 	 * This method translates an Event-B type into an SMT-LIB sort. It gives the
 	 * sort a fresh name if necessary, to avoid any name collision.
 	 */
@@ -934,6 +891,49 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
 				hypotheses, goal);
 		return smtB;
+	}
+
+	/**
+	 * @param lemmaName
+	 *            the name of the lemma
+	 * @param ppTranslatedHypotheses
+	 *            the PP translated hypotheses
+	 * @param ppTranslatedGoal
+	 *            the PP translated goal
+	 * @param logic
+	 *            the used logic
+	 * @return the SMTBenchmark of the translation
+	 */
+	private SMTBenchmark translate(final String lemmaName,
+			final List<Predicate> ppTranslatedHypotheses,
+			final Predicate ppTranslatedGoal, final SMTLogic logic) {
+		translateSignature(logic, ppTranslatedHypotheses, ppTranslatedGoal);
+
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+
+		if (gatherer.foundInteger()) {
+			translatedAssumptions.add(generateIntegerAxiom());
+		}
+
+		for (final SMTTheory t : signature.getLogic().getTheories()) {
+			if (t instanceof Booleans) {
+				translatedAssumptions.add(generateBoolAxiom());
+			}
+		}
+
+		// translates each hypothesis
+		for (final Predicate hypothesis : ppTranslatedHypotheses) {
+			clearFormula();
+			translatedAssumptions.add(translate(hypothesis));
+		}
+		// translates the goal
+		clearFormula();
+		final SMTFormula smtFormula = translate(ppTranslatedGoal);
+
+		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
+				signature, translatedAssumptions, smtFormula);
+		benchmark.removeUnusedSymbols();
+		return benchmark;
 	}
 
 	/**

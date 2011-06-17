@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
@@ -62,6 +63,25 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final SMTFormula goal = benchmark.getGoal();
 		assertEquals(expectedGoal, goal.toString());
+	}
+
+	private void testContainsAssumptionsPP(final ITypeEnvironment te,
+			final String inputGoal, final List<String> expectedAssumptions) {
+
+		final Predicate goal = parse(inputGoal, te);
+
+		assertTypeChecked(goal);
+
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				"lemma", new ArrayList<Predicate>(), goal, "Z3");
+
+		final List<SMTFormula> assumptions = benchmark.getAssumptions();
+		assertEquals(assumptionsString(assumptions),
+				expectedAssumptions.size(), assumptions.size());
+		for (final SMTFormula assumption : assumptions) {
+			assertTrue(assumption.toString(),
+					expectedAssumptions.remove(assumption.toString()));
+		}
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -397,8 +417,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * can be expected here. TODO Add tests for the integer axiom
 		 * generation.
 		 */
-		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a int AZ)");
 		testTranslationV1_2(te, "int↦ℤ ∈ SPZ", "(MS int_0 int SPZ)");
+		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a int AZ)");
 	}
 
 	/**
@@ -595,4 +615,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
 				"(forall (?x Int) (exists (?x_0 Int) (and (= ?x_0 (+ ?x 1)) (S ?x_0))))");
 	}
+
+	@Test
+	public void testIntAxiom() {
+		final ITypeEnvironment te = defaultTe;
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(forall (?x Int) (MS ?x int))");
+
+		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
+	}
+
 }
