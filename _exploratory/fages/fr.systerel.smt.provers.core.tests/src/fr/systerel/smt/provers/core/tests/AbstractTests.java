@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.Formula;
@@ -28,6 +29,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 
+import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -227,5 +229,13 @@ public abstract class AbstractTests {
 				assertTrue(sb, expectedPreds.contains(builder.toString()));
 			}
 		}
+	}
+
+	protected String assumptionsString(final List<SMTFormula> assumptions) {
+		String string = "";
+		for (final SMTFormula formula : assumptions) {
+			string += formula.toString() + "\n";
+		}
+		return string;
 	}
 }

@@ -151,7 +151,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
 	}
 
-	private void testContainsAssumptions(final ITypeEnvironment te,
+	private void testContainsAssumptionsVeriT(final ITypeEnvironment te,
 			final String inputGoal, final List<String> expectedAssumptions) {
 
 		final Predicate goal = parse(inputGoal, te);
@@ -171,14 +171,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		}
 
 		assertTrue(expectedAssumptions.isEmpty());
-	}
-
-	private String assumptionsString(final List<SMTFormula> assumptions) {
-		String string = "";
-		for (final SMTFormula formula : assumptions) {
-			string += formula.toString() + "\n";
-		}
-		return string;
 	}
 
 	public static void testTypeEnvironmentSorts(final SMTLogic logic,
@@ -1066,7 +1058,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(finite finite_p enum_0 finite_f finite_k)");
-		testContainsAssumptions(te, "finite({1,2,3})", expectedAssumptions);
+		testContainsAssumptionsVeriT(te, "finite({1,2,3})", expectedAssumptions);
 	}
 
 	@Test
@@ -1088,7 +1080,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedAssumptions.add("(= set_0 enum_1)");
 		expectedAssumptions.add("(= set enum_0)");
 
-		testContainsAssumptions(te, "partition(A,{1},{2},{3})",
+		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",
 				expectedAssumptions);
 	}
 

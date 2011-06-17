@@ -47,7 +47,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testIntsSetEquality() {
 		setPreferencesForSolverTest(solver);
 
@@ -62,7 +62,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	public void testBoolsSetEquality() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non", "BOOL → BOOL");
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non",
+				"BOOL → BOOL");
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("non = {TRUE ↦ FALSE, FALSE ↦ TRUE}");
 		hyps.add("∀ b · non(b) ∈ BOOL");
@@ -453,7 +454,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
-	// @Ignore("AltErgo MESSAGE: unknown (sat)")
+	@Ignore("AltErgo MESSAGE: unknown (sat)")
 	// TODO : is it possible to give some division behavior rules ?
 	public void testCh915Bin10() {
 		setPreferencesForSolverTest(solver);

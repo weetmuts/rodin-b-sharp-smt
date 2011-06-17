@@ -25,6 +25,7 @@ import java.util.Set;
  * 
  */
 public abstract class SMTBenchmark {
+
 	protected final String name;
 	protected final List<SMTFormula> assumptions;
 	protected final SMTFormula goal;
@@ -36,6 +37,10 @@ public abstract class SMTBenchmark {
 
 	protected void getUsedSymbols(final SMTVar var, final Set<SMTSymbol> symbols) {
 		symbols.add(var.getSort());
+	}
+
+	public SMTFormula getGoal() {
+		return goal;
 	}
 
 	public abstract SMTSignature getSignature();

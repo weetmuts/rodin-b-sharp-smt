@@ -9,6 +9,7 @@ import static fr.systerel.smt.provers.core.tests.unit.Messages.SMTLIB_Translatio
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,8 @@ import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
@@ -45,6 +48,20 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final String ppPredStr, final String expectedSMTNode) {
 		testTranslationV1_2(te, ppPredStr, expectedSMTNode,
 				SMTLIB_Translation_Failed);
+	}
+
+	private void testTranslateGoalPP(final ITypeEnvironment te,
+			final String inputGoal, final String expectedGoal) {
+
+		final Predicate goalPredicate = parse(inputGoal, te);
+
+		assertTypeChecked(goalPredicate);
+
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3");
+
+		final SMTFormula goal = benchmark.getGoal();
+		assertEquals(expectedGoal, goal.toString());
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
@@ -564,5 +581,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedFuns.add("(NSYMB NSORT_0)");
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns, "implies = ite");
+	}
+
+	@Test
+	public void testNumeral() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		testTranslateGoalPP(te, "n ≥ 1", "(<= 1 n)");
 	}
 }
