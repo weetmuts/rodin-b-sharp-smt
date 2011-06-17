@@ -649,7 +649,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the integer constant
 		final SMTTerm intConstant = SMTFactory.makeConstant(signature
-				.getLogic().getIntegerCst(), signature);
+				.getLogic().getIntsSet(), signature);
 
 		// gets the membership symbol
 		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
@@ -682,7 +682,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the boolean constant
 		final SMTTerm boolConstant = SMTFactory.makeConstant(signature
-				.getLogic().getBooleanCst(), signature);
+				.getLogic().getBoolsSet(), signature);
 
 		// gets the membership symbol
 		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
@@ -694,6 +694,35 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// returns the quantified formula
 		return SMTFactory.makeForAll(membershipFormula, smtVar);
+	}
+
+	/**
+	 * Generate the SMT-LIB formula for this event-B formula:
+	 * <code>∀x, y·(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
+	 * @return the SMTFormula representing the translated axiom
+	 */
+	private SMTFormula generateTrueAxiom() {
+		// creates the quantified boolean variables with fresh names
+		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
+		final String xName = signature.freshSymbolName("x");
+		final String yName = signature.freshSymbolName("y");
+		final SMTTerm xTerm = sf.makeVar(xName, boolSort);
+		final SMTTerm yTerm = sf.makeVar(yName, boolSort);
+
+		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
+		final SMTPredicateSymbol truePredSymbol = signature.getLogic().getTrue();
+		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol, signature, xTerm);
+		final SMTFormula trueY = SMTFactory.makeAtom(truePredSymbol, signature, yTerm);
+		final SMTFormula trueXEqvTrueY = SMTFactory.makeIff(trueX, trueY);
+
+		// creates the formula <code>x = y</code>
+		final SMTFormula xEqualY = SMTFactory.makeEqual(xTerm, yTerm);
+
+		// creates the formula <code>(x = TRUE ⇔ y = TRUE) ⇔ x = y</code> 
+		final SMTFormula equivalence = SMTFactory.makeIff(trueXEqvTrueY, xEqualY);
+
+		// returns the quantified formula
+		return SMTFactory.makeForAll(equivalence, xTerm, yTerm);
 	}
 
 	/**
@@ -741,6 +770,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		for (final SMTTheory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
 				translatedAssumptions.add(generateBoolAxiom());
+				if (gatherer.usesTruePredicate()) {
+					translatedAssumptions.add(generateTrueAxiom());
+				}
 			}
 		}
 
@@ -1011,11 +1043,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			smtNode = makeInteger(signature.getLogic().getIntegerCst(),
+			smtNode = makeInteger(signature.getLogic().getIntsSet(),
 					signature);
 			break;
 		case Formula.BOOL:
-			smtNode = makeBool(signature.getLogic().getBooleanCst(), signature);
+			smtNode = makeBool(signature.getLogic().getBoolsSet(), signature);
 			break;
 		case Formula.TRUE:
 			/**

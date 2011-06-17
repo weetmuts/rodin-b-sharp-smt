@@ -20,8 +20,9 @@ public abstract class SMTSymbol {
 	protected final boolean predefined;
 
 	public static final String INT = "Int"; //$NON-NLS-1$
-	public static final String INT_CST = "int";
+	public static final String INTS = "INTS";
 	public static final String BOOL = "BOOL"; //$NON-NLS-1$
+	public static final String BOOLS = "BOOLS";
 	public static final String EQUAL = "="; //$NON-NLS-1$
 	public static final String NOTEQUAL = "!="; //$NON-NLS-1$
 	public static final String LT = "<"; //$NON-NLS-1$

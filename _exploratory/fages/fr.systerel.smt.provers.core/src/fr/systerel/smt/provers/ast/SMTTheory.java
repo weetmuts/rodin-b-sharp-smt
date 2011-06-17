@@ -11,7 +11,8 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static fr.systerel.smt.provers.ast.SMTSymbol.BOOL;
+import static fr.systerel.smt.provers.ast.SMTSymbol.BOOLS;
+import static fr.systerel.smt.provers.ast.SMTSymbol.INTS;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 
 import java.util.Arrays;
@@ -66,7 +67,7 @@ public class SMTTheory {
 	 */
 	public static class Ints extends SMTTheory implements
 			ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort {
-		private static final String INTS = "Ints";
+		private static final String INTS_THEORY_NAME = "Ints";
 
 		/**
 		 * Sorts of the integer theory
@@ -74,8 +75,8 @@ public class SMTTheory {
 		private static final SMTSortSymbol INT = new SMTSortSymbol(
 				SMTSymbol.INT, PREDEFINED);
 
-		private static final SMTFunctionSymbol INT_CST = new SMTFunctionSymbol(
-				SMTSymbol.INT_CST, INT, !ASSOCIATIVE, !PREDEFINED);
+		private static final SMTFunctionSymbol INTS_SET = new SMTFunctionSymbol(
+				INTS, INT, !ASSOCIATIVE, !PREDEFINED);
 
 		private static final SMTSortSymbol[] SORTS = { INT };
 
@@ -125,7 +126,7 @@ public class SMTTheory {
 				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
 				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { INT_CST, UMINUS,
+		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET, UMINUS,
 				MINUS, PLUS, MUL, DIV, MOD, EXPN };
 
 		/**
@@ -134,7 +135,7 @@ public class SMTTheory {
 		private static final Ints INSTANCE = new Ints();
 
 		protected Ints() {
-			super(INTS, SORTS, PREDICATES, FUNCTIONS);
+			super(INTS_THEORY_NAME, SORTS, PREDICATES, FUNCTIONS);
 		}
 
 		public static Ints getInstance() {
@@ -153,8 +154,8 @@ public class SMTTheory {
 			return INT_INT_TAB;
 		}
 
-		public static SMTFunctionSymbol getIntCst() {
-			return INT_CST;
+		public static SMTFunctionSymbol getIntsSet() {
+			return INTS_SET;
 		}
 
 		@Override
@@ -220,7 +221,7 @@ public class SMTTheory {
 	}
 
 	public static class Booleans extends SMTTheory implements ISMTBooleanSort {
-		private static final String BOOLS = "Bools";
+		private static final String BOOLS_THEORY_NAME = "Bools";
 
 		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
 				SMTSymbol.BOOL, !PREDEFINED);
@@ -235,23 +236,23 @@ public class SMTTheory {
 
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
-		private static final SMTFunctionSymbol BOOL_CST = new SMTFunctionSymbol(
-				BOOL, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
+		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
+				BOOLS, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
 
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOL_CST };
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
 
 		private static final Booleans INSTANCE = new Booleans();
 
 		private Booleans() {
-			super(BOOLS, SORTS, PREDICATES, FUNCTIONS);
+			super(BOOLS_THEORY_NAME, SORTS, PREDICATES, FUNCTIONS);
 		}
 
 		public static Booleans getInstance() {
 			return INSTANCE;
 		}
 
-		public static SMTFunctionSymbol getBoolCst() {
-			return BOOL_CST;
+		public static SMTFunctionSymbol getBoolsSet() {
+			return BOOLS_SET;
 		}
 
 		public static SMTPredicateSymbol getTrue() {

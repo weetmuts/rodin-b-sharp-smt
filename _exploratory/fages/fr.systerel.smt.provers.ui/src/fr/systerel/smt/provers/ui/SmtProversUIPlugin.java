@@ -26,6 +26,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * Default delay for time-out of the Smt provers (value 30 seconds).
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
+	public static long NO_DELAY = 0;
 
 	/**
 	 * The constructor

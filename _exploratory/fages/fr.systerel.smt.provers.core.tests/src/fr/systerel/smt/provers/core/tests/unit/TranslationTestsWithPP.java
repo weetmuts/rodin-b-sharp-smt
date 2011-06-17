@@ -397,12 +397,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2(te, "a↦b ∈ AB", "(MS a b AB)");
-		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOL BOOL X)");
+		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOLS BOOLS X)");
 	}
 
 	@Test
 	public void testPredIn2() {
-		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOL a Y)");
+		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOLS a Y)");
 	}
 
 	@Test
@@ -417,8 +417,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * can be expected here. TODO Add tests for the integer axiom
 		 * generation.
 		 */
-		testTranslationV1_2(te, "int↦ℤ ∈ SPZ", "(MS int_0 int SPZ)");
-		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a int AZ)");
+		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(MS INTS_0 INTS SPZ)");
+		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a INTS AZ)");
 	}
 
 	/**
@@ -554,10 +554,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOL BOOL)");
+		expectedFuns.add("(BOOLS BOOL)");
 		expectedFuns.add("(mod Int Int Int)");
 		expectedFuns.add("(NSYMB_1 NSYMB)");
-		expectedFuns.add("(int Int)");
+		expectedFuns.add("(INTS Int)");
 		expectedFuns.add("(expn Int Int Int)");
 		expectedFuns.add("(divi Int Int Int)");
 		expectedFuns.add("(NSYMB_2 NSORT)");
@@ -591,10 +591,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOL BOOL)");
+		expectedFuns.add("(BOOLS BOOL)");
 		expectedFuns.add("(NSYMB_0 NSORT_0)");
 		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(int Int)");
+		expectedFuns.add("(INTS Int)");
 		expectedFuns.add("(expn Int Int Int)");
 		expectedFuns.add("(NSORT_1 NSORT)");
 		expectedFuns.add("(divi Int Int Int)");
@@ -620,7 +620,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testIntAxiom() {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x Int) (MS ?x int))");
+		expectedAssumptions.add("(forall (?x Int) (MS ?x INTS))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
@@ -629,7 +629,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOL))");
+		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
