@@ -527,6 +527,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule14() {
 
+		testTranslationV1_2Default("(AB)∼ = AB", "(= (inv AB) AB)");
 		/**
 		 * inverse(SMT)/converse(EventB)
 		 */
