@@ -32,12 +32,6 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
  * 
  */
 public class SMTBenchmarkVeriT extends SMTBenchmark {
-
-	/**
-	 * The signature of the benchmark
-	 */
-	private final SMTSignatureVerit signature;
-
 	/**
 	 * Constructs a new benchmark.
 	 * 
@@ -47,19 +41,13 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	 *            the signature of the benchmark
 	 * @param assumptions
 	 *            the assumptions of the benchmark
-	 * @param goal
-	 *            the goal of the benchmark
+	 * @param formula
+	 *            the formula of the benchmark
 	 */
 	public SMTBenchmarkVeriT(final String lemmaName,
 			final SMTSignatureVerit signature,
-			final List<SMTFormula> assumptions, final SMTFormula goal) {
-		super(lemmaName, assumptions, goal);
-		this.signature = signature;
-	}
-
-	@Override
-	public SMTSignature getSignature() {
-		return signature;
+			final List<SMTFormula> assumptions, final SMTFormula formula) {
+		super(lemmaName, signature, assumptions, formula);
 	}
 
 	/**
@@ -135,8 +123,9 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		for (final SMTFormula assumption : assumptions) {
 			getUsedSymbols(assumption, symbols);
 		}
-		getUsedSymbols(goal, symbols);
-		final Set<SMTMacro> macros = signature.getMacros();
+		getUsedSymbols(formula, symbols);
+		final Set<SMTMacro> macros = ((SMTSignatureVerit) signature)
+				.getMacros();
 		for (final SMTMacro macro : macros) {
 			getUsedSymbols(macro, symbols);
 		}
@@ -388,5 +377,4 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			final Set<SMTSymbol> symbols) {
 		getUsedSymbols(qf.getFormula(), symbols);
 	}
-
 }

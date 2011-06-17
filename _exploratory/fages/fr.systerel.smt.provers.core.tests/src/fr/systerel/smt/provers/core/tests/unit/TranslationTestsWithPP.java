@@ -52,7 +52,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	private void testTranslateGoalPP(final ITypeEnvironment te,
-			final String inputGoal, final String expectedGoal) {
+			final String inputGoal, final String expectedFormula) {
 
 		final Predicate goalPredicate = parse(inputGoal, te);
 
@@ -61,8 +61,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3");
 
-		final SMTFormula goal = benchmark.getGoal();
-		assertEquals(expectedGoal, goal.toString());
+		final SMTFormula formula = benchmark.getFormula();
+		assertEquals(expectedFormula, formula.toString());
 	}
 
 	private void testContainsAssumptionsPP(final ITypeEnvironment te,

@@ -1442,10 +1442,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public void visitLiteralPredicate(final LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
-			smtNode = sf.makePTrue(signature);
+			smtNode = SMTFactory.makePTrue(signature);
 			break;
 		case Formula.BFALSE:
-			smtNode = sf.makePFalse(signature);
+			smtNode = SMTFactory.makePFalse(signature);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());

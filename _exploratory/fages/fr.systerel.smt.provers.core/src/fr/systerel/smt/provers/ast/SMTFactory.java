@@ -187,11 +187,11 @@ public abstract class SMTFactory {
 	/**
 	 * Creates a new propositional atom. {, }
 	 */
-	public SMTFormula makePTrue(final SMTSignature signature) {
+	public static SMTFormula makePTrue(final SMTSignature signature) {
 		return makePropAtom(PTRUE, signature);
 	}
 
-	public SMTFormula makePFalse(final SMTSignature signature) {
+	public static SMTFormula makePFalse(final SMTSignature signature) {
 		return makePropAtom(PFALSE, signature);
 	}
 
@@ -289,7 +289,7 @@ public abstract class SMTFactory {
 	 *            the signature, used to check the rank of the predicate symbol.
 	 * @return a new SMT formula with the predicate symbol.
 	 */
-	public SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
+	public static SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
 			final SMTSignature signature) {
 		return makeAtom(predicateSymbol, signature);
 	}

@@ -27,8 +27,28 @@ import java.util.Set;
 public abstract class SMTBenchmark {
 
 	protected final String name;
+	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
-	protected final SMTFormula goal;
+	protected final SMTFormula formula;
+
+	/**
+	 * Constructs a new SMT Benchmark. It is composed by the name of the
+	 * benchmark, the signature, the assumptions and the formula.
+	 * 
+	 * @param lemmaName
+	 *            the name of the benchmark
+	 * @param assumptions
+	 *            the list of assumptions
+	 * @param formula
+	 *            the formula formula
+	 */
+	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
+			final List<SMTFormula> assumptions, final SMTFormula formula) {
+		name = lemmaName;
+		this.signature = signature;
+		this.assumptions = assumptions;
+		this.formula = formula;
+	}
 
 	protected void getUsedSymbols(final SMTNumeral num,
 			final Set<SMTSymbol> symbols) {
@@ -37,29 +57,6 @@ public abstract class SMTBenchmark {
 
 	protected void getUsedSymbols(final SMTVar var, final Set<SMTSymbol> symbols) {
 		symbols.add(var.getSort());
-	}
-
-	public SMTFormula getGoal() {
-		return goal;
-	}
-
-	public abstract SMTSignature getSignature();
-
-	/**
-	 * Adds the opening format of a benchmark command to the given string
-	 * builder.
-	 */
-	public static void smtCmdOpening(final StringBuilder sb,
-			final String element, final String name) {
-		sb.append(OPAR);
-		sb.append(element);
-		sb.append(SPACE);
-		sb.append(name);
-		sb.append("\n");
-	}
-
-	public List<SMTFormula> getAssumptions() {
-		return assumptions;
 	}
 
 	/**
@@ -77,8 +74,6 @@ public abstract class SMTBenchmark {
 		}
 	}
 
-	public abstract void print(final PrintWriter pw);
-
 	/**
 	 * Appends the string representation of the formula section to the strinh
 	 * builder
@@ -88,26 +83,25 @@ public abstract class SMTBenchmark {
 	 */
 	protected void formulaSection(final StringBuilder sb) {
 		sb.append(" :formula (not ");
-		goal.toString(sb, false);
+		formula.toString(sb, false);
 		sb.append(")\n");
 	}
 
 	/**
-	 * Constructs a new SMT Benchmark. It is composed by the name of the
-	 * benchmark, the signature, the assumptions and the goal.
-	 * 
-	 * @param lemmaName
-	 *            the name of the benchmark
-	 * @param assumptions
-	 *            the list of assumptions
-	 * @param goal
-	 *            the goal formula
+	 * Adds the opening format of a benchmark command to the given string
+	 * builder.
 	 */
-	public SMTBenchmark(final String lemmaName,
-			final List<SMTFormula> assumptions, final SMTFormula goal) {
-		name = lemmaName;
-		this.assumptions = assumptions;
-		this.goal = goal;
+	public static void smtCmdOpening(final StringBuilder sb,
+			final String element, final String name) {
+		sb.append(OPAR);
+		sb.append(element);
+		sb.append(SPACE);
+		sb.append(name);
+		sb.append("\n");
+	}
+
+	public SMTSignature getSignature() {
+		return signature;
 	}
 
 	/**
@@ -118,4 +112,14 @@ public abstract class SMTBenchmark {
 	public String getName() {
 		return name;
 	}
+
+	public List<SMTFormula> getAssumptions() {
+		return assumptions;
+	}
+
+	public SMTFormula getFormula() {
+		return formula;
+	}
+
+	public abstract void print(final PrintWriter pw);
 }

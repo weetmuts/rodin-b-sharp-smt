@@ -68,7 +68,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		hyps.add("non = {TRUE ↦ FALSE, FALSE ↦ TRUE}");
 		hyps.add("∀ b · non(b) ∈ BOOL");
 
-		doTest("IntsSetEquality", hyps, "S = BOOL", te, VALID);
+		doTest("BoolsSetEquality", hyps, "S = BOOL", te, VALID);
 	}
 
 	/**

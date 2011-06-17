@@ -205,29 +205,29 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	/**
-	 * First, calls the translation of the given sequent (hypothesis and goal
+	 * First, calls the translation of the given sequent (hypotheses and goal
 	 * 'Predicate' instances) into SMT-LIB syntax, and then calls the SMT
 	 * prover. The test is successful if the solver returns the expected result.
 	 * 
-	 * @param parsedHypothesis
-	 *            list of the sequent hypothesis (Predicate instances)
+	 * @param parsedHypotheses
+	 *            list of the sequent hypotheses (Predicate instances)
 	 * @param parsedGoal
 	 *            sequent goal (Predicate instance)
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
 	protected void doTest(final SMTTranslationApproach translationApproach,
-			final String lemmaName, final List<Predicate> parsedHypothesis,
+			final String lemmaName, final List<Predicate> parsedHypotheses,
 			final Predicate parsedGoal, final boolean expectedSolverResult)
 			throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
-		for (final Predicate predicate : parsedHypothesis) {
-			assertTypeChecked(predicate);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
 		}
 
 		// Create an instance of SmtProversCall
-		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypotheses,
 				parsedGoal, MONITOR, preferences, lemmaName) {
 			@Override
 			public String displayMessage() {
@@ -279,17 +279,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private void doTeTest(final String lemmaName,
-			final List<Predicate> parsedHypothesis, final Predicate parsedGoal,
+			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
 			final Set<String> expectedFuns, final Set<String> expectedPreds,
 			final Set<String> expectedSorts) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
-		for (final Predicate predicate : parsedHypothesis) {
-			assertTypeChecked(predicate);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
 		}
 
 		// Create an instance of SmtProversCall
-		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypothesis,
+		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypotheses,
 				parsedGoal, MONITOR, preferences, lemmaName) {
 			@Override
 			public String displayMessage() {

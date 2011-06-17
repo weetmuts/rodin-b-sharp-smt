@@ -23,12 +23,6 @@ import java.util.Set;
  * 
  */
 public class SMTBenchmarkPP extends SMTBenchmark {
-
-	/**
-	 * The signature of the benchmark
-	 */
-	private final SMTSignaturePP signature;
-
 	/**
 	 * Constructs a new benchmark.
 	 * 
@@ -38,19 +32,13 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	 *            the signature of the benchmark
 	 * @param assumptions
 	 *            the assumptions of the benchmark
-	 * @param goal
-	 *            the goal of the benchmark
+	 * @param formula
+	 *            the formula of the benchmark
 	 */
 	public SMTBenchmarkPP(final String lemmaName,
 			final SMTSignaturePP signature, final List<SMTFormula> assumptions,
-			final SMTFormula goal) {
-		super(lemmaName, assumptions, goal);
-		this.signature = signature;
-	}
-
-	@Override
-	public SMTSignature getSignature() {
-		return signature;
+			final SMTFormula formula) {
+		super(lemmaName, signature, assumptions, formula);
 	}
 
 	/**
@@ -61,7 +49,7 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 		for (final SMTFormula assumption : assumptions) {
 			getUsedSymbols(assumption, symbols);
 		}
-		getUsedSymbols(goal, symbols);
+		getUsedSymbols(formula, symbols);
 
 		signature.removeUnusedSymbols(symbols);
 	}
@@ -191,5 +179,4 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 			final Set<SMTSymbol> symbols) {
 		getUsedSymbols(qf.getFormula(), symbols);
 	}
-
 }
