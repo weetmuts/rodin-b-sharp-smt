@@ -625,4 +625,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
 
+	@Test
+	public void testBoolAxiom() {
+		final ITypeEnvironment te = defaultTe;
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOL))");
+		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
+	}
+
 }
