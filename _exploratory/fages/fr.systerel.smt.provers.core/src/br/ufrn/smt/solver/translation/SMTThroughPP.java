@@ -125,11 +125,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 	/**
 	 * This class is used to traverse the Event-B sequent in order to gather
-	 * some informations needed to proceed with the translation, such as : - the
-	 * appearing of occurrences of the Event-B integer symbol; - the appearing
-	 * of elements of the bool theory; - the need for using the True predicate;
-	 * - the list of the sets to be translated into monadic membership
-	 * predicates.
+	 * some informations needed to proceed with the translation, such as:
+	 * <ul>
+	 * <li>the appearing of occurrences of the Event-B integer symbol;</li>
+	 * <li>the appearing of elements of the bool theory; - the need for using
+	 * the True predicate;</li>
+	 * <li>the list of the sets to be translated into monadic membership
+	 * predicates.</li>
+	 * </ul>
 	 **/
 	private static class Gatherer extends DefaultVisitor {
 		private boolean integerFound = false;
@@ -139,6 +142,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
 		private final Set<Type> boundSetsTypes = new HashSet<Type>();
 
+		/**
+		 * This method executes the traversal in the hpoytheses and predicates
+		 * to process the informations described in {@link Gatherer}. It also
+		 * makes the mapping of each free identifier to its correlated predicate
+		 * symbol
+		 * 
+		 * @param hypotheses
+		 *            The hypotheses
+		 * @param goal
+		 *            the goal
+		 * @param monadicSetsMap
+		 *            an empty monadic sets map that will be filled.
+		 * @return a new gatherer with the results of the traversal.
+		 */
 		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
 				final Predicate goal,
 				final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap) {

@@ -537,9 +537,6 @@ public abstract class SMTSignature {
 	 *            the predicate symbol that will be checked.
 	 */
 	public void verifyPredicateSignature(final SMTPredicateSymbol symbol) {
-		if (symbol.isPTRUEorPFALSE()) {
-			return;
-		}
 		for (final SMTPredicateSymbol predSymbol : preds) {
 
 			// Verify if the predicates have the same name
