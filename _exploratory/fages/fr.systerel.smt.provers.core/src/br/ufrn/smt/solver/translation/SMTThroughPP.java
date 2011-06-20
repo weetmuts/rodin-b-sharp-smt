@@ -1273,16 +1273,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates an Event-B bound identifier into an SMT node.
-	 */
-	@Override
-	public void visitBoundIdentifier(final BoundIdentifier expression) {
-		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
-				- expression.getBoundIndex() - 1);
-		smtNode = qVarMap.get(bidName);
-	}
-
-	/**
 	 * This method translates an Event-B free identifier into an SMT node.
 	 */
 	@Override

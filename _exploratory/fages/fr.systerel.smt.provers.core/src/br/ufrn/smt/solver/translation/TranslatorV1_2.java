@@ -19,6 +19,7 @@ import java.util.Stack;
 import org.eventb.core.ast.AssociativePredicate;
 import org.eventb.core.ast.BinaryPredicate;
 import org.eventb.core.ast.BoundIdentDecl;
+import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
@@ -97,6 +98,17 @@ public abstract class TranslatorV1_2 extends Translator {
 		for (final GivenType type : predicate.getGivenTypes()) {
 			typeEnvironment.addGivenSet(type.getName());
 		}
+	}
+
+	/**
+	 * This method translates an Event-B bound identifier into an Extended SMT
+	 * node.
+	 */
+	@Override
+	public void visitBoundIdentifier(final BoundIdentifier expression) {
+		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
+				- expression.getBoundIndex() - 1);
+		smtNode = qVarMap.get(bidName);
 	}
 
 	/**

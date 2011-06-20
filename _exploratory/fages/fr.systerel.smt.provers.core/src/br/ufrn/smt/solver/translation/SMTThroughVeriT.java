@@ -72,7 +72,6 @@ import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
-import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
@@ -623,7 +622,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * @param xSort
 	 * @param xFun
 	 * @param mapstoTerm
-	 * @return
+	 * @return The term that represents the translation of predecessor or
+	 *         sucessor
 	 */
 	private SMTTerm translateKPREDorKSUCCPart2(final String macroName,
 			final SMTSortSymbol xSort, final SMTTerm xFun,
@@ -803,9 +803,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
 
-		final String smtVarName = signature.freshQVarName(varName,
-				qVarMap.keySet());
-
+		final String smtVarName = signature.freshQVarName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
 		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
@@ -816,17 +814,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			boundIdentifiers.add(smtVarName);
 		}
 		smtNode = smtVar;
-	}
-
-	/**
-	 * This method translates an Event-B bound identifier into an Extended SMT
-	 * node.
-	 */
-	@Override
-	public void visitBoundIdentifier(final BoundIdentifier expression) {
-		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
-				- expression.getBoundIndex() - 1);
-		smtNode = qVarMap.get(bidName);
 	}
 
 	/**
