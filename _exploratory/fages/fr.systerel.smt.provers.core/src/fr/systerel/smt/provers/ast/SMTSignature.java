@@ -620,7 +620,7 @@ public abstract class SMTSignature {
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
 		final String freshName = freshSymbolName(name);
 		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
-				freshName, returnSort, !ASSOCIATIVE, !PREDEFINED, argSorts);
+				freshName, argSorts, returnSort, !ASSOCIATIVE, !PREDEFINED);
 		final boolean successfullyAdded = funs.add(freshConstant);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(

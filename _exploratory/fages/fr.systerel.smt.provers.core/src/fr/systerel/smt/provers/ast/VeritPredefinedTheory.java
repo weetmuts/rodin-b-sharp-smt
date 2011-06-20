@@ -49,22 +49,23 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			SMTSymbol.GE, PREDEFINED, INT_INT_TAB);
 
 	private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-			SMTSymbol.UMINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_TAB);
+			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
-			SMTSymbol.MINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_INT_TAB);
+			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-			SMTSymbol.DIV, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 	private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-			SMTSymbol.PLUS, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
+			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-			SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
+			SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-			SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 	private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-			SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+			SMTSymbol.MOD, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
-			SMTMacroSymbol.BOOL_SORT_VERIT, BOOL, false, true);
+			SMTMacroSymbol.BOOL_SORT_VERIT, new SMTSortSymbol[] {}, BOOL,
+			false, true);
 
 	public static SMTFunctionSymbol getBoolFunction() {
 		return BOOL_FUNCTION;

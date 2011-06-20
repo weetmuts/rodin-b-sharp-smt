@@ -59,8 +59,8 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 *            determines if the function is predefined
 	 */
 	public SMTFunctionSymbol(final String symbolName,
-			final SMTSortSymbol resultSort, final boolean associative,
-			final boolean predefined, final SMTSortSymbol... argSorts) {
+			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort,
+			final boolean associative, final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		// Must not be null

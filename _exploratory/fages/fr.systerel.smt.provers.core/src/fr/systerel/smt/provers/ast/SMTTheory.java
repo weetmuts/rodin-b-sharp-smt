@@ -76,7 +76,7 @@ public class SMTTheory {
 				SMTSymbol.INT, PREDEFINED);
 
 		private static final SMTFunctionSymbol INTS_SET = new SMTFunctionSymbol(
-				INTS, INT, !ASSOCIATIVE, !PREDEFINED);
+				INTS, new SMTSortSymbol[] {}, INT, !ASSOCIATIVE, !PREDEFINED);
 
 		private static final SMTSortSymbol[] SORTS = { INT };
 
@@ -113,19 +113,19 @@ public class SMTTheory {
 		 **/
 
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.UMINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_TAB);
+				SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
-				SMTSymbol.MINUS, INT, !ASSOCIATIVE, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-				SMTSymbol.DIV, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+				SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
+				SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-				SMTSymbol.MUL, INT, ASSOCIATIVE, PREDEFINED, INT_TAB);
+				SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+				SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
+				SMTSymbol.MOD, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
 				UMINUS, MINUS, PLUS, MUL, DIV, MOD, EXPN };
 
@@ -237,7 +237,8 @@ public class SMTTheory {
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
-				BOOLS, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
+				BOOLS, new SMTSortSymbol[] {}, BOOL_SORT, !ASSOCIATIVE,
+				!PREDEFINED);
 
 		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
 

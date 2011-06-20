@@ -106,15 +106,15 @@ public class SMTMacroFactory {
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
-			MAPSTO, PAIR_SORT, false, !PREDEFINED, PAIR_ARG_SORTS);
+			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT, false, !PREDEFINED);
 
 	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
 
 	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
-			"fst", FST_RETURN_SORT, false, !PREDEFINED, PAIR_SORTS);
+			"fst", PAIR_SORTS, FST_RETURN_SORT, false, !PREDEFINED);
 
 	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
-			"snd", SND_RETURN_SORT, false, !PREDEFINED, PAIR_SORTS);
+			"snd", PAIR_SORTS, SND_RETURN_SORT, false, !PREDEFINED);
 
 	public static final SMTSymbol[] PAIR_AND_FST_AND_SND_SYMBOLS = { PAIR_SORT,
 			PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL };
