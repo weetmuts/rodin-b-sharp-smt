@@ -11,8 +11,6 @@ Require-Bundle: org.junit4,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
-Import-Package: fr.systerel.decert,
- fr.systerel.decert.smt,
- org.eclipse.osgi.util,
+Import-Package: org.eclipse.osgi.util,
  org.eventb.pp
 Bundle-Version: 0.1.0.qualifier

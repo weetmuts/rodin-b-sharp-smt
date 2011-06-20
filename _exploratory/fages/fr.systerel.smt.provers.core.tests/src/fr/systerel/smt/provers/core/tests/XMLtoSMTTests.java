@@ -35,8 +35,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import br.ufrn.smt.solver.translation.SMTSolver;
-import fr.systerel.decert.LemmaParser;
 import fr.systerel.smt.provers.core.tests.utils.LemmaData;
+import fr.systerel.smt.provers.core.tests.utils.LemmaParser;
 
 /**
  * This class is used to make tests with XML files. It's a parameterized tests
