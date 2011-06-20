@@ -91,16 +91,16 @@ public class SMTTheory {
 		 * Predicates and functions of the integer theory
 		 */
 		private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-				SMTSymbol.EQUAL, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.EQUAL, INT_INT_TAB, PREDEFINED);
 
 		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-				SMTSymbol.LT, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.LT, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-				SMTSymbol.LE, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.LE, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-				SMTSymbol.GT, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.GT, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-				SMTSymbol.GE, PREDEFINED, INT_INT_TAB);
+				SMTSymbol.GE, INT_INT_TAB, PREDEFINED);
 		private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE,
 				GT, GE };
 
@@ -232,7 +232,7 @@ public class SMTTheory {
 				BOOL_SORT };
 
 		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
-				"TRUE", !PREDEFINED, BOOL_TAB);
+				"TRUE", BOOL_TAB, !PREDEFINED);
 
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 

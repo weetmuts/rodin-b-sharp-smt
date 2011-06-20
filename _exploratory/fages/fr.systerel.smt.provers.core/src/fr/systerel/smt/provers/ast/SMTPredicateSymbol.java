@@ -50,7 +50,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 *            the expected sorts of the arguments.
 	 */
 	public SMTPredicateSymbol(final String symbolName,
-			final boolean predefined, final SMTSortSymbol... argSorts) {
+			final SMTSortSymbol[] argSorts, final boolean predefined) {
 		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
@@ -181,8 +181,8 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * This class represents the predicate symbol equals (=)
 	 */
 	public static class SMTEqual extends SMTPredicateSymbol {
-		public SMTEqual(final SMTSortSymbol... sort) {
-			super(EQUAL, PREDEFINED, sort);
+		public SMTEqual(final SMTSortSymbol[] sort) {
+			super(EQUAL, sort, PREDEFINED);
 		}
 	}
 }

@@ -683,7 +683,7 @@ public abstract class SMTSignature {
 			final SMTSortSymbol... argSorts) {
 		final String freshName = freshSymbolName(name);
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
-				freshName, !SMTSymbol.PREDEFINED, argSorts);
+				freshName, argSorts, !SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = preds.add(freshPredicate);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
