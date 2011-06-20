@@ -289,7 +289,8 @@ public abstract class SMTFactory {
 	 *            the signature, used to check the rank of the predicate symbol.
 	 * @return a new SMT formula with the predicate symbol.
 	 */
-	public static SMTFormula makePropAtom(final SMTPredicateSymbol predicateSymbol,
+	public static SMTFormula makePropAtom(
+			final SMTPredicateSymbol predicateSymbol,
 			final SMTSignature signature) {
 		return makeAtom(predicateSymbol, signature);
 	}

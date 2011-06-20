@@ -38,7 +38,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static SMTSortSymbol PAIR_SORT = SMTFactory
 			.makePolymorphicSortSymbol("(Pair 's 't)");
 
-	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactory
+	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactory
 			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
 
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactory
@@ -50,15 +50,19 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
 			MAPSTO, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_ARG_SORTS);
 
-	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
+	public final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
 
-	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
+	public final static SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
 			"fst", FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
-	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
+	public final static SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
 			"snd", SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, PAIR_SORTS);
 
 	private boolean pairAxiomAdded = false;
+
+	public SMTSymbol[] getPAIR_AND_FST_AND_SND_SYMBOLS() {
+		return new SMTSymbol[] { PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL };
+	}
 
 	/**
 	 * Adds the pair equality axiom. It is added only once.
@@ -107,7 +111,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 * 
 	 * @return the pair equality axiom
 	 */
-	public static SMTFormula createPairEqualityAxiom() {
+	public SMTFormula createPairEqualityAxiom() {
 
 		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT,
 				!PREDEFINED);

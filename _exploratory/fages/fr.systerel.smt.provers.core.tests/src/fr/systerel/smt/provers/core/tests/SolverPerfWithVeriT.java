@@ -47,6 +47,34 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testRule15RestrictionsAndSubstractions() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(A ◁ AB) = (A ◁ AB)");
+		hyps.add("(A ◁ AB) = (A ◁ AB)");
+		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
+		hyps.add("(AB ▷ A) = (AB ▷ A)");
+
+		doTest("rule15_res_subs", hyps, "(AB ⩥ A) = (AB ⩥ A)", te, VALID);
+	}
+
+	@Test
+	public void testRule15CartesianProductAndIntegerRange() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("(AB × AB) = (AB × AB)");
+
+		doTest("rule15_cart_prod_int_range", hyps, "(a ‥ a) = (a ‥ a)", te,
+				VALID);
+	}
+
+	@Test
 	public void testTePlusSort() {
 		setPreferencesForSolverTest(solver);
 
@@ -567,34 +595,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		doTest("rule15_bcomp", hyps, "(AB \u2218 AB) = (AB \u2218 AB)", te,
 				VALID);
-	}
-
-	@Test
-	public void testRule15CartesianProductAndIntegerRange() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(AB × AB) = (AB × AB)");
-
-		doTest("rule15_cart_prod_int_range", hyps, "(a ‥ a) = (a ‥ a)", te,
-				VALID);
-	}
-
-	@Test
-	public void testRule15RestrictionsAndSubstractions() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(A ◁ AB) = (A ◁ AB)");
-		hyps.add("(A ◁ AB) = (A ◁ AB)");
-		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
-		hyps.add("(AB ▷ A) = (AB ▷ A)");
-
-		doTest("rule15_res_subs", hyps, "(AB ⩥ A) = (AB ⩥ A)", te, VALID);
 	}
 
 	public void testRule18() {

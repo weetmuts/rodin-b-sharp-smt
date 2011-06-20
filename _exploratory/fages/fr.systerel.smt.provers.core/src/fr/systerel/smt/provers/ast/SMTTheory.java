@@ -126,8 +126,8 @@ public class SMTTheory {
 				SMTSymbol.EXPN, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
 				SMTSymbol.MOD, INT, !ASSOCIATIVE, !PREDEFINED, INT_INT_TAB);
-		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET, UMINUS,
-				MINUS, PLUS, MUL, DIV, MOD, EXPN };
+		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
+				UMINUS, MINUS, PLUS, MUL, DIV, MOD, EXPN };
 
 		/**
 		 * The sole instance of the integer theory

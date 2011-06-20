@@ -10,10 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
-import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.FST_SYMBOL;
-import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.PAIR_SORT;
-import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.PAIR_SYMBOL;
-import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.SND_SYMBOL;
 import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.VeritPredefinedTheory.POLYMORPHIC;
@@ -62,8 +58,10 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
+import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTPolymorphicSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
@@ -90,18 +88,46 @@ public class SMTMacroFactory {
 	public static boolean IS_GENERIC_SORT = true;
 	public static final String ENUM_PREFIX = "enum";
 
+	public static final String SND_PAIR_ARG_NAME = "sndArg";
+	public static final String FST_PAIR_ARG_NAME = "fstArg";
+	private static final String FST_PAIR_SORT_NAME = "'s";
+	private static final String SND_PAIR_SORT_NAME = "'t";
+
+	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactory
+			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
+
+	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactory
+			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
+
+	public static SMTSortSymbol PAIR_SORT = SMTFactory
+			.makePolymorphicSortSymbol("(Pair 's 't)");
+
+	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
+			SND_RETURN_SORT };
+
+	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
+			MAPSTO, PAIR_SORT, false, !PREDEFINED, PAIR_ARG_SORTS);
+
+	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
+
+	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
+			"fst", FST_RETURN_SORT, false, !PREDEFINED, PAIR_SORTS);
+
+	public static final SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
+			"snd", SND_RETURN_SORT, false, !PREDEFINED, PAIR_SORTS);
+
+	public static final SMTSymbol[] PAIR_AND_FST_AND_SND_SYMBOLS = { PAIR_SORT,
+			PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL };
+
 	/**
 	 * This set stores the name of all identifiers of the macro that have a
 	 * question mark prefixed.
 	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
-	private static SMTSymbol[] PAIR_AND_FST_AND_SND_SYMBOLS = { PAIR_SORT,
-			PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL };
+	private final static SMTSymbol[] PAIR_SYMBOLS = { PAIR_SORT, PAIR_SYMBOL };
 
-	private static SMTSymbol[] PAIR_SYMBOLS = { PAIR_SORT, PAIR_SYMBOL };
-
-	private static SMTSymbol[] EMPTY_SYMBOLS = {};
+	private final static SMTSymbol[] EMPTY_SYMBOLS = {};
 
 	private static SMTMacro[] EMPTY_MACROS = {};
 
