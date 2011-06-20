@@ -37,6 +37,16 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testNames() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("x", "IN_1");
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("IN_1 = {x}");
+		doTest("namecol", hyps, "(∃ IN_0 ⦂ IN_1 · IN_0 ∈ IN_1)", te, VALID);
+	}
+
+	@Test
 	public void testTePlusSort() {
 		setPreferencesForSolverTest(solver);
 
@@ -698,16 +708,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
 		doTest("intsettest", hyps, "A ⊆ ℤ", te, VALID);
-	}
-
-	@Test
-	public void testNames() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment("x", "IN_1");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("IN_1 = {x}");
-		doTest("namecol", hyps, "(∃ IN_O ⦂ IN_1 · IN_0 ∈ IN_1)", te, VALID);
 	}
 
 	@Test
