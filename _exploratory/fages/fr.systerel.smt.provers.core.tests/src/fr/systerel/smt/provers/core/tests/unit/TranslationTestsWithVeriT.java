@@ -274,13 +274,13 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"AB = AB");
 	}
 
-	//FIXME: This method
 	@Test
 	public void testReservedQNames() {
-		final ITypeEnvironment te = mTypeEnvironment("UNION_0", "UNION_1");
+		final ITypeEnvironment te = mTypeEnvironment();
 
 		testTranslationV1_2VerDefaultSolver(te,
-				"∀UNION_O⦂UNION_1·UNION_0 ∈ {UNION_0}", "(iff u v)");
+				"∀UNION_0⦂UNION_1·UNION_0 ∈ {UNION_0}",
+				"(forall (?UNION_0_0 UNION_1) (in ?UNION_0_0 enum_0))");
 	}
 
 	/**
@@ -313,14 +313,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(or (= a b) (iff u v) (= r s))");
 	}
 
-	//FIXME This method
-//	@Test
-//	public void testReservedMacroName() {
-//		final ITypeEnvironment te = mTypeEnvironment("in", "emptyset", "inter",
-//				"emptyset");
-//
-//		testTranslationV1_2VerDefaultSolver(te, "in = inter", "(= in inter)");
-//	}
+	@Test
+	public void testReservedMacroName() {
+		final ITypeEnvironment te = mTypeEnvironment("in", "emptyset", "range",
+				"emptyset");
+
+		testTranslationV1_2VerDefaultSolver(te, "in = range",
+				"(= in_0 range_0)");
+	}
 
 	/**
 	 * "pred-boolequ with constants only"
