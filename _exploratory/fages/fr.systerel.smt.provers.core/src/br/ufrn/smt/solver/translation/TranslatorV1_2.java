@@ -29,6 +29,7 @@ import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 
@@ -255,6 +256,27 @@ public abstract class TranslatorV1_2 extends Translator {
 			throw new IllegalTagException(predicate.getTag());
 		}
 
+	}
+
+	@Override
+	public void visitQuantifiedPredicate(final QuantifiedPredicate predicate) {
+		boundIdentifiersMarker.push(boundIdentifiers.size());
+
+		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
+		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
+
+		switch (predicate.getTag()) {
+		case Formula.FORALL:
+			smtNode = SMTFactory.makeForAll(termChildren, formulaChild);
+			break;
+		case Formula.EXISTS:
+			smtNode = SMTFactory.makeExists(termChildren, formulaChild);
+			break;
+		default:
+			throw new IllegalTagException(predicate.getTag());
+		}
+		final int top = boundIdentifiersMarker.pop();
+		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 	}
 
 	/**

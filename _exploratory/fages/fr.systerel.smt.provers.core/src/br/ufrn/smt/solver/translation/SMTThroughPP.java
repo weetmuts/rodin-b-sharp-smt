@@ -47,7 +47,6 @@ import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
-import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
@@ -537,7 +536,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] args = membershipPredicateTerms
 				.toArray(new SMTTerm[numberOfArguments]);
 
-		smtNode = SMTFactory.makeAtom(predSymbol, signature, args);
+		smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
 		membershipPredicateTerms.clear();
 	}
 
@@ -554,8 +553,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			monadicSetsMap.put(rightSet, monadicMembershipPredicate);
 		}
 
-		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate, signature,
-				leftTerm);
+		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate,
+				new SMTTerm[] { leftTerm }, signature);
 		membershipPredicateTerms.clear();
 	}
 
@@ -613,7 +612,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula leftFormula = translateTruePred(left);
 		final SMTFormula rightFormula = translateTruePred(right);
 
-		return SMTFactory.makeIff(leftFormula, rightFormula);
+		return SMTFactory
+				.makeIff(new SMTFormula[] { leftFormula, rightFormula });
 	}
 
 	private SMTFormula translateTruePred(final Expression expr) {
@@ -624,7 +624,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
 				return SMTFactory.makeAtom(signature.getLogic().getTrue(),
-						signature, term);
+						new SMTTerm[] { term }, signature);
 			}
 		}
 		return smtFormula(expr);
@@ -657,10 +657,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the membership formula
 		final SMTFormula membershipFormula = SMTFactory.makeAtom(
-				membershipPredSymbol, signature, smtVar, intConstant);
+				membershipPredSymbol, new SMTTerm[] { smtVar, intConstant },
+				signature);
 
 		// returns the quantified formula
-		return SMTFactory.makeForAll(membershipFormula, smtVar);
+		return SMTFactory.makeForAll(new SMTTerm[] { smtVar },
+				membershipFormula);
 	}
 
 	/**
@@ -690,10 +692,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the membership formula
 		final SMTFormula membershipFormula = SMTFactory.makeAtom(
-				membershipPredSymbol, signature, smtVar, boolConstant);
+				membershipPredSymbol, new SMTTerm[] { smtVar, boolConstant },
+				signature);
 
 		// returns the quantified formula
-		return SMTFactory.makeForAll(membershipFormula, smtVar);
+		return SMTFactory.makeForAll(new SMTTerm[] { smtVar },
+				membershipFormula);
 	}
 
 	/**
@@ -713,21 +717,24 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
 		final SMTPredicateSymbol truePredSymbol = signature.getLogic()
 				.getTrue();
-		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol, signature,
-				xTerm);
-		final SMTFormula trueY = SMTFactory.makeAtom(truePredSymbol, signature,
-				yTerm);
-		final SMTFormula trueXEqvTrueY = SMTFactory.makeIff(trueX, trueY);
+		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol,
+				new SMTTerm[] { xTerm }, signature);
+		final SMTFormula trueY = SMTFactory.makeAtom(truePredSymbol,
+				new SMTTerm[] { yTerm }, signature);
+		final SMTFormula trueXEqvTrueY = SMTFactory.makeIff(new SMTFormula[] {
+				trueX, trueY });
 
 		// creates the formula <code>x = y</code>
-		final SMTFormula xEqualY = SMTFactory.makeEqual(xTerm, yTerm);
+		final SMTFormula xEqualY = SMTFactory.makeEqual(new SMTTerm[] { xTerm,
+				yTerm });
 
 		// creates the formula <code>(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
-		final SMTFormula equivalence = SMTFactory.makeIff(trueXEqvTrueY,
-				xEqualY);
+		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
+				trueXEqvTrueY, xEqualY });
 
 		// returns the quantified formula
-		return SMTFactory.makeForAll(equivalence, xTerm, yTerm);
+		return SMTFactory.makeForAll(new SMTTerm[] { xTerm, yTerm },
+				equivalence);
 	}
 
 	/**
@@ -1026,11 +1033,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (tag) {
 		case Formula.PLUS:
 			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.PLUS), signature, children);
+					.getOperator(SMTOperator.PLUS), children, signature);
 			break;
 		case Formula.MUL:
 			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MUL), signature, children);
+					.getOperator(SMTOperator.MUL), children, signature);
 			break;
 		default:
 			/**
@@ -1079,7 +1086,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.MINUS:
 			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MINUS), signature, children);
+					.getOperator(SMTOperator.MINUS), children, signature);
 			break;
 		case Formula.MAPSTO:
 
@@ -1093,15 +1100,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			break;
 		case Formula.DIV:
 			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), signature, children);
+					.getOperator(SMTOperator.DIV), children, signature);
 			break;
 		case Formula.MOD:
 			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MOD), signature, children);
+					.getOperator(SMTOperator.MOD), children, signature);
 			break;
 		case Formula.EXPN:
 			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), signature, children);
+					.getOperator(SMTOperator.EXPN), children, signature);
 			break;
 		default:
 			/**
@@ -1192,8 +1199,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
 			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GT), signature,
-					children);
+					.getLogic().getOperator(SMTOperator.GT), children,
+					signature);
 		}
 			break;
 		case Formula.GE: {
@@ -1226,7 +1233,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
 			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.UMINUS), signature, children);
+					.getOperator(SMTOperator.UMINUS), children, signature);
 			break;
 		default:
 			/**
@@ -1287,32 +1294,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 					signature);
 			return;
 		}
-		smtNode = SMTFactory.makeAtom((SMTPredicateSymbol) symbol, signature);
-	}
-
-	/**
-	 * This method translates an Event-B quantified actualPredicate into an SMT
-	 * node
-	 */
-	@Override
-	public void visitQuantifiedPredicate(final QuantifiedPredicate predicate) {
-		boundIdentifiersMarker.push(boundIdentifiers.size());
-
-		final SMTTerm[] termChildren = smtTerms(predicate.getBoundIdentDecls());
-		final SMTFormula formulaChild = smtFormula(predicate.getPredicate());
-
-		switch (predicate.getTag()) {
-		case Formula.FORALL:
-			smtNode = SMTFactory.makeForAll(formulaChild, termChildren);
-			break;
-		case Formula.EXISTS:
-			smtNode = sf.makeExists(formulaChild, termChildren);
-			break;
-		default:
-			throw new IllegalTagException(predicate.getTag());
-		}
-		final int top = boundIdentifiersMarker.pop();
-		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
+		smtNode = SMTFactory.makeAtom((SMTPredicateSymbol) symbol,
+				new SMTTerm[] {}, signature);
 	}
 
 	/**

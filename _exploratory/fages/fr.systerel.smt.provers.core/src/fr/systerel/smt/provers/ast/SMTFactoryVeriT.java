@@ -121,8 +121,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTVar pairVar1 = new SMTVar(pSymbol1);
 		final SMTVar pairVar2 = new SMTVar(pSymbol2);
 
-		final SMTFormula equalsFormula = SMTFactory.makeEqual(pairVar1,
-				pairVar2);
+		final SMTFormula equalsFormula = SMTFactory.makeEqual(new SMTTerm[] {
+				pairVar1, pairVar2 });
 
 		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(FST_SYMBOL,
 				pairVar1);
@@ -130,8 +130,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTFunApplication fstFunAppl2 = new SMTFunApplication(FST_SYMBOL,
 				pairVar2);
 
-		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(fstFunAppl1,
-				fstFunAppl2);
+		final SMTFormula subEqualsFormula1 = SMTFactory
+				.makeEqual(new SMTTerm[] { fstFunAppl1, fstFunAppl2 });
 
 		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(SND_SYMBOL,
 				pairVar1);
@@ -139,18 +139,18 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTFunApplication sndFunAppl2 = new SMTFunApplication(SND_SYMBOL,
 				pairVar2);
 
-		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(sndFunAppl1,
-				sndFunAppl2);
+		final SMTFormula subEqualsFormula2 = SMTFactory
+				.makeEqual(new SMTTerm[] { sndFunAppl1, sndFunAppl2 });
 
-		final SMTFormula andFormula = SMTFactory.makeAnd(subEqualsFormula1,
-				subEqualsFormula2);
+		final SMTFormula andFormula = SMTFactory.makeAnd(new SMTFormula[] {
+				subEqualsFormula1, subEqualsFormula2 });
 
-		final SMTFormula impliesFormula = SMTFactory.makeImplies(andFormula,
-				equalsFormula);
+		final SMTFormula impliesFormula = SMTFactory
+				.makeImplies(new SMTFormula[] { andFormula, equalsFormula });
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						impliesFormula, pairVar1, pairVar2);
+						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula);
 
 		return quantifiedFormula;
 	}
@@ -214,7 +214,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol);
 
 		} else if (smtSymbol instanceof SMTFunctionSymbol) {
-			return makeFunApplication((SMTFunctionSymbol) smtSymbol, signature);
+			return makeConstant((SMTFunctionSymbol) smtSymbol, signature);
 		} else {
 			throw new IllegalArgumentException(
 					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");
