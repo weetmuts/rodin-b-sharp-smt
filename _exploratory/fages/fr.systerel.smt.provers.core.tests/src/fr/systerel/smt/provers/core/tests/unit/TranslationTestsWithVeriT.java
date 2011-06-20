@@ -274,6 +274,15 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"AB = AB");
 	}
 
+	//FIXME: This method
+	@Test
+	public void testReservedQNames() {
+		final ITypeEnvironment te = mTypeEnvironment("UNION_0", "UNION_1");
+
+		testTranslationV1_2VerDefaultSolver(te,
+				"∀UNION_O⦂UNION_1·UNION_0 ∈ {UNION_0}", "(iff u v)");
+	}
+
 	/**
 	 * "pred-ass"
 	 */
@@ -303,6 +312,15 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
 				"(or (= a b) (iff u v) (= r s))");
 	}
+
+	//FIXME This method
+//	@Test
+//	public void testReservedMacroName() {
+//		final ITypeEnvironment te = mTypeEnvironment("in", "emptyset", "inter",
+//				"emptyset");
+//
+//		testTranslationV1_2VerDefaultSolver(te, "in = inter", "(= in inter)");
+//	}
 
 	/**
 	 * "pred-boolequ with constants only"
@@ -1083,5 +1101,4 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",
 				expectedAssumptions);
 	}
-
 }

@@ -122,7 +122,7 @@ public abstract class SMTSignature {
 	 * 
 	 * @return the reserved symbols and keyboards.
 	 */
-	private static Set<String> getReservedSymbolsAndKeywords() {
+	public static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
 				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
 						"distinct", "false", "flet", "if_then_else", "iff",

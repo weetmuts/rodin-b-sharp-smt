@@ -633,4 +633,13 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
+	@Test
+	public void testBoundBaseType() {
+		final ITypeEnvironment te = mTypeEnvironment();
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOL))");
+		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
+				"(forall (?z NSORT_1) (?c NSORT_1) (= ?z ?c))");
+	}
+
 }

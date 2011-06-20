@@ -31,6 +31,7 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
+import fr.systerel.smt.provers.ast.SMTSignature;
 
 /**
  * 
@@ -106,7 +107,11 @@ public class SmtProverCall extends XProverCall {
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm);
 		smtUiPreferences = preferences;
-		this.lemmaName = lemmaName;
+		if (SMTSignature.getReservedSymbolsAndKeywords().contains(lemmaName)) {
+			this.lemmaName = lemmaName + "_";
+		} else {
+			this.lemmaName = lemmaName;
+		}
 		proverName = preferences.getSolver().getId();
 	}
 
@@ -497,7 +502,7 @@ public class SmtProverCall extends XProverCall {
 
 		/**
 		 * Set up result file
-		 */
+		 **/
 		final File resultFile = new File(iFile.getParent() + File.separatorChar
 				+ lemmaName + ".res");
 		if (!resultFile.exists()) {
