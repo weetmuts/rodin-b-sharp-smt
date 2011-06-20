@@ -28,8 +28,6 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.translation.SMTThroughPP;
-import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
 
@@ -38,49 +36,46 @@ import fr.systerel.smt.provers.ast.SMTSignature;
  * Each instance of this class represents a call to an external SMT prover.
  * 
  */
-public class SmtProverCall extends XProverCall {
-
-	private static final String RES = "res";
-	private static final String SMT_LIB_FILE_EXTENSION = ".smt";
-	private static final String VERIT_TEMP_FILE = "_prep";
-	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
-	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
-	private static final String TRANSLATION_PATH = System
+public abstract class SMTProverCall extends XProverCall {
+	protected static final String RES = "res";
+	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
+	protected static final String TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
 
-	private static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = false;
+	protected static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = true;
 
-	private String translationFolder = null;
+	protected String translationFolder = null;
 
-	private final List<Process> activeProcesses = new ArrayList<Process>();
+	protected final List<Process> activeProcesses = new ArrayList<Process>();
 
 	/**
 	 * Name of the called external SMT prover
 	 */
-	private final String proverName;
+	protected final String proverName;
 
 	/**
-	 * The UI preferences of the SMT plugin
+	 * The UI preferences of the SMT plugin TODO remove this dependance to the
+	 * UI
 	 */
-	private final SMTPreferences smtUiPreferences;
+	protected final SMTPreferences smtUiPreferences;
 
 	/**
 	 * Name of the lemma to prove
 	 */
-	private final String lemmaName;
+	protected final String lemmaName;
 
 	/**
 	 * Tells whether the given sequent was discharged (valid = true) or not
 	 * (valid = false)
 	 */
-	private volatile boolean valid;
+	protected volatile boolean valid;
 
 	/**
 	 * Solver output at the end of the call
 	 */
-	private String resultOfSolver;
+	protected String resultOfSolver;
 
 	/**
 	 * Access to these files must be synchronized. iFile contains the sequent to
@@ -89,7 +84,6 @@ public class SmtProverCall extends XProverCall {
 	 */
 	protected File iFile;
 	protected File oFile;
-	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
 	/**
 	 * Creates an instance of this class. Additional computations are: prover
@@ -102,7 +96,7 @@ public class SmtProverCall extends XProverCall {
 	 * @param pm
 	 *            proof monitor used for cancellation
 	 */
-	protected SmtProverCall(final Iterable<Predicate> hypotheses,
+	protected SMTProverCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm);
@@ -204,7 +198,7 @@ public class SmtProverCall extends XProverCall {
 	 *            the SMT file which will be the output of the translation
 	 * @return the PrintWriter that points to the SMT file.
 	 */
-	private static PrintWriter openSMTFileWriter(final File smtFile) {
+	protected static PrintWriter openSMTFileWriter(final File smtFile) {
 		try {
 			final PrintWriter smtFileWriter = new PrintWriter(
 					new BufferedWriter(new FileWriter(smtFile)));
@@ -221,6 +215,8 @@ public class SmtProverCall extends XProverCall {
 			return null;
 		}
 	}
+
+	public abstract List<String> smtTranslation() throws IOException;
 
 	/**
 	 * Run the external SMT prover on the sequent given at instance creation.
@@ -248,7 +244,7 @@ public class SmtProverCall extends XProverCall {
 				 * set the pre-processor: veriT or pptrans.
 				 */
 				proofMonitor.setTask("Translating Event-B proof obligation");
-				final List<String> translatedPOs = smtTranslationThroughPP();
+				final List<String> translatedPOs = smtTranslation();
 				callProver(translatedPOs);
 
 			} else if (smtUiPreferences.getSolver().getsmtV2_0()) {
@@ -262,69 +258,6 @@ public class SmtProverCall extends XProverCall {
 	}
 
 	/**
-	 * Execute translation of Event-B predicates using the PP approach.
-	 * 
-	 * @return the list of arguments
-	 * @throws IOException
-	 */
-	public List<String> smtTranslationThroughPP() throws IOException {
-		return smtTranslation(translateToBenchmarkThroughPP());
-	}
-
-	/**
-	 * Execute translation of Event-B predicates using the PP approach.
-	 * 
-	 * @return the list of arguments
-	 * @throws IOException
-	 */
-	public SMTBenchmark translateToBenchmarkThroughPP() throws IOException {
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
-						.getId());
-		return benchmark;
-	}
-
-	/**
-	 * Execute translation of Event-B predicates using the VeriT pre-processing
-	 * approach.
-	 * 
-	 * @throws IOException
-	 */
-	public List<String> smtTranslationThroughVeriT() throws IOException {
-		final SMTBenchmark benchmark = SMTThroughVeriT
-				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
-						smtUiPreferences.getSolver().getId());
-		/**
-		 * The name of the SMT file with macros.
-		 */
-		if (translationFolder == null) {
-			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
-		}
-		final String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
-				.getName());
-
-		/**
-		 * First, write the SMT file with macros
-		 */
-		final File preprocessedFile = writeVeritPreprocessedSMTFile(benchmark,
-				veriTPreProcessingFileName);
-
-		if (!preprocessedFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
-
-		/**
-		 * Then, call veriT, which produces a version of the SMT file without
-		 * macros
-		 */
-		callVeriT(preprocessedFile);
-
-		final List<String> args = setSolverArgs(iFile.getPath());
-
-		return args;
-	}
-
-	/**
 	 * Executes the SMT-Solver process and returns the output of it.
 	 * 
 	 * @param args
@@ -332,7 +265,7 @@ public class SmtProverCall extends XProverCall {
 	 * @return the output of the process
 	 * @throws IOException
 	 */
-	private String execProcess(final List<String> args) throws IOException {
+	protected String execProcess(final List<String> args) throws IOException {
 		final ProcessBuilder pb = new ProcessBuilder(args);
 		pb.redirectErrorStream(true);
 		final Process p = pb.start();
@@ -340,94 +273,6 @@ public class SmtProverCall extends XProverCall {
 		final ProcessMonitor pm = new ProcessMonitor(null, p, this);
 		final String resultString = new String(pm.output());
 		return resultString;
-	}
-
-	/**
-	 * This method should: call the veriT, produce a simplified version of the
-	 * SMT file without macros, and verify if there is any input error
-	 * 
-	 * @param preprocessedFile
-	 * @throws IOException
-	 */
-	private void callVeriT(final File preprocessedFile) throws IOException {
-		final List<String> args = new ArrayList<String>();
-
-		if (smtUiPreferences.getPreproPath().isEmpty()
-				|| smtUiPreferences.getPreproPath() == null) {
-			throw new IllegalArgumentException(
-					Messages.SmtProversCall_preprocessor_path_not_defined);
-		}
-
-		args.add(smtUiPreferences.getPreproPath());
-		args.add(VERIT_SIMPLIFY_ARGUMENT_STRING);
-		args.add(VERIT_DISABLE_BANNER);
-		args.add(preprocessedFile.getPath());
-
-		resultOfSolver = execProcess(args);
-
-		/**
-		 * Set up temporary result file
-		 */
-		checkPreProcessingResult(preprocessedFile.getParent());
-	}
-
-	private void createPostProcessedFile(final String parentFolder,
-			final String extension) throws IOException {
-		iFile = new File(parentFolder + File.separatorChar + lemmaName
-				+ POST_PROCESSED_FILE_POSTFIX + extension);
-		if (!iFile.exists()) {
-			iFile.createNewFile();
-		}
-		final FileWriter fileWriter = new FileWriter(iFile);
-		fileWriter.write(resultOfSolver);
-		fileWriter.close();
-	}
-
-	private void checkPreProcessingResult(final String parentFolder)
-			throws IOException {
-		if (resultOfSolver.contains("(benchmark")) {
-			resultOfSolver = resultOfSolver.substring(resultOfSolver
-					.indexOf("(benchmark"));
-			createPostProcessedFile(parentFolder, "smt");
-			return;
-		} else {
-			createPostProcessedFile(parentFolder, RES);
-			if (resultOfSolver.contains("syntax error")
-					|| resultOfSolver.contains("parse error")
-					|| resultOfSolver.contains("Lexical_error")) {
-				throw new IllegalArgumentException(proverName
-						+ " could not pre-process " + lemmaName
-						+ ".smt with VeriT. See " + lemmaName
-						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
-			} else {
-				throw new IllegalArgumentException("Unexpected response of "
-						+ proverName + ". See " + lemmaName
-						+ POST_PROCESSED_FILE_POSTFIX + RES
-						+ " for more details.");
-			}
-		}
-	}
-
-	private String smtVeriTPreProcessFilePath(final String fileName) {
-		return translationFolder + File.separatorChar + fileName
-				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
-	}
-
-	private File writeVeritPreprocessedSMTFile(final SMTBenchmark benchmark,
-			final String veriTPreProcessingFileName) {
-		final File preProcessedSMTFile = new File(veriTPreProcessingFileName);
-		try {
-			preProcessedSMTFile.createNewFile();
-		} catch (final IOException ioe) {
-			ioe.printStackTrace();
-			ioe.getMessage();
-			return null;
-		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(preProcessedSMTFile);
-		benchmark.print(smtFileWriter);
-		smtFileWriter.close();
-		return preProcessedSMTFile;
-
 	}
 
 	private File writeSMTFile(final SMTBenchmark benchmark,
@@ -454,10 +299,10 @@ public class SmtProverCall extends XProverCall {
 	 * 
 	 * @throws IOException
 	 */
-	private List<String> smtTranslation(final SMTBenchmark benchmark)
+	protected List<String> smtTranslation(final SMTBenchmark benchmark)
 			throws IOException {
 		if (translationFolder == null) {
-			translationFolder = mkTranslationDir(CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+			translationFolder = mkTranslationDir(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
 		final String smtFileName = smtFilePath(benchmark.getName());
 
@@ -523,7 +368,7 @@ public class SmtProverCall extends XProverCall {
 	 * Set up input arguments for solver.
 	 * 
 	 */
-	private List<String> setSolverArgs(final String lemmaFilePath) {
+	protected List<String> setSolverArgs(final String lemmaFilePath) {
 		final List<String> args = new ArrayList<String>();
 		args.add(smtUiPreferences.getSolver().getPath());
 

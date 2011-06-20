@@ -24,7 +24,9 @@ import br.ufrn.smt.solver.translation.SMTSolver;
 import br.ufrn.smt.solver.translation.SMTTranslationApproach;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
-import fr.systerel.smt.provers.internal.core.SmtProverCall;
+import fr.systerel.smt.provers.internal.core.SMTPPCall;
+import fr.systerel.smt.provers.internal.core.SMTProverCall;
+import fr.systerel.smt.provers.internal.core.SMTVeriTCall;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
 
@@ -32,7 +34,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public static String smtFolder;
 
-	protected final List<SmtProverCall> smtProverCalls = new ArrayList<SmtProverCall>();
+	protected final List<SMTProverCall> smtProverCalls = new ArrayList<SMTProverCall>();
 
 	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 	/**
@@ -57,7 +59,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	/**
-	 * A ProofMonitor is necessary for SmtProverCall instances creation.
+	 * A ProofMonitor is necessary for SMTProverCall instances creation.
 	 * Instances from this ProofMonitor do nothing.
 	 */
 	protected static class NullProofMonitor implements IProofMonitor {
@@ -84,14 +86,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	@BeforeClass
 	public static void cleanSMTFolder() {
 		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SmtProverCall
+			CommonSolverRunTests.smtFolder = SMTProverCall
 					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
 		}
 	}
 
 	@After
 	public void finalizeSolverProcess() {
-		for (final SmtProverCall smtProverCall : smtProverCalls) {
+		for (final SMTProverCall smtProverCall : smtProverCalls) {
 			smtProverCall.cleanup();
 		}
 	}
@@ -226,30 +228,35 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
-		// Create an instance of SmtProversCall
-		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypotheses,
-				parsedGoal, MONITOR, preferences, lemmaName) {
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-		};
-		smtProverCalls.add(smtProverCall);
+		final SMTProverCall smtProverCall;
 
 		try {
-			final List<String> smtArgs;
 			switch (translationApproach) {
 			case USING_VERIT:
-				smtArgs = new ArrayList<String>(
-						smtProverCall.smtTranslationThroughVeriT());
+				// Create an instance of SmtVeriTCall
+				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					@Override
+					public String displayMessage() {
+						return "SMT";
+					}
+				};
 				break;
 
 			default: // USING_PP
-				smtArgs = new ArrayList<String>(
-						smtProverCall.smtTranslationThroughPP());
+				// Create an instance of SmtPPCall
+				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					@Override
+					public String displayMessage() {
+						return "SMT";
+					}
+				};
 				break;
 			}
 
+			smtProverCalls.add(smtProverCall);
+			final List<String> smtArgs = new ArrayList<String>(smtProverCall.smtTranslation());
 			smtProverCall.callProver(smtArgs);
 
 			assertEquals(
@@ -289,8 +296,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		// Create an instance of SmtProversCall
-		final SmtProverCall smtProverCall = new SmtProverCall(parsedHypotheses,
-				parsedGoal, MONITOR, preferences, lemmaName) {
+		final SMTPPCall smtPPCall = new SMTPPCall(parsedHypotheses, parsedGoal,
+				MONITOR, preferences, lemmaName) {
 			@Override
 			public String displayMessage() {
 				return "SMT";
@@ -298,7 +305,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		};
 
 		try {
-			final SMTBenchmark benchmark = smtProverCall
+			final SMTBenchmark benchmark = smtPPCall
 					.translateToBenchmarkThroughPP();
 
 			final SMTSignature signature = benchmark.getSignature();

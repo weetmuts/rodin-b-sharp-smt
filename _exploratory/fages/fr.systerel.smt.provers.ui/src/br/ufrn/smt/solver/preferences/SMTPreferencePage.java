@@ -62,7 +62,7 @@ import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 public class SMTPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	public static final String PREFERENCE_NAME = "SMTTacticProvider-Solver Plugin";
+	public static final String PREFERENCE_NAME = "SMT-Solver Plugin";
 
 	public static final String SOLVER_ID = "Solver ID";
 
@@ -118,7 +118,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		if (selectedSolverIndex == -1) {
 			UIUtils.showError(Messages.SmtProversCall_no_selected_solver);
 		}
-		setDescription("SMTTacticProvider-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
+		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
 
 	}
 
@@ -497,7 +497,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// smt version
 		final Label smtVersionLabel = new Label(compSmtVersion, SWT.LEFT);
-		smtVersionLabel.setText("SMTTacticProvider-Lib"); //$NON-NLS-1$
+		smtVersionLabel.setText("SMT-Lib"); //$NON-NLS-1$
 
 		final Button smt1_2_Button = new Button(compSmtVersion, SWT.CHECK);
 		smt1_2_Button.setText("1.2"); //$NON-NLS-1$

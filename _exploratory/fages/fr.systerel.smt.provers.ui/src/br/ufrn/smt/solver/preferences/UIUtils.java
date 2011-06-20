@@ -30,7 +30,7 @@ public class UIUtils {
 	 * Opens an error dialog to the user displaying the given message.
 	 */
 	public static void showError(final String message) {
-		final String title = "SMTTacticProvider error";
+		final String title = "SMT error";
 		syncExec(new Runnable() {
 			@Override
 			public void run() {

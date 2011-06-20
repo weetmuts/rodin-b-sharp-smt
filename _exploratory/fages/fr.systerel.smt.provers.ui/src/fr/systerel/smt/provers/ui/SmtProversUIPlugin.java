@@ -4,12 +4,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eventb.core.seqprover.ITactic;
-import org.eventb.core.seqprover.tactics.BasicTactics;
-import org.eventb.core.seqprover.xprover.XProverInput;
 import org.osgi.framework.BundleContext;
-
-import fr.systerel.smt.provers.internal.core.ExternalSmt;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -21,12 +16,6 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static SmtProversUIPlugin plugin;
-
-	/**
-	 * Default delay for time-out of the Smt provers (value 30 seconds).
-	 */
-	public static long DEFAULT_DELAY = 3 * 1000;
-	public static long NO_DELAY = 0;
 
 	/**
 	 * The constructor
@@ -61,25 +50,6 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 			return window.getShell();
 		}
 		return null;
-	}
-
-	/**
-	 * Returns a tactic for applying the Smt prover to a proof tree node.
-	 * <p>
-	 * This is a convenience method, fully equivalent to:
-	 * 
-	 * <pre>
-	 * externalSMT(forces, DEFAULT_DELAY)
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @return a tactic for running SMTTacticProvider with the given forces
-	 */
-	public static ITactic ExternalSmtTac(final boolean restricted) {
-		return BasicTactics.reasonerTac(//
-				new ExternalSmt(), //
-				new XProverInput(restricted, DEFAULT_DELAY));
 	}
 
 	/**

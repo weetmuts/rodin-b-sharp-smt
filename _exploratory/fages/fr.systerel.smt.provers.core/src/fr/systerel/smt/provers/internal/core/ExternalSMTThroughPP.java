@@ -24,26 +24,18 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**
- * Runs an external SMT prover as a reasoner.
+ * Runs an external SMTPP prover as a reasoner.
  * 
  * @author Y. Fages-Tafanelli
  */
-public class ExternalSmt extends XProverReasoner {
-
-	private static final String PREPROPATH = "prepropath";
-
-	private static final String USINGPREPRO = "usingprepro";
-
+public class ExternalSMTThroughPP extends XProverReasoner {
 	private static final String SOLVERINDEX = "solverindex";
-
 	private static final String SOLVERPREFERENCES = "solverpreferences";
-
 	private static final String RODIN_SEQUENT = "rodin_sequent";
+	private static final String PREFS_ID = "fr.systerel.smt.provers.ui";
 
 	public static String REASONER_ID = SmtProversCore.PLUGIN_ID
 			+ ".externalSMT";
-
-	private static String PREFS_ID = "fr.systerel.smt.provers.ui";
 
 	@Override
 	public String getReasonerID() {
@@ -60,19 +52,16 @@ public class ExternalSmt extends XProverReasoner {
 
 		/**
 		 * Get back preferences from UI
+		 * TODO remove UI dependance here
 		 */
-		final String string1 = preferencesService.getString(PREFS_ID,
+		final String solverPreferences = preferencesService.getString(PREFS_ID,
 				SOLVERPREFERENCES, null, null);
-		final int int2 = preferencesService.getInt(PREFS_ID, SOLVERINDEX, -1,
-				null);
-		final boolean bool3 = preferencesService.getBoolean(PREFS_ID,
-				USINGPREPRO, false, null);
-		final String string4 = preferencesService.getString(PREFS_ID,
-				PREPROPATH, null, null);
-		final SMTPreferences smtPreferences = new SMTPreferences(string1, int2,
-				bool3, string4);
+		final int solverIndex = preferencesService.getInt(PREFS_ID,
+				SOLVERINDEX, -1, null);
+		final SMTPreferences smtPreferences = new SMTPreferences(
+				solverPreferences, solverIndex, false, null);
 
-		return new SmtProverCall(hypotheses, goal, pm, smtPreferences,
+		return new SMTPPCall(hypotheses, goal, pm, smtPreferences,
 				RODIN_SEQUENT); // TODO
 		// replace
 		// "rodin_sequent"

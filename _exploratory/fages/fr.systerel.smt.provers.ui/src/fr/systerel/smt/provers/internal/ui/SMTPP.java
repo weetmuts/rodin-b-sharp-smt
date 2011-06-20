@@ -12,16 +12,16 @@ import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
 import org.eventb.ui.prover.ITacticProvider;
 
-import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
+import fr.systerel.smt.provers.core.SmtProversCore;
 
-public class SMTTacticProvider extends DefaultTacticProvider implements
+public class SMTPP extends DefaultTacticProvider implements
 		ITacticProvider {
 
-	public static class SMTApplication extends DefaultPredicateApplication {
+	public static class SMTPPApplication extends DefaultPredicateApplication {
 
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
-			return SmtProversUIPlugin.ExternalSmtTac(true);
+			return SmtProversCore.externalSMTThroughPP(true);
 		}
 
 	}
@@ -31,7 +31,7 @@ public class SMTTacticProvider extends DefaultTacticProvider implements
 			final IProofTreeNode node, final Predicate hyp,
 			final String globalInput) {
 		if (node != null && node.isOpen()) {
-			final ITacticApplication appli = new SMTApplication();
+			final ITacticApplication appli = new SMTPPApplication();
 			return singletonList(appli);
 		}
 		return emptyList();

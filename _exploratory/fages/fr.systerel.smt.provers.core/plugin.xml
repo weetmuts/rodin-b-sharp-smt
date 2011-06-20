@@ -4,7 +4,7 @@
    <extension
          point="org.eventb.core.seqprover.reasoners">
       <reasoner
-            class="fr.systerel.smt.provers.internal.core.ExternalSmt"
+            class="fr.systerel.smt.provers.internal.core.ExternalSMTThroughPP"
             id="externalSMT"
             name="%externalSMT.name">
       </reasoner>

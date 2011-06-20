@@ -10,12 +10,12 @@
  *     Vitor Alcantara de Almeida - First integration Smt solvers 
  *******************************************************************************/
 
-package fr.systerel.smt.provers.internal.ui;
+package fr.systerel.smt.provers.internal.core;
 
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 
-import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
+import fr.systerel.smt.provers.core.SmtProversCore;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
@@ -34,11 +34,19 @@ public class AutoTactics {
 		//
 	}
 
-	public static class SMT extends AbsractLazilyConstrTactic {
+	public static class SMTPP extends AbsractLazilyConstrTactic {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversUIPlugin.ExternalSmtTac(true);
+			return SmtProversCore.externalSMTThroughPP(true);
+		}
+	}
+
+	public static class SMTVeriT extends AbsractLazilyConstrTactic {
+
+		@Override
+		protected ITactic getSingInstance() {
+			return SmtProversCore.externalSMTThroughVeriT(true);
 		}
 	}
 }
