@@ -45,7 +45,7 @@ public class SMTPPCall extends SMTProverCall {
 	 */
 	public SMTBenchmark translateToBenchmarkThroughPP() throws IOException {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal, smtUiPreferences.getSolver()
+				lemmaName, hypotheses, goal, smtPreferences.getSolver()
 						.getId());
 		return benchmark;
 	}

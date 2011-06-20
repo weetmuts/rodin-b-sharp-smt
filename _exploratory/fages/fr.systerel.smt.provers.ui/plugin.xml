@@ -8,18 +8,31 @@
             name="%dropdown.name"
             priority="fr.systerel.smt.provers.ui.dropdown"
             toolbar="org.eventb.ui.sequentToolbar">
+            tooltip="%dropdown.name">
       </dropdown>
       <tactic
             dropdown="fr.systerel.smt.provers.ui.dropdown"
             icon="icons/SMT.GIF"
-            id="fr.systerel.smt.provers.ui.tactic"
+            id="fr.systerel.smt.provers.ui.pptactic"
             interrupt="true"
-            name="%tactic.name"
-            priority="fr.systerel.smt.provers.ui.tactic"
+            name="%PPtactic.name"
+            priority="0"
             skipPostTactic="false"
             tacticProvider="fr.systerel.smt.provers.internal.ui.SMTPP"
             target="global"
-            tooltip="%tactic.tooltip">
+            tooltip="%PPtactic.tooltip">
+      </tactic>
+      <tactic
+            dropdown="fr.systerel.smt.provers.ui.dropdown"
+            icon="icons/SMT.GIF"
+            id="fr.systerel.smt.provers.ui.verittactic"
+            interrupt="true"
+            name="%VeriTtactic.name"
+            priority="1"
+            skipPostTactic="false"
+            tacticProvider="fr.systerel.smt.provers.internal.ui.SMTVeriT"
+            target="global"
+            tooltip="%VeriTtactic.tooltip">
       </tactic>
    </extension>
    <extension

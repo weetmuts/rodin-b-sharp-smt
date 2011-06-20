@@ -12,8 +12,6 @@
 
 package fr.systerel.smt.provers.internal.core;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
@@ -29,13 +27,15 @@ import fr.systerel.smt.provers.core.SmtProversCore;
  * @author Y. Fages-Tafanelli
  */
 public class ExternalSMTThroughPP extends XProverReasoner {
-	private static final String SOLVERINDEX = "solverindex";
-	private static final String SOLVERPREFERENCES = "solverpreferences";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
-	private static final String PREFS_ID = "fr.systerel.smt.provers.ui";
+	private final SMTPreferences preferences;
 
 	public static String REASONER_ID = SmtProversCore.PLUGIN_ID
 			+ ".externalSMT";
+
+	public ExternalSMTThroughPP(final SMTPreferences preferences) {
+		this.preferences = preferences;
+	}
 
 	@Override
 	public String getReasonerID() {
@@ -47,22 +47,7 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 			final Iterable<Predicate> hypotheses, final Predicate goal,
 			final IProofMonitor pm) {
 
-		final IPreferencesService preferencesService = Platform
-				.getPreferencesService();
-
-		/**
-		 * Get back preferences from UI
-		 * TODO remove UI dependance here
-		 */
-		final String solverPreferences = preferencesService.getString(PREFS_ID,
-				SOLVERPREFERENCES, null, null);
-		final int solverIndex = preferencesService.getInt(PREFS_ID,
-				SOLVERINDEX, -1, null);
-		final SMTPreferences smtPreferences = new SMTPreferences(
-				solverPreferences, solverIndex, false, null);
-
-		return new SMTPPCall(hypotheses, goal, pm, smtPreferences,
-				RODIN_SEQUENT); // TODO
+		return new SMTPPCall(hypotheses, goal, pm, preferences, RODIN_SEQUENT); // TODO
 		// replace
 		// "rodin_sequent"
 		// with

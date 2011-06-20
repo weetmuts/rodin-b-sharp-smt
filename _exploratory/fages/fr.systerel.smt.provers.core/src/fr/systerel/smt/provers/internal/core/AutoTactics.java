@@ -34,11 +34,12 @@ public class AutoTactics {
 		//
 	}
 
+	//TODO add SMTAltErgoPP, SMTCVC3PP, SMTVeriTPP and SMTZ3PP etc.. with adequat preferences
 	public static class SMTPP extends AbsractLazilyConstrTactic {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversCore.externalSMTThroughPP(true);
+			return SmtProversCore.externalSMTThroughPP(null, true);
 		}
 	}
 
@@ -46,7 +47,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversCore.externalSMTThroughVeriT(true);
+			return SmtProversCore.externalSMTThroughVeriT(null, true);
 		}
 	}
 }

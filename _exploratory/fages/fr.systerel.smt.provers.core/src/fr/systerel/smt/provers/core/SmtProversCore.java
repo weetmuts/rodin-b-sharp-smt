@@ -18,6 +18,7 @@ import org.eventb.core.seqprover.tactics.BasicTactics;
 import org.eventb.core.seqprover.xprover.XProverInput;
 import org.osgi.framework.BundleContext;
 
+import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.Translator;
 import fr.systerel.smt.provers.internal.core.ExternalSMTThroughPP;
 import fr.systerel.smt.provers.internal.core.ExternalSMTThroughVeriT;
@@ -82,17 +83,21 @@ public class SmtProversCore extends Plugin {
 	 * 
 	 * </p>
 	 * 
+	 * @param smtPreferences
+	 * 
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(final boolean restricted) {
+	public static ITactic externalSMTThroughPP(
+			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughPP(), //
+				new ExternalSMTThroughPP(smtPreferences), //
 				new XProverInput(restricted, DEFAULT_DELAY));
 	}
 
-	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
+	public static ITactic externalSMTThroughVeriT(
+			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughVeriT(), //
+				new ExternalSMTThroughVeriT(smtPreferences), //
 				new XProverInput(restricted, DEFAULT_DELAY));
 	}
 

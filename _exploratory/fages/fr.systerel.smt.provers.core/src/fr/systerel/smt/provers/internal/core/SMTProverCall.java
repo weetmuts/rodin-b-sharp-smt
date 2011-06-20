@@ -59,7 +59,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 * The UI preferences of the SMT plugin TODO remove this dependance to the
 	 * UI
 	 */
-	protected final SMTPreferences smtUiPreferences;
+	protected final SMTPreferences smtPreferences;
 
 	/**
 	 * Name of the lemma to prove
@@ -100,7 +100,7 @@ public abstract class SMTProverCall extends XProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm);
-		smtUiPreferences = preferences;
+		smtPreferences = preferences;
 		if (SMTSignature.getReservedSymbolsAndKeywords().contains(lemmaName)) {
 			this.lemmaName = lemmaName + "_";
 		} else {
@@ -226,7 +226,7 @@ public abstract class SMTProverCall extends XProverCall {
 		/**
 		 * Test the SMT solver path
 		 */
-		if (smtUiPreferences.getSolver() == null) {
+		if (smtPreferences.getSolver() == null) {
 			/**
 			 * Message popup displayed when there is no defined solver path
 			 */
@@ -238,7 +238,7 @@ public abstract class SMTProverCall extends XProverCall {
 			/**
 			 * Translate and apply smt solver
 			 */
-			if (smtUiPreferences.getSolver().getsmtV1_2()) {
+			if (smtPreferences.getSolver().getsmtV1_2()) {
 				/**
 				 * SMT lib v1.2 TODO: Add option here and in the preferences to
 				 * set the pre-processor: veriT or pptrans.
@@ -247,7 +247,7 @@ public abstract class SMTProverCall extends XProverCall {
 				final List<String> translatedPOs = smtTranslation();
 				callProver(translatedPOs);
 
-			} else if (smtUiPreferences.getSolver().getsmtV2_0()) {
+			} else if (smtPreferences.getSolver().getsmtV2_0()) {
 				/**
 				 * SMT lib v2.0
 				 */
@@ -370,23 +370,23 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	protected List<String> setSolverArgs(final String lemmaFilePath) {
 		final List<String> args = new ArrayList<String>();
-		args.add(smtUiPreferences.getSolver().getPath());
+		args.add(smtPreferences.getSolver().getPath());
 
 		/**
 		 * If solver is V1.2 the smt input is added in arguments
 		 */
-		if (smtUiPreferences.getSolver().getsmtV1_2()) {
+		if (smtPreferences.getSolver().getsmtV1_2()) {
 			args.add(lemmaFilePath);
 		}
 
 		/**
 		 * Get back solver arguments
 		 */
-		if (!smtUiPreferences.getSolver().getArgs().isEmpty()) {
+		if (!smtPreferences.getSolver().getArgs().isEmpty()) {
 			/**
 			 * Split arguments and add them in the list
 			 */
-			final String[] argumentsString = smtUiPreferences.getSolver()
+			final String[] argumentsString = smtPreferences.getSolver()
 					.getArgs().split(" "); //$NON-NLS-1$
 			for (final String argString : argumentsString) {
 				args.add(argString);

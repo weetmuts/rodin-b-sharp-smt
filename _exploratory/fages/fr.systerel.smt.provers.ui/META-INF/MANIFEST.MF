@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %Bundle-Name
+Bundle-Name: %pluginName
 Bundle-SymbolicName: fr.systerel.smt.provers.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eventb.ui,
  fr.systerel.smt.provers.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: %Bundle-Vendor
+Bundle-Vendor: %providerName
 Export-Package: br.ufrn.smt.solver.preferences,
  fr.systerel.smt.provers.ui
 Bundle-Activator: fr.systerel.smt.provers.ui.SmtProversUIPlugin
