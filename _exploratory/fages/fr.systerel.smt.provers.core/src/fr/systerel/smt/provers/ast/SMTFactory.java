@@ -189,12 +189,12 @@ public abstract class SMTFactory {
 	/**
 	 * Creates a new propositional atom. {, }
 	 */
-	public static SMTFormula makePTrue(final SMTSignature signature) {
-		return makePropAtom(PTRUE, signature);
+	public static SMTFormula makePTrue() {
+		return new SMTAtom(PTRUE, new SMTTerm[] {});
 	}
 
-	public static SMTFormula makePFalse(final SMTSignature signature) {
-		return makePropAtom(PFALSE, signature);
+	public static SMTFormula makePFalse() {
+		return new SMTAtom(PFALSE, new SMTTerm[] {});
 	}
 
 	public static SMTTerm makeInteger(final SMTFunctionSymbol integerCste,

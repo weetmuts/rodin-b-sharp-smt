@@ -253,7 +253,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
 							function.symbol.name, sortSymbols, !PREDEFINED);
-					final SMTAtom atom = new SMTAtom(predicateSymbol);
+					final SMTAtom atom = new SMTAtom(predicateSymbol,
+							new SMTTerm[] {});
 					formulas[i] = atom;
 				} else {
 					throw new IllegalArgumentException(

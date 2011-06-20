@@ -42,7 +42,6 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
-import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
@@ -1130,25 +1129,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		throw new IllegalArgumentException(
 				Messages.Incompatible_Formula_With_PPTrans_Production);
-	}
-
-	/**
-	 * This method translates an Event-B literal actualPredicate into an SMT
-	 * node.
-	 */
-	@Override
-	public void visitLiteralPredicate(final LiteralPredicate pred) {
-		final int tag = pred.getTag();
-		switch (tag) {
-		case Formula.BTRUE:
-			smtNode = SMTFactory.makePTrue(signature);
-			break;
-		case Formula.BFALSE:
-			smtNode = SMTFactory.makePFalse(signature);
-			break;
-		default:
-			throw new IllegalTagException(tag);
-		}
 	}
 
 	/**

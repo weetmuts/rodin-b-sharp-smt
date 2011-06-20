@@ -29,6 +29,7 @@ import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.IntegerLiteral;
+import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.Type;
@@ -247,6 +248,25 @@ public abstract class TranslatorV1_2 extends Translator {
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
+		}
+	}
+
+	/**
+	 * This method translates an Event-B literal actualPredicate into an SMT
+	 * node.
+	 */
+	@Override
+	public void visitLiteralPredicate(final LiteralPredicate pred) {
+		final int tag = pred.getTag();
+		switch (tag) {
+		case Formula.BTRUE:
+			smtNode = SMTFactory.makePTrue();
+			break;
+		case Formula.BFALSE:
+			smtNode = SMTFactory.makePFalse();
+			break;
+		default:
+			throw new IllegalTagException(tag);
 		}
 	}
 
