@@ -89,7 +89,7 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	 */
 	private void getUsedSymbols(final SMTVeriTAtom va,
 			final Set<SMTSymbol> symbols) {
-		symbols.add(va.getPredicate());
+		symbols.add(va.getMacroSymbol());
 
 		final SMTTerm[] terms = va.getTerms();
 		for (final SMTTerm term : terms) {

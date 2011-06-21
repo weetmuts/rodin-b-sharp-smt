@@ -16,39 +16,65 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
- * TODO: Comment this class
+ * This class is used to create atoms with macros being its symbols. The
+ * difference between SMTVeriTAtom and SMTVeritTerm is that some macros are used
+ * in a predicate level (example of macros: ismin, ismax, in).
+ * 
+ * The difference between veriT Atom and normal atoms is that this one does not
+ * have a predicate, but a macro as its symbol.
+ * 
  */
 class SMTVeriTAtom extends SMTFormula {
 
-	final SMTMacroSymbol predicateSymbol;
+	/**
+	 * The macro symbol of the atom
+	 */
+	final SMTMacroSymbol macroSymbol;
+
+	/**
+	 * the terms
+	 */
 	final SMTTerm[] terms;
 
-	public SMTMacroSymbol getPredicate() {
-		return predicateSymbol;
+	/**
+	 * get the macro symbol
+	 * 
+	 * @return the macro symbol
+	 */
+	public SMTMacroSymbol getMacroSymbol() {
+		return macroSymbol;
 	}
 
+	/**
+	 * get the terms
+	 * 
+	 * @return the terms
+	 */
 	public SMTTerm[] getTerms() {
 		return terms;
 	}
 
 	/**
+	 * Constructs a new veriT atom
 	 * 
 	 * @param symbol
+	 *            the macro symbol
 	 * @param terms
+	 *            the terms
 	 */
 	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[]) {
 		// TODO: Create a verification method for macros
-		predicateSymbol = symbol;
+		macroSymbol = symbol;
 		this.terms = terms.clone();
 	}
 
 	@Override
 	public void toString(final StringBuilder builder, final boolean printPoint) {
-		if (predicateSymbol.isPropositional()) {
-			builder.append(predicateSymbol.name);
+		if (macroSymbol.isPropositional()) {
+			builder.append(macroSymbol.name);
 		} else {
 			builder.append(OPAR);
-			builder.append(predicateSymbol.name);
+			builder.append(macroSymbol.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder);
@@ -59,10 +85,10 @@ class SMTVeriTAtom extends SMTFormula {
 
 	@Override
 	public String toString() {
-		if (predicateSymbol.isPropositional()) {
-			return predicateSymbol.getName();
+		if (macroSymbol.isPropositional()) {
+			return macroSymbol.getName();
 		} else {
-			String s = OPAR + predicateSymbol.getName();
+			String s = OPAR + macroSymbol.getName();
 			for (final SMTTerm term : terms) {
 				s += SPACE + term;
 			}

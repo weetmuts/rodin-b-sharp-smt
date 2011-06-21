@@ -39,6 +39,9 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
 			SMTSymbol.EQUAL, POLYMORPHIC_PAIRS, PREDEFINED);
 
+	/**
+	 * Predicate symbols
+	 */
 	private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
 			SMTSymbol.LT, INT_INT_TAB, PREDEFINED);
 	private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
@@ -48,6 +51,9 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
 			SMTSymbol.GE, INT_INT_TAB, PREDEFINED);
 
+	/**
+	 * Function symbols
+	 */
 	private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
 			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
 	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(

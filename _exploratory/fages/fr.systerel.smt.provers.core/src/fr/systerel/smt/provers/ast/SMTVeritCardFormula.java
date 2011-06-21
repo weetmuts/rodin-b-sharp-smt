@@ -15,36 +15,90 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
+/**
+ * This class was created to handle VeriT Card Formula. In the paper
+ * "Integration of SMT-Solvers in B and Event-B Development Environments", from
+ * DEHARBE, David, dated of December 17, 2010, it explains in the rule 25 how to
+ * translate the Event-B cardinality term.
+ * 
+ * In the formalized translation, it must be added a new assumption: (card t f
+ * k).
+ * 
+ * This class represents this assumption, where: card is a macro symbol, and t,
+ * f and k are functions and t are terms.
+ * 
+ */
 public class SMTVeritCardFormula extends SMTFormula {
 
+	/**
+	 * The card macro symbol
+	 */
 	private final SMTMacroSymbol cardSymbol;
+
+	/**
+	 * the k argument
+	 */
 	private final SMTFunctionSymbol kArgument;
+
+	/**
+	 * the f argument
+	 */
 	private final SMTFunctionSymbol fArgument;
+
+	/**
+	 * the terms
+	 */
 	private final SMTTerm[] terms;
 
+	/**
+	 * get the macro symbol
+	 * 
+	 * @return the macro symbol
+	 */
 	public SMTMacroSymbol getCardSymbol() {
 		return cardSymbol;
 	}
 
+	/**
+	 * get the k argument
+	 * 
+	 * @return the k argument
+	 */
 	public SMTFunctionSymbol getkArgument() {
 		return kArgument;
 	}
 
+	/**
+	 * get the f argument
+	 * 
+	 * @return the f argument
+	 */
 	public SMTFunctionSymbol getfArgument() {
 		return fArgument;
 	}
 
+	/**
+	 * get the term
+	 * 
+	 * @return the terms
+	 */
 	public SMTTerm[] getTerms() {
 		return terms;
 	}
 
 	/**
-	 * TODO Comment this
+	 * Constructs a new card formula
 	 * 
 	 * @param cardSymbol
+	 *            the card macro symbol
 	 * @param fVarSymbol
+	 *            the f argument
 	 * @param kVarSymbol
+	 *            the k argument
 	 * @param terms
+	 *            the terms of the formula
+	 * 
+	 * @see SMTVeritCardFormula
 	 */
 	public SMTVeritCardFormula(final SMTMacroSymbol cardSymbol,
 			final SMTFunctionSymbol fVarSymbol,
@@ -72,12 +126,9 @@ public class SMTVeritCardFormula extends SMTFormula {
 
 	@Override
 	public String toString() {
-		String s = OPAR + cardSymbol.getName();
-		for (final SMTTerm term : terms) {
-			s += SPACE + term;
-		}
-		s += SPACE + fArgument.getName() + SPACE + kArgument.getName() + CPAR;
-		return s;
+		final StringBuilder sb = new StringBuilder();
+		this.toString(sb, false);
+		return sb.toString();
 	}
 
 }

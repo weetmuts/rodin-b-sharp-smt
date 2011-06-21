@@ -15,35 +15,110 @@ import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
-//TODO: Comment this class
+/**
+ * This class was created to handle VeriT finite Formula. In the paper
+ * "Integration of SMT-Solvers in B and Event-B Development Environments", from
+ * DEHARBE, David, dated of December 17, 2010, it explains in the rule 24 how to
+ * translate the Event-B finite formula.
+ * 
+ * In the formalized translation, it must be added a new assumption: (finite p t
+ * f k).
+ * 
+ * This class represents this assumption, where: finite is a macro symbol, p is
+ * a predicate symbol, and t, f and k are functions and t are terms.
+ * 
+ * 
+ * @author vitor
+ * 
+ */
 public class SMTVeritFiniteFormula extends SMTFormula {
 
+	/**
+	 * the macro symbol of the formula
+	 */
 	private final SMTMacroSymbol finitePred;
+
+	/**
+	 * The p argument
+	 */
 	private final SMTPredicateSymbol pArgument;
+
+	/**
+	 * The k argument
+	 */
 	private final SMTFunctionSymbol kArgument;
+
+	/**
+	 * The f argument
+	 */
 	private final SMTFunctionSymbol fArgument;
+
+	/**
+	 * The terms
+	 */
 	private final SMTTerm[] terms;
 
+	/**
+	 * gets the macro symbol of the formula
+	 * 
+	 * @return the finite macro symbol
+	 */
 	public SMTMacroSymbol getFinitePred() {
 		return finitePred;
 	}
 
+	/**
+	 * gets the p argument
+	 * 
+	 * @return the p argument
+	 */
 	public SMTPredicateSymbol getpArgument() {
 		return pArgument;
 	}
 
+	/**
+	 * gets the k argument
+	 * 
+	 * @return the k argument
+	 */
 	public SMTFunctionSymbol getkArgument() {
 		return kArgument;
 	}
 
+	/**
+	 * gets the f argument
+	 * 
+	 * @return the f argument
+	 */
 	public SMTFunctionSymbol getfArgument() {
 		return fArgument;
 	}
 
+	/**
+	 * gets the terms of the formula
+	 * 
+	 * @return the terms of the formula
+	 */
 	public SMTTerm[] getTerms() {
 		return terms;
 	}
 
+	/**
+	 * Constructs a new finite formula
+	 * 
+	 * @param finitePredSymbol
+	 *            the macro symbol which represents finite macro
+	 * @param pArgument
+	 *            the p argument
+	 * @param fArgument
+	 *            the f argument
+	 * @param kArgument
+	 *            the k argument
+	 * @param terms
+	 *            the terms
+	 * 
+	 * @see SMTVeritFiniteFormula
+	 */
 	public SMTVeritFiniteFormula(final SMTMacroSymbol finitePredSymbol,
 			final SMTPredicateSymbol pArgument,
 			final SMTFunctionSymbol fArgument,

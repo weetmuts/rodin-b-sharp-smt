@@ -10,14 +10,40 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+/**
+ * The difference between verit term and normal terms is that the symbol of the
+ * term is a predicate symbol, and not function symbol.
+ * 
+ * Each instance of this class is used to store predicates that are used as
+ * arguments of macros. Since the macros arguments are terms, and the SMT preds
+ * can be used as arguments to the macros, this class was created to solve this
+ * problem, providing predicate symbols inside terms.
+ * 
+ * @author vitor
+ * 
+ */
 public class SMTVeriTTerm extends SMTTerm {
 
+	/**
+	 * The predicate symbol of this term.
+	 */
 	private final SMTPredicateSymbol symbol;
 
+	/**
+	 * gets the predicate symbol
+	 * 
+	 * @return the predicate symbol
+	 */
 	public SMTPredicateSymbol getSymbol() {
 		return symbol;
 	}
 
+	/**
+	 * Constructs a new verit term.
+	 * 
+	 * @param symbol
+	 *            the predicate symbol of the term
+	 */
 	SMTVeriTTerm(final SMTPredicateSymbol symbol) {
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
