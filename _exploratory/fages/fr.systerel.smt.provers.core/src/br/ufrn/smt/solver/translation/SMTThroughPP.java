@@ -687,10 +687,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * This method is used to translate boolean equalities, where the predicate
+	 * TRUE is not rid and the left and the right side are identifiers.
+	 * <p>
+	 * Example:
+	 * <p>
+	 * b = c,
+	 * <p>
+	 * where b and c are of type Bool.
+	 * <p>
+	 * The translation is then:
+	 * <p>
+	 * (iff b c)
+	 * 
 	 * @param left
+	 *            the left child of the equality
 	 * @param right
+	 *            the right child of the equality
+	 * @return the translation of the equality
 	 */
-	private SMTFormula translateTruePredWithId(final Expression left,
+	private SMTFormula translateBoolIds(final Expression left,
 			final Expression right) {
 		final SMTFormula leftFormula = translateTruePred(left);
 		final SMTFormula rightFormula = translateTruePred(right);
@@ -699,6 +715,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.makeIff(new SMTFormula[] { leftFormula, rightFormula });
 	}
 
+	/**
+	 * This method is used to translated boolean equalities, where the predicate
+	 * TRUE is not rid and the left or the right side is the TRUE predicate and
+	 * the other an identifier.
+	 * <p>
+	 * Example:
+	 * <p>
+	 * b = TRUE,
+	 * <p>
+	 * where b is of type Bool.
+	 * <p>
+	 * The translation is then:
+	 * <p>
+	 * b
+	 * 
+	 * @param expr
+	 *            the other element of equality. It is supposed that one of the
+	 *            sides are already the TRUE predicate.
+	 * @return the translation of the equality
+	 */
 	private SMTFormula translateTruePred(final Expression expr) {
 		if (expr.getTag() == Formula.TRUE) {
 			throw new IllegalArgumentException(
@@ -1236,7 +1272,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				smtNode = translateTruePred(left);
 				break;
 			} else if (left.getType() instanceof BooleanType) {
-				smtNode = translateTruePredWithId(left, right);
+				smtNode = translateBoolIds(left, right);
 				break;
 			}
 
