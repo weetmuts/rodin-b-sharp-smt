@@ -60,10 +60,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 	private boolean pairAxiomAdded = false;
 
-	public SMTSymbol[] getPAIR_AND_FST_AND_SND_SYMBOLS() {
-		return new SMTSymbol[] { PAIR_SORT, PAIR_SYMBOL, FST_SYMBOL, SND_SYMBOL };
-	}
-
 	/**
 	 * Adds the pair equality axiom. It is added only once.
 	 */

@@ -27,8 +27,9 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
-	protected SMTVeriTCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, SMTPreferences preferences, String lemmaName) {
+	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
 		// TODO Auto-generated constructor stub
 	}
@@ -36,7 +37,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	/**
 	 * Execute translation of Event-B predicates using the VeriT pre-processing
 	 * approach.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	@Override
 	public List<String> smtTranslation() throws IOException {

@@ -636,10 +636,24 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOL))");
 		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
 				"(forall (?z NSORT_1) (?c NSORT_1) (= ?z ?c))");
+	}
+
+	@Test
+	public void testBoundBaseType2() {
+		final ITypeEnvironment te = mTypeEnvironment();
+		testTranslateGoalPP(
+				te,
+				"∀z⦂A×B,c⦂A×B·z=c",
+				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z_0 B) (?c_0 B) (= ?z_0 ?c_0)))");
+	}
+
+	@Test
+	public void testBoundRightHandSide() {
+		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
+		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
+				"(and (forall (?c A) (MS ?c a)) (forall (?z NSORT) (?c_0 A) (MS ?c_0 ?z)))");
 	}
 
 }

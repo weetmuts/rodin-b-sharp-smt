@@ -70,18 +70,6 @@ public abstract class SMTFactory {
 		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
-	/**
-	 * The SMT-LIB language doesn't define a <code>NOTEQUAL</code> symbol. Thus
-	 * we use <code>EQUAL</code> and <code>NOT</code> symbols to build it.
-	 */
-	public static SMTFormula makeNotEqual(final SMTTerm[] args) {
-		final SMTSortSymbol sort0 = args[0].getSort();
-		final SMTSortSymbol sort[] = { sort0, sort0 };
-		final SMTFormula[] argsT = { new SMTAtom(
-				new SMTPredicateSymbol.SMTEqual(sort), args) };
-		return makeNot(argsT);
-	}
-
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
 			final SMTTerm[] args, final SMTSignature signature) {
 		signature.verifyPredicateSignature(lt);
@@ -280,20 +268,5 @@ public abstract class SMTFactory {
 	public static SMTTerm makeConstant(final SMTFunctionSymbol functionSymbol,
 			final SMTSignature signature) {
 		return makeFunApplication(functionSymbol, EMPTY_TERMS, signature);
-	}
-
-	/**
-	 * this method makes a propositional atom.
-	 * 
-	 * @param predicateSymbol
-	 *            the predicate symbol of the atom.
-	 * @param signature
-	 *            the signature, used to check the rank of the predicate symbol.
-	 * @return a new SMT formula with the predicate symbol.
-	 */
-	public static SMTFormula makePropAtom(
-			final SMTPredicateSymbol predicateSymbol,
-			final SMTSignature signature) {
-		return makeAtom(predicateSymbol, EMPTY_TERMS, signature);
 	}
 }

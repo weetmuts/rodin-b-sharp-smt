@@ -33,7 +33,7 @@ public class ExternalSMTThroughVeriT extends XProverReasoner {
 			+ ".externalSMT";
 
 	public ExternalSMTThroughVeriT(final SMTPreferences smtPreferences) {
-		this.preferences = smtPreferences;
+		preferences = smtPreferences;
 	}
 
 	@Override

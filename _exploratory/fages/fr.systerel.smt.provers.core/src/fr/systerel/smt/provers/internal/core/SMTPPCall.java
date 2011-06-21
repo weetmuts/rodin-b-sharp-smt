@@ -9,19 +9,19 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 
-import fr.systerel.smt.provers.ast.SMTBenchmark;
-
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
+import fr.systerel.smt.provers.ast.SMTBenchmark;
 
 /**
  * @author guyot
- *
+ * 
  */
 public class SMTPPCall extends SMTProverCall {
 
-	protected SMTPPCall(Iterable<Predicate> hypotheses, Predicate goal,
-			IProofMonitor pm, SMTPreferences preferences, String lemmaName) {
+	protected SMTPPCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,7 +30,7 @@ public class SMTPPCall extends SMTProverCall {
 	 * Execute translation of Event-B predicates using the PP approach.
 	 * 
 	 * @return the list of arguments
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Override
 	public List<String> smtTranslation() throws IOException {
@@ -44,9 +44,9 @@ public class SMTPPCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	public SMTBenchmark translateToBenchmarkThroughPP() throws IOException {
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal, smtPreferences.getSolver()
-						.getId());
+		final SMTBenchmark benchmark = SMTThroughPP
+				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
+						smtPreferences.getSolver().getId());
 		return benchmark;
 	}
 

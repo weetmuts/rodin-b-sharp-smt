@@ -256,7 +256,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 
 			smtProverCalls.add(smtProverCall);
-			final List<String> smtArgs = new ArrayList<String>(smtProverCall.smtTranslation());
+			final List<String> smtArgs = new ArrayList<String>(
+					smtProverCall.smtTranslation());
 			smtProverCall.callProver(smtArgs);
 
 			assertEquals(
