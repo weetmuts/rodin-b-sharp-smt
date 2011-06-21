@@ -303,9 +303,8 @@ public class SMTLogic {
 				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
 				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
 				SMTMacroSymbol.SUBSET), RANGE_INTEGER(
-				SMTMacroSymbol.RANGE_INTEGER), DOM(SMTMacroSymbol.DOM),
-		// RAN(SMTMacroSymbol.RAN),
-		IMG(SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
+				SMTMacroSymbol.RANGE_INTEGER), DOM(SMTMacroSymbol.DOM), IMG(
+				SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
 				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(
 				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
 				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), DIV(
@@ -332,7 +331,7 @@ public class SMTLogic {
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
 				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
 				SMTMacroSymbol.RANGE), BCOMP(SMTMacroSymbol.BCOMP), INTEGER(
-				SMTMacroSymbol.INT);
+				SMTMacroSymbol.INT), SUCC(SMTMacroSymbol.SUCC);
 
 		/**
 		 * The symbol string.

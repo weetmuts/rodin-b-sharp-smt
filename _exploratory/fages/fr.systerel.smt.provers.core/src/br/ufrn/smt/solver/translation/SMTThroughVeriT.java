@@ -43,6 +43,7 @@ import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.RELATIONAL_I
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SETMINUS;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SUBSET;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SUBSETEQ;
+import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SUCC;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.SURJECTIVE_RELATION;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_BIJECTION;
 import static fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator.TOTAL_FUNCTION;
@@ -509,7 +510,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			smtNode = translateKPRED(SMTMacroSymbol.PRED);
 			break;
 		case Formula.KSUCC:
-			smtNode = translateKSUCC(SMTMacroSymbol.SUCC);
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(SUCC,
+					signature));
 			break;
 		case Formula.INTEGER:
 			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(INTEGER,
@@ -549,42 +551,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
-	}
-
-	/**
-	 * Method used to translate sucessor operator. It returns a SMT-LIB version
-	 * of (λ·x ∈ ℤ ∣ x + 1).
-	 * 
-	 * @param macroName
-	 *            the name of this macro
-	 * 
-	 * @return the translated term of sucessor
-	 */
-	private SMTTerm translateKSUCC(final String macroName) {
-
-		// Making x
-		final String x = signature.freshSymbolName("x");
-		final SMTSortSymbol xSort = SMTFactoryVeriT.makePairSortSymbol(
-				Ints.getInt(), Ints.getInt());
-
-		final SMTTerm xFun = sf.makeVar(x, Ints.getInt());
-
-		// Making 1
-		final SMTNumeral plusOrMinusUmNumeral = SMTFactory
-				.makeNumeral(BigInteger.ONE);
-
-		// Making x + 1
-		final SMTTerm plusTerm = sf.makeMinus((SMTFunctionSymbol) signature
-				.getLogic().getOperator(SMTOperator.PLUS), new SMTTerm[] {
-				xFun, plusOrMinusUmNumeral }, signature);
-
-		// Making x |-> x + 1
-		final SMTTerm mapstoTerm = SMTFactory.makeFunApplication(
-				SMTFactoryVeriT.PAIR_SYMBOL, new SMTTerm[] { xFun, plusTerm },
-				signature);
-
-		return translateKPREDorKSUCCPart2(macroName, xSort, xFun, mapstoTerm);
-
 	}
 
 	/**

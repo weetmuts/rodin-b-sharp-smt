@@ -47,6 +47,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RELATIONAL_IMAGE
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SETMINUS;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SUBSET;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SUBSETEQ;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SUCC;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.SURJECTIVE_RELATION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
@@ -359,6 +360,11 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
 			INT, "(lambda (?INT_0 Int). true)", 0, EMPTY_SYMBOLS, EMPTY_MACROS);
 
+	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
+			SUCC,
+			"(lambda(?elem (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?elem (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
+			1, PAIR_SYMBOLS, EMPTY_MACROS);
+
 	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
 			POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
@@ -453,6 +459,8 @@ public class SMTMacroFactory {
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED);
 	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
+	private static SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
+			EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
 			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
@@ -467,7 +475,8 @@ public class SMTMacroFactory {
 			DOMAIN_RESTRICTION_MACRO, DOMAIN_SUBSTRACTION_MACRO,
 			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
 			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
-			TOTAL_RELATION_MACRO, RANGE_MACRO, BCOMP_MACRO, INTEGER_MACRO };
+			TOTAL_RELATION_MACRO, RANGE_MACRO, BCOMP_MACRO, INTEGER_MACRO,
+			SUCCESSOR_MACRO };
 
 	/**
 	 * Retrieves the name of the identifiers that have a question mark as a
@@ -867,6 +876,10 @@ public class SMTMacroFactory {
 			signature.addMacro(INTEGER_MACRO);
 			break;
 		}
+		case SUCC: {
+			signature.addMacro(SUCCESSOR_MACRO);
+			break;
+		}
 		default:
 			throw new IllegalArgumentException(
 					"There is no predefined macro with symbol: "
@@ -1002,6 +1015,8 @@ public class SMTMacroFactory {
 			return BCOMP_SYMBOL;
 		case INTEGER:
 			return INTEGER_SYMBOL;
+		case SUCC:
+			return SUCC_SYMBOL;
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro symbol with symbol: "
