@@ -937,7 +937,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
 		return SMTFactoryVeriT.makeMacroAtom(
-				getMacroSymbol(operator, signature), children);
+				getMacroSymbol(operator, signature), children, signature);
 	}
 
 	/**
@@ -1379,7 +1379,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the new assumption (ismin m t) and saving it.
 		final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(opSymbol,
-				minChildrenTerms);
+				minChildrenTerms, signature);
 		additionalAssumptions.add(isMinFormula);
 
 		return mVarTerm;

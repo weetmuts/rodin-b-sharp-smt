@@ -13,6 +13,10 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+
+import java.util.Set;
+
+import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
@@ -54,6 +58,18 @@ class SMTVeriTAtom extends SMTFormula {
 		return terms;
 	}
 
+	private static void checkIfMacroIsDefinedInTheSignature(
+			final SMTMacroSymbol macro, final SMTSignatureVerit signature) {
+		final Set<SMTMacro> macros = signature.getMacros();
+		for (final SMTMacro smtMacro : macros) {
+			if (smtMacro.getMacroName().equals(macro.getName())) {
+				return;
+			}
+		}
+		throw new IllegalArgumentException(
+				"A macro cannot be created without being defined in the signature");
+	}
+
 	/**
 	 * Constructs a new veriT atom
 	 * 
@@ -62,8 +78,9 @@ class SMTVeriTAtom extends SMTFormula {
 	 * @param terms
 	 *            the terms
 	 */
-	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[]) {
-		// TODO: Create a verification method for macros
+	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[],
+			final SMTSignatureVerit signature) {
+		checkIfMacroIsDefinedInTheSignature(symbol, signature);
 		macroSymbol = symbol;
 		this.terms = terms.clone();
 	}
