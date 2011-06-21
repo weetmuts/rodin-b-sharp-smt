@@ -494,6 +494,18 @@ public class SMTMacroFactory {
 		}
 	}
 
+	public static void checkIfMacroIsDefinedInTheSignature(
+			final SMTMacroSymbol macro, final SMTSignatureVerit signature) {
+		final Set<SMTMacro> macros = signature.getMacros();
+		for (final SMTMacro smtMacro : macros) {
+			if (smtMacro.getMacroName().equals(macro.getName())) {
+				return;
+			}
+		}
+		throw new IllegalArgumentException(
+				"A macro cannot be created without being defined in the signature");
+	}
+
 	/**
 	 * Creates a macro of sets defined in extension which the elements are a
 	 * mapping. An enumeration macro is of the form:

@@ -1345,7 +1345,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the new assumption (card p t k f) and saving it.
 		final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
-				fVarSymbol, kVarSymbol, children);
+				fVarSymbol, kVarSymbol, children, signature);
 
 		additionalAssumptions.add(cardFormula);
 
@@ -1567,7 +1567,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the new assumption (finite p t k f) and saving it.
 		final SMTFormula finiteFormula = new SMTVeritFiniteFormula(
-				finiteSymbol, pVarSymbol, fVarSymbol, kVarSymbol, children);
+				finiteSymbol, pVarSymbol, fVarSymbol, kVarSymbol, children,
+				signature);
 
 		additionalAssumptions.add(finiteFormula);
 

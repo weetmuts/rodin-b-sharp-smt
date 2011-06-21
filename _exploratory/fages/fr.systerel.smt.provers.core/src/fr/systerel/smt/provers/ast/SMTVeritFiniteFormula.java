@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
@@ -122,7 +123,10 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 	public SMTVeritFiniteFormula(final SMTMacroSymbol finitePredSymbol,
 			final SMTPredicateSymbol pArgument,
 			final SMTFunctionSymbol fArgument,
-			final SMTFunctionSymbol kArgument, final SMTTerm[] terms) {
+			final SMTFunctionSymbol kArgument, final SMTTerm[] terms,
+			final SMTSignatureVerit signature) {
+		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(finitePredSymbol,
+				signature);
 		finitePred = finitePredSymbol;
 		this.terms = terms;
 		this.pArgument = pArgument;
@@ -149,12 +153,9 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 
 	@Override
 	public String toString() {
-		String s = OPAR + finitePred.name + SPACE + pArgument.name;
-		for (final SMTTerm term : terms) {
-			s += SPACE + term;
-		}
-		s += SPACE + fArgument.name + SPACE + kArgument.name + CPAR;
-		return s;
+		final StringBuilder sb = new StringBuilder();
+		this.toString(sb, false);
+		return sb.toString();
 	}
 
 }

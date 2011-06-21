@@ -13,6 +13,7 @@ package fr.systerel.smt.provers.ast;
 import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
@@ -102,7 +103,10 @@ public class SMTVeritCardFormula extends SMTFormula {
 	 */
 	public SMTVeritCardFormula(final SMTMacroSymbol cardSymbol,
 			final SMTFunctionSymbol fVarSymbol,
-			final SMTFunctionSymbol kVarSymbol, final SMTTerm[] terms) {
+			final SMTFunctionSymbol kVarSymbol, final SMTTerm[] terms,
+			final SMTSignatureVerit signature) {
+		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(cardSymbol,
+				signature);
 		this.cardSymbol = cardSymbol;
 		this.terms = terms;
 		kArgument = kVarSymbol;

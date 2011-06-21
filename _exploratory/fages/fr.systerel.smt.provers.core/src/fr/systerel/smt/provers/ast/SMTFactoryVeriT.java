@@ -207,7 +207,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public SMTTerm makeVeriTConstantTerm(final SMTSymbol smtSymbol,
 			final SMTSignature signature) {
 		if (smtSymbol instanceof SMTPredicateSymbol) {
-			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol);
+			return new SMTVeriTTerm((SMTPredicateSymbol) smtSymbol, signature);
 
 		} else if (smtSymbol instanceof SMTFunctionSymbol) {
 			return makeConstant((SMTFunctionSymbol) smtSymbol, signature);

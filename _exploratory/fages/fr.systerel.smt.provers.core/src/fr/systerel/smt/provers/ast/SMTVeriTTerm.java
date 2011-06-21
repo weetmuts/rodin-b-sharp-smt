@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
+import java.util.Set;
+
 /**
  * The difference between verit term and normal terms is that the symbol of the
  * term is a predicate symbol, and not function symbol.
@@ -38,13 +40,26 @@ public class SMTVeriTTerm extends SMTTerm {
 		return symbol;
 	}
 
+	private static void checkIfPredIsDefinedInSignature(
+			final SMTPredicateSymbol pred, final SMTSignature signature) {
+		final Set<SMTPredicateSymbol> preds = signature.getPreds();
+		for (final SMTPredicateSymbol predicate : preds) {
+			if (predicate.getName().equals(pred.getName())) {
+				return;
+			}
+		}
+		throw new IllegalArgumentException("The predicate " + pred.toString()
+				+ " is not defined in the signature");
+	}
+
 	/**
 	 * Constructs a new verit term.
 	 * 
 	 * @param symbol
 	 *            the predicate symbol of the term
 	 */
-	SMTVeriTTerm(final SMTPredicateSymbol symbol) {
+	SMTVeriTTerm(final SMTPredicateSymbol symbol, final SMTSignature signature) {
+		checkIfPredIsDefinedInSignature(symbol, signature);
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
 		sort = VeritPredefinedTheory.getInstance().getBooleanSort();
