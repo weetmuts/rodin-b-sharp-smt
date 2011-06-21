@@ -24,32 +24,34 @@ import fr.systerel.smt.provers.internal.core.ExternalSMTThroughPP;
 import fr.systerel.smt.provers.internal.core.ExternalSMTThroughVeriT;
 
 /**
- * The main plugin class for the Smt provers.
+ * This is the main class of the SMT solvers plugin.
  */
-public class SmtProversCore extends Plugin {
+public class SMTProversCore extends Plugin {
 	/**
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "fr.systerel.smt.provers.core";
-
+	/**
+	 * Debug variables
+	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
-
 	/**
 	 * Default delay for time-out of the Smt provers (value 30 seconds).
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;
-
-	// The shared instance.
-	private static SmtProversCore plugin;
+	/**
+	 * The shared instance.
+	 */
+	private static SMTProversCore plugin;
 
 	/**
 	 * Returns the single instance of the Smt Provers for Rodin core plug-in.
 	 * 
 	 * @return the single instance of the Smt Provers for Rodin core plug-in
 	 */
-	public static SmtProversCore getDefault() {
+	public static SMTProversCore getDefault() {
 		return plugin;
 	}
 
@@ -73,18 +75,22 @@ public class SmtProversCore extends Plugin {
 	}
 
 	/**
-	 * Returns a tactic for applying the Smt prover to a proof tree node.
 	 * <p>
-	 * This is a convenience method, fully equivalent to:
+	 * Returns a tactic for applying the SMT prover to a proof tree node
+	 * (sequent), translated using ppTrans. This is a convenience method, fully
+	 * equivalent to:
 	 * 
 	 * <pre>
-	 * externalSMT(forces, DEFAULT_DELAY)
+	 * externalSMTThroughPP(forces, DEFAULT_DELAY)
 	 * </pre>
 	 * 
 	 * </p>
 	 * 
 	 * @param smtPreferences
-	 * 
+	 *            preferences set for this calling
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughPP(
@@ -94,6 +100,25 @@ public class SmtProversCore extends Plugin {
 				new XProverInput(restricted, DEFAULT_DELAY));
 	}
 
+	/**
+	 * <p>
+	 * Returns a tactic for applying the SMT prover to a proof tree node
+	 * (sequent), translated using veriT. This is a convenience method, fully
+	 * equivalent to:
+	 * 
+	 * <pre>
+	 * externalSMTThroughPP(forces, DEFAULT_DELAY)
+	 * </pre>
+	 * 
+	 * </p>
+	 * 
+	 * @param smtPreferences
+	 *            preferences set for this calling
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @return a tactic for running SMTTacticProvider with the given forces
+	 */
 	public static ITactic externalSMTThroughVeriT(
 			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
@@ -101,6 +126,9 @@ public class SmtProversCore extends Plugin {
 				new XProverInput(restricted, DEFAULT_DELAY));
 	}
 
+	/**
+	 * Starts up this plug-in.
+	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
@@ -111,6 +139,9 @@ public class SmtProversCore extends Plugin {
 		}
 	}
 
+	/**
+	 * Stops this plug-in.
+	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
 		plugin = null;

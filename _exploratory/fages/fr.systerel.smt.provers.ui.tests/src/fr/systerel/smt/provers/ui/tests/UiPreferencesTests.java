@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
-import fr.systerel.smt.provers.core.SmtProversCore;
+import fr.systerel.smt.provers.core.SMTProversCore;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
@@ -35,7 +35,7 @@ public class UiPreferencesTests {
 
 	public static final String RODIN_SEQUENT = "rodin_sequent";
 
-	public static final String REASONER_ID = SmtProversCore.PLUGIN_ID
+	public static final String REASONER_ID = SMTProversCore.PLUGIN_ID
 			+ ".externalSMT";
 
 	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";

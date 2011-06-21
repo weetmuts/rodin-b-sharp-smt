@@ -45,7 +45,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
-//import fr.systerel.smt.provers.core.SmtProversCore;
+//import fr.systerel.smt.provers.core.SMTProversCore;
 //import fr.systerel.smt.provers.internal.core.UIUtils;
 
 /**

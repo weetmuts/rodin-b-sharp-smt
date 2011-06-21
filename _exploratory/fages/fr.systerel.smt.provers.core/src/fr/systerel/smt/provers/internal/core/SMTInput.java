@@ -14,12 +14,12 @@ package fr.systerel.smt.provers.internal.core;
 
 import org.eventb.core.seqprover.xprover.XProverInput;
 
-public class SmtInput extends XProverInput {
+public class SMTInput extends XProverInput {
 
 	// Forces to use in the mono-lemma prover
 	final String forces;
 
-	protected SmtInput(final String forces, final long timeOutDelay,
+	protected SMTInput(final String forces, final long timeOutDelay,
 			final boolean restricted) {
 		super(restricted, timeOutDelay);
 		if (forces.length() == 0) {
@@ -29,15 +29,15 @@ public class SmtInput extends XProverInput {
 		this.forces = forces;
 	}
 
-	protected SmtInput(final String forces, final long timeOutDelay) {
+	protected SMTInput(final String forces, final long timeOutDelay) {
 		this(forces, timeOutDelay, false);
 	}
 
-	public SmtInput(final int forces, final long timeOutDelay) {
+	public SMTInput(final int forces, final long timeOutDelay) {
 		this(forcesToString(forces), timeOutDelay, false);
 	}
 
-	public SmtInput(final int forces, final long timeOutDelay,
+	public SMTInput(final int forces, final long timeOutDelay,
 			final boolean restricted) {
 		this(forcesToString(forces), timeOutDelay, restricted);
 	}

@@ -19,7 +19,7 @@ import org.eventb.ui.prover.ITacticProvider;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 
-import fr.systerel.smt.provers.core.SmtProversCore;
+import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**
  * @author guyot
@@ -46,7 +46,7 @@ public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 					PREPROPATH, null, null);
 			final SMTPreferences smtPreferences = new SMTPreferences(
 					solverPreferences, solverIndex, USINGPREPRO, preProPath);
-			return SmtProversCore.externalSMTThroughVeriT(smtPreferences, true);
+			return SMTProversCore.externalSMTThroughVeriT(smtPreferences, true);
 		}
 
 	}

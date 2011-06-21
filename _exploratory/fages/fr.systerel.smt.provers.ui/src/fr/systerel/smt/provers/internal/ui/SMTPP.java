@@ -16,7 +16,7 @@ import org.eventb.ui.prover.ITacticProvider;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 
-import fr.systerel.smt.provers.core.SmtProversCore;
+import fr.systerel.smt.provers.core.SMTProversCore;
 
 public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 
@@ -36,7 +36,7 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 					SOLVERINDEX, -1, null);
 			final SMTPreferences smtPreferences = new SMTPreferences(
 					solverPreferences, solverIndex, false, null);
-			return SmtProversCore.externalSMTThroughPP(smtPreferences, true);
+			return SMTProversCore.externalSMTThroughPP(smtPreferences, true);
 		}
 
 	}

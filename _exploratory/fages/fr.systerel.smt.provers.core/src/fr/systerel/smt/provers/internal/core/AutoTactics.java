@@ -15,7 +15,7 @@ package fr.systerel.smt.provers.internal.core;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 
-import fr.systerel.smt.provers.core.SmtProversCore;
+import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
@@ -39,7 +39,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversCore.externalSMTThroughPP(null, true);
+			return SMTProversCore.externalSMTThroughPP(null, true);
 		}
 	}
 
@@ -47,7 +47,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SmtProversCore.externalSMTThroughVeriT(null, true);
+			return SMTProversCore.externalSMTThroughVeriT(null, true);
 		}
 	}
 }

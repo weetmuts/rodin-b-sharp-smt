@@ -19,7 +19,7 @@ import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.core.seqprover.xprover.XProverReasoner;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import fr.systerel.smt.provers.core.SmtProversCore;
+import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**
  * Runs an external SMTPP prover as a reasoner.
@@ -30,7 +30,7 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 	private static final String RODIN_SEQUENT = "rodin_sequent";
 	private final SMTPreferences preferences;
 
-	public static String REASONER_ID = SmtProversCore.PLUGIN_ID
+	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
 			+ ".externalSMT";
 
 	public ExternalSMTThroughPP(final SMTPreferences preferences) {
