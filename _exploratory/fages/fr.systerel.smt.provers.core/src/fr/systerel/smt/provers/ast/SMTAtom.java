@@ -19,21 +19,41 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
  */
 class SMTAtom extends SMTFormula {
 
+	/**
+	 * The predicate symbol of the atom
+	 */
 	final SMTPredicateSymbol predicateSymbol;
+
+	/**
+	 * the therms that are arguments of the predicate symbol
+	 */
 	final SMTTerm[] terms;
 
+	/**
+	 * get the predicate symbol of the atom
+	 * 
+	 * @return the predicate symbol of the atom
+	 */
 	public SMTPredicateSymbol getPredicate() {
 		return predicateSymbol;
 	}
 
+	/**
+	 * get the terms of the atom
+	 * 
+	 * @return the terms of the atom
+	 */
 	public SMTTerm[] getTerms() {
 		return terms;
 	}
 
 	/**
+	 * Creates a new SMT Atom
 	 * 
 	 * @param symbol
+	 *            the predicate symbol of the atom
 	 * @param terms
+	 *            the terms that are arguments of the predicate
 	 */
 	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm[] terms) {
 		verifyPredicateRank(symbol, terms);

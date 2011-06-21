@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author vitor
+ * This class is the benchmark resultant of the translation in the PP approach
  * 
  */
 public class SMTBenchmarkPP extends SMTBenchmark {

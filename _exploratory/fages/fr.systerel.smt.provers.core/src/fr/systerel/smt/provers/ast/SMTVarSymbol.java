@@ -23,16 +23,38 @@ import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
 public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> {
 	final private SMTSortSymbol sort;
 
+	/**
+	 * Constructs a new SMT var symbols.
+	 * 
+	 * @param symbolName
+	 *            the name of the symbol
+	 * @param sort
+	 *            the sort
+	 * @param predefined
+	 *            yes if it is predefined, otherwise no.
+	 */
 	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort,
 			final boolean predefined) {
 		super(symbolName, predefined);
 		this.sort = sort;
 	}
 
+	/**
+	 * returns the sort of the symbol
+	 * 
+	 * @return the sort
+	 */
 	public SMTSortSymbol getSort() {
 		return sort;
 	}
 
+	/**
+	 * appends in the string builder the string representation of the var symbol
+	 * with a "?" before. For example: if the name is "a", it returns, "?a"
+	 * 
+	 * @param sb
+	 *            the StringBuilder that will append the var symbol.
+	 */
 	public void getNameWithQMark(final StringBuilder sb) {
 		sb.append(QVAR + name);
 	}

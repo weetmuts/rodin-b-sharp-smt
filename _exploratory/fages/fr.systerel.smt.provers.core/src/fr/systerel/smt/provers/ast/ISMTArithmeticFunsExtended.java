@@ -31,5 +31,10 @@ public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
 	 */
 	public SMTSymbol getExpn();
 
+	/**
+	 * returns the mod function symbol
+	 * 
+	 * @return the mod function symbol
+	 */
 	public SMTSymbol getMod();
 }

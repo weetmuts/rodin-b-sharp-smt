@@ -11,16 +11,29 @@
 package fr.systerel.smt.provers.ast;
 
 /**
- * @author guyot
+ * This class handles terms created from Bound Identifier Declarations in
+ * Event-B
  * 
- */
+ * @author guyot
+ **/
 public class SMTVar extends SMTTerm {
 	final SMTVarSymbol symbol;
 
+	/**
+	 * The constructor.
+	 * 
+	 * @param symbol
+	 *            the symbol of the constructor
+	 */
 	public SMTVar(final SMTVarSymbol symbol) {
 		this.symbol = symbol;
 	}
 
+	/**
+	 * gets the symbol of the term
+	 * 
+	 * @return the symbol of the term
+	 */
 	public SMTVarSymbol getSymbol() {
 		return symbol;
 	}

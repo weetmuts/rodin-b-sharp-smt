@@ -28,8 +28,8 @@ import fr.systerel.smt.provers.ast.macros.SMTQuantifiedMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
 /**
- * @author vitor
- * 
+ * This class is the benchmark resultant of the translation in the VeriT
+ * approach
  */
 public class SMTBenchmarkVeriT extends SMTBenchmark {
 	/**

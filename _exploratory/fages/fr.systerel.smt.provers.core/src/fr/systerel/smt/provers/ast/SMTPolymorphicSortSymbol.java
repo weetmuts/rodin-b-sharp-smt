@@ -26,6 +26,12 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 		super("", !PREDEFINED);
 	}
 
+	/**
+	 * Initializes the sort class.
+	 * 
+	 * @param symbolName
+	 *            the name of the sort
+	 */
 	public SMTPolymorphicSortSymbol(final String symbolName) {
 		super(symbolName, !PREDEFINED);
 	}

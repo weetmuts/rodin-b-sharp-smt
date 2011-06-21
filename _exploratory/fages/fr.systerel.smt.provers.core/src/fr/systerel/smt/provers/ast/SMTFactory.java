@@ -95,7 +95,7 @@ public abstract class SMTFactory {
 	}
 
 	/**
-	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS}
+	 * Creates a new arithmetic term. {PLUS, MINUS, MUL, UMINUS,DIV,MOD,EXPN}
 	 */
 	public SMTTerm makePlus(final SMTFunctionSymbol plus, final SMTTerm[] args,
 			final SMTSignature signature) {
@@ -237,12 +237,34 @@ public abstract class SMTFactory {
 		return makeSMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
+	/**
+	 * Creates and returns a SMT quantified formula
+	 * 
+	 * @param qSymbol
+	 *            The quantifier symbol
+	 * @param qVars
+	 *            the terms that contains the bound identifier symbols
+	 * @param formula
+	 *            the subformula of the quantifier formula
+	 * @return a new SMT quantified formula
+	 */
 	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
 			final SMTFormula formula) {
 		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
+	/**
+	 * Creates and returns a new function application
+	 * 
+	 * @param functionSymbol
+	 *            the function symbol
+	 * @param args
+	 *            the arguments of the function
+	 * @param signature
+	 *            the signature used to check the rank of the function
+	 * @return a new term which is the function application
+	 */
 	public static SMTTerm makeFunApplication(
 			final SMTFunctionSymbol functionSymbol, final SMTTerm[] args,
 			final SMTSignature signature) {
@@ -250,6 +272,17 @@ public abstract class SMTFactory {
 		return new SMTFunApplication(functionSymbol, args);
 	}
 
+	/**
+	 * Creates and returns a new atom
+	 * 
+	 * @param predicateSymbol
+	 *            the predicate of the atom
+	 * @param args
+	 *            the arguments of the predicate
+	 * @param signature
+	 *            the signature used to check the rank of the predicate
+	 * @return a new atom formula
+	 */
 	public static SMTFormula makeAtom(final SMTPredicateSymbol predicateSymbol,
 			final SMTTerm[] args, final SMTSignature signature) {
 		signature.verifyPredicateSignature(predicateSymbol);

@@ -113,13 +113,31 @@ public abstract class SMTBenchmark {
 		return name;
 	}
 
+	/**
+	 * get the assumptions of the benchmark
+	 * 
+	 * @return the assumptions of the benchmark
+	 */
 	public List<SMTFormula> getAssumptions() {
 		return assumptions;
 	}
 
+	/**
+	 * get the formula of the benchmark
+	 * 
+	 * @return the formula of the benchmark
+	 */
 	public SMTFormula getFormula() {
 		return formula;
 	}
 
+	/**
+	 * This method is created to print the string representation of the
+	 * benchmark in the PrintWriter
+	 * 
+	 * @param pw
+	 *            the printwriter that will receive the string representation of
+	 *            the benchmark
+	 */
 	public abstract void print(final PrintWriter pw);
 }
