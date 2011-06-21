@@ -89,7 +89,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private final SMTFactory sf;
 
+	/**
+	 * The gatherer is a class used to determine the logic and sets defined from
+	 * monadic predicates
+	 */
 	private Gatherer gatherer;
+
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -104,12 +109,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	private final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
 
-	private final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
+	/**
+	 * This field maps Event-B free identifiers to monadic preds that represents
+	 * simpler sets.
+	 */
+	private final Map<FreeIdentifier, SMTPredicateSymbol> monadicPredsMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
+
 	/**
 	 * This list contains the terms of the current membership being translated
 	 * in the translation process.
 	 */
-	// FIXME Seems to be unsafe, to be deleted if possible
 	private final List<SMTTerm> membershipPredicateTerms = new ArrayList<SMTTerm>();
 
 	/**
@@ -128,8 +137,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * some informations needed to proceed with the translation, such as:
 	 * <ul>
 	 * <li>the appearing of occurrences of the Event-B integer symbol;</li>
-	 * <li>the appearing of elements of the bool theory; - the need for using
-	 * the True predicate;</li>
+	 * <li>the appearing of elements of the bool theory;</li>
+	 * <li>the need for using the True predicate;</li>
 	 * <li>the list of the sets to be translated into monadic membership
 	 * predicates.</li>
 	 * </ul>
@@ -152,13 +161,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 *            The hypotheses
 		 * @param goal
 		 *            the goal
-		 * @param monadicSetsMap
+		 * @param monadicPredsMap
 		 *            an empty monadic sets map that will be filled.
 		 * @return a new gatherer with the results of the traversal.
 		 */
 		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
 				final Predicate goal,
-				final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap) {
+				final Map<FreeIdentifier, SMTPredicateSymbol> monadicPredsMap) {
 			final Gatherer gatherer = new Gatherer();
 
 			for (final Predicate hypothesis : hypotheses) {
@@ -167,11 +176,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			goal.accept(gatherer);
 
 			gatherer.removeIdentsFromSetsForMonadicPreds();
-			gatherer.setMonadicSetsMapKeys(monadicSetsMap);
+			gatherer.setMonadicSetsMapKeys(monadicPredsMap);
 
 			return gatherer;
 		}
 
+		/**
+		 * This method copies monadicpreds found in the Proof Obligation to the
+		 * parameter monadicSetsMap
+		 * 
+		 * @param monadicSetsMap
+		 *            the var that will receive the monadic preds found in the
+		 *            PO
+		 */
 		private void setMonadicSetsMapKeys(
 				final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap) {
 			final Iterator<FreeIdentifier> monadicSetsIterator = setsForMonadicPreds
@@ -181,6 +198,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 		}
 
+		/**
+		 * This method checks if the were found Boolean Elements in the
+		 * relational predicate. If yes, it returns false and determine that the
+		 * True predicate must be used.
+		 * 
+		 * @param pred
+		 *            the relational predicate.
+		 * @return true if there is no boolean element, false otherwise.
+		 */
 		private boolean checkBooleanElementsInMembershipPredicate(
 				final RelationalPredicate pred) {
 			if (pred.getLeft().getType() instanceof BooleanType
@@ -192,7 +218,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			return true;
 		}
 
-		private void gatherMonadicSets(final RelationalPredicate pred) {
+		/**
+		 * This method is used to gather the monadic preds from the relational
+		 * predicate. If the right side of the relation is a free identifier,
+		 * then this identifier is added to the monadic preds set. Else if it is
+		 * bound identifier, the type of the bound identifier is added to the
+		 * set of bound types.
+		 * 
+		 * @param pred
+		 *            the relational predicate
+		 */
+		private void gatherMonadicPreds(final RelationalPredicate pred) {
 			/**
 			 * Code for of membership predicate optimization
 			 */
@@ -240,14 +276,29 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			setsForMonadicPreds.removeAll(identsNotForMonadicPreds);
 		}
 
+		/**
+		 * return true if the integer set is found in the PO.
+		 * 
+		 * @return true if the integer is found in the PO, false otherwise.
+		 */
 		public boolean foundInteger() {
 			return integerFound;
 		}
 
+		/**
+		 * return true if the True predicate needs to be used in the PO.
+		 * 
+		 * @return true if the True predicate needs to be used, false otherwise.
+		 */
 		public boolean usesTruePredicate() {
 			return usesTruePredicate;
 		}
 
+		/**
+		 * return true if the Bool Theory is used in the PO.
+		 * 
+		 * @return true if the Bool Theory is used, false otherwise.
+		 */
 		public boolean usesBoolTheory() {
 			return boolTheory;
 		}
@@ -280,7 +331,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		@Override
 		public boolean enterIN(final RelationalPredicate pred) {
-			gatherMonadicSets(pred);
+			gatherMonadicPreds(pred);
 			return checkBooleanElementsInMembershipPredicate(pred);
 		}
 
@@ -411,7 +462,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		gatherer = Gatherer.gatherFrom(hypotheses, goal, monadicSetsMap);
+		gatherer = Gatherer.gatherFrom(hypotheses, goal, monadicPredsMap);
 
 		if (gatherer.usesBoolTheory()) {
 			return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
@@ -520,7 +571,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// Translate monadic setsForMonadicPreds (special case)
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
-			if (monadicSetsMap.containsKey(rightSet)) {
+			if (monadicPredsMap.containsKey(rightSet)) {
 				translateInMonadicMembershipPredicate(left, rightSet);
 				return;
 			}
@@ -529,6 +580,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		translateInClassicMembershipPredicate(left, right);
 	}
 
+	/**
+	 * This method translates membership predicate in a normal way (the other
+	 * way is simpler one with monadic predicates).
+	 * 
+	 * @param left
+	 *            the left child of the membership
+	 * @param right
+	 *            the right child of the membership
+	 */
 	private void translateInClassicMembershipPredicate(final Expression left,
 			final Expression right) {
 		final SMTTerm[] children = smtTerms(left, right);
@@ -556,17 +616,24 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		membershipPredicateTerms.clear();
 	}
 
-	private void translateInMonadicMembershipPredicate(
-			final Expression leftExpression, final FreeIdentifier rightSet) {
-		final SMTTerm leftTerm = smtTerm(leftExpression);
-		SMTPredicateSymbol monadicMembershipPredicate = monadicSetsMap
-				.get(rightSet);
+	/**
+	 * This method translates membership to monadic predicates (optimization)
+	 * 
+	 * @param left
+	 *            the left child of the membership
+	 * @param right
+	 *            the right child of the membership
+	 */
+	private void translateInMonadicMembershipPredicate(final Expression left,
+			final FreeIdentifier right) {
+		final SMTTerm leftTerm = smtTerm(left);
+		SMTPredicateSymbol monadicMembershipPredicate = monadicPredsMap
+				.get(right);
 
 		if (monadicMembershipPredicate == null) {
-			// TODO add tests for this
 			monadicMembershipPredicate = signature.freshPredicateSymbol(
-					rightSet.getName(), leftTerm.getSort());
-			monadicSetsMap.put(rightSet, monadicMembershipPredicate);
+					right.getName(), leftTerm.getSort());
+			monadicPredsMap.put(right, monadicMembershipPredicate);
 		}
 
 		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate,
@@ -879,7 +946,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			for (final FreeIdentifier monadicSet : monadicSetsMap.keySet()) {
+			for (final FreeIdentifier monadicSet : monadicPredsMap.keySet()) {
 				if (monadicSet.getName().equals(varName)
 						&& monadicSet.getType().equals(varType)) {
 					varType = iter.getType().getBaseType();
