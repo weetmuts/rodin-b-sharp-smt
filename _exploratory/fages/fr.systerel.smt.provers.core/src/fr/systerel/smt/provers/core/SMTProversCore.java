@@ -15,13 +15,13 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.tactics.BasicTactics;
-import org.eventb.core.seqprover.xprover.XProverInput;
 import org.osgi.framework.BundleContext;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.Translator;
 import fr.systerel.smt.provers.internal.core.ExternalSMTThroughPP;
 import fr.systerel.smt.provers.internal.core.ExternalSMTThroughVeriT;
+import fr.systerel.smt.provers.internal.core.SMTInput;
 
 /**
  * This is the main class of the SMT solvers plugin.
@@ -36,6 +36,7 @@ public class SMTProversCore extends Plugin {
 	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
+	private static final String RODIN_SEQUENT = "rodin_sequent";
 	/**
 	 * Default delay for time-out of the Smt provers (value 30 seconds).
 	 */
@@ -97,7 +98,7 @@ public class SMTProversCore extends Plugin {
 			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughPP(smtPreferences), //
-				new XProverInput(restricted, DEFAULT_DELAY));
+				new SMTInput(restricted, DEFAULT_DELAY, RODIN_SEQUENT));
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class SMTProversCore extends Plugin {
 			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughVeriT(smtPreferences), //
-				new XProverInput(restricted, DEFAULT_DELAY));
+				new SMTInput(restricted, DEFAULT_DELAY, RODIN_SEQUENT));
 	}
 
 	/**

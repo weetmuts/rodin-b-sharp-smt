@@ -12,52 +12,46 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import org.eventb.core.seqprover.IReasonerInputReader;
+import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
 
 public class SMTInput extends XProverInput {
 
-	// Forces to use in the mono-lemma prover
-	final String forces;
+	private final String error;
 
-	protected SMTInput(final String forces, final long timeOutDelay,
-			final boolean restricted) {
+	public final String sequentName;
+
+	protected SMTInput(final IReasonerInputReader reader)
+			throws SerializeException {
+		super(reader);
+		this.sequentName = reader.getDisplayName();
+		this.error = validate();
+	}
+
+	public SMTInput(final boolean restricted, final long timeOutDelay,
+			final String sequentName) {
 		super(restricted, timeOutDelay);
-		if (forces.length() == 0) {
-			this.forces = null;
-			return;
+		this.sequentName = sequentName;
+		this.error = validate();
+	}
+
+	private String validate() {
+		if (sequentName != null && !sequentName.equals("")) {
+			return null;
+		} else {
+			return "Illegal sequent name";
 		}
-		this.forces = forces;
-	}
-
-	protected SMTInput(final String forces, final long timeOutDelay) {
-		this(forces, timeOutDelay, false);
-	}
-
-	public SMTInput(final int forces, final long timeOutDelay) {
-		this(forcesToString(forces), timeOutDelay, false);
-	}
-
-	public SMTInput(final int forces, final long timeOutDelay,
-			final boolean restricted) {
-		this(forcesToString(forces), timeOutDelay, restricted);
-	}
-
-	public static String forcesToString(final int forces) {
-		return null;
-
-	}
-
-	@Override
-	public boolean hasError() {
-		return forces == null || super.hasError();
 	}
 
 	@Override
 	public String getError() {
-		if (forces == null) {
-			return Messages.force_error_invalid_forces;
-		}
-		return super.getError();
+		return error != null ? error : super.getError();
+	}
+
+	@Override
+	public boolean hasError() {
+		return error != null || super.hasError();
 	}
 
 }

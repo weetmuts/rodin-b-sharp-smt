@@ -15,6 +15,9 @@ package fr.systerel.smt.provers.internal.core;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
+import org.eventb.core.seqprover.IReasonerInputReader;
+import org.eventb.core.seqprover.IReasonerInputWriter;
+import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.core.seqprover.xprover.XProverReasoner;
 
@@ -22,13 +25,13 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**
- * Runs an external SMTPP prover as a reasoner.
+ * Runs an external SMT prover as a reasoner.
  * 
  * @author Y. Fages-Tafanelli
  */
 public class ExternalSMTThroughPP extends XProverReasoner {
-	private static final String RODIN_SEQUENT = "rodin_sequent";
 	private final SMTPreferences preferences;
+	private static final String ARG_KEY = "arg";
 
 	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
 			+ ".externalSMT";
@@ -43,22 +46,35 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 	}
 
 	@Override
+	public void serializeInput(IReasonerInput rInput,
+			IReasonerInputWriter writer) throws SerializeException {
+
+		SMTInput input = (SMTInput) rInput;
+		final String delayString = Long.toString(input.timeOutDelay);
+		final String restrictedString = Boolean.toString(input.restricted);
+		writer.putString(ARG_KEY, restrictedString + ":" + delayString + ":"
+				+ input.sequentName);
+	}
+
+	@Override
+	public IReasonerInput deserializeInput(
+			IReasonerInputReader reasonerInputReader) throws SerializeException {
+
+		String arg = reasonerInputReader.getString(ARG_KEY);
+		String[] args = arg.split(":");
+		if (args.length != 3) {
+			throw new SerializeException(new IllegalStateException(
+					"Malformed argument: " + arg));
+		}
+		return new SMTInput(Boolean.parseBoolean(args[2]),
+				Long.parseLong(args[1]), args[2]);
+	}
+
+	@Override
 	public XProverCall newProverCall(final IReasonerInput input,
 			final Iterable<Predicate> hypotheses, final Predicate goal,
 			final IProofMonitor pm) {
-
-		return new SMTPPCall(hypotheses, goal, pm, preferences, RODIN_SEQUENT); // TODO
-		// replace
-		// "rodin_sequent"
-		// with
-		// the
-		// name
-		// of
-		// the
-		// theorem
-		// being
-		// proved
-		// in
-		// Rodin
+		final String sequentName = ((SMTInput) input).sequentName;
+		return new SMTPPCall(hypotheses, goal, pm, preferences, sequentName);
 	}
 }

@@ -117,6 +117,7 @@ public class LemmaParser {
 	 * @throws IOException
 	 *             if a problem occurs when patching the XML file
 	 */
+	@SuppressWarnings("deprecation")
 	public static URL patch(final URL XMLFile, final String regex,
 			final String replacement) throws IOException {
 		// Reads the XML file
