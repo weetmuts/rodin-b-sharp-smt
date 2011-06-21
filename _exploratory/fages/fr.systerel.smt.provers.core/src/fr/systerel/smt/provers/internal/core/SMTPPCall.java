@@ -3,8 +3,9 @@
  */
 package fr.systerel.smt.provers.internal.core;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
@@ -23,31 +24,44 @@ public class SMTPPCall extends SMTProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * Execute translation of Event-B predicates using the PP approach.
+	 * Makes an SMT-LIB benchmark file containing the Event-B sequent translated
+	 * in SMT-LIB V1.2 language, using the PP approach.
 	 * 
-	 * @return the list of arguments
 	 * @throws IOException
 	 */
 	@Override
-	public List<String> smtTranslation() throws IOException {
-		return smtTranslation(translateToBenchmarkThroughPP());
-	}
-
-	/**
-	 * Execute translation of Event-B predicates using the PP approach.
-	 * 
-	 * @return the list of arguments
-	 * @throws IOException
-	 */
-	public SMTBenchmark translateToBenchmarkThroughPP() throws IOException {
+	public void makeSMTBenchmarkFileV1_2() throws IOException {
+		proofMonitor.setTask("Translating Event-B proof obligation");
+		/**
+		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
+		 * SMT-LIB translation
+		 */
 		final SMTBenchmark benchmark = SMTThroughPP
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtPreferences.getSolver().getId());
-		return benchmark;
+		/**
+		 * Update of the lemma name
+		 */
+		lemmaName = benchmark.getName();
+		/**
+		 * Creation of the translation folder (cleans it if needed)
+		 */
+		if (translationFolder == null) {
+			translationFolder = mkTranslationDir(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+		}
+		/**
+		 * Prints the benchmark in a new file
+		 */
+		smtBenchmarkFile = new File(smtFilePath());
+		smtBenchmarkFile.createNewFile();
+		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
+		benchmark.print(smtFileWriter);
+		smtFileWriter.close();
+		if (!smtBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
 	}
-
 }

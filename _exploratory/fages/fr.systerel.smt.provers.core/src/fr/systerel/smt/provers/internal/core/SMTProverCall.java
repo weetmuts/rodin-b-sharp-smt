@@ -28,65 +28,62 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import fr.systerel.smt.provers.ast.SMTBenchmark;
-import fr.systerel.smt.provers.ast.SMTSignature;
 
 /**
  * 
- * Each instance of this class represents a call to an external SMT prover.
+ * Each instance of this class represents a call to an external SMT solver.
  * 
  */
 public abstract class SMTProverCall extends XProverCall {
-	protected static final String RES = "res";
-	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
-	protected static final String TRANSLATION_PATH = System
+	private static final String TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
 
+	protected static final String RES = "res";
+	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = true;
 
-	protected String translationFolder = null;
-
-	protected final List<Process> activeProcesses = new ArrayList<Process>();
+	private final List<Process> activeProcesses = new ArrayList<Process>();
 
 	/**
-	 * Name of the called external SMT prover
+	 * Name of the called external SMT solver
 	 */
-	protected final String proverName;
+	protected final String solverName;
 
 	/**
-	 * The UI preferences of the SMT plugin TODO remove this dependance to the
-	 * UI
+	 * The UI preferences of the SMT plugin
 	 */
 	protected final SMTPreferences smtPreferences;
-
-	/**
-	 * Name of the lemma to prove
-	 */
-	protected final String lemmaName;
 
 	/**
 	 * Tells whether the given sequent was discharged (valid = true) or not
 	 * (valid = false)
 	 */
-	protected volatile boolean valid;
+	private volatile boolean valid;
+
+	protected String translationFolder = null;
+
+	/**
+	 * Name of the lemma to prove
+	 */
+	protected String lemmaName;
 
 	/**
 	 * Solver output at the end of the call
 	 */
-	protected String resultOfSolver;
+	protected String solverResult;
 
 	/**
-	 * Access to these files must be synchronized. iFile contains the sequent to
-	 * discharge translated into SMT-LIB language, oFile contains the result of
-	 * the solver
+	 * Access to these files must be synchronized. smtBenchmarkFile contains the
+	 * sequent to discharge translated into SMT-LIB language, smtResultFile
+	 * contains the result of the solver
 	 */
-	protected File iFile;
-	protected File oFile;
+	protected File smtBenchmarkFile;
+	protected File smtResultFile;
 
 	/**
-	 * Creates an instance of this class. Additional computations are: prover
+	 * Creates an instance of this class. Additional computations are: solver
 	 * name and preferences settings.
 	 * 
 	 * @param hypotheses
@@ -101,17 +98,8 @@ public abstract class SMTProverCall extends XProverCall {
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm);
 		smtPreferences = preferences;
-		if (SMTSignature.getReservedSymbolsAndKeywords().contains(lemmaName)) {
-			this.lemmaName = lemmaName + "_";
-		} else {
-			this.lemmaName = lemmaName;
-		}
-		proverName = preferences.getSolver().getId();
-	}
-
-	private String smtFilePath(final String fileName) {
-		return translationFolder + File.separatorChar + fileName
-				+ SMT_LIB_FILE_EXTENSION;
+		this.lemmaName = lemmaName;
+		solverName = preferences.getSolver().getId();
 	}
 
 	/**
@@ -120,7 +108,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 * @param file
 	 *            the file to be deleted
 	 */
-	public static void deleteFile(final File file) {
+	private static void deleteFile(final File file) {
 		if (file.isFile()) {
 			file.delete();
 		} else {
@@ -139,7 +127,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 * @param smtFolder
 	 *            the SMT Folder
 	 */
-	public static void cleanSMTFolder(final File smtFolder) {
+	private static void cleanSMTFolder(final File smtFolder) {
 		if (smtFolder.exists()) {
 			if (smtFolder.isDirectory()) {
 				final File[] children = smtFolder.listFiles();
@@ -149,6 +137,117 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 		}
 	}
+
+	/**
+	 * Set up input arguments for solver.
+	 */
+	private List<String> solverCommandLine() {
+		final List<String> commandLine = new ArrayList<String>();
+
+		/**
+		 * Selected solver binary path
+		 */
+		commandLine.add(smtPreferences.getSolver().getPath());
+		/**
+		 * Benchmark file produced by translating the Event-B sequent
+		 */
+		commandLine.add(smtBenchmarkFile.getAbsolutePath());
+		/**
+		 * Selected solver parameters
+		 */
+		if (!smtPreferences.getSolver().getArgs().isEmpty()) {
+			final String[] argumentsString = smtPreferences.getSolver()
+					.getArgs().split(" ");
+			for (final String argString : argumentsString) {
+				commandLine.add(argString);
+			}
+		}
+
+		return commandLine;
+	}
+
+	private void makeSMTResultFile() throws IOException {
+		proofMonitor.setTask("Processing result file from SMT-Solver");
+		smtResultFile = new File(smtBenchmarkFile.getParent()
+				+ File.separatorChar + lemmaName + ".res");
+		if (!smtResultFile.exists()) {
+			smtResultFile.createNewFile();
+		}
+		final FileWriter fileWriter = new FileWriter(smtResultFile);
+		fileWriter.write(solverResult);
+		fileWriter.close();
+	}
+
+	/**
+	 * Check if the result provided by the solver contains "unsat" string.
+	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
+	 * So is set and returned "valid" attribut.
+	 */
+	private boolean checkSolverResult() {
+		if (solverResult.contains("syntax error")
+				|| solverResult.contains("parse error")
+				|| solverResult.contains("Lexical_error")) {
+			throw new IllegalArgumentException(solverName + " could not parse "
+					+ lemmaName + ".smt. See " + lemmaName
+					+ ".res for more details.");
+		} else if (solverResult.contains("unsat")) {
+			valid = true;
+		} else if (solverResult.contains("sat")) {
+			valid = false;
+		} else {
+			throw new IllegalArgumentException("Unexpected response of "
+					+ solverName + ". See " + lemmaName
+					+ ".res for more details.");
+		}
+		return valid;
+	}
+
+	/**
+	 * Create a new PrintWriter given the file.
+	 * 
+	 * @param smtFile
+	 *            the SMT file which will be the output of the translation
+	 * @return the PrintWriter that points to the SMT file.
+	 */
+	protected static PrintWriter openSMTFileWriter(final File smtFile) {
+		try {
+			final PrintWriter smtFileWriter = new PrintWriter(
+					new BufferedWriter(new FileWriter(smtFile)));
+
+			return smtFileWriter;
+
+		} catch (final IOException ioe) {
+			ioe.printStackTrace();
+			ioe.getMessage();
+			return null;
+		} catch (final SecurityException se) {
+			se.printStackTrace();
+			se.getMessage();
+			return null;
+		}
+	}
+
+	protected final String smtFilePath() {
+		return translationFolder + File.separatorChar + lemmaName
+				+ SMT_LIB_FILE_EXTENSION;
+	}
+
+	protected String execProcess(final List<String> args) throws IOException {
+		final ProcessBuilder pb = new ProcessBuilder(args);
+		pb.redirectErrorStream(true);
+		final Process p = pb.start();
+		activeProcesses.add(p);
+		final ProcessMonitor pm = new ProcessMonitor(null, p, this);
+		final String resultString = new String(pm.output());
+		return resultString;
+	}
+
+	/**
+	 * This method
+	 * 
+	 * @throws IOException
+	 */
+	abstract protected void makeSMTBenchmarkFileV1_2() throws IOException;
 
 	/**
 	 * makes the output folder for SMT files.
@@ -192,34 +291,21 @@ public abstract class SMTProverCall extends XProverCall {
 	}
 
 	/**
-	 * Create a new PrintWriter given the file.
+	 * Method to call an SMT solver and get results back from it.
 	 * 
-	 * @param smtFile
-	 *            the SMT file which will be the output of the translation
-	 * @return the PrintWriter that points to the SMT file.
+	 * @param commandLine
+	 *            Command-line which executes the solver on the produced
+	 *            benchmark
+	 * @throws IOException
 	 */
-	protected static PrintWriter openSMTFileWriter(final File smtFile) {
-		try {
-			final PrintWriter smtFileWriter = new PrintWriter(
-					new BufferedWriter(new FileWriter(smtFile)));
-
-			return smtFileWriter;
-
-		} catch (final IOException ioe) {
-			ioe.printStackTrace();
-			ioe.getMessage();
-			return null;
-		} catch (final SecurityException se) {
-			se.printStackTrace();
-			se.getMessage();
-			return null;
-		}
+	public void callProver(final List<String> commandLine) throws IOException,
+			IllegalArgumentException {
+		proofMonitor.setTask("Running SMT-Solver");
+		solverResult = execProcess(commandLine);
 	}
 
-	public abstract List<String> smtTranslation() throws IOException;
-
 	/**
-	 * Run the external SMT prover on the sequent given at instance creation.
+	 * Run the external SMT solver on the sequent given at instance creation.
 	 */
 	@Override
 	public void run() {
@@ -236,20 +322,18 @@ public abstract class SMTProverCall extends XProverCall {
 
 		try {
 			/**
-			 * Translate and apply smt solver
+			 * Translates in SMT-LIB V1.2 language and tries to discharge with
+			 * an SMT solver
 			 */
 			if (smtPreferences.getSolver().getsmtV1_2()) {
-				/**
-				 * SMT lib v1.2 TODO: Add option here and in the preferences to
-				 * set the pre-processor: veriT or pptrans.
-				 */
-				proofMonitor.setTask("Translating Event-B proof obligation");
-				final List<String> translatedPOs = smtTranslation();
-				callProver(translatedPOs);
+				makeSMTBenchmarkFileV1_2();
+				callProver(solverCommandLine());
+				makeSMTResultFile();
+				checkSolverResult();
 
 			} else if (smtPreferences.getSolver().getsmtV2_0()) {
 				/**
-				 * SMT lib v2.0
+				 * TODO SMT-LIB v2.0
 				 */
 			}
 		} catch (final IOException e) {
@@ -258,174 +342,8 @@ public abstract class SMTProverCall extends XProverCall {
 	}
 
 	/**
-	 * Executes the SMT-Solver process and returns the output of it.
-	 * 
-	 * @param args
-	 *            The arguments to build and execute the process
-	 * @return the output of the process
-	 * @throws IOException
-	 */
-	protected String execProcess(final List<String> args) throws IOException {
-		final ProcessBuilder pb = new ProcessBuilder(args);
-		pb.redirectErrorStream(true);
-		final Process p = pb.start();
-		activeProcesses.add(p);
-		final ProcessMonitor pm = new ProcessMonitor(null, p, this);
-		final String resultString = new String(pm.output());
-		return resultString;
-	}
-
-	private File writeSMTFile(final SMTBenchmark benchmark,
-			final String filePathName) {
-		final File smtFile = new File(filePathName);
-		try {
-			smtFile.createNewFile();
-		} catch (final IOException ioe) {
-			ioe.printStackTrace();
-			ioe.getMessage();
-			return null;
-		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(smtFile);
-		benchmark.print(smtFileWriter);
-		smtFileWriter.close();
-		return smtFile;
-	}
-
-	// TODO Re-do this comment
-	/**
-	 * Performs Rodin PO to SMT translation: First, translate to predicate
-	 * calculus, then translate to SMT with macros, eventually pre-processing
-	 * macros.
-	 * 
-	 * @throws IOException
-	 */
-	protected List<String> smtTranslation(final SMTBenchmark benchmark)
-			throws IOException {
-		if (translationFolder == null) {
-			translationFolder = mkTranslationDir(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
-		}
-		final String smtFileName = smtFilePath(benchmark.getName());
-
-		/**
-		 * Parse Rodin PO to create Smt file
-		 */
-		iFile = writeSMTFile(benchmark, smtFileName);
-
-		/**
-		 * Get back translated smt file
-		 */
-		if (!iFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
-
-		/**
-		 * Set up arguments
-		 */
-		final List<String> args = setSolverArgs(smtFileName);
-
-		return args;
-	}
-
-	/**
-	 * Method to call a SMT solver and get results back from it.
-	 * 
-	 * @param args
-	 *            Arguments list needed by the prover to be called
-	 * @throws IOException
-	 * 
-	 *             FIXME must be refactored: this method should not do anything
-	 *             else than calling the prover. No file manipulation should be
-	 *             visible at this level.
-	 */
-	public void callProver(final List<String> args) throws IOException,
-			IllegalArgumentException {
-		proofMonitor.setTask("Running SMT-Solver");
-
-		resultOfSolver = execProcess(args);
-
-		proofMonitor.setTask("Processing result file from SMT-Solver");
-
-		/**
-		 * Set up result file
-		 **/
-		final File resultFile = new File(iFile.getParent() + File.separatorChar
-				+ lemmaName + ".res");
-		if (!resultFile.exists()) {
-			resultFile.createNewFile();
-		}
-		final FileWriter fileWriter = new FileWriter(resultFile);
-		fileWriter.write(resultOfSolver);
-		fileWriter.close();
-		oFile = resultFile;
-
-		/**
-		 * Check Solver Result
-		 */
-		checkResult(resultOfSolver);
-	}
-
-	/**
-	 * Set up input arguments for solver.
-	 * 
-	 */
-	protected List<String> setSolverArgs(final String lemmaFilePath) {
-		final List<String> args = new ArrayList<String>();
-		args.add(smtPreferences.getSolver().getPath());
-
-		/**
-		 * If solver is V1.2 the smt input is added in arguments
-		 */
-		if (smtPreferences.getSolver().getsmtV1_2()) {
-			args.add(lemmaFilePath);
-		}
-
-		/**
-		 * Get back solver arguments
-		 */
-		if (!smtPreferences.getSolver().getArgs().isEmpty()) {
-			/**
-			 * Split arguments and add them in the list
-			 */
-			final String[] argumentsString = smtPreferences.getSolver()
-					.getArgs().split(" "); //$NON-NLS-1$
-			for (final String argString : argumentsString) {
-				args.add(argString);
-			}
-		}
-
-		return args;
-	}
-
-	/**
-	 * Check if the result provided by the solver contains "unsat" string.
-	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
-	 * So is set and returned "valid" attribut.
-	 * 
-	 * @param solverResult
-	 *            The string result from the SMT solver.
-	 */
-	private boolean checkResult(final String solverResult) {
-		if (solverResult.contains("syntax error")
-				|| solverResult.contains("parse error")
-				|| solverResult.contains("Lexical_error")) {
-			throw new IllegalArgumentException(proverName + " could not parse "
-					+ lemmaName + ".smt. See " + lemmaName
-					+ ".res for more details.");
-		} else if (solverResult.contains("unsat")) {
-			valid = true;
-		} else if (solverResult.contains("sat")) {
-			valid = false;
-		} else {
-			throw new IllegalArgumentException("Unexpected response of "
-					+ proverName + ". See " + lemmaName
-					+ ".res for more details.");
-		}
-		return valid;
-	}
-
-	/**
 	 * Tells whether the sequent has been proved valid by the external SMT
-	 * prover.
+	 * solver.
 	 **/
 	@Override
 	public boolean isValid() {

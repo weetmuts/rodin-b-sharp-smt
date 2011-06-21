@@ -7,7 +7,6 @@ import static br.ufrn.smt.solver.translation.SMTSolver.Z3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +20,7 @@ import org.junit.BeforeClass;
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
 import br.ufrn.smt.solver.translation.SMTSolver;
+import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTTranslationApproach;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -256,15 +256,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 
 			smtProverCalls.add(smtProverCall);
-			final List<String> smtArgs = new ArrayList<String>(
-					smtProverCall.smtTranslation());
-			smtProverCall.callProver(smtArgs);
+			smtProverCall.run();
 
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-		} catch (final IOException ioe) {
-			fail(ioe.getMessage());
 		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
@@ -296,30 +292,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
-		// Create an instance of SmtProversCall
-		final SMTPPCall smtPPCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-				MONITOR, preferences, lemmaName) {
-			@Override
-			public String displayMessage() {
-				return "SMT";
-			}
-		};
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				lemmaName, parsedHypotheses, parsedGoal, preferences
+						.getSolver().getId());
 
-		try {
-			final SMTBenchmark benchmark = smtPPCall
-					.translateToBenchmarkThroughPP();
+		final SMTSignature signature = benchmark.getSignature();
 
-			final SMTSignature signature = benchmark.getSignature();
-
-			AbstractTests
-					.testTypeEnvironmentSorts(signature, expectedSorts, "");
-			AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
-			AbstractTests
-					.testTypeEnvironmentPreds(signature, expectedPreds, "");
-
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
+		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
+		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 }

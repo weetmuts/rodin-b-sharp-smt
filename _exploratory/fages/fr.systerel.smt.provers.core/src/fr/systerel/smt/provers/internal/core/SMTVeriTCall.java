@@ -41,26 +41,29 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	@Override
-	public List<String> smtTranslation() throws IOException {
+	public void makeSMTBenchmarkFileV1_2() throws IOException {
+		proofMonitor.setTask("Translating Event-B proof obligation");
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtPreferences.getSolver().getId());
+		lemmaName = benchmark.getName();
+
 		/**
 		 * The name of the SMT file with macros.
 		 */
 		if (translationFolder == null) {
 			translationFolder = mkTranslationDir(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
-		final String veriTPreProcessingFileName = smtVeriTPreProcessFilePath(benchmark
-				.getName());
 
 		/**
 		 * First, write the SMT file with macros
 		 */
-		final File preprocessedFile = writeVeritPreprocessedSMTFile(benchmark,
-				veriTPreProcessingFileName);
-
-		if (!preprocessedFile.exists()) {
+		final File preProcessedSMTFile = new File(smtVeriTPreProcessFilePath());
+		preProcessedSMTFile.createNewFile();
+		final PrintWriter smtFileWriter = openSMTFileWriter(preProcessedSMTFile);
+		benchmark.print(smtFileWriter);
+		smtFileWriter.close();
+		if (!preProcessedSMTFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 
@@ -68,11 +71,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Then, call veriT, which produces a version of the SMT file without
 		 * macros
 		 */
-		callVeriT(preprocessedFile);
-
-		final List<String> args = setSolverArgs(iFile.getPath());
-
-		return args;
+		callVeriT(preProcessedSMTFile);
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());
 
-		resultOfSolver = execProcess(args);
+		solverResult = execProcess(args);
 
 		/**
 		 * Set up temporary result file
@@ -104,62 +103,45 @@ public class SMTVeriTCall extends SMTProverCall {
 		checkPreProcessingResult(preprocessedFile.getParent());
 	}
 
+	private String smtVeriTPreProcessFilePath() {
+		return translationFolder + File.separatorChar + lemmaName
+				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
+	}
+
 	private void createPostProcessedFile(final String parentFolder,
 			final String extension) throws IOException {
-		iFile = new File(parentFolder + File.separatorChar + lemmaName
+		smtBenchmarkFile = new File(parentFolder + File.separatorChar + lemmaName
 				+ POST_PROCESSED_FILE_POSTFIX + extension);
-		if (!iFile.exists()) {
-			iFile.createNewFile();
+		if (!smtBenchmarkFile.exists()) {
+			smtBenchmarkFile.createNewFile();
 		}
-		final FileWriter fileWriter = new FileWriter(iFile);
-		fileWriter.write(resultOfSolver);
+		final FileWriter fileWriter = new FileWriter(smtBenchmarkFile);
+		fileWriter.write(solverResult);
 		fileWriter.close();
 	}
 
 	private void checkPreProcessingResult(final String parentFolder)
 			throws IOException {
-		if (resultOfSolver.contains("(benchmark")) {
-			resultOfSolver = resultOfSolver.substring(resultOfSolver
+		if (solverResult.contains("(benchmark")) {
+			solverResult = solverResult.substring(solverResult
 					.indexOf("(benchmark"));
 			createPostProcessedFile(parentFolder, "smt");
 			return;
 		} else {
 			createPostProcessedFile(parentFolder, RES);
-			if (resultOfSolver.contains("syntax error")
-					|| resultOfSolver.contains("parse error")
-					|| resultOfSolver.contains("Lexical_error")) {
-				throw new IllegalArgumentException(proverName
+			if (solverResult.contains("syntax error")
+					|| solverResult.contains("parse error")
+					|| solverResult.contains("Lexical_error")) {
+				throw new IllegalArgumentException(solverName
 						+ " could not pre-process " + lemmaName
 						+ ".smt with VeriT. See " + lemmaName
 						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
 			} else {
 				throw new IllegalArgumentException("Unexpected response of "
-						+ proverName + ". See " + lemmaName
+						+ solverName + ". See " + lemmaName
 						+ POST_PROCESSED_FILE_POSTFIX + RES
 						+ " for more details.");
 			}
 		}
-	}
-
-	private String smtVeriTPreProcessFilePath(final String fileName) {
-		return translationFolder + File.separatorChar + fileName
-				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
-	}
-
-	private File writeVeritPreprocessedSMTFile(final SMTBenchmark benchmark,
-			final String veriTPreProcessingFileName) {
-		final File preProcessedSMTFile = new File(veriTPreProcessingFileName);
-		try {
-			preProcessedSMTFile.createNewFile();
-		} catch (final IOException ioe) {
-			ioe.printStackTrace();
-			ioe.getMessage();
-			return null;
-		}
-		final PrintWriter smtFileWriter = openSMTFileWriter(preProcessedSMTFile);
-		benchmark.print(smtFileWriter);
-		smtFileWriter.close();
-		return preProcessedSMTFile;
-
 	}
 }
