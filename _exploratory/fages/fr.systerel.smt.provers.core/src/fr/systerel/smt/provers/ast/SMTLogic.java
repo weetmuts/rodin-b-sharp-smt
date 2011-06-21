@@ -24,6 +24,10 @@ import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  * The SMT logics.
+ * 
+ * TODO: Implement methods/classes to define new logics/theories. For that it is
+ * necessary to discover and standardize how to add new logics/theories to the
+ * solvers.
  */
 public class SMTLogic {
 	public static String UNKNOWN = "UNKNOWN";
@@ -412,59 +416,6 @@ public class SMTLogic {
 	}
 
 	/**
-	 * This class represents the UFNIA logic
-	 * 
-	 */
-	public static class UFNIA extends SMTLIBUnderlyingLogic {
-		private static final String UFNIA = "UFNIA";
-
-		private static final UFNIA INSTANCE = new UFNIA();
-
-		private UFNIA() {
-			super(UFNIA);
-		}
-
-		public static UFNIA getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
-	 * This class represents the LIA logic
-	 * 
-	 */
-	public static class LIA extends SMTLIBUnderlyingLogic {
-		private static final String LIA = "LIA";
-
-		private static final LIA INSTANCE = new LIA();
-
-		private LIA() {
-			super(LIA);
-		}
-
-		public static LIA getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
-	 * This class represents the AUFLIA logic.
-	 */
-	public static class AUFLIA extends SMTLIBUnderlyingLogic {
-		private static final String AUFLIA = "AUFLIA";
-
-		private static final AUFLIA INSTANCE = new AUFLIA();
-
-		private AUFLIA() {
-			super(AUFLIA);
-		}
-
-		public static AUFLIA getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
 	 * returns the integer sort constant symbol.
 	 * 
 	 * @return the integer sort constant symbol.
@@ -487,7 +438,9 @@ public class SMTLogic {
 	public SMTFunctionSymbol getBoolsSet() {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof VeritPredefinedTheory) {
-				return VeritPredefinedTheory.getBoolFunction();
+				// Impossible to reach yet because the Bools theory is not
+				// defined by VeriT yet.
+				return VeritPredefinedTheory.getBoolsSet();
 			} else if (theory instanceof Booleans) {
 				return Booleans.getBoolsSet();
 			}

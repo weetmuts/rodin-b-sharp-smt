@@ -245,6 +245,9 @@ final public class SMTFactoryVeriT extends SMTFactory {
 					final SMTFunApplication function = (SMTFunApplication) term;
 					final SMTSortSymbol[] sortSymbols = new SMTSortSymbol[function.args.length];
 					for (int j = 0; j < function.args.length; j++) {
+						// This code is not reachable because the terms that are
+						// passed to formulas have no arguments in veriT
+						// approach
 						sortSymbols[j] = function.args[j].getSort();
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(

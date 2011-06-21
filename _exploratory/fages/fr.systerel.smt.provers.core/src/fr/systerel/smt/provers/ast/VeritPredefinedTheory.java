@@ -63,12 +63,12 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
 			SMTSymbol.MOD, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
 
-	private static final SMTFunctionSymbol BOOL_FUNCTION = new SMTFunctionSymbol(
+	private static final SMTFunctionSymbol BOOL_SET = new SMTFunctionSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, new SMTSortSymbol[] {}, BOOL,
 			false, true);
 
-	public static SMTFunctionSymbol getBoolFunction() {
-		return BOOL_FUNCTION;
+	public static SMTFunctionSymbol getBoolsSet() {
+		return BOOL_SET;
 	}
 
 	private static final SMTSortSymbol[] SORTS = { BOOL, INT };

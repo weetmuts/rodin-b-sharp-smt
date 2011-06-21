@@ -146,14 +146,6 @@ public class SMTTheory {
 			return INT;
 		}
 
-		public static SMTSortSymbol[] getIntTab() {
-			return INT_TAB;
-		}
-
-		public static SMTSortSymbol[] getIntIntTab() {
-			return INT_INT_TAB;
-		}
-
 		public static SMTFunctionSymbol getIntsSet() {
 			return INTS_SET;
 		}
