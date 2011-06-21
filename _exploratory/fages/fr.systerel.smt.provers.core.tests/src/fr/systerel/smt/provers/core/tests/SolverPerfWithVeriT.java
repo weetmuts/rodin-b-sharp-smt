@@ -667,7 +667,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		doTest("testpred", hyps, "1 ↦ 2 ∈ succ", te, VALID);
+		doTest("testsucc", hyps, "1 ↦ 2 ∈ succ", te, VALID);
 	}
 
 	@Test

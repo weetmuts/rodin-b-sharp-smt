@@ -25,15 +25,15 @@ public class SMTInput extends XProverInput {
 	protected SMTInput(final IReasonerInputReader reader)
 			throws SerializeException {
 		super(reader);
-		this.sequentName = reader.getDisplayName();
-		this.error = validate();
+		sequentName = reader.getDisplayName();
+		error = validate();
 	}
 
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final String sequentName) {
 		super(restricted, timeOutDelay);
 		this.sequentName = sequentName;
-		this.error = validate();
+		error = validate();
 	}
 
 	private String validate() {

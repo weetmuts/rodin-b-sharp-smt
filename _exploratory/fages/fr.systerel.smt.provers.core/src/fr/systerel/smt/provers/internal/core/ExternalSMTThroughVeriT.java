@@ -45,10 +45,10 @@ public class ExternalSMTThroughVeriT extends XProverReasoner {
 	}
 
 	@Override
-	public void serializeInput(IReasonerInput rInput,
-			IReasonerInputWriter writer) throws SerializeException {
+	public void serializeInput(final IReasonerInput rInput,
+			final IReasonerInputWriter writer) throws SerializeException {
 
-		SMTInput input = (SMTInput) rInput;
+		final SMTInput input = (SMTInput) rInput;
 		final String delayString = Long.toString(input.timeOutDelay);
 		final String restrictedString = Boolean.toString(input.restricted);
 		writer.putString(ARG_KEY, restrictedString + ":" + delayString + ":"
@@ -57,10 +57,11 @@ public class ExternalSMTThroughVeriT extends XProverReasoner {
 
 	@Override
 	public IReasonerInput deserializeInput(
-			IReasonerInputReader reasonerInputReader) throws SerializeException {
+			final IReasonerInputReader reasonerInputReader)
+			throws SerializeException {
 
-		String arg = reasonerInputReader.getString(ARG_KEY);
-		String[] args = arg.split(":");
+		final String arg = reasonerInputReader.getString(ARG_KEY);
+		final String[] args = arg.split(":");
 		if (args.length != 3) {
 			throw new SerializeException(new IllegalStateException(
 					"Malformed argument: " + arg));

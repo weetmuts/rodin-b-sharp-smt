@@ -552,16 +552,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Method used to translate predecessor or sucessor operators. For
-	 * predecessor, it returns a SMT-LIB version of (λ·x ∈ ℤ ∣ x − 1), and for
-	 * sucessor, it returns a SMT-LIB version of (λ·x ∈ ℤ ∣ x + 1)
+	 * Method used to translate sucessor operator. It returns a SMT-LIB version
+	 * of (λ·x ∈ ℤ ∣ x + 1).
 	 * 
 	 * @param macroName
 	 *            the name of this macro
 	 * 
-	 * @return the translated term of predecessor or sucessor
+	 * @return the translated term of sucessor
 	 */
-
 	private SMTTerm translateKSUCC(final String macroName) {
 
 		// Making x
@@ -589,6 +587,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	}
 
+	/**
+	 * Method used to translate predecessor operator. It returns a SMT-LIB
+	 * version of (λ·x ∈ ℤ ∣ x - 1).
+	 * 
+	 * @param macroName
+	 *            the name of this macro
+	 * 
+	 * @return the translated term of predecessor
+	 */
 	private SMTTerm translateKPRED(final String macroName) {
 
 		// Making x
@@ -617,10 +624,27 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * This method continues the translation of the sucessor and predecessor. To
+	 * help understanding, the parameters are explained according to this
+	 * predicate:
+	 * <p>
+	 * (λ·x ∈ ℤ ∣ x + 1)
+	 * <p>
+	 * 
+	 * the resulting term of this method must be:
+	 * 
+	 * (succ(lambda(?elem (Pair Int Int)) . (exists (?x Int) . (= ?elem (pair ?x
+	 * (+ ?x 1))))))
+	 * 
 	 * @param macroName
+	 *            the name of the macro
 	 * @param xSort
+	 *            the sort of x
 	 * @param xFun
+	 *            the function symbol that represents x in SMT-LIB
 	 * @param mapstoTerm
+	 *            the term (pair ?x (+ ?x 1))
+	 * 
 	 * @return The term that represents the translation of predecessor or
 	 *         sucessor
 	 */
@@ -1355,7 +1379,17 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Translate min or max operators. This translation is based in the article
+	 * "Integration of SMT-Solvers in B and Event-B Development Environments",
+	 * from DEHARBE, David, dated of December 17, 2010.
+	 * 
+	 * @param operator
+	 *            the operator (min or max)
+	 * @param constantName
+	 *            the name of the constant 'm' (see the article)
 	 * @param children
+	 *            the children terms of the min or max term
+	 * @return the constant term that represents the min or the max
 	 */
 	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
 			final String constantName, final SMTTerm[] children) {
