@@ -10,7 +10,6 @@ import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferencesStore.CreatePreferences;
 import static br.ufrn.smt.solver.translation.SMTSolver.ALT_ERGO;
 import static br.ufrn.smt.solver.translation.SMTSolver.CVC3;
 import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
@@ -60,7 +59,7 @@ public class UiPreferencesTests {
 		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
 		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
-		final String preferences = CreatePreferences(solvers);
+		final String preferences = SolverDetail.toString(solvers);
 		store.setValue(SOLVERPREFERENCES, preferences);
 		store.setValue(SOLVERINDEX, 0);
 		store.setValue(VERITPATH, BIN_PATH + VERIT);

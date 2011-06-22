@@ -13,13 +13,14 @@ package br.ufrn.smt.solver.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * The SMT preferences class
  */
 public class SMTPreferences {
-	private static final String SEPARATOR1 = ",,";
-	private static final String SEPARATOR2 = ";";
+	public static final String SEPARATOR1 = ",,";
+	public static final String SEPARATOR2 = ";";
 	public static final String VERITPATH = "veritpath";
 	public static final String SOLVERINDEX = "solverindex";
 	public static final String SOLVERPREFERENCES = "solverpreferences";
@@ -43,26 +44,34 @@ public class SMTPreferences {
 	/**
 	 * Constructs a new SMT preferences
 	 * 
-	 * @param solverSettingsPreferences
+	 * @param solverSettings
 	 *            The string that contains the details of the solvers
 	 * @param selectedSolverIndex
 	 *            the index of the selected solver
 	 * @param veriTPath
 	 *            The path of the veriT solver for pre-processing
+	 * @throws PatternSyntaxException
+	 *             if the given settings are not formatted correctly
 	 */
-	public SMTPreferences(final String solverSettingsPreferences,
-			final int selectedSolverIndex, final String veriTPath) {
-		final List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
-		if (selectedSolverIndex >= 0 && selectedSolverIndex < solvers.size()) {
+	public SMTPreferences(final String solverSettings,
+			final int selectedSolverIndex, final String veriTPath)
+			throws PatternSyntaxException, IllegalArgumentException {
+
+		if (solverSettings == null) {
+			throw new IllegalArgumentException("Illegal solver settings");
+		}
+		
+		final List<SolverDetail> solvers = parsePreferencesString(solverSettings);
+		try {
 			solver = solvers.get(selectedSolverIndex);
-		} else {
+		} catch (IndexOutOfBoundsException ioobe) {
 			if (solvers.size() > 0) {
-				//TODO Show message "The solver 1 was selected automatically"
-				solver = solvers.get(0);
+				throw new IllegalArgumentException("No SMT solver selected");
 			} else {
 				throw new IllegalArgumentException("No SMT solver installed");
 			}
 		}
+
 		this.veriTPath = veriTPath;
 	}
 
@@ -75,19 +84,20 @@ public class SMTPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	public static List<SolverDetail> CreateModel(final String preferences) {
-		final List<SolverDetail> model = new ArrayList<SolverDetail>();
+	public static List<SolverDetail> parsePreferencesString(
+			final String preferences) throws PatternSyntaxException {
+		final List<SolverDetail> solverDetail = new ArrayList<SolverDetail>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				model.add(new SolverDetail(columns[0], columns[1], columns[2],
-						Boolean.valueOf(columns[3]), Boolean
+				solverDetail.add(new SolverDetail(columns[0], columns[1],
+						columns[2], Boolean.valueOf(columns[3]), Boolean
 								.valueOf(columns[4])));
 			}
 		}
-		return model;
+		return solverDetail;
 	}
 
 	public SolverDetail getSolver() {

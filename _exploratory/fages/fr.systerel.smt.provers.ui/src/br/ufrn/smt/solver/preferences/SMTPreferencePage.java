@@ -14,6 +14,7 @@ package br.ufrn.smt.solver.preferences;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -83,15 +84,11 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	TableViewer fTable;
 
-	/*****************************************/
-	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-
 	static String veriTPath;
-	/*****************************************/
 
 	int selectedSolverIndex;
 
-	List<SolverDetail> fModel = new ArrayList<SolverDetail>();
+	List<SolverDetail> solverDetails = new ArrayList<SolverDetail>();
 
 	/**
 	 * The name of the preference displayed in this preference page.
@@ -103,18 +100,17 @@ public class SMTPreferencePage extends PreferencePage implements
 	}
 
 	private void initWithPreferences() {
+		setDescription("SMT-Solver Plugin Preference Page");
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(PREFERENCES_NAME);
-		/*****************************************/
-		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
 		veriTPath = getPreferenceStore().getString(VERIT_PATH_FIELD);
-		/*****************************************/
-		fModel = SMTPreferencesStore.CreateModel(preferences);
-		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_FIELD);
-		if (selectedSolverIndex == -1) {
-			UIUtils.showError(Messages.SmtProversCall_no_selected_solver);
+		try {
+			solverDetails = SMTPreferences.parsePreferencesString(preferences);
+		} catch (PatternSyntaxException pse) {
+			pse.printStackTrace(System.err);
+			UIUtils.showError(pse.getMessage());
 		}
-		setDescription("SMT-Solver Plugin Preference Page");
+		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_FIELD);
 	}
 
 	/**
@@ -139,7 +135,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Create the table viewer
 		fTable = createTableViewer(comp);
-		fTable.setInput(fModel);
+		fTable.setInput(solverDetails);
 
 		// Configure table
 		final Table tableControl = fTable.getTable();
@@ -189,7 +185,7 @@ public class SMTPreferencePage extends PreferencePage implements
 						.getSelection();
 				final SolverDetail solverToRemove = (SolverDetail) sel
 						.getFirstElement();
-				fModel.remove(solverToRemove);
+				solverDetails.remove(solverToRemove);
 
 				// Check if the selected is being to be removed
 				if (fTable.getTable().getSelectionIndex() == selectedSolverIndex) {
@@ -201,7 +197,7 @@ public class SMTPreferencePage extends PreferencePage implements
 				fTable.refresh();
 
 				// save preferences
-				preferences = SMTPreferencesStore.CreatePreferences(fModel);
+				preferences = SolverDetail.toString(solverDetails);
 
 			}
 		});
@@ -499,17 +495,17 @@ public class SMTPreferencePage extends PreferencePage implements
 					if (editMode) {
 						final int indexToEdit = fTable.getTable()
 								.getSelectionIndex();
-						fModel.get(indexToEdit).setId(solverIdText.getText());
-						fModel.get(indexToEdit).setPath(
+						solverDetails.get(indexToEdit).setId(solverIdText.getText());
+						solverDetails.get(indexToEdit).setPath(
 								solverPathText.getText());
-						fModel.get(indexToEdit).setArgs(
+						solverDetails.get(indexToEdit).setArgs(
 								solverArgsText.getText());
-						fModel.get(indexToEdit).setSmtV1_2(
+						solverDetails.get(indexToEdit).setSmtV1_2(
 								smt1_2_Button.getSelection());
-						fModel.get(indexToEdit).setSmtV2_0(
+						solverDetails.get(indexToEdit).setSmtV2_0(
 								smt2_0_Button.getSelection());
 					} else {
-						fModel.add(new SolverDetail(solverIdText.getText(),
+						solverDetails.add(new SolverDetail(solverIdText.getText(),
 								solverPathText.getText(), solverArgsText
 										.getText(), smt1_2_Button
 										.getSelection(), smt2_0_Button
@@ -517,7 +513,7 @@ public class SMTPreferencePage extends PreferencePage implements
 					}
 
 					// save preferences
-					preferences = SMTPreferencesStore.CreatePreferences(fModel);
+					preferences = SolverDetail.toString(solverDetails);
 
 					// Update table with solver details
 					fTable.refresh();
@@ -576,6 +572,9 @@ public class SMTPreferencePage extends PreferencePage implements
 		getPreferenceStore().putValue(PREFERENCES_NAME, preferences);
 		getPreferenceStore().setValue(SOLVER_INDEX_FIELD, selectedSolverIndex);
 		getPreferenceStore().putValue(VERIT_PATH_FIELD, veriTPath);
+		if (selectedSolverIndex < 0 || selectedSolverIndex >= solverDetails.size()) {
+			UIUtils.showWarning(Messages.SmtProversCall_no_selected_solver);
+		}
 		return super.performOk();
 	}
 }

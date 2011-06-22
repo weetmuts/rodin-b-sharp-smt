@@ -11,6 +11,11 @@
 
 package br.ufrn.smt.solver.preferences;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SEPARATOR1;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SEPARATOR2;
+
+import java.util.List;
+
 /**
  * This is a class to describe a solver detail
  * 
@@ -88,6 +93,25 @@ public class SolverDetail {
 
 	public void setSmtV2_0(final boolean smtV2_0) {
 		this.smtV2_0 = smtV2_0;
+	}
+
+	public static final String toString(List<SolverDetail> solversDetails) {
+		final StringBuilder sb = new StringBuilder();
+
+		for (final SolverDetail solverDetail : solversDetails) {
+			sb.append(solverDetail.getId());
+			sb.append(SEPARATOR1);
+			sb.append(solverDetail.getPath());
+			sb.append(SEPARATOR1);
+			sb.append(solverDetail.getArgs());
+			sb.append(SEPARATOR1);
+			sb.append(Boolean.toString(solverDetail.getsmtV1_2()));
+			sb.append(SEPARATOR1);
+			sb.append(Boolean.toString(solverDetail.getsmtV2_0()));
+			sb.append(SEPARATOR2);
+		}
+
+		return sb.toString();
 	}
 
 	public void toString(final StringBuilder builder) {

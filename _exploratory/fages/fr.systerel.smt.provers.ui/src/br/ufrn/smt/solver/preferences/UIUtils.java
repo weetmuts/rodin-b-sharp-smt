@@ -38,6 +38,38 @@ public class UIUtils {
 			}
 		});
 	}
+	
+	/**
+	 * Opens a warning dialog to the user displaying the given message.
+	 * 
+	 * @param message
+	 *            The dialog message displayed
+	 * 
+	 */
+	public static void showWarning(final String message) {
+		final String smtWarningTitle = "SMT warning";
+		syncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openWarning(getShell(), smtWarningTitle, message);
+			}
+		});
+	}
+
+	/**
+	 * Opens an information dialog to the user displaying the given message.
+	 * 
+	 * @param message
+	 *            The dialog message
+	 */
+	public static void showInfo(final String message) {
+		syncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openInformation(getShell(), null, message);
+			}
+		});
+	}
 
 	private static void syncExec(final Runnable runnable) {
 		final Display display = PlatformUI.getWorkbench().getDisplay();

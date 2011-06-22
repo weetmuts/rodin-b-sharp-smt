@@ -14,6 +14,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -25,6 +26,7 @@ import org.eventb.ui.prover.ITacticApplication;
 import org.eventb.ui.prover.ITacticProvider;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
+import br.ufrn.smt.solver.preferences.UIUtils;
 import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**
@@ -32,31 +34,46 @@ import fr.systerel.smt.provers.core.SMTProversCore;
  * 
  */
 public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
+	SMTPreferences smtPreferences;
 
-	public static class SMTVeriTApplication extends DefaultPredicateApplication {
+	private boolean smtPreferencesCorrectlySet() {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
+				null);
+		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
+				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
+		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
+				VERITPATH, DEFAULT_VERITPATH, null);
+		try {
+			smtPreferences = new SMTPreferences(solverPreferences, solverIndex,
+					veriTPath);
+		} catch (PatternSyntaxException pse) {
+			UIUtils.showError(pse.getMessage());
+			pse.printStackTrace(System.err);
+			return false;
+		} catch (IllegalArgumentException iae) {
+			UIUtils.showError(iae.getMessage());
+			iae.printStackTrace(System.err);
+			return false;
+		}
+		return true;
+	}
+
+	public class SMTVeriTApplication extends DefaultPredicateApplication {
 
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
-			final IPreferencesService preferencesService = Platform
-					.getPreferencesService();
-			final String solverPreferences = preferencesService.getString(
-					PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES, null);
-			final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
-					SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
-			final String veriTPath = preferencesService.getString(PREFERENCES_ID,
-					VERITPATH, DEFAULT_VERITPATH, null);
-			final SMTPreferences smtPreferences = new SMTPreferences(
-					solverPreferences, solverIndex, veriTPath);
 			return SMTProversCore.externalSMTThroughVeriT(smtPreferences, true);
 		}
-
 	}
 
 	@Override
 	public List<ITacticApplication> getPossibleApplications(
 			final IProofTreeNode node, final Predicate hyp,
 			final String globalInput) {
-		if (node != null && node.isOpen()) {
+		if (node != null && node.isOpen() && smtPreferencesCorrectlySet()) {
 			final ITacticApplication appli = new SMTVeriTApplication();
 			return singletonList(appli);
 		}
