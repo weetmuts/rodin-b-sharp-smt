@@ -47,17 +47,46 @@ import fr.systerel.smt.provers.core.tests.utils.LemmaParser;
  */
 @RunWith(Parameterized.class)
 public class XMLtoSMTTests extends CommonSolverRunTests {
-
 	/**
 	 * If true, is printed details of the test for each test iteration.
 	 */
 	private final boolean PRINT_INFO = true;
 	private static int round = 0;
 
+	private static final String RODIN_XML_TMP_FOLDER = System
+			.getProperty("user.home")
+			+ File.separatorChar
+			+ "rodin_xml_tmp_files";
+	/**
+	 * The path of the input folder containing the XML files for the Event-B
+	 * lemmas to be translated in SMT-LIB format, and their associated DTD file.
+	 */
+	private final static String XMLFolder = RODIN_XML_TMP_FOLDER
+			+ File.separatorChar + "xml";
+	/**
+	 * The path of the output folder where to store the generated SMT files.
+	 */
+	private final static String SMTFolder = RODIN_XML_TMP_FOLDER
+			+ File.separatorChar + "smt";
+	private final static String DTDFolder = "src/fr/systerel/smt/provers/core/tests/utils";
+
+	private final LemmaData data;
+
 	/**
 	 * The chosen solver for the tests
 	 */
 	private final SMTSolver SOLVER = SMTSolver.Z3;
+
+	/**
+	 * Constructs a new test.
+	 * 
+	 * @param data
+	 *            the parameter of one test.
+	 */
+	public XMLtoSMTTests(final LemmaData data) {
+		this.data = data;
+		System.out.println("Loop: " + round++ / 2);
+	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
@@ -101,31 +130,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		}
 		return totalDocData;
 	}
-
-	/**
-	 * Constructs a new test.
-	 * 
-	 * @param data
-	 *            the parameter of one test.
-	 */
-	public XMLtoSMTTests(final LemmaData data) {
-		this.data = data;
-		System.out.println("Loop: " + round++ / 2);
-	}
-
-	private final LemmaData data;
-
-	/**
-	 * The path of the input folder containing the XML files for the Event-B
-	 * lemmas to be translated in SMT-LIB format, and their associated DTD file.
-	 */
-	private final static String XMLFolder = "/u/vitor/rodin_xml_tmp_files/xml";
-	private final static String DTDFolder = "src/fr/systerel/smt/provers/core/tests/utils";
-
-	/**
-	 * The path of the output folder where to store the generated SMT files.
-	 */
-	private final static String SMTFolder = "/u/vitor/rodin_xml_tmp_files/smt";
 
 	/**
 	 * Asserts that the given formula is typed.
