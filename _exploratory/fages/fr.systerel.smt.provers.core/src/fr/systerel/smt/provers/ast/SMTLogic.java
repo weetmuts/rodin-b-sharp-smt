@@ -331,7 +331,8 @@ public class SMTLogic {
 				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
 				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
 				SMTMacroSymbol.RANGE), BCOMP(SMTMacroSymbol.BCOMP), INTEGER(
-				SMTMacroSymbol.INT), SUCC(SMTMacroSymbol.SUCC);
+				SMTMacroSymbol.INT), SUCC(SMTMacroSymbol.SUCC), PRED(
+				SMTMacroSymbol.PRED);
 
 		/**
 		 * The symbol string.

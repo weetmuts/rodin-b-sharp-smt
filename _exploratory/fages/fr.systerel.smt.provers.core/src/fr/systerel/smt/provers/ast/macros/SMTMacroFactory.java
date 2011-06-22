@@ -38,6 +38,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.OVR;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.PRED;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE_INTEGER;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroSymbol.RANGE_RESTRICTION;
@@ -362,7 +363,12 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
 			SUCC,
-			"(lambda(?elem (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?elem (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
+			"(lambda(?SUCC_1 (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?SUCC_1 (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
+			1, PAIR_SYMBOLS, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro PREDECESSOR_MACRO = new SMTPredefinedMacro(
+			PRED,
+			"(lambda(?PRED_0 (Pair Int Int)) . (exists (?PRED_1 Int) . (= ?PRED_0 (pair (+ ?PRED_1 1) ?PRED_1))))",
 			1, PAIR_SYMBOLS, EMPTY_MACROS);
 
 	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
@@ -461,6 +467,8 @@ public class SMTMacroFactory {
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
 	private static SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
+	private static SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
+			EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
 			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
@@ -476,7 +484,7 @@ public class SMTMacroFactory {
 			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
 			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
 			TOTAL_RELATION_MACRO, RANGE_MACRO, BCOMP_MACRO, INTEGER_MACRO,
-			SUCCESSOR_MACRO };
+			SUCCESSOR_MACRO, PREDECESSOR_MACRO };
 
 	/**
 	 * Retrieves the name of the identifiers that have a question mark as a
@@ -880,6 +888,10 @@ public class SMTMacroFactory {
 			signature.addMacro(SUCCESSOR_MACRO);
 			break;
 		}
+		case PRED: {
+			signature.addMacro(PREDECESSOR_MACRO);
+			break;
+		}
 		default:
 			throw new IllegalArgumentException(
 					"There is no predefined macro with symbol: "
@@ -1017,6 +1029,8 @@ public class SMTMacroFactory {
 			return INTEGER_SYMBOL;
 		case SUCC:
 			return SUCC_SYMBOL;
+		case PRED:
+			return PRED_SYMBOL;
 		default:
 			throw new IllegalArgumentException(
 					"There is no defined macro symbol with symbol: "

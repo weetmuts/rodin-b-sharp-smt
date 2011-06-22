@@ -1049,7 +1049,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final Map<String, String> expectedCSETMacros = new HashMap<String, String>();
 		expectedCSETMacros
 				.put("cset",
-						"(cset(lambda(?elem_0 (Pair Int Int)) . (exists (?x Int). (and (= ?elem_0 (pair ?x (+ ?x ?x))) (forall (?y Int) .  (and (in ?y Nat) (forall (?z Int) .  (and (in ?z Nat) (= (+ ?z ?y) ?x)))))))))");
+						"(cset(lambda(?elem (Pair Int Int)) . (exists (?x Int). (and (= ?elem (pair ?x (+ ?x ?x))) (forall (?y Int) .  (and (in ?y Nat) (forall (?z Int) .  (and (in ?z Nat) (= (+ ?z ?y) ?x)))))))))");
 
 		testContainsMacro(
 				te,

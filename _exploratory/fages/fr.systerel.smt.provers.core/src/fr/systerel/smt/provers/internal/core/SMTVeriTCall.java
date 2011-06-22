@@ -110,8 +110,8 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	private void createPostProcessedFile(final String parentFolder,
 			final String extension) throws IOException {
-		smtBenchmarkFile = new File(parentFolder + File.separatorChar + lemmaName
-				+ POST_PROCESSED_FILE_POSTFIX + extension);
+		smtBenchmarkFile = new File(parentFolder + File.separatorChar
+				+ lemmaName + POST_PROCESSED_FILE_POSTFIX + extension);
 		if (!smtBenchmarkFile.exists()) {
 			smtBenchmarkFile.createNewFile();
 		}
