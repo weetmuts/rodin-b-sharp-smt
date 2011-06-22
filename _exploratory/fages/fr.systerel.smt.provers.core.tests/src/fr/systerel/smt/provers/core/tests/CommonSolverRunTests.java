@@ -128,7 +128,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SolverDetail sd = new SolverDetail(solverBinaryName,
 				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
 				isSMTV2_0Compatible);
-		preferences = new SMTPreferences(sd, true, veritBinPath.toString());
+		preferences = new SMTPreferences(sd, veritBinPath.toString());
 	}
 
 	protected void setPreferencesForVeriTTest() {

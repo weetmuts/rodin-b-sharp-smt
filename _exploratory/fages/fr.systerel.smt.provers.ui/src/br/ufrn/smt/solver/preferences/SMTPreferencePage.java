@@ -16,14 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,9 +40,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
-//import fr.systerel.smt.provers.core.SMTProversCore;
-//import fr.systerel.smt.provers.internal.core.UIUtils;
-
 /**
  * This class represents a preference page that is contributed to the
  * Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>, we
@@ -62,37 +54,42 @@ import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 public class SMTPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	public static final String PREFERENCE_NAME = "SMT-Solver Plugin";
+	private static final String PREFERENCES_NAME = "solverpreferences";
+	private static final String SOLVER_ID = "Solver ID";
+	private static final String SOLVER_PATH = "Solver path";
+	private static final String SOLVER_ARGS = "Solver arguments";
+	private static final String V1_2 = "v1.2";
+	private static final String V2_0 = "v2.0";
+	private static final String VERIT_PATH = "VeriT path";
+	private static final String SMT_LIB = "SMT-LIB";
+	/**
+	 * Button texts
+	 */
+	private static final String BROWSE = "Browse";
+	private static final String OK = "OK";
+	private static final String CANCEL = "Cancel";
+	private static final String ADD = "Add...";
+	private static final String REMOVE = "Remove";
+	private static final String EDIT = "Edit...";
+	private static final String SELECT = "Select";
 
-	public static final String SOLVER_ID = "Solver ID";
+	private static final String VERIT_PATH_FIELD = "veritpath";
+	private static final String SOLVER_INDEX_FIELD = "solverindex";
 
-	public static final String SOLVER_PATH = "Solver path";
+	private static final String[] PROPS = { SOLVER_ID, SOLVER_PATH,
+			SOLVER_ARGS, V1_2, V2_0 };
 
-	public static final String SOLVER_ARGS = "Args";
+	private static final int[] BOUNDS = { 70, 190, 50, 35, 35 };
 
-	public static final String V1_2 = "v1.2";
-
-	public static final String V2_0 = "v2.0";
-
-	public static final String[] PROPS = { SOLVER_ID, SOLVER_PATH, SOLVER_ARGS,
-			V1_2, V2_0 };
-
-	public static final int[] BOUNDS = { 70, 190, 50, 35, 35 };
-
-	private static final String preferencesName = "solverpreferences";
+	TableViewer fTable;
 
 	/*****************************************/
 	/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-	static boolean prepro;
 
-	static String preproPath;
+	static String veriTPath;
 	/*****************************************/
 
 	int selectedSolverIndex;
-
-	protected TableViewer fTable;
-
-	protected Control fTableControl;
 
 	List<SolverDetail> fModel = new ArrayList<SolverDetail>();
 
@@ -107,29 +104,17 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	private void initWithPreferences() {
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
-		preferences = getPreferenceStore().getString(preferencesName);
+		preferences = getPreferenceStore().getString(PREFERENCES_NAME);
 		/*****************************************/
 		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-		prepro = getPreferenceStore().getBoolean("usingprepro");//$NON-NLS-1$
-		preproPath = getPreferenceStore().getString("prepropath");//$NON-NLS-1$
+		veriTPath = getPreferenceStore().getString(VERIT_PATH_FIELD);
 		/*****************************************/
 		fModel = SMTPreferencesStore.CreateModel(preferences);
-		selectedSolverIndex = getPreferenceStore().getInt("solverindex");//$NON-NLS-1$
+		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_FIELD);
 		if (selectedSolverIndex == -1) {
 			UIUtils.showError(Messages.SmtProversCall_no_selected_solver);
 		}
-		setDescription("SMT-Solver Plugin Preference Page YFT"); //$NON-NLS-1$
-
-	}
-
-	@Override
-	public void init(final IWorkbench workbench) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	protected Control createContents(final Composite parent) {
-		return createTableAndButtons(parent);
+		setDescription("SMT-Solver Plugin Preference Page");
 	}
 
 	/**
@@ -186,7 +171,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Add buttons
 		final Button addButton = new Button(compButtons, SWT.PUSH);
-		addButton.setText("Add..."); //$NON-NLS-1$
+		addButton.setText(ADD);
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -196,7 +181,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		});
 
 		final Button removeButton = new Button(compButtons, SWT.PUSH);
-		removeButton.setText("Remove"); //$NON-NLS-1$
+		removeButton.setText(REMOVE);
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -222,7 +207,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		});
 
 		final Button editButton = new Button(compButtons, SWT.PUSH);
-		editButton.setText("Edit..."); //$NON-NLS-1$
+		editButton.setText(EDIT);
 		editButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -240,7 +225,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		});
 
 		final Button selectButton = new Button(compButtons, SWT.PUSH);
-		selectButton.setText("Select"); //$NON-NLS-1$
+		selectButton.setText(SELECT);
 		selectButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -283,38 +268,19 @@ public class SMTPreferencePage extends PreferencePage implements
 		// resize compButtons
 		compPrepro.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		final Button prepro_Button = new Button(compPrepro, SWT.CHECK);
-		prepro_Button.setText("prepro"); //$NON-NLS-1$
-		prepro_Button.setSelection(prepro);
-
-		// callbacks for the 2 buttons
-		prepro_Button.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				prepro = prepro_Button.getSelection();
-			}
-
-			@Override
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
 		final Label solverPreproPathTextLabel = new Label(compPrepro, SWT.LEFT);
-		solverPreproPathTextLabel.setText("prepro Path"); //$NON-NLS-1$
+		solverPreproPathTextLabel.setText(VERIT_PATH);
 
 		final Text solverPreproPathText = new Text(compPrepro, SWT.LEFT
 				| SWT.BORDER);
 		solverPreproPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, true));
 		solverPreproPathText.setEditable(false);
-		solverPreproPathText.setText(preproPath);
+		solverPreproPathText.setText(veriTPath);
 
 		// Add button Browse
 		final Button browseButton = new Button(compPrepro, SWT.PUSH);
-		browseButton.setText("Browse"); //$NON-NLS-1$
+		browseButton.setText(BROWSE);
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -324,7 +290,7 @@ public class SMTPreferencePage extends PreferencePage implements
 				}
 				final File d = getFile(f);
 				solverPreproPathText.setText(d.getPath());
-				preproPath = solverPreproPathText.getText();
+				veriTPath = solverPreproPathText.getText();
 			}
 
 		});
@@ -347,7 +313,7 @@ public class SMTPreferencePage extends PreferencePage implements
 	 * @param parent
 	 *            the parent composite
 	 */
-	protected TableViewer createTableViewer(final Composite parent) {
+	private TableViewer createTableViewer(final Composite parent) {
 
 		final TableViewer tv = new TableViewer(parent, SWT.FULL_SELECTION);
 
@@ -375,14 +341,6 @@ public class SMTPreferencePage extends PreferencePage implements
 		table.setLinesVisible(true);
 	}
 
-	/*
-	 * Subclasses may override to specify a different style.
-	 */
-	protected int getListStyle() {
-		final int style = SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL;
-		return style;
-	}
-
 	/**
 	 * Helper to open the file chooser dialog.
 	 * 
@@ -407,19 +365,6 @@ public class SMTPreferencePage extends PreferencePage implements
 		}
 
 		return null;
-	}
-
-	@Override
-	public boolean performOk() {
-		// Set preferences
-		getPreferenceStore().putValue(preferencesName, preferences);
-		getPreferenceStore().setValue("solverindex", selectedSolverIndex);
-		/*****************************************/
-		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-		getPreferenceStore().setValue("usingprepro", prepro);
-		getPreferenceStore().putValue("prepropath", preproPath);
-		/*****************************************/
-		return super.performOk();
 	}
 
 	void createSolverDetailsPage(final Composite parent,
@@ -452,7 +397,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Solver Id
 		final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
-		solverIdTextLabel.setText("Solver ID"); //$NON-NLS-1$
+		solverIdTextLabel.setText(SOLVER_ID);
 
 		final Text solverIdText = new Text(compName, SWT.LEFT | SWT.BORDER);
 		solverIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -461,7 +406,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Solver Path
 		final Label solverPathTextLabel = new Label(compPath, SWT.LEFT);
-		solverPathTextLabel.setText("Solver Path"); //$NON-NLS-1$
+		solverPathTextLabel.setText(SOLVER_PATH);
 
 		final Text solverPathText = new Text(compPath, SWT.LEFT | SWT.BORDER);
 		solverPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -471,7 +416,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Add button Browse
 		final Button browseButton = new Button(compPath, SWT.PUSH);
-		browseButton.setText("Browse"); //$NON-NLS-1$
+		browseButton.setText(BROWSE);
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -487,7 +432,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// arguments
 		final Label solverArgTextLabel = new Label(compArg, SWT.LEFT);
-		solverArgTextLabel.setText("Solver arguments"); //$NON-NLS-1$
+		solverArgTextLabel.setText(SOLVER_ARGS);
 
 		final Text solverArgsText = new Text(compArg, SWT.LEFT | SWT.BORDER);
 		solverArgsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -497,14 +442,14 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// smt version
 		final Label smtVersionLabel = new Label(compSmtVersion, SWT.LEFT);
-		smtVersionLabel.setText("SMT-Lib"); //$NON-NLS-1$
+		smtVersionLabel.setText(SMT_LIB);
 
 		final Button smt1_2_Button = new Button(compSmtVersion, SWT.CHECK);
-		smt1_2_Button.setText("1.2"); //$NON-NLS-1$
+		smt1_2_Button.setText(V1_2);
 		smt1_2_Button.setSelection(v1_2);
 
 		final Button smt2_0_Button = new Button(compSmtVersion, SWT.CHECK);
-		smt2_0_Button.setText("2.0"); //$NON-NLS-1$
+		smt2_0_Button.setText(V2_0);
 		smt2_0_Button.setSelection(v2_0);
 
 		// callbacks for the 2 buttons
@@ -538,15 +483,15 @@ public class SMTPreferencePage extends PreferencePage implements
 
 		// Add 2 buttons OK and Cancel
 		final Button okButton = new Button(compOkCancel, SWT.PUSH);
-		okButton.setText("OK"); //$NON-NLS-1$
+		okButton.setText(OK);
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
 				// Check mandatory fields
-				if (solverIdText.getText() == "" //$NON-NLS-1$
+				if (solverIdText.getText() == ""
 						|| !smt1_2_Button.getSelection()
 						&& !smt2_0_Button.getSelection()
-						|| solverPathText.getText() == "") { //$NON-NLS-1$
+						|| solverPathText.getText() == "") {
 					// Message popup displayed when there is no defined
 					// solver path or smt lib chosen or smt Id
 					UIUtils.showError(br.ufrn.smt.solver.preferences.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails);
@@ -602,7 +547,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		});
 
 		final Button cancelButton = new Button(compOkCancel, SWT.PUSH);
-		cancelButton.setText("Cancel"); //$NON-NLS-1$
+		cancelButton.setText(CANCEL);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
@@ -616,80 +561,21 @@ public class SMTPreferencePage extends PreferencePage implements
 		shell.open();
 	}
 
-	public class SolverEditingSupport extends EditingSupport {
-		private CellEditor editor;
-		private final int column;
-
-		public SolverEditingSupport(final ColumnViewer viewer, final int column) {
-			super(viewer);
-
-			// Create the correct editor based on the column index
-			switch (column) {
-			case 2:
-				editor = new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
-				break;
-			case 3:
-				editor = new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
-				break;
-			default:
-				editor = new TextCellEditor(((TableViewer) viewer).getTable());
-			}
-			this.column = column;
-		}
-
-		@Override
-		protected boolean canEdit(final Object element) {
-			return true;
-		}
-
-		@Override
-		protected CellEditor getCellEditor(final Object element) {
-			return editor;
-		}
-
-		@Override
-		protected Object getValue(final Object element) {
-			final SolverDetail solver = (SolverDetail) element;
-
-			switch (column) {
-			case 0:
-				return solver.getId();
-			case 1:
-				return solver.getPath();
-			case 2:
-				return solver.getsmtV1_2();
-			case 3:
-				return solver.getsmtV2_0();
-			default:
-				break;
-			}
-			return null;
-		}
-
-		@Override
-		protected void setValue(final Object element, final Object value) {
-			final SolverDetail solver = (SolverDetail) element;
-
-			switch (column) {
-			case 0:
-				solver.setId(String.valueOf(value));
-				break;
-			case 1:
-				solver.setPath(String.valueOf(value));
-				break;
-			case 2:
-				solver.setSmtV1_2((Boolean) value);
-				break;
-			case 3:
-				solver.setSmtV2_0((Boolean) value);
-				break;
-			default:
-				break;
-			}
-
-			getViewer().update(element, null);
-		}
-
+	@Override
+	protected Control createContents(final Composite parent) {
+		return createTableAndButtons(parent);
 	}
 
+	@Override
+	public void init(final IWorkbench workbench) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean performOk() {
+		getPreferenceStore().putValue(PREFERENCES_NAME, preferences);
+		getPreferenceStore().setValue(SOLVER_INDEX_FIELD, selectedSolverIndex);
+		getPreferenceStore().putValue(VERIT_PATH_FIELD, veriTPath);
+		return super.performOk();
+	}
 }

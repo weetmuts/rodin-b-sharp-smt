@@ -16,6 +16,94 @@ package br.ufrn.smt.solver.preferences;
  * 
  */
 public class SolverDetail {
+
+	private String id;
+
+	private String path;
+
+	private String args;
+
+	private boolean smtV1_2;
+
+	private boolean smtV2_0;
+
+	/**
+	 * Constructs a new SolverDetails
+	 * 
+	 * @param id
+	 *            the id of the solver
+	 * @param path
+	 *            the path of the solver
+	 * @param args
+	 *            arguments that the solver can use
+	 * @param smtV1_2
+	 *            determines if the solver will be used for SMT 1.2
+	 * @param smtV2_0
+	 *            determines if the solver will be used for SMT 2.0
+	 */
+	public SolverDetail(final String id, final String path, final String args,
+			final boolean smtV1_2, final boolean smtV2_0) {
+		this.id = id;
+		this.path = path;
+		this.args = args;
+		this.smtV1_2 = smtV1_2;
+		this.smtV2_0 = smtV2_0;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getArgs() {
+		return args;
+	}
+
+	public boolean getsmtV1_2() {
+		return smtV1_2;
+	}
+
+	public boolean getsmtV2_0() {
+		return smtV2_0;
+	}
+
+	public void setId(final String id) {
+		this.id = id;
+	}
+
+	public void setPath(final String path) {
+		this.path = path;
+	}
+
+	public void setArgs(final String args) {
+		this.args = args;
+	}
+
+	public void setSmtV1_2(final boolean smtV1_2) {
+		this.smtV1_2 = smtV1_2;
+	}
+
+	public void setSmtV2_0(final boolean smtV2_0) {
+		this.smtV2_0 = smtV2_0;
+	}
+
+	public void toString(final StringBuilder builder) {
+		builder.append("SolverDetail [id=");
+		builder.append(id);
+		builder.append(", path=");
+		builder.append(path);
+		builder.append(", args=");
+		builder.append(args);
+		builder.append(", smtV1_2=");
+		builder.append(smtV1_2);
+		builder.append(", smtV2_0=");
+		builder.append(smtV2_0);
+		builder.append("]");
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -33,20 +121,6 @@ public class SolverDetail {
 		final StringBuilder builder = new StringBuilder();
 		toString(builder);
 		return builder.toString();
-	}
-
-	public void toString(final StringBuilder builder) {
-		builder.append("SolverDetail [id=");
-		builder.append(id);
-		builder.append(", path=");
-		builder.append(path);
-		builder.append(", args=");
-		builder.append(args);
-		builder.append(", smtV1_2=");
-		builder.append(smtV1_2);
-		builder.append(", smtV2_0=");
-		builder.append(smtV2_0);
-		builder.append("]");
 	}
 
 	@Override
@@ -89,78 +163,5 @@ public class SolverDetail {
 			return false;
 		}
 		return true;
-	}
-
-	private String id;
-
-	private String path;
-
-	private String args;
-
-	private boolean smtV1_2;
-
-	private boolean smtV2_0;
-
-	public String getId() {
-		return id;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public String getArgs() {
-		return args;
-	}
-
-	public boolean getsmtV1_2() {
-		return smtV1_2;
-	}
-
-	public boolean getsmtV2_0() {
-		return smtV2_0;
-	}
-
-	public void setId(final String id) {
-		this.id = id;
-	}
-
-	public void setPath(final String path) {
-		this.path = path;
-	}
-
-	public void setArgs(final String args) {
-		this.args = args;
-	}
-
-	public void setSmtV1_2(final boolean smtV1_2) {
-		this.smtV1_2 = smtV1_2;
-	}
-
-	public void setSmtV2_0(final boolean smtV2_0) {
-		this.smtV2_0 = smtV2_0;
-	}
-
-	/**
-	 * Constructs a new SolverDetails
-	 * 
-	 * @param id
-	 *            the id of the solver
-	 * @param path
-	 *            the path of the solver
-	 * @param args
-	 *            arguments that the solver can use
-	 * @param smtV1_2
-	 *            determines if the solver will be used for SMT 1.2
-	 * @param smtV2_0
-	 *            determines if the solver will be used for SMT 2.0
-	 */
-	public SolverDetail(final String id, final String path, final String args,
-			final boolean smtV1_2, final boolean smtV2_0) {
-		this.id = id;
-		this.path = path;
-		this.args = args;
-		this.smtV1_2 = smtV1_2;
-		this.smtV2_0 = smtV2_0;
 	}
 }

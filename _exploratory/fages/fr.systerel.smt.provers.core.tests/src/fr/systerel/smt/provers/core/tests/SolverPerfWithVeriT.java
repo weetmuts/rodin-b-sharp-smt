@@ -632,7 +632,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testCard() {
 		setPreferencesForSolverTest(solver);
 

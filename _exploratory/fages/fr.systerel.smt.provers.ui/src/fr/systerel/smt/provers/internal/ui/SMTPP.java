@@ -1,5 +1,8 @@
 package fr.systerel.smt.provers.internal.ui;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -15,15 +18,11 @@ import org.eventb.ui.prover.ITacticApplication;
 import org.eventb.ui.prover.ITacticProvider;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-
 import fr.systerel.smt.provers.core.SMTProversCore;
 
 public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 
 	public static class SMTPPApplication extends DefaultPredicateApplication {
-		private static final String SOLVERINDEX = "solverindex";
-		private static final String SOLVERPREFERENCES = "solverpreferences";
-		private static final String PREFS_ID = "fr.systerel.smt.provers.ui";
 
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
@@ -31,11 +30,11 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 					.getPreferencesService();
 
 			final String solverPreferences = preferencesService.getString(
-					PREFS_ID, SOLVERPREFERENCES, null, null);
-			final int solverIndex = preferencesService.getInt(PREFS_ID,
+					PREFERENCES_ID, SOLVERPREFERENCES, null, null);
+			final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 					SOLVERINDEX, -1, null);
 			final SMTPreferences smtPreferences = new SMTPreferences(
-					solverPreferences, solverIndex, false, null);
+					solverPreferences, solverIndex, null);
 			return SMTProversCore.externalSMTThroughPP(smtPreferences, true);
 		}
 

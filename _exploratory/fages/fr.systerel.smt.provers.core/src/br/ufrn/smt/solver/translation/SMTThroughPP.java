@@ -500,6 +500,87 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		return rewritedPreds;
 	}
 
+	private void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
+
+		/**
+		 * For each membership of the type environment,
+		 */
+		final IIterator iter = typeEnvironment.getIterator();
+		while (iter.hasNext()) {
+			iter.advance();
+			final String varName = iter.getName();
+			Type varType = iter.getType();
+			boolean parseConstant = true;
+
+			/**
+			 * check if the the variable is a monadic set. If so, translate the
+			 * base type of it
+			 */
+			for (final FreeIdentifier monadicSet : monadicPredsMap.keySet()) {
+				if (monadicSet.getName().equals(varName)
+						&& monadicSet.getType().equals(varType)) {
+					varType = iter.getType().getBaseType();
+					parseConstant = false;
+					break;
+				}
+			}
+
+			/**
+			 * translates the type into an SMT-LIB sort, adds it to the types
+			 * mapping (and adds it to the signature sort symbols set)
+			 */
+			final SMTSortSymbol smtSortSymbol;
+			if (!typeMap.containsKey(varType)) {
+				smtSortSymbol = translateTypeName(varType);
+				typeMap.put(varType, smtSortSymbol);
+			} else {
+				smtSortSymbol = typeMap.get(varType);
+			}
+
+			/**
+			 * gets a fresh name for the type of the variable to be typed, adds
+			 * it to the type names mapping (and adds it to the signature
+			 * symbols set)
+			 * 
+			 */
+			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
+					varType);
+			for (final Type baseType : baseTypes) {
+				if (!typeMap.containsKey(baseType)) {
+					final SMTSortSymbol baseSort = translateTypeName(baseType);
+					typeMap.put(baseType, baseSort);
+				}
+			}
+
+			if (parseConstant) {
+				/**
+				 * gets a fresh name for the variable to be typed, adds it to
+				 * the variable names mapping (and adds it to the signature
+				 * symbols set)
+				 */
+				final SMTFunctionSymbol smtConstant;
+				if (!varMap.containsKey(varName)) {
+					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
+						final SMTPredicateSymbol predSymbol = signature
+								.freshPredicateSymbol(varName);
+						varMap.put(varName, predSymbol);
+						continue;
+					} else {
+						/**
+						 * adds the typing item (<code>x ⦂ S</code>) to the
+						 * signature as a constant (<code>extrafuns</code>
+						 * SMT-LIB section, with a sort but no argument:
+						 * <code>(x S)</code>).
+						 */
+						smtConstant = signature.freshConstant(varName,
+								smtSortSymbol);
+						varMap.put(varName, smtConstant);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Translate the type of the bound identifiers
 	 * 
@@ -964,87 +1045,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		translateTypeEnvironment(typeEnvironment);
 		translateBoundIdentTypes(hypotheses, goal);
-	}
-
-	public void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
-
-		/**
-		 * For each membership of the type environment,
-		 */
-		final IIterator iter = typeEnvironment.getIterator();
-		while (iter.hasNext()) {
-			iter.advance();
-			final String varName = iter.getName();
-			Type varType = iter.getType();
-			boolean parseConstant = true;
-
-			/**
-			 * check if the the variable is a monadic set. If so, translate the
-			 * base type of it
-			 */
-			for (final FreeIdentifier monadicSet : monadicPredsMap.keySet()) {
-				if (monadicSet.getName().equals(varName)
-						&& monadicSet.getType().equals(varType)) {
-					varType = iter.getType().getBaseType();
-					parseConstant = false;
-					break;
-				}
-			}
-
-			/**
-			 * translates the type into an SMT-LIB sort, adds it to the types
-			 * mapping (and adds it to the signature sort symbols set)
-			 */
-			final SMTSortSymbol smtSortSymbol;
-			if (!typeMap.containsKey(varType)) {
-				smtSortSymbol = translateTypeName(varType);
-				typeMap.put(varType, smtSortSymbol);
-			} else {
-				smtSortSymbol = typeMap.get(varType);
-			}
-
-			/**
-			 * gets a fresh name for the type of the variable to be typed, adds
-			 * it to the type names mapping (and adds it to the signature
-			 * symbols set)
-			 * 
-			 */
-			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
-					varType);
-			for (final Type baseType : baseTypes) {
-				if (!typeMap.containsKey(baseType)) {
-					final SMTSortSymbol baseSort = translateTypeName(baseType);
-					typeMap.put(baseType, baseSort);
-				}
-			}
-
-			if (parseConstant) {
-				/**
-				 * gets a fresh name for the variable to be typed, adds it to
-				 * the variable names mapping (and adds it to the signature
-				 * symbols set)
-				 */
-				final SMTFunctionSymbol smtConstant;
-				if (!varMap.containsKey(varName)) {
-					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
-						final SMTPredicateSymbol predSymbol = signature
-								.freshPredicateSymbol(varName);
-						varMap.put(varName, predSymbol);
-						continue;
-					} else {
-						/**
-						 * adds the typing item (<code>x ⦂ S</code>) to the
-						 * signature as a constant (<code>extrafuns</code>
-						 * SMT-LIB section, with a sort but no argument:
-						 * <code>(x S)</code>).
-						 */
-						smtConstant = signature.freshConstant(varName,
-								smtSortSymbol);
-						varMap.put(varName, smtConstant);
-					}
-				}
-			}
-		}
 	}
 
 	/**

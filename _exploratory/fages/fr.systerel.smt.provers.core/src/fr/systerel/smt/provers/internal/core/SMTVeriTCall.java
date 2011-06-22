@@ -84,13 +84,13 @@ public class SMTVeriTCall extends SMTProverCall {
 	private void callVeriT(final File preprocessedFile) throws IOException {
 		final List<String> args = new ArrayList<String>();
 
-		if (smtPreferences.getPreproPath().isEmpty()
-				|| smtPreferences.getPreproPath() == null) {
+		if (smtPreferences.getVeriTPath().isEmpty()
+				|| smtPreferences.getVeriTPath() == null) {
 			throw new IllegalArgumentException(
-					Messages.SmtProversCall_preprocessor_path_not_defined);
+					Messages.SmtProversCall_veriT_path_not_defined);
 		}
 
-		args.add(smtPreferences.getPreproPath());
+		args.add(smtPreferences.getVeriTPath());
 		args.add(VERIT_SIMPLIFY_ARGUMENT_STRING);
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());

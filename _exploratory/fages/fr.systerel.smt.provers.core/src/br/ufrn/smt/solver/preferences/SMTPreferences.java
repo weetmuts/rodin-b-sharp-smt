@@ -18,43 +18,52 @@ import java.util.List;
  * The SMT preferences class
  */
 public class SMTPreferences {
-
-	public SMTPreferences(final SolverDetail solver, final boolean usingPrepro,
-			final String preproPath) {
-		super();
-		this.solver = solver;
-		this.usingPrepro = usingPrepro;
-		this.preproPath = preproPath;
-	}
-
 	private static final String SEPARATOR1 = ",,";
 	private static final String SEPARATOR2 = ";";
+	public static final String VERITPATH = "veritpath";
+	public static final String SOLVERINDEX = "solverindex";
+	public static final String SOLVERPREFERENCES = "solverpreferences";
+	public static final String DEFAULT_SOLVERPREFERENCES = "";
+	public static final int DEFAULT_SOLVERINDEX = -1;
+	public static final String DEFAULT_VERITPATH = "";
+	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";
 
+	private final String veriTPath;
 	/**
 	 * The solver's settings
 	 */
 	private SolverDetail solver;
 
-	/**
-	 * The preprocessing boolean option
-	 */
-	private final boolean usingPrepro;
-
-	/**
-	 * The preprocessing Solver Path
-	 */
-	private final String preproPath;
-
-	public SolverDetail getSolver() {
-		return solver;
+	public SMTPreferences(final SolverDetail solver, final String veriTPath) {
+		super();
+		this.solver = solver;
+		this.veriTPath = veriTPath;
 	}
 
-	public Boolean getUsingPrepro() {
-		return usingPrepro;
-	}
-
-	public String getPreproPath() {
-		return preproPath;
+	/**
+	 * Constructs a new SMT preferences
+	 * 
+	 * @param solverSettingsPreferences
+	 *            The string that contains the details of the solvers
+	 * @param selectedSolverIndex
+	 *            the index of the selected solver
+	 * @param veriTPath
+	 *            The path of the veriT solver for pre-processing
+	 */
+	public SMTPreferences(final String solverSettingsPreferences,
+			final int selectedSolverIndex, final String veriTPath) {
+		final List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
+		if (selectedSolverIndex >= 0 && selectedSolverIndex < solvers.size()) {
+			solver = solvers.get(selectedSolverIndex);
+		} else {
+			if (solvers.size() > 0) {
+				//TODO Show message "The solver 1 was selected automatically"
+				solver = solvers.get(0);
+			} else {
+				throw new IllegalArgumentException("No SMT solver installed");
+			}
+		}
+		this.veriTPath = veriTPath;
 	}
 
 	/**
@@ -81,6 +90,24 @@ public class SMTPreferences {
 		return model;
 	}
 
+	public SolverDetail getSolver() {
+		return solver;
+	}
+
+	public String getVeriTPath() {
+		return veriTPath;
+	}
+
+	public void toString(final StringBuilder builder) {
+		builder.append("SMTPreferences [solver=");
+		builder.append(solver);
+		builder.append(", ");
+		builder.append(VERITPATH);
+		builder.append("=");
+		builder.append(veriTPath);
+		builder.append("]");
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
@@ -88,52 +115,13 @@ public class SMTPreferences {
 		return builder.toString();
 	}
 
-	public void toString(final StringBuilder builder) {
-		builder.append("SMTPreferences [solver=");
-		builder.append(solver);
-		builder.append(", usingPrepro=");
-		builder.append(usingPrepro);
-		builder.append(", preproPath=");
-		builder.append(preproPath);
-		builder.append("]");
-	}
-
-	/**
-	 * Constructs a new SMT preferences
-	 * 
-	 * @param solverSettingsPreferences
-	 *            The string that contains the details of the solvers
-	 * @param selectedSolverIndex
-	 *            the index of the selected solver
-	 * @param usingprepro
-	 *            the boolean that defines if it will use veriT pre-processing
-	 *            or not
-	 * @param prepropath
-	 *            The path of the veriT solver for pre-processing
-	 */
-	public SMTPreferences(final String solverSettingsPreferences,
-			final int selectedSolverIndex, final boolean usingprepro,
-			final String prepropath) {
-		final List<SolverDetail> solvers = CreateModel(solverSettingsPreferences);
-		if (selectedSolverIndex == -1) {
-			throw new IllegalArgumentException("There is no selected solver");
-		} else if (selectedSolverIndex < solvers.size()) {
-			solver = solvers.get(selectedSolverIndex);
-		} else {
-			solver = null;
-		}
-		usingPrepro = usingprepro;
-		preproPath = prepropath;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ (preproPath == null ? 0 : preproPath.hashCode());
+				+ (veriTPath == null ? 0 : veriTPath.hashCode());
 		result = prime * result + (solver == null ? 0 : solver.hashCode());
-		result = prime * result + (usingPrepro ? 1231 : 1237);
 		return result;
 	}
 
@@ -149,11 +137,11 @@ public class SMTPreferences {
 			return false;
 		}
 		final SMTPreferences other = (SMTPreferences) obj;
-		if (preproPath == null) {
-			if (other.preproPath != null) {
+		if (veriTPath == null) {
+			if (other.veriTPath != null) {
 				return false;
 			}
-		} else if (!preproPath.equals(other.preproPath)) {
+		} else if (!veriTPath.equals(other.veriTPath)) {
 			return false;
 		}
 		if (solver == null) {
@@ -163,10 +151,6 @@ public class SMTPreferences {
 		} else if (!solver.equals(other.solver)) {
 			return false;
 		}
-		if (usingPrepro != other.usingPrepro) {
-			return false;
-		}
 		return true;
 	}
-
 }
