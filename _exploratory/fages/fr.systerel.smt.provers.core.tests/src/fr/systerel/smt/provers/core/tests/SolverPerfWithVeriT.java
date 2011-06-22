@@ -120,7 +120,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("ERROR: line 9 column 19: could not locate id  ?veriT.veriT__25.")
+	@Ignore("Z3 ERROR: line 9 column 19: could not locate id  ?veriT.veriT__25.")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -206,6 +206,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
 	}
 
+	@Test
 	@Ignore("Z3 Error: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
 	public void testExpn() {
 		setPreferencesForSolverTest(solver);
@@ -385,7 +386,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : pre_process: results is not FOL")
+	// @Ignore("error : pre_process: results is not FOL")
 	public void testSubSet() {
 		setPreferencesForSolverTest(solver);
 
@@ -435,7 +436,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("Problem: macro containing another macro")
+	@Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForSolverTest(solver);
 
@@ -621,7 +622,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Expected true, but it was false")
+	@Ignore("Z3: Expected true, but it was false")
 	public void testRule24() {
 		setPreferencesForSolverTest(solver);
 
@@ -711,6 +712,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Lemmas cannot be SMT reserved names")
 	public void testExists() {
 		setPreferencesForSolverTest(solver);
 
@@ -744,5 +746,64 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		hyps.add("¬ k = m ↦ n");
 		hyps.add("k ∈ P ∪ {m ↦ n} ∪ (Q ∖ {m ↦ n})");
 		doTest("dynamicStableLSR_081014_20", hyps, "k ∈ P ∪ Q", te, VALID);
+	}
+
+	@Test
+	@Ignore("Function ?DOM_0 is not declared")
+	public void testBepiColombo6() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
+				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
+				"x", "R", "y", "R", "z", "R");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("¬ a=b");
+		hyps.add("¬ a=c");
+		hyps.add("¬ a=d");
+		hyps.add("¬ a=e");
+		hyps.add("¬ b=c");
+		hyps.add("¬ b=d");
+		hyps.add("¬ b=e");
+		hyps.add("¬ c=d");
+		hyps.add("¬ c=e");
+		hyps.add("¬ d=e");
+		hyps.add("¬ x=y");
+		hyps.add("¬ y=z");
+		hyps.add("¬ z=x");
+		hyps.add("S={a,c,d,b,e}");
+		hyps.add("R={x,y,z}");
+		hyps.add("m ∈ {x,y,z}");
+
+		doTest("bepicombo_6", hyps,
+				"m ∈ {x} ∪ dom({y} × {a,c,e}) ∪ dom({z} × {e,c,d,b,e})", te,
+				VALID);
+	}
+
+	@Test
+	@Ignore("Function ?DOM_0 is not declared")
+	public void testBepiColombo6_2() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
+				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
+				"x", "R", "y", "R", "z", "R");
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("bepicombo_6_2", hyps,
+				"dom({y} × {a,c,e}) = dom({y} × {a,c,e})", te, VALID);
+	}
+
+	@Test
+	@Ignore("Function ?DOM_0 is not declared")
+	public void testBepiColombo6Parte_3() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
+				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
+				"x", "R", "y", "R", "z", "R");
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("bepicombo_6_3", hyps, "dom({y} × {a,c,e}) = {y}", te, VALID);
 	}
 }

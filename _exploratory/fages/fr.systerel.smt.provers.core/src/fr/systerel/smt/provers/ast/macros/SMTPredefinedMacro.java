@@ -13,8 +13,6 @@ package fr.systerel.smt.provers.ast.macros;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.systerel.smt.provers.ast.SMTSymbol;
-
 /**
  * This class stores the macros that are predefined. They contain only the name
  * and its body. All the macros defined before the translation rules in the
@@ -38,7 +36,9 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
-	private final SMTSymbol[] usedSymbols;
+	private final boolean usesPairFunctionAndSort;
+
+	private final boolean usesFstAndSndFunctions;
 
 	private final SMTMacro[] requiredMacros;
 
@@ -55,22 +55,23 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 *            details.
 	 */
 	SMTPredefinedMacro(final String macroName, final String bodyText,
-			final int precedence, final SMTSymbol[] usedSymbols,
+			final int precedence, final boolean usesPairFunctionAndSort,
+			final boolean usesFstAndSndFunctions,
 			final SMTMacro[] requiredMacros) {
 		super(macroName, precedence);
 		body = bodyText;
+		this.usesPairFunctionAndSort = usesPairFunctionAndSort;
+		this.usesFstAndSndFunctions = usesFstAndSndFunctions;
 		collectQSymbols();
-		this.usedSymbols = usedSymbols;
 		this.requiredMacros = requiredMacros;
 	}
 
-	/**
-	 * 
-	 * 
-	 * @return the used symbols of this macro
-	 */
-	public SMTSymbol[] getUsedSymbols() {
-		return usedSymbols;
+	public boolean usesPairFunctionAndSort() {
+		return usesPairFunctionAndSort;
+	}
+
+	public boolean usesFstAndSndFunctions() {
+		return usesFstAndSndFunctions;
 	}
 
 	/**

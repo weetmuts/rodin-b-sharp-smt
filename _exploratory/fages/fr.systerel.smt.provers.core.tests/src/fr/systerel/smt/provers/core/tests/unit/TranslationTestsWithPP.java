@@ -252,11 +252,22 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 */
 		testTranslationV1_2(te, "∀x,y·x↦y∈RR",
 				"(forall (?x r) (?y s) (MS ?x ?y RR))");
+
 		/**
 		 * bound set
 		 */
 		testTranslationV1_2Default("∃ x ⦂ ℤ, X ⦂ ℙ(ℤ) · x ∈ X",
 				"(exists (?x Int) (?X NSORT) (MS ?x ?X))");
+
+	}
+
+	@Test
+	public void testForall2() {
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		testTranslationV1_2(te, "∃  X ⦂ ℙ(A×A)· (∃ x · x↦x ∈ X)",
+				"(exists (?X NSORT_0) (?x A) (MS ?x ?x ?X))");
+
 	}
 
 	@Test
@@ -656,6 +667,29 @@ public class TranslationTestsWithPP extends AbstractTests {
 				te,
 				"∀z⦂A,c⦂A·z↦c=c↦z",
 				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z_0 A) (?c_0 A) (= ?c_0 ?z_0)))");
+	}
+
+	@Test
+	public void testBoundBaseType4() {
+		final ITypeEnvironment te = mTypeEnvironment();
+		testTranslateGoalPP(te, "∃ x ⦂ ℤ×ℤ×ℤ, X ⦂ ℙ(ℤ×ℤ×ℤ) · x ∈ X",
+				"(exists (?x Int) (?x_0 Int) (?x_1 Int) (?X NSORT) (MS ?x ?x_0 ?x_1 ?X))");
+	}
+
+	@Test
+	public void testBoundBaseType5() {
+		final ITypeEnvironment te = mTypeEnvironment();
+		testTranslateGoalPP(te,
+				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
+				"(exists (?x NSORT) (?X NSORT_0) (MS ?x ?X))");
+	}
+
+	@Test
+	public void testBoundBaseType6() {
+		final ITypeEnvironment te = mTypeEnvironment();
+		testTranslateGoalPP(te,
+				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
+				"(exists (?x NSORT) (?X NSORT_0) (MS ?x ?X))");
 	}
 
 	@Test

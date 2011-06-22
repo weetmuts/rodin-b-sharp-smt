@@ -14,7 +14,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -181,7 +180,14 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	 */
 	private void getUsedSymbols(final SMTPredefinedMacro macro,
 			final Set<SMTSymbol> symbols) {
-		symbols.addAll(Arrays.asList(macro.getUsedSymbols()));
+		if (macro.usesPairFunctionAndSort()) {
+			symbols.add(SMTFactoryVeriT.PAIR_SORT);
+			symbols.add(SMTFactoryVeriT.PAIR_SYMBOL);
+		}
+		if (macro.usesFstAndSndFunctions()) {
+			symbols.add(SMTFactoryVeriT.FST_SYMBOL);
+			symbols.add(SMTFactoryVeriT.SND_SYMBOL);
+		}
 	}
 
 	/**
