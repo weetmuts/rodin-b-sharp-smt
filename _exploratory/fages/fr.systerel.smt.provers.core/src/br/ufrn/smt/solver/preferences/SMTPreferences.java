@@ -11,6 +11,11 @@
 
 package br.ufrn.smt.solver.preferences;
 
+import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
+import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
+import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_NoSMTSolverSet;
+import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_VeriTPathNotSet;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
@@ -19,6 +24,15 @@ import java.util.regex.PatternSyntaxException;
  * The SMT preferences class
  */
 public class SMTPreferences {
+	public static final IllegalArgumentException IllegalSMTSolverSettingsException = new IllegalArgumentException(
+			SMTPreferences_IllegalSMTSolverSettings);
+	public static final IllegalArgumentException NoSMTSolverSelectedException = new IllegalArgumentException(
+			SMTPreferences_NoSMTSolverSelected);
+	public static final IllegalArgumentException NoSMTSolverSetException = new IllegalArgumentException(
+			SMTPreferences_NoSMTSolverSet);
+	public static final IllegalArgumentException VeriTPathNotSetException = new IllegalArgumentException(
+			SMTPreferences_VeriTPathNotSet);
+
 	public static final String SEPARATOR1 = ",,";
 	public static final String SEPARATOR2 = ";";
 	public static final String VERITPATH = "veritpath";
@@ -29,7 +43,7 @@ public class SMTPreferences {
 	public static final String DEFAULT_VERITPATH = "";
 	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";
 
-	private final String veriTPath;
+	private String veriTPath = null;
 	/**
 	 * The solver's settings
 	 */
@@ -48,6 +62,36 @@ public class SMTPreferences {
 	 *            The string that contains the details of the solvers
 	 * @param selectedSolverIndex
 	 *            the index of the selected solver
+	 * @throws PatternSyntaxException
+	 *             if the given settings are not formatted correctly
+	 */
+	public SMTPreferences(final String solverSettings,
+			final int selectedSolverIndex) throws PatternSyntaxException,
+			IllegalArgumentException {
+
+		if (solverSettings == null) {
+			throw IllegalSMTSolverSettingsException;
+		}
+
+		final List<SolverDetail> solvers = parsePreferencesString(solverSettings);
+		try {
+			solver = solvers.get(selectedSolverIndex);
+		} catch (final IndexOutOfBoundsException ioobe) {
+			if (solvers.size() > 0) {
+				throw NoSMTSolverSelectedException;
+			} else {
+				throw NoSMTSolverSetException;
+			}
+		}
+	}
+
+	/**
+	 * Constructs a new SMT preferences
+	 * 
+	 * @param solverSettings
+	 *            The string that contains the details of the solvers
+	 * @param selectedSolverIndex
+	 *            the index of the selected solver
 	 * @param veriTPath
 	 *            The path of the veriT solver for pre-processing
 	 * @throws PatternSyntaxException
@@ -56,23 +100,13 @@ public class SMTPreferences {
 	public SMTPreferences(final String solverSettings,
 			final int selectedSolverIndex, final String veriTPath)
 			throws PatternSyntaxException, IllegalArgumentException {
+		this(solverSettings, selectedSolverIndex);
 
-		if (solverSettings == null) {
-			throw new IllegalArgumentException("Illegal solver settings");
+		if (veriTPath != null && !veriTPath.isEmpty()) {
+			this.veriTPath = veriTPath;
+		} else {
+			throw VeriTPathNotSetException;
 		}
-
-		final List<SolverDetail> solvers = parsePreferencesString(solverSettings);
-		try {
-			solver = solvers.get(selectedSolverIndex);
-		} catch (final IndexOutOfBoundsException ioobe) {
-			if (solvers.size() > 0) {
-				throw new IllegalArgumentException("No SMT solver selected");
-			} else {
-				throw new IllegalArgumentException("No SMT solver installed");
-			}
-		}
-
-		this.veriTPath = veriTPath;
 	}
 
 	/**

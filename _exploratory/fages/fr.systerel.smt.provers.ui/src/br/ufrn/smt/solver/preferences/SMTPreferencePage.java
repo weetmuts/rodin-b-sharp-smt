@@ -11,11 +11,21 @@
 
 package br.ufrn.smt.solver.preferences;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -74,9 +84,6 @@ public class SMTPreferencePage extends PreferencePage implements
 	private static final String EDIT = "Edit...";
 	private static final String SELECT = "Select";
 
-	private static final String VERIT_PATH_FIELD = "veritpath";
-	private static final String SOLVER_INDEX_FIELD = "solverindex";
-
 	private static final String[] PROPS = { SOLVER_ID, SOLVER_PATH,
 			SOLVER_ARGS, V1_2, V2_0 };
 
@@ -84,7 +91,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	TableViewer fTable;
 
-	static String veriTPath;
+	static String setVeriTPath;
 
 	int selectedSolverIndex;
 
@@ -103,14 +110,14 @@ public class SMTPreferencePage extends PreferencePage implements
 		setDescription("SMT-Solver Plugin Preference Page");
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(PREFERENCES_NAME);
-		veriTPath = getPreferenceStore().getString(VERIT_PATH_FIELD);
+		setVeriTPath = getPreferenceStore().getString(VERITPATH);
 		try {
 			solverDetails = SMTPreferences.parsePreferencesString(preferences);
 		} catch (PatternSyntaxException pse) {
 			pse.printStackTrace(System.err);
 			UIUtils.showError(pse.getMessage());
 		}
-		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_FIELD);
+		selectedSolverIndex = getPreferenceStore().getInt(SOLVERINDEX);
 	}
 
 	/**
@@ -272,7 +279,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		solverPreproPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, true));
 		solverPreproPathText.setEditable(false);
-		solverPreproPathText.setText(veriTPath);
+		solverPreproPathText.setText(setVeriTPath);
 
 		// Add button Browse
 		final Button browseButton = new Button(compPrepro, SWT.PUSH);
@@ -286,7 +293,7 @@ public class SMTPreferencePage extends PreferencePage implements
 				}
 				final File d = getFile(f);
 				solverPreproPathText.setText(d.getPath());
-				veriTPath = solverPreproPathText.getText();
+				setVeriTPath = solverPreproPathText.getText();
 			}
 
 		});
@@ -495,7 +502,8 @@ public class SMTPreferencePage extends PreferencePage implements
 					if (editMode) {
 						final int indexToEdit = fTable.getTable()
 								.getSelectionIndex();
-						solverDetails.get(indexToEdit).setId(solverIdText.getText());
+						solverDetails.get(indexToEdit).setId(
+								solverIdText.getText());
 						solverDetails.get(indexToEdit).setPath(
 								solverPathText.getText());
 						solverDetails.get(indexToEdit).setArgs(
@@ -505,9 +513,9 @@ public class SMTPreferencePage extends PreferencePage implements
 						solverDetails.get(indexToEdit).setSmtV2_0(
 								smt2_0_Button.getSelection());
 					} else {
-						solverDetails.add(new SolverDetail(solverIdText.getText(),
-								solverPathText.getText(), solverArgsText
-										.getText(), smt1_2_Button
+						solverDetails.add(new SolverDetail(solverIdText
+								.getText(), solverPathText.getText(),
+								solverArgsText.getText(), smt1_2_Button
 										.getSelection(), smt2_0_Button
 										.getSelection()));
 					}
@@ -557,6 +565,32 @@ public class SMTPreferencePage extends PreferencePage implements
 		shell.open();
 	}
 
+	public static SMTPreferences getSMTPreferencesForPP()
+			throws PatternSyntaxException, IllegalArgumentException {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
+				null);
+		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
+				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
+		return new SMTPreferences(solverPreferences, solverIndex);
+	}
+
+	public static SMTPreferences getSMTPreferencesForVeriT()
+			throws PatternSyntaxException, IllegalArgumentException {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
+				null);
+		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
+				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
+		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
+				VERITPATH, DEFAULT_VERITPATH, null);
+		return new SMTPreferences(solverPreferences, solverIndex, veriTPath);
+	}
+
 	@Override
 	protected Control createContents(final Composite parent) {
 		return createTableAndButtons(parent);
@@ -570,9 +604,10 @@ public class SMTPreferencePage extends PreferencePage implements
 	@Override
 	public boolean performOk() {
 		getPreferenceStore().putValue(PREFERENCES_NAME, preferences);
-		getPreferenceStore().setValue(SOLVER_INDEX_FIELD, selectedSolverIndex);
-		getPreferenceStore().putValue(VERIT_PATH_FIELD, veriTPath);
-		if (selectedSolverIndex < 0 || selectedSolverIndex >= solverDetails.size()) {
+		getPreferenceStore().setValue(SOLVERINDEX, selectedSolverIndex);
+		getPreferenceStore().putValue(VERITPATH, setVeriTPath);
+		if (selectedSolverIndex < 0
+				|| selectedSolverIndex >= solverDetails.size()) {
 			UIUtils.showWarning(Messages.SmtProversCall_no_selected_solver);
 		}
 		return super.performOk();
