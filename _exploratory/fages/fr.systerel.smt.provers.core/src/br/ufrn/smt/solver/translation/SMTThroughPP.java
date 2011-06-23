@@ -41,8 +41,8 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
+import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
@@ -464,8 +464,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * <code>buildBasenameString</code> on alpha and beta.
 		 */
 		else if (source != null) {
-			return (buildBasenameString(buildBasenameString(builder, source),
-					target));
+			return buildBasenameString(buildBasenameString(builder, source),
+					target);
 		}
 
 		/**

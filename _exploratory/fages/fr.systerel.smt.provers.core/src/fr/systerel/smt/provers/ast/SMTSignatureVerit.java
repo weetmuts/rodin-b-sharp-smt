@@ -109,6 +109,14 @@ public class SMTSignatureVerit extends SMTSignature {
 	 */
 	public SMTSignatureVerit(final SMTLogic logic) {
 		super(logic);
+		loadMacroSymbols();
+	}
+	
+	private void loadMacroSymbols() {
+		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
+			names.add(op.getSymbol().getMacroName());
+		}
+		names.add("Pair");
 	}
 
 	/**
@@ -238,11 +246,6 @@ public class SMTSignatureVerit extends SMTSignature {
 		usedNames.addAll(getSymbolNames(sorts));
 		usedNames.addAll(getSymbolNames(preds));
 		usedNames.addAll(getMacroNames());
-		final SMTVeriTOperator[] ops = SMTVeriTOperator.values();
-		for (final SMTVeriTOperator op : ops) {
-			usedNames.add(op.getSymbol().getMacroName());
-		}
-
 		return freshSymbolName(usedNames, name);
 	}
 

@@ -40,6 +40,7 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 			final SMTFormula formula) {
 		super(lemmaName + "_pp", signature, assumptions, formula);
 	}
+
 	/**
 	 * Remove unused symbols from the benchmark
 	 */

@@ -519,8 +519,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testPredefinedAttributesSymbolsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NS)", "implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
+				"implies", "NS", "ite", "NS");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
@@ -536,8 +536,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywords() {
-		final ITypeEnvironment te = mTypeEnvironment("distinct", "false",
-				"nf", "false");
+		final ITypeEnvironment te = mTypeEnvironment("distinct", "false", "nf",
+				"false");
 
 		testTranslationV1_2(te, "distinct = flet", "(= nf1 nf)");
 	}
@@ -549,10 +549,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
-		expectedSorts.add("NS"); //logic
+		expectedSorts.add("NS"); // logic
 		expectedSorts.add("Int");
 		expectedSorts.add("BOOL");
-		expectedSorts.add("PL"); //ℙ(logic)
+		expectedSorts.add("PL"); // ℙ(logic)
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"extrasorts = extrafuns");
@@ -580,8 +580,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywordsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NS)", "implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
+				"implies", "NS", "ite", "NS");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
@@ -596,8 +596,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywordsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NS)", "implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
+				"implies", "NS", "ite", "NS");
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
@@ -653,18 +653,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testBoundBaseType2() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(
-				te,
-				"∀z⦂A×B,c⦂A×B·z=c",
+		testTranslateGoalPP(te, "∀z⦂A×B,c⦂A×B·z=c",
 				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 B) (?c0 B) (= ?z0 ?c0)))");
 	}
 
 	@Test
 	public void testBoundBaseType3() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(
-				te,
-				"∀z⦂A,c⦂A·z↦c=c↦z",
+		testTranslateGoalPP(te, "∀z⦂A,c⦂A·z↦c=c↦z",
 				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 A) (?c0 A) (= ?c0 ?z0)))");
 	}
 

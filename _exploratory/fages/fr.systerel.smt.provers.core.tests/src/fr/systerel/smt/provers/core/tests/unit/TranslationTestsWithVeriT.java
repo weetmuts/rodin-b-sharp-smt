@@ -318,8 +318,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment("in", "emptyset", "range",
 				"emptyset");
 
-		testTranslationV1_2VerDefaultSolver(te, "in = range",
-				"(= in0 range0)");
+		testTranslationV1_2VerDefaultSolver(te, "in = range", "(= in0 range0)");
 	}
 
 	/**

@@ -170,6 +170,16 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testPairSymbolName() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment("pair", "Pair");
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("pairName", hyps, "pair = pair", te, VALID);
+	}
+
+	@Test
 	public void testSolverCallSimpleUWithCVC3() {
 		setPreferencesForSolverTest(solver);
 
