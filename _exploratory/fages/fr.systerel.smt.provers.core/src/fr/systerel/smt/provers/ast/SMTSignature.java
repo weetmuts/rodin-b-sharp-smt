@@ -63,8 +63,10 @@ public abstract class SMTSignature {
 	 */
 	private final SMTLogic logic;
 
-	private final static String NEW_SYMBOL_NAME = "NSYMB";
-	private final static String NEW_SORT_NAME = "NSORT";
+	private final static String NEW_SORT_NAME = "NS";
+	private final static String NEW_FUNCTION_NAME = "nf";
+	private final static String NEW_PREDICATE_NAME = "np";
+	private final static String NEW_SYMBOL_NAME = "ns";
 
 	/**
 	 * reserved symbols and keywords
@@ -275,17 +277,17 @@ public abstract class SMTSignature {
 		int i = 0;
 		final StringBuilder freshName = new StringBuilder(name);
 
-		final String intermediateName = freshName.toString();
+		final int basenameLength = freshName.length();
 		/**
 		 * If the set already contains this symbol
 		 */
 		while (names.contains(freshName.toString())
 				|| additionalReservedNames.contains(freshName.toString())) {
 			/**
-			 * Sets the buffer content to: name + "_" + i.
+			 * Sets the buffer content to: name + i.
 			 */
-			freshName.setLength(intermediateName.length());
-			freshName.append("_").append(i);
+			freshName.setLength(basenameLength);
+			freshName.append(i);
 
 			i = i + 1;
 		}
@@ -465,6 +467,24 @@ public abstract class SMTSignature {
 		return symbolNames;
 	}
 
+	private String freshSymbolName(final Set<String> symbolNames,
+			final String name, final String newSymbolName) {
+		final String freshName;
+		/**
+		 * Avoids creating names similar to reserved symbols, predefined symbols
+		 * or keywords
+		 */
+		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
+			freshName = freshName(symbolNames, newSymbolName);
+		} else {
+			freshName = freshName(symbolNames, name);
+		}
+
+		names.add(freshName);
+
+		return freshName;
+	}
+
 	/**
 	 * Returns a fresh symbol name.
 	 * 
@@ -477,20 +497,22 @@ public abstract class SMTSignature {
 	 */
 	protected String freshSymbolName(final Set<String> symbolNames,
 			final String name) {
-		final String freshName;
-		/**
-		 * Avoids creating names similar to reserved symbols, predefined symbols
-		 * or keywords
-		 */
-		if (reservedSymbols.contains(name) || attributeSymbols.contains(name)) {
-			freshName = freshName(symbolNames, NEW_SYMBOL_NAME);
-		} else {
-			freshName = freshName(symbolNames, name);
-		}
+		return freshSymbolName(symbolNames, name, NEW_SYMBOL_NAME);
+	}
 
-		names.add(freshName);
+	protected String freshSortName(final Set<String> symbolNames,
+			final String name) {
+		return freshSymbolName(symbolNames, name, NEW_SORT_NAME);
+	}
 
-		return freshName;
+	protected String freshFunctionName(final Set<String> symbolNames,
+			final String name) {
+		return freshSymbolName(symbolNames, name, NEW_FUNCTION_NAME);
+	}
+
+	protected String freshPredicateName(final Set<String> symbolNames,
+			final String name) {
+		return freshSymbolName(symbolNames, name, NEW_PREDICATE_NAME);
 	}
 
 	/**
@@ -601,6 +623,27 @@ public abstract class SMTSignature {
 		return freshSymbolName(new HashSet<String>(), name);
 	}
 
+	public String freshSortName(final String name) {
+		return freshSortName(new HashSet<String>(), name);
+	}
+
+	public String freshPredicateName(final String name) {
+		return freshPredicateName(new HashSet<String>(), name);
+	}
+
+	public String freshFunctionName(final String name) {
+		return freshFunctionName(new HashSet<String>(), name);
+	}
+
+	/**
+	 * Returns a fresh name for the benchmark
+	 */
+	public String freshBenchmarkName(final String basename) {
+		final String freshName = freshName(new HashSet<String>(), basename);
+		names.add(freshName);
+		return freshName;
+	}
+
 	/**
 	 * Returns a fresh function symbol.
 	 * 
@@ -615,7 +658,7 @@ public abstract class SMTSignature {
 	 */
 	public SMTFunctionSymbol freshFunctionSymbol(final String name,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
-		final String freshName = freshSymbolName(name);
+		final String freshName = freshFunctionName(name);
 		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
 				freshName, argSorts, returnSort, !ASSOCIATIVE, !PREDEFINED);
 		final boolean successfullyAdded = funs.add(freshConstant);
@@ -642,21 +685,12 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * returns a fresh sort.
-	 * 
-	 * @return a fresh sort.
-	 */
-	public SMTSortSymbol freshSort() {
-		return freshSort(NEW_SORT_NAME);
-	}
-
-	/**
 	 * Gives a fresh sort
 	 * 
 	 * @param name
 	 */
 	public SMTSortSymbol freshSort(final String name) {
-		final String freshName = freshSymbolName(name);
+		final String freshName = freshSortName(name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = sorts.add(freshSort);
@@ -678,7 +712,7 @@ public abstract class SMTSignature {
 	 */
 	public SMTPredicateSymbol freshPredicateSymbol(final String name,
 			final SMTSortSymbol... argSorts) {
-		final String freshName = freshSymbolName(name);
+		final String freshName = freshPredicateName(name);
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
 				freshName, argSorts, !SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = preds.add(freshPredicate);

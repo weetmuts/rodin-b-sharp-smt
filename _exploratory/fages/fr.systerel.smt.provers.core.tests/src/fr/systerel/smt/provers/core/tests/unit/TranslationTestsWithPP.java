@@ -257,7 +257,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * bound set
 		 */
 		testTranslationV1_2Default("∃ x ⦂ ℤ, X ⦂ ℙ(ℤ) · x ∈ X",
-				"(exists (?x Int) (?X NSORT) (MS ?x ?X))");
+				"(exists (?x Int) (?X PZ) (MS ?x ?X))");
 
 	}
 
@@ -266,7 +266,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		testTranslationV1_2(te, "∃  X ⦂ ℙ(A×A)· (∃ x · x↦x ∈ X)",
-				"(exists (?X NSORT_0) (?x A) (MS ?x ?x ?X))");
+				"(exists (?X PAA) (?x A) (MS ?x ?x ?X))");
 
 	}
 
@@ -428,7 +428,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * can be expected here. TODO Add tests for the integer axiom
 		 * generation.
 		 */
-		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(MS INTS_0 INTS SPZ)");
+		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(MS INTS0 INTS SPZ)");
 		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a INTS AZ)");
 	}
 
@@ -514,20 +514,20 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment("assumption", "funs",
 				"formula", "funs");
 
-		testTranslationV1_2(te, "assumption = formula", "(= NSYMB_0 NSYMB_2)");
+		testTranslationV1_2(te, "assumption = formula", "(= nf nf1)");
 	}
 
 	@Test
 	public void testPredefinedAttributesSymbolsSorts() {
 		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+				"ℙ(NS)", "implies", "NS", "ite", "NS");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
-		expectedSorts.add("NSORT");
+		expectedSorts.add("PN");
 		expectedSorts.add("Int");
 		expectedSorts.add("BOOL");
-		expectedSorts.add("NSORT_0");
+		expectedSorts.add("NS");
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"implies = ite");
@@ -537,9 +537,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testReservedSymbolsAndKeywords() {
 		final ITypeEnvironment te = mTypeEnvironment("distinct", "false",
-				"NSYMB", "false");
+				"nf", "false");
 
-		testTranslationV1_2(te, "distinct = flet", "(= NSYMB_2 NSYMB_0)");
+		testTranslationV1_2(te, "distinct = flet", "(= nf1 nf)");
 	}
 
 	@Test
@@ -549,10 +549,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
-		expectedSorts.add("NSORT");
+		expectedSorts.add("NS"); //logic
 		expectedSorts.add("Int");
 		expectedSorts.add("BOOL");
-		expectedSorts.add("NSYMB");
+		expectedSorts.add("PL"); //ℙ(logic)
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"extrasorts = extrafuns");
@@ -567,12 +567,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		expectedFuns.add("(BOOLS BOOL)");
 		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(NSYMB_1 NSYMB)");
+		expectedFuns.add("(nf0 NS)");
 		expectedFuns.add("(INTS Int)");
 		expectedFuns.add("(expn Int Int Int)");
 		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(NSYMB_2 NSORT)");
-		expectedFuns.add("(NSYMB_0 NSYMB)");
+		expectedFuns.add("(nf1 PL)");
+		expectedFuns.add("(nf NS)");
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns,
 				"extrasorts = extrafuns");
@@ -581,35 +581,34 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testReservedSymbolsAndKeywordsSorts() {
 		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+				"ℙ(NS)", "implies", "NS", "ite", "NS");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
-		expectedSorts.add("NSORT");
+		expectedSorts.add("PN");
 		expectedSorts.add("Int");
 		expectedSorts.add("BOOL");
-		expectedSorts.add("NSORT_0");
+		expectedSorts.add("NS");
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"implies = ite");
-
 	}
 
 	@Test
 	public void testReservedSymbolsAndKeywordsFuns() {
 		final ITypeEnvironment te = mTypeEnvironment("if_then_else",
-				"ℙ(NSORT)", "implies", "NSORT", "ite", "NSORT");
+				"ℙ(NS)", "implies", "NS", "ite", "NS");
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
 		expectedFuns.add("(BOOLS BOOL)");
-		expectedFuns.add("(NSYMB_0 NSORT_0)");
+		expectedFuns.add("(nf0 NS)");
 		expectedFuns.add("(mod Int Int Int)");
 		expectedFuns.add("(INTS Int)");
 		expectedFuns.add("(expn Int Int Int)");
-		expectedFuns.add("(NSORT_1 NSORT)");
+		expectedFuns.add("(NS0 PN)");
 		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(NSYMB NSORT_0)");
+		expectedFuns.add("(nf NS)");
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns, "implies = ite");
 	}
@@ -624,7 +623,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testQuantifier() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
-				"(forall (?x Int) (exists (?x_0 Int) (and (= ?x_0 (+ ?x 1)) (S ?x_0))))");
+				"(forall (?x Int) (exists (?x0 Int) (and (= ?x0 (+ ?x 1)) (S ?x0))))");
 	}
 
 	@Test
@@ -648,7 +647,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
-				"(forall (?z NSORT_1) (?c NSORT_1) (= ?z ?c))");
+				"(forall (?z PAB) (?c PAB) (= ?z ?c))");
 	}
 
 	@Test
@@ -657,7 +656,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslateGoalPP(
 				te,
 				"∀z⦂A×B,c⦂A×B·z=c",
-				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z_0 B) (?c_0 B) (= ?z_0 ?c_0)))");
+				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 B) (?c0 B) (= ?z0 ?c0)))");
 	}
 
 	@Test
@@ -666,14 +665,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslateGoalPP(
 				te,
 				"∀z⦂A,c⦂A·z↦c=c↦z",
-				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z_0 A) (?c_0 A) (= ?c_0 ?z_0)))");
+				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 A) (?c0 A) (= ?c0 ?z0)))");
 	}
 
 	@Test
 	public void testBoundBaseType4() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∃ x ⦂ ℤ×ℤ×ℤ, X ⦂ ℙ(ℤ×ℤ×ℤ) · x ∈ X",
-				"(exists (?x Int) (?x_0 Int) (?x_1 Int) (?X NSORT) (MS ?x ?x_0 ?x_1 ?X))");
+				"(exists (?x Int) (?x0 Int) (?x1 Int) (?X PZZZ) (MS ?x ?x0 ?x1 ?X))");
 	}
 
 	@Test
@@ -681,7 +680,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te,
 				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
-				"(exists (?x NSORT) (?X NSORT_0) (MS ?x ?X))");
+				"(exists (?x PZZ) (?X PZZ0) (MS ?x ?X))");
 	}
 
 	@Test
@@ -689,14 +688,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te,
 				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
-				"(exists (?x NSORT) (?X NSORT_0) (MS ?x ?X))");
+				"(exists (?x PZZ) (?X PZZ0) (MS ?x ?X))");
 	}
 
 	@Test
 	public void testBoundRightHandSide() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
 		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
-				"(and (forall (?c A) (MS ?c a)) (forall (?z NSORT) (?c_0 A) (MS ?c_0 ?z)))");
+				"(and (forall (?c A) (MS ?c a)) (forall (?z PA) (?c0 A) (MS ?c0 ?z)))");
 	}
 
 }

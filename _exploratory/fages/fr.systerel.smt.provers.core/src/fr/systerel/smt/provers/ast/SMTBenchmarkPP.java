@@ -38,9 +38,8 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	public SMTBenchmarkPP(final String lemmaName,
 			final SMTSignaturePP signature, final List<SMTFormula> assumptions,
 			final SMTFormula formula) {
-		super(lemmaName, signature, assumptions, formula);
+		super(lemmaName + "_pp", signature, assumptions, formula);
 	}
-
 	/**
 	 * Remove unused symbols from the benchmark
 	 */

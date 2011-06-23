@@ -44,8 +44,8 @@ public abstract class SMTBenchmark {
 	 */
 	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
 			final List<SMTFormula> assumptions, final SMTFormula formula) {
-		name = lemmaName;
 		this.signature = signature;
+		name = this.signature.freshBenchmarkName(lemmaName);
 		this.assumptions = assumptions;
 		this.formula = formula;
 	}

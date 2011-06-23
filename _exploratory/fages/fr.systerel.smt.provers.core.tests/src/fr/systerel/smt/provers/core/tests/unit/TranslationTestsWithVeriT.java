@@ -232,7 +232,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testTypeEnvironmentPredicateSimpleTePreds() {
 		final Set<String> expectedPredicates = new HashSet<String>();
 
-		expectedPredicates.add("(S_0 S)");
+		expectedPredicates.add("(S0 S)");
 
 		testTypeEnvironmentPreds(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
@@ -280,7 +280,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testTranslationV1_2VerDefaultSolver(te,
 				"∀UNION_0⦂UNION_1·UNION_0 ∈ {UNION_0}",
-				"(forall (?UNION_0_0 UNION_1) (in ?UNION_0_0 enum))");
+				"(forall (?UNION_00 UNION_1) (in ?UNION_00 enum))");
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"emptyset");
 
 		testTranslationV1_2VerDefaultSolver(te, "in = range",
-				"(= in_0 range_0)");
+				"(= in0 range0)");
 	}
 
 	/**
@@ -609,7 +609,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				base.getPredicate(), null);
 		// System.out.println("Predicate " + p);
 		testTranslationV1_2Verit(p,
-				"(forall (?x R) (?x_0 R) (and (in ?x s) (in ?x_0 s)))",
+				"(forall (?x R) (?x0 R) (and (in ?x s) (in ?x0 s)))",
 				"twice same decl", VERIT.toString());
 	}
 
@@ -751,7 +751,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule18() {
 
 		testTranslationV1_2Default("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}",
-				"(= cset cset_0)");
+				"(= cset cset0)");
 
 		testTranslationV1_2Default("{a∣a ≥ 0} = A", "(= cset A)");
 	}
@@ -759,7 +759,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule19() {
 		testTranslationV1_2Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,2 ↦ 3}",
-				"(= enum enum_0)");
+				"(= enum enum0)");
 
 		testTranslationV1_2Default("{0,1,2,3,4} = A", "(= enum A)");
 	}
@@ -781,10 +781,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testRule22and23() {
 
 		testTranslationV1_2Default("min({2,3}) = min({2,3})",
-				"(= ismin_var ismin_var_0)");
+				"(= ismin_var ismin_var0)");
 
 		testTranslationV1_2Default("max({2,3}) = max({2,3})",
-				"(= ismax_var ismax_var_0)");
+				"(= ismax_var ismax_var0)");
 	}
 
 	@Test
@@ -795,7 +795,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule25() {
 		testTranslationV1_2Default("card({1,2,3}) = card({1,2,3})",
-				"(= card_k card_k_0)");
+				"(= card_k card_k0)");
 	}
 
 	@Test
@@ -808,7 +808,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testDistinct() {
 		testTranslationV1_2Default("partition(A,{1},{2},{3})",
-				"(= A (union (union set set_0) set_1))");
+				"(= A (union (union set set0) set1))");
 	}
 
 	@Test
@@ -851,7 +851,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("AB[A] = AB[A]", "(= (img AB A) (img AB A))");
 
 		testTranslationV1_2Default("AB[{1}] =  AB[{1}]",
-				"(= (img AB enum) (img AB enum_0))");
+				"(= (img AB enum) (img AB enum0))");
 	}
 
 	@Test
@@ -867,7 +867,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testPartition() {
 		testTranslationV1_2Default("partition(A,{1,2},{3,4})",
-				"(and (= A enum) (= (inter enum_0 enum_1) emptyset))");
+				"(and (= A enum) (= (inter enum0 enum1) emptyset))");
 	}
 
 	@Test
@@ -1084,8 +1084,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
 		expectedEnumerations
-				.put("enum_0",
-						"(enum_0 (lambda (?elem (Pair Int Int)) . (or (= ?elem (pair 2 1))(= ?elem (pair 3 2)))))");
+				.put("enum0",
+						"(enum0 (lambda (?elem (Pair Int Int)) . (or (= ?elem (pair 2 1))(= ?elem (pair 3 2)))))");
 		testContainsMacro(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred", expectedEnumerations);
 	}
 
@@ -1093,9 +1093,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testDistinctAssumptions() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(distinct set set_0 set_1)");
-		expectedAssumptions.add("(= set_1 enum_1)");
-		expectedAssumptions.add("(= set_0 enum_0)");
+		expectedAssumptions.add("(distinct set set0 set1)");
+		expectedAssumptions.add("(= set1 enum1)");
+		expectedAssumptions.add("(= set0 enum0)");
 		expectedAssumptions.add("(= set enum)");
 
 		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",

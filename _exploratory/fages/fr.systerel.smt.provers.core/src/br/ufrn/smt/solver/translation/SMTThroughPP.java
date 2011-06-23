@@ -41,6 +41,7 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.Predicate;
@@ -413,6 +414,66 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 */
 		else if (type.getBaseType() != null) {
 			return getBaseTypes(baseTypes, type.getBaseType());
+		}
+
+		/**
+		 * This case should not be reached because Event-B types given as
+		 * arguments are well-formed.
+		 */
+		else {
+			throw new IllegalArgumentException(Messages.Misformed_EventB_Types);
+		}
+	}
+
+	/**
+	 * Builds a basename for the given type.
+	 */
+	private static StringBuilder buildBasenameString(
+			final StringBuilder builder, final Type type) {
+		final Type source = type.getSource();
+		final Type target = type.getTarget();
+		final Type baseType = type.getBaseType();
+		final boolean isAProductType = type instanceof ProductType;
+
+		/**
+		 * Base case: the type is a base type. Appends its first character
+		 * changed to upper case.
+		 */
+		if (source == null && target == null && baseType == null
+				&& !isAProductType) {
+			if (type instanceof IntegerType) {
+				return builder.append("Z");
+			} else {
+				return builder.append(type.toString().toUpperCase().charAt(0));
+			}
+		}
+
+		/**
+		 * The type looks like <code>alpha × beta</code>. Calls recursively
+		 * <code>buildBasenameString</code> on alpha and beta.
+		 */
+		else if (isAProductType) {
+			final ProductType product = (ProductType) type;
+			return buildBasenameString(
+					buildBasenameString(builder, product.getLeft()),
+					product.getRight());
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha × beta)</code>. Calls recursively
+		 * <code>buildBasenameString</code> on alpha and beta.
+		 */
+		else if (source != null) {
+			return (buildBasenameString(buildBasenameString(builder, source),
+					target));
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha)</code>. Calls recursively
+		 * <code>buildBasenameString</code> on alpha.
+		 */
+		else if (baseType != null) {
+			return buildBasenameString(builder, baseType);
 		}
 
 		/**
@@ -878,7 +939,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Type booleanType = FormulaFactory.getDefault().makeBooleanType();
 
 		// creates the quantified variable with a fresh name
-		final String varName = signature.freshSymbolName("x"); //$NON-NLS-1$
+		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 		final SMTTerm smtVar = sf.makeVar(varName, boolSort);
 
@@ -1014,11 +1075,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	protected SMTSortSymbol translateTypeName(final Type type) {
-		if (type.getSource() == null && type.getTarget() == null
-				&& type.getBaseType() == null) {
+		if (type.getBaseType() == null && type.getSource() == null
+				&& type.getTarget() == null) {
 			return signature.freshSort(type.toString());
+		} else {
+			final StringBuilder basenameBuilder;
+			if (type instanceof ProductType) {
+				basenameBuilder = new StringBuilder();
+			} else { // instance of PowerSetType
+				basenameBuilder = new StringBuilder("P");
+			}
+			return signature.freshSort(buildBasenameString(basenameBuilder,
+					type).toString());
 		}
-		return signature.freshSort();
 	}
 
 	/**
