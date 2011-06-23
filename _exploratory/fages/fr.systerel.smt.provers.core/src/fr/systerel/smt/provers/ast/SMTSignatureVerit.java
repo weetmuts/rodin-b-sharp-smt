@@ -116,6 +116,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.getSymbol().getMacroName());
 		}
+		names.add("pair");
 		names.add("Pair");
 	}
 
