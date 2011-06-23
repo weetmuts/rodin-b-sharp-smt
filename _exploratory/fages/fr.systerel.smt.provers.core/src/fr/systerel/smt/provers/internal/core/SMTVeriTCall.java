@@ -24,6 +24,8 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 public class SMTVeriTCall extends SMTProverCall {
 	private static final String VERIT_TEMP_FILE = "_prep";
 	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
+	private static final String VERIT_PRINT_FLAT = "--print-flat";
+
 	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
 	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
@@ -92,6 +94,7 @@ public class SMTVeriTCall extends SMTProverCall {
 
 		args.add(smtPreferences.getVeriTPath());
 		args.add(VERIT_SIMPLIFY_ARGUMENT_STRING);
+		args.add(VERIT_PRINT_FLAT);
 		args.add(VERIT_DISABLE_BANNER);
 		args.add(preprocessedFile.getPath());
 

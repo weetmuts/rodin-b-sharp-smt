@@ -1062,6 +1062,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final Type setExtensionType = expression.getMembers()[0].getType();
 		if (setExtensionType instanceof ProductType) {
 			translatePairSet(expression, children, macroName, varName);
+			sf.addPairEqualityAxiom(additionalAssumptions, signature);
 		} else {
 			translateSimpleSet(expression, children, macroName, varName);
 		}

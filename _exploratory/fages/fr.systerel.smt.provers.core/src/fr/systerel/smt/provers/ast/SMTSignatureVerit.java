@@ -111,7 +111,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		super(logic);
 		loadMacroSymbols();
 	}
-	
+
 	private void loadMacroSymbols() {
 		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
 			names.add(op.getSymbol().getMacroName());

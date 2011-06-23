@@ -96,7 +96,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: ERROR: line 9 column 81: could not locate id  ?veriT.veriT__35.")
+	@Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -815,5 +815,54 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 		doTest("bepicombo_6_3", hyps, "dom({y} × {a,c,e}) = {y}", te, VALID);
+	}
+
+	@Test
+	@Ignore("Z3 ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
+	public void testSubseteqMapsto() {
+		setPreferencesForSolverTest(solver);
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("subseteqMapsto", hyps, "{0↦1,1↦2} ⊆ {0↦1,1↦2,2↦3}", te, VALID);
+	}
+
+	@Test
+	public void testSubseteq2() {
+		setPreferencesForSolverTest(solver);
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("subseteq2", hyps, "{1↦2} ⊆ {1↦2}", te, VALID);
+	}
+
+	@Test
+	@Ignore("Z3: Expected TRUE, but was FALSE")
+	public void testSubsetMapsto1() {
+		setPreferencesForSolverTest(solver);
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("subsetmapsto1", hyps, "{0↦1,1↦2} ⊂ {0↦1,1↦2,2↦3}", te, VALID);
+	}
+
+	@Test
+	@Ignore("Z3: Expected TRUE, but was FALSE")
+	public void testSubsetMapsto2() {
+		setPreferencesForSolverTest(solver);
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("subsetmapsto2", hyps, "{0↦1} ⊂ {0↦1,1↦2,2↦3}", te, VALID);
+	}
+
+	@Test
+	@Ignore("Z3: Expected TRUE, but was FALSE")
+	public void testNotEqualMapsto() {
+		setPreferencesForSolverTest(solver);
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+		doTest("notequalmapsto", hyps, "{0↦1} ≠ {0↦1,1↦2,2↦3}", te, VALID);
 	}
 }
