@@ -280,7 +280,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testTranslationV1_2VerDefaultSolver(te,
 				"∀UNION_0⦂UNION_1·UNION_0 ∈ {UNION_0}",
-				"(forall (?UNION_0_0 UNION_1) (in ?UNION_0_0 enum_0))");
+				"(forall (?UNION_0_0 UNION_1) (in ?UNION_0_0 enum))");
 	}
 
 	/**
@@ -759,9 +759,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testRule19() {
 		testTranslationV1_2Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,2 ↦ 3}",
-				"(= enum_0 enum_1)");
+				"(= enum enum_0)");
 
-		testTranslationV1_2Default("{0,1,2,3,4} = A", "(= enum_0 A)");
+		testTranslationV1_2Default("{0,1,2,3,4} = A", "(= enum A)");
 	}
 
 	@Test
@@ -851,7 +851,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("AB[A] = AB[A]", "(= (img AB A) (img AB A))");
 
 		testTranslationV1_2Default("AB[{1}] =  AB[{1}]",
-				"(= (img AB enum_0) (img AB enum_1))");
+				"(= (img AB enum) (img AB enum_0))");
 	}
 
 	@Test
@@ -867,7 +867,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testPartition() {
 		testTranslationV1_2Default("partition(A,{1,2},{3,4})",
-				"(and (= A enum_0) (= (inter enum_1 enum_2) emptyset))");
+				"(and (= A enum) (= (inter enum_0 enum_1) emptyset))");
 	}
 
 	@Test
@@ -1075,7 +1075,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	public void testFiniteAssumptions() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(finite finite_p enum_0 finite_f finite_k)");
+		expectedAssumptions.add("(finite finite_p enum finite_f finite_k)");
 		testContainsAssumptionsVeriT(te, "finite({1,2,3})", expectedAssumptions);
 	}
 
@@ -1094,9 +1094,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(distinct set set_0 set_1)");
-		expectedAssumptions.add("(= set_1 enum_2)");
-		expectedAssumptions.add("(= set_0 enum_1)");
-		expectedAssumptions.add("(= set enum_0)");
+		expectedAssumptions.add("(= set_1 enum_1)");
+		expectedAssumptions.add("(= set_0 enum_0)");
+		expectedAssumptions.add("(= set enum)");
 
 		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",
 				expectedAssumptions);

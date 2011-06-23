@@ -16,10 +16,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
+import fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTPredefinedMacro;
@@ -238,8 +238,9 @@ public class SMTSignatureVerit extends SMTSignature {
 		usedNames.addAll(getSymbolNames(sorts));
 		usedNames.addAll(getSymbolNames(preds));
 		usedNames.addAll(getMacroNames());
-		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
-			usedNames.add(op.toString());
+		final SMTVeriTOperator[] ops = SMTVeriTOperator.values();
+		for (final SMTVeriTOperator op : ops) {
+			usedNames.add(op.getSymbol().getMacroName());
 		}
 
 		return freshSymbolName(usedNames, name);

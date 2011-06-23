@@ -64,7 +64,6 @@ import fr.systerel.smt.provers.ast.SMTFactory;
 import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTVeriTOperator;
 import fr.systerel.smt.provers.ast.SMTPolymorphicSortSymbol;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
@@ -211,7 +210,7 @@ public class SMTMacroFactory {
 			"(lambda (?TOTAL_SURJECTIVE_RELATION_0 ('t Bool)) . (?TOTAL_SURJECTIVE_RELATION_1 ((Pair 's 't) Bool))(and (forall (?TOTAL_SURJECTIVE_RELATION_2 (Pair 's 't)) (= (?TOTAL_SURJECTIVE_RELATION_1 ?TOTAL_SURJECTIVE_RELATION_2) (?TOTAL_SURJECTIVE_RELATION_0 (snd ?TOTAL_SURJECTIVE_RELATION_2))))  (forall (?TOTAL_SURJECTIVE_RELATION_3 (Pair 's 't)) (= (?TOTAL_SURJECTIVE_RELATION_1 ?TOTAL_SURJECTIVE_RELATION_3) (?TOTAL_SURJECTIVE_RELATION_0 (fst ?TOTAL_SURJECTIVE_RELATION_3))))))",
 			1, true, true, EMPTY_MACROS);
 
-	private static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
+	public static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
 			FUNP,
 			"(lambda (?FUNP_0 ((Pair 's 't )Bool)) . (forall (?FUNP_1 (Pair 's 't))(?FUNP_2 (Pair 's 't)) . (implies (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (implies (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2))))))",
 			1, true, true, EMPTY_MACROS);
@@ -255,7 +254,7 @@ public class SMTMacroFactory {
 
 	private static SMTMacro[] FUNP_AND_INV = { FUNP_MACRO, INVERSE_MACRO };
 
-	private static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
+	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
 			INJP,
 			"(lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))", 2,
 			false, false, FUNP_AND_INV);
@@ -615,6 +614,60 @@ public class SMTMacroFactory {
 		return new SMTQuantifiedMacro(macroName, qVars, lambdaVar, formula, 1);
 	}
 
+	public static enum SMTVeriTOperator {
+		BUNION_OP(BUNION_MACRO), BINTER_OP(BINTER_MACRO), EMPTY_OP(
+				EMPTYSET_MACRO), INTER_OP(BINTER_MACRO), SETMINUS_OP(
+				SETMINUS_MACRO), IN_OP(IN_MACRO), SUBSETEQ_OP(SUBSETEQ_MACRO), SUBSET_OP(
+				SUBSET_MACRO), RANGE_INTEGER_OP(RANGE_INTEGER_MACRO), DOM_OP(
+				DOM_MACRO), IMG_OP(RELATIONAL_IMAGE_MACRO), DOMR_OP(
+				DOMAIN_RESTRICTION_MACRO), DOMS_OP(DOMAIN_SUBSTRACTION_MACRO), INV_OP(
+				INVERSE_MACRO), OVR_OP(REL_OVR_MACRO), ID_OP(ID_MACRO), FCOMP_OP(
+				FCOMP_MACRO), RANGE_SUBSTRACTION_OP(RANGE_SUBSTRACTION_MACRO), RANGE_RESTRICTION_OP(
+				RANGE_RESTRICTION_MACRO), RELATION_OP(RELATION_MACRO), TOTAL_RELATION_OP(
+				TOTAL_RELATION_MACRO), SURJECTIVE_RELATION_OP(
+				SURJECTIVE_RELATION_MACRO), TOTAL_SURJECTIVE_RELATION_OP(
+				TOTAL_SURJECTIVE_RELATION_MACRO), PARTIAL_FUNCTION_OP(
+				PARTIAL_FUNCTION_MACRO), TOTAL_FUNCTION_OP(TOTAL_FUNCTION_MACRO), NAT_OP(
+				NAT_MACRO), NAT1_OP(NAT1_MACRO), PARTIAL_INJECTION_OP(
+				PARTIAL_INJECTION_MACRO), TOTAL_INJECTION_OP(
+				TOTAL_INJECTION_MACRO), PARTIAL_SURJECTION_OP(
+				PARTIAL_SURJECTION_MACRO), TOTAL_SURJECTION_OP(
+				TOTAL_SURJECTION_MACRO), TOTAL_BIJECTION_OP(
+				TOTAL_BIJECTION_MACRO), CARTESIAN_PRODUCT_OP(
+				CARTESIAN_PRODUCT_MACRO), DOMAIN_RESTRICTION_OP(
+				DOMAIN_RESTRICTION_MACRO), DOMAIN_SUBSTRACTION_OP(
+				DOMAIN_SUBSTRACTION_MACRO), RELATIONAL_IMAGE_OP(
+				RELATIONAL_IMAGE_MACRO), ISMIN_OP(ISMIN_MACRO), ISMAX_OP(
+				ISMAX_MACRO), FINITE_OP(FINITE_MACRO), CARD_OP(CARD_MACRO), FUNP_OP(
+				FUNP_MACRO), INJP_OP(INJP_MACRO), RANGE_OP(RANGE_MACRO), BCOMP_OP(
+				BCOMP_MACRO), INTEGER_OP(INTEGER_MACRO), SUCC_OP(
+				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO);
+
+		/**
+		 * The symbol string.
+		 */
+		private SMTPredefinedMacro symbol;
+
+		/**
+		 * THe Constructor of the enumeration
+		 * 
+		 * @param symbol
+		 *            the String value of the operator.
+		 */
+		SMTVeriTOperator(final SMTPredefinedMacro symbol) {
+			this.symbol = symbol;
+		}
+
+		@Override
+		public String toString() {
+			return symbol.toString();
+		}
+
+		public SMTPredefinedMacro getSymbol() {
+			return symbol;
+		}
+	}
+
 	/**
 	 * Adds a predefined macro and other macros on which it depends on the
 	 * signature
@@ -626,143 +679,7 @@ public class SMTMacroFactory {
 	 */
 	public static void addPredefinedMacroInSignature(
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
-		SMTPredefinedMacro pmacro;
-		switch (operator) {
-		case BUNION:
-			pmacro = BUNION_MACRO;
-			break;
-		case BINTER:
-			pmacro = BINTER_MACRO;
-			break;
-		case FCOMP:
-			pmacro = FCOMP_MACRO;
-			break;
-		case OVR:
-			pmacro = REL_OVR_MACRO;
-			break;
-		case EMPTY:
-			pmacro = EMPTYSET_MACRO;
-			break;
-		case IN:
-			pmacro = IN_MACRO;
-			break;
-		case SUBSET:
-			pmacro = SUBSET_MACRO;
-			break;
-		case SUBSETEQ:
-			pmacro = SUBSETEQ_MACRO;
-			break;
-		case RANGE_INTEGER:
-			pmacro = RANGE_INTEGER_MACRO;
-			break;
-		case BCOMP:
-			pmacro = FCOMP_MACRO;
-			break;
-		case RANGE_SUBSTRACTION:
-			pmacro = RANGE_SUBSTRACTION_MACRO;
-			break;
-		case RANGE_RESTRICTION:
-			pmacro = RANGE_RESTRICTION_MACRO;
-			break;
-		case RELATION:
-			pmacro = RELATION_MACRO;
-			break;
-		case TOTAL_RELATION:
-			pmacro = TOTAL_RELATION_MACRO;
-			break;
-		case SURJECTIVE_RELATION:
-			pmacro = SURJECTIVE_RELATION_MACRO;
-			break;
-		case TOTAL_SURJECTIVE_RELATION:
-			pmacro = TOTAL_SURJECTIVE_RELATION_MACRO;
-			break;
-		case PARTIAL_FUNCTION:
-			pmacro = PARTIAL_FUNCTION_MACRO;
-			break;
-		case TOTAL_FUNCTION:
-			pmacro = TOTAL_FUNCTION_MACRO;
-			break;
-		case ID:
-			pmacro = ID_MACRO;
-			break;
-		case NAT:
-			pmacro = NAT_MACRO;
-			break;
-		case NAT1:
-			pmacro = NAT1_MACRO;
-			break;
-		case INV:
-			pmacro = INVERSE_MACRO;
-			break;
-		case DOM:
-			pmacro = DOM_MACRO;
-			break;
-		case PARTIAL_INJECTION:
-			pmacro = PARTIAL_INJECTION_MACRO;
-			break;
-		case TOTAL_INJECTION:
-			pmacro = TOTAL_INJECTION_MACRO;
-			break;
-		case PARTIAL_SURJECTION:
-			pmacro = BUNION_MACRO;
-			break;
-		case TOTAL_SURJECTION:
-			pmacro = TOTAL_SURJECTION_MACRO;
-			break;
-		case TOTAL_BIJECTION:
-			pmacro = TOTAL_BIJECTION_MACRO;
-			break;
-		case CARTESIAN_PRODUCT:
-			pmacro = CARTESIAN_PRODUCT_MACRO;
-			break;
-		case DOMAIN_RESTRICTION:
-			pmacro = DOMAIN_RESTRICTION_MACRO;
-			break;
-		case DOMAIN_SUBSTRACTION:
-			pmacro = DOMAIN_SUBSTRACTION_MACRO;
-			break;
-		case RELATIONAL_IMAGE:
-			pmacro = RELATIONAL_IMAGE_MACRO;
-			break;
-		case SETMINUS:
-			pmacro = SETMINUS_MACRO;
-			signature.addMacro(SETMINUS_MACRO);
-			break;
-		case ISMIN:
-			pmacro = ISMIN_MACRO;
-			break;
-		case ISMAX:
-			pmacro = ISMAX_MACRO;
-			break;
-		case FINITE:
-			pmacro = FINITE_MACRO;
-			break;
-		case CARD:
-			pmacro = CARD_MACRO;
-			break;
-		case FUNP:
-			pmacro = FUNP_MACRO;
-			break;
-		case INJP:
-			pmacro = INJP_MACRO;
-			break;
-		case RANGE:
-			pmacro = RANGE_MACRO;
-			break;
-		case INTEGER:
-			pmacro = INTEGER_MACRO;
-			break;
-		case SUCC:
-			pmacro = SUCCESSOR_MACRO;
-			break;
-		case PRED:
-			pmacro = PREDECESSOR_MACRO;
-			break;
-		default:
-			throw new IllegalArgumentException(
-					"There is no predefined macro with symbol: "
-							+ operator.toString());
-		}
+		final SMTPredefinedMacro pmacro = operator.getSymbol();
 		if (pmacro.usesPairFunctionAndSort()) {
 			signature.addPairSortAndFunction();
 		}
@@ -788,124 +705,87 @@ public class SMTMacroFactory {
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		addPredefinedMacroInSignature(operator, signature);
 		switch (operator) {
-		case BUNION: {
+		case BUNION_OP:
 			return BUNION_SYMBOL;
-		}
-		case BINTER: {
+		case BINTER_OP:
 			return BINTER_SYMBOL;
-		}
-		case FCOMP: {
+		case FCOMP_OP:
 			return FCOMP_SYMBOL;
-		}
-		case OVR: {
+		case OVR_OP:
 			return REL_OVR_SYMBOL;
-		}
-		case EMPTY: {
+		case EMPTY_OP:
 			return EMPTYSET_SYMBOL;
-		}
-		case IN: {
+		case IN_OP:
 			return IN_SYMBOL;
-		}
-		case SUBSET: {
+		case SUBSET_OP:
 			return SUBSET_SYMBOL;
-		}
-		case SUBSETEQ: {
+		case SUBSETEQ_OP:
 			return SUBSETEQ_SYMBOL;
-		}
-		case RANGE_INTEGER: {
+		case RANGE_INTEGER_OP:
 			return INTEGER_RANGE_SYMBOL;
-		}
-		case RANGE_SUBSTRACTION: {
+		case RANGE_SUBSTRACTION_OP:
 			return RANGE_SUBSTRACTION_SYMBOL;
-		}
-		case RANGE_RESTRICTION: {
+		case RANGE_RESTRICTION_OP:
 			return RANGE_RESTRICTION_SYMBOL;
-		}
-		case RELATION: {
+		case RELATION_OP:
 			return RELATION_SYMBOL;
-		}
-		case TOTAL_RELATION: {
+		case TOTAL_RELATION_OP:
 			return TOTAL_RELATION_SYMBOL;
-		}
-		case SURJECTIVE_RELATION: {
+		case SURJECTIVE_RELATION_OP:
 			return SURJECTIVE_RELATION_SYMBOL;
-		}
-		case TOTAL_SURJECTIVE_RELATION: {
+		case TOTAL_SURJECTIVE_RELATION_OP:
 			return TOTAL_SURJECTIVE_RELATION_SYMBOL;
-		}
-		case PARTIAL_FUNCTION: {
+		case PARTIAL_FUNCTION_OP:
 			return PARTIAL_FUNCTION_SYMBOL;
-		}
-		case TOTAL_FUNCTION: {
+		case TOTAL_FUNCTION_OP:
 			return TOTAL_FUNCTION_SYMBOL;
-		}
-		case ID: {
+		case ID_OP:
 			return ID_SYMBOL;
-		}
-		case NAT: {
+		case NAT_OP:
 			return NAT_SYMBOL;
-		}
-		case NAT1: {
+		case NAT1_OP:
 			return NAT1_SYMBOL;
-		}
-		case INV: {
+		case INV_OP:
 			return INVERSE_SYMBOL;
-		}
-		case DOM: {
+		case DOM_OP:
 			return DOM_SYMBOL;
-		}
-		case PARTIAL_INJECTION: {
+		case PARTIAL_INJECTION_OP:
 			return PARTIAL_INJECTION_SYMBOL;
-		}
-		case TOTAL_INJECTION: {
+		case TOTAL_INJECTION_OP:
 			return TOTAL_INJECTION_SYMBOL;
-		}
-		case PARTIAL_SURJECTION: {
+		case PARTIAL_SURJECTION_OP:
 			return PARTIAL_SURJECTION_SYMBOL;
-		}
-		case TOTAL_SURJECTION: {
+		case TOTAL_SURJECTION_OP:
 			return TOTAL_SURJECTION_SYMBOL;
-		}
-		case TOTAL_BIJECTION: {
+		case TOTAL_BIJECTION_OP:
 			return TOTAL_BIJECTION_SYMBOL;
-		}
-		case CARTESIAN_PRODUCT: {
+		case CARTESIAN_PRODUCT_OP:
 			return CARTESIAN_PRODUCT_SYMBOL;
-		}
-		case DOMAIN_RESTRICTION: {
+		case DOMAIN_RESTRICTION_OP:
 			return DOMAIN_RESTRICTION_SYMBOL;
-		}
-		case DOMAIN_SUBSTRACTION: {
+		case DOMAIN_SUBSTRACTION_OP:
 			return DOMAIN_SUBSTRACTION_SYMBOL;
-		}
-		case RELATIONAL_IMAGE: {
+		case RELATIONAL_IMAGE_OP:
 			return RELATIONAL_IMAGE_SYMBOL;
-		}
-		case SETMINUS: {
+		case SETMINUS_OP:
 			return SETMINUS_SYMBOL;
-		}
-		case ISMIN: {
+		case ISMIN_OP:
 			return ISMIN_SYMBOL;
-		}
-		case ISMAX: {
+		case ISMAX_OP:
 			return ISMAX_SYMBOL;
-		}
-		case FINITE: {
+		case FINITE_OP:
 			return FINITE_SYMBOL;
-		}
-		case CARD: {
+		case CARD_OP:
 			return CARD_SYMBOL;
-		}
-		case RANGE: {
+		case RANGE_OP:
 			return RANGE_SYMBOL;
-		}
-		case BCOMP:
+		case BCOMP_OP:
 			return BCOMP_SYMBOL;
-		case INTEGER:
+		case INTEGER_OP:
 			return INTEGER_SYMBOL;
-		case SUCC:
+		case SUCC_OP:
 			return SUCC_SYMBOL;
-		case PRED:
+		case PRED_OP:
 			return PRED_SYMBOL;
 		default:
 			throw new IllegalArgumentException(

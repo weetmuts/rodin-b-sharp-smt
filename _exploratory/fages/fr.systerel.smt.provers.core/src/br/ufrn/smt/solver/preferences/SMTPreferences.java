@@ -60,11 +60,11 @@ public class SMTPreferences {
 		if (solverSettings == null) {
 			throw new IllegalArgumentException("Illegal solver settings");
 		}
-		
+
 		final List<SolverDetail> solvers = parsePreferencesString(solverSettings);
 		try {
 			solver = solvers.get(selectedSolverIndex);
-		} catch (IndexOutOfBoundsException ioobe) {
+		} catch (final IndexOutOfBoundsException ioobe) {
 			if (solvers.size() > 0) {
 				throw new IllegalArgumentException("No SMT solver selected");
 			} else {

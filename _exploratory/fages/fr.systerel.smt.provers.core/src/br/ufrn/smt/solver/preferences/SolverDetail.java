@@ -95,7 +95,7 @@ public class SolverDetail {
 		this.smtV2_0 = smtV2_0;
 	}
 
-	public static final String toString(List<SolverDetail> solversDetails) {
+	public static final String toString(final List<SolverDetail> solversDetails) {
 		final StringBuilder sb = new StringBuilder();
 
 		for (final SolverDetail solverDetail : solversDetails) {

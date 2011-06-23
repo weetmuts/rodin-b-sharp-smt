@@ -20,7 +20,6 @@ import java.util.List;
 
 import fr.systerel.smt.provers.ast.SMTTheory.Booleans;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
-import fr.systerel.smt.provers.ast.macros.SMTMacroSymbol;
 
 /**
  * The SMT logics.
@@ -295,65 +294,6 @@ public class SMTLogic {
 	/**
 	 * This class represents VeriT extended SMT operators.
 	 */
-	public static enum SMTVeriTOperator {
-		GE(SMTSymbol.GE), GT(SMTSymbol.GT), LE(SMTSymbol.LE), LT(SMTSymbol.LT), MINUS(
-				SMTSymbol.MINUS), MUL(SMTSymbol.MUL), PLUS(SMTSymbol.PLUS), UMINUS(
-				SMTSymbol.UMINUS), BUNION(SMTMacroSymbol.BUNION), BINTER(
-				SMTMacroSymbol.BINTER), EMPTY(SMTMacroSymbol.EMPTY), INTER(
-				SMTMacroSymbol.INTER), SETMINUS(SMTMacroSymbol.SETMINUS), IN(
-				SMTMacroSymbol.IN), SUBSETEQ(SMTMacroSymbol.SUBSETEQ), SUBSET(
-				SMTMacroSymbol.SUBSET), RANGE_INTEGER(
-				SMTMacroSymbol.RANGE_INTEGER), DOM(SMTMacroSymbol.DOM), IMG(
-				SMTMacroSymbol.IMG), DOMR(SMTMacroSymbol.DOMR), DOMS(
-				SMTMacroSymbol.DOMS), INV(SMTMacroSymbol.INV), OVR(
-				SMTMacroSymbol.OVR), ID(SMTMacroSymbol.ID), FCOMP(
-				SMTMacroSymbol.FCOMP), ENUM(SMTMacroSymbol.ENUM), DIV(
-				SMTMacroSymbol.DIV), MOD(SMTMacroSymbol.MOD), RANGE_SUBSTRACTION(
-				SMTMacroSymbol.RANGE_SUBSTRACION), RANGE_RESTRICTION(
-				SMTMacroSymbol.RANGE_RESTRICTION), RELATION(
-				SMTMacroSymbol.RELATION), TOTAL_RELATION(
-				SMTMacroSymbol.TOTAL_RELATION), SURJECTIVE_RELATION(
-				SMTMacroSymbol.SURJECTIVE_RELATION), TOTAL_SURJECTIVE_RELATION(
-				SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION), PARTIAL_FUNCTION(
-				SMTMacroSymbol.PARTIAL_FUNCTION), TOTAL_FUNCTION(
-				SMTMacroSymbol.TOTAL_FUNCTION), MAPSTO(SMTMacroSymbol.MAPSTO), NAT(
-				SMTMacroSymbol.NAT), NAT1(SMTMacroSymbol.NAT1), PARTIAL_INJECTION(
-				SMTMacroSymbol.PARTIAL_INJECTION), TOTAL_INJECTION(
-				SMTMacroSymbol.TOTAL_INJECTION), PARTIAL_SURJECTION(
-				SMTMacroSymbol.PARTIAL_SURJECTION), TOTAL_SURJECTION(
-				SMTMacroSymbol.TOTAL_SURJECTION), TOTAL_BIJECTION(
-				SMTMacroSymbol.TOTAL_BIJECTION), CARTESIAN_PRODUCT(
-				SMTMacroSymbol.CARTESIAN_PRODUCT), DOMAIN_RESTRICTION(
-				SMTMacroSymbol.DOMAIN_RESTRICTION), DOMAIN_SUBSTRACTION(
-				SMTMacroSymbol.DOMAIN_SUBSTRACTION), RELATIONAL_IMAGE(
-				SMTMacroSymbol.RELATIONAL_IMAGE), ISMIN(SMTMacroSymbol.ISMIN), ISMAX(
-				SMTMacroSymbol.ISMAX), FINITE(SMTMacroSymbol.FINITE), CARD(
-				SMTMacroSymbol.CARD), PAIR(SMTMacroSymbol.PAIR), FUNP(
-				SMTMacroSymbol.FUNP), INJP(SMTMacroSymbol.INJP), RANGE(
-				SMTMacroSymbol.RANGE), BCOMP(SMTMacroSymbol.BCOMP), INTEGER(
-				SMTMacroSymbol.INT), SUCC(SMTMacroSymbol.SUCC), PRED(
-				SMTMacroSymbol.PRED);
-
-		/**
-		 * The symbol string.
-		 */
-		private String symbol;
-
-		/**
-		 * THe Constructor of the enumeration
-		 * 
-		 * @param symbol
-		 *            the String value of the operator.
-		 */
-		SMTVeriTOperator(final String symbol) {
-			this.symbol = symbol;
-		}
-
-		@Override
-		public String toString() {
-			return symbol;
-		}
-	}
 
 	/**
 	 * "Version 1.2 of the SMT-LIB format adopts as its underlying logic a basic
