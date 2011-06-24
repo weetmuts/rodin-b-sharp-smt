@@ -213,7 +213,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * land (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff u v) (= r s))");
+				"(and (= a b) (iff u v) (forall (?x R) (iff (MS ?x r) (MS ?x s))))");
 		/**
 		 * lor
 		 */
@@ -223,7 +223,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * lor (multiple predicates)
 		 */
 		testTranslationV1_2Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff u v) (= r s))");
+				"(or (= a b) (iff u v) (forall (?x R) (iff (MS ?x r) (MS ?x s))))");
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	@Test
 	public void testPredSetEqu() {
-		testTranslationV1_2Default("r = s", "(= r s)");
+		testTranslationV1_2Default("r = s", "(forall (?x R) (iff (MS ?x r) (MS ?x s)))");
 	}
 
 	/**

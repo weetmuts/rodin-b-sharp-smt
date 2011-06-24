@@ -195,7 +195,7 @@ public abstract class SMTFactory {
 		return makeConstant(booleanCste, signature);
 	}
 
-	public SMTTerm makeVar(final String name, final SMTSortSymbol sort) {
+	public static SMTTerm makeVar(final String name, final SMTSortSymbol sort) {
 		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 

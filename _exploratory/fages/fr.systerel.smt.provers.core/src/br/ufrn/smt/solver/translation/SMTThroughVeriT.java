@@ -707,7 +707,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		final String smtVarName = signature.freshQVarName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
+		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);

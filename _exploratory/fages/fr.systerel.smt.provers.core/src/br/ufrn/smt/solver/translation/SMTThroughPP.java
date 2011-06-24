@@ -44,6 +44,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.MultiplePredicate;
+import org.eventb.core.ast.PowerSetType;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.QuantifiedExpression;
@@ -704,41 +705,48 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param membershipPredicate
 	 *            The membership actualPredicate that will be translated.
 	 */
-	private void translateMemberShipPredicate(
+	private SMTFormula translateMemberShipPredicate(
 			final RelationalPredicate membershipPredicate) {
 
 		final Expression left = membershipPredicate.getLeft();
 		final Expression right = membershipPredicate.getRight();
 
+		final SMTTerm leftTerm = smtTerm(left);
+
 		// Translate monadic setsForMonadicPreds (special case)
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
 			if (monadicPredsMap.containsKey(rightSet)) {
-				translateInMonadicMembershipPredicate(left, rightSet);
-				return;
+				return translateInMonadicMembershipPredicate(leftTerm, rightSet);
 			}
 		}
 
-		translateInClassicMembershipPredicate(left, right);
+		final boolean leftTagIsMapsTo = left.getTag() == Formula.MAPSTO;
+		final Type leftType = left.getType();
+		return translateInClassicMembershipPredicate(leftTerm, leftType,
+				leftTagIsMapsTo, right);
 	}
 
 	/**
 	 * This method translates membership predicate in a normal way (the other
-	 * way is simpler one with monadic predicates).
+	 * way is the simpler one with monadic predicates).
 	 * 
-	 * @param left
-	 *            the left child of the membership
+	 * @param leftTerm
+	 * @param leftType
+	 * @param leftTagIsMapsTo
 	 * @param right
-	 *            the right child of the membership
+	 * @return the membership translated with ad-hoc uninterpreted predicate
+	 *         symbol
 	 */
-	private void translateInClassicMembershipPredicate(final Expression left,
-			final Expression right) {
-		final SMTTerm[] children = smtTerms(left, right);
+	private SMTFormula translateInClassicMembershipPredicate(
+			final SMTTerm leftTerm, final Type leftType,
+			final boolean leftTagIsMapsTo, final Expression right) {
+		final SMTTerm rightTerm = smtTerm(right);
 
-		if (left.getTag() != Formula.MAPSTO) {
-			membershipPredicateTerms.add(0, children[0]);
+		if (!leftTagIsMapsTo) {
+			membershipPredicateTerms.add(0, leftTerm);
 		}
-		membershipPredicateTerms.add(children[1]);
+		membershipPredicateTerms.add(rightTerm);
 
 		final int numberOfArguments = membershipPredicateTerms.size();
 		final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
@@ -746,29 +754,28 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			argSorts[i] = membershipPredicateTerms.get(i).getSort();
 		}
 
-		final Type leftType = left.getType();
-
 		final SMTPredicateSymbol predSymbol = getMembershipPredicateSymbol(
 				leftType, argSorts);
 
 		final SMTTerm[] args = membershipPredicateTerms
 				.toArray(new SMTTerm[numberOfArguments]);
 
-		smtNode = SMTFactory.makeAtom(predSymbol, args, signature);
+		final SMTFormula membership = SMTFactory.makeAtom(predSymbol, args,
+				signature);
 		membershipPredicateTerms.clear();
+		return membership;
 	}
 
 	/**
 	 * This method translates membership to monadic predicates (optimization)
 	 * 
-	 * @param left
-	 *            the left child of the membership
+	 * @param leftTerm
+	 *            the translated left child of the membership
 	 * @param right
 	 *            the right child of the membership
 	 */
-	private void translateInMonadicMembershipPredicate(final Expression left,
-			final FreeIdentifier right) {
-		final SMTTerm leftTerm = smtTerm(left);
+	private SMTFormula translateInMonadicMembershipPredicate(
+			final SMTTerm leftTerm, final FreeIdentifier right) {
 		SMTPredicateSymbol monadicMembershipPredicate = monadicPredsMap
 				.get(right);
 
@@ -778,9 +785,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			monadicPredsMap.put(right, monadicMembershipPredicate);
 		}
 
-		smtNode = SMTFactory.makeAtom(monadicMembershipPredicate,
-				new SMTTerm[] { leftTerm }, signature);
+		final SMTFormula membership = SMTFactory.makeAtom(
+				monadicMembershipPredicate, new SMTTerm[] { leftTerm },
+				signature);
 		membershipPredicateTerms.clear();
+		return membership;
 	}
 
 	/**
@@ -892,6 +901,55 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * In order to translate sets equality, we use the extensionality axiom
+	 * instead.
+	 * <code>∀ A ⦂ ℙ(S), B ⦂ ℙ(S) · ((∀c ⦂ S · (c ∈ A ⇔ c ∈ B)) ⇒ (A = B))</code>
+	 **/
+	private SMTFormula translateSetsEquality(final FreeIdentifier leftSet,
+			final FreeIdentifier rightSet) {
+		// boolean constant for indicating mapplet on the left hand side of a
+		// membership
+		final boolean leftTagIsMapsTo = true;
+
+		// gets the type of elements contained in the given sets
+		final Type baseType = leftSet.getType().getBaseType();
+
+		// creates the quantified variable with a fresh name
+		final String varName = signature.freshSymbolName("x");
+		final SMTSortSymbol varSort = typeMap.get(baseType);
+		final SMTTerm smtVar = SMTFactory.makeVar(varName, varSort);
+
+		// creates the membership of the created bounded variable into the left
+		// set
+		final SMTFormula leftMembership;
+		if (monadicPredsMap.containsKey(leftSet)) {
+			leftMembership = translateInMonadicMembershipPredicate(smtVar,
+					leftSet);
+		} else {
+			leftMembership = translateInClassicMembershipPredicate(smtVar,
+					baseType, false, leftSet);
+		}
+
+		// creates the membership of the created bounded variable into the right
+		// set
+		final SMTFormula rightMembership;
+		if (monadicPredsMap.containsKey(rightSet)) {
+			rightMembership = translateInMonadicMembershipPredicate(smtVar,
+					rightSet);
+		} else {
+			rightMembership = translateInClassicMembershipPredicate(smtVar,
+					baseType, !leftTagIsMapsTo, rightSet);
+		}
+
+		// creates the equivalence between the two memberships
+		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
+				leftMembership, rightMembership });
+
+		// returns the quantified formula
+		return SMTFactory.makeForAll(new SMTTerm[] { smtVar }, equivalence);
+	}
+
+	/**
 	 * Generate the translated SMT-LIB formula for this Event-B predicate:
 	 * 
 	 * <code>∀x·x ∈ ℤ</code>
@@ -904,9 +962,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Type integerType = FormulaFactory.getDefault().makeIntegerType();
 
 		// creates the quantified variable with a fresh name
-		final String varName = signature.freshSymbolName("x"); //$NON-NLS-1$
+		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
-		final SMTTerm smtVar = sf.makeVar(varName, intSort);
+		final SMTTerm smtVar = SMTFactory.makeVar(varName, intSort);
 
 		// creates the integer constant
 		final SMTTerm intConstant = SMTFactory.makeConstant(signature
@@ -941,7 +999,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the quantified variable with a fresh name
 		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
-		final SMTTerm smtVar = sf.makeVar(varName, boolSort);
+		final SMTTerm smtVar = SMTFactory.makeVar(varName, boolSort);
 
 		// creates the boolean constant
 		final SMTTerm boolConstant = SMTFactory.makeConstant(signature
@@ -972,8 +1030,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 		final String xName = signature.freshSymbolName("x");
 		final String yName = signature.freshSymbolName("y");
-		final SMTTerm xTerm = sf.makeVar(xName, boolSort);
-		final SMTTerm yTerm = sf.makeVar(yName, boolSort);
+		final SMTTerm xTerm = SMTFactory.makeVar(xName, boolSort);
+		final SMTTerm yTerm = SMTFactory.makeVar(yName, boolSort);
 
 		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
 		final SMTPredicateSymbol truePredSymbol = signature.getLogic()
@@ -1343,6 +1401,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			} else if (left.getType() instanceof BooleanType) {
 				smtNode = translateBoolIds(left, right);
 				break;
+			} else if (left instanceof FreeIdentifier
+					&& right instanceof FreeIdentifier
+					&& left.getType() instanceof PowerSetType
+					&& right.getType() instanceof PowerSetType) {
+				smtNode = translateSetsEquality((FreeIdentifier) left,
+						(FreeIdentifier) right);
+				break;
 			}
 
 			final SMTTerm[] children = smtTerms(left, right);
@@ -1381,7 +1446,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 			break;
 		case Formula.IN:
-			translateMemberShipPredicate(predicate);
+			smtNode = translateMemberShipPredicate(predicate);
 			break;
 		default:
 			/**
@@ -1430,7 +1495,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final String smtVarName = signature.freshSymbolName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) sf.makeVar(smtVarName, sort);
+		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);
