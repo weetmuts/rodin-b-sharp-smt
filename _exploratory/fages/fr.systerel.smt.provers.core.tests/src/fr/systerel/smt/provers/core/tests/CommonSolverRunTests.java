@@ -85,10 +85,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	@BeforeClass
 	public static void cleanSMTFolder() {
-		if (CommonSolverRunTests.CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST) {
-			CommonSolverRunTests.smtFolder = SMTProverCall
-					.mkTranslationDir(CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
-		}
+		CommonSolverRunTests.smtFolder = SMTProverCall
+				.mkTranslationFolder(!CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
 	}
 
 	@After
@@ -236,10 +234,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
 						MONITOR, preferences, lemmaName) {
-					@Override
-					public String displayMessage() {
-						return "SMT";
-					}
+					// nothing to do
 				};
 				break;
 
@@ -247,10 +242,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
 						MONITOR, preferences, lemmaName) {
-					@Override
-					public String displayMessage() {
-						return "SMT";
-					}
+					// nothing to do
 				};
 				break;
 			}

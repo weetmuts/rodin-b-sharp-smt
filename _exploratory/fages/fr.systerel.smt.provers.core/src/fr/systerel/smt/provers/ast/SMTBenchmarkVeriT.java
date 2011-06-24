@@ -10,10 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
-import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
-
-import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +42,8 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	public SMTBenchmarkVeriT(final String lemmaName,
 			final SMTSignatureVerit signature,
 			final List<SMTFormula> assumptions, final SMTFormula formula) {
-		super(lemmaName, signature, assumptions, formula);
+		super(lemmaName + "_vt", signature, assumptions, formula);
+		comments.add("translated from Event-B with the VeriT approach of Rodin SMT Plugin");
 	}
 
 	/**
@@ -237,21 +234,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			throw new IllegalArgumentException("The class of the macro is: "
 					+ macro.getClass().toString() + ", which is not recognized");
 		}
-	}
-
-	/**
-	 * Prints the benchmark into the given print writer.
-	 */
-	@Override
-	public void print(final PrintWriter pw) {
-		final StringBuilder sb = new StringBuilder();
-		smtCmdOpening(sb, BENCHMARK, name);
-		signature.toString(sb);
-		sb.append("\n");
-		assumptionsSection(sb);
-		formulaSection(sb);
-		sb.append(CPAR);
-		pw.println(sb.toString());
 	}
 
 	/**

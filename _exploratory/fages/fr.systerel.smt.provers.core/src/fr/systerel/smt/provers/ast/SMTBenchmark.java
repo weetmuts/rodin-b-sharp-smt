@@ -11,10 +11,13 @@
 
 package fr.systerel.smt.provers.ast;
 
+import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.OPAR;
 import static fr.systerel.smt.provers.ast.SMTFactory.SPACE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,12 +27,13 @@ import java.util.Set;
  * @author guyot
  * 
  */
-public abstract class SMTBenchmark {
+public class SMTBenchmark {
 
 	protected final String name;
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
 	protected final SMTFormula formula;
+	protected final List<String> comments = new ArrayList<String>();
 
 	/**
 	 * Constructs a new SMT Benchmark. It is composed by the name of the
@@ -57,6 +61,20 @@ public abstract class SMTBenchmark {
 
 	protected void getUsedSymbols(final SMTVar var, final Set<SMTSymbol> symbols) {
 		symbols.add(var.getSort());
+	}
+
+	/**
+	 * Appends the string for notes section to the string builder
+	 * 
+	 * @param sb
+	 *            the builder which will receive the string
+	 */
+	protected void appendComments(final StringBuilder sb) {
+		for (final String comment : comments) {
+			sb.append(";");
+			sb.append(comment);
+			sb.append("\n");
+		}
 	}
 
 	/**
@@ -139,5 +157,16 @@ public abstract class SMTBenchmark {
 	 *            the printwriter that will receive the string representation of
 	 *            the benchmark
 	 */
-	public abstract void print(final PrintWriter pw);
+	public void print(final PrintWriter pw) {
+		final StringBuilder sb = new StringBuilder();
+		smtCmdOpening(sb, BENCHMARK, name);
+		appendComments(sb);
+		sb.append("\n");
+		signature.toString(sb);
+		sb.append("\n");
+		assumptionsSection(sb);
+		formulaSection(sb);
+		sb.append(CPAR);
+		pw.println(sb.toString());
+	}
 }

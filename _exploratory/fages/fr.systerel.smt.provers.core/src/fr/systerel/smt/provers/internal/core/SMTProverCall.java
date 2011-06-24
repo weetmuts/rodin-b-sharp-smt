@@ -167,7 +167,7 @@ public abstract class SMTProverCall extends XProverCall {
 	}
 
 	private void makeSMTResultFile() throws IOException {
-		proofMonitor.setTask("Processing result file from SMT-Solver");
+		proofMonitor.setTask("Processing result file from SMT solver");
 		smtResultFile = new File(smtBenchmarkFile.getParent()
 				+ File.separatorChar + lemmaName + ".res");
 		if (!smtResultFile.exists()) {
@@ -183,7 +183,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
 	 * So is set and returned "valid" attribut.
 	 */
-	private boolean checkSolverResult() {
+	private void parseSolverResult() {
 		if (solverResult.contains("syntax error")
 				|| solverResult.contains("parse error")
 				|| solverResult.contains("Lexical_error")) {
@@ -199,7 +199,6 @@ public abstract class SMTProverCall extends XProverCall {
 					+ solverName + ". See " + lemmaName
 					+ ".res for more details.");
 		}
-		return valid;
 	}
 
 	/**
@@ -259,35 +258,48 @@ public abstract class SMTProverCall extends XProverCall {
 	 * 
 	 * @return the path string of the created directory
 	 */
-	public static String mkTranslationDir(final boolean cleanSmtFolder) {
-		final String returnString;
-		File f = new File(TRANSLATION_PATH);
-		if (!f.mkdir()) {
-			if (f.isDirectory()) {
-				returnString = f.getPath();
+	public static String mkTranslationFolder(final boolean cleanSmtFolder) {
+		final String translationFolder;
+		File folderFile = new File(TRANSLATION_PATH);
+		/**
+		 * Tries to create the translation folder
+		 */
+		if (!folderFile.mkdir()) {
+			/**
+			 * If couldn't, testes if the existing file is a directory
+			 */
+			if (folderFile.isDirectory()) {
+				/**
+				 * If it is, uses it as destination folder for translation files
+				 */
+				translationFolder = folderFile.getPath();
 			} else {
+				/**
+				 * If it is not, creates a new fresh folder
+				 */
 				for (int i = 0;; i++) {
-					f = new File(TRANSLATION_PATH + i);
-					if (!f.mkdir()) {
-						if (f.isDirectory()) {
-							returnString = f.getPath();
+					folderFile = new File(TRANSLATION_PATH + i);
+					if (!folderFile.mkdir()) {
+						if (folderFile.isDirectory()) {
+							translationFolder = folderFile.getPath();
 							break;
 						} else {
 							continue;
 						}
 					} else {
-						returnString = f.getPath();
+						translationFolder = folderFile.getPath();
 						break;
 					}
 				}
 			}
 		} else {
-			returnString = f.getPath();
+			translationFolder = folderFile.getPath();
 		}
+
 		if (cleanSmtFolder) {
-			cleanSMTFolder(f);
+			cleanSMTFolder(folderFile);
 		}
-		return returnString;
+		return translationFolder;
 	}
 
 	/**
@@ -300,8 +312,15 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	public void callProver(final List<String> commandLine) throws IOException,
 			IllegalArgumentException {
-		proofMonitor.setTask("Running SMT-Solver");
+		proofMonitor.setTask("Running SMT solver : " + smtPreferences.getSolver());
 		solverResult = execProcess(commandLine);
+	}
+
+
+	public void callSMTSolverAndComputeResult() throws IOException {
+		callProver(solverCommandLine());
+		makeSMTResultFile();
+		parseSolverResult();
 	}
 
 	/**
@@ -309,17 +328,6 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	@Override
 	public void run() {
-		/**
-		 * Test the SMT solver path
-		 */
-		if (smtPreferences.getSolver() == null) {
-			/**
-			 * Message popup displayed when there is no defined solver path
-			 */
-			throw new IllegalArgumentException(
-					Messages.SmtProversCall_Check_Smt_Preferences);
-		}
-
 		try {
 			/**
 			 * Translates in SMT-LIB V1.2 language and tries to discharge with
@@ -327,9 +335,7 @@ public abstract class SMTProverCall extends XProverCall {
 			 */
 			if (smtPreferences.getSolver().getsmtV1_2()) {
 				makeSMTBenchmarkFileV1_2();
-				callProver(solverCommandLine());
-				makeSMTResultFile();
-				checkSolverResult();
+				callSMTSolverAndComputeResult();
 
 			} else if (smtPreferences.getSolver().getsmtV2_0()) {
 				/**

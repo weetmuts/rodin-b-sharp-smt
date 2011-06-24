@@ -10,10 +10,6 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast;
 
-import static fr.systerel.smt.provers.ast.SMTFactory.CPAR;
-import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
-
-import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +35,7 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 			final SMTSignaturePP signature, final List<SMTFormula> assumptions,
 			final SMTFormula formula) {
 		super(lemmaName + "_pp", signature, assumptions, formula);
+		comments.add("translated from Event-B with the PP approach of Rodin SMT Plugin");
 	}
 
 	/**
@@ -52,21 +49,6 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 		getUsedSymbols(formula, symbols);
 
 		signature.removeUnusedSymbols(symbols);
-	}
-
-	/**
-	 * Prints the benchmark into the given print writer.
-	 */
-	@Override
-	public void print(final PrintWriter pw) {
-		final StringBuilder sb = new StringBuilder();
-		smtCmdOpening(sb, BENCHMARK, name);
-		signature.toString(sb);
-		sb.append("\n");
-		assumptionsSection(sb);
-		formulaSection(sb);
-		sb.append(CPAR);
-		pw.println(sb.toString());
 	}
 
 	/**
