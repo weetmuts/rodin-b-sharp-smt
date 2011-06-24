@@ -33,6 +33,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	// passes with alt-ergo, cvc3, veriT and z3 thanks to the extensionality axiom
 	public void testSetsEquality() {
 		setPreferencesForSolverTest(solver);
 
