@@ -40,7 +40,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 
 	private final boolean usesFstAndSndFunctions;
 
-	private final SMTMacro[] requiredMacros;
+	private final SMTPredefinedMacro[] requiredMacros;
 
 	/**
 	 * Initializes the class with the name of the macro, the body text and the
@@ -57,7 +57,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	SMTPredefinedMacro(final String macroName, final String bodyText,
 			final int precedence, final boolean usesPairFunctionAndSort,
 			final boolean usesFstAndSndFunctions,
-			final SMTMacro[] requiredMacros) {
+			final SMTPredefinedMacro[] requiredMacros) {
 		super(macroName, precedence);
 		body = bodyText;
 		this.usesPairFunctionAndSort = usesPairFunctionAndSort;
@@ -88,7 +88,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	 * 
 	 * @return the required macros of thi macro
 	 */
-	public SMTMacro[] getRequiredMacros() {
+	public SMTPredefinedMacro[] getRequiredMacros() {
 		return requiredMacros;
 	}
 

@@ -12,7 +12,6 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTSolver;
@@ -96,7 +95,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected TRUE, but was FALSE")
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -120,7 +119,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3 ERROR: line 9 column 19: could not locate id  ?veriT.veriT__25.")
+	// @Ignore("Z3 ERROR: line 9 column 19: could not locate id  ?veriT.veriT__25.")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -217,7 +216,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3 Error: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
+	// @Ignore("Z3 Error: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
 	public void testExpn() {
 		setPreferencesForSolverTest(solver);
 
@@ -324,7 +323,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("This test has many problems. See the text above")
+	// @Ignore("This test has many problems. See the text above")
 	public void testIntInRelation() {
 		setPreferencesForSolverTest(solver);
 
@@ -341,7 +340,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test
-	@Ignore("Division is uninterpreted, so the solver is returning sat")
+	// @Ignore("Division is uninterpreted, so the solver is returning sat")
 	public void testCh915Bin10() {
 		setPreferencesForSolverTest(solver);
 
@@ -416,13 +415,13 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("It is unknown if z3 finishes processing this or not")
-	public void testCh7LikeEvenSimplerZ3() {
+	// @Ignore("It is unknown if z3 finishes processing this or not")
+	public void testCh7LikeEvenSimpler() {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		doTest("ch7_likeEvenSimplerz3", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
+		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
 	}
 
 	/**
@@ -431,22 +430,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	@Ignore("Z3 ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
-	public void testCh7LikeEvenSimplerAltErgo() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch7_likeEvenSimplerAltErgo", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 * 
-	 */
-	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
+	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForSolverTest(solver);
 
@@ -461,7 +445,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected true, but returned false")
+	// @Ignore("Z3: Expected true, but returned false")
 	public void testBepiColombo3Mini() {
 		setPreferencesForSolverTest(solver);
 
@@ -476,7 +460,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected true, but it was false")
+	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3Medium() {
 		setPreferencesForSolverTest(solver);
 
@@ -504,7 +488,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : Sort 't cannot be unified with sort (PairInt't Bool)")
+	// @Ignore("error : Sort 't cannot be unified with sort (PairInt't Bool)")
 	public void testRelation() {
 		setPreferencesForSolverTest(solver);
 
@@ -520,7 +504,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 'basic_relation' theory
 	 */
 	@Test
-	@Ignore("Z3: Expected true, but it was false")
+	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3() {
 		setPreferencesForSolverTest(solver);
 
@@ -582,7 +566,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
+	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15RelationOverridingCompANdComposition() {
 		setPreferencesForSolverTest(solver);
 
@@ -596,7 +580,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("error : DAG_new: unable to determine sort")
+	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15BackwardComposition() {
 		setPreferencesForSolverTest(solver);
 
@@ -632,7 +616,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected true, but it was false")
+	// @Ignore("Z3: Expected true, but it was false")
 	public void testRule24() {
 		setPreferencesForSolverTest(solver);
 
@@ -663,7 +647,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("z3: ERROR: line 9 column 66: could not locate id  ?veriT.veriT__35.")
+	// @Ignore("z3: ERROR: line 9 column 66: could not locate id  ?veriT.veriT__35.")
 	public void testPredSet() {
 		setPreferencesForSolverTest(solver);
 
@@ -722,7 +706,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Lemmas cannot be SMT reserved names")
+	// @Ignore("Lemmas cannot be SMT reserved names")
 	public void testExists() {
 		setPreferencesForSolverTest(solver);
 
@@ -733,7 +717,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Sort BOOL is not implemented yet")
+	// @Ignore("Sort BOOL is not implemented yet")
 	public void testLinearSort29() {
 		setPreferencesForSolverTest(solver);
 
@@ -759,7 +743,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Function ?DOM_0 is not declared")
+	// @Ignore("Function ?DOM_0 is not declared")
 	public void testBepiColombo6() {
 		setPreferencesForSolverTest(solver);
 
@@ -791,7 +775,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Function ?DOM_0 is not declared")
+	// @Ignore("Function ?DOM_0 is not declared")
 	public void testBepiColombo6_2() {
 		setPreferencesForSolverTest(solver);
 
@@ -805,7 +789,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Function ?DOM_0 is not declared")
+	// @Ignore("Function ?DOM_0 is not declared")
 	public void testBepiColombo6Parte_3() {
 		setPreferencesForSolverTest(solver);
 
@@ -818,7 +802,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3 ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
+	// @Ignore("Z3 ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
 	public void testSubseteqMapsto() {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -837,7 +821,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected TRUE, but was FALSE")
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testSubsetMapsto1() {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -847,7 +831,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected TRUE, but was FALSE")
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testSubsetMapsto2() {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -857,7 +841,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Z3: Expected TRUE, but was FALSE")
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testNotEqualMapsto() {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();

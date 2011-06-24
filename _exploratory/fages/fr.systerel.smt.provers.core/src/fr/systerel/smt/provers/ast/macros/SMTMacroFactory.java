@@ -126,7 +126,7 @@ public class SMTMacroFactory {
 	 */
 	private final Set<String> qSymbols = new HashSet<String>();
 
-	private static SMTMacro[] EMPTY_MACROS = {};
+	private static SMTPredefinedMacro[] EMPTY_MACROS = {};
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
@@ -161,7 +161,7 @@ public class SMTMacroFactory {
 			"(lambda (?SUBSETEQ_0 ('t Bool)) (?SUBSETEQ_1 ('t Bool)) . (forall (?SUBSETEQ_2 't). (implies (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
+	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
 
 	public static final SMTPredefinedMacro SUBSET_MACRO = new SMTPredefinedMacro(
 			SUBSET,
@@ -173,7 +173,7 @@ public class SMTMacroFactory {
 			"(lambda (?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int) . (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTMacro[] FCOMPS = { FCOMP_MACRO };
+	private static SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
 
 	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
 			BCOMP,
@@ -213,16 +213,17 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
 			FUNP,
 			"(lambda (?FUNP_0 ((Pair 's 't )Bool)) . (forall (?FUNP_1 (Pair 's 't))(?FUNP_2 (Pair 's 't)) . (implies (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (implies (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2))))))",
-			1, true, true, EMPTY_MACROS);
+			2, true, true, EMPTY_MACROS);
 
-	private static SMTMacro[] REL_AND_FUNP = { RELATION_MACRO, FUNP_MACRO };
+	private static SMTPredefinedMacro[] REL_AND_FUNP = { RELATION_MACRO,
+			FUNP_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_FUNCTION,
 			"(lambda (?PARTIAL_FUNCTION_0 ('s Bool)) (?PARTIAL_FUNCTION_1  ('t Bool)) . (lambda (?PARTIAL_FUNCTION_2 ((Pair 's 't) Bool)) .  (and ((rel ?PARTIAL_FUNCTION_0 ?PARTIAL_FUNCTION_1) ?PARTIAL_FUNCTION_2) (funp ?PARTIAL_FUNCTION_2))))",
-			2, false, false, REL_AND_FUNP);
+			3, false, false, REL_AND_FUNP);
 
-	private static SMTMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION = {
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION = {
 			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
@@ -249,17 +250,18 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
 			DOM,
-			"(lambda (?DOM_0 ((Pair't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 ?DOM_1 ?DOM_2))))",
+			"(lambda (?DOM_0 ((Pair 't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 ?DOM_1 ?DOM_2))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTMacro[] FUNP_AND_INV = { FUNP_MACRO, INVERSE_MACRO };
+	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
+			INVERSE_MACRO };
 
 	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
 			INJP,
 			"(lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))", 2,
 			false, false, FUNP_AND_INV);
 
-	private static SMTMacro[] PARTIAL_FUNCTION_AND_INJP = {
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_INJP = {
 			PARTIAL_FUNCTION_MACRO, INJP_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
@@ -267,7 +269,7 @@ public class SMTMacroFactory {
 			"(lambda (?PARTIAL_INJECTION_0 ('s Bool)) (?PARTIAL_INJECTION_1 ('s Bool)) . (lambda (?PARTIAL_INJECTION_2 ((Pair 's 't) Bool)) . (and ((pfun ?PARTIAL_INJECTION_0 ?PARTIAL_INJECTION_1) ?PARTIAL_INJECTION_2) (injp ?PARTIAL_INJECTION_2))))",
 			3, false, false, PARTIAL_FUNCTION_AND_INJP);
 
-	private static SMTMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
+	private static SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
 			PARTIAL_INJECTION_MACRO, TOTAL_RELATION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
@@ -275,7 +277,7 @@ public class SMTMacroFactory {
 			"(lambda (?TOTAL_INJECTION_0 ('s Bool)) . (?TOTAL_INJECTION_1 ('s Bool))(lambda (?TOTAL_INJECTION_2 ((Pair 's 't) Bool)) . (and ((pinj ?TOTAL_INJECTION_0 ?TOTAL_INJECTION_1) ?TOTAL_INJECTION_2) (totp ?TOTAL_INJECTION_0 ?TOTAL_INJECTION_2))))",
 			4, false, false, PARTIAL_INJECTION_AND_TOTAL_RELATION);
 
-	private static SMTMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
 			PARTIAL_FUNCTION_MACRO, SURJECTIVE_RELATION_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = new SMTPredefinedMacro(
@@ -283,7 +285,7 @@ public class SMTMacroFactory {
 			"(lambda (?PARTIAL_SURJECTION_0 ('s Bool))(?PARTIAL_SURJECTION_1 ('s Bool)) . (lambda (?PARTIAL_SURJECTION_2 ((Pair 's 't) Bool)) .  (and ((pfun ?PARTIAL_SURJECTION_0 ?PARTIAL_SURJECTION_1) ?PARTIAL_SURJECTION_2) (surp ?PARTIAL_SURJECTION_1 ?PARTIAL_SURJECTION_2))))",
 			3, false, false, PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION);
 
-	private static SMTMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
+	private static SMTPredefinedMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
 			TOTAL_RELATION_MACRO, PARTIAL_SURJECTION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
@@ -291,7 +293,7 @@ public class SMTMacroFactory {
 			"(lambda (?TOTAL_SURJECTION_0 ('s Bool)) (?TOTAL_SURJECTION_1 ('s Bool))(lambda (?TOTAL_SURJECTION_2 ((Pair 's 't) Bool)) (and ((psur ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_1) ?TOTAL_SURJECTION_2) (totp ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_2))))",
 			4, false, false, TOTAL_RELATION_AND_PARTIAL_SURJECTION);
 
-	private static final SMTMacro[] TOTAL_SURJECTION_AND_TOTAL_INJECTION = {
+	private static final SMTPredefinedMacro[] TOTAL_SURJECTION_AND_TOTAL_INJECTION = {
 			TOTAL_SURJECTION_MACRO, TOTAL_INJECTION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_BIJECTION_MACRO = new SMTPredefinedMacro(
@@ -324,7 +326,7 @@ public class SMTMacroFactory {
 			"(lambda (?SETMINUS_0 ('t Bool)) (?SETMINUS_1 ('t Bool)) . (lambda (?SETMINUS_2 't) . (and (?SETMINUS_0 ?SETMINUS_2) (not (?SETMINUS_1 ?SETMINUS_2)))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTMacro[] INS = { IN_MACRO };
+	private static SMTPredefinedMacro[] INS = { IN_MACRO };
 
 	public static final SMTPredefinedMacro ISMIN_MACRO = new SMTPredefinedMacro(
 			ISMIN,
@@ -336,7 +338,7 @@ public class SMTMacroFactory {
 			"(lambda (?ISMAX_0 Int) (?ISMAX_1 (Int Bool)) . (and(in ?ISMAX_0 ?ISMAX_1)(forall (?ISMAX_2 Int) . (implies (in ?ISMAX_2 ?ISMAX_1)(<= ?ISMAX_2 ?ISMAX_0)))))",
 			1, false, false, INS);
 
-	private static SMTMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
+	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
 			RANGE_INTEGER_MACRO };
 
 	public static final SMTPredefinedMacro FINITE_MACRO = new SMTPredefinedMacro(
@@ -678,15 +680,16 @@ public class SMTMacroFactory {
 	 *            The signature that will receive the macro
 	 */
 	public static void addPredefinedMacroInSignature(
-			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
-		final SMTPredefinedMacro pmacro = operator.getSymbol();
+			final SMTPredefinedMacro operator, final SMTSignatureVerit signature) {
+		final SMTPredefinedMacro pmacro = operator;
 		if (pmacro.usesPairFunctionAndSort()) {
 			signature.addPairSortAndFunction();
 		}
 		if (pmacro.usesFstAndSndFunctions()) {
 			signature.addFstAndSndAuxiliarFunctions();
 		}
-		for (final SMTMacro macro : pmacro.getRequiredMacros()) {
+		for (final SMTPredefinedMacro macro : pmacro.getRequiredMacros()) {
+			addPredefinedMacroInSignature(macro, signature);
 			signature.addMacro(macro);
 		}
 		signature.addMacro(pmacro);
@@ -703,7 +706,7 @@ public class SMTMacroFactory {
 	 */
 	public static final SMTMacroSymbol getMacroSymbol(
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
-		addPredefinedMacroInSignature(operator, signature);
+		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
 		case BUNION_OP:
 			return BUNION_SYMBOL;
