@@ -414,21 +414,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test(timeout = 3000)
-	// @Ignore("It is unknown if z3 finishes processing this or not")
-	public void testCh7LikeEvenSimpler() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
-		doTest("ch7_likeEvenSimpler", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 * 
-	 */
 	@Test
 	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {

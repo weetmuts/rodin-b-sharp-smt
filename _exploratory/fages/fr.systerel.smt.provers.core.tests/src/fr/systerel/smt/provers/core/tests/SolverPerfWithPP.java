@@ -567,8 +567,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test
-	@Ignore("Takes more than 30 seconds to return a result")
+	@Test(timeout = 3000)
+	// @Ignore("Takes more than 30 seconds to return a result")
 	public void testBepiColombo3Medium2() {
 		setPreferencesForSolverTest(solver);
 
@@ -592,7 +592,6 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("Segmentation Fault with VeriT")
 	public void testBepiColombo3() {
 		setPreferencesForSolverTest(solver);
 

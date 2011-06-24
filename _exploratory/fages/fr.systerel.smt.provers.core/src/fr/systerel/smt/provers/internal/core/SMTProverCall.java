@@ -312,10 +312,10 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	public void callProver(final List<String> commandLine) throws IOException,
 			IllegalArgumentException {
-		proofMonitor.setTask("Running SMT solver : " + smtPreferences.getSolver());
+		proofMonitor.setTask("Running SMT solver : "
+				+ smtPreferences.getSolver());
 		solverResult = execProcess(commandLine);
 	}
-
 
 	public void callSMTSolverAndComputeResult() throws IOException {
 		callProver(solverCommandLine());

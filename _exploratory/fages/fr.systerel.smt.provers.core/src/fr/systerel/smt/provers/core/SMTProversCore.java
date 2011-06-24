@@ -89,7 +89,7 @@ public class SMTProversCore extends Plugin {
 		private final static SMTFailureTactic VERIT_PATH_NOT_SET = new SMTFailureTactic(
 				Messages.SMTProversCore_VeriTPathNotSet);
 
-		private SMTFailureTactic(String message) {
+		private SMTFailureTactic(final String message) {
 			this.message = message;
 		}
 
@@ -110,7 +110,7 @@ public class SMTProversCore extends Plugin {
 		}
 
 		@Override
-		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
+		public Object apply(final IProofTreeNode ptNode, final IProofMonitor pm) {
 			return message;
 		}
 	}

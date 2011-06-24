@@ -250,7 +250,7 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
 			DOM,
-			"(lambda (?DOM_0 ((Pair 't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 ?DOM_1 ?DOM_2))))",
+			"(lambda (?DOM_0 ((Pair 't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 (pair ?DOM_1 ?DOM_2)))))",
 			0, false, false, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
