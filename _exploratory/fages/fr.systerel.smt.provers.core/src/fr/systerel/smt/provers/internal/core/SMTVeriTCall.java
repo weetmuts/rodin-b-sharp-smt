@@ -22,6 +22,8 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
  * 
  */
 public class SMTVeriTCall extends SMTProverCall {
+	private static final String VERIT_TRANSLATION_PATH = TRANSLATION_PATH
+			+ File.separatorChar + "verit";
 	private static final String VERIT_TEMP_FILE = "_prep";
 	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String VERIT_PRINT_FLAT = "--print-flat";
@@ -33,7 +35,6 @@ public class SMTVeriTCall extends SMTProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,12 +50,15 @@ public class SMTVeriTCall extends SMTProverCall {
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtPreferences.getSolver().getId());
 		lemmaName = benchmark.getName();
+		final String benchmarkTargetedPath = VERIT_TRANSLATION_PATH
+				+ File.separatorChar + lemmaName;
 
 		/**
 		 * The name of the SMT file with macros.
 		 */
 		if (translationFolder == null) {
-			translationFolder = mkTranslationFolder(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+			translationFolder = mkTranslationFolder(benchmarkTargetedPath,
+					!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
 
 		/**

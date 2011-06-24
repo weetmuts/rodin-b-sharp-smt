@@ -30,13 +30,16 @@ import fr.systerel.smt.provers.internal.core.SMTVeriTCall;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
 
-	protected SMTPreferences preferences;
+	private static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
 
-	public static String smtFolder;
+	private static final NullProofMonitor MONITOR = new NullProofMonitor();
 
-	protected final List<SMTProverCall> smtProverCalls = new ArrayList<SMTProverCall>();
+	private final List<SMTProverCall> smtProverCalls = new ArrayList<SMTProverCall>();
 
-	protected static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
+	private SMTPreferences preferences;
+
+	static String smtFolder;
+
 	/**
 	 * H |- ¬ G is UNSAT, so H |- G is VALID
 	 */
@@ -45,7 +48,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * H |- ¬ G is SAT, so H |- G is NOT VALID
 	 */
 	protected static boolean NOT_VALID = false;
-	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
 
 	/**
 	 * In linux: '/home/username/bin/'
@@ -62,7 +64,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * A ProofMonitor is necessary for SMTProverCall instances creation.
 	 * Instances from this ProofMonitor do nothing.
 	 */
-	protected static class NullProofMonitor implements IProofMonitor {
+	private static class NullProofMonitor implements IProofMonitor {
 		public NullProofMonitor() {
 			// Nothing do to
 		}
@@ -83,19 +85,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	@BeforeClass
-	public static void cleanSMTFolder() {
-		CommonSolverRunTests.smtFolder = SMTProverCall
-				.mkTranslationFolder(!CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
-	}
-
-	@After
-	public void finalizeSolverProcess() {
-		for (final SMTProverCall smtProverCall : smtProverCalls) {
-			smtProverCall.cleanup();
-		}
-	}
-
 	/**
 	 * Sets plugin preferences with the given solver preferences
 	 * 
@@ -104,7 +93,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * @param isSMTV1_2Compatible
 	 * @param isSMTV2_0Compatible
 	 */
-	protected void setSolverPreferences(final String solverBinaryName,
+	private void setSolverPreferences(final String solverBinaryName,
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
@@ -127,6 +116,81 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
 				isSMTV2_0Compatible);
 		preferences = new SMTPreferences(sd, veritBinPath.toString());
+	}
+
+	/**
+	 * First, calls the translation of the given sequent (hypotheses and goal
+	 * 'Predicate' instances) into SMT-LIB syntax, and then calls the SMT
+	 * prover. The test is successful if the solver returns the expected result.
+	 * 
+	 * @param parsedHypotheses
+	 *            list of the sequent hypotheses (Predicate instances)
+	 * @param parsedGoal
+	 *            sequent goal (Predicate instance)
+	 * @param expectedSolverResult
+	 *            the result expected to be produced by the solver call
+	 */
+	private void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<Predicate> parsedHypotheses,
+			final Predicate parsedGoal, final boolean expectedSolverResult)
+			throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		final SMTProverCall smtProverCall;
+
+		try {
+			switch (translationApproach) {
+			case USING_VERIT:
+				// Create an instance of SmtVeriTCall
+				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					// nothing to do
+				};
+				break;
+
+			default: // USING_PP
+				// Create an instance of SmtPPCall
+				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					// nothing to do
+				};
+				break;
+			}
+
+			smtProverCalls.add(smtProverCall);
+			smtProverCall.run();
+
+			assertEquals(
+					"The result of the SMT prover wasn't the expected one.",
+					expectedSolverResult, smtProverCall.isValid());
+		} catch (final IllegalArgumentException iae) {
+			fail(iae.getMessage());
+		}
+	}
+
+	private void doTeTest(final String lemmaName,
+			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
+			final Set<String> expectedFuns, final Set<String> expectedPreds,
+			final Set<String> expectedSorts) throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				lemmaName, parsedHypotheses, parsedGoal, preferences
+						.getSolver().getId());
+
+		final SMTSignature signature = benchmark.getSignature();
+
+		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
+		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
+		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 
 	protected void setPreferencesForVeriTTest() {
@@ -204,60 +268,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				expectedSolverResult);
 	}
 
-	/**
-	 * First, calls the translation of the given sequent (hypotheses and goal
-	 * 'Predicate' instances) into SMT-LIB syntax, and then calls the SMT
-	 * prover. The test is successful if the solver returns the expected result.
-	 * 
-	 * @param parsedHypotheses
-	 *            list of the sequent hypotheses (Predicate instances)
-	 * @param parsedGoal
-	 *            sequent goal (Predicate instance)
-	 * @param expectedSolverResult
-	 *            the result expected to be produced by the solver call
-	 */
-	protected void doTest(final SMTTranslationApproach translationApproach,
-			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult)
-			throws IllegalArgumentException {
-		// Type check goal and hypotheses
-		assertTypeChecked(parsedGoal);
-		for (final Predicate parsedHypothesis : parsedHypotheses) {
-			assertTypeChecked(parsedHypothesis);
-		}
-
-		final SMTProverCall smtProverCall;
-
-		try {
-			switch (translationApproach) {
-			case USING_VERIT:
-				// Create an instance of SmtVeriTCall
-				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
-					// nothing to do
-				};
-				break;
-
-			default: // USING_PP
-				// Create an instance of SmtPPCall
-				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
-					// nothing to do
-				};
-				break;
-			}
-
-			smtProverCalls.add(smtProverCall);
-			smtProverCall.run();
-
-			assertEquals(
-					"The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
-		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
-		}
-	}
-
 	protected void doTTeTest(final String lemmaName,
 			final List<String> inputHyps, final String inputGoal,
 			final ITypeEnvironment te, final Set<String> expectedFuns,
@@ -274,24 +284,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				expectedSorts);
 	}
 
-	private void doTeTest(final String lemmaName,
-			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
-			final Set<String> expectedFuns, final Set<String> expectedPreds,
-			final Set<String> expectedSorts) throws IllegalArgumentException {
-		// Type check goal and hypotheses
-		assertTypeChecked(parsedGoal);
-		for (final Predicate parsedHypothesis : parsedHypotheses) {
-			assertTypeChecked(parsedHypothesis);
+	@BeforeClass
+	public static void cleanSMTFolder() {
+		CommonSolverRunTests.smtFolder = SMTProverCall.mkTranslationFolder(
+				SMTProverCall.TRANSLATION_PATH,
+				!CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
+	}
+
+	@After
+	public void finalizeSolverProcess() {
+		for (final SMTProverCall smtProverCall : smtProverCalls) {
+			smtProverCall.cleanup();
 		}
-
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, parsedHypotheses, parsedGoal, preferences
-						.getSolver().getId());
-
-		final SMTSignature signature = benchmark.getSignature();
-
-		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
-		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
-		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 }

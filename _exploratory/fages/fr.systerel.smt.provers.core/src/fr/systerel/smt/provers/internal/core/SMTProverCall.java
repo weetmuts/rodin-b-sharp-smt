@@ -35,7 +35,7 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
  * 
  */
 public abstract class SMTProverCall extends XProverCall {
-	private static final String TRANSLATION_PATH = System
+	public static final String TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
@@ -169,7 +169,7 @@ public abstract class SMTProverCall extends XProverCall {
 	private void makeSMTResultFile() throws IOException {
 		proofMonitor.setTask("Processing result file from SMT solver");
 		smtResultFile = new File(smtBenchmarkFile.getParent()
-				+ File.separatorChar + lemmaName + ".res");
+				+ File.separatorChar + lemmaName + "_" + solverName + ".res");
 		if (!smtResultFile.exists()) {
 			smtResultFile.createNewFile();
 		}
@@ -258,13 +258,14 @@ public abstract class SMTProverCall extends XProverCall {
 	 * 
 	 * @return the path string of the created directory
 	 */
-	public static String mkTranslationFolder(final boolean cleanSmtFolder) {
+	public static String mkTranslationFolder(final String targetedPath,
+			final boolean cleanSmtFolder) {
 		final String translationFolder;
-		File folderFile = new File(TRANSLATION_PATH);
+		File folderFile = new File(targetedPath);
 		/**
 		 * Tries to create the translation folder
 		 */
-		if (!folderFile.mkdir()) {
+		if (!folderFile.mkdirs()) {
 			/**
 			 * If couldn't, testes if the existing file is a directory
 			 */
@@ -278,7 +279,7 @@ public abstract class SMTProverCall extends XProverCall {
 				 * If it is not, creates a new fresh folder
 				 */
 				for (int i = 0;; i++) {
-					folderFile = new File(TRANSLATION_PATH + i);
+					folderFile = new File(targetedPath + i);
 					if (!folderFile.mkdir()) {
 						if (folderFile.isDirectory()) {
 							translationFolder = folderFile.getPath();

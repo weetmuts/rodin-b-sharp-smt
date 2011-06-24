@@ -19,6 +19,8 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
  * 
  */
 public class SMTPPCall extends SMTProverCall {
+	private static final String PP_TRANSLATION_PATH = TRANSLATION_PATH
+			+ File.separatorChar + "pp";
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
@@ -46,11 +48,15 @@ public class SMTPPCall extends SMTProverCall {
 		 * Update of the lemma name
 		 */
 		lemmaName = benchmark.getName();
+		final String benchmarkTargetedPath = PP_TRANSLATION_PATH
+				+ File.separatorChar + lemmaName;
+
 		/**
 		 * Creation of the translation folder (cleans it if needed)
 		 */
 		if (translationFolder == null) {
-			translationFolder = mkTranslationFolder(!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+			translationFolder = mkTranslationFolder(benchmarkTargetedPath,
+					!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
 		}
 		/**
 		 * Prints the benchmark in a new file

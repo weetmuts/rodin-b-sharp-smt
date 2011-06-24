@@ -444,7 +444,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test
+	@Test(timeout=3000)
 	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3Medium() {
 		setPreferencesForSolverTest(solver);
@@ -488,7 +488,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * bepi_colombo.3 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_relation' theory
 	 */
-	@Test
+	@Test(timeout=3000)
 	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3() {
 		setPreferencesForSolverTest(solver);
@@ -531,7 +531,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		bids[1] = bids[0];
 		final Predicate p = ff.makeQuantifiedPredicate(Formula.FORALL, bids,
 				base.getPredicate(), null);
-		System.out.println("Predicate " + p);
+		//System.out.println("Predicate " + p);
 
 		doTest("rule17_forall", hyps, p.toString(), te, VALID);
 

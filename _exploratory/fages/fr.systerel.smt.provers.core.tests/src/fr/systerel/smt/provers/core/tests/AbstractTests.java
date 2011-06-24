@@ -40,7 +40,7 @@ public abstract class AbstractTests {
 	protected static final FormulaFactory ff = FormulaFactory.getDefault();
 
 	/**
-	 * Builds a type environment with given combined symbols
+	 * Builds an Event-B type environment with given combined symbols
 	 */
 	protected static ITypeEnvironment mTypeEnvironment(final String... strs) {
 		assert (strs.length & 1) == 0;
@@ -74,7 +74,7 @@ public abstract class AbstractTests {
 	}
 
 	/**
-	 * Asserts that the given formula is typed.
+	 * Asserts that the given Event-B formula is typed.
 	 */
 	public static void assertTypeChecked(final Formula<?> formula) {
 		assertTrue("Formula is not typed: " + formula, formula.isTypeChecked());
@@ -232,10 +232,11 @@ public abstract class AbstractTests {
 	}
 
 	protected String assumptionsString(final List<SMTFormula> assumptions) {
-		String string = "";
-		for (final SMTFormula formula : assumptions) {
-			string += formula.toString() + "\n";
+		final StringBuilder assumptionsStringBuilder = new StringBuilder();
+		for (final SMTFormula assumption : assumptions) {
+			assumptionsStringBuilder.append(assumption);
+			assumptionsStringBuilder.append("\n");
 		}
-		return string;
+		return assumptionsStringBuilder.toString();
 	}
 }
