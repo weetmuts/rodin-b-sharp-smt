@@ -120,7 +120,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPred() {
+	public void testTRUEPredZ3Call() {
 		setPreferencesForZ3Test();
 
 		final List<String> hyps = new ArrayList<String>();
@@ -131,7 +131,40 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSet() {
+	public void testTRUEPredCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b = TRUE");
+		hyps.add("c ≠ FALSE");
+
+		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
+	}
+
+	@Test
+	public void testTRUEPredAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b = TRUE");
+		hyps.add("c ≠ FALSE");
+
+		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
+	}
+
+	@Test
+	public void testTRUEPredVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b = TRUE");
+		hyps.add("c ≠ FALSE");
+
+		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
+	}
+
+	@Test
+	public void testBOOLSetZ3Call() {
 		setPreferencesForZ3Test();
 
 		final List<String> hyps = new ArrayList<String>();
@@ -141,7 +174,37 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSetsEquality() {
+	public void testBOOLSetAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+	}
+
+	@Test
+	public void testBOOLSetVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+	}
+
+	@Test
+	public void testBOOLSetCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+	}
+
+	@Test
+	public void testSetsEqualityZ3Call() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
@@ -156,7 +219,52 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testDivision() {
+	public void testSetsEqualityCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("p ∈ ℙ({1})");
+		hyps.add("p ≠ ∅");
+		hyps.add("q ∈ ℙ({1})");
+		hyps.add("q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
+	@Test
+	public void testSetsEqualityAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("p ∈ ℙ({1})");
+		hyps.add("p ≠ ∅");
+		hyps.add("q ∈ ℙ({1})");
+		hyps.add("q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
+	@Test
+	public void testSetsEqualityVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("p ∈ ℙ({1})");
+		hyps.add("p ≠ ∅");
+		hyps.add("q ∈ ℙ({1})");
+		hyps.add("q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
+	@Test
+	public void testDivisionZ3Call() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -175,7 +283,64 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testExponentiation() {
+	public void testDivisionCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 ÷  2 =  2");
+		hyps.add("−4 ÷  2 = −2");
+		hyps.add("−4 ÷ −2 =  2");
+		hyps.add(" 4 ÷ −2 = −2");
+		hyps.add(" 3 ÷  2 =  1");
+		hyps.add("−3 ÷  2 = −1");
+		hyps.add("−3 ÷ −2 =  1");
+
+		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
+	}
+
+	@Test
+	public void testDivisionAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 ÷  2 =  2");
+		hyps.add("−4 ÷  2 = −2");
+		hyps.add("−4 ÷ −2 =  2");
+		hyps.add(" 4 ÷ −2 = −2");
+		hyps.add(" 3 ÷  2 =  1");
+		hyps.add("−3 ÷  2 = −1");
+		hyps.add("−3 ÷ −2 =  1");
+
+		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
+	}
+
+	@Test
+	public void testDivisionVeriT() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 ÷  2 =  2");
+		hyps.add("−4 ÷  2 = −2");
+		hyps.add("−4 ÷ −2 =  2");
+		hyps.add(" 4 ÷ −2 = −2");
+		hyps.add(" 3 ÷  2 =  1");
+		hyps.add("−3 ÷  2 = −1");
+		hyps.add("−3 ÷ −2 =  1");
+
+		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
+	}
+
+	@Test
+	public void testExponentiationZ3Call() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -186,7 +351,40 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testMod() {
+	public void testExponentiationCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
+	}
+
+	@Test
+	public void testExponentiationAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
+	}
+
+	@Test
+	public void testExponentiationVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
+	}
+
+	@Test
+	public void testModZ3Call() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -202,7 +400,55 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testIntegerSet() {
+	public void testModVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 mod  2 =  0");
+		hyps.add("−4 mod  2 =  0");
+		hyps.add("−4 mod −2 =  0");
+		hyps.add(" 4 mod −2 =  0");
+
+		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
+	}
+
+	@Test
+	public void testModAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 mod  2 =  0");
+		hyps.add("−4 mod  2 =  0");
+		hyps.add("−4 mod −2 =  0");
+		hyps.add(" 4 mod −2 =  0");
+
+		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
+	}
+
+	@Test
+	public void testModForCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add(" 4 mod  2 =  0");
+		hyps.add("−4 mod  2 =  0");
+		hyps.add("−4 mod −2 =  0");
+		hyps.add(" 4 mod −2 =  0");
+
+		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
+	}
+
+	@Test
+	public void testIntegerSetZ3Call() {
 		setPreferencesForZ3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -214,4 +460,47 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
+
+	@Test
+	public void testIntegerSetVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ", "x", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n = 2");
+		hyps.add("x = −5");
+
+		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+	}
+
+	@Test
+	public void testIntegerSetForCVC3Call() {
+		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ", "x", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n = 2");
+		hyps.add("x = −5");
+
+		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+	}
+
+	@Test
+	public void testIntegerSetForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"n", "ℤ", "x", "ℤ");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("n = 2");
+		hyps.add("x = −5");
+
+		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+	}
+
 }
