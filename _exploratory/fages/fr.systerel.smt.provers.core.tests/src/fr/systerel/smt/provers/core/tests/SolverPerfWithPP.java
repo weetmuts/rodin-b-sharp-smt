@@ -79,7 +79,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non",
-				"BOOL → BOOL");
+				"BOOL ↔ BOOL");
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("non = {TRUE ↦ FALSE, FALSE ↦ TRUE}");
 		hyps.add("∀ b · non(b) ∈ BOOL");

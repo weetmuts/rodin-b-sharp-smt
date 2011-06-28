@@ -1394,24 +1394,20 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 			if (left.getTag() == Formula.TRUE) {
 				smtNode = translateTruePred(right);
-				break;
 			} else if (right.getTag() == Formula.TRUE) {
 				smtNode = translateTruePred(left);
-				break;
 			} else if (left.getType() instanceof BooleanType) {
 				smtNode = translateBoolIds(left, right);
-				break;
 			} else if (left instanceof FreeIdentifier
 					&& right instanceof FreeIdentifier
 					&& left.getType() instanceof PowerSetType
 					&& right.getType() instanceof PowerSetType) {
 				smtNode = translateSetsEquality((FreeIdentifier) left,
 						(FreeIdentifier) right);
-				break;
+			} else {
+				final SMTTerm[] children = smtTerms(left, right);
+				smtNode = SMTFactory.makeEqual(children);
 			}
-
-			final SMTTerm[] children = smtTerms(left, right);
-			smtNode = SMTFactory.makeEqual(children);
 			break;
 		}
 		case Formula.LT: {

@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughPP;
@@ -437,7 +438,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 */
 	@Test
 	public void testPredSetEqu() {
-		testTranslationV1_2Default("r = s", "(forall (?x R) (iff (MS ?x r) (MS ?x s)))");
+		testTranslationV1_2Default("r = s",
+				"(forall (?x R) (iff (MS ?x r) (MS ?x s)))");
 	}
 
 	/**
@@ -540,6 +542,74 @@ public class TranslationTestsWithPP extends AbstractTests {
 				"false");
 
 		testTranslationV1_2(te, "distinct = flet", "(= nf1 nf)");
+	}
+
+	/**
+	 * Some tests to check if the translator puts quantified formulas into
+	 * prenex normal form
+	 */
+	@Ignore("TODO")
+	@Test
+	public void testPrenexNormalForm() {
+		final ITypeEnvironment te = mTypeEnvironment("t1", "S", "t2", "S");
+		te.addAll(defaultTe);
+
+		// (1) ¬(∀ x ⦂ ℤ · x = 0) ⇒ (∃ x ⦂ ℤ · ¬ (x = 0))
+		testTranslationV1_2(te, "¬(∀ x ⦂ ℤ · x = 0)",
+				"(exists (?x Int) (not (= ?x 0)))");
+
+		// (2) ((∀ x ⦂ ℤ · f(x) = TRUE) ∧ f(a) = TRUE) ⇒ (∀ x ⦂ ℤ · f(x) = TRUE
+		// ∧ f(a) = TRUE)
+		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ∧ t1 = t2)",
+				"(forall (?x S) (and (= ?x t1) (= t1 t2)))");
+
+		// (3) ((∀ x ⦂ S · x = t1) ∨ t1 = t2) ⇒ (∀ x ⦂ S · x = t1 ∨ t1 = t2)
+		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ∨ t1 = t2)",
+				"(forall (?x S) (or (= ?x t1) (= t1 t2)))");
+
+		// (4) ((∀ x ⦂ S · x = t1) ⇒ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ⇒ t1 = t2)
+		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ⇒ t1 = t2)",
+				"(exists (?x S) (implies (= ?x t1) (= t1 t2)))");
+
+		// (5) (t1 = t2 ∧ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ∧ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ∧ (∀ x ⦂ S · x = t1))",
+				"(forall (?x S) (and (= t1 t2) (= ?x t1)))");
+
+		// (6) (t1 = t2 ∨ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ∨ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ∨ (∀ x ⦂ S · x = t1))",
+				"(forall (?x S) (or (= t1 t2) (= ?x t1)))");
+
+		// (7) (t1 = t2 ⇒ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ⇒ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ⇒ (∀ x ⦂ S · x = t1))",
+				"(forall (?x S) (implies (= t1 t2) (= ?x t1)))");
+
+		// (8) (¬ ∃ x ⦂ S · x = t1) ⇒ (∀ x ⦂ S · ¬ x = t1)
+		testTranslationV1_2(te, "(¬ ∃ x ⦂ S · x = t1)",
+				"(forall (?x S) (not (= ?x t1)))");
+
+		// (9) ((∃ x ⦂ S · x = t1) ∧ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ∧ t1 = t2)
+		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ∧ t1 = t2)",
+				"(exists (?x S) (and (= ?x t1) (= t1 t2)))");
+
+		// (10) ((∃ x ⦂ S · x = t1) ∨ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ∨ t1 = t2)
+		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ∨ t1 = t2)",
+				"(exists (?x S) (or (= ?x t1) (= t1 t2)))");
+
+		// (11) ((∃ x ⦂ S · x = t1) ⇒ t1 = t2) ⇒ (∀ x ⦂ S · x = t1 ⇒ t1 = t2)
+		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ⇒ t1 = t2)",
+				"(forall (?x S) (implies (= ?x t1) (= t1 t2)))");
+
+		// (12) (t1 = t2 ∧ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ∧ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ∧ (∃ x ⦂ S · x = t1))",
+				"(exists (?x S) (and (= t1 t2) (= ?x t1)))");
+
+		// (13) (t1 = t2 ∨ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ∨ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ∨ (∃ x ⦂ S · x = t1))",
+				"(exists (?x S) (or (= t1 t2) (= ?x t1)))");
+
+		// (14) (t1 = t2 ⇒ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ⇒ x = t1)
+		testTranslationV1_2(te, "(t1 = t2 ⇒ (∃ x ⦂ S · x = t1))",
+				"(exists (?x S) (implies (= t1 t2) (= ?x t1)))");
 	}
 
 	@Test

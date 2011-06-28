@@ -174,6 +174,17 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testBOOLSet() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c ∈ BOOL×BOOL");
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set", hyps, "b = TRUE", arith_te, VALID);
+	}
+
+	@Test
 	public void testBOOLSetAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -502,5 +513,4 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
-
 }
