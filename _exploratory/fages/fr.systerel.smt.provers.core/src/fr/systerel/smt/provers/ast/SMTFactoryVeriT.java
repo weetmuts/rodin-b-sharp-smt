@@ -60,6 +60,18 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 	private boolean pairAxiomAdded = false;
 
+	public SMTTerm makeTrueConstant(final SMTFunctionSymbol trueSymbol) {
+		return new SMTFunApplication(trueSymbol, new SMTTerm[] {});
+	}
+
+	public SMTTerm makeFalseConstant(final SMTFunctionSymbol falseSymbol) {
+		return new SMTFunApplication(falseSymbol, new SMTTerm[] {});
+	}
+
+	public SMTTerm makeBoolConstant(final SMTFunctionSymbol boolsSet) {
+		return new SMTFunApplication(boolsSet, new SMTTerm[] {});
+	}
+
 	/**
 	 * Adds the pair equality axiom. It is added only once.
 	 */
@@ -151,6 +163,35 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return quantifiedFormula;
 	}
 
+	public SMTFormula makeDefinitionOfElementsOfBooleanFormula(
+			final String boolVarName, final SMTSortSymbol boolSort,
+			final SMTFunctionSymbol trueSymbol,
+			final SMTFunctionSymbol falseSymbol) {
+
+		final SMTTerm trueTerm = new SMTFunApplication(trueSymbol,
+				new SMTTerm[] {});
+		final SMTTerm falseTerm = new SMTFunApplication(falseSymbol,
+				new SMTTerm[] {});
+		final SMTVarSymbol boolvarSymbol = new SMTVarSymbol(boolVarName,
+				boolSort, false);
+		final SMTVar boolVar = new SMTVar(boolvarSymbol);
+
+		final SMTFormula or = makeOr(new SMTFormula[] {
+				makeEqual(new SMTTerm[] { boolVar, trueTerm }),
+				makeEqual(new SMTTerm[] { boolVar, falseTerm }) });
+
+		final SMTFormula forall = makeSMTQuantifiedFormula(
+				SMTQuantifierSymbol.FORALL,
+				new SMTVarSymbol[] { boolvarSymbol }, or);
+
+		final SMTFormula not = makeNot(new SMTFormula[] { makeEqual(new SMTTerm[] {
+				trueTerm, falseTerm }) });
+
+		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not });
+
+		return and;
+	}
+
 	/**
 	 * Creates and return a pair sort symbol. The string representation of a
 	 * pair sort symbol is:
@@ -239,7 +280,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 					.equals(VeritPredefinedTheory.getInstance()
 							.getBooleanSort().toString())) {
 				throw new IllegalArgumentException(
-						"VeriT translation does not accept equal operator under terms with different operators");
+						"VeriT translation does not accept equal operator under terms with different types");
 			} else {
 				if (term instanceof SMTFunApplication) {
 					final SMTFunApplication function = (SMTFunApplication) term;
@@ -265,5 +306,4 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return formulas;
 
 	}
-
 }

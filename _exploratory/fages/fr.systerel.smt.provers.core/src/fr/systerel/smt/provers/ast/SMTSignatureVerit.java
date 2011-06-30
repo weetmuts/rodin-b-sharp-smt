@@ -81,8 +81,17 @@ public class SMTSignatureVerit extends SMTSignature {
 		if (name.equals("\u2124")) { // INTEGER
 			freshName = SMTSymbol.INT;
 		} else if (name.equals("BOOL")) {
-			// unreachable while the Booleans theory is not implemented yet.
-			freshName = SMTMacroSymbol.BOOL_SORT_VERIT;
+			boolean veriTBools = false;
+			for (final SMTTheory theory : getLogic().getTheories()) {
+				if (theory instanceof VeriTBooleans) {
+					veriTBools = true;
+				}
+			}
+			if (veriTBools) {
+				return VeriTBooleans.getInstance().getBooleanSort();
+			} else {
+				return VeritPredefinedTheory.getInstance().getBooleanSort();
+			}
 		} else {
 			freshName = freshSymbolName(name);
 		}

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
+import static fr.systerel.smt.provers.ast.SMTSymbol.BOOLS;
 import static fr.systerel.smt.provers.ast.SMTSymbol.INT;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.VeritPredefinedTheory.POLYMORPHIC;
@@ -359,6 +360,10 @@ public class SMTMacroFactory {
 	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
 			INT, "(lambda (?INT_0 Int). true)", 0, false, false, EMPTY_MACROS);
 
+	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
+			BOOLS, "(lambda (?BOOL_0 BOOL). true)", 0, false, false,
+			EMPTY_MACROS);
+
 	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
 			SUCC,
 			"(lambda(?SUCC_1 (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?SUCC_1 (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
@@ -375,7 +380,7 @@ public class SMTMacroFactory {
 	private static SMTSortSymbol[] ISMIN_MAX_SORTS = { Ints.getInt(),
 			POLYMORPHIC };
 	private static SMTSortSymbol[] FINITE_SORTS = {
-			fr.systerel.smt.provers.ast.VeritPredefinedTheory.getInstance()
+			fr.systerel.smt.provers.ast.VeriTBooleans.getInstance()
 					.getBooleanSort(), POLYMORPHIC, Ints.getInt(),
 			Ints.getInt() };
 
@@ -385,6 +390,8 @@ public class SMTMacroFactory {
 	private static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE, POLYMORPHICS, POLYMORPHIC, !PREDEFINED);
 
+	private static final SMTMacroSymbol BOOL_SET_SYMBOL = new SMTMacroSymbol(
+			BOOLS, EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
 	private static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
 			INT, EMPTY_SORT, POLYMORPHIC, !PREDEFINED);
 	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
@@ -482,7 +489,7 @@ public class SMTMacroFactory {
 			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
 			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
 			TOTAL_RELATION_MACRO, RANGE_MACRO, BCOMP_MACRO, INTEGER_MACRO,
-			SUCCESSOR_MACRO, PREDECESSOR_MACRO };
+			SUCCESSOR_MACRO, PREDECESSOR_MACRO, BOOL_SET_MACRO };
 
 	/**
 	 * Retrieves the name of the identifiers that have a question mark as a
@@ -509,6 +516,14 @@ public class SMTMacroFactory {
 		}
 	}
 
+	/**
+	 * This method checks if the macro is already defined in the signature
+	 * 
+	 * @param macro
+	 *            the macro to be checked
+	 * @param signature
+	 *            the signature used for the check
+	 */
 	public static void checkIfMacroIsDefinedInTheSignature(
 			final SMTMacroSymbol macro, final SMTSignatureVerit signature) {
 		final Set<SMTMacro> macros = signature.getMacros();
@@ -643,7 +658,8 @@ public class SMTMacroFactory {
 				ISMAX_MACRO), FINITE_OP(FINITE_MACRO), CARD_OP(CARD_MACRO), FUNP_OP(
 				FUNP_MACRO), INJP_OP(INJP_MACRO), RANGE_OP(RANGE_MACRO), BCOMP_OP(
 				BCOMP_MACRO), INTEGER_OP(INTEGER_MACRO), SUCC_OP(
-				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO);
+				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO), BOOLS(
+				BOOL_SET_MACRO);
 
 		/**
 		 * The symbol string.
@@ -708,6 +724,8 @@ public class SMTMacroFactory {
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
+		case BOOLS:
+			return BOOL_SET_SYMBOL;
 		case BUNION_OP:
 			return BUNION_SYMBOL;
 		case BINTER_OP:

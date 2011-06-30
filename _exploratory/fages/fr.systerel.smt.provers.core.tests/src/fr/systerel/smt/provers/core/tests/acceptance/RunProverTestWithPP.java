@@ -21,8 +21,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
-	static ITypeEnvironment bool_te = mTypeEnvironment(//
-			"b", "BOOL", "c", "BOOL", "f", "ℙ(BOOL)");
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,

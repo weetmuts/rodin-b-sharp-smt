@@ -902,7 +902,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void testExceptionBoolSort() {
 
 		final ITypeEnvironment errorTe = mTypeEnvironment();
@@ -930,7 +929,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(= prj2s prj2)");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void testExceptionTRUE() {
 
 		final ITypeEnvironment errorTe = mTypeEnvironment();
@@ -939,7 +937,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(in TRUE BOOL)");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void testExceptionFALSE() {
 
 		final ITypeEnvironment errorTe = mTypeEnvironment();

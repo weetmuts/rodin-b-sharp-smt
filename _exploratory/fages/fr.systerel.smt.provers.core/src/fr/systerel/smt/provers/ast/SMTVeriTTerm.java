@@ -62,7 +62,7 @@ public class SMTVeriTTerm extends SMTTerm {
 		checkIfPredIsDefinedInSignature(symbol, signature);
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
-		sort = VeritPredefinedTheory.getInstance().getBooleanSort();
+		sort = VeriTBooleans.getInstance().getBooleanSort();
 	}
 
 	@Override

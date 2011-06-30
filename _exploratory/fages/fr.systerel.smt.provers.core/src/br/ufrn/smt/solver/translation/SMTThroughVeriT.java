@@ -19,6 +19,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BCOMP_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BINTER_OP;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BOOLS;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BUNION_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARD_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARTESIAN_PRODUCT_OP;
@@ -70,8 +71,8 @@ import org.eventb.core.ast.BecomesMemberOf;
 import org.eventb.core.ast.BecomesSuchThat;
 import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BoolExpression;
-import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
+import org.eventb.core.ast.DefaultVisitor;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
@@ -104,11 +105,13 @@ import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
 import fr.systerel.smt.provers.ast.SMTSortSymbol;
 import fr.systerel.smt.provers.ast.SMTTerm;
+import fr.systerel.smt.provers.ast.SMTTheory;
 import fr.systerel.smt.provers.ast.SMTTheory.Ints;
 import fr.systerel.smt.provers.ast.SMTVar;
 import fr.systerel.smt.provers.ast.SMTVarSymbol;
 import fr.systerel.smt.provers.ast.SMTVeritCardFormula;
 import fr.systerel.smt.provers.ast.SMTVeritFiniteFormula;
+import fr.systerel.smt.provers.ast.VeriTBooleans;
 import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroFactory;
@@ -207,6 +210,72 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return translator.getSMTFormula();
 	}
 
+	private static class Gatherer extends DefaultVisitor {
+		private boolean boolTheory = false;
+
+		/**
+		 * This method executes the traversal in the hpoytheses and predicates
+		 * to process the informations described in {@link Gatherer}. It also
+		 * makes the mapping of each free identifier to its correlated predicate
+		 * symbol
+		 * 
+		 * @param hypotheses
+		 *            The hypotheses
+		 * @param goal
+		 *            the goal
+		 * @return a new gatherer with the results of the traversal.
+		 */
+		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
+				final Predicate goal) {
+			final Gatherer gatherer = new Gatherer();
+
+			for (final Predicate hypothesis : hypotheses) {
+				hypothesis.accept(gatherer);
+			}
+			goal.accept(gatherer);
+			return gatherer;
+		}
+
+		/**
+		 * return true if the Bool Theory is used in the PO.
+		 * 
+		 * @return true if the Bool Theory is used, false otherwise.
+		 */
+		public boolean usesBoolTheory() {
+			return boolTheory;
+		}
+
+		/**
+		 * If one of the predicates has a BOOL set, set <code>boolTheory</code>
+		 * <i>true</i>
+		 */
+		@Override
+		public boolean visitBOOL(final AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+
+		/**
+		 * If one of the predicates has a TRUE constant, set
+		 * <code>boolTheory</code> <i>true</i>
+		 */
+		@Override
+		public boolean visitTRUE(final AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+
+		/**
+		 * If one of the predicates has a FALSE constant, set
+		 * <code>boolTheory</code> <i>true</i>
+		 */
+		@Override
+		public boolean visitFALSE(final AtomicExpression expr) {
+			boolTheory = true;
+			return true;
+		}
+	}
+
 	/**
 	 * Determine the logic. In the veriT approach for the translation, it is
 	 * returned the solver's own logic.
@@ -214,6 +283,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
+		final Gatherer gatherer = Gatherer.gatherFrom(hypotheses, goal);
+
+		if (gatherer.usesBoolTheory()) {
+			return new SMTLogic(SMTLogic.UNKNOWN,
+					VeritPredefinedTheory.getInstance(),
+					VeriTBooleans.getInstance());
+		}
 		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
 
@@ -254,10 +330,29 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		return SMTFactoryVeriT.makePairSortSymbol(sourceSymbol, targetSymbol);
 	}
 
+	private void addBooleanAssumption(final SMTLogic logic) {
+		for (final SMTTheory theory : logic.getTheories()) {
+			if (theory instanceof VeriTBooleans) {
+				final String boolVarName = signature.freshSymbolName("elem");
+				additionalAssumptions
+						.add(sf.makeDefinitionOfElementsOfBooleanFormula(
+								boolVarName, VeriTBooleans.getInstance()
+										.getBooleanSort(), VeriTBooleans
+										.getInstance().getTrueConstant(),
+								VeriTBooleans.getInstance().getFalseConstant()));
+				assert additionalAssumptions.size() == 1;
+				return;
+			}
+		}
+	}
+
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		signature = new SMTSignatureVerit(logic);
+
+		addBooleanAssumption(logic);
+
 		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
 				hypotheses, goal);
 		translateTypeEnvironment(typeEnvironment);
@@ -337,15 +432,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final List<Predicate> hypotheses, final Predicate goal) {
 
 		final SMTLogic logic = determineLogic(hypotheses, goal);
-
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 		/**
 		 * SMT translation
 		 */
 		// translates the signature
 		translateSignature(logic, hypotheses, goal);
+		translatedAssumptions.addAll(getAdditionalAssumptions());
 
 		// translates each hypothesis
-		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 		for (final Predicate hypothesis : hypotheses) {
 			clearFormula();
 			final SMTFormula translatedFormula = translate(hypothesis);
@@ -532,20 +627,23 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature));
 			break;
 		case Formula.BOOL:
-			throw new IllegalArgumentException(
-					"Sort BOOL is not implemented yet");
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(BOOLS,
+					signature));
+			break;
+		case Formula.TRUE:
+			smtNode = sf.makeTrueConstant(signature.getLogic()
+					.getTrueConstant());
+			break;
+		case Formula.FALSE:
+			smtNode = sf.makeFalseConstant(signature.getLogic()
+					.getFalseConstant());
+			break;
 		case Formula.KPRJ1_GEN:
 			throw new IllegalArgumentException(
 					"prj1 (KPRJ1_GEN) is not implemented yet");
 		case Formula.KPRJ2_GEN:
 			throw new IllegalArgumentException(
 					"prj2 (KPRJ2_GEN) is not implemented yet");
-		case Formula.TRUE:
-			throw new IllegalArgumentException(
-					"TRUE value (TRUE)is not implemented yet");
-		case Formula.FALSE:
-			throw new IllegalArgumentException(
-					"false value (FALSE) is not implemented yet");
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -745,7 +843,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
 		final Type leftType = predicate.getLeft().getType();
-		if (leftType instanceof BooleanType) {
+		if (children[0].getSort().equals(
+				VeritPredefinedTheory.getInstance().getBooleanSort())) {
 			final SMTFormula[] childrenFormulas = sf
 					.convertVeritTermsIntoFormulas(children);
 			return SMTFactory.makeIff(childrenFormulas);
@@ -1066,8 +1165,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} else {
 			translateSimpleSet(expression, children, macroName, varName);
 		}
-		final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
-				VeritPredefinedTheory.getInstance().getBooleanSort());
+		final SMTMacroSymbol symbol = makeMacroSymbol(macroName, VeriTBooleans
+				.getInstance().getBooleanSort());
 		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 	}
 

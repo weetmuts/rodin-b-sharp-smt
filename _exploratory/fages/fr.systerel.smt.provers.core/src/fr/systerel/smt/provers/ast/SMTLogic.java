@@ -377,11 +377,7 @@ public class SMTLogic {
 	 */
 	public SMTFunctionSymbol getBoolsSet() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof VeritPredefinedTheory) {
-				// Impossible to reach yet because the Bools theory is not
-				// defined by VeriT yet.
-				return VeritPredefinedTheory.getBoolsSet();
-			} else if (theory instanceof Booleans) {
+			if (theory instanceof Booleans) {
 				return Booleans.getBoolsSet();
 			}
 		}
@@ -397,6 +393,24 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof Booleans) {
 				return Booleans.getTrue();
+			}
+		}
+		return null;
+	}
+
+	public SMTFunctionSymbol getTrueConstant() {
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof VeriTBooleans) {
+				return VeriTBooleans.getInstance().getTrueConstant();
+			}
+		}
+		return null;
+	}
+
+	public SMTFunctionSymbol getFalseConstant() {
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof VeriTBooleans) {
+				return VeriTBooleans.getInstance().getFalseConstant();
 			}
 		}
 		return null;
