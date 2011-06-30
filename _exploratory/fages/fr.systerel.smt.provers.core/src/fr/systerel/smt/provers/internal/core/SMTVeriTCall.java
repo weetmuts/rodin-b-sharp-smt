@@ -24,11 +24,11 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 public class SMTVeriTCall extends SMTProverCall {
 	private static final String VERIT_TRANSLATION_PATH = TRANSLATION_PATH
 			+ File.separatorChar + "verit";
-	private static final String VERIT_TEMP_FILE = "_prep";
-	private static final String VERIT_SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
-	private static final String VERIT_PRINT_FLAT = "--print-flat";
-
-	private static final String VERIT_DISABLE_BANNER = "--disable-banner";
+	private static final String TEMP_FILE = "_prep";
+	private static final String SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
+	private static final String PRINT_FLAT = "--print-flat";
+	private static final String DISABLE_BANNER = "--disable-banner";
+	private static final String DISABLE_ACKERMANN = "--disable-ackermann";
 	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
 
 	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
@@ -97,9 +97,10 @@ public class SMTVeriTCall extends SMTProverCall {
 		}
 
 		args.add(smtPreferences.getVeriTPath());
-		args.add(VERIT_SIMPLIFY_ARGUMENT_STRING);
-		args.add(VERIT_PRINT_FLAT);
-		args.add(VERIT_DISABLE_BANNER);
+		args.add(SIMPLIFY_ARGUMENT_STRING);
+		args.add(PRINT_FLAT);
+		args.add(DISABLE_BANNER);
+		args.add(DISABLE_ACKERMANN);
 		args.add(preprocessedFile.getPath());
 
 		solverResult = execProcess(args);
@@ -111,8 +112,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	}
 
 	private String smtVeriTPreProcessFilePath() {
-		return translationFolder + File.separatorChar + lemmaName
-				+ VERIT_TEMP_FILE + SMT_LIB_FILE_EXTENSION;
+		return translationFolder + File.separatorChar + lemmaName + TEMP_FILE
+				+ SMT_LIB_FILE_EXTENSION;
 	}
 
 	private void createPostProcessedFile(final String parentFolder,
