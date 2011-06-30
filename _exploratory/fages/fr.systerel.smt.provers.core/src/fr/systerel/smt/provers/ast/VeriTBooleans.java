@@ -43,4 +43,10 @@ public class VeriTBooleans extends SMTTheory implements ISMTBooleanSort {
 	public SMTSortSymbol getBooleanSort() {
 		return BOOL_SORT;
 	}
+
+	@Override
+	public SMTSortSymbol getPowerSetBooleanSort() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

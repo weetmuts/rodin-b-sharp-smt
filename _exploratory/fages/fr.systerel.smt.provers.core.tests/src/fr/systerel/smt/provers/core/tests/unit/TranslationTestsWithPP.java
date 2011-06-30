@@ -528,7 +528,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		expectedSorts.add("PN");
 		expectedSorts.add("Int");
+		expectedSorts.add("PZ");
 		expectedSorts.add("BOOL");
+		expectedSorts.add("PB");
 		expectedSorts.add("NS");
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
@@ -621,7 +623,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		expectedSorts.add("NS"); // logic
 		expectedSorts.add("Int");
+		expectedSorts.add("PZ");
 		expectedSorts.add("BOOL");
+		expectedSorts.add("PB");
 		expectedSorts.add("PL"); // ℙ(logic)
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
@@ -635,10 +639,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOLS BOOL)");
+		expectedFuns.add("(BOOLS PB)");
 		expectedFuns.add("(mod Int Int Int)");
 		expectedFuns.add("(nf0 NS)");
-		expectedFuns.add("(INTS Int)");
+		expectedFuns.add("(INTS PZ)");
 		expectedFuns.add("(expn Int Int Int)");
 		expectedFuns.add("(divi Int Int Int)");
 		expectedFuns.add("(nf1 PL)");
@@ -657,7 +661,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		expectedSorts.add("PN");
 		expectedSorts.add("Int");
+		expectedSorts.add("PZ");
 		expectedSorts.add("BOOL");
+		expectedSorts.add("PB");
 		expectedSorts.add("NS");
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
@@ -671,10 +677,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOLS BOOL)");
+		expectedFuns.add("(BOOLS PB)");
 		expectedFuns.add("(nf0 NS)");
 		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(INTS Int)");
+		expectedFuns.add("(INTS PZ)");
 		expectedFuns.add("(expn Int Int Int)");
 		expectedFuns.add("(NS0 PN)");
 		expectedFuns.add("(divi Int Int Int)");

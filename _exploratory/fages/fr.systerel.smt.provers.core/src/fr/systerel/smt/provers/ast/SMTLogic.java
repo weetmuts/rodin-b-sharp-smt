@@ -145,6 +145,15 @@ public class SMTLogic {
 		return null;
 	}
 
+	public SMTSortSymbol getPowerSetIntegerSort() {
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof ISMTIntegerSort) {
+				return ((ISMTIntegerSort) theory).getPowerSetIntegerSort();
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * returns the boolean sort if the logic contains a theory that defines the
 	 * boolean sort, otherwise it returns null.
@@ -155,6 +164,15 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof ISMTBooleanSort) {
 				return ((ISMTBooleanSort) theory).getBooleanSort();
+			}
+		}
+		return null;
+	}
+
+	public SMTSortSymbol getPowerSetBooleanSort() {
+		for (final SMTTheory theory : theories) {
+			if (theory instanceof ISMTBooleanSort) {
+				return ((ISMTBooleanSort) theory).getPowerSetBooleanSort();
 			}
 		}
 		return null;

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTSolver;
@@ -82,8 +81,9 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non",
 				"BOOL ↔ BOOL");
 		final List<String> hyps = new ArrayList<String>();
+		hyps.add("S ≠ ∅");
 		hyps.add("non = {TRUE ↦ FALSE, FALSE ↦ TRUE}");
-		hyps.add("∀ b · non(b) ∈ BOOL");
+		hyps.add("∀ x · x ∈ S ⇔ non(x) ∈ S");
 
 		doTest("BoolsSetEquality", hyps, "S = BOOL", te, VALID);
 	}
@@ -304,7 +304,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("rule20_many_foralls_pp", hyps,
+		doTest("rule20_many_foralls", hyps,
 				"(λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x))) ∣ x+x) = ∅", te,
 				VALID);
 	}
@@ -470,8 +470,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * ch915_bin.10 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'nonlinear_arith' theory
 	 */
-	@Test
-	@Ignore("AltErgo MESSAGE: unknown (sat)")
+	@Test(timeout = 3000)
+	//@Ignore("AltErgo MESSAGE: unknown (sat)")
 	// TODO : is it possible to give some division behavior rules ?
 	public void testCh915Bin10() {
 		setPreferencesForSolverTest(solver);
@@ -532,7 +532,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ {1} → ({0} →  D)", te,
+		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ ({1} → ({0} →  D))", te,
 				VALID);
 	}
 
@@ -549,9 +549,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				"D", "ℙ(D)", "d", "D");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n ≥ 1");
 
-		doTest("ch7_conc29_altErgo", hyps,
+		doTest("ch7_conc29", hyps,
 				"{0 ↦ {0 ↦ d,1 ↦ d},1 ↦ {0 ↦ d,1 ↦ d}} ∈ {0,1} → ({0,1} →  D)",
 				te, VALID);
 	}
@@ -651,7 +650,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = new ArrayList<String>();
-		final String smtFileName = "div_verit";
+		final String smtFileName = "div";
 		doTest(smtFileName + "_1", hyps, "4 ÷ 2 = 2", te, VALID);
 		doTest(smtFileName + "_2", hyps, "−4 ÷ 2 = −2", te, VALID);
 		doTest(smtFileName + "_3", hyps, "−4 ÷ −2 = 2", te, VALID);

@@ -970,9 +970,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm intConstant = SMTFactory.makeConstant(signature
 				.getLogic().getIntsSet(), signature);
 
+		// creates the sort POW(INT)
+		final Type powerSetIntegerType = FormulaFactory.getDefault()
+				.makePowerSetType(integerType);
+		final SMTSortSymbol powerSetIntSort = typeMap.get(powerSetIntegerType);
+
 		// gets the membership symbol
 		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
-				integerType, intSort, intSort);
+				integerType, intSort, powerSetIntSort);
 
 		// creates the membership formula
 		final SMTFormula membershipFormula = SMTFactory.makeAtom(
@@ -1005,9 +1010,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm boolConstant = SMTFactory.makeConstant(signature
 				.getLogic().getBoolsSet(), signature);
 
+		// creates the sort POW(BOOL)
+		final Type powerSetBooleanType = FormulaFactory.getDefault()
+				.makePowerSetType(booleanType);
+		final SMTSortSymbol powerSetBoolSort = typeMap.get(powerSetBooleanType);
+
 		// gets the membership symbol
 		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
-				booleanType, boolSort, boolSort);
+				booleanType, boolSort, powerSetBoolSort);
 
 		// creates the membership formula
 		final SMTFormula membershipFormula = SMTFactory.makeAtom(
@@ -1063,8 +1073,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTLogic logic = signature.getLogic();
 		final FormulaFactory ff = FormulaFactory.getDefault();
 
-		typeMap.put(ff.makeIntegerType(), logic.getIntegerSort());
-		typeMap.put(ff.makeBooleanType(), logic.getBooleanSort());
+		final Type integerType = ff.makeIntegerType();
+		final Type booleanType = ff.makeBooleanType();
+
+		typeMap.put(integerType, logic.getIntegerSort());
+		typeMap.put(ff.makePowerSetType(integerType),
+				logic.getPowerSetIntegerSort());
+		typeMap.put(booleanType, logic.getBooleanSort());
+		typeMap.put(ff.makePowerSetType(booleanType),
+				logic.getPowerSetBooleanSort());
 	}
 
 	/**
@@ -1196,19 +1213,26 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		/**
 		 * PP auto-rewriting
 		 */
-		final List<Predicate> ppRewritedHypotheses = recursiveAutoRewriteAll(ppTranslatedHypotheses);
-		final Predicate ppRewritedGoal = recursiveAutoRewrite(ppTranslatedGoal);
+		// final List<Predicate> ppRewritedHypotheses =
+		// recursiveAutoRewriteAll(ppTranslatedHypotheses);
+		// final Predicate ppRewritedGoal =
+		// recursiveAutoRewrite(ppTranslatedGoal);
 
 		/**
 		 * Logic auto-configuration
 		 */
-		final SMTLogic logic = determineLogic(ppRewritedHypotheses,
-				ppRewritedGoal);
+		// final SMTLogic logic = determineLogic(ppRewritedHypotheses,
+		// ppRewritedGoal);
+		final SMTLogic logic = determineLogic(ppTranslatedHypotheses,
+				ppTranslatedGoal);
 
 		/**
 		 * SMT translation
 		 */
-		return translate(lemmaName, ppRewritedHypotheses, ppRewritedGoal, logic);
+		// return translate(lemmaName, ppRewritedHypotheses, ppRewritedGoal,
+		// logic);
+		return translate(lemmaName, ppTranslatedHypotheses, ppTranslatedGoal,
+				logic);
 	}
 
 	/**
