@@ -24,15 +24,15 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				
+
 				final SMTPreferences smtPreferences = SMTPreferencePage
 						.getSMTPreferencesForPP();
 				return SMTProversCore
 						.externalSMTThroughPP(smtPreferences, true);
-			} catch (PatternSyntaxException pse) {
+			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMTProversCore.smtSolverError();
-			} catch (IllegalArgumentException iae) {
+			} catch (final IllegalArgumentException iae) {
 				if (iae.equals(SMTPreferences.NoSMTSolverSelectedException)) {
 					return SMTProversCore.noSMTSolverSelected();
 				} else if (iae.equals(SMTPreferences.NoSMTSolverSetException)) {

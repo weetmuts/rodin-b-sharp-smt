@@ -113,7 +113,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		setVeriTPath = getPreferenceStore().getString(VERITPATH);
 		try {
 			solverDetails = SMTPreferences.parsePreferencesString(preferences);
-		} catch (PatternSyntaxException pse) {
+		} catch (final PatternSyntaxException pse) {
 			pse.printStackTrace(System.err);
 			UIUtils.showError(pse.getMessage());
 		}

@@ -38,7 +38,7 @@ public class UIUtils {
 			}
 		});
 	}
-	
+
 	/**
 	 * Opens a warning dialog to the user displaying the given message.
 	 * 

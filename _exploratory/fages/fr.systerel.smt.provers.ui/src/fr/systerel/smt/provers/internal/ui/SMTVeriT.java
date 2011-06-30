@@ -36,10 +36,10 @@ public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 						.getSMTPreferencesForVeriT();
 				return SMTProversCore.externalSMTThroughVeriT(smtPreferences,
 						true);
-			} catch (PatternSyntaxException pse) {
+			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMTProversCore.smtSolverError();
-			} catch (IllegalArgumentException iae) {
+			} catch (final IllegalArgumentException iae) {
 				if (iae.equals(SMTPreferences.NoSMTSolverSelectedException)) {
 					return SMTProversCore.noSMTSolverSelected();
 				} else if (iae.equals(SMTPreferences.NoSMTSolverSetException)) {
