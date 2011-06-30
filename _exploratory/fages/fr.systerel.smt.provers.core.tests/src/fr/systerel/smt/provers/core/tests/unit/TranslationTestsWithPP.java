@@ -42,7 +42,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		defaultLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+		defaultLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN, Ints.getInstance(),
 				Booleans.getInstance());
 	}
 

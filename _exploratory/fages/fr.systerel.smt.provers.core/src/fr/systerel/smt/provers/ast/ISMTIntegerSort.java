@@ -21,6 +21,4 @@ public interface ISMTIntegerSort {
 	 * @return the integer sort.
 	 */
 	public SMTSortSymbol getIntegerSort();
-
-	public SMTSortSymbol getPowerSetIntegerSort();
 }

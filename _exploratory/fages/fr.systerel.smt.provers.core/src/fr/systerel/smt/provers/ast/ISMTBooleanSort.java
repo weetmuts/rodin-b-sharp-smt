@@ -21,6 +21,4 @@ public interface ISMTBooleanSort {
 	 * @return the boolean sort.
 	 */
 	public SMTSortSymbol getBooleanSort();
-
-	public SMTSortSymbol getPowerSetBooleanSort();
 }

@@ -152,6 +152,10 @@ public class SMTTheory {
 			return INT_SORT;
 		}
 
+		public SMTSortSymbol getPowerSetIntegerSort() {
+			return POW_INT_SORT;
+		}
+
 		public static SMTFunctionSymbol getIntsSet() {
 			return INTS_SET;
 		}
@@ -159,11 +163,6 @@ public class SMTTheory {
 		@Override
 		public SMTSortSymbol getIntegerSort() {
 			return INT_SORT;
-		}
-
-		@Override
-		public SMTSortSymbol getPowerSetIntegerSort() {
-			return POW_INT_SORT;
 		}
 
 		@Override
@@ -257,6 +256,10 @@ public class SMTTheory {
 			return INSTANCE;
 		}
 
+		public SMTSortSymbol getPowerSetBooleanSort() {
+			return POW_BOOL_SORT;
+		}
+
 		public static SMTFunctionSymbol getBoolsSet() {
 			return BOOLS_SET;
 		}
@@ -268,11 +271,6 @@ public class SMTTheory {
 		@Override
 		public SMTSortSymbol getBooleanSort() {
 			return BOOL_SORT;
-		}
-
-		@Override
-		public SMTSortSymbol getPowerSetBooleanSort() {
-			return POW_BOOL_SORT;
 		}
 	}
 }

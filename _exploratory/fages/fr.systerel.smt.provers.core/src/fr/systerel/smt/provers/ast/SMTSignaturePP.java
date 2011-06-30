@@ -16,7 +16,12 @@ package fr.systerel.smt.provers.ast;
  * 
  */
 public class SMTSignaturePP extends SMTSignature {
-	public SMTSignaturePP(final SMTLogic logic) {
+	public SMTSignaturePP(final SMTLogic.SMTLogicPP logic) {
 		super(logic);
+	}
+
+	@Override
+	public SMTLogic.SMTLogicPP getLogic() {
+		return (SMTLogic.SMTLogicPP) logic;
 	}
 }

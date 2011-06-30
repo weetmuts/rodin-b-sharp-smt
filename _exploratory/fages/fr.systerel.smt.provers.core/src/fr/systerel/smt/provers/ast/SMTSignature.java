@@ -61,7 +61,7 @@ public abstract class SMTSignature {
 	/**
 	 * The logic of the signature
 	 */
-	private final SMTLogic logic;
+	protected final SMTLogic logic;
 
 	private final static String NEW_SORT_NAME = "NS";
 	private final static String NEW_FUNCTION_NAME = "nf";

@@ -20,8 +20,8 @@ public class LogicTestsWithPP extends AbstractTests {
 	private static final SMTLogic boolLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
-		boolLogic = new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
-				Booleans.getInstance());
+		boolLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
+				Ints.getInstance(), Booleans.getInstance());
 		smtLibUnderlyingLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
 	}
 

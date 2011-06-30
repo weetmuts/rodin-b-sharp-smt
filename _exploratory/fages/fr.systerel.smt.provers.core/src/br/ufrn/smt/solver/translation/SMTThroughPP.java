@@ -65,6 +65,8 @@ import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTLogicPP;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -527,10 +529,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		gatherer = Gatherer.gatherFrom(hypotheses, goal, monadicPredsMap);
 
 		if (gatherer.usesBoolTheory()) {
-			return new SMTLogic(SMTLogic.UNKNOWN, Ints.getInstance(),
+			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN, Ints.getInstance(),
 					Booleans.getInstance());
 		}
-		return SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+		return SMTLIBUnderlyingLogic.getInstance();
 	}
 
 	/**
@@ -1070,7 +1072,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
 	private void linkLogicSymbols() {
-		final SMTLogic logic = signature.getLogic();
+		final SMTLogicPP logic = signature.getLogic();
 		final FormulaFactory ff = FormulaFactory.getDefault();
 
 		final Type integerType = ff.makeIntegerType();
@@ -1180,7 +1182,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		signature = new SMTSignaturePP(logic);
+		if (logic instanceof SMTLogicPP) {
+			signature = new SMTSignaturePP((SMTLogicPP) logic);
+		} else {
+			throw new IllegalArgumentException("Wrong logic.");
+		}
 
 		linkLogicSymbols();
 

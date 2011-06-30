@@ -112,20 +112,8 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	}
 
 	@Override
-	public SMTSortSymbol getPowerSetBooleanSort() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public SMTSortSymbol getIntegerSort() {
 		return INT;
-	}
-
-	@Override
-	public SMTSortSymbol getPowerSetIntegerSort() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class SMTLogic {
 
 	/** The logic name and symbols */
 	private final String name;
-	private final SMTTheory[] theories;
+	protected final SMTTheory[] theories;
 
 	// TODO add fields needed to print a complete logic (language, extensions,
 	// notes)
@@ -145,15 +145,6 @@ public class SMTLogic {
 		return null;
 	}
 
-	public SMTSortSymbol getPowerSetIntegerSort() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof ISMTIntegerSort) {
-				return ((ISMTIntegerSort) theory).getPowerSetIntegerSort();
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * returns the boolean sort if the logic contains a theory that defines the
 	 * boolean sort, otherwise it returns null.
@@ -164,15 +155,6 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof ISMTBooleanSort) {
 				return ((ISMTBooleanSort) theory).getBooleanSort();
-			}
-		}
-		return null;
-	}
-
-	public SMTSortSymbol getPowerSetBooleanSort() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof ISMTBooleanSort) {
-				return ((ISMTBooleanSort) theory).getPowerSetBooleanSort();
 			}
 		}
 		return null;
@@ -310,8 +292,32 @@ public class SMTLogic {
 	}
 
 	/**
-	 * This class represents VeriT extended SMT operators.
+	 * This class represents the SMT underlying logic used by the PP approach.
+	 * It differs from the standard underlying logic.
 	 */
+	public static class SMTLogicPP extends SMTLogic {
+		public SMTLogicPP(final String name, final SMTTheory...theories) {
+			super(name, theories);
+		}
+
+		public SMTSortSymbol getPowerSetIntegerSort() {
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof Ints) {
+					return ((Ints) theory).getPowerSetIntegerSort();
+				}
+			}
+			return null;
+		}
+
+		public SMTSortSymbol getPowerSetBooleanSort() {
+			for (final SMTTheory theory : theories) {
+				if (theory instanceof Booleans) {
+					return ((Booleans) theory).getPowerSetBooleanSort();
+				}
+			}
+			return null;
+		}
+	}
 
 	/**
 	 * "Version 1.2 of the SMT-LIB format adopts as its underlying logic a basic
@@ -320,7 +326,7 @@ public class SMTLogic {
 	 * sophisticated constructs such as subsorts, sort constructors, explicit
 	 * sort declarations for terms, and so on."
 	 */
-	public static class SMTLIBUnderlyingLogic extends SMTLogic {
+	public static class SMTLIBUnderlyingLogic extends SMTLogicPP {
 		private static final SMTTheory[] THEORIES = { SMTTheory.Ints
 				.getInstance() };
 
