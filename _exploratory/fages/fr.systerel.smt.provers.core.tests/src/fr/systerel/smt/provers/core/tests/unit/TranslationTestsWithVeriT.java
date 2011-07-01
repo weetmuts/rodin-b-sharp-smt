@@ -20,15 +20,18 @@ import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.VeriTSMTLIBUnderlyingLogic;
 import fr.systerel.smt.provers.ast.SMTSignature;
 import fr.systerel.smt.provers.ast.SMTSignatureVerit;
+import fr.systerel.smt.provers.ast.SMTTheory;
+import fr.systerel.smt.provers.ast.VeriTBooleans;
+import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
@@ -61,7 +64,13 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	private static void testTranslationV1_2Default(final String predStr,
 			final String expectedSMTNode) {
 		testTranslationV1_2(defaultTe, predStr, expectedSMTNode,
-				defaultFailMessage, VERIT.toString());
+				defaultFailMessage, VERIT.toString(), defaultLogic);
+	}
+
+	private static void testTranslationV1_2ChooseLogic(final String predStr,
+			final String expectedSMTNode, final SMTLogic logic) {
+		testTranslationV1_2(defaultTe, predStr, expectedSMTNode,
+				defaultFailMessage, VERIT.toString(), logic);
 	}
 
 	private static void testTranslationV1_2VerDefaultSolver(
@@ -88,12 +97,21 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 			final String predStr, final String expectedSMTNode,
 			final String failMessage, final String solver)
 			throws AssertionError {
+		testTranslationV1_2(iTypeEnv, predStr, expectedSMTNode, failMessage,
+				solver, defaultLogic);
+	}
+
+	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
+			final String predStr, final String expectedSMTNode,
+			final String failMessage, final String solver, final SMTLogic logic)
+			throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
 
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(pred);
 
-		testTranslationV1_2Verit(pred, expectedSMTNode, failMessage, solver);
+		testTranslationV1_2Verit(pred, expectedSMTNode, failMessage, solver,
+				logic);
 	}
 
 	private void testContainsMacro(final ITypeEnvironment te,
@@ -135,11 +153,18 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	private static void testTranslationV1_2Verit(final Predicate ppred,
 			final String expectedSMTNode, final String failMessage,
 			final String solver) {
+		testTranslationV1_2Verit(ppred, expectedSMTNode, failMessage, solver,
+				defaultLogic);
+	}
+
+	private static void testTranslationV1_2Verit(final Predicate ppred,
+			final String expectedSMTNode, final String failMessage,
+			final String solver, final SMTLogic logic) {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(defaultLogic, ppred, solver).toString(
-				actualSMTNode, false);
+		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode,
+				false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -333,10 +358,16 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	 * "pred-boolequ"
 	 */
 	@Test
-	@Ignore("Not yet implemented")
 	public void testPredBoolEqu() {
-		testTranslationV1_2Default("u = TRUE", "(= u TRUE)");
-		testTranslationV1_2Default("TRUE = u", "(= TRUE u)");
+		final SMTLogic defaultPlusBooleanLogic = new SMTLogic(
+				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
+				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
+						VeriTBooleans.getInstance() });
+
+		testTranslationV1_2ChooseLogic("u = TRUE", "(= u TRUE)",
+				defaultPlusBooleanLogic);
+		testTranslationV1_2ChooseLogic("TRUE = u", "(= TRUE u)",
+				defaultPlusBooleanLogic);
 	}
 
 	/**
@@ -769,11 +800,15 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("(λx·x>0 ∣ x+x) = ∅", "(= cset emptyset)");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testRule21() {
-		// FIXME The translation of bool(⊤) is not defined yet
-		testTranslationV1_2Default("bool(⊤) ∈ BOOL",
-				"translation not defined yet");
+		final SMTLogic defaultPlusBooleanLogic = new SMTLogic(
+				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
+				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
+						VeriTBooleans.getInstance() });
+
+		testTranslationV1_2ChooseLogic("bool(⊤) ∈ BOOL",
+				"translation not defined yet", defaultPlusBooleanLogic);
 	}
 
 	@Test

@@ -409,12 +409,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		testTranslationV1_2Default("a ∈ A", "(A a)");
 		testTranslationV1_2(te, "a↦b ∈ AB", "(MS a b AB)");
-		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOLS_OP BOOLS_OP X)");
+		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOLS BOOLS X)");
 	}
 
 	@Test
 	public void testPredIn2() {
-		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOLS_OP a Y)");
+		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOLS a Y)");
 	}
 
 	@Test
@@ -639,7 +639,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOLS_OP PB)");
+		expectedFuns.add("(BOOLS PB)");
 		expectedFuns.add("(mod Int Int Int)");
 		expectedFuns.add("(nf0 NS)");
 		expectedFuns.add("(INTS PZ)");
@@ -677,7 +677,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOLS_OP PB)");
+		expectedFuns.add("(BOOLS PB)");
 		expectedFuns.add("(nf0 NS)");
 		expectedFuns.add("(mod Int Int Int)");
 		expectedFuns.add("(INTS PZ)");
@@ -715,7 +715,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS_OP))");
+		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
