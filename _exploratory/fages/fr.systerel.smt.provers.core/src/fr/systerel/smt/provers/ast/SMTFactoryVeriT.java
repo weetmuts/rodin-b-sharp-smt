@@ -68,10 +68,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return new SMTFunApplication(falseSymbol, new SMTTerm[] {});
 	}
 
-	public SMTTerm makeBoolConstant(final SMTFunctionSymbol boolsSet) {
-		return new SMTFunApplication(boolsSet, new SMTTerm[] {});
-	}
-
 	/**
 	 * Adds the pair equality axiom. It is added only once.
 	 */

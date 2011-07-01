@@ -103,26 +103,6 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		return argSorts.length == 0;
 	}
 
-	/**
-	 * returns true if the argument sorts of this predicate symbol is equal
-	 * {@code argSorts2}, false otherwise.
-	 * 
-	 * @param argSorts2
-	 *            the list of sort symbols.
-	 * @return true if they are equal, false otherwise
-	 */
-	public boolean hasRank(final SMTSortSymbol[] argSorts2) {
-		return Arrays.equals(argSorts, argSorts2);
-	}
-
-	public boolean isPTRUEorPFALSE() {
-		if (name.equals(SMTFactory.PTRUE.getName())
-				|| name.equals(SMTFactory.PFALSE.getName())) {
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
