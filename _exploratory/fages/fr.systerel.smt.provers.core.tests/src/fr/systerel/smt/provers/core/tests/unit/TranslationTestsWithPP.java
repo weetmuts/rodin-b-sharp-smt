@@ -712,6 +712,16 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
+	public void testTrueAxiom() {
+		final ITypeEnvironment te = mTypeEnvironment("Y", "ℙ(BOOL×BOOL)");
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
+		expectedAssumptions
+				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
+		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
+	}
+
+	@Test
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
@@ -769,5 +779,4 @@ public class TranslationTestsWithPP extends AbstractTests {
 		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
 				"(forall (?z PA) (?c A) (and (MS ?c a) (MS ?c ?z)))");
 	}
-
 }

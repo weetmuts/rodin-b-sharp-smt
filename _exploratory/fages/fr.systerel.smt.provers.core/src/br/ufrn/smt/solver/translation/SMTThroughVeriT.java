@@ -341,7 +341,6 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 										.getBooleanSort(), VeriTBooleans
 										.getInstance().getTrueConstant(),
 								VeriTBooleans.getInstance().getFalseConstant()));
-				assert additionalAssumptions.size() == 1;
 				return;
 			}
 		}
