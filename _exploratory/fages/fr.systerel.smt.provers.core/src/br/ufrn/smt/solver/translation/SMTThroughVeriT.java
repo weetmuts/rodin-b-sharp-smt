@@ -12,8 +12,8 @@
 package br.ufrn.smt.solver.translation;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
-import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeMacroTerm;
 import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeITE;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeMacroTerm;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
@@ -1614,14 +1614,5 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	public SMTSignature getSignature() {
 		return signature;
-	}
-
-	/**
-	 * 
-	 * @param signature
-	 *            The signature to be set in the translator.
-	 */
-	public void setSignature(final SMTSignatureVerit signature) {
-		this.signature = signature;
 	}
 }

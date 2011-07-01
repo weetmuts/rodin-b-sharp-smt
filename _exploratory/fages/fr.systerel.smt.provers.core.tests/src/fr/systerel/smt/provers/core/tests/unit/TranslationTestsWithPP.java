@@ -730,14 +730,14 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoundBaseType2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂A×B,c⦂A×B·z=c",
-				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 B) (?c0 B) (= ?z0 ?c0)))");
+				"(forall (?z A) (?z0 B) (?c A) (?c0 B) (and (= ?z ?c) (= ?z0 ?c0)))");
 	}
 
 	@Test
 	public void testBoundBaseType3() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂A,c⦂A·z↦c=c↦z",
-				"(and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 A) (?c0 A) (= ?c0 ?z0)))");
+				"(forall (?z A) (?c A) (and (= ?z ?c) (= ?c ?z)))");
 	}
 
 	@Test
@@ -767,7 +767,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoundRightHandSide() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
 		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
-				"(and (forall (?c A) (MS ?c a)) (forall (?z PA) (?c0 A) (MS ?c0 ?z)))");
+				"(forall (?z PA) (?c A) (and (MS ?c a) (MS ?c ?z)))");
 	}
 
 }
