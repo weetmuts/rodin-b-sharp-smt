@@ -33,7 +33,7 @@ import fr.systerel.smt.provers.ast.SMTTheory;
 import fr.systerel.smt.provers.ast.VeriTBooleans;
 import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
 import fr.systerel.smt.provers.ast.macros.SMTMacro;
-import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
+import fr.systerel.smt.provers.ast.macros.SMTPredefinedMacro;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
@@ -114,7 +114,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				logic);
 	}
 
-	private void testContainsMacro(final ITypeEnvironment te,
+	private void testContainsNotPredefinedMacros(final ITypeEnvironment te,
 			final String inputGoal, final Map<String, String> expectedMacros) {
 		final Predicate goal = parse(inputGoal, te);
 
@@ -126,16 +126,15 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 						new ArrayList<Predicate>(), goal, "Z3");
 
 		final SMTSignature signature = benchmark.getSignature();
-		assert signature instanceof SMTSignatureVerit;
 		final SMTSignatureVerit sigverit = (SMTSignatureVerit) signature;
 		final Set<SMTMacro> sets = sigverit.getMacros();
 		for (final SMTMacro macro : sets) {
-			if (macro instanceof SMTSetComprehensionMacro) {
+			if (!(macro instanceof SMTPredefinedMacro)) {
 				final String macroName = macro.getMacroName();
-				assert expectedMacros.keySet().contains(macroName);
+				assertTrue(macroName.toString(), expectedMacros.keySet()
+						.contains(macroName));
 				final String macroBody = expectedMacros.get(macroName);
-				final SMTSetComprehensionMacro setmacro = (SMTSetComprehensionMacro) macro;
-				assertEquals(macroBody, setmacro.toString());
+				assertEquals(macroBody, macro.toString());
 			}
 		}
 	}
@@ -1077,15 +1076,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	@Test
 	public void testComprehensionSet() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		final Map<String, String> expectedCSETMacros = new HashMap<String, String>();
-		expectedCSETMacros
+		final Map<String, String> expectedNotPredefinedMacros = new HashMap<String, String>();
+		expectedNotPredefinedMacros
 				.put("cset",
 						"(cset(lambda(?elem (Pair Int Int)) . (exists (?x Int). (and (= ?elem (pair ?x (+ ?x ?x))) (forall (?y Int) .  (and (in ?y Nat) (forall (?z Int) .  (and (in ?z Nat) (= (+ ?z ?y) ?x)))))))))");
-
-		testContainsMacro(
+		testContainsNotPredefinedMacros(
 				te,
 				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x	))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
-				expectedCSETMacros);
+				expectedNotPredefinedMacros);
 	}
 
 	@Test
@@ -1093,12 +1091,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
 		expectedEnumerations
-				.put("enum_0",
-						"(enum_0 (lambda (?elem Int) . (or (= ?elem 1)(= ?elem 2)(= ?elem 3))))");
+				.put("enum",
+						"(enum (lambda (?elem Int) . (or\n\t\t(= ?elem 1)\n\t\t(= ?elem 2)\n\t\t(= ?elem 3)\n )))");
 		expectedEnumerations
-				.put("enum_1",
-						"(enum_1 (lambda (?elem_0 Int) . (or (= ?elem_0 1) (= ?elem_0 2) (= ?elem_0 3))))");
-		testContainsMacro(te, "card({1,2,3}) = card({1,2,3})",
+				.put("enum0",
+						"(enum0 (lambda (?elem0 Int) . (or\n\t\t(= ?elem0 1)\n\t\t(= ?elem0 2)\n\t\t(= ?elem0 3)\n )))");
+		testContainsNotPredefinedMacros(te, "card({1,2,3}) = card({1,2,3})",
 				expectedEnumerations);
 	}
 
@@ -1115,9 +1113,10 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
 		expectedEnumerations
-				.put("enum0",
-						"(enum0 (lambda (?elem (Pair Int Int)) . (or (= ?elem (pair 2 1))(= ?elem (pair 3 2)))))");
-		testContainsMacro(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred", expectedEnumerations);
+				.put("enum",
+						"(enum (lambda (?elem (Pair Int Int)) . (or\n\t\t(= ?elem (pair 2 1))\n\t\t(= ?elem (pair 3 2))\n)))");
+		testContainsNotPredefinedMacros(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred",
+				expectedEnumerations);
 	}
 
 	@Test
