@@ -1095,8 +1095,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 						"(enum (lambda (?elem Int) . (or\n\t\t(= ?elem 1)\n\t\t(= ?elem 2)\n\t\t(= ?elem 3)\n )))");
 		expectedEnumerations
 				.put("enum0",
-						"(enum0 (lambda (?elem0 Int) . (or\n\t\t(= ?elem0 1)\n\t\t(= ?elem0 2)\n\t\t(= ?elem0 3)\n )))");
-		testContainsNotPredefinedMacros(te, "card({1,2,3}) = card({1,2,3})",
+						"(enum0 (lambda (?elem0 Int) . (= ?elem0 1)))");
+		testContainsNotPredefinedMacros(te, "card({1,2,3}) ≠ card({1})",
 				expectedEnumerations);
 	}
 
