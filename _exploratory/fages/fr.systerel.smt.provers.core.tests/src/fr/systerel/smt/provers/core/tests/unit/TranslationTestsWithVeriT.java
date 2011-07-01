@@ -1132,4 +1132,14 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",
 				expectedAssumptions);
 	}
+
+	@Test
+	public void testCardAssumptions() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		final List<String> expectedAssumptions = new ArrayList<String>();
+		expectedAssumptions.add("(card enum card_f card_k)");
+		expectedAssumptions.add("(card enum0 card_f0 card_k0)");
+		testContainsAssumptionsVeriT(te, "card({1,2,3}) = card({1,2,3})",
+				expectedAssumptions);
+	}
 }
