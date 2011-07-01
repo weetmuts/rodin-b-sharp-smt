@@ -191,7 +191,7 @@ public class SMTMacroFactory {
 			1, true, true, EMPTY_MACROS);
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
-			"(lambda (?RELATION_0 ('s Bool)) (?RELATION_1 ('s Bool)) . (lambda (?RELATION_2  ((Pair 's 't) Bool)) .  (forall (?RELATION_3 (Pair 's 't)) . (implies (?RELATION_2 ?RELATION_3) (and (?RELATION_0 (fst ?RELATION_3))(?RELATION_1 (snd ?RELATION_3)))))))",
+			"(lambda (?RELATION_0 ('s Bool)) (?RELATION_1 ('t Bool)) . (lambda (?RELATION_2  ((Pair 's 't) Bool)) . (forall (?RELATION_3 (Pair 's 't)) . (implies (?RELATION_2 ?RELATION_3) (and (?RELATION_0 (fst ?RELATION_3)) (?RELATION_1 (snd ?RELATION_3)))))))",
 			1, true, true, EMPTY_MACROS);
 
 	// Using the totp (total property) to define this macro
@@ -216,21 +216,21 @@ public class SMTMacroFactory {
 			"(lambda (?FUNP_0 ((Pair 's 't )Bool)) . (forall (?FUNP_1 (Pair 's 't))(?FUNP_2 (Pair 's 't)) . (implies (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (implies (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2))))))",
 			2, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] REL_AND_FUNP = { RELATION_MACRO,
-			FUNP_MACRO };
+	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
+			FUNP_MACRO, IN_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_FUNCTION,
-			"(lambda (?PARTIAL_FUNCTION_0 ('s Bool)) (?PARTIAL_FUNCTION_1  ('t Bool)) . (lambda (?PARTIAL_FUNCTION_2 ((Pair 's 't) Bool)) .  (and ((rel ?PARTIAL_FUNCTION_0 ?PARTIAL_FUNCTION_1) ?PARTIAL_FUNCTION_2) (funp ?PARTIAL_FUNCTION_2))))",
-			3, false, false, REL_AND_FUNP);
+			"(lambda (?PARTIAL_FUNCTION_0 ('s Bool)) (?PARTIAL_FUNCTION_1  ('t Bool)) . (lambda (?PARTIAL_FUNCTION_2 ((Pair 's 't) Bool)) . (and (in ?PARTIAL_FUNCTION_2 (rel ?PARTIAL_FUNCTION_0 ?PARTIAL_FUNCTION_1)) (funp ?PARTIAL_FUNCTION_2))))",
+			3, false, false, REL_AND_FUNP_AND_IN);
 
-	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION = {
-			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO };
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
+			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO, IN_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_FUNCTION,
-			"(lambda (?TOTAL_FUNCTION_0 ('s Bool)) (?TOTAL_FUNCTION_1 ('t Bool)) . (lambda (?TOTAL_FUNCTION_2 ((Pair 's 't) Bool)) . (and ((pfun ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_1) ?TOTAL_FUNCTION_2) (totp ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_2))))",
-			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION);
+			"(lambda (?TOTAL_FUNCTION_0 ('s Bool)) (?TOTAL_FUNCTION_1 ('t Bool)) . (lambda (?TOTAL_FUNCTION_2 ((Pair 's 't) Bool)) . (and (in ?TOTAL_FUNCTION_2 (pfun ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_1)) (totp ?TOTAL_FUNCTION_0 ?TOTAL_FUNCTION_2))))",
+			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
 
 	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
 			ID, "(lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))",
@@ -658,7 +658,7 @@ public class SMTMacroFactory {
 				ISMAX_MACRO), FINITE_OP(FINITE_MACRO), CARD_OP(CARD_MACRO), FUNP_OP(
 				FUNP_MACRO), INJP_OP(INJP_MACRO), RANGE_OP(RANGE_MACRO), BCOMP_OP(
 				BCOMP_MACRO), INTEGER_OP(INTEGER_MACRO), SUCC_OP(
-				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO), BOOLS(
+				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO), BOOLS_OP(
 				BOOL_SET_MACRO);
 
 		/**
@@ -724,7 +724,7 @@ public class SMTMacroFactory {
 			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
 		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
-		case BOOLS:
+		case BOOLS_OP:
 			return BOOL_SET_SYMBOL;
 		case BUNION_OP:
 			return BUNION_SYMBOL;

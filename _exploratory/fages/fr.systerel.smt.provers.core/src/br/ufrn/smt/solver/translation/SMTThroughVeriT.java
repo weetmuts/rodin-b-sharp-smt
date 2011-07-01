@@ -19,7 +19,7 @@ import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BCOMP_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BINTER_OP;
-import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BOOLS;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BOOLS_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.BUNION_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARD_OP;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARTESIAN_PRODUCT_OP;
@@ -627,7 +627,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 					signature));
 			break;
 		case Formula.BOOL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(BOOLS,
+			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(BOOLS_OP,
 					signature));
 			break;
 		case Formula.TRUE:

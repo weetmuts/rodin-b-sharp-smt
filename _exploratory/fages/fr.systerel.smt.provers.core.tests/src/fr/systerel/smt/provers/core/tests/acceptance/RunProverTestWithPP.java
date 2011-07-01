@@ -464,8 +464,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -478,8 +476,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -492,8 +488,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -506,8 +500,6 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}

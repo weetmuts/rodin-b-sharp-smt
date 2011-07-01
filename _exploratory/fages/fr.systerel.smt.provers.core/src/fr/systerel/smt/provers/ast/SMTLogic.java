@@ -296,7 +296,7 @@ public class SMTLogic {
 	 * It differs from the standard underlying logic.
 	 */
 	public static class SMTLogicPP extends SMTLogic {
-		public SMTLogicPP(final String name, final SMTTheory...theories) {
+		public SMTLogicPP(final String name, final SMTTheory... theories) {
 			super(name, theories);
 		}
 

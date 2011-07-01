@@ -471,7 +471,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'nonlinear_arith' theory
 	 */
 	@Test(timeout = 3000)
-	//@Ignore("AltErgo MESSAGE: unknown (sat)")
+	// @Ignore("AltErgo MESSAGE: unknown (sat)")
 	// TODO : is it possible to give some division behavior rules ?
 	public void testCh915Bin10() {
 		setPreferencesForSolverTest(solver);
@@ -532,8 +532,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ ({1} → ({0} →  D))", te,
-				VALID);
+		doTest("differentForall", hyps, "{1 ↦ {0 ↦ d}} ∈ ({1} → ({0} →  D))",
+				te, VALID);
 	}
 
 	/**

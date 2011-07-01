@@ -95,7 +95,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -119,7 +118,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Z3 ERROR: line 9 column 19: could not locate id  ?veriT.veriT__25.")
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -415,7 +413,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
-	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForSolverTest(solver);
 
@@ -423,7 +420,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 				"D", "ℙ(D)", "d", "D");
 
 		final List<String> hyps = new ArrayList<String>();
-		// hyps.add("n ≥ 1");
 
 		doTest("ch7_likeMoreSimpleYet", hyps, "{0 ↦ d} ∈ ({0,1} →  D)", te,
 				!VALID);
@@ -550,7 +546,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15RelationOverridingCompANdComposition() {
 		setPreferencesForSolverTest(solver);
 
@@ -564,7 +559,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("error : DAG_new: unable to determine sort")
 	public void testRule15BackwardComposition() {
 		setPreferencesForSolverTest(solver);
 
@@ -832,5 +826,16 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 		doTest("notequalmapsto", hyps, "{0↦1} ≠ {0↦1,1↦2,2↦3}", te, VALID);
+	}
+
+	@Test
+	public void testBOOLSet() {
+		setPreferencesForZ3Test();
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c ∈ BOOL×BOOL");
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set_2", hyps, "b = TRUE", arith_te, VALID);
 	}
 }
