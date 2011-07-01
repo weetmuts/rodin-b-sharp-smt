@@ -19,7 +19,6 @@ import fr.systerel.smt.provers.ast.macros.SMTMacro;
 import fr.systerel.smt.provers.ast.macros.SMTMacroTerm;
 import fr.systerel.smt.provers.ast.macros.SMTPairEnumMacro;
 import fr.systerel.smt.provers.ast.macros.SMTPredefinedMacro;
-import fr.systerel.smt.provers.ast.macros.SMTQuantifiedMacro;
 import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
 
 /**
@@ -199,11 +198,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		getUsedSymbols(macro.getFormula(), symbols);
 	}
 
-	private void getUsedSymbols(final SMTQuantifiedMacro macro,
-			final Set<SMTSymbol> symbols) {
-		getUsedSymbols(macro.getFormula(), symbols);
-	}
-
 	/**
 	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
 	 * 
@@ -224,11 +218,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		} else if (macro instanceof SMTSetComprehensionMacro) {
 			final SMTSetComprehensionMacro scm = (SMTSetComprehensionMacro) macro;
 			getUsedSymbols(scm, symbols);
-
-		} else if (macro instanceof SMTQuantifiedMacro) {
-
-			final SMTQuantifiedMacro qm = (SMTQuantifiedMacro) macro;
-			getUsedSymbols(qm, symbols);
 		} else {
 			// This part should never be reached
 			throw new IllegalArgumentException("The class of the macro is: "
