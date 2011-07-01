@@ -13,6 +13,7 @@ package br.ufrn.smt.solver.translation;
 
 import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeMacroTerm;
+import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeITE;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
@@ -1057,8 +1058,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 */
 	@Override
 	public void visitBoolExpression(final BoolExpression expression) {
-		throw new IllegalArgumentException(
-				"'Translation of Boolean Expression is not implemented yet");
+		final SMTFormula child = smtFormula(expression.getPredicate());
+		smtNode = makeITE(child,
+				sf.makeTrueConstant(signature.getLogic().getTrueConstant()),
+				sf.makeFalseConstant(signature.getLogic().getFalseConstant()));
 	}
 
 	/**

@@ -111,6 +111,11 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return new SMTAtom(DISTINCT, args);
 	}
 
+	public static SMTTerm makeITE(final SMTFormula arg1, final SMTTerm arg2,
+			final SMTTerm arg3) {
+		return new SMTITETerm(arg1, arg2, arg3);
+	}
+
 	/**
 	 * Creates the pair equality axiom. It is defined as:
 	 * 

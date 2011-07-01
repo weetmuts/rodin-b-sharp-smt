@@ -808,7 +808,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 						VeriTBooleans.getInstance() });
 
 		testTranslationV1_2ChooseLogic("bool(⊤) ∈ BOOL",
-				"translation not defined yet", defaultPlusBooleanLogic);
+				"(in (ite true TRUE FALSE) BOOLS)", defaultPlusBooleanLogic);
 	}
 
 	@Test

@@ -46,6 +46,7 @@ public abstract class SMTFactory {
 			"true", new SMTSortSymbol[] {}, PREDEFINED);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
 			"false", new SMTSortSymbol[] {}, PREDEFINED);
+
 	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
 			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true);
 
