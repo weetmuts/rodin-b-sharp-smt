@@ -128,7 +128,7 @@ class SMTAtom extends SMTFormula {
 	 * 
 	 * @see #verifyPredicateRank(SMTPredicateSymbol, SMTTerm[])
 	 */
-	protected static IllegalArgumentException incompatiblePredicateRankException(
+	protected static String incompatiblePredicateRankException(
 			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args,
 			final StringBuilder sb) {
 		sb.append("Arguments of function symbol: ");
@@ -146,6 +146,6 @@ class SMTAtom extends SMTFormula {
 			sep = " ";
 			arg.getSort().toString(sb);
 		}
-		return new IllegalArgumentException(sb.toString());
+		return sb.toString();
 	}
 }
