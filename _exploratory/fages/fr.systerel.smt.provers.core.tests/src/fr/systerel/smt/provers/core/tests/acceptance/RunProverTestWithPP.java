@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.systerel.smt.provers.core.tests.CommonSolverRunTests;
@@ -273,6 +274,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -292,6 +294,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -311,6 +314,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -330,6 +334,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -349,6 +354,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -360,6 +366,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -371,6 +378,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -382,6 +390,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -393,6 +402,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -409,6 +419,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -425,6 +436,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -441,6 +453,7 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModForCVC3Call() {
 		setPreferencesForCvc3Test();
 

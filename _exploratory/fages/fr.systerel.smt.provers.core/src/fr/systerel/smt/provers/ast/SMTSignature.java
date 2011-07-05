@@ -11,6 +11,8 @@
 package fr.systerel.smt.provers.ast;
 
 import static fr.systerel.smt.provers.ast.SMTFunctionSymbol.ASSOCIATIVE;
+import static fr.systerel.smt.provers.ast.SMTSymbol.BENCHMARK;
+import static fr.systerel.smt.provers.ast.SMTSymbol.EQUAL;
 import static fr.systerel.smt.provers.ast.SMTSymbol.LOGIC;
 import static fr.systerel.smt.provers.ast.SMTSymbol.PREDEFINED;
 import static fr.systerel.smt.provers.ast.SMTSymbol.THEORY;
@@ -126,7 +128,7 @@ public abstract class SMTSignature {
 	 */
 	public static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(SMTSymbol.EQUAL, "and", SMTSymbol.BENCHMARK,
+				Arrays.asList(EQUAL, "and", BENCHMARK,
 						"distinct", "false", "flet", "if_then_else", "iff",
 						"implies", "ite", "let", LOGIC, "not", "or", "sat",
 						THEORY, "true", "unknown", "unsat", "xor"));

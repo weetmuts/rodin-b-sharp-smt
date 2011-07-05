@@ -42,6 +42,7 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
+import org.eventb.core.ast.Identifier;
 import org.eventb.core.ast.IntegerType;
 import org.eventb.core.ast.MultiplePredicate;
 import org.eventb.core.ast.PowerSetType;
@@ -339,24 +340,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			return checkBooleanElementsInMembershipPredicate(pred);
 		}
 
-		@Override
-		public boolean enterEQUAL(final RelationalPredicate pred) {
-			final Expression right = pred.getRight();
-			final Expression left = pred.getLeft();
-
-			if (right instanceof FreeIdentifier) {
-				final FreeIdentifier rightIdent = (FreeIdentifier) right;
-				identsNotForMonadicPreds.add(rightIdent);
-			}
-
-			if (left instanceof FreeIdentifier) {
-				final FreeIdentifier leftIdent = (FreeIdentifier) left;
-				identsNotForMonadicPreds.add(leftIdent);
-			}
-
-			return true;
-		}
-
 		/**
 		 * If one of the predicates has a TRUE constant, set
 		 * <code>boolTheory</code> <i>true</i> and stop visiting.
@@ -529,8 +512,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		gatherer = Gatherer.gatherFrom(hypotheses, goal, monadicPredsMap);
 
 		if (gatherer.usesBoolTheory()) {
-			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN, Ints.getInstance(),
-					Booleans.getInstance());
+			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
+					Ints.getInstance(), Booleans.getInstance());
 		}
 		return SMTLIBUnderlyingLogic.getInstance();
 	}
@@ -907,8 +890,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * instead.
 	 * <code>∀ A ⦂ ℙ(S), B ⦂ ℙ(S) · ((∀c ⦂ S · (c ∈ A ⇔ c ∈ B)) ⇒ (A = B))</code>
 	 **/
-	private SMTFormula translateSetsEquality(final FreeIdentifier leftSet,
-			final FreeIdentifier rightSet) {
+	private SMTFormula translateSetsEquality(final Identifier leftSet,
+			final Identifier rightSet) {
 		// boolean constant for indicating mapplet on the left hand side of a
 		// membership
 		final boolean leftTagIsMapsTo = true;
@@ -918,7 +901,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the quantified variable with a fresh name
 		final String varName = signature.freshSymbolName("x");
-		final SMTSortSymbol varSort = typeMap.get(baseType);
+		final SMTSortSymbol varSort;
+		if (!typeMap.containsKey(baseType)) {
+			varSort = translateTypeName(baseType);
+			typeMap.put(baseType, varSort);
+		} else {
+			varSort = typeMap.get(baseType);
+		}
 		final SMTTerm smtVar = SMTFactory.makeVar(varName, varSort);
 
 		// creates the membership of the created bounded variable into the left
@@ -926,7 +915,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula leftMembership;
 		if (monadicPredsMap.containsKey(leftSet)) {
 			leftMembership = translateInMonadicMembershipPredicate(smtVar,
-					leftSet);
+					(FreeIdentifier) leftSet);
 		} else {
 			leftMembership = translateInClassicMembershipPredicate(smtVar,
 					baseType, false, leftSet);
@@ -937,7 +926,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula rightMembership;
 		if (monadicPredsMap.containsKey(rightSet)) {
 			rightMembership = translateInMonadicMembershipPredicate(smtVar,
-					rightSet);
+					(FreeIdentifier) rightSet);
 		} else {
 			rightMembership = translateInClassicMembershipPredicate(smtVar,
 					baseType, !leftTagIsMapsTo, rightSet);
@@ -1152,12 +1141,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	@Override
 	protected SMTSortSymbol translateTypeName(final Type type) {
+		final boolean isAProductType = type instanceof ProductType;
 		if (type.getBaseType() == null && type.getSource() == null
-				&& type.getTarget() == null) {
+				&& type.getTarget() == null && !isAProductType) {
 			return signature.freshSort(type.toString());
 		} else {
 			final StringBuilder basenameBuilder;
-			if (type instanceof ProductType) {
+			if (isAProductType) {
 				basenameBuilder = new StringBuilder();
 			} else { // instance of PowerSetType
 				basenameBuilder = new StringBuilder("P");
@@ -1268,7 +1258,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		predicate = translator.recursiveAutoRewrite(predicate);
+		// predicate = translator.recursiveAutoRewrite(predicate);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.translate(predicate);
@@ -1281,7 +1271,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		predicate = translator.recursiveAutoRewrite(predicate);
+		// predicate = translator.recursiveAutoRewrite(predicate);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.getSignature();
@@ -1292,7 +1282,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTLogic determineLogic(Predicate goalPredicate) {
 		final SMTThroughPP translator = new SMTThroughPP(null);
-		goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
+		// goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
 		return translator.determineLogic(new ArrayList<Predicate>(0),
 				goalPredicate);
 	}
@@ -1428,12 +1418,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				smtNode = translateTruePred(left);
 			} else if (left.getType() instanceof BooleanType) {
 				smtNode = translateBoolIds(left, right);
-			} else if (left instanceof FreeIdentifier
-					&& right instanceof FreeIdentifier
+			} else if (left instanceof Identifier
+					&& right instanceof Identifier
 					&& left.getType() instanceof PowerSetType
 					&& right.getType() instanceof PowerSetType) {
-				smtNode = translateSetsEquality((FreeIdentifier) left,
-						(FreeIdentifier) right);
+				smtNode = translateSetsEquality((Identifier) left,
+						(Identifier) right);
 			} else {
 				final SMTTerm[] children = smtTerms(left, right);
 				smtNode = SMTFactory.makeEqual(children);

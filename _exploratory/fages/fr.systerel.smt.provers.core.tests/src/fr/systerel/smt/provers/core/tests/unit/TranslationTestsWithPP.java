@@ -240,7 +240,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	 * "pred-quant"
 	 */
 	@Test
-	public void testForall() {
+	public void testQuantifiers() {
 		final ITypeEnvironment te = mTypeEnvironment("RR", "r ↔ s");
 		te.addAll(defaultTe);
 
@@ -263,7 +263,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
-	public void testForall2() {
+	@Ignore("")
+	public void testQuantifiers2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		testTranslationV1_2(te, "∃  X ⦂ ℙ(A×A)· (∃ x · x↦x ∈ X)",
@@ -313,10 +314,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 */
 		testTranslationV1_2Default("42 − 1 + 1 = 42", "(= (+ (- 42 1) 1) 42)");
 		/**
-		 * notequal
-		 */
-		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
-		/**
 		 * lt
 		 */
 		testTranslationV1_2Default("a < b", "(< a b)");
@@ -335,6 +332,16 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	/**
+	 * notequal
+	 */
+	@Test
+	@Ignore("Waiting for ppTrans to be updated")
+	// TODO Re-add when ppTrans is updated
+	public void testPredRelopNotEqual() {
+		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
+	}
+
+	/**
 	 * Arithmetic expressions binary operations: cf. "a-expr-bin"
 	 */
 	@Test
@@ -350,7 +357,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
-	// @Ignore("Not yet implemented")
 	public void testArithExprBinopUnsupported() {
 		/**
 		 * expn
@@ -426,8 +432,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		/**
 		 * Through these unit tests, the integer axiom is not generated. That's
 		 * why the membership predicate symbol 'MS' is not already in use, and
-		 * can be expected here. TODO Add tests for the integer axiom
-		 * generation.
+		 * can be expected here.
 		 */
 		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(MS INTS0 INTS SPZ)");
 		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a INTS AZ)");
@@ -505,10 +510,19 @@ public class TranslationTestsWithPP extends AbstractTests {
 	}
 
 	@Test
-	public void testSimplifications() {
+	@Ignore("Waiting for ppTrans to be updated")
+	// TODO Readd when ppTrans is updated
+	public void testSimplifyAnd() {
 		testTranslationV1_2Default(
 				"((a = b) ∧ (u = v) ∧ (a = b)) ∧ ((u = v) ∧ (a = b))",
 				"(and (= a b) (iff u v))");
+	}
+
+	@Test
+	@Ignore("Waiting for ppTrans to be updated")
+	// TODO Re-add when ppTrans is updated
+	public void testSimplifyImplies() {
+		testTranslationV1_2Default("∀ x · x + 1 > 0 ⇒ ∀ y · y + 1 > 0", "true");
 	}
 
 	@Test
@@ -544,74 +558,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 				"false");
 
 		testTranslationV1_2(te, "distinct = flet", "(= nf1 nf)");
-	}
-
-	/**
-	 * Some tests to check if the translator puts quantified formulas into
-	 * prenex normal form
-	 */
-	@Ignore("TODO")
-	@Test
-	public void testPrenexNormalForm() {
-		final ITypeEnvironment te = mTypeEnvironment("t1", "S", "t2", "S");
-		te.addAll(defaultTe);
-
-		// (1) ¬(∀ x ⦂ ℤ · x = 0) ⇒ (∃ x ⦂ ℤ · ¬ (x = 0))
-		testTranslationV1_2(te, "¬(∀ x ⦂ ℤ · x = 0)",
-				"(exists (?x Int) (not (= ?x 0)))");
-
-		// (2) ((∀ x ⦂ ℤ · f(x) = TRUE) ∧ f(a) = TRUE) ⇒ (∀ x ⦂ ℤ · f(x) = TRUE
-		// ∧ f(a) = TRUE)
-		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ∧ t1 = t2)",
-				"(forall (?x S) (and (= ?x t1) (= t1 t2)))");
-
-		// (3) ((∀ x ⦂ S · x = t1) ∨ t1 = t2) ⇒ (∀ x ⦂ S · x = t1 ∨ t1 = t2)
-		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ∨ t1 = t2)",
-				"(forall (?x S) (or (= ?x t1) (= t1 t2)))");
-
-		// (4) ((∀ x ⦂ S · x = t1) ⇒ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ⇒ t1 = t2)
-		testTranslationV1_2(te, "((∀ x ⦂ S · x = t1) ⇒ t1 = t2)",
-				"(exists (?x S) (implies (= ?x t1) (= t1 t2)))");
-
-		// (5) (t1 = t2 ∧ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ∧ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ∧ (∀ x ⦂ S · x = t1))",
-				"(forall (?x S) (and (= t1 t2) (= ?x t1)))");
-
-		// (6) (t1 = t2 ∨ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ∨ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ∨ (∀ x ⦂ S · x = t1))",
-				"(forall (?x S) (or (= t1 t2) (= ?x t1)))");
-
-		// (7) (t1 = t2 ⇒ (∀ x ⦂ S · x = t1)) ⇒ (∀ x ⦂ S · t1 = t2 ⇒ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ⇒ (∀ x ⦂ S · x = t1))",
-				"(forall (?x S) (implies (= t1 t2) (= ?x t1)))");
-
-		// (8) (¬ ∃ x ⦂ S · x = t1) ⇒ (∀ x ⦂ S · ¬ x = t1)
-		testTranslationV1_2(te, "(¬ ∃ x ⦂ S · x = t1)",
-				"(forall (?x S) (not (= ?x t1)))");
-
-		// (9) ((∃ x ⦂ S · x = t1) ∧ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ∧ t1 = t2)
-		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ∧ t1 = t2)",
-				"(exists (?x S) (and (= ?x t1) (= t1 t2)))");
-
-		// (10) ((∃ x ⦂ S · x = t1) ∨ t1 = t2) ⇒ (∃ x ⦂ S · x = t1 ∨ t1 = t2)
-		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ∨ t1 = t2)",
-				"(exists (?x S) (or (= ?x t1) (= t1 t2)))");
-
-		// (11) ((∃ x ⦂ S · x = t1) ⇒ t1 = t2) ⇒ (∀ x ⦂ S · x = t1 ⇒ t1 = t2)
-		testTranslationV1_2(te, "((∃ x ⦂ S · x = t1) ⇒ t1 = t2)",
-				"(forall (?x S) (implies (= ?x t1) (= t1 t2)))");
-
-		// (12) (t1 = t2 ∧ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ∧ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ∧ (∃ x ⦂ S · x = t1))",
-				"(exists (?x S) (and (= t1 t2) (= ?x t1)))");
-
-		// (13) (t1 = t2 ∨ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ∨ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ∨ (∃ x ⦂ S · x = t1))",
-				"(exists (?x S) (or (= t1 t2) (= ?x t1)))");
-
-		// (14) (t1 = t2 ⇒ (∃ x ⦂ S · x = t1)) ⇒ (∃ x ⦂ S · t1 = t2 ⇒ x = t1)
-		testTranslationV1_2(te, "(t1 = t2 ⇒ (∃ x ⦂ S · x = t1))",
-				"(exists (?x S) (implies (= t1 t2) (= ?x t1)))");
 	}
 
 	@Test
@@ -733,7 +679,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
-				"(forall (?z PAB) (?c PAB) (= ?z ?c))");
+				"(forall (?z PAB) (?c PAB) (forall (?x AB) (iff (MS ?x ?z) (MS ?x ?c))))");
 	}
 
 	@Test
