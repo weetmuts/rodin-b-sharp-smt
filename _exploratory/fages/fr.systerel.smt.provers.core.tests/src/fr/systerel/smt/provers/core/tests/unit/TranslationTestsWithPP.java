@@ -653,6 +653,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(forall (?x Int) (MS ?x INTS))");
+		expectedAssumptions
+				.add("(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))");
+		expectedAssumptions
+				.add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x1 Int) (?x2 PZ) (iff (MS0 ?x1 ?x2 ?A0) (MS0 ?x1 ?x2 ?B0))) (= ?A0 ?B0)))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
@@ -664,6 +668,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
 				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
+		expectedAssumptions
+				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x5 BOOL) (iff (MS ?x5 ?A0) (MS ?x5 ?B0))) (= ?A0 ?B0)))");
+		expectedAssumptions
+				.add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS0 ?x3 ?x4 ?A) (MS0 ?x3 ?x4 ?B))) (= ?A ?B)))");
+
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
 
@@ -672,6 +681,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
+		expectedAssumptions
+				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x3 BOOL) (iff (MS ?x3 ?A0) (MS ?x3 ?B0))) (= ?A0 ?B0)))");
+		expectedAssumptions
+				.add("(forall (?A PZBZ) (?B PZBZ) (implies (forall (?x0 Int) (?x1 PB) (?x2 Int) (iff (MS0 ?x0 ?x1 ?x2 ?A) (MS0 ?x0 ?x1 ?x2 ?B))) (= ?A ?B)))");
+
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

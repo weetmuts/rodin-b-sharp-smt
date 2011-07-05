@@ -15,6 +15,7 @@ import static fr.systerel.smt.provers.ast.SMTFactory.makeBool;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeInteger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -941,7 +942,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Generate the translated SMT-LIB formula for this Event-B predicate:
+	 * Generates the translated SMT-LIB formula for this Event-B predicate:
 	 * 
 	 * <code>∀x·x ∈ ℤ</code>
 	 * 
@@ -981,7 +982,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Generate the translated SMT-LIB formula for this Event-B predicate:
+	 * Generates the translated SMT-LIB formula for this Event-B predicate:
 	 * 
 	 * <code>∀x·x ∈ BOOL</code>
 	 * 
@@ -1021,7 +1022,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * Generate the SMT-LIB formula for this event-B formula:
+	 * Generates the SMT-LIB formula for this event-B formula:
 	 * <code>∀x, y·(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
 	 * 
 	 * @return the SMTFormula representing the translated axiom
@@ -1055,6 +1056,65 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// returns the quantified formula
 		return SMTFactory.makeForAll(new SMTTerm[] { xTerm, yTerm },
 				equivalence);
+	}
+
+	/**
+	 * Generates the SMT-LIB formula for the extensionality axiom event-B
+	 * formula:
+	 * <code>∀ A ⦂ ℙ(S), B ⦂ ℙ(S) · ((∀c ⦂ S · (c ∈ A ⇔ c ∈ B)) ⇒ (A = B))</code>
+	 * 
+	 * @return the SMTFormula representing the translated axiom
+	 */
+	private SMTFormula generateExtensionalityAxiom(
+			final SMTPredicateSymbol membershipPredSymbol) {
+		final SMTSortSymbol[] membershipArgSorts = membershipPredSymbol
+				.getArgSorts();
+		final int leftMembersNumber = membershipArgSorts.length - 1;
+		final SMTSortSymbol setSort = membershipArgSorts[leftMembersNumber];
+		// creates the quantified set variables with fresh names
+		final String setA = signature.freshSymbolName("A");
+		final String setB = signature.freshSymbolName("B");
+		final SMTTerm termA = SMTFactory.makeVar(setA, setSort);
+		final SMTTerm termB = SMTFactory.makeVar(setB, setSort);
+
+		// creates the quantified element variables with fresh names
+		final SMTTerm[] eltTerms = new SMTTerm[leftMembersNumber];
+		final SMTTerm[] setAmembershipArgs = new SMTTerm[membershipArgSorts.length];
+		final SMTTerm[] setBmembershipArgs = new SMTTerm[membershipArgSorts.length];
+		for (int i = 0; i < leftMembersNumber; i++) {
+			final String xVar = signature.freshSymbolName("x");
+			final SMTTerm xTerm = SMTFactory.makeVar(xVar,
+					membershipArgSorts[i]);
+			eltTerms[i] = xTerm;
+			setAmembershipArgs[i] = xTerm;
+			setBmembershipArgs[i] = xTerm;
+		}
+		setAmembershipArgs[leftMembersNumber] = termA;
+		setBmembershipArgs[leftMembersNumber] = termB;
+
+		// creates the membership formulas
+		final SMTFormula setAmembershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, setAmembershipArgs, signature);
+		final SMTFormula setBmembershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, setBmembershipArgs, signature);
+
+		// creates the formula <code>c ∈ A ⇔ c ∈ B</code>
+		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
+				setAmembershipFormula, setBmembershipFormula });
+
+		// creates the quantified formula
+		final SMTFormula forall = SMTFactory.makeForAll(eltTerms, equivalence);
+
+		// creates the equality <code>A = B</code>
+		final SMTFormula equality = SMTFactory.makeEqual(new SMTTerm[] { termA,
+				termB });
+
+		// creates the implication
+		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
+				forall, equality });
+
+		// returns the quantified formula
+		return SMTFactory.makeForAll(new SMTTerm[] { termA, termB }, implies);
 	}
 
 	/**
@@ -1128,6 +1188,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// translates the formula
 		clearFormula();
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
+
+		int i = 0;
+		for (Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap.entrySet()) {
+			translatedAssumptions.add(i,
+					generateExtensionalityAxiom(entry.getValue()));
+			i++;
+		}
 
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
 				signature, translatedAssumptions, smtFormula);
