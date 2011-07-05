@@ -32,7 +32,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				expectedSolverResult);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	// passes with alt-ergo, cvc3, veriT and z3 thanks to the extensionality
 	// axiom
 	public void testSetsEquality() {
@@ -49,7 +49,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testSetsEquality2() {
 		setPreferencesForSolverTest(solver);
 
@@ -76,7 +76,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("IntsSetEquality", hyps, "S = ℤ", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testBoolsSetEquality() {
 		setPreferencesForSolverTest(solver);
 
@@ -93,8 +93,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForSolverTest(solver);
 
@@ -110,7 +109,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * This is an example where, I think, the monadic optimization of membership
 	 * predicate is unsuccessful without its refinement (axioms to add).
 	 */
-	@Test
+	@Test(timeout = 3000)
 	@Ignore("Re-add when set theory axioms implemented")
 	public void testDifferentForallPlusSimpleMonadic() {
 		setPreferencesForSolverTest(solver);
@@ -128,8 +127,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple00() {
 		setPreferencesForSolverTest(solver);
 
@@ -144,8 +142,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple01() {
 		setPreferencesForSolverTest(solver);
 
@@ -160,8 +157,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple11() {
 		setPreferencesForSolverTest(solver);
 
@@ -176,8 +172,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple12() {
 		setPreferencesForSolverTest(solver);
 
@@ -192,8 +187,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple32() {
 		setPreferencesForSolverTest(solver);
 
@@ -208,8 +202,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple30() {
 		setPreferencesForSolverTest(solver);
 
@@ -224,8 +217,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple1y() {
 		setPreferencesForSolverTest(solver);
 
@@ -238,8 +230,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple3y() {
 		setPreferencesForSolverTest(solver);
 
@@ -252,8 +243,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplex1() {
 		setPreferencesForSolverTest(solver);
 
@@ -266,8 +256,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplex2() {
 		setPreferencesForSolverTest(solver);
 
@@ -280,8 +269,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplexy() {
 		setPreferencesForSolverTest(solver);
 
@@ -294,7 +282,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test public void testSets1() {
+	@Test(timeout = 3000)
+	public void testSets1() {
 		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
@@ -305,7 +294,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test public void testSets2() {
+	@Test(timeout = 3000)
+	public void testSets2() {
 		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
@@ -316,7 +306,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test public void testSets3() {
+	@Test(timeout = 3000)
+	public void testSets3() {
 		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
@@ -327,7 +318,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
+	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated")
 	public void testSets4() {
 		setPreferencesForSolverTest(solver);
@@ -339,7 +330,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	/**
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testSets5() {
 		setPreferencesForSolverTest(solver);
 
@@ -356,7 +347,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
+	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated")
 	public void testSets6() {
 		setPreferencesForSolverTest(solver);
@@ -369,7 +360,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testSets7() {
 		setPreferencesForSolverTest(solver);
 
@@ -378,7 +369,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", arith_te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testSolverCallBelong1() {
 		setPreferencesForSolverTest(solver);
 
@@ -388,7 +379,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testRule20MacroInsideMacro() {
 		setPreferencesForSolverTest(solver);
 
@@ -399,7 +390,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testRule20ManyForalls() {
 		setPreferencesForSolverTest(solver);
 
@@ -411,7 +402,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testCallBelong1XtraSortXtraFun() {
 		setPreferencesForSolverTest(solver);
 
@@ -439,7 +430,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testSolverCallSimpleU() {
 		setPreferencesForSolverTest(solver);
 
@@ -455,7 +446,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testSolverCallBelong3() {
 		setPreferencesForSolverTest(solver);
 
@@ -472,7 +463,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest("belong_3", hyps, "⊤", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testSolverCall() {
 		setPreferencesForSolverTest(solver);
 
@@ -487,7 +478,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * ch8_circ_arbiter.1 from task 1 (Requirement Analysis) 's Rodin benchmarks
 	 * on 'integer' theory
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testCh8CircArbiter1() {
 		setPreferencesForSolverTest(solver);
 
@@ -508,7 +499,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * quick_sort.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'linear_arith' theory
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testQuickSort1() {
 		setPreferencesForSolverTest(solver);
 
@@ -530,7 +521,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * bosch_switch.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'linear_order_int' theory
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testBoschSwitch1() {
 		setPreferencesForSolverTest(solver);
 
@@ -552,7 +543,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * bepi_colombo.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_set' theory
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testBepiColombo1() {
 		setPreferencesForSolverTest(solver);
 
@@ -592,7 +583,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testCh7LikeEvenSimpler() {
 		setPreferencesForSolverTest(solver);
 
@@ -608,7 +599,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForSolverTest(solver);
 
@@ -624,8 +615,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testDifferentForall() {
 		setPreferencesForSolverTest(solver);
 
@@ -642,8 +632,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
 	 */
-	@Test
-	@Ignore("Re-add when set theory axioms implemented")
+	@Test(timeout = 3000)
 	public void testCh7Conc29() {
 		setPreferencesForSolverTest(solver);
 
@@ -657,7 +646,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testBepiColombo3Mini() {
 		setPreferencesForSolverTest(solver);
 
@@ -741,7 +730,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	// @Ignore("division is uninterpreted, so the verit returned sat")
 	// @Ignore("z3 uses the symbol div as division. And it does not have the same properties as in Event-B")
 	// @Ignore("division is uninterpreted, so the cvc3 returned sat")
@@ -760,7 +749,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	// @Ignore("Division in veriT does not have the same properties as in Event-B")
 	// @Ignore("Division in z3 does not have the same properties as in Event-B")
 	// @Ignore("Division in cvc3 does not have the same properties as in Event-B")
@@ -779,7 +768,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
-	@Test
+	@Test(timeout = 3000)
 	public void testch910_ring_6() {
 		setPreferencesForSolverTest(solver);
 

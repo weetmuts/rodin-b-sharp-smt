@@ -15,7 +15,6 @@ import static fr.systerel.smt.provers.ast.SMTFactory.makeBool;
 import static fr.systerel.smt.provers.ast.SMTFactory.makeInteger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -67,8 +66,8 @@ import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
 import fr.systerel.smt.provers.ast.SMTLogic;
-import fr.systerel.smt.provers.ast.SMTLogic.SMTLogicPP;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTLIBUnderlyingLogic;
+import fr.systerel.smt.provers.ast.SMTLogic.SMTLogicPP;
 import fr.systerel.smt.provers.ast.SMTLogic.SMTOperator;
 import fr.systerel.smt.provers.ast.SMTPredicateSymbol;
 import fr.systerel.smt.provers.ast.SMTSignature;
@@ -1118,6 +1117,77 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
+	 * Generates the SMT-LIB formula for the singleton part of elementary sets
+	 * axiom event-B formula:
+	 * <code>∀ x ⦂ ℤ · (∃ X ⦂ ℙ(ℤ) · (x ∈ X ∧ (∀ y ⦂ ℤ · (y ∈ X ⇒ x = y))))</code>
+	 * 
+	 * @return the SMTFormula representing the translated axiom
+	 */
+	private SMTFormula generateSingletonAxiom(
+			final SMTPredicateSymbol membershipPredSymbol) {
+		final SMTSortSymbol[] membershipArgSorts = membershipPredSymbol
+				.getArgSorts();
+		final int leftMembersNumber = membershipArgSorts.length - 1;
+		final SMTSortSymbol setSort = membershipArgSorts[leftMembersNumber];
+		// creates the quantified set variable with fresh name
+		final String setX = signature.freshSymbolName("X");
+		final SMTTerm termX = SMTFactory.makeVar(setX, setSort);
+
+		// creates the quantified element variables with fresh names
+		// and the equalities
+		final SMTTerm[] xTerms = new SMTTerm[leftMembersNumber];
+		final SMTTerm[] yTerms = new SMTTerm[leftMembersNumber];
+		final SMTTerm[] xMembershipArgs = new SMTTerm[membershipArgSorts.length];
+		final SMTTerm[] yMembershipArgs = new SMTTerm[membershipArgSorts.length];
+		final SMTFormula[] equalities = new SMTFormula[leftMembersNumber];
+		for (int i = 0; i < leftMembersNumber; i++) {
+			final String xVar = signature.freshSymbolName("x");
+			final SMTTerm xTerm = SMTFactory.makeVar(xVar,
+					membershipArgSorts[i]);
+			xTerms[i] = xTerm;
+			xMembershipArgs[i] = xTerm;
+
+			final String yVar = signature.freshSymbolName("y");
+			final SMTTerm yTerm = SMTFactory.makeVar(yVar,
+					membershipArgSorts[i]);
+			yTerms[i] = yTerm;
+			yMembershipArgs[i] = yTerm;
+
+			equalities[i] = SMTFactory
+					.makeEqual(new SMTTerm[] { yTerm, xTerm });
+		}
+		xMembershipArgs[leftMembersNumber] = termX;
+		yMembershipArgs[leftMembersNumber] = termX;
+
+		// creates the membership formulas
+		final SMTFormula xMembershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, xMembershipArgs, signature);
+		final SMTFormula yMembershipFormula = SMTFactory.makeAtom(
+				membershipPredSymbol, yMembershipArgs, signature);
+
+		// creates the conjunction of equalities
+		final SMTFormula eqConjunction = SMTFactory.makeAnd(equalities);
+
+		// creates the implication
+		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
+				yMembershipFormula, eqConjunction });
+
+		// creates the quantified formula
+		final SMTFormula yForall = SMTFactory.makeForAll(yTerms, implies);
+
+		// creates the first conjunction
+		final SMTFormula conjonction = SMTFactory.makeAnd(new SMTFormula[] {
+				xMembershipFormula, yForall });
+
+		// creates the set existential
+		final SMTFormula existsX = SMTFactory.makeExists(
+				new SMTTerm[] { termX }, conjonction);
+
+		// returns the quantified formula
+		return SMTFactory.makeForAll(xTerms, existsX);
+	}
+
+	/**
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
 	private void linkLogicSymbols() {
@@ -1191,9 +1261,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		int i = 0;
 		for (Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap.entrySet()) {
-			translatedAssumptions.add(i,
-					generateExtensionalityAxiom(entry.getValue()));
-			i++;
+			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
+					entry.getKey());
+			baseTypes.remove(FormulaFactory.getDefault().makeBooleanType());
+			if (!baseTypes.isEmpty()) {
+				translatedAssumptions.add(i,
+						generateExtensionalityAxiom(entry.getValue()));
+				i++;
+				translatedAssumptions.add(i,
+						generateSingletonAxiom(entry.getValue()));
+				i++;
+			}
 		}
 
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
