@@ -1167,7 +1167,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				membershipPredSymbol, yMembershipArgs, signature);
 
 		// creates the conjunction of equalities
-		final SMTFormula eqConjunction = SMTFactory.makeAnd(equalities);
+		final SMTFormula eqConjunction;
+		if (equalities.length > 1) {
+			eqConjunction = SMTFactory.makeAnd(equalities);
+		} else {
+			eqConjunction = equalities[0];
+		}
 
 		// creates the implication
 		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {

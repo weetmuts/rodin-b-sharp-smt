@@ -659,7 +659,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedAssumptions
 				.add("(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))");
 		expectedAssumptions
-				.add("(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (and (= ?y ?x1)))))))");
+				.add("(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x1))))))");
 		expectedAssumptions
 				.add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x2 Int) (?x3 PZ) (iff (MS0 ?x2 ?x3 ?A0) (MS0 ?x2 ?x3 ?B0))) (= ?A0 ?B0)))");
 		expectedAssumptions
