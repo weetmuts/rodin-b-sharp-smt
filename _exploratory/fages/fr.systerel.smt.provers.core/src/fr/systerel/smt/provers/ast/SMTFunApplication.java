@@ -113,7 +113,7 @@ public class SMTFunApplication extends SMTTerm {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(final StringBuilder builder, final int offset) {
 		if (symbol.isConstant()) {
 			builder.append(symbol.name);
 		} else {
@@ -121,7 +121,7 @@ public class SMTFunApplication extends SMTTerm {
 			builder.append(symbol.name);
 			for (final SMTTerm arg : args) {
 				builder.append(SPACE);
-				arg.toString(builder);
+				arg.toString(builder, offset);
 			}
 			builder.append(CPAR);
 		}
@@ -129,17 +129,8 @@ public class SMTFunApplication extends SMTTerm {
 
 	@Override
 	public String toString() {
-		if (symbol.isConstant()) {
-			return symbol.name;
-		} else {
-			String s = OPAR;
-			s += symbol.name;
-			for (final SMTTerm arg : args) {
-				s += SPACE + arg;
-			}
-			s += CPAR;
-			return s;
-		}
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1);
+		return builder.toString();
 	}
-
 }

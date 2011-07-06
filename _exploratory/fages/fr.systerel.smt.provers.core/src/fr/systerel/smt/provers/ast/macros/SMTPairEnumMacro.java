@@ -115,7 +115,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		toString(builder);
+		toString(builder, -1);
 		return builder.toString();
 	}
 
@@ -135,7 +135,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 *            the Yn term
 	 */
 	private void elemToString(final SMTVarSymbol keyEl, final SMTTerm keyTerm,
-			final SMTTerm valueTerm, final StringBuilder sb) {
+			final SMTTerm valueTerm, final StringBuilder sb, final int offset) {
 		sb.append(OPAR);
 		sb.append("=");
 		sb.append(SPACE);
@@ -144,9 +144,9 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(OPAR);
 		sb.append("pair");
 		sb.append(SPACE);
-		keyTerm.toString(sb);
+		keyTerm.toString(sb, offset);
 		sb.append(SPACE);
-		valueTerm.toString(sb);
+		valueTerm.toString(sb, offset);
 		sb.append(CPAR);
 		sb.append(CPAR);
 	}
@@ -176,7 +176,7 @@ public class SMTPairEnumMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(final StringBuilder sb) {
+	public void toString(final StringBuilder sb, final int offset) {
 		sb.append(OPAR);
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
@@ -186,14 +186,15 @@ public class SMTPairEnumMacro extends SMTMacro {
 		if (terms.length == 1) {
 
 			elemToString(key, getArgTerm(terms[0], 0), getArgTerm(terms[0], 1),
-					sb);
+					sb, offset);
 			sb.append(CPAR);
 			sb.append(CPAR);
 		} else {
 			sb.append("(or");
 			for (final SMTTerm term : terms) {
 				sb.append("\n\t\t");
-				elemToString(key, getArgTerm(term, 0), getArgTerm(term, 1), sb);
+				elemToString(key, getArgTerm(term, 0), getArgTerm(term, 1), sb,
+						offset);
 			}
 			sb.append("\n");
 			sb.append(CPAR);

@@ -61,4 +61,10 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 		}
 		return true;
 	}
+
+	public static void indent(final StringBuilder builder, final int offset) {
+		for (int i = 0; i < offset; i++) {
+			builder.append(" ");
+		}
+	}
 }

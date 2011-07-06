@@ -59,7 +59,7 @@ public class SMTMacroTerm extends SMTTerm {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(final StringBuilder builder, final int offset) {
 		if (macroSymbol.isPropositional()) {
 			builder.append(macroSymbol.getName());
 		} else {
@@ -67,7 +67,7 @@ public class SMTMacroTerm extends SMTTerm {
 			builder.append(macroSymbol.getName());
 			for (final SMTTerm term : args) {
 				builder.append(SPACE);
-				term.toString(builder);
+				term.toString(builder, offset);
 			}
 			builder.append(CPAR);
 		}
@@ -80,16 +80,9 @@ public class SMTMacroTerm extends SMTTerm {
 	 */
 	@Override
 	public String toString() {
-		if (macroSymbol.isPropositional()) {
-			return macroSymbol.getName();
-		} else {
-			String s = OPAR + macroSymbol.getName();
-			for (final SMTTerm term : args) {
-				s += SPACE + term;
-			}
-			s += CPAR;
-			return s;
-		}
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1);
+		return builder.toString();
 	}
 
 }

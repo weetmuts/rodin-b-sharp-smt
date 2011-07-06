@@ -114,12 +114,13 @@ public class SMTVeritCardFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder, final boolean printPoint) {
+	public void toString(final StringBuilder builder, final int offset,
+			final boolean printPoint) {
 		builder.append(OPAR);
 		builder.append(cardSymbol.getName());
 		for (final SMTTerm term : terms) {
 			builder.append(SPACE);
-			term.toString(builder);
+			term.toString(builder, offset);
 		}
 		builder.append(SPACE);
 		builder.append(fArgument.getName());
@@ -131,7 +132,7 @@ public class SMTVeritCardFormula extends SMTFormula {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		this.toString(sb, false);
+		this.toString(sb, -1, false);
 		return sb.toString();
 	}
 

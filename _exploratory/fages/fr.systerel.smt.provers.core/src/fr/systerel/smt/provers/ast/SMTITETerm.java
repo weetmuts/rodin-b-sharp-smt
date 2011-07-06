@@ -51,16 +51,23 @@ public final class SMTITETerm extends SMTTerm {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(final StringBuilder builder, final int offset) {
 		final String sep = " ";
 		builder.append('(');
 		builder.append(ITE);
 		builder.append(sep);
-		formula.toString(builder, false);
+		formula.toString(builder, offset, false);
 		builder.append(sep);
-		tTerm.toString(builder);
+		tTerm.toString(builder, offset);
 		builder.append(sep);
-		fTerm.toString(builder);
+		fTerm.toString(builder, offset);
 		builder.append(')');
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1);
+		return builder.toString();
 	}
 }

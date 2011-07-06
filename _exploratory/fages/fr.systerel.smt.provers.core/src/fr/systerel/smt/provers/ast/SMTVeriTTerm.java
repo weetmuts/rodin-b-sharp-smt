@@ -66,13 +66,15 @@ public class SMTVeriTTerm extends SMTTerm {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(final StringBuilder builder, final int offset) {
 		builder.append(symbol.name);
 	}
 
 	@Override
 	public String toString() {
-		return symbol.name;
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1);
+		return builder.toString();
 	}
 
 }

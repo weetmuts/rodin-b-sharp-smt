@@ -62,7 +62,8 @@ class SMTAtom extends SMTFormula {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder, final boolean printPoint) {
+	public void toString(final StringBuilder builder, final int offset,
+			final boolean printPoint) {
 		if (predicateSymbol.isPropositional()) {
 			builder.append(predicateSymbol.name);
 		} else {
@@ -70,7 +71,7 @@ class SMTAtom extends SMTFormula {
 			builder.append(predicateSymbol.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
-				term.toString(builder);
+				term.toString(builder, offset);
 			}
 			builder.append(CPAR);
 		}
@@ -78,16 +79,9 @@ class SMTAtom extends SMTFormula {
 
 	@Override
 	public String toString() {
-		if (predicateSymbol.isPropositional()) {
-			return predicateSymbol.getName();
-		} else {
-			String s = OPAR + predicateSymbol.getName();
-			for (final SMTTerm term : terms) {
-				s += SPACE + term.toString();
-			}
-			s += CPAR;
-			return s;
-		}
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1, false);
+		return builder.toString();
 	}
 
 	/**

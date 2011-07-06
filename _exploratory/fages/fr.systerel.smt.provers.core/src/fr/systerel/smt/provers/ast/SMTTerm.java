@@ -23,7 +23,7 @@ public abstract class SMTTerm extends SMTNode<SMTTerm> {
 	 *            the StringBuilder that will store the string representation of
 	 *            the SMTTerm.
 	 */
-	public abstract void toString(StringBuilder builder);
+	public abstract void toString(final StringBuilder builder, final int offset);
 
 	/**
 	 * Returns the sort of the SMT term.

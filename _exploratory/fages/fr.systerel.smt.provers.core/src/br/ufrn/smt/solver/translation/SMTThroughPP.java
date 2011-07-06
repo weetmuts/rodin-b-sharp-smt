@@ -539,6 +539,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * Rewrites the predicates using a basic auto-rewriter for the Event-B
 	 * sequent prover.
 	 */
+	@SuppressWarnings("unused") //TODO remove when ppTrans updated
 	private List<Predicate> recursiveAutoRewriteAll(final List<Predicate> preds) {
 		final List<Predicate> rewritedPreds = new ArrayList<Predicate>();
 		for (final Predicate pred : preds) {

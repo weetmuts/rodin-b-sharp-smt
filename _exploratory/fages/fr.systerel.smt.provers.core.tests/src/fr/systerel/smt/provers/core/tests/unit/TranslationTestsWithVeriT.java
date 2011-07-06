@@ -162,7 +162,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode,
+		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode, -1,
 				false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}

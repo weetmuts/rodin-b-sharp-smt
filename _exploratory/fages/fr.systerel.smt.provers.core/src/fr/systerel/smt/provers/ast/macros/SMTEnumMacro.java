@@ -72,7 +72,7 @@ public class SMTEnumMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		toString(builder);
+		toString(builder, -1);
 		return builder.toString();
 	}
 
@@ -82,7 +82,7 @@ public class SMTEnumMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(final StringBuilder sb) {
+	public void toString(final StringBuilder sb, final int offset) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
@@ -92,7 +92,7 @@ public class SMTEnumMacro extends SMTMacro {
 			sb.append("(= ");
 			assignedVar.getNameWithQMark(sb);
 			sb.append(" ");
-			terms[0].toString(sb);
+			terms[0].toString(sb, offset);
 			sb.append(")))");
 		} else {
 			sb.append("(or");
@@ -100,7 +100,7 @@ public class SMTEnumMacro extends SMTMacro {
 				sb.append("\n\t\t(= ");
 				assignedVar.getNameWithQMark(sb);
 				sb.append(" ");
-				term.toString(sb);
+				term.toString(sb, offset);
 				sb.append(")");
 			}
 			sb.append("\n )))");

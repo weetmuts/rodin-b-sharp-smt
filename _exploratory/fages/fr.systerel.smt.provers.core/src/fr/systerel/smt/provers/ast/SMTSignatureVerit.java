@@ -159,7 +159,7 @@ public class SMTSignatureVerit extends SMTSignature {
 			sb.append(":extramacros(");
 			for (final SMTMacro macro : macros) {
 				sb.append("\n");
-				macro.toString(sb);
+				macro.toString(sb, 0);
 			}
 			sb.append("\n)");
 		}

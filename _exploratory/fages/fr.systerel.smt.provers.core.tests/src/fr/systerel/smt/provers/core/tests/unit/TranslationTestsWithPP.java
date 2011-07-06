@@ -165,10 +165,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final String failMessage, final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
 		SMTThroughPP.translate(logic, ppPred, solver).toString(actualSMTNode,
-				false);
+				-1, false);
 
-		System.out
-				.println(translationMessage(ppPred, actualSMTNode.toString()));
+		System.out.println(translationMessage(ppPred, actualSMTNode.toString()));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -497,7 +496,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
 		testTranslationV1_2(te, "TRUE = b ∧ (∀d·d = b)",
 				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
-		testTranslationV1_2(te, "b = c ∧ (∀d·d = b)",
+		testTranslationV1_2(
+				te,
+				"b = c ∧ (∀d·d = b)",
 				"(and (iff (TRUE b) (TRUE c)) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
 
 		/**
@@ -644,7 +645,9 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testQuantifier() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
+		testTranslateGoalPP(
+				te,
+				"∀ x · x + 1 ∈ S",
 				"(forall (?x Int) (exists (?x0 Int) (and (= ?x0 (+ ?x 1)) (S ?x0))))");
 	}
 
@@ -656,7 +659,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedAssumptions
 				.add("(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))");
 		expectedAssumptions
-				.add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x1 Int) (?x2 PZ) (iff (MS0 ?x1 ?x2 ?A0) (MS0 ?x1 ?x2 ?B0))) (= ?A0 ?B0)))");
+				.add("(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (and (= ?y ?x1)))))))");
+		expectedAssumptions
+				.add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x2 Int) (?x3 PZ) (iff (MS0 ?x2 ?x3 ?A0) (MS0 ?x2 ?x3 ?B0))) (= ?A0 ?B0)))");
+		expectedAssumptions
+				.add("(forall (?x4 Int) (?x5 PZ) (exists (?X0 PZZ) (and (MS0 ?x4 ?x5 ?X0) (forall (?y0 Int) (?y1 PZ) (implies (MS0 ?y0 ?y1 ?X0) (and (= ?y0 ?x4) (= ?y1 ?x5)))))))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
@@ -668,10 +675,6 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
 				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
-		expectedAssumptions
-				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x5 BOOL) (iff (MS ?x5 ?A0) (MS ?x5 ?B0))) (= ?A0 ?B0)))");
-		expectedAssumptions
-				.add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS0 ?x3 ?x4 ?A) (MS0 ?x3 ?x4 ?B))) (= ?A ?B)))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -682,17 +685,18 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
-				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x3 BOOL) (iff (MS ?x3 ?A0) (MS ?x3 ?B0))) (= ?A0 ?B0)))");
-		expectedAssumptions
 				.add("(forall (?A PZBZ) (?B PZBZ) (implies (forall (?x0 Int) (?x1 PB) (?x2 Int) (iff (MS0 ?x0 ?x1 ?x2 ?A) (MS0 ?x0 ?x1 ?x2 ?B))) (= ?A ?B)))");
-
+		expectedAssumptions
+				.add("(forall (?x3 Int) (?x4 PB) (?x5 Int) (exists (?X PZBZ) (and (MS0 ?x3 ?x4 ?x5 ?X) (forall (?y Int) (?y0 PB) (?y1 Int) (implies (MS0 ?y ?y0 ?y1 ?X) (and (= ?y ?x3) (= ?y0 ?x4) (= ?y1 ?x5)))))))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
 	@Test
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
+		testTranslateGoalPP(
+				te,
+				"∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
 				"(forall (?z PAB) (?c PAB) (forall (?x AB) (iff (MS ?x ?z) (MS ?x ?c))))");
 	}
 

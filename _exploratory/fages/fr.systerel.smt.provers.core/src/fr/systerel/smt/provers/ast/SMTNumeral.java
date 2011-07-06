@@ -40,7 +40,7 @@ public final class SMTNumeral extends SMTTerm {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(final StringBuilder builder, final int offset) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
 			builder.append(SMTTheory.Ints.getInstance().getUMinus().getName());
@@ -59,11 +59,8 @@ public final class SMTNumeral extends SMTTerm {
 	 */
 	@Override
 	public String toString() {
-		if (value.signum() < 0) {
-			return OPAR + SMTTheory.Ints.getInstance().getUMinus().getName()
-					+ SPACE + value.abs() + CPAR;
-		} else {
-			return value.abs().toString();
-		}
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1);
+		return builder.toString();
 	}
 }

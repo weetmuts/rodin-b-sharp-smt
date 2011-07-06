@@ -145,7 +145,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(final StringBuilder sb) {
+	public void toString(final StringBuilder sb, final int offset) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append("(lambda");
@@ -158,12 +158,12 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 		sb.append(". (and (= ");
 		sb.append("?" + lambdaVar.getName());
 		sb.append(" ");
-		expression.toString(sb);
+		expression.toString(sb, offset);
 		sb.append(") ");
 		if (formula instanceof SMTQuantifiedFormula) {
-			((SMTQuantifiedFormula) formula).toString(sb, true);
+			((SMTQuantifiedFormula) formula).toString(sb, offset, true);
 		} else {
-			formula.toString(sb, true);
+			formula.toString(sb, offset, true);
 		}
 		sb.append("))))");
 	}
@@ -171,7 +171,7 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		toString(builder);
+		toString(builder, -1);
 		return builder.toString();
 	}
 }

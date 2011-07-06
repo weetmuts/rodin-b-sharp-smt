@@ -71,7 +71,8 @@ class SMTVeriTAtom extends SMTFormula {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder, final boolean printPoint) {
+	public void toString(final StringBuilder builder, final int offset,
+			final boolean printPoint) {
 		if (macroSymbol.isPropositional()) {
 			builder.append(macroSymbol.name);
 		} else {
@@ -79,7 +80,7 @@ class SMTVeriTAtom extends SMTFormula {
 			builder.append(macroSymbol.name);
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
-				term.toString(builder);
+				term.toString(builder, offset);
 			}
 			builder.append(CPAR);
 		}
@@ -87,15 +88,8 @@ class SMTVeriTAtom extends SMTFormula {
 
 	@Override
 	public String toString() {
-		if (macroSymbol.isPropositional()) {
-			return macroSymbol.getName();
-		} else {
-			String s = OPAR + macroSymbol.getName();
-			for (final SMTTerm term : terms) {
-				s += SPACE + term;
-			}
-			s += CPAR;
-			return s;
-		}
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1, false);
+		return builder.toString();
 	}
 }

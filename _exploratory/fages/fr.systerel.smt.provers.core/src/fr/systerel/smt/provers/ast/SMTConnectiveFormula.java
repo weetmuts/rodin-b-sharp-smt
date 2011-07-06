@@ -40,24 +40,32 @@ public class SMTConnectiveFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder, final boolean printPoint) {
+	public void toString(final StringBuilder builder, final int offset,
+			final boolean printPoint) {
+		final int newOffset;
+		final String newLine;
+		if (offset >= 0) {
+			newOffset = offset + 4;
+			newLine = "\n";
+		} else {
+			newOffset = offset;
+			newLine = "";
+		}
 		builder.append(OPAR);
 		builder.append(connective);
 		for (final SMTFormula formula : formulas) {
 			builder.append(SPACE);
-			formula.toString(builder, printPoint);
+			builder.append(newLine);
+			SMTNode.indent(builder, newOffset);
+			formula.toString(builder, newOffset, printPoint);
 		}
 		builder.append(CPAR);
 	}
 
 	@Override
 	public String toString() {
-		String s = OPAR + connective;
-		for (final SMTFormula formula : formulas) {
-			s += SPACE + formula;
-		}
-		s += CPAR;
-		return s;
+		final StringBuilder builder = new StringBuilder();
+		toString(builder, -1, false);
+		return builder.toString();
 	}
-
 }

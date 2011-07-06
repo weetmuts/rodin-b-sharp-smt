@@ -118,7 +118,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		toString(builder);
+		toString(builder, -1);
 		return builder.toString();
 	}
 
@@ -135,7 +135,7 @@ public class SMTPredefinedMacro extends SMTMacro {
 	}
 
 	@Override
-	public void toString(final StringBuilder sb) {
+	public void toString(final StringBuilder sb, final int offset) {
 		sb.append("(");
 		sb.append(super.getMacroName());
 		sb.append(" ");

@@ -47,7 +47,17 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	}
 
 	@Override
-	public void toString(final StringBuilder builder, final boolean printPoint) {
+	public void toString(final StringBuilder builder, final int offset,
+			final boolean printPoint) {
+		final int newOffset;
+		final String newLine;
+		if (offset >= 0) {
+			 newOffset = offset + 4;
+			 newLine = "\n";
+		} else {
+			newOffset = offset;
+			newLine = "";
+		}
 		builder.append(OPAR);
 		builder.append(quantifier);
 		for (final SMTVarSymbol qVar : qVars) {
@@ -60,10 +70,13 @@ public class SMTQuantifiedFormula extends SMTFormula {
 			builder.append(SPACE);
 		}
 		builder.append(SPACE);
+		builder.append(newLine);
+		SMTNode.indent(builder, newOffset);
 		if (formula instanceof SMTQuantifiedFormula && printPoint) {
-			((SMTQuantifiedFormula) formula).toString(builder, true);
+			((SMTQuantifiedFormula) formula)
+					.toString(builder, newOffset, true);
 		} else {
-			formula.toString(builder, printPoint);
+			formula.toString(builder, newOffset, printPoint);
 		}
 		builder.append(CPAR);
 	}
@@ -71,7 +84,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		this.toString(sb, false);
+		this.toString(sb, -1, false);
 		return sb.toString();
 	}
 }

@@ -29,5 +29,6 @@ public abstract class SMTFormula extends SMTNode<SMTFormula> {
 	 *            true if it's necessary to print a dot in the situation
 	 *            described in {@link SMTFormula}, false otherwise.
 	 * */
-	public abstract void toString(StringBuilder builder, boolean printPoint);
+	public abstract void toString(final StringBuilder builder,
+			final int offset, final boolean printPoint);
 }
