@@ -77,11 +77,6 @@ public class SMTEnumMacro extends SMTMacro {
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		return true;
-	}
-
-	@Override
 	public void toString(final StringBuilder sb, final int offset) {
 		sb.append("(");
 		sb.append(super.getMacroName());

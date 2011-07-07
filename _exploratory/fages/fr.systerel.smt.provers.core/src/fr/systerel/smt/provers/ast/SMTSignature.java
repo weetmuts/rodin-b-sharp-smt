@@ -128,10 +128,10 @@ public abstract class SMTSignature {
 	 */
 	public static Set<String> getReservedSymbolsAndKeywords() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
-				Arrays.asList(EQUAL, "and", BENCHMARK,
-						"distinct", "false", "flet", "if_then_else", "iff",
-						"implies", "ite", "let", LOGIC, "not", "or", "sat",
-						THEORY, "true", "unknown", "unsat", "xor"));
+				Arrays.asList(EQUAL, "and", BENCHMARK, "distinct", "false",
+						"flet", "if_then_else", "iff", "implies", "ite", "let",
+						LOGIC, "not", "or", "sat", THEORY, "true", "unknown",
+						"unsat", "xor"));
 		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
 				.addAll(SMTConnective.getConnectiveSymbols())
 				&& reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol

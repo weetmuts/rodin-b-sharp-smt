@@ -167,7 +167,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		SMTThroughPP.translate(logic, ppPred, solver).toString(actualSMTNode,
 				-1, false);
 
-		System.out.println(translationMessage(ppPred, actualSMTNode.toString()));
+		System.out
+				.println(translationMessage(ppPred, actualSMTNode.toString()));
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -496,9 +497,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
 		testTranslationV1_2(te, "TRUE = b ∧ (∀d·d = b)",
 				"(and (TRUE b) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
-		testTranslationV1_2(
-				te,
-				"b = c ∧ (∀d·d = b)",
+		testTranslationV1_2(te, "b = c ∧ (∀d·d = b)",
 				"(and (iff (TRUE b) (TRUE c)) (forall (?d BOOL) (iff (TRUE ?d) (TRUE b))))");
 
 		/**
@@ -645,9 +644,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testQuantifier() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		testTranslateGoalPP(
-				te,
-				"∀ x · x + 1 ∈ S",
+		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
 				"(forall (?x Int) (exists (?x0 Int) (and (= ?x0 (+ ?x 1)) (S ?x0))))");
 	}
 
@@ -694,9 +691,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 	@Test
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(
-				te,
-				"∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
+		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
 				"(forall (?z PAB) (?c PAB) (forall (?x AB) (iff (MS ?x ?z) (MS ?x ?c))))");
 	}
 

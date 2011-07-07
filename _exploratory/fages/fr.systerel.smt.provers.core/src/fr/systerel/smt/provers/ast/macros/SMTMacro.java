@@ -67,7 +67,7 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	public abstract void toString(final StringBuilder builder, final int offset);
 
 	@Override
-	public boolean equals(final Object obj) {
+	public final boolean equals(final Object obj) {
 		if (obj instanceof SMTMacro) {
 			final SMTMacro macroObj = (SMTMacro) obj;
 			if (macroObj.getMacroName().equals(getMacroName())) {
@@ -78,9 +78,9 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	}
 
 	@Override
-	public int compareTo(final SMTMacro o) {
+	public final int compareTo(final SMTMacro o) {
 		if (o.getPrecedence() == precedence) {
-			return 1;
+			return this.getMacroName().compareTo(o.getMacroName());
 		} else if (precedence > o.getPrecedence()) {
 			return 1;
 		} else {

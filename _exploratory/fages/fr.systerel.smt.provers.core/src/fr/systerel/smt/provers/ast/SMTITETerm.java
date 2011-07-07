@@ -41,13 +41,6 @@ public final class SMTITETerm extends SMTTerm {
 		this.formula = formula;
 		this.tTerm = tTerm;
 		this.fTerm = fTerm;
-		if (formula == null) { // FIXME Are these tests useful or needed?
-			throw new NullPointerException();
-		} else if (tTerm == null) {
-			throw new NullPointerException();
-		} else if (fTerm == null) {
-			throw new NullPointerException();
-		}
 	}
 
 	@Override

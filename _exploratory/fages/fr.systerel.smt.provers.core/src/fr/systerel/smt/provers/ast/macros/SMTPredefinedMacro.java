@@ -123,18 +123,6 @@ public class SMTPredefinedMacro extends SMTMacro {
 	}
 
 	@Override
-	public boolean equals(final Object object) {
-		if (object instanceof SMTPredefinedMacro) {
-			final SMTPredefinedMacro obj = (SMTPredefinedMacro) object;
-			if (getMacroName().equals(obj.getMacroName())
-					&& body.equals(obj.body)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public void toString(final StringBuilder sb, final int offset) {
 		sb.append("(");
 		sb.append(super.getMacroName());

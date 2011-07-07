@@ -162,8 +162,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode, -1,
-				false);
+		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode,
+				-1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -722,8 +722,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testTranslationV1_2Default("AB ∈ (A→A)", "(in AB (tfun A A))");
 
-		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
-
 		testTranslationV1_2Default("AB ∈ (A↣A)", "(in AB (tinj A A))");
 
 		testTranslationV1_2Default("AB ∈ (A⤔A)", "(in AB (pinj A A))");
@@ -732,7 +730,9 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 
 		testTranslationV1_2Default("AB ∈ (A⤀A)", "(in AB (psur A A))");
 
-		testTranslationV1_2Default("AB ∈ (A⤖A)", "(in AB (bij A A))");
+		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
+
+		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
 	}
 
 	@Test
@@ -1093,9 +1093,8 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		expectedEnumerations
 				.put("enum",
 						"(enum (lambda (?elem Int) . (or\n\t\t(= ?elem 1)\n\t\t(= ?elem 2)\n\t\t(= ?elem 3)\n )))");
-		expectedEnumerations
-				.put("enum0",
-						"(enum0 (lambda (?elem0 Int) . (= ?elem0 1)))");
+		expectedEnumerations.put("enum0",
+				"(enum0 (lambda (?elem0 Int) . (= ?elem0 1)))");
 		testContainsNotPredefinedMacros(te, "card({1,2,3}) ≠ card({1})",
 				expectedEnumerations);
 	}

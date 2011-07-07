@@ -136,16 +136,9 @@ public class SMTSignatureVerit extends SMTSignature {
 	 *            the new macro that will be added to the signature
 	 */
 	public void addMacro(final SMTMacro macro) {
-		// FIXME: The set should take care of unique elements. This comparison
-		// should not exist
-		for (final SMTMacro macroEl : macros) {
-			final String x1 = macroEl.getMacroName();
-			final String x2 = macro.getMacroName();
-			if (x1.equals(x2)) {
-				return;
-			}
+		if (!macros.contains(macro)) {
+			macros.add(macro);
 		}
-		macros.add(macro);
 	}
 
 	/**

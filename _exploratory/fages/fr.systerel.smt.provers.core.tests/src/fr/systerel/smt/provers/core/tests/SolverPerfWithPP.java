@@ -285,7 +285,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("sets2", hyps, "{{x},{y}} ∈ {{{x}, {y}}, {{x}}}", arith_te, VALID);
+		doTest("sets2", hyps, "{{x},{y}} ∈ {{{x}, {y}}, {{x}}}", arith_te,
+				VALID);
 	}
 
 	/**
@@ -310,7 +311,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("sets4", hyps, "∀ x · (x ∈ ℤ → ℙ(ℤ) ⇒ (∃ y · y ≠ x))", arith_te, VALID);
+		doTest("sets4", hyps, "∀ x · (x ∈ ℤ → ℙ(ℤ) ⇒ (∃ y · y ≠ x))", arith_te,
+				VALID);
 	}
 
 	/**
@@ -325,8 +327,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("a = {x ↦ {y}}");
 
-		doTest("sets5", hyps, "a ∈ {x} → {{y}}", arith_te,
-				VALID);
+		doTest("sets5", hyps, "a ∈ {x} → {{y}}", arith_te, VALID);
 	}
 
 	/**
@@ -339,7 +340,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("sets6", hyps, "∀ x · (x ∈ {3} → {{4}} ⇒ (∃ y · y ≠ x))", arith_te, VALID);
+		doTest("sets6", hyps, "∀ x · (x ∈ {3} → {{4}} ⇒ (∃ y · y ≠ x))",
+				arith_te, VALID);
 	}
 
 	/**
@@ -351,7 +353,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", arith_te, VALID);
+		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", arith_te,
+				VALID);
 	}
 
 	@Test(timeout = 3000)
@@ -372,7 +375,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		doTest("rule20_macro_inside_macro", hyps,
 
-				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
+		"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
 	}
 
 	@Test(timeout = 3000)

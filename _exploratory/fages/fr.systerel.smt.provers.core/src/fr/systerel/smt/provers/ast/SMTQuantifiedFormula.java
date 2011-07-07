@@ -52,8 +52,8 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		final int newOffset;
 		final String newLine;
 		if (offset >= 0) {
-			 newOffset = offset + 4;
-			 newLine = "\n";
+			newOffset = offset + 4;
+			newLine = "\n";
 		} else {
 			newOffset = offset;
 			newLine = "";
@@ -73,8 +73,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		builder.append(newLine);
 		SMTNode.indent(builder, newOffset);
 		if (formula instanceof SMTQuantifiedFormula && printPoint) {
-			((SMTQuantifiedFormula) formula)
-					.toString(builder, newOffset, true);
+			((SMTQuantifiedFormula) formula).toString(builder, newOffset, true);
 		} else {
 			formula.toString(builder, newOffset, printPoint);
 		}
