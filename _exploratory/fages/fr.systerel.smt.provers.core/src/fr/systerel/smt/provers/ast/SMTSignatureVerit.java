@@ -30,7 +30,6 @@ import fr.systerel.smt.provers.ast.macros.SMTSetComprehensionMacro;
  * veriT.
  * 
  */
-// FIXME this class must be refactored
 public class SMTSignatureVerit extends SMTSignature {
 
 	/**
@@ -81,17 +80,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		if (name.equals("\u2124")) { // INTEGER
 			freshName = SMTSymbol.INT;
 		} else if (name.equals("BOOL")) {
-			boolean veriTBools = false;
-			for (final SMTTheory theory : getLogic().getTheories()) {
-				if (theory instanceof VeriTBooleans) {
-					veriTBools = true;
-				}
-			}
-			if (veriTBools) {
-				return VeriTBooleans.getInstance().getBooleanSort();
-			} else {
-				return VeritPredefinedTheory.getInstance().getBooleanSort();
-			}
+			return getBoolSort();
 		} else {
 			freshName = freshSymbolName(name);
 		}
@@ -99,6 +88,28 @@ public class SMTSignatureVerit extends SMTSignature {
 				!SMTSymbol.PREDEFINED);
 		sorts.add(freshSort);
 		return freshSort;
+	}
+
+	/**
+	 * This method returns the Bool sort. It first check if the
+	 * {@link VeriTBooleans} theory is being used. If so, it returns that the
+	 * Bool sort defined in that theory. If not, returns the bool sort defined
+	 * in {@link VeritPredefinedTheory}
+	 * 
+	 * @return a Bool sort
+	 */
+	private SMTSortSymbol getBoolSort() {
+		boolean veriTBools = false;
+		for (final SMTTheory theory : getLogic().getTheories()) {
+			if (theory instanceof VeriTBooleans) {
+				veriTBools = true;
+			}
+		}
+		if (veriTBools) {
+			return VeriTBooleans.getInstance().getBooleanSort();
+		} else {
+			return VeritPredefinedTheory.getInstance().getBooleanSort();
+		}
 	}
 
 	/**
