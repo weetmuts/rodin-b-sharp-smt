@@ -31,15 +31,12 @@ import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BoolExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
-import org.eventb.core.ast.BoundIdentifier;
-import org.eventb.core.ast.DefaultVisitor;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.ExtendedExpression;
 import org.eventb.core.ast.ExtendedPredicate;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.IFormulaRewriter;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironment.IIterator;
 import org.eventb.core.ast.Identifier;
@@ -54,8 +51,6 @@ import org.eventb.core.ast.SetExtension;
 import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
-import org.eventb.internal.core.seqprover.eventbExtensions.rewriters.AutoRewriterImpl;
-import org.eventb.internal.core.seqprover.eventbExtensions.rewriters.AutoRewrites.Level;
 import org.eventb.pp.IPPMonitor;
 import org.eventb.pp.PPProof;
 
@@ -86,8 +81,6 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * to reduce an Event-B sequent to Predicate Calculus. Then the SMT translation
  * is done.
  */
-// TODO check if it is possible to use AutoRewriterImpl without warnings
-@SuppressWarnings("restriction")
 public class SMTThroughPP extends TranslatorV1_2 {
 	/**
 	 * The SMT factory used by the translator to make SMT symbols
@@ -135,220 +128,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	public SMTThroughPP(final String solver) {
 		super(solver);
 		sf = SMTFactoryPP.getInstance();
-	}
-
-	/**
-	 * This class is used to traverse the Event-B sequent in order to gather
-	 * some informations needed to proceed with the translation, such as:
-	 * <ul>
-	 * <li>the appearing of occurrences of the Event-B integer symbol;</li>
-	 * <li>the appearing of elements of the bool theory;</li>
-	 * <li>the need for using the True predicate;</li>
-	 * <li>the list of the sets to be translated into monadic membership
-	 * predicates.</li>
-	 * </ul>
-	 **/
-	private static class Gatherer extends DefaultVisitor {
-		private boolean integerFound = false;
-		private boolean boolTheory = false;
-		private boolean usesTruePredicate = false;
-		private final Set<FreeIdentifier> identsNotForMonadicPreds = new HashSet<FreeIdentifier>();
-		private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
-		private final Set<Type> boundSetsTypes = new HashSet<Type>();
-
-		/**
-		 * This method executes the traversal in the hpoytheses and predicates
-		 * to process the informations described in {@link Gatherer}. It also
-		 * makes the mapping of each free identifier to its correlated predicate
-		 * symbol
-		 * 
-		 * @param hypotheses
-		 *            The hypotheses
-		 * @param goal
-		 *            the goal
-		 * @param monadicPredsMap
-		 *            an empty monadic sets map that will be filled.
-		 * @return a new gatherer with the results of the traversal.
-		 */
-		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
-				final Predicate goal,
-				final Map<FreeIdentifier, SMTPredicateSymbol> monadicPredsMap) {
-			final Gatherer gatherer = new Gatherer();
-
-			for (final Predicate hypothesis : hypotheses) {
-				hypothesis.accept(gatherer);
-			}
-			goal.accept(gatherer);
-
-			gatherer.removeIdentsFromSetsForMonadicPreds();
-			gatherer.setMonadicSetsMapKeys(monadicPredsMap);
-
-			return gatherer;
-		}
-
-		/**
-		 * This method copies monadicpreds found in the Proof Obligation to the
-		 * parameter monadicSetsMap
-		 * 
-		 * @param monadicSetsMap
-		 *            the var that will receive the monadic preds found in the
-		 *            PO
-		 */
-		private void setMonadicSetsMapKeys(
-				final Map<FreeIdentifier, SMTPredicateSymbol> monadicSetsMap) {
-			final Iterator<FreeIdentifier> monadicSetsIterator = setsForMonadicPreds
-					.iterator();
-			while (monadicSetsIterator.hasNext()) {
-				monadicSetsMap.put(monadicSetsIterator.next(), null);
-			}
-		}
-
-		/**
-		 * This method checks if the were found Boolean Elements in the
-		 * relational predicate. If yes, it returns false and determine that the
-		 * True predicate must be used.
-		 * 
-		 * @param pred
-		 *            the relational predicate.
-		 * @return true if there is no boolean element, false otherwise.
-		 */
-		private boolean checkBooleanElementsInMembershipPredicate(
-				final RelationalPredicate pred) {
-			if (pred.getLeft().getType() instanceof BooleanType
-					|| pred.getRight().getType() instanceof BooleanType) {
-				usesTruePredicate = true;
-				boolTheory = true;
-				return false;
-			}
-			return true;
-		}
-
-		/**
-		 * This method is used to gather the monadic preds from the relational
-		 * predicate. If the right side of the relation is a free identifier,
-		 * then this identifier is added to the monadic preds set. Else if it is
-		 * bound identifier, the type of the bound identifier is added to the
-		 * set of bound types.
-		 * 
-		 * @param pred
-		 *            the relational predicate
-		 */
-		private void gatherMonadicPreds(final RelationalPredicate pred) {
-			/**
-			 * Code for of membership predicate optimization
-			 */
-			final Expression right = pred.getRight();
-
-			assert right instanceof FreeIdentifier
-					|| right instanceof BoundIdentifier;
-
-			if (right instanceof FreeIdentifier) {
-				final FreeIdentifier rightSet = (FreeIdentifier) right;
-				if (right.getType().getSource() == null) {
-					setsForMonadicPreds.add(rightSet);
-				}
-			} else if (right instanceof BoundIdentifier) {
-				boundSetsTypes.add(((BoundIdentifier) right).getType());
-			}
-		}
-
-		/**
-		 * This method extracts all the setsForMonadicPreds that will be
-		 * translated in optimized membership predicates, that is, the
-		 * setsForMonadicPreds complying with the following rules:
-		 * 
-		 * <ul>
-		 * <li>The set only occur on the right-hand side of membership
-		 * predicates;
-		 * <li>No bound variable occurs in the right-hand side of similar
-		 * membership predicates;
-		 * </ul>
-		 * 
-		 * Then these setsForMonadicPreds are used as operator with one
-		 * argument, instead of creating a fresh membership predicate where the
-		 * set is one of the arguments.
-		 */
-		private void removeIdentsFromSetsForMonadicPreds() {
-			/**
-			 * Removal of all bounded variables from the map of monadic
-			 * setsForMonadicPreds.
-			 */
-			for (final FreeIdentifier set : setsForMonadicPreds) {
-				if (boundSetsTypes.contains(set.getType())) {
-					identsNotForMonadicPreds.add(set);
-				}
-			}
-			setsForMonadicPreds.removeAll(identsNotForMonadicPreds);
-		}
-
-		/**
-		 * return true if the integer set is found in the PO.
-		 * 
-		 * @return true if the integer is found in the PO, false otherwise.
-		 */
-		public boolean foundInteger() {
-			return integerFound;
-		}
-
-		/**
-		 * return true if the True predicate needs to be used in the PO.
-		 * 
-		 * @return true if the True predicate needs to be used, false otherwise.
-		 */
-		public boolean usesTruePredicate() {
-			return usesTruePredicate;
-		}
-
-		/**
-		 * return true if the Bool Theory is used in the PO.
-		 * 
-		 * @return true if the Bool Theory is used, false otherwise.
-		 */
-		public boolean usesBoolTheory() {
-			return boolTheory;
-		}
-
-		@Override
-		public boolean visitINTEGER(final AtomicExpression expr) {
-			integerFound = true;
-			return true;
-		}
-
-		@Override
-		public boolean visitBOUND_IDENT_DECL(final BoundIdentDecl ident) {
-			if (ident.getType() instanceof BooleanType) {
-				boolTheory = true;
-				usesTruePredicate = true;
-				return false;
-			}
-			return true;
-		}
-
-		/**
-		 * If one of the predicates has a BOOL set, set <code>boolTheory</code>
-		 * <i>true</i> and stop visiting.
-		 */
-		@Override
-		public boolean visitBOOL(final AtomicExpression expr) {
-			boolTheory = true;
-			return true;
-		}
-
-		@Override
-		public boolean enterIN(final RelationalPredicate pred) {
-			gatherMonadicPreds(pred);
-			return checkBooleanElementsInMembershipPredicate(pred);
-		}
-
-		/**
-		 * If one of the predicates has a TRUE constant, set
-		 * <code>boolTheory</code> <i>true</i> and stop visiting.
-		 */
-		@Override
-		public boolean visitTRUE(final AtomicExpression expr) {
-			boolTheory = true;
-			return true;
-		}
 	}
 
 	/**
@@ -509,43 +288,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	@Override
 	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
 			final Predicate goal) {
-		gatherer = Gatherer.gatherFrom(hypotheses, goal, monadicPredsMap);
+		gatherer = Gatherer.gatherFrom(hypotheses, goal);
 
 		if (gatherer.usesBoolTheory()) {
 			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
 					Ints.getInstance(), Booleans.getInstance());
 		}
 		return SMTLIBUnderlyingLogic.getInstance();
-	}
-
-	/**
-	 * Rewrites the predicate using a basic auto-rewriter of Event-B. The
-	 * rewriting is done until the fixpoint is reached.
-	 */
-	private Predicate recursiveAutoRewrite(Predicate pred) {
-		final FormulaFactory ff = FormulaFactory.getDefault();
-		final IFormulaRewriter rewriter = new AutoRewriterImpl(ff, Level.L2);
-
-		Predicate resultPred;
-		resultPred = pred.rewrite(rewriter);
-		while (resultPred != pred) {
-			pred = resultPred;
-			resultPred = pred.rewrite(rewriter);
-		}
-		return resultPred;
-	}
-
-	/**
-	 * Rewrites the predicates using a basic auto-rewriter for the Event-B
-	 * sequent prover.
-	 */
-	@SuppressWarnings("unused") //TODO remove when ppTrans updated
-	private List<Predicate> recursiveAutoRewriteAll(final List<Predicate> preds) {
-		final List<Predicate> rewritedPreds = new ArrayList<Predicate>();
-		for (final Predicate pred : preds) {
-			rewritedPreds.add(recursiveAutoRewrite(pred));
-		}
-		return rewritedPreds;
 	}
 
 	private void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
@@ -564,9 +313,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * check if the the variable is a monadic set. If so, translate the
 			 * base type of it
 			 */
-			for (final FreeIdentifier monadicSet : monadicPredsMap.keySet()) {
-				if (monadicSet.getName().equals(varName)
-						&& monadicSet.getType().equals(varType)) {
+			for (final FreeIdentifier setForMonadicPred : gatherer
+					.getSetsForMonadicPreds()) {
+				if (setForMonadicPred.getName().equals(varName)
+						&& setForMonadicPred.getType().equals(varType)) {
 					varType = iter.getType().getBaseType();
 					parseConstant = false;
 					break;
@@ -702,7 +452,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// Translate monadic setsForMonadicPreds (special case)
 		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
-			if (monadicPredsMap.containsKey(rightSet)) {
+			if (gatherer.getSetsForMonadicPreds().contains(rightSet)) {
 				return translateInMonadicMembershipPredicate(leftTerm, rightSet);
 			}
 		}
@@ -914,7 +664,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the membership of the created bounded variable into the left
 		// set
 		final SMTFormula leftMembership;
-		if (monadicPredsMap.containsKey(leftSet)) {
+		if (gatherer.getSetsForMonadicPreds().contains(leftSet)) {
 			leftMembership = translateInMonadicMembershipPredicate(smtVar,
 					(FreeIdentifier) leftSet);
 		} else {
@@ -925,7 +675,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the membership of the created bounded variable into the right
 		// set
 		final SMTFormula rightMembership;
-		if (monadicPredsMap.containsKey(rightSet)) {
+		if (gatherer.getSetsForMonadicPreds().contains(rightSet)) {
 			rightMembership = translateInMonadicMembershipPredicate(smtVar,
 					(FreeIdentifier) rightSet);
 		} else {
@@ -1358,26 +1108,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final Predicate ppTranslatedGoal = ppProof.getTranslatedGoal();
 
 		/**
-		 * PP auto-rewriting
-		 */
-		// final List<Predicate> ppRewritedHypotheses =
-		// recursiveAutoRewriteAll(ppTranslatedHypotheses);
-		// final Predicate ppRewritedGoal =
-		// recursiveAutoRewrite(ppTranslatedGoal);
-
-		/**
 		 * Logic auto-configuration
 		 */
-		// final SMTLogic logic = determineLogic(ppRewritedHypotheses,
-		// ppRewritedGoal);
 		final SMTLogic logic = determineLogic(ppTranslatedHypotheses,
 				ppTranslatedGoal);
 
 		/**
 		 * SMT translation
 		 */
-		// return translate(lemmaName, ppRewritedHypotheses, ppRewritedGoal,
-		// logic);
 		return translate(lemmaName, ppTranslatedHypotheses, ppTranslatedGoal,
 				logic);
 	}
@@ -1409,7 +1147,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		// predicate = translator.recursiveAutoRewrite(predicate);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.translate(predicate);
@@ -1422,7 +1159,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		// predicate = translator.recursiveAutoRewrite(predicate);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
 		return translator.getSignature();
@@ -1433,7 +1169,6 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTLogic determineLogic(Predicate goalPredicate) {
 		final SMTThroughPP translator = new SMTThroughPP(null);
-		// goalPredicate = translator.recursiveAutoRewrite(goalPredicate);
 		return translator.determineLogic(new ArrayList<Predicate>(0),
 				goalPredicate);
 	}

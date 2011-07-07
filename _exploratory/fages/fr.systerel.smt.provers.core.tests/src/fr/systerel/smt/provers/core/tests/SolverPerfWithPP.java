@@ -50,21 +50,6 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	public void testSetsEquality2() {
-		setPreferencesForSolverTest(solver);
-
-		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-
-		doTest("SetsEquality2", hyps, "p = p", te, VALID);
-	}
-
-	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans is updated (one-point rule needed)")
 	public void testIntsSetEquality() {
 		setPreferencesForSolverTest(solver);
@@ -616,6 +601,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
+	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDifferentForall() {
 		setPreferencesForSolverTest(solver);
 
@@ -633,6 +619,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test(timeout = 3000)
+	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testCh7Conc29() {
 		setPreferencesForSolverTest(solver);
 
@@ -713,6 +700,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
+	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDynamicStableLSR_081014_15() {
 		setPreferencesForSolverTest(solver);
 
@@ -769,6 +757,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
+	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testch910_ring_6() {
 		setPreferencesForSolverTest(solver);
 
