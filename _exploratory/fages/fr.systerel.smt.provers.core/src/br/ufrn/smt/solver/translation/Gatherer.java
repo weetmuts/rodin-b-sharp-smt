@@ -51,7 +51,7 @@ public class Gatherer extends DefaultVisitor {
 	 * This method recursively traverses the type tree to check if it contains
 	 * the boolean type.
 	 */
-	private boolean booleanTypeInTypeTree(final Type rightType) {
+	private static boolean booleanTypeInTypeTree(final Type rightType) {
 		final boolean isAProductType = rightType instanceof ProductType;
 		/**
 		 * Base case: the type is a base type. Adds it to the list and returns
@@ -230,7 +230,6 @@ public class Gatherer extends DefaultVisitor {
 		if (ident.getType() instanceof BooleanType) {
 			boolTheory = true;
 			usesTruePredicate = true;
-			return false;
 		}
 		return true;
 	}
@@ -258,10 +257,8 @@ public class Gatherer extends DefaultVisitor {
 		if (booleanTypeInTypeTree(membershipPredicate.getRight().getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;
-			return false;
-		} else {
-			return true;
 		}
+		return true;
 	}
 
 	/**
