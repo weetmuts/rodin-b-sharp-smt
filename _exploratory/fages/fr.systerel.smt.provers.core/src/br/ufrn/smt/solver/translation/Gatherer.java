@@ -51,15 +51,15 @@ public class Gatherer extends DefaultVisitor {
 	 * This method recursively traverses the type tree to check if it contains
 	 * the boolean type.
 	 */
-	private static boolean booleanTypeInTypeTree(final Type rightType) {
-		final boolean isAProductType = rightType instanceof ProductType;
+	private static boolean booleanTypeInTypeTree(final Type type) {
+		final boolean isAProductType = type instanceof ProductType;
 		/**
 		 * Base case: the type is a base type. Adds it to the list and returns
 		 * the list.
 		 */
-		if (rightType.getSource() == null && rightType.getTarget() == null
-				&& rightType.getBaseType() == null && !isAProductType) {
-			return rightType instanceof BooleanType;
+		if (type.getSource() == null && type.getTarget() == null
+				&& type.getBaseType() == null && !isAProductType) {
+			return type instanceof BooleanType;
 		}
 
 		/**
@@ -67,7 +67,7 @@ public class Gatherer extends DefaultVisitor {
 		 * <code>getBaseTypes</code> on alpha and beta.
 		 */
 		else if (isAProductType) {
-			final ProductType product = (ProductType) rightType;
+			final ProductType product = (ProductType) type;
 			return booleanTypeInTypeTree(product.getLeft())
 					|| booleanTypeInTypeTree(product.getRight());
 		}
@@ -76,17 +76,17 @@ public class Gatherer extends DefaultVisitor {
 		 * The type looks like <code>ℙ(alpha × beta)</code>. Calls recursively
 		 * <code>getBaseTypes</code> on alpha and beta.
 		 */
-		else if (rightType.getSource() != null) {
-			return booleanTypeInTypeTree(rightType.getSource())
-					|| booleanTypeInTypeTree(rightType.getTarget());
+		else if (type.getSource() != null) {
+			return booleanTypeInTypeTree(type.getSource())
+					|| booleanTypeInTypeTree(type.getTarget());
 		}
 
 		/**
 		 * The type looks like <code>ℙ(alpha)</code>. Calls recursively
 		 * <code>getBaseTypes</code> on alpha.
 		 */
-		else if (rightType.getBaseType() != null) {
-			return booleanTypeInTypeTree(rightType.getBaseType());
+		else if (type.getBaseType() != null) {
+			return booleanTypeInTypeTree(type.getBaseType());
 		}
 
 		/**
@@ -254,7 +254,7 @@ public class Gatherer extends DefaultVisitor {
 	@Override
 	public boolean enterIN(final RelationalPredicate membershipPredicate) {
 		gatherMonadicPreds(membershipPredicate);
-		if (booleanTypeInTypeTree(membershipPredicate.getRight().getType())) {
+		if (booleanTypeInTypeTree(membershipPredicate.getLeft().getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;
 		}
