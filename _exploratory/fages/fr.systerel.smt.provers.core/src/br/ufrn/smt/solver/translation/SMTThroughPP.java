@@ -988,13 +988,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
-		if (gatherer.foundInteger()) {
+		if (gatherer.foundAtomicIntegerExp()) {
 			translatedAssumptions.add(generateIntegerAxiom());
 		}
 
 		for (final SMTTheory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
-				translatedAssumptions.add(generateBoolAxiom());
+				if (gatherer.foundAtomicBoolExp()) {
+					translatedAssumptions.add(generateBoolAxiom());
+				}
 				if (gatherer.usesTruePredicate()) {
 					translatedAssumptions.add(generateTrueAxiom());
 				}

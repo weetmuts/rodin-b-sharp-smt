@@ -669,9 +669,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 	public void testTrueAxiom() {
 		final ITypeEnvironment te = mTypeEnvironment("Y", "ℙ(BOOL×BOOL)");
 		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
-				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
+				.add("(forall (?x BOOL) (?y BOOL) (iff (iff (TRUE ?x) (TRUE ?y)) (= ?x ?y)))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}

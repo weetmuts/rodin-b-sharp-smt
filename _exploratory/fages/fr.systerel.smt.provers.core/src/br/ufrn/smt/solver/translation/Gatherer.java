@@ -38,8 +38,9 @@ import org.eventb.core.ast.Type;
  * </ul>
  **/
 public class Gatherer extends DefaultVisitor {
-	private boolean integerFound = false;
+	private boolean atomicIntegerExpFound = false;
 	private boolean boolTheory = false;
+	private boolean atomicBoolExpFound = false;
 	private boolean usesTruePredicate = false;
 	private final Set<FreeIdentifier> identsNotForMonadicPreds = new HashSet<FreeIdentifier>();
 	private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
@@ -60,8 +61,8 @@ public class Gatherer extends DefaultVisitor {
 			final RelationalPredicate pred) {
 		if (pred.getLeft().getType() instanceof BooleanType
 				|| pred.getRight().getType() instanceof BooleanType) {
-			usesTruePredicate = true;
 			boolTheory = true;
+			usesTruePredicate = true;
 			return false;
 		}
 		return true;
@@ -154,25 +155,16 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * return true if the integer set is found in the PO.
+	 * returns true if the integer set is found in the PO.
 	 * 
 	 * @return true if the integer is found in the PO, false otherwise.
 	 */
-	public boolean foundInteger() {
-		return integerFound;
+	public boolean foundAtomicIntegerExp() {
+		return atomicIntegerExpFound;
 	}
 
 	/**
-	 * return true if the True predicate needs to be used in the PO.
-	 * 
-	 * @return true if the True predicate needs to be used, false otherwise.
-	 */
-	public boolean usesTruePredicate() {
-		return usesTruePredicate;
-	}
-
-	/**
-	 * return true if the Bool Theory is used in the PO.
+	 * returns true if the Bool Theory is used in the PO.
 	 * 
 	 * @return true if the Bool Theory is used, false otherwise.
 	 */
@@ -181,18 +173,29 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * return the gathered sets for which monadic membership predicates should be used
+	 * returns true if the True predicate needs to be used in the PO.
+	 * 
+	 * @return true if the True predicate needs to be used, false otherwise.
+	 */
+	public boolean usesTruePredicate() {
+		return usesTruePredicate;
+	}
+
+	/**
+	 * returns true if the atomic expression BOOL was found in the sequent
+	 */
+	public boolean foundAtomicBoolExp() {
+		return atomicBoolExpFound;
+	}
+
+	/**
+	 * returns the gathered sets for which monadic membership predicates should
+	 * be used
 	 * 
 	 * @return the set of identifiers
 	 */
 	public Set<FreeIdentifier> getSetsForMonadicPreds() {
 		return setsForMonadicPreds;
-	}
-
-	@Override
-	public boolean visitINTEGER(final AtomicExpression expr) {
-		integerFound = true;
-		return true;
 	}
 
 	@Override
@@ -205,6 +208,12 @@ public class Gatherer extends DefaultVisitor {
 		return true;
 	}
 
+	@Override
+	public boolean visitINTEGER(final AtomicExpression expr) {
+		atomicIntegerExpFound = true;
+		return true;
+	}
+
 	/**
 	 * If one of the predicates has a BOOL set, set <code>boolTheory</code>
 	 * <i>true</i> and stop visiting.
@@ -212,6 +221,7 @@ public class Gatherer extends DefaultVisitor {
 	@Override
 	public boolean visitBOOL(final AtomicExpression expr) {
 		boolTheory = true;
+		atomicBoolExpFound = true;
 		return true;
 	}
 
