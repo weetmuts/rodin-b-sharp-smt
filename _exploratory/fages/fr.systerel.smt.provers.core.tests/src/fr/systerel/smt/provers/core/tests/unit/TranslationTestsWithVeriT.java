@@ -731,8 +731,6 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("AB ∈ (A⤀A)", "(in AB (psur A A))");
 
 		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
-
-		testTranslationV1_2Default("AB ∈ (A⇸A)", "(in AB (pfun A A))");
 	}
 
 	@Test
