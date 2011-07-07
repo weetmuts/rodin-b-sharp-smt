@@ -23,6 +23,7 @@ import org.eventb.core.ast.DefaultVisitor;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.Type;
 
@@ -49,23 +50,54 @@ public class Gatherer extends DefaultVisitor {
 	private final static Gatherer DEFAULT_INSTANCE = new Gatherer();
 
 	/**
-	 * This method checks if the were found Boolean Elements in the relational
-	 * predicate. If yes, it returns false and determine that the True predicate
-	 * must be used.
-	 * 
-	 * @param pred
-	 *            the relational predicate.
-	 * @return true if there is no boolean element, false otherwise.
+	 * This method recursively traverses the type tree to check if it contains
+	 * the boolean type.
 	 */
-	private boolean checkBooleanElementsInMembershipPredicate(
-			final RelationalPredicate pred) {
-		if (pred.getLeft().getType() instanceof BooleanType
-				|| pred.getRight().getType() instanceof BooleanType) {
-			boolTheory = true;
-			usesTruePredicate = true;
-			return false;
+	private boolean booleanTypeInTypeTree(final Type rightType) {
+		final boolean isAProductType = rightType instanceof ProductType;
+		/**
+		 * Base case: the type is a base type. Adds it to the list and returns
+		 * the list.
+		 */
+		if (rightType.getSource() == null && rightType.getTarget() == null
+				&& rightType.getBaseType() == null && !isAProductType) {
+			return rightType instanceof BooleanType;
 		}
-		return true;
+
+		/**
+		 * The type looks like <code>alpha × beta</code>. Calls recursively
+		 * <code>getBaseTypes</code> on alpha and beta.
+		 */
+		else if (isAProductType) {
+			final ProductType product = (ProductType) rightType;
+			return booleanTypeInTypeTree(product.getLeft())
+					|| booleanTypeInTypeTree(product.getRight());
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha × beta)</code>. Calls recursively
+		 * <code>getBaseTypes</code> on alpha and beta.
+		 */
+		else if (rightType.getSource() != null) {
+			return booleanTypeInTypeTree(rightType.getSource())
+					|| booleanTypeInTypeTree(rightType.getTarget());
+		}
+
+		/**
+		 * The type looks like <code>ℙ(alpha)</code>. Calls recursively
+		 * <code>getBaseTypes</code> on alpha.
+		 */
+		else if (rightType.getBaseType() != null) {
+			return booleanTypeInTypeTree(rightType.getBaseType());
+		}
+
+		/**
+		 * This case should not be reached because Event-B types given as
+		 * arguments are well-formed.
+		 */
+		else {
+			throw new IllegalArgumentException(Messages.Misformed_EventB_Types);
+		}
 	}
 
 	/**
@@ -226,9 +258,15 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	@Override
-	public boolean enterIN(final RelationalPredicate pred) {
-		gatherMonadicPreds(pred);
-		return checkBooleanElementsInMembershipPredicate(pred);
+	public boolean enterIN(final RelationalPredicate membershipPredicate) {
+		gatherMonadicPreds(membershipPredicate);
+		if (booleanTypeInTypeTree(membershipPredicate.getRight().getType())) {
+			boolTheory = true;
+			usesTruePredicate = true;
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
