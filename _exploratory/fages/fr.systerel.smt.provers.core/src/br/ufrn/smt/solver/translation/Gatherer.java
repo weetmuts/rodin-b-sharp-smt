@@ -12,6 +12,7 @@
 package br.ufrn.smt.solver.translation;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,11 +44,8 @@ public class Gatherer extends DefaultVisitor {
 	private boolean boolTheory = false;
 	private boolean atomicBoolExpFound = false;
 	private boolean usesTruePredicate = false;
-	private final Set<FreeIdentifier> identsNotForMonadicPreds = new HashSet<FreeIdentifier>();
 	private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
 	private final Set<Type> boundSetsTypes = new HashSet<Type>();
-
-	private final static Gatherer DEFAULT_INSTANCE = new Gatherer();
 
 	/**
 	 * This method recursively traverses the type tree to check if it contains
@@ -149,16 +147,13 @@ public class Gatherer extends DefaultVisitor {
 		 * Removal of all bounded variables from the map of monadic
 		 * setsForMonadicPreds.
 		 */
-		for (final FreeIdentifier set : setsForMonadicPreds) {
+		final Iterator<FreeIdentifier> setsForMonadicPredsIterator = setsForMonadicPreds.iterator();
+		while (setsForMonadicPredsIterator.hasNext()) {
+			final FreeIdentifier set = setsForMonadicPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
-				identsNotForMonadicPreds.add(set);
+				setsForMonadicPreds.remove(set);
 			}
 		}
-		setsForMonadicPreds.removeAll(identsNotForMonadicPreds);
-	}
-
-	public static Gatherer getInstance() {
-		return DEFAULT_INSTANCE;
 	}
 
 	/**
