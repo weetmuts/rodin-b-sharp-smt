@@ -1018,7 +1018,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
 
 		int i = 0;
-		for (Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap.entrySet()) {
+		for (final Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap
+				.entrySet()) {
 			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
 					entry.getKey());
 			baseTypes.remove(FormulaFactory.getDefault().makeBooleanType());
@@ -1146,7 +1147,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			Predicate predicate, final String solver) {
+			final Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		translator.determineLogic(noHypothesis, predicate);
@@ -1158,7 +1159,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			Predicate predicate, final String solver) {
+			final Predicate predicate, final String solver) {
 		final SMTThroughPP translator = new SMTThroughPP(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		translator.determineLogic(noHypothesis, predicate);
@@ -1169,7 +1170,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	/**
 	 * This method is used only to test the logic determination
 	 */
-	public static SMTLogic determineLogic(Predicate goalPredicate) {
+	public static SMTLogic determineLogic(final Predicate goalPredicate) {
 		final SMTThroughPP translator = new SMTThroughPP(null);
 		return translator.determineLogic(new ArrayList<Predicate>(0),
 				goalPredicate);

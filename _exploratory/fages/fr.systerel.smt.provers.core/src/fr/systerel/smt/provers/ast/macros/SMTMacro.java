@@ -80,7 +80,7 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	@Override
 	public final int compareTo(final SMTMacro o) {
 		if (o.getPrecedence() == precedence) {
-			return this.getMacroName().compareTo(o.getMacroName());
+			return getMacroName().compareTo(o.getMacroName());
 		} else if (precedence > o.getPrecedence()) {
 			return 1;
 		} else {

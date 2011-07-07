@@ -163,15 +163,12 @@ public class SMTPairEnumMacro extends SMTMacro {
 	 * @return the term argument in the position index
 	 */
 	private SMTTerm getArgTerm(final SMTTerm term, final int index) {
-		if (term instanceof SMTMacroTerm) {
-			final SMTMacroTerm mT = (SMTMacroTerm) term;
-			return mT.getArgs()[index];
-		} else if (term instanceof SMTFunApplication) {
+		if (term instanceof SMTFunApplication) {
 			final SMTFunApplication fA = (SMTFunApplication) term;
 			return fA.getArgs()[index];
 		} else {
-			// FIXME: This statement should never be reached
-			return null;
+			throw new IllegalArgumentException(
+					"All the arguments of the pair enum macro must be a SMTFunApplication");
 		}
 	}
 

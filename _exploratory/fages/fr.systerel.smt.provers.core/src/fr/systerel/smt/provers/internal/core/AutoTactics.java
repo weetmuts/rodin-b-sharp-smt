@@ -35,7 +35,7 @@ public class AutoTactics {
 	}
 
 	// TODO add SMTAltErgoPP, SMTCVC3PP, SMTVeriTPP and SMTZ3PP etc.. with
-	// adequat preferences
+	// appropriate preferences
 	public static class SMTPP extends AbsractLazilyConstrTactic {
 
 		@Override
