@@ -1,6 +1,15 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License  v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * 	   Systerel (YFG) - Creation
+ *     Vitor Alcantara de Almeida - Commented code 
+ *******************************************************************************/
+
 package fr.systerel.smt.provers.internal.core;
 
 import java.io.File;
@@ -18,8 +27,9 @@ import br.ufrn.smt.solver.translation.SMTThroughVeriT;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 
 /**
- * @author guyot
- * 
+ * This class contains fields and methods to config the execution of veriT
+ * pre-processing, opening and writing of pre-processed SMT files, and check
+ * result of post-processing.
  */
 public class SMTVeriTCall extends SMTProverCall {
 	private static final String VERIT_TRANSLATION_PATH = TRANSLATION_PATH
@@ -128,6 +138,16 @@ public class SMTVeriTCall extends SMTProverCall {
 		fileWriter.close();
 	}
 
+	/**
+	 * this method checks the output of the SMT file after being simplified by
+	 * veriT (in the pre-processing step)
+	 * 
+	 * @param parentFolder
+	 *            the folder where the post-processed SMT file is
+	 * @throws IOException
+	 *             if any IO problem occurr when accessing the SMT files and
+	 *             folders
+	 */
 	private void checkPreProcessingResult(final String parentFolder)
 			throws IOException {
 		if (solverResult.contains("(benchmark")) {
