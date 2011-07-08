@@ -233,6 +233,14 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	@Override
+	public boolean visitFREE_IDENT(final FreeIdentifier ident) {
+		if (booleanTypeInTypeTree(ident.getType())) {
+			boolTheory = true;
+		}
+		return true;
+	}
+
+	@Override
 	public boolean visitINTEGER(final AtomicExpression expr) {
 		atomicIntegerExpFound = true;
 		return true;

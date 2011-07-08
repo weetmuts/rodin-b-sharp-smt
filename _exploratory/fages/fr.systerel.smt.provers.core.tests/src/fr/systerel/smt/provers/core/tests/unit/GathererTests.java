@@ -187,14 +187,27 @@ public class GathererTests extends AbstractTests {
 	public void test5() {
 		final String[] expectedMonadicPreds = {};
 
-		doTest(mTypeEnvironment("x", "S"),//
-				AtomicBoolExp.NOT_FOUND, //
+		doTest(mTypeEnvironment("x", "BOOL", "z", "BOOL", "t", "ℤ", "g",
+				"BOOL", "G", "ℙ(BOOL)"),//
+		AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				expectedMonadicPreds, new String[] {},// Monadic Pred
-				// FIXME Goal
-				"x ∈ A");
+				"(x = z) ∧ (t ∈ ℤ) ∧ (g ∈ G)");
+	}
+
+	@Test
+	public void test5_1() {
+		final String[] expectedMonadicPreds = {};
+
+		doTest(mTypeEnvironment("x", "BOOL", "z", "BOOL"),//
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.FOUND, //
+				TruePredicate.NOT_FOUND, //
+				expectedMonadicPreds, new String[] {},// Monadic Pred
+				"(x = z)");
 	}
 
 	// FIXME Fix the goal of this test
