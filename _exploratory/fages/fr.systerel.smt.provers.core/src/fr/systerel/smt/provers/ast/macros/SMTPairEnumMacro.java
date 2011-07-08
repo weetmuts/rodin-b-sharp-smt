@@ -177,7 +177,6 @@ public class SMTPairEnumMacro extends SMTMacro {
 		sb.append(OPAR);
 		sb.append(super.getMacroName());
 		sb.append(" (lambda ");
-		// sb.append(key);
 		key.toString(sb);
 		sb.append(" . ");
 		if (terms.length == 1) {
