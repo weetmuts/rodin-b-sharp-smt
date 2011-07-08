@@ -80,9 +80,17 @@ public class TranslationTestsWithPP extends AbstractTests {
 		assertEquals(assumptionsString(assumptions),
 				expectedAssumptions.size(), assumptions.size());
 		for (final SMTFormula assumption : assumptions) {
-			assertTrue(assumption.toString(),
+			assertTrue(
+					expectedAssumptionMessage(expectedAssumptions,
+							assumption.toString()),
 					expectedAssumptions.remove(assumption.toString()));
 		}
+	}
+
+	private String expectedAssumptionMessage(
+			final List<String> expectedAssumptions, final String assumption) {
+		return "Expected these assumptions: " + expectedAssumptions.toString()
+				+ ". But found this assumption: " + assumption.toString();
 	}
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
