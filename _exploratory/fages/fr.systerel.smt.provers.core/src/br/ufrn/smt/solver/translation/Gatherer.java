@@ -114,9 +114,6 @@ public class Gatherer extends DefaultVisitor {
 		 */
 		final Expression right = pred.getRight();
 
-		assert right instanceof FreeIdentifier
-				|| right instanceof BoundIdentifier;
-
 		if (right instanceof FreeIdentifier) {
 			if (right.getType().getSource() == null) {
 				final FreeIdentifier rightSet = (FreeIdentifier) right;
@@ -147,7 +144,8 @@ public class Gatherer extends DefaultVisitor {
 		 * Removal of all bounded variables from the map of monadic
 		 * setsForMonadicPreds.
 		 */
-		final Iterator<FreeIdentifier> setsForMonadicPredsIterator = setsForMonadicPreds.iterator();
+		final Iterator<FreeIdentifier> setsForMonadicPredsIterator = setsForMonadicPreds
+				.iterator();
 		while (setsForMonadicPredsIterator.hasNext()) {
 			final FreeIdentifier set = setsForMonadicPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
@@ -227,7 +225,7 @@ public class Gatherer extends DefaultVisitor {
 
 	@Override
 	public boolean visitBOUND_IDENT_DECL(final BoundIdentDecl ident) {
-		if (ident.getType() instanceof BooleanType) {
+		if (booleanTypeInTypeTree(ident.getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;
 		}
