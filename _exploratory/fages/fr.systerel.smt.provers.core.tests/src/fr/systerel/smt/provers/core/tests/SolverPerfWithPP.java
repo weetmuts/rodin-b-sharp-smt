@@ -86,8 +86,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("dfpsBool", hyps, "{TRUE ↦ {FALSE}} ∈ {TRUE} → {{FALSE}}",
-				te, VALID);
+		doTest("dfpsBool", hyps, "{TRUE ↦ {FALSE}} ∈ {TRUE} → {{FALSE}}", te,
+				VALID);
 	}
 
 	/**
@@ -366,10 +366,10 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	public void testSets7() {
 		setPreferencesForSolverTest(solver);
 
+		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
 
-		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", arith_te,
-				VALID);
+		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", te, VALID);
 	}
 
 	@Test(timeout = 3000)

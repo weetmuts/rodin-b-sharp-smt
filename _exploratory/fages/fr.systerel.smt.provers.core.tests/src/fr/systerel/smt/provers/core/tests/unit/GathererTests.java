@@ -121,7 +121,7 @@ public class GathererTests extends AbstractTests {
 		atomicIntegerExp.check(result.foundAtomicIntegerExp());
 		boolTheory.check(result.usesBoolTheory());
 		truePredicate.check(result.usesTruePredicate());
-		checkMonadicPreds(expectedMonadicPreds, result.getSetsForMonadicPreds());
+		checkMonadicPreds(expectedMonadicPreds, result.getSetsForSpecialMSPreds());
 	}
 
 	private static String notEncounteredMonadicPredMessage(

@@ -35,8 +35,8 @@ import org.eventb.core.ast.Type;
  * <li>the appearing of occurrences of the Event-B integer symbol;</li>
  * <li>the appearing of elements of the bool theory;</li>
  * <li>the need for using the True predicate;</li>
- * <li>the list of the sets to be translated into monadic membership predicates.
- * </li>
+ * <li>the list of the sets to be translated into specialized membership
+ * predicates.</li>
  * </ul>
  **/
 public class Gatherer extends DefaultVisitor {
@@ -44,7 +44,7 @@ public class Gatherer extends DefaultVisitor {
 	private boolean boolTheory = false;
 	private boolean atomicBoolExpFound = false;
 	private boolean usesTruePredicate = false;
-	private final Set<FreeIdentifier> setsForMonadicPreds = new HashSet<FreeIdentifier>();
+	private final Set<FreeIdentifier> setsForSpecialMSPreds = new HashSet<FreeIdentifier>();
 	private final Set<Type> boundSetsTypes = new HashSet<Type>();
 
 	/**
@@ -99,35 +99,37 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * This method is used to gather the monadic preds from the relational
-	 * predicate. If the right side of the relation is a free identifier, then
-	 * this identifier is added to the monadic preds set. Else if it is bound
-	 * identifier, the type of the bound identifier is added to the set of bound
-	 * types.
+	 * This method is used to gather from the relational predicate, the sets for
+	 * which specialized membership predicates (monadic or dyadic) should be
+	 * used. If the right side of the relation is a free identifier, then this
+	 * identifier is added to the specialized membership predicates set. Else if
+	 * it is bound identifier, the type of the bound identifier is added to the
+	 * set of bound types.
 	 * 
 	 * @param pred
 	 *            the relational predicate
 	 */
-	private void gatherMonadicPreds(final RelationalPredicate pred) {
-		/**
-		 * Code for of membership predicate optimization
-		 */
+	private void gatherSetsForSpecialMSPreds(final RelationalPredicate pred) {
 		final Expression right = pred.getRight();
 
 		if (right instanceof FreeIdentifier) {
-			if (right.getType().getSource() == null) {
-				final FreeIdentifier rightSet = (FreeIdentifier) right;
-				setsForMonadicPreds.add(rightSet);
-			}
+			/**
+			 * If this identifier type does not look like ℙ(alpha × beta), then
+			 * it should be translated into a specialized membership predicate.
+			 */
+			// if (right.getType().getSource() == null) {
+			final FreeIdentifier rightSet = (FreeIdentifier) right;
+			setsForSpecialMSPreds.add(rightSet);
+			// }
 		} else if (right instanceof BoundIdentifier) {
 			boundSetsTypes.add(((BoundIdentifier) right).getType());
 		}
 	}
 
 	/**
-	 * This method extracts all the setsForMonadicPreds that will be translated
-	 * in optimized membership predicates, that is, the setsForMonadicPreds
-	 * complying with the following rules:
+	 * This method extracts all the setsForSpecialMSPreds that will be
+	 * translated in optimized membership predicates, that is, the
+	 * setsForSpecialMSPreds complying with the following rules:
 	 * 
 	 * <ul>
 	 * <li>The set only occur on the right-hand side of membership predicates;
@@ -135,21 +137,20 @@ public class Gatherer extends DefaultVisitor {
 	 * predicates;
 	 * </ul>
 	 * 
-	 * Then these setsForMonadicPreds are used as operator with one argument,
+	 * Then these setsForSpecialMSPreds are used as operator with one argument,
 	 * instead of creating a fresh membership predicate where the set is one of
 	 * the arguments.
 	 */
-	private void removeIdentsFromSetsForMonadicPreds() {
+	private void removeIdentsFromSetsForSpecialMSPreds() {
 		/**
-		 * Removal of all bounded variables from the map of monadic
-		 * setsForMonadicPreds.
+		 * Removal of all bounded variables from the setsForSpecialMSPreds.
 		 */
-		final Iterator<FreeIdentifier> setsForMonadicPredsIterator = setsForMonadicPreds
+		final Iterator<FreeIdentifier> setsForSpecialMSPredsIterator = setsForSpecialMSPreds
 				.iterator();
-		while (setsForMonadicPredsIterator.hasNext()) {
-			final FreeIdentifier set = setsForMonadicPredsIterator.next();
+		while (setsForSpecialMSPredsIterator.hasNext()) {
+			final FreeIdentifier set = setsForSpecialMSPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
-				setsForMonadicPreds.remove(set);
+				setsForSpecialMSPreds.remove(set);
 			}
 		}
 	}
@@ -174,7 +175,7 @@ public class Gatherer extends DefaultVisitor {
 		}
 		goal.accept(gatherer);
 
-		gatherer.removeIdentsFromSetsForMonadicPreds();
+		gatherer.removeIdentsFromSetsForSpecialMSPreds();
 
 		return gatherer;
 	}
@@ -214,13 +215,13 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * returns the gathered sets for which monadic membership predicates should
-	 * be used
+	 * returns the gathered sets for which specialized membership predicates
+	 * should be used
 	 * 
 	 * @return the set of identifiers
 	 */
-	public Set<FreeIdentifier> getSetsForMonadicPreds() {
-		return setsForMonadicPreds;
+	public Set<FreeIdentifier> getSetsForSpecialMSPreds() {
+		return setsForSpecialMSPreds;
 	}
 
 	@Override
@@ -259,7 +260,7 @@ public class Gatherer extends DefaultVisitor {
 
 	@Override
 	public boolean enterIN(final RelationalPredicate membershipPredicate) {
-		gatherMonadicPreds(membershipPredicate);
+		gatherSetsForSpecialMSPreds(membershipPredicate);
 		if (booleanTypeInTypeTree(membershipPredicate.getLeft().getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;

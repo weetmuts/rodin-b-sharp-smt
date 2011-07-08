@@ -260,7 +260,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV1_2(te, "∀x,y·x↦y∈RR",
-				"(forall (?x r) (?y s) (MS ?x ?y RR))");
+				"(forall (?x r) (?y s) (RR ?x ?y))");
 
 		/**
 		 * bound set
@@ -422,13 +422,13 @@ public class TranslationTestsWithPP extends AbstractTests {
 		te.addAll(defaultTe);
 
 		testTranslationV1_2Default("a ∈ A", "(A a)");
-		testTranslationV1_2(te, "a↦b ∈ AB", "(MS a b AB)");
-		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(MS a BOOLS BOOLS X)");
+		testTranslationV1_2(te, "a↦b ∈ AB", "(AB a b)");
+		testTranslationV1_2(te, "a↦BOOL↦BOOL ∈ X", "(X a BOOLS BOOLS)");
 	}
 
 	@Test
 	public void testPredIn2() {
-		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(MS a BOOLS a Y)");
+		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(Y a BOOLS a)");
 	}
 
 	@Test
@@ -442,8 +442,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		 * why the membership predicate symbol 'MS' is not already in use, and
 		 * can be expected here.
 		 */
-		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(MS INTS0 INTS SPZ)");
-		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(MS a INTS AZ)");
+		testTranslationV1_2(te, "INTS↦ℤ ∈ SPZ", "(SPZ INTS0 INTS)");
+		testTranslationV1_2(te, "a↦ℤ ∈ AZ", "(AZ a INTS)");
 	}
 
 	/**
@@ -665,10 +665,10 @@ public class TranslationTestsWithPP extends AbstractTests {
 				.add("(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))");
 		expectedAssumptions
 				.add("(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x1))))))");
-		expectedAssumptions
-				.add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x2 Int) (?x3 PZ) (iff (MS0 ?x2 ?x3 ?A0) (MS0 ?x2 ?x3 ?B0))) (= ?A0 ?B0)))");
-		expectedAssumptions
-				.add("(forall (?x4 Int) (?x5 PZ) (exists (?X0 PZZ) (and (MS0 ?x4 ?x5 ?X0) (forall (?y0 Int) (?y1 PZ) (implies (MS0 ?y0 ?y1 ?X0) (and (= ?y0 ?x4) (= ?y1 ?x5)))))))");
+		// expectedAssumptions
+		// .add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x2 Int) (?x3 PZ) (iff (MS0 ?x2 ?x3 ?A0) (MS0 ?x2 ?x3 ?B0))) (= ?A0 ?B0)))");
+		// expectedAssumptions
+		// .add("(forall (?x4 Int) (?x5 PZ) (exists (?X0 PZZ) (and (MS0 ?x4 ?x5 ?X0) (forall (?y0 Int) (?y1 PZ) (implies (MS0 ?y0 ?y1 ?X0) (and (= ?y0 ?x4) (= ?y1 ?x5)))))))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
@@ -680,11 +680,11 @@ public class TranslationTestsWithPP extends AbstractTests {
 		expectedAssumptions
 				.add("(forall (?x BOOL) (?y BOOL) (iff (iff (TRUE ?x) (TRUE ?y)) (= ?x ?y)))");
 		expectedAssumptions
-				.add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS ?x3 ?x4 ?A) (MS ?x3 ?x4 ?B))) (= ?A ?B)))");
-		expectedAssumptions
-				.add("(forall (?x5 BOOL) (?x6 BOOL) (exists (?X PBB) (and (MS ?x5 ?x6 ?X) (forall (?y1 BOOL) (?y2 BOOL) (implies (MS ?y1 ?y2 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6)))))))");
-		expectedAssumptions
 				.add("(exists (?x0 BOOL) (?y0 BOOL) (and (TRUE ?x0) (not (TRUE ?y0))))");
+		// expectedAssumptions
+		// .add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS ?x3 ?x4 ?A) (MS ?x3 ?x4 ?B))) (= ?A ?B)))");
+		// expectedAssumptions
+		// .add("(forall (?x5 BOOL) (?x6 BOOL) (exists (?X PBB) (and (MS ?x5 ?x6 ?X) (forall (?y1 BOOL) (?y2 BOOL) (implies (MS ?y1 ?y2 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6)))))))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -695,17 +695,13 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
-				.add("(forall (?A PZBZ) (?B PZBZ) (implies (forall (?x2 Int) (?x3 PB) (?x4 Int) (iff (MS0 ?x2 ?x3 ?x4 ?A) (MS0 ?x2 ?x3 ?x4 ?B))) (= ?A ?B)))");
-		expectedAssumptions
-				.add("(forall (?x5 Int) (?x6 PB) (?x7 Int) (exists (?X PZBZ) (and (MS0 ?x5 ?x6 ?x7 ?X) (forall (?y1 Int) (?y2 PB) (?y3 Int) (implies (MS0 ?y1 ?y2 ?y3 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6) (= ?y3 ?x7)))))))");
-		expectedAssumptions
 				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
 		expectedAssumptions
 				.add("(exists (?x1 BOOL) (?y0 BOOL) (and (TRUE ?x1) (not (TRUE ?y0))))");
 		expectedAssumptions
-				.add("(forall (?x9 BOOL) (exists (?X0 PB) (and (MS ?x9 ?X0) (forall (?y4 BOOL) (implies (MS ?y4 ?X0) (= ?y4 ?x9))))))");
+				.add("(forall (?A PB) (?B PB) (implies (forall (?x2 BOOL) (iff (MS ?x2 ?A) (MS ?x2 ?B))) (= ?A ?B)))");
 		expectedAssumptions
-				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x8 BOOL) (iff (MS ?x8 ?A0) (MS ?x8 ?B0))) (= ?A0 ?B0)))");
+				.add("(forall (?x3 BOOL) (exists (?X PB) (and (MS ?x3 ?X) (forall (?y1 BOOL) (implies (MS ?y1 ?X) (= ?y1 ?x3))))))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

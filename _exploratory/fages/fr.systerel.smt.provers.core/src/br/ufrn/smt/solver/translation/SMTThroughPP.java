@@ -88,8 +88,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private final SMTFactory sf;
 
 	/**
-	 * The gatherer is a class used to determine the logic and sets defined from
-	 * monadic predicates
+	 * The gatherer is a class used to determine the logic and sets defined with
+	 * specialized membership predicates
 	 */
 	private Gatherer gatherer;
 
@@ -108,10 +108,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private final Map<Type, SMTPredicateSymbol> msTypeMap = new HashMap<Type, SMTPredicateSymbol>();
 
 	/**
-	 * This field maps Event-B free identifiers to monadic preds that represents
-	 * simpler sets.
+	 * This field maps Event-B free identifiers to specialized membership
+	 * predicates that represents simpler sets.
 	 */
-	private final Map<FreeIdentifier, SMTPredicateSymbol> monadicPredsMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
+	private final Map<FreeIdentifier, SMTPredicateSymbol> specialMSPredsMap = new HashMap<FreeIdentifier, SMTPredicateSymbol>();
 
 	/**
 	 * This list contains the terms of the current membership being translated
@@ -310,13 +310,13 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			boolean parseConstant = true;
 
 			/**
-			 * check if the the variable is a monadic set. If so, translate the
-			 * base type of it
+			 * Checks if the the set expects a specialized membership predicate.
+			 * If so, translates the base type of it.
 			 */
-			for (final FreeIdentifier setForMonadicPred : gatherer
-					.getSetsForMonadicPreds()) {
-				if (setForMonadicPred.getName().equals(varName)
-						&& setForMonadicPred.getType().equals(varType)) {
+			for (final FreeIdentifier setForSpecialMSPred : gatherer
+					.getSetsForSpecialMSPreds()) {
+				if (setForSpecialMSPred.getName().equals(varName)
+						&& setForSpecialMSPred.getType().equals(varType)) {
 					varType = iter.getType().getBaseType();
 					parseConstant = false;
 					break;
@@ -430,7 +430,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * <code>s ⦂ ℙ(S)</code>.
 	 * <p>
 	 * If this actualPredicate is in accordance with the rules of optimization
-	 * of translation setsForMonadicPreds, the membership is translated to:
+	 * of translation setsForSpecialMSPreds, the membership is translated to:
 	 * 
 	 * (s a)
 	 * 
@@ -449,23 +449,24 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final SMTTerm leftTerm = smtTerm(left);
 
-		// Translate monadic setsForMonadicPreds (special case)
-		if (right instanceof FreeIdentifier) {
-			final FreeIdentifier rightSet = (FreeIdentifier) right;
-			if (gatherer.getSetsForMonadicPreds().contains(rightSet)) {
-				return translateInMonadicMembershipPredicate(leftTerm, rightSet);
-			}
-		}
-
 		final boolean leftTagIsMapsTo = left.getTag() == Formula.MAPSTO;
 		final Type leftType = left.getType();
+
+		// Translate setsForSpecialMSPreds (special case)
+		if (right instanceof FreeIdentifier) {
+			final FreeIdentifier rightSet = (FreeIdentifier) right;
+			if (gatherer.getSetsForSpecialMSPreds().contains(rightSet)) {
+				return translateInSpecializedMembershipPredicate(leftTerm,
+						leftType, leftTagIsMapsTo, rightSet);
+			}
+		}
 		return translateInClassicMembershipPredicate(leftTerm, leftType,
 				leftTagIsMapsTo, right);
 	}
 
 	/**
 	 * This method translates membership predicate in a normal way (the other
-	 * way is the simpler one with monadic predicates).
+	 * way is the simpler one with specialized predicates).
 	 * 
 	 * @param leftTerm
 	 * @param leftType
@@ -503,27 +504,41 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	}
 
 	/**
-	 * This method translates membership to monadic predicates (optimization)
+	 * This method translates membership to specialized membership predicates
+	 * (optimization)
 	 * 
 	 * @param leftTerm
 	 *            the translated left child of the membership
 	 * @param right
 	 *            the right child of the membership
 	 */
-	private SMTFormula translateInMonadicMembershipPredicate(
-			final SMTTerm leftTerm, final FreeIdentifier right) {
-		SMTPredicateSymbol monadicMembershipPredicate = monadicPredsMap
+	private SMTFormula translateInSpecializedMembershipPredicate(
+			final SMTTerm leftTerm, final Type leftType,
+			final boolean leftTagIsMapsTo, final FreeIdentifier right) {
+
+		if (!leftTagIsMapsTo) {
+			membershipPredicateTerms.add(0, leftTerm);
+		}
+
+		final int numberOfArguments = membershipPredicateTerms.size();
+		final SMTTerm[] args = new SMTTerm[numberOfArguments];
+		final SMTSortSymbol[] argSorts = new SMTSortSymbol[numberOfArguments];
+		for (int i = 0; i < numberOfArguments; i++) {
+			args[i] = membershipPredicateTerms.get(i);
+			argSorts[i] = args[i].getSort();
+		}
+
+		SMTPredicateSymbol specializedMembershipPredicate = specialMSPredsMap
 				.get(right);
 
-		if (monadicMembershipPredicate == null) {
-			monadicMembershipPredicate = signature.freshPredicateSymbol(
-					right.getName(), leftTerm.getSort());
-			monadicPredsMap.put(right, monadicMembershipPredicate);
+		if (specializedMembershipPredicate == null) {
+			specializedMembershipPredicate = signature.freshPredicateSymbol(
+					right.getName(), argSorts);
+			specialMSPredsMap.put(right, specializedMembershipPredicate);
 		}
 
 		final SMTFormula membership = SMTFactory.makeAtom(
-				monadicMembershipPredicate, new SMTTerm[] { leftTerm },
-				signature);
+				specializedMembershipPredicate, args, signature);
 		membershipPredicateTerms.clear();
 		return membership;
 	}
@@ -664,9 +679,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the membership of the created bounded variable into the left
 		// set
 		final SMTFormula leftMembership;
-		if (gatherer.getSetsForMonadicPreds().contains(leftSet)) {
-			leftMembership = translateInMonadicMembershipPredicate(smtVar,
-					(FreeIdentifier) leftSet);
+		if (gatherer.getSetsForSpecialMSPreds().contains(leftSet)) {
+			leftMembership = translateInSpecializedMembershipPredicate(smtVar,
+					baseType, false, (FreeIdentifier) leftSet);
 		} else {
 			leftMembership = translateInClassicMembershipPredicate(smtVar,
 					baseType, false, leftSet);
@@ -675,9 +690,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		// creates the membership of the created bounded variable into the right
 		// set
 		final SMTFormula rightMembership;
-		if (gatherer.getSetsForMonadicPreds().contains(rightSet)) {
-			rightMembership = translateInMonadicMembershipPredicate(smtVar,
-					(FreeIdentifier) rightSet);
+		if (gatherer.getSetsForSpecialMSPreds().contains(rightSet)) {
+			rightMembership = translateInSpecializedMembershipPredicate(smtVar,
+					baseType, false, (FreeIdentifier) rightSet);
 		} else {
 			rightMembership = translateInClassicMembershipPredicate(smtVar,
 					baseType, !leftTagIsMapsTo, rightSet);
