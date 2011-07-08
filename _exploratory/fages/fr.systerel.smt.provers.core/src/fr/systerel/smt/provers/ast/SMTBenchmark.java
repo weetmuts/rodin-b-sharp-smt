@@ -86,6 +86,7 @@ public class SMTBenchmark {
 	 */
 	protected void assumptionsSection(final StringBuilder sb) {
 		for (final SMTFormula assumption : assumptions) {
+			assumption.printComment(sb);
 			sb.append(" :assumption ");
 			assumption.toString(sb, 13, false);
 			sb.append("\n");

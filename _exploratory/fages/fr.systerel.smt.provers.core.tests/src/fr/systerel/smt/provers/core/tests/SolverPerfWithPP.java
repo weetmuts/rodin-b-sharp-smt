@@ -79,6 +79,21 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
+	public void testDFPSBool() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = new ArrayList<String>();
+
+		doTest("dfpsBool", hyps, "{TRUE ↦ {FALSE}} ∈ {TRUE} → {{FALSE}}",
+				te, VALID);
+	}
+
+	/**
+	 * 
+	 */
+	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple() {
 		setPreferencesForSolverTest(solver);
 

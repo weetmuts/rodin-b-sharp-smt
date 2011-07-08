@@ -679,6 +679,12 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions
 				.add("(forall (?x BOOL) (?y BOOL) (iff (iff (TRUE ?x) (TRUE ?y)) (= ?x ?y)))");
+		expectedAssumptions
+				.add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS ?x3 ?x4 ?A) (MS ?x3 ?x4 ?B))) (= ?A ?B)))");
+		expectedAssumptions
+				.add("(forall (?x5 BOOL) (?x6 BOOL) (exists (?X PBB) (and (MS ?x5 ?x6 ?X) (forall (?y1 BOOL) (?y2 BOOL) (implies (MS ?y1 ?y2 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6)))))))");
+		expectedAssumptions
+				.add("(exists (?x0 BOOL) (?y0 BOOL) (and (TRUE ?x0) (not (TRUE ?y0))))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -689,11 +695,17 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final List<String> expectedAssumptions = new ArrayList<String>();
 		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
 		expectedAssumptions
-				.add("(forall (?A PZBZ) (?B PZBZ) (implies (forall (?x1 Int) (?x2 PB) (?x3 Int) (iff (MS0 ?x1 ?x2 ?x3 ?A) (MS0 ?x1 ?x2 ?x3 ?B))) (= ?A ?B)))");
+				.add("(forall (?A PZBZ) (?B PZBZ) (implies (forall (?x2 Int) (?x3 PB) (?x4 Int) (iff (MS0 ?x2 ?x3 ?x4 ?A) (MS0 ?x2 ?x3 ?x4 ?B))) (= ?A ?B)))");
 		expectedAssumptions
-				.add("(forall (?x4 Int) (?x5 PB) (?x6 Int) (exists (?X PZBZ) (and (MS0 ?x4 ?x5 ?x6 ?X) (forall (?y0 Int) (?y1 PB) (?y2 Int) (implies (MS0 ?y0 ?y1 ?y2 ?X) (and (= ?y0 ?x4) (= ?y1 ?x5) (= ?y2 ?x6)))))))");
+				.add("(forall (?x5 Int) (?x6 PB) (?x7 Int) (exists (?X PZBZ) (and (MS0 ?x5 ?x6 ?x7 ?X) (forall (?y1 Int) (?y2 PB) (?y3 Int) (implies (MS0 ?y1 ?y2 ?y3 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6) (= ?y3 ?x7)))))))");
 		expectedAssumptions
 				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
+		expectedAssumptions
+				.add("(exists (?x1 BOOL) (?y0 BOOL) (and (TRUE ?x1) (not (TRUE ?y0))))");
+		expectedAssumptions
+				.add("(forall (?x9 BOOL) (exists (?X0 PB) (and (MS ?x9 ?X0) (forall (?y4 BOOL) (implies (MS ?y4 ?X0) (= ?y4 ?x9))))))");
+		expectedAssumptions
+				.add("(forall (?A0 PB) (?B0 PB) (implies (forall (?x8 BOOL) (iff (MS ?x8 ?A0) (MS ?x8 ?B0))) (= ?A0 ?B0)))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

@@ -14,6 +14,7 @@ package fr.systerel.smt.provers.ast;
  * Common class for SMT-LIB formulas.
  */
 public abstract class SMTFormula extends SMTNode<SMTFormula> {
+	private String comment;
 
 	/**
 	 * prints in the {@code builder} the string representation of the SMT
@@ -31,4 +32,14 @@ public abstract class SMTFormula extends SMTNode<SMTFormula> {
 	 * */
 	public abstract void toString(final StringBuilder builder,
 			final int offset, final boolean printPoint);
+
+	public void setComment(final String comment) {
+		this.comment = comment;
+	}
+
+	public void printComment(final StringBuilder builder) {
+		if (comment != null) {
+			builder.append(";").append(comment).append("\n");
+		}
+	}
 }

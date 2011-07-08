@@ -726,9 +726,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				membershipPredSymbol, new SMTTerm[] { smtVar, intConstant },
 				signature);
 
-		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { smtVar },
-				membershipFormula);
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeForAll(
+				new SMTTerm[] { smtVar }, membershipFormula);
+
+		axiom.setComment("Integer axiom");
+		return axiom;
 	}
 
 	/**
@@ -766,9 +769,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				membershipPredSymbol, new SMTTerm[] { smtVar, boolConstant },
 				signature);
 
-		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { smtVar },
-				membershipFormula);
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeForAll(
+				new SMTTerm[] { smtVar }, membershipFormula);
+
+		axiom.setComment("Bool axiom");
+		return axiom;
 	}
 
 	/**
@@ -777,7 +783,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * 
 	 * @return the SMTFormula representing the translated axiom
 	 */
-	private SMTFormula generateTrueAxiom() {
+	private SMTFormula generateTrueEqualityAxiom() {
 		// creates the quantified boolean variables with fresh names
 		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
 		final String xName = signature.freshSymbolName("x");
@@ -803,9 +809,47 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
 				trueXEqvTrueY, xEqualY });
 
-		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { xTerm, yTerm },
-				equivalence);
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { xTerm,
+				yTerm }, equivalence);
+
+		axiom.setComment("True equality axiom");
+		return axiom;
+	}
+
+	/**
+	 * Generates the SMT-LIB formula for this event-B formula:
+	 * <code>∃ x ⦂ BOOL, y ⦂ BOOL · x = TRUE ∧ y ≠ TRUE</code>
+	 * 
+	 * @return the SMTFormula representing the translated axiom
+	 */
+	private SMTFormula generateTrueExistenceAxiom() {
+		// creates the quantified boolean variables with fresh names
+		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
+		final String xName = signature.freshSymbolName("x");
+		final String yName = signature.freshSymbolName("y");
+		final SMTTerm xTerm = SMTFactory.makeVar(xName, boolSort);
+		final SMTTerm yTerm = SMTFactory.makeVar(yName, boolSort);
+
+		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
+		final SMTPredicateSymbol truePredSymbol = signature.getLogic()
+				.getTrue();
+		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol,
+				new SMTTerm[] { xTerm }, signature);
+		final SMTFormula notTrueY = SMTFactory
+				.makeNot(new SMTFormula[] { SMTFactory.makeAtom(truePredSymbol,
+						new SMTTerm[] { yTerm }, signature) });
+
+		// creates the conjunction <code>x = TRUE ∧ y ≠ TRUE</code>
+		final SMTFormula trueXAndNotTrueY = SMTFactory
+				.makeAnd(new SMTFormula[] { trueX, notTrueY });
+
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeExists(new SMTTerm[] { xTerm,
+				yTerm }, trueXAndNotTrueY);
+
+		axiom.setComment("True existence axiom");
+		return axiom;
 	}
 
 	/**
@@ -863,8 +907,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
 				forall, equality });
 
-		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { termA, termB }, implies);
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { termA,
+				termB }, implies);
+
+		axiom.setComment("Extensionality axiom");
+		return axiom;
 	}
 
 	/**
@@ -939,8 +987,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTFormula existsX = SMTFactory.makeExists(
 				new SMTTerm[] { termX }, conjonction);
 
-		// returns the quantified formula
-		return SMTFactory.makeForAll(xTerms, existsX);
+		// creates the axiom
+		final SMTFormula axiom = SMTFactory.makeForAll(xTerms, existsX);
+
+		axiom.setComment("Elementary Sets axiom (Singleton part)");
+		return axiom;
 	}
 
 	/**
@@ -988,17 +1039,36 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 
+		/**
+		 * If the gatherer found an occurrence of the atomic expression
+		 * <code>ℤ</code>, the translator adds the integer axiom to handle it.
+		 */
 		if (gatherer.foundAtomicIntegerExp()) {
 			translatedAssumptions.add(generateIntegerAxiom());
 		}
 
+		/**
+		 * If the gatherer found that the boolean theory was needed to discharge
+		 * the sequent,
+		 */
 		for (final SMTTheory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
+				/**
+				 * If the gatherer found an occurrence of the atomic expression
+				 * <code>BOOL</code>, the translator adds the bool axiom to
+				 * handle it.
+				 */
 				if (gatherer.foundAtomicBoolExp()) {
 					translatedAssumptions.add(generateBoolAxiom());
 				}
+				/**
+				 * If the gatherer found that the identifiers couldn't be
+				 * translated themselves in boolean equalities, the translator
+				 * adds the true axiom to handle them.
+				 */
 				if (gatherer.usesTruePredicate()) {
-					translatedAssumptions.add(generateTrueAxiom());
+					translatedAssumptions.add(generateTrueEqualityAxiom());
+					translatedAssumptions.add(generateTrueExistenceAxiom());
 				}
 			}
 		}
@@ -1007,7 +1077,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		for (final Predicate hypothesis : ppTranslatedHypotheses) {
 			clearFormula();
 			/**
-			 * ignoring TRUE hypotheses generated by PP
+			 * ignoring TRUE hypotheses generated by PP (
+			 * <code>:assumption (true)</code>)
 			 */
 			if (hypothesis.getTag() != Formula.BTRUE) {
 				translatedAssumptions.add(translate(hypothesis));
@@ -1017,20 +1088,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		clearFormula();
 		final SMTFormula smtFormula = translate(ppTranslatedGoal);
 
+		/**
+		 * The translator adds some set theory axioms for each defined
+		 * membership predicate
+		 */
 		int i = 0;
 		for (final Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap
 				.entrySet()) {
-			final Set<Type> baseTypes = getBaseTypes(new HashSet<Type>(),
-					entry.getKey());
-			baseTypes.remove(FormulaFactory.getDefault().makeBooleanType());
-			if (!baseTypes.isEmpty()) {
-				translatedAssumptions.add(i,
-						generateExtensionalityAxiom(entry.getValue()));
-				i++;
-				translatedAssumptions.add(i,
-						generateSingletonAxiom(entry.getValue()));
-				i++;
-			}
+			translatedAssumptions.add(i,
+					generateExtensionalityAxiom(entry.getValue()));
+			i++;
+			translatedAssumptions.add(i,
+					generateSingletonAxiom(entry.getValue()));
+			i++;
 		}
 
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
