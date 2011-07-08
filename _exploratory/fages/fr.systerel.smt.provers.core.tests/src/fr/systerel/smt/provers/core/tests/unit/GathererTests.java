@@ -118,14 +118,29 @@ public class GathererTests extends AbstractTests {
 		checkMonadicPreds(expectedMonadicPreds, result.getSetsForMonadicPreds());
 	}
 
+	private static String notEncounteredMonadicPredMessage(
+			final String monadicPred) {
+		return "The monadic predicate: " + monadicPred.toString()
+				+ " was not expected";
+	}
+
+	private static String monadicPredsErrorMessage(
+			final Set<FreeIdentifier> setsOfMonadicPreds) {
+		return "The encountered monadic predicates were: "
+				+ setsOfMonadicPreds.toString();
+	}
+
 	private static void checkMonadicPreds(final String[] expectedMonadicPreds,
 			final Set<FreeIdentifier> setsForMonadicPreds) {
-		assertEquals(expectedMonadicPreds.length, setsForMonadicPreds.size());
+		assertEquals(monadicPredsErrorMessage(setsForMonadicPreds),
+				expectedMonadicPreds.length, setsForMonadicPreds.size());
 
 		final List<String> eMonPreds = Arrays.asList(expectedMonadicPreds);
 
 		for (final FreeIdentifier monadicPred : setsForMonadicPreds) {
-			assertTrue(eMonPreds.contains(monadicPred.toString()));
+			assertTrue(
+					notEncounteredMonadicPredMessage(monadicPred.toString()),
+					eMonPreds.contains(monadicPred.toString()));
 		}
 	}
 
@@ -182,18 +197,17 @@ public class GathererTests extends AbstractTests {
 				"(x ∈ BOOL) ∧ (x = z) ∧ (t ∈ ℤ) ∧ (g ∈ G)");
 	}
 
-	// FIXME Fix the goal of this test
 	@Test
 	public void test5() {
-		final String[] expectedMonadicPreds = {};
+		final String[] expectedMonadicPreds = { "G" };
 
 		doTest(mTypeEnvironment("x", "BOOL", "z", "BOOL", "t", "ℤ", "g",
 				"BOOL", "G", "ℙ(BOOL)"),//
-		AtomicBoolExp.NOT_FOUND, //
+				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {},// Monadic Pred
+				expectedMonadicPreds, new String[] {},
 				"(x = z) ∧ (t ∈ ℤ) ∧ (g ∈ G)");
 	}
 
@@ -206,23 +220,34 @@ public class GathererTests extends AbstractTests {
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// Monadic Pred
+				expectedMonadicPreds, new String[] {}, //
 				"(x = z)");
 	}
 
-	// FIXME Fix the goal of this test
 	@Test
 	public void test6() {
-		final String[] expectedMonadicPreds = {};
+		final String[] expectedMonadicPreds = { "X" };
 
-		doTest(mTypeEnvironment("x", "S"),//
-				AtomicBoolExp.FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
+		doTest(mTypeEnvironment("x", "ℤ", "X", "ℙ(ℤ)"),//
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// Monadic Pred
+				expectedMonadicPreds, new String[] {},//
 				// FIXME Goal
-				"x ∈ A");
+				"(x ∈ X) ∧ (X = ℤ)");
 	}
 
+	@Test
+	public void test6_1() {
+		final String[] expectedMonadicPreds = {};
+
+		doTest(mTypeEnvironment("x", "ℤ×ℤ×ℤ", "X", "ℙ(ℤ×ℤ×ℤ)"),//
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				expectedMonadicPreds, new String[] {},//
+				"(x ∈ X) ∧ (X = ℤ×ℤ×ℤ)");
+	}
 }
