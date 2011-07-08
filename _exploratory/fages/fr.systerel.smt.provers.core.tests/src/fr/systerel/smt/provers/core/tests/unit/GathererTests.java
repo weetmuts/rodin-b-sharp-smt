@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.pptrans.Translator;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Gatherer;
@@ -90,9 +91,14 @@ public class GathererTests extends AbstractTests {
 
 		final List<Predicate> preds = new ArrayList<Predicate>();
 		for (final String hypothesis : hypotheses) {
-			preds.add(parse(hypothesis, typenv));
+			final Predicate h = parse(hypothesis, typenv);
+			assertTrue("Predicate: " + h.toString()
+					+ " is not in the PP sub-language.", Translator.isInGoal(h));
+			preds.add(h);
 		}
 		final Predicate goalP = parse(goal, typenv);
+		assertTrue("Predicate: " + goalP.toString()
+				+ " is not in the PP sub-language.", Translator.isInGoal(goalP));
 		final Gatherer result = Gatherer.gatherFrom(preds, goalP);
 
 		checkResult(atomicBoolExp, atomicIntegerExp, boolTheory, truePredicate,
@@ -161,54 +167,50 @@ public class GathererTests extends AbstractTests {
 	public void test2() {
 		final String[] expectedMonadicPreds = {};
 
-		doTest(mTypeEnvironment("z", "BOOL"),//
+		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {},
-				"∃x·((x ∈ BOOL) ∧ (x = z))");
+				expectedMonadicPreds, new String[] {}, "a↦BOOL↦BOOL ∈ X");
 	}
 
 	@Test
 	public void test3() {
 		final String[] expectedMonadicPreds = {};
 
-		doTest(mTypeEnvironment("z", "BOOL"),//
+		doTest(mTypeEnvironment(),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				expectedMonadicPreds, new String[] {}, // No Monadic Pred
-				"∃x,t·((x ∈ BOOL) ∧ (x = z) ∧ (t ∈ ℤ))");
+				"(a↦BOOL↦ℤ ∈ X) ∧ (a = TRUE) ");
 	}
 
 	@Test
 	public void test4() {
 		final String[] expectedMonadicPreds = { "G" };
 
-		doTest(mTypeEnvironment("x", "BOOL", "z", "BOOL", "t", "ℤ", "g", "ℤ",
-				"G", "ℙ(ℤ)"),//
-		AtomicBoolExp.FOUND, //
+		doTest(mTypeEnvironment("a", "BOOL", "g", "ℤ", "G", "ℙ(ℤ)"),//
+				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				expectedMonadicPreds, new String[] {},// Monadic Pred
-				"(x ∈ BOOL) ∧ (x = z) ∧ (t ∈ ℤ) ∧ (g ∈ G)");
+				"(a↦BOOL↦ℤ ∈ X) ∧ (g ∈ G)");
 	}
 
 	@Test
 	public void test5() {
 		final String[] expectedMonadicPreds = { "G" };
 
-		doTest(mTypeEnvironment("x", "BOOL", "z", "BOOL", "t", "ℤ", "g",
-				"BOOL", "G", "ℙ(BOOL)"),//
+		doTest(mTypeEnvironment("a", "BOOL", "g", "ℤ", "G", "ℙ(ℤ)"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {},
-				"(x = z) ∧ (t ∈ ℤ) ∧ (g ∈ G)");
+				expectedMonadicPreds, new String[] {}, "(a↦ℤ ∈ X) ∧ (g ∈ G)");
 	}
 
 	@Test
@@ -228,16 +230,17 @@ public class GathererTests extends AbstractTests {
 	public void test6() {
 		final String[] expectedMonadicPreds = { "X" };
 
-		doTest(mTypeEnvironment("x", "ℤ", "X", "ℙ(ℤ)"),//
+		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				expectedMonadicPreds, new String[] {},//
 				// FIXME Goal
-				"(x ∈ X) ∧ (X = ℤ)");
+				"(ℤ↦a ∈ P) ∧ (a ∈ X)");
 	}
 
+	// FIXME Put in the PP sublanguage
 	@Test
 	public void test6_1() {
 		final String[] expectedMonadicPreds = {};
@@ -250,4 +253,35 @@ public class GathererTests extends AbstractTests {
 				expectedMonadicPreds, new String[] {},//
 				"(x ∈ X) ∧ (X = ℤ×ℤ×ℤ)");
 	}
+
+	// FIXME Put in the PP sublanguage
+	@Test
+	public void test7() {
+		final String[] expectedMonadicPreds = {};
+
+		doTest(mTypeEnvironment("A", "ℙ(A)", "SA", "ℙ(A)", "b", "B", "bs", "B",
+				"SB", "ℙ(B)", "C", "ℙ(C)", "c", "C", "D", "ℙ(D)"),//
+		AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				expectedMonadicPreds, new String[] {},//
+				"(SA ∈ ℙ(A)) ∧ (∃X⦂(ℙ(B))· b ∈ X) ∧ (bs ∈ SB)");
+	}
+
+	// FIXME Put in the PP sublanguage
+	@Test
+	public void test7_1() {
+		final String[] expectedMonadicPreds = { "SA" };
+
+		doTest(mTypeEnvironment("A", "ℙ(A)", "SA", "ℙ(A)", "b", "B", "bs", "B",
+				"SB", "ℙ(B)", "C", "ℙ(C)", "c", "C", "D", "ℙ(D)"),//
+		AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				expectedMonadicPreds, new String[] {},//
+				"(SA ∈ ℙ(A)) ∧ (a ∈ SA)");
+	}
+
 }
