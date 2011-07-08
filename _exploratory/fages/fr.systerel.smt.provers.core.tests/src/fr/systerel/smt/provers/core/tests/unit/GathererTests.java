@@ -239,49 +239,4 @@ public class GathererTests extends AbstractTests {
 				// FIXME Goal
 				"(ℤ↦a ∈ P) ∧ (a ∈ X)");
 	}
-
-	// FIXME Put in the PP sublanguage
-	@Test
-	public void test6_1() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("x", "ℤ×ℤ×ℤ", "X", "ℙ(ℤ×ℤ×ℤ)"),//
-				AtomicBoolExp.NOT_FOUND, //
-				AtomicIntegerExp.FOUND, //
-				BoolTheory.NOT_FOUND, //
-				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},//
-				"(x ∈ X) ∧ (X = ℤ×ℤ×ℤ)");
-	}
-
-	// FIXME Put in the PP sublanguage
-	@Test
-	public void test7() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("A", "ℙ(A)", "SA", "ℙ(A)", "b", "B", "bs", "B",
-				"SB", "ℙ(B)", "C", "ℙ(C)", "c", "C", "D", "ℙ(D)"),//
-		AtomicBoolExp.NOT_FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
-				BoolTheory.NOT_FOUND, //
-				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},//
-				"(SA ∈ ℙ(A)) ∧ (∃X⦂(ℙ(B))· b ∈ X) ∧ (bs ∈ SB)");
-	}
-
-	// FIXME Put in the PP sublanguage
-	@Test
-	public void test7_1() {
-		final String[] expectedMonadicPreds = { "SA" };
-
-		doTest(mTypeEnvironment("A", "ℙ(A)", "SA", "ℙ(A)", "b", "B", "bs", "B",
-				"SB", "ℙ(B)", "C", "ℙ(C)", "c", "C", "D", "ℙ(D)"),//
-		AtomicBoolExp.NOT_FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
-				BoolTheory.NOT_FOUND, //
-				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},//
-				"(SA ∈ ℙ(A)) ∧ (a ∈ SA)");
-	}
-
 }
