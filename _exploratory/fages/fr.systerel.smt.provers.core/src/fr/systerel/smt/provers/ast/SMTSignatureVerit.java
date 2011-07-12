@@ -77,7 +77,7 @@ public class SMTSignatureVerit extends SMTSignature {
 	public SMTSortSymbol freshSort(final String name) {
 		final String freshName;
 
-		if (name.equals("\u2124")) { // INTEGER
+		if (name.equals("ℤ")) { // INTEGER
 			freshName = SMTSymbol.INT;
 		} else if (name.equals("BOOL")) {
 			return getBoolSort();

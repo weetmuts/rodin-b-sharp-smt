@@ -416,9 +416,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final IIterator iter = typeEnvironment.getIterator();
 		while (iter.hasNext()) {
 			iter.advance();
+			final String varName = iter.getName();
 			final Type varType = iter.getType();
 			final SMTSortSymbol sort = translateTypeName(varType);
-			final String varName = iter.getName();
 			if (varType.getSource() != null || varType.getBaseType() != null) {
 				translatePredSymbol(varName, sort);
 			} else {
@@ -527,9 +527,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private SMTSortSymbol translateProductType(final ProductType type) {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
-		typeMap.put(type.getLeft(), left);
 		final SMTSortSymbol right = translateTypeName(type.getRight());
-		typeMap.put(type.getLeft(), right);
 		return SMTFactoryVeriT.makePairSortSymbol(left, right);
 	}
 
