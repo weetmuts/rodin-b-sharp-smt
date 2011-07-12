@@ -42,6 +42,10 @@ public class GathererTests extends AbstractTests {
 
 	private static final String[] NO_MS_SPECIAL_PREDS = new String[0];
 
+	/**
+	 * Class created to handle each expected field from the Gatherer
+	 * 
+	 */
 	private static class Option {
 		private final boolean isTrue;
 
@@ -55,6 +59,9 @@ public class GathererTests extends AbstractTests {
 
 	}
 
+	/**
+	 * Class created to handle the expected field Bool Set from the Gatherer.
+	 **/
 	static class AtomicBoolExp extends Option {
 		static final AtomicBoolExp FOUND = new AtomicBoolExp(true);
 		static final AtomicBoolExp NOT_FOUND = new AtomicBoolExp(false);
@@ -64,6 +71,9 @@ public class GathererTests extends AbstractTests {
 		}
 	}
 
+	/**
+	 * Class created to handle the expected field Integer set from the Gatherer.
+	 **/
 	static class AtomicIntegerExp extends Option {
 		static final AtomicIntegerExp FOUND = new AtomicIntegerExp(true);
 		static final AtomicIntegerExp NOT_FOUND = new AtomicIntegerExp(false);
@@ -73,6 +83,10 @@ public class GathererTests extends AbstractTests {
 		}
 	}
 
+	/**
+	 * Class created to handle the expected field BoolTheoryFound from the
+	 * Gatherer.
+	 **/
 	static class BoolTheory extends Option {
 		static final BoolTheory FOUND = new BoolTheory(true);
 		static final BoolTheory NOT_FOUND = new BoolTheory(false);
@@ -82,6 +96,10 @@ public class GathererTests extends AbstractTests {
 		}
 	}
 
+	/**
+	 * Class created to handle the expected element True Predicate from the
+	 * Gatherer.
+	 **/
 	static class TruePredicate extends Option {
 		static final TruePredicate FOUND = new TruePredicate(true);
 		static final TruePredicate NOT_FOUND = new TruePredicate(false);
@@ -91,6 +109,25 @@ public class GathererTests extends AbstractTests {
 		}
 	}
 
+	/**
+	 * Executes tests in the Gatherer class. This method is similar to the other
+	 * doTest in this class, but it accepts no hypotheses.
+	 * 
+	 * @param typenv
+	 *            The type environment for the test
+	 * @param atomicBoolExp
+	 *            the expected field value
+	 * @param atomicIntegerExp
+	 *            the expected field value
+	 * @param boolTheory
+	 *            the expected field value
+	 * @param truePredicate
+	 *            the expected field value
+	 * @param expectedSpecialMSPredImages
+	 *            the expected monadic predicates
+	 * @param goal
+	 *            the goal for the test
+	 */
 	private static void doTest(final ITypeEnvironment typenv,
 			final AtomicBoolExp atomicBoolExp,
 			final AtomicIntegerExp atomicIntegerExp,
@@ -100,6 +137,26 @@ public class GathererTests extends AbstractTests {
 				truePredicate, expectedSpecialMSPredImages, new String[0], goal);
 	}
 
+	/**
+	 * Execute tests in the Gatherer class
+	 * 
+	 * @param typenv
+	 *            The type environment for the test
+	 * @param atomicBoolExp
+	 *            the expected field value
+	 * @param atomicIntegerExp
+	 *            the expected field value
+	 * @param boolTheory
+	 *            the expected field value
+	 * @param truePredicate
+	 *            the expected field value
+	 * @param expectedSpecialMSPredImages
+	 *            the expected monadic predicates
+	 * @param hypotheses
+	 *            the hypotheses for the test
+	 * @param goal
+	 *            the goal for the test
+	 */
 	private static void doTest(final ITypeEnvironment typenv,
 			final AtomicBoolExp atomicBoolExp,
 			final AtomicIntegerExp atomicIntegerExp,
@@ -125,6 +182,18 @@ public class GathererTests extends AbstractTests {
 				expectedSpecialMSPreds, actual);
 	}
 
+	/**
+	 * Given the type environment and the expected predicate strings, thi method
+	 * builds and returns the set of Free Identifiers that are expected to be
+	 * translated to monadic predicates.
+	 * 
+	 * @param typenv
+	 *            the type environment
+	 * @param expectedSpecialMSPredImages
+	 *            the list of expected monadic predicate strings
+	 * @return the set of Free Identifiers that are expected to be translated to
+	 *         monadic predicates.
+	 */
 	private static Set<FreeIdentifier> getExpectedIdents(
 			final ITypeEnvironment typenv,
 			final String[] expectedSpecialMSPredImages) {
@@ -152,6 +221,13 @@ public class GathererTests extends AbstractTests {
 		assertEquals(expectedSpecialMSPreds, actual.getSetsForSpecialMSPreds());
 	}
 
+	/**
+	 * Returns an array of String
+	 * 
+	 * @param strings
+	 *            the list of strings
+	 * @return the array of the strings
+	 */
 	private static final String[] L(final String... strings) {
 		return strings;
 	}
