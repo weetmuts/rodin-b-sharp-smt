@@ -152,44 +152,43 @@ public class GathererTests extends AbstractTests {
 		}
 	}
 
-	@Test
-	public void testBoolExpr() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("a", "ℤ", "b", "ℤ"),//
-				AtomicBoolExp.FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
-				BoolTheory.FOUND, //
-				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
-				"(a↦BOOL↦BOOL ∈ X");
-	}
-
 	// FIXME
 	@Test
-	@Ignore("")
 	public void testIntegerExpr() {
 		final String[] expectedMonadicPreds = {};
 
-		doTest(mTypeEnvironment("a", "ℤ", "b", "ℤ"),//
+		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
+				AtomicIntegerExp.FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				expectedMonadicPreds, new String[] {},// No Monadic Pre
-				"(a = b)");
+				"(a↦ℤ ∈ X) ∨ (∃ T · (a↦ℤ ∈ T))");
 	}
 
 	// FIXME
 	@Test
-	@Ignore("")
+	public void testIntegerMonadicExpr() {
+		final String[] expectedMonadicPreds = { "X" };
+
+		doTest(mTypeEnvironment("a", "ℤ"),//
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				expectedMonadicPreds, new String[] {},// No Monadic Pre
+				"(a↦ℤ ∈ X) ∨ (∃ V · (a ∈ V))");
+	}
+
+	// FIXME
+	@Test
 	public void testBoolTheory() {
 		final String[] expectedMonadicPreds = {};
 
-		doTest(mTypeEnvironment("a", "ℤ", "b", "ℤ"),//
+		doTest(mTypeEnvironment("a", "BOOL", "b", "BOOL"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
-				BoolTheory.NOT_FOUND, //
+				BoolTheory.FOUND, //
 				TruePredicate.NOT_FOUND, //
 				expectedMonadicPreds, new String[] {},// No Monadic Pre
 				"(a = b)");
