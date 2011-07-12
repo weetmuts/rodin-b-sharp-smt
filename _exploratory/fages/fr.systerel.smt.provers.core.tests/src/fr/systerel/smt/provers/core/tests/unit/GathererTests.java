@@ -11,28 +11,36 @@
 package fr.systerel.smt.provers.core.tests.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.ast.Type;
 import org.eventb.pptrans.Translator;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.translation.Gatherer;
 import fr.systerel.smt.provers.core.tests.AbstractTests;
 
 /**
+ * Ensures that the gatherer reports correct information about the sequent
+ * passed to it for analysis.
  * 
+ * @see Gatherer
  * @author Laurent Voisin
+ * @author Vitor Almeida
  */
 public class GathererTests extends AbstractTests {
+
+	private static final String[] NO_MS_SPECIAL_PREDS = new String[0];
 
 	private static class Option {
 		private final boolean isTrue;
@@ -87,8 +95,17 @@ public class GathererTests extends AbstractTests {
 			final AtomicBoolExp atomicBoolExp,
 			final AtomicIntegerExp atomicIntegerExp,
 			final BoolTheory boolTheory, final TruePredicate truePredicate,
-			final String[] expectedMonadicPreds, final String[] hypotheses,
-			final String goal) {
+			final String[] expectedSpecialMSPredImages, final String goal) {
+		doTest(typenv, atomicBoolExp, atomicIntegerExp, boolTheory,
+				truePredicate, expectedSpecialMSPredImages, new String[0], goal);
+	}
+
+	private static void doTest(final ITypeEnvironment typenv,
+			final AtomicBoolExp atomicBoolExp,
+			final AtomicIntegerExp atomicIntegerExp,
+			final BoolTheory boolTheory, final TruePredicate truePredicate,
+			final String[] expectedSpecialMSPredImages,
+			final String[] hypotheses, final String goal) {
 
 		final List<Predicate> preds = new ArrayList<Predicate>();
 		for (final String hypothesis : hypotheses) {
@@ -100,226 +117,179 @@ public class GathererTests extends AbstractTests {
 		final Predicate goalP = parse(goal, typenv);
 		assertTrue("Predicate: " + goalP.toString()
 				+ " is not in the PP sub-language.", Translator.isInGoal(goalP));
-		final Gatherer result = Gatherer.gatherFrom(preds, goalP);
+		final Set<FreeIdentifier> expectedSpecialMSPreds = getExpectedIdents(
+				typenv, expectedSpecialMSPredImages);
 
+		final Gatherer actual = Gatherer.gatherFrom(preds, goalP);
 		checkResult(atomicBoolExp, atomicIntegerExp, boolTheory, truePredicate,
-				expectedMonadicPreds, result);
+				expectedSpecialMSPreds, actual);
 	}
 
-	/**
-	 * @param atomicBoolExp
-	 * @param atomicIntegerExp
-	 * @param boolTheory
-	 * @param truePredicate
-	 * @param expectedMonadicPreds
-	 * @param result
-	 */
+	private static Set<FreeIdentifier> getExpectedIdents(
+			final ITypeEnvironment typenv,
+			final String[] expectedSpecialMSPredImages) {
+		final FormulaFactory factory = typenv.getFormulaFactory();
+		final Set<FreeIdentifier> result = new HashSet<FreeIdentifier>();
+		for (final String name : expectedSpecialMSPredImages) {
+			final Type type = typenv.getType(name);
+			assertNotNull("Invalid identifier name " + name, type);
+			assertNotNull("identifier " + name + " should be a set",
+					type.getBaseType());
+			result.add(factory.makeFreeIdentifier(name, null, type));
+		}
+		return result;
+	}
+
 	private static void checkResult(final AtomicBoolExp atomicBoolExp,
 			final AtomicIntegerExp atomicIntegerExp,
 			final BoolTheory boolTheory, final TruePredicate truePredicate,
-			final String[] expectedMonadicPreds, final Gatherer result) {
-		atomicBoolExp.check(result.foundAtomicBoolExp());
-		atomicIntegerExp.check(result.foundAtomicIntegerExp());
-		boolTheory.check(result.usesBoolTheory());
-		truePredicate.check(result.usesTruePredicate());
-		checkMonadicPreds(expectedMonadicPreds,
-				result.getSetsForSpecialMSPreds());
+			final Set<FreeIdentifier> expectedSpecialMSPreds,
+			final Gatherer actual) {
+		atomicBoolExp.check(actual.foundAtomicBoolExp());
+		atomicIntegerExp.check(actual.foundAtomicIntegerExp());
+		boolTheory.check(actual.usesBoolTheory());
+		truePredicate.check(actual.usesTruePredicate());
+		assertEquals(expectedSpecialMSPreds, actual.getSetsForSpecialMSPreds());
 	}
 
-	private static String notEncounteredMonadicPredMessage(
-			final String monadicPred) {
-		return "The monadic predicate: " + monadicPred.toString()
-				+ " was not expected";
+	private static final String[] L(String... strings) {
+		return strings;
 	}
 
-	private static String monadicPredsErrorMessage(
-			final Set<FreeIdentifier> setsOfMonadicPreds) {
-		return "The encountered monadic predicates were: "
-				+ setsOfMonadicPreds.toString();
-	}
-
-	private static void checkMonadicPreds(final String[] expectedMonadicPreds,
-			final Set<FreeIdentifier> setsForMonadicPreds) {
-		assertEquals(monadicPredsErrorMessage(setsForMonadicPreds),
-				expectedMonadicPreds.length, setsForMonadicPreds.size());
-
-		final List<String> eMonPreds = Arrays.asList(expectedMonadicPreds);
-
-		for (final FreeIdentifier monadicPred : setsForMonadicPreds) {
-			assertTrue(
-					notEncounteredMonadicPredMessage(monadicPred.toString()),
-					eMonPreds.contains(monadicPred.toString()));
-		}
-	}
-
-	// FIXME
+	/**
+	 * Ensures that occurrence of the set of integers alone is correctly
+	 * reported.
+	 */
 	@Test
 	public void testIntegerExpr() {
-		final String[] expectedMonadicPreds = {};
-
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
+				NO_MS_SPECIAL_PREDS, //
 				"(a↦ℤ ∈ X) ∨ (∃ T · (a↦ℤ ∈ T))");
 	}
 
-	// FIXME
 	@Test
-	public void testIntegerMonadicExpr() {
-		final String[] expectedMonadicPreds = { "X" };
-
+	public void testIntegerSpecialMSExpr() {
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
+				L("X"), //
 				"(a↦ℤ ∈ X) ∨ (∃ V · (a ∈ V))");
 	}
 
-	// FIXME
 	@Test
 	public void testBoolTheory() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("a", "BOOL", "b", "BOOL"),//
+		doTest(mTypeEnvironment("a", "BOOL"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
-				"(a = b)");
-	}
-
-	// FIXME
-	@Test
-	@Ignore("")
-	public void testTruePred() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("a", "ℤ", "b", "ℤ"),//
-				AtomicBoolExp.NOT_FOUND, //
-				AtomicIntegerExp.NOT_FOUND, //
-				BoolTheory.NOT_FOUND, //
-				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
+				NO_MS_SPECIAL_PREDS, //
 				"(a = b)");
 	}
 
 	@Test
-	public void testMonadicPreds() {
-		final String[] expectedMonadicPreds = { "X" };
-
+	public void testSpecialMSPreds() {
 		doTest(mTypeEnvironment("X", "ℙ(ℤ)"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {}, "∃t · (t ∈ X)");
+				L("X"), //
+				"∃t · (t ∈ X)");
 	}
 
 	@Test
-	public void testMonadicPredsFull() {
-		final String[] expectedMonadicPreds = {};
-
+	public void testSpecialMSPredsFull() {
 		doTest(mTypeEnvironment("a", "A", "b", "B", "c", "A", "d", "B"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// Monadic Pred
+				NO_MS_SPECIAL_PREDS, //
 				"∀H·((a↦b ∈ X) ∨ (c↦d ∈ H))");
 	}
 
 	@Test
-	public void testMonadicPredsAbsence() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("X", "ℙ(ℤ)"),//
+	public void testSpecialMSPredsAbsence() {
+		doTest(mTypeEnvironment(),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {}, "∃t⦂ℤ · (∀ X · (t ∈ X))");
+				NO_MS_SPECIAL_PREDS, //
+				"∃t⦂ℤ · (∀ X · (t ∈ X))");
 	}
 
 	@Test
 	public void testMix1() {
-		final String[] expectedMonadicPreds = {};
-
-		doTest(mTypeEnvironment("a", "ℤ", "b", "ℤ"),//
+		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
-				expectedMonadicPreds, new String[] {},// No Monadic Pre
+				NO_MS_SPECIAL_PREDS, //
 				"(a = b)");
 	}
 
 	@Test
 	public void testMix2() {
-		final String[] expectedMonadicPreds = {};
-
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {},
+				NO_MS_SPECIAL_PREDS, //
 				"a↦BOOL↦BOOL ∈ X ∧ (∃T · a↦BOOL↦BOOL ∈ T)");
 	}
 
 	@Test
 	public void testMix2_1() {
-		final String[] expectedMonadicPreds = { "X" };
-
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {}, "a↦BOOL↦BOOL ∈ X");
+				L("X"), //
+				"a↦BOOL↦BOOL ∈ X");
 	}
 
 	@Test
 	public void testNotBoolSetNotIntgSet() {
-		final String[] expectedMonadicPreds = {};
-
 		doTest(mTypeEnvironment("a", "BOOL", "b", "BOOL", "c", "BOOL", "d",
 				"BOOL"),//
 		AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {},// Monadic Pred
+				NO_MS_SPECIAL_PREDS, //
 				"∀H·((a↦b↦c ∈ X) ∨ (c↦d↦a ∈ H))");
 	}
 
 	@Test
 	public void testNotBoolSetOnly() {
-		final String[] expectedMonadicPreds = { "G","X" };
-
-		doTest(mTypeEnvironment("a", "BOOL", "g", "ℤ", "G", "ℙ(ℤ)"),//
+		doTest(mTypeEnvironment("a", "BOOL", "g", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {}, "(a↦ℤ ∈ X) ∧ (g ∈ G)");
+				L("G", "X"), //
+				"(a↦ℤ ∈ X) ∧ (g ∈ G)");
 	}
 
 	@Test
 	public void testAll() {
-		final String[] expectedMonadicPreds = { "X" };
-
 		doTest(mTypeEnvironment(),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.FOUND, //
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
-				expectedMonadicPreds, new String[] {}, // No Monadic Pred
+				L("X"), //
 				"(a↦BOOL↦ℤ ∈ X) ∧ (a = TRUE)");
 	}
 }
