@@ -152,7 +152,7 @@ public class GathererTests extends AbstractTests {
 		assertEquals(expectedSpecialMSPreds, actual.getSetsForSpecialMSPreds());
 	}
 
-	private static final String[] L(String... strings) {
+	private static final String[] L(final String... strings) {
 		return strings;
 	}
 
@@ -171,8 +171,12 @@ public class GathererTests extends AbstractTests {
 				"(a↦ℤ ∈ X) ∨ (∃ T · (a↦ℤ ∈ T))");
 	}
 
+	/**
+	 * Ensures that occurrence of the set of integers and at monadic predicates
+	 * are correctly reported.
+	 */
 	@Test
-	public void testIntegerSpecialMSExpr() {
+	public void testIntegerAndSpecialMSExpr() {
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.FOUND, //
@@ -182,6 +186,10 @@ public class GathererTests extends AbstractTests {
 				"(a↦ℤ ∈ X) ∨ (∃ V · (a ∈ V))");
 	}
 
+	/**
+	 * Ensures that the occurrence of Bool Theory in the predicate, looking at
+	 * the type of the identifiers, is correctly reported.
+	 */
 	@Test
 	public void testBoolTheory() {
 		doTest(mTypeEnvironment("a", "BOOL"),//
@@ -193,6 +201,11 @@ public class GathererTests extends AbstractTests {
 				"(a = b)");
 	}
 
+	/**
+	 * Ensures that the occurrence of monadic predicates, where the left side of
+	 * the membership that contains the monadic predicate is a bound identifier,
+	 * is correctly reported.
+	 */
 	@Test
 	public void testSpecialMSPreds() {
 		doTest(mTypeEnvironment("X", "ℙ(ℤ)"),//
@@ -204,6 +217,11 @@ public class GathererTests extends AbstractTests {
 				"∃t · (t ∈ X)");
 	}
 
+	/**
+	 * Ensures that, if a membership contains in the right side a bound
+	 * identifier, no other predicate from similar membership is translated to
+	 * monadic predicate.
+	 */
 	@Test
 	public void testSpecialMSPredsFull() {
 		doTest(mTypeEnvironment("a", "A", "b", "B", "c", "A", "d", "B"),//
@@ -215,6 +233,11 @@ public class GathererTests extends AbstractTests {
 				"∀H·((a↦b ∈ X) ∨ (c↦d ∈ H))");
 	}
 
+	/**
+	 * Ensures that if the elements of the membership are bound, then the right
+	 * identifier cannot be translated to monadic predicate.
+	 * 
+	 */
 	@Test
 	public void testSpecialMSPredsAbsence() {
 		doTest(mTypeEnvironment(),//
@@ -226,8 +249,12 @@ public class GathererTests extends AbstractTests {
 				"∃t⦂ℤ · (∀ X · (t ∈ X))");
 	}
 
+	/**
+	 * Ensures that no field of the Gatherer is changed, that is, no symbol is
+	 * found.
+	 */
 	@Test
-	public void testMix1() {
+	public void testNoSymbol() {
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.NOT_FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
@@ -237,8 +264,12 @@ public class GathererTests extends AbstractTests {
 				"(a = b)");
 	}
 
+	/**
+	 * Ensures that the set Bool, the Bool Theory and the Bool Predicate are
+	 * defined as true in the Gatherer.
+	 */
 	@Test
-	public void testMix2() {
+	public void testMix() {
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
@@ -248,8 +279,12 @@ public class GathererTests extends AbstractTests {
 				"a↦BOOL↦BOOL ∈ X ∧ (∃T · a↦BOOL↦BOOL ∈ T)");
 	}
 
+	/**
+	 * Ensures that the set Bool, the Bool Theory, the Bool Predicate and
+	 * Monadic Preds are correctly reported.
+	 */
 	@Test
-	public void testMix2_1() {
+	public void testMix_1() {
 		doTest(mTypeEnvironment("a", "ℤ"),//
 				AtomicBoolExp.FOUND, //
 				AtomicIntegerExp.NOT_FOUND, //
@@ -259,6 +294,11 @@ public class GathererTests extends AbstractTests {
 				"a↦BOOL↦BOOL ∈ X");
 	}
 
+	/**
+	 * Ensures that Bool Theory and True Predicate are correctly reported, as
+	 * well as identifiers are not translated to monadic predicates if there is
+	 * a similar membership where the identifier in the right is bound.
+	 */
 	@Test
 	public void testNotBoolSetNotIntgSet() {
 		doTest(mTypeEnvironment("a", "BOOL", "b", "BOOL", "c", "BOOL", "d",
@@ -271,6 +311,10 @@ public class GathererTests extends AbstractTests {
 				"∀H·((a↦b↦c ∈ X) ∨ (c↦d↦a ∈ H))");
 	}
 
+	/**
+	 * Ensures that the Gatherer reports correctly the symbols in a predicate
+	 * where only the set Bool is not present.
+	 */
 	@Test
 	public void testNotBoolSetOnly() {
 		doTest(mTypeEnvironment("a", "BOOL", "g", "ℤ"),//
@@ -282,6 +326,10 @@ public class GathererTests extends AbstractTests {
 				"(a↦ℤ ∈ X) ∧ (g ∈ G)");
 	}
 
+	/**
+	 * Ensures that the Gatherer reports correctly in a predicate that contains
+	 * all the symbols.
+	 */
 	@Test
 	public void testAll() {
 		doTest(mTypeEnvironment(),//
