@@ -33,8 +33,6 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	// passes with alt-ergo, cvc3, veriT and z3 thanks to the extensionality
-	// axiom
 	public void testSetsEquality() {
 		setPreferencesForSolverTest(solver);
 
@@ -110,7 +108,6 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * predicate is unsuccessful without its refinement (axioms to add).
 	 */
 	@Test(timeout = 3000)
-	@Ignore("Re-add when set theory axioms implemented")
 	public void testDifferentForallPlusSimpleMonadic() {
 		setPreferencesForSolverTest(solver);
 

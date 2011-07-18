@@ -53,7 +53,7 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 		final String delayString = Long.toString(input.timeOutDelay);
 		final String restrictedString = Boolean.toString(input.restricted);
 		writer.putString(ARG_KEY, restrictedString + ":" + delayString + ":"
-				+ input.sequentName);
+				+ input.getSequentName());
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 	public XProverCall newProverCall(final IReasonerInput input,
 			final Iterable<Predicate> hypotheses, final Predicate goal,
 			final IProofMonitor pm) {
-		final String sequentName = ((SMTInput) input).sequentName;
+		final String sequentName = ((SMTInput) input).getSequentName();
 		return new SMTPPCall(hypotheses, goal, pm, preferences, sequentName);
 	}
 }

@@ -88,6 +88,8 @@ public class SMTProversCore extends Plugin {
 				Messages.SMTProversCore_NoSMTSolverSet);
 		private final static SMTFailureTactic VERIT_PATH_NOT_SET = new SMTFailureTactic(
 				Messages.SMTProversCore_VeriTPathNotSet);
+		private final static SMTFailureTactic PROOF_TREE_ORIGIN_ERROR = new SMTFailureTactic(
+				Messages.SMTProversCore_ProofTreeOriginError);
 
 		private SMTFailureTactic(final String message) {
 			this.message = message;
@@ -107,6 +109,10 @@ public class SMTProversCore extends Plugin {
 
 		static final SMTFailureTactic getVeriTPathNotSet() {
 			return VERIT_PATH_NOT_SET;
+		}
+
+		static final SMTFailureTactic getProofTreeOriginError() {
+			return PROOF_TREE_ORIGIN_ERROR;
 		}
 
 		@Override
@@ -131,6 +137,10 @@ public class SMTProversCore extends Plugin {
 		return SMTFailureTactic.getVeriTPathNotSet();
 	}
 
+	public static final SMTFailureTactic proofTreeOriginError() {
+		return SMTFailureTactic.getProofTreeOriginError();
+	}
+
 	/**
 	 * <p>
 	 * Returns a tactic for applying the SMT prover to a proof tree node
@@ -150,11 +160,16 @@ public class SMTProversCore extends Plugin {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(
+	public static ITactic externalSMTThroughPP(final String poName,
 			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughPP(smtPreferences), //
-				new SMTInput(restricted, DEFAULT_DELAY, RODIN_SEQUENT));
+				new SMTInput(restricted, DEFAULT_DELAY, poName));
+	}
+
+	public static ITactic externalSMTThroughPP(
+			final SMTPreferences smtPreferences, final boolean restricted) {
+		return externalSMTThroughPP(RODIN_SEQUENT, smtPreferences, restricted);
 	}
 
 	/**
@@ -176,11 +191,17 @@ public class SMTProversCore extends Plugin {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughVeriT(
+	public static ITactic externalSMTThroughVeriT(final String poName,
 			final SMTPreferences smtPreferences, final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughVeriT(smtPreferences), //
-				new SMTInput(restricted, DEFAULT_DELAY, RODIN_SEQUENT));
+				new SMTInput(restricted, DEFAULT_DELAY, poName));
+	}
+
+	public static ITactic externalSMTThroughVeriT(
+			final SMTPreferences smtPreferences, final boolean restricted) {
+		return externalSMTThroughVeriT(RODIN_SEQUENT, smtPreferences,
+				restricted);
 	}
 
 	/**
@@ -204,5 +225,4 @@ public class SMTProversCore extends Plugin {
 		plugin = null;
 		super.stop(context);
 	}
-
 }

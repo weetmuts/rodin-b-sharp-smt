@@ -513,7 +513,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void checkIfIsSetOfSet(final Type type, final Type parentType) {
 		if (type.getSource() != null || type.getBaseType() != null) {
 			throw new IllegalArgumentException("Type " + parentType.toString()
-					+ ": Sets of sets are not supported yet");
+					+ ": sets of sets are not supported yet");
 		}
 	}
 
@@ -1073,10 +1073,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		case Formula.QUNION:
 			throw new IllegalArgumentException(
-					"It's not possible to translated quantified union (QUNION) to SMT-LIB yet");
+					"It's not possible to translate quantified union (QUNION) to SMT-LIB yet");
 		case Formula.QINTER:
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate quantified intersection (QINTER) to SMT-LIB yet");
+					"It's not possible to translate quantified intersection (QINTER) to SMT-LIB yet");
 		default:
 			throw new IllegalTagException(expression.getTag());
 		}
@@ -1261,25 +1261,25 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 		case Formula.POW: {
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate  PowerSet unary expression (POW) to SMT-LIB yet");
+					"It's not possible to translate PowerSet unary expression (POW) to SMT-LIB yet");
 		}
 		case Formula.POW1: {
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate  PowerSet1 unary expression (POW1) to SMT-LIB yet");
+					"It's not possible to translate PowerSet1 unary expression (POW1) to SMT-LIB yet");
 		}
 			/**
 			 * Not reached because sets of sets are not supported yet
 			 */
 		case Formula.KUNION: {
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate generalized union (KUNION) to SMT-LIB yet");
+					"It's not possible to translate generalized union (KUNION) to SMT-LIB yet");
 		}
 			/**
 			 * Not reached because sets of sets are not supported yet
 			 */
 		case Formula.KINTER: {
 			throw new IllegalArgumentException(
-					"It's not possible yet to translate generalized inter (KINTER) to SMT-LIB yet");
+					"It's not possible to translate generalized inter (KINTER) to SMT-LIB yet");
 		}
 		default: {
 			throw new IllegalTagException(expression.getTag());
@@ -1594,14 +1594,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void visitExtendedExpression(final ExtendedExpression expression) {
 		throw new IllegalArgumentException(
-				"It's not possible yet to translate extended expression to SMT-LIB yet");
+				"It's not possible to translate extended expression to SMT-LIB yet");
 
 	}
 
 	@Override
 	public void visitExtendedPredicate(final ExtendedPredicate predicate) {
 		throw new IllegalArgumentException(
-				"It's not possible yet to translate extended predicate to SMT-LIB yet");
+				"It's not possible to translate extended predicate to SMT-LIB yet");
 
 	}
 

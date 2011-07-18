@@ -20,7 +20,7 @@ public class SMTInput extends XProverInput {
 
 	private final String error;
 
-	public final String sequentName;
+	private final String sequentName;
 
 	protected SMTInput(final IReasonerInputReader reader)
 			throws SerializeException {
@@ -44,6 +44,10 @@ public class SMTInput extends XProverInput {
 		}
 	}
 
+	public String getSequentName() {
+		return sequentName;
+	}
+
 	@Override
 	public String getError() {
 		return error != null ? error : super.getError();
@@ -53,5 +57,4 @@ public class SMTInput extends XProverInput {
 	public boolean hasError() {
 		return error != null || super.hasError();
 	}
-
 }
