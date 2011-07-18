@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Vitor Alcantara de Almeida - Implementation
+ *     Systerel - Initial API and implementation
  *******************************************************************************/
 package fr.systerel.smt.provers.ast.macros;
 
@@ -80,7 +80,7 @@ import fr.systerel.smt.provers.ast.VeritPredefinedTheory;
  * VeriT. It stores macro expressions, Macro Symbols and creates macro
  * enumerations, which are used to translate in extension.
  * 
- * @author vitor
+ * @author vitor almeida
  * 
  */
 public class SMTMacroFactory {
@@ -319,7 +319,7 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
 			RELATIONAL_IMAGE,
-			"(lambda (?RELATIONAL_IMAGE_0 ((Pair 's 't) Bool)(?RELATIONAL_IMAGE_1 ('s Bool)(lambda (?RELATIONAL_IMAGE_2 't) (exists (?RELATIONAL_IMAGE_3 's)(and (?RELATIONAL_IMAGE_1 ?RELATIONAL_IMAGE_3)(?RELATIONAL_IMAGE_0 (pair ?RELATIONAL_IMAGE_3 ?RELATIONAL_IMAGE_2))))))",
+			"(lambda (?RELATIONAL_IMAGE_0 ((Pair 's 't) Bool)(?RELATIONAL_IMAGE_1 ('s Bool)(lambda (?RELATIONAL_IMAGE_2 't) (exists (?RELATIONAL_IMAGE_3 's)(and (?RELATIONAL_IMAGE_1 ?RELATIONAL_IMAGE_3)(?RELATIONAL_IMAGE_0 (pair ?RELATIONAL_IMAGE_3 ?RELATIONAL_IMAGE_2))))))))",
 			1, true, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro SETMINUS_MACRO = new SMTPredefinedMacro(
