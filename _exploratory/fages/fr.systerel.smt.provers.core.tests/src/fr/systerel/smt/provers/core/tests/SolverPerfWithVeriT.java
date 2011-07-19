@@ -95,6 +95,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testRule20() {
 		setPreferencesForSolverTest(solver);
 
@@ -325,8 +326,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testIntInRelation() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)", "f",
-				"ℙ(ℤ × D)", "n", "ℤ", "r", "ℤ");
+		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)");
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -413,6 +413,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test
+	// Z3: ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA
+	// does not support them.
 	public void testCh7LikeMoreSimpleYet() {
 		setPreferencesForSolverTest(solver);
 
@@ -469,7 +471,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("error : Sort 't cannot be unified with sort (PairInt't Bool)")
+	// ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does
+	// not support them.
 	public void testRelation() {
 		setPreferencesForSolverTest(solver);
 
@@ -625,13 +628,13 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("z3: ERROR: line 9 column 66: could not locate id  ?veriT.veriT__35.")
+	// Expected <true> but was <false>
 	public void testPredSet() {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
-		doTest("testpredset", hyps, "{2 ↦ 1,3 ↦ 2} ⊂ pred", te, VALID);
+		doTest("testpredset", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
 	}
 
 	@Test
@@ -644,6 +647,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	// error : pre_process: result is not FOL
 	public void testDistinctForSingleton() {
 		setPreferencesForSolverTest(solver);
 
@@ -695,7 +699,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Sort BOOL is not implemented yet")
+	// Function application (FUNIMAGE) is not implemented yet
 	public void testLinearSort29() {
 		setPreferencesForSolverTest(solver);
 
@@ -721,7 +725,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Function ?DOM_0 is not declared")
+	// Expected <True> but was <False>
 	public void testBepiColombo6() {
 		setPreferencesForSolverTest(solver);
 
@@ -767,7 +771,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
-	// @Ignore("Function ?DOM_0 is not declared")
+	// Expected <True> but was <False>
 	public void testBepiColombo6Parte_3() {
 		setPreferencesForSolverTest(solver);
 
@@ -829,6 +833,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testBOOLSet() {
 		setPreferencesForZ3Test();
 

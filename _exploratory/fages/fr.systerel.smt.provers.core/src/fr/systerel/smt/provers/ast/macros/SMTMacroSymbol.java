@@ -47,7 +47,7 @@ public class SMTMacroSymbol extends SMTSymbol {
 	public static final String BOOL_SORT_VERIT = "Bool";
 
 	public static final String ENUM = "enum";
-	public static final String RANGE_SUBSTRACION = "rans";
+	public static final String RANGE_SUBSTRACTION = "rans";
 	public static final String RANGE_RESTRICTION = "ranr";
 	public static final String RELATION = "rel";
 	public static final String TOTAL_RELATION = "totp";

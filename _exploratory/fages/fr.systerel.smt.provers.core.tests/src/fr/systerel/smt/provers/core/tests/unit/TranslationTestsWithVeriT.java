@@ -693,6 +693,12 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 	}
 
 	@Test
+	// FIXME: This test must be changed after recoding POW rule
+	public void testPow() {
+		testTranslationV1_2Default("A ∈ ℙ(A)", "(subseteq A A)");
+	}
+
+	@Test
 	public void testRule15() {
 
 		/**
@@ -1014,6 +1020,7 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 				"(= (dprod A A) (dprod A A))");
 	}
 
+	// FIXME: This test must be changed after recoding POW
 	@Test(expected = IllegalArgumentException.class)
 	public void testExceptionPOW() {
 
