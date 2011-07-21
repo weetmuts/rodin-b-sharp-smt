@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.ui.prover.DefaultTacticProvider;
@@ -21,11 +20,6 @@ import fr.systerel.smt.provers.core.SMTProversCore;
 public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 
 	public class SMTPPApplication extends DefaultPredicateApplication {
-		private IProofTreeNode node;
-
-		public SMTPPApplication(final IProofTreeNode node) {
-			this.node = node;
-		}
 
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
@@ -33,16 +27,8 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 				final SMTPreferences smtPreferences = SMTPreferencePage
 						.getSMTPreferencesForPP();
 
-				final Object origin = node.getProofTree().getOrigin();
-				if (!(origin instanceof IProofAttempt)) {
-					return SMTProversCore.externalSMTThroughPP(smtPreferences,
-							true);
-				}
-				final IProofAttempt pa = (IProofAttempt) origin;
-				final String poName = pa.getName().replaceAll("/", "_");
-
-				return SMTProversCore.externalSMTThroughPP(poName,
-						smtPreferences, true);
+				return SMTProversCore
+						.externalSMTThroughPP(smtPreferences, true);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMTProversCore.smtSolverError();
@@ -63,7 +49,7 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 			final IProofTreeNode node, final Predicate hyp,
 			final String globalInput) {
 		if (node != null && node.isOpen()) {
-			final ITacticApplication appli = new SMTPPApplication(node);
+			final ITacticApplication appli = new SMTPPApplication();
 			return singletonList(appli);
 		}
 		return emptyList();

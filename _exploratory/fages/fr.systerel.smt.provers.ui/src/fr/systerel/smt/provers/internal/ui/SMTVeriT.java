@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.core.ast.Predicate;
-import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.ui.prover.DefaultTacticProvider;
@@ -28,11 +27,6 @@ import fr.systerel.smt.provers.core.SMTProversCore;
 public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 
 	public class SMTVeriTApplication extends DefaultPredicateApplication {
-		private IProofTreeNode node;
-
-		public SMTVeriTApplication(final IProofTreeNode node) {
-			this.node = node;
-		}
 
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
@@ -40,16 +34,8 @@ public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 				final SMTPreferences smtPreferences = SMTPreferencePage
 						.getSMTPreferencesForVeriT();
 
-				final Object origin = node.getProofTree().getOrigin();
-				if (!(origin instanceof IProofAttempt)) {
-					return SMTProversCore.externalSMTThroughVeriT(
-							smtPreferences, true);
-				}
-				final IProofAttempt pa = (IProofAttempt) origin;
-				final String poName = pa.getName().replaceAll("/", "_");
-
-				return SMTProversCore.externalSMTThroughVeriT(poName,
-						smtPreferences, true);
+				return SMTProversCore.externalSMTThroughVeriT(smtPreferences,
+						true);
 
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
@@ -73,7 +59,7 @@ public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 			final IProofTreeNode node, final Predicate hyp,
 			final String globalInput) {
 		if (node != null && node.isOpen()) {
-			final ITacticApplication appli = new SMTVeriTApplication(node);
+			final ITacticApplication appli = new SMTVeriTApplication();
 			return singletonList(appli);
 		}
 		return emptyList();
