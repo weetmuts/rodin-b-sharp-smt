@@ -1,7 +1,7 @@
 package fr.systerel.smt.provers.core.tests;
 
-import br.ufrn.smt.solver.translation.SMTSolver;
 import fr.systerel.smt.provers.core.tests.utils.LemmaData;
+import fr.systerel.smt.provers.internal.core.SMTSolver;
 
 public class XMLtoSMTTestsVerit extends XMLtoSMTTests {
 

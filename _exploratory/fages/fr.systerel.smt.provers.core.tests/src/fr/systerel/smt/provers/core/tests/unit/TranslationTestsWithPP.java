@@ -4,8 +4,8 @@
  *******************************************************************************/
 package fr.systerel.smt.provers.core.tests.unit;
 
-import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
 import static fr.systerel.smt.provers.core.tests.unit.Messages.SMTLIB_Translation_Failed;
+import static fr.systerel.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

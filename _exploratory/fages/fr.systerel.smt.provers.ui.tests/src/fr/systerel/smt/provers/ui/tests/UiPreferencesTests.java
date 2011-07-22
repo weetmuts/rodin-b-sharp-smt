@@ -10,10 +10,10 @@ import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
-import static br.ufrn.smt.solver.translation.SMTSolver.ALT_ERGO;
-import static br.ufrn.smt.solver.translation.SMTSolver.CVC3;
-import static br.ufrn.smt.solver.translation.SMTSolver.VERIT;
-import static br.ufrn.smt.solver.translation.SMTSolver.Z3;
+import static fr.systerel.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static fr.systerel.smt.provers.internal.core.SMTSolver.CVC3;
+import static fr.systerel.smt.provers.internal.core.SMTSolver.VERIT;
+import static fr.systerel.smt.provers.internal.core.SMTSolver.Z3;
 
 import java.util.ArrayList;
 import java.util.List;

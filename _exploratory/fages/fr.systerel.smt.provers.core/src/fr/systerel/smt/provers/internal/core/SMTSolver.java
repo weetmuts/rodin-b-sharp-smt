@@ -1,4 +1,4 @@
-package br.ufrn.smt.solver.translation;
+package fr.systerel.smt.provers.internal.core;
 
 /**
  * This enum enumerates the solvers.

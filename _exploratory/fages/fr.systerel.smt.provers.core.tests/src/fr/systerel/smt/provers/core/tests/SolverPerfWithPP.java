@@ -11,7 +11,8 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.SMTSolver;
+import fr.systerel.smt.provers.internal.core.SMTSolver;
+
 
 public class SolverPerfWithPP extends CommonSolverRunTests {
 	private final SMTSolver solver;

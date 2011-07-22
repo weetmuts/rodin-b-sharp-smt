@@ -14,7 +14,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.junit.Test;
 
-import br.ufrn.smt.solver.translation.SMTSolver;
+import fr.systerel.smt.provers.internal.core.SMTSolver;
+
 
 public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	private final SMTSolver solver;
