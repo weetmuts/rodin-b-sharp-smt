@@ -206,8 +206,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	public static SMTFormula translate(final SMTLogic logic,
 			final Predicate predicate, final String solver) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
-		translator.translateSignature(logic, new ArrayList<Predicate>(0),
-				predicate);
+		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
+		translator.translateSignature(logic, noHypothesis, predicate);
 		try {
 			predicate.accept(translator);
 		} catch (IllegalArgumentException e) {

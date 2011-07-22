@@ -331,7 +331,7 @@ public class SMTSignatureVerit extends SMTSignature {
 		final Set<SMTFunctionSymbol> unusedFunctionSymbols = removeUnusedFunctions(usedFuns);
 		final Set<SMTPredicateSymbol> unusedPredicateSymbols = removeUnusedPreds(usedPreds);
 		final Set<SMTSortSymbol> unusedSortSymbols = removeUnusedSorts(usedSorts);
-		final Set<String> unusedMacroSymbols = removeUnusedMacros(usedMacros);
+		final Set<SMTMacro> unusedMacroSymbols = removeUnusedMacros(usedMacros);
 
 		if (unusedFunctionSymbols.isEmpty() && unusedPredicateSymbols.isEmpty()
 				&& unusedSortSymbols.isEmpty() && unusedMacroSymbols.isEmpty()) {
@@ -348,23 +348,17 @@ public class SMTSignatureVerit extends SMTSignature {
 	 *            used macro symbols
 	 * @return unused macro symbols
 	 */
-	private Set<String> removeUnusedMacros(final Set<String> usedMacros) {
-		final Set<String> unusedMacroSymbols = new HashSet<String>();
-		final Set<String> macroNames = getMacroNames();
-
-		for (final String macroName : macroNames) {
-			if (!usedMacros.contains(macroName)) {
-
-				unusedMacroSymbols.add(macroName);
-			}
-		}
+	private Set<SMTMacro> removeUnusedMacros(final Set<String> usedMacros) {
+		final Set<SMTMacro> unusedMacros = new HashSet<SMTMacro>();
 
 		for (final SMTMacro macro : macros) {
-			if (unusedMacroSymbols.contains(macro.getMacroName())) {
-				macros.remove(macro);
+			if (!usedMacros.contains(macro.getMacroName())) {
+				unusedMacros.add(macro);
 			}
 		}
 
-		return unusedMacroSymbols;
+		macros.removeAll(unusedMacros);
+
+		return unusedMacros;
 	}
 }

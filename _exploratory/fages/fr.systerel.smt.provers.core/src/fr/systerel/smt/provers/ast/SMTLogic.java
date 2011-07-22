@@ -345,11 +345,17 @@ public class SMTLogic {
 		}
 	}
 
+	public static class SMTLogicVeriT extends SMTLogic {
+		public SMTLogicVeriT(final String name, final SMTTheory... theories) {
+			super(name, theories);
+		}
+	}
+
 	/**
 	 * This class represents the SMT underlying logic used by veriT. It differs
 	 * from the standard underlying logic.
 	 */
-	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogic {
+	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogicVeriT {
 
 		/**
 		 * The theories used by the veriT logic.
