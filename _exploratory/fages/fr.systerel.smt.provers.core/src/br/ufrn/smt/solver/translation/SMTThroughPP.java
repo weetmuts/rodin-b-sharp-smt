@@ -1031,8 +1031,16 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method translates the given actualPredicate into an SMT Formula.
 	 * 
 	 */
-	private SMTFormula translate(final Predicate predicate) {
-		predicate.accept(this);
+	private SMTFormula translate(final Predicate predicate, final boolean inGoal) {
+		try {
+			predicate.accept(this);
+		} catch (IllegalArgumentException e) {
+			if (inGoal) {
+				return SMTFactoryPP.makePFalse();
+			} else {
+				return SMTFactoryPP.makePTrue();
+			}
+		}
 		return getSMTFormula();
 	}
 
@@ -1096,12 +1104,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * <code>:assumption (true)</code>)
 			 */
 			if (hypothesis.getTag() != Formula.BTRUE) {
-				translatedAssumptions.add(translate(hypothesis));
+				translatedAssumptions.add(translate(hypothesis, !IN_GOAL));
 			}
 		}
 		// translates the formula
 		clearFormula();
-		final SMTFormula smtFormula = translate(ppTranslatedGoal);
+		final SMTFormula smtFormula = translate(ppTranslatedGoal, IN_GOAL);
 
 		/**
 		 * The translator adds some set theory axioms for each defined
@@ -1237,7 +1245,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
-		return translator.translate(predicate);
+		return translator.translate(predicate, IN_GOAL);
 	}
 
 	/**

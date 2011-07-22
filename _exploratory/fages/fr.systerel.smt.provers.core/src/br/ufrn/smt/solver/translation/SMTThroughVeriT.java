@@ -96,6 +96,7 @@ import org.eventb.core.ast.expanders.Expanders;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 import fr.systerel.smt.provers.ast.SMTBenchmarkVeriT;
 import fr.systerel.smt.provers.ast.SMTFactory;
+import fr.systerel.smt.provers.ast.SMTFactoryPP;
 import fr.systerel.smt.provers.ast.SMTFactoryVeriT;
 import fr.systerel.smt.provers.ast.SMTFormula;
 import fr.systerel.smt.provers.ast.SMTFunctionSymbol;
@@ -207,7 +208,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		translator.translateSignature(logic, new ArrayList<Predicate>(0),
 				predicate);
-		predicate.accept(translator);
+		try {
+			predicate.accept(translator);
+		} catch (IllegalArgumentException e) {
+			return SMTFactoryPP.makePFalse();
+		}
 		return translator.getSMTFormula();
 	}
 
@@ -443,14 +448,14 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// translates each hypothesis
 		for (final Predicate hypothesis : hypotheses) {
 			clearFormula();
-			final SMTFormula translatedFormula = translate(hypothesis);
+			final SMTFormula translatedFormula = translate(hypothesis, !IN_GOAL);
 			translatedAssumptions.addAll(getAdditionalAssumptions());
 			translatedAssumptions.add(translatedFormula);
 		}
 
 		// translates the goal
 		clearFormula();
-		final SMTFormula smtFormula = translate(goal);
+		final SMTFormula smtFormula = translate(goal, IN_GOAL);
 		translatedAssumptions.addAll(getAdditionalAssumptions());
 
 		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,
@@ -466,8 +471,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 *            The Rodin predicate to be translated.
 	 * @return the translated SMT Formula from the predicate
 	 */
-	private SMTFormula translate(final Predicate predicate) {
-		predicate.accept(this);
+	private SMTFormula translate(final Predicate predicate, final boolean inGoal) {
+		try {
+			predicate.accept(this);
+		} catch (IllegalArgumentException e) {
+			if (inGoal) {
+				return SMTFactoryPP.makePFalse();
+			} else {
+				return SMTFactoryPP.makePTrue();
+			}
+		}
 		return getSMTFormula();
 	}
 

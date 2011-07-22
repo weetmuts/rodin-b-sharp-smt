@@ -46,6 +46,7 @@ import fr.systerel.smt.provers.internal.core.IllegalTagException;
  * syntax.
  */
 public abstract class TranslatorV1_2 extends Translator {
+	protected static final boolean IN_GOAL = true;
 
 	/**
 	 * The target solver of the translation. It is used to check which
