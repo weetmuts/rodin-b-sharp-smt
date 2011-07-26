@@ -662,6 +662,33 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 	}
 
+	/**
+	 * This method executes the translation of function application.
+	 * 
+	 * The rules applied for the translation are:
+	 * 
+	 * • The function is id_gen: If the term has the form id(E), where E is an
+	 * expression, it is translated to Es, where Es is the translated SMT term
+	 * from E.
+	 * 
+	 * • The function is prj1_gen: If the term has the form prj1(E), where E is
+	 * an expression, the function fst is added to the benchmark, together with
+	 * the set Pair and the function pair, and the term is translated to (fst
+	 * Es), where Es is the translated SMT term from E.
+	 * 
+	 * • The function is prj2_gen: If the term has the form prj2(E), where E is
+	 * an expression, the function snd is added to the benchmark, together with
+	 * the set P air and the function pair, and the term is translated to (snd
+	 * Es), where Es is the translated SMT term from E.
+	 * 
+	 * @param expression
+	 *            the function application expression
+	 * @return the translation of the expression
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If the expression has another operator which not one of the
+	 *             three described above
+	 */
 	private SMTTerm translateFunctionApplicationSpecialCases(
 			final BinaryExpression expression) {
 		if (expression.getLeft().getTag() == Formula.KID_GEN) {
