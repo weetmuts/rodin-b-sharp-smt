@@ -15,6 +15,8 @@ import static fr.systerel.smt.provers.ast.SMTFactory.makeEqual;
 import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeITE;
 import static fr.systerel.smt.provers.ast.SMTFactoryVeriT.makeMacroTerm;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.getMacroSymbol;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.FST_SYMBOL;
+import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.SND_SYMBOL;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeMacroSymbol;
 import static fr.systerel.smt.provers.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
@@ -660,12 +662,35 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 	}
 
+	private SMTTerm translateFunctionApplicationSpecialCases(
+			final BinaryExpression expression) {
+		if (expression.getLeft().getTag() == Formula.KID_GEN) {
+			return smtTerm(expression.getRight());
+		}
+		if (expression.getLeft().getTag() == Formula.KPRJ1_GEN) {
+			signature.addFstAndSndAuxiliarFunctions();
+			return SMTFactory.makeFunApplication(FST_SYMBOL,
+					smtTerms(expression.getRight()), signature);
+		}
+		if (expression.getLeft().getTag() == Formula.KPRJ2_GEN) {
+			signature.addFstAndSndAuxiliarFunctions();
+			return SMTFactory.makeFunApplication(SND_SYMBOL,
+					smtTerms(expression.getRight()), signature);
+		}
+		throw new IllegalArgumentException(
+				"function application (FUNIMAGE) is not implemented yet");
+	}
+
 	/**
 	 * This method translates an Event-B binary expression into an Extended SMT
 	 * node.
 	 */
 	@Override
 	public void visitBinaryExpression(final BinaryExpression expression) {
+		if (expression.getTag() == Formula.FUNIMAGE) {
+			smtNode = translateFunctionApplicationSpecialCases(expression);
+			return;
+		}
 		final SMTTerm[] children = smtTerms(expression.getLeft(),
 				expression.getRight());
 		switch (expression.getTag()) {

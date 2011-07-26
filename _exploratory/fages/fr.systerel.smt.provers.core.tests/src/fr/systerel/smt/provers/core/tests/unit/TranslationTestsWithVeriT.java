@@ -920,6 +920,23 @@ public class TranslationTestsWithVeriT extends AbstractTests {
 		testTranslationV1_2Default("partition(A,{1})", "(= A set)");
 	}
 
+	@Test
+	public void testFunAppl_ID() {
+		testTranslationV1_2Default("id(ℤ) = id(ℤ)", "(= Int Int)");
+	}
+
+	@Test
+	public void testFunAppl_PRJ1() {
+		testTranslationV1_2Default("prj1(ℤ↦BOOL) = prj1(ℤ↦BOOL)",
+				"(= (fst (pair Int BOOLS)) (fst (pair Int BOOLS)))");
+	}
+
+	@Test
+	public void testFunAppl_PRJ2() {
+		testTranslationV1_2Default("prj2(ℤ↦BOOL) = prj2(ℤ↦BOOL)",
+				"(= (snd (pair Int BOOLS)) (snd (pair Int BOOLS)))");
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testExceptionSetOfSet() {
 

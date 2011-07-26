@@ -291,7 +291,7 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_SURJECTION,
-			"(lambda (?TOTAL_SURJECTION_0 ('s Bool)) (?TOTAL_SURJECTION_1 ('s Bool)) . (lambda (?TOTAL_SURJECTION_2 ((Pair 's 't) Bool)) . (and ((psur ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_1) ?TOTAL_SURJECTION_2) (totp ?TOTAL_SURJECTION_0 ?TOTAL_SURJECTION_2))))",
+			"(lambda (?TOT_SUR_0 ('s Bool)) (?TOT_SUR_1 ('s Bool)) . (lambda (?TOT_SUR_2 ((Pair 's 't) Bool)) . (and ((psur ?TOT_SUR_0 ?TOT_SUR_1) ?TOT_SUR_2) (totp ?TOT_SUR_0 ?TOT_SUR_2))))",
 			4, false, false, TOTAL_RELATION_AND_PARTIAL_SURJECTION);
 
 	private static final SMTPredefinedMacro[] TOTAL_SURJECTION_AND_TOTAL_INJECTION = {
