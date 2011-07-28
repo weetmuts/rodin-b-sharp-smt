@@ -7,7 +7,6 @@
  *
  * Contributors:
  *     YGU (Systerel) - initial API and implementation
- *     Vitor Alcantara de Almeida - implementation
  *******************************************************************************/
 package br.ufrn.smt.solver.translation;
 
@@ -282,6 +281,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			boolTheory = true;
 			return true;
 		}
+		
+		/**
+		 * If the predicate has a bool expression, set
+		 * <code>boolTheory</code> <i>true</i>
+		 */
+		@Override
+		public boolean enterKBOOL(BoolExpression expr) {
+			boolTheory = true;
+			return true;
+		}		
 	}
 
 	/**
