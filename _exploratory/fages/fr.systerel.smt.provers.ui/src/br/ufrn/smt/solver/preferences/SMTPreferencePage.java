@@ -13,10 +13,12 @@ package br.ufrn.smt.solver.preferences;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
 
 import java.io.File;
@@ -71,6 +73,7 @@ public class SMTPreferencePage extends PreferencePage implements
 	private static final String SOLVER_ARGS = "Solver arguments";
 	private static final String V1_2 = "v1.2";
 	private static final String V2_0 = "v2.0";
+	private static final String TRANSLATION_PATH = "Temporary translation files path";
 	private static final String VERIT_PATH = "VeriT path";
 	private static final String SMT_LIB = "SMT-LIB";
 	/**
@@ -91,6 +94,7 @@ public class SMTPreferencePage extends PreferencePage implements
 
 	TableViewer fTable;
 
+	static String setTranslationPath;
 	static String setVeriTPath;
 
 	int selectedSolverIndex;
@@ -110,6 +114,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		setDescription("SMT-Solver Plugin Preference Page");
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(PREFERENCES_NAME);
+		setTranslationPath = getPreferenceStore().getString("TRANSLATIONPATH");
 		setVeriTPath = getPreferenceStore().getString(VERITPATH);
 		try {
 			solverDetails = SMTPreferences.parsePreferencesString(preferences);
@@ -257,24 +262,53 @@ public class SMTPreferencePage extends PreferencePage implements
 			}
 		});
 
-		/*****************************************/
-		/* TO REMOVE WHEN PREPRO HAS DISAPPEARED */
-		// Create a new Composite with 1 column to dispose prepro option
-		final Composite compPrepro = new Composite(comp, SWT.NONE);
+		// Create a new Composite with 1 column to dispose path options
+		final Composite compPaths = new Composite(comp, SWT.NONE);
 
 		// Define 1 column for buttons
-		final GridLayout layoutPrepro = new GridLayout(3, false);
+		final GridLayout layoutPaths = new GridLayout(3, false);
 		layoutButtons.marginHeight = 0;
 		layoutButtons.marginWidth = 0;
-		compPrepro.setLayout(layoutPrepro);
+		compPaths.setLayout(layoutPaths);
 
 		// resize compButtons
-		compPrepro.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		compPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		final Label solverPreproPathTextLabel = new Label(compPrepro, SWT.LEFT);
+		// translation path
+		final Label translationPathTextLabel = new Label(compPaths, SWT.LEFT);
+		translationPathTextLabel.setText(TRANSLATION_PATH);
+
+		final Text translationPathText = new Text(compPaths, SWT.LEFT
+				| SWT.BORDER);
+		translationPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, true));
+		translationPathText.setEditable(false);
+		translationPathText.setText(setTranslationPath);
+
+		// Add button Browse
+		final Button translationPathbrowseButton = new Button(compPaths,
+				SWT.PUSH);
+		translationPathbrowseButton.setText(BROWSE);
+		translationPathbrowseButton
+				.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(final SelectionEvent event) {
+						File f = new File(translationPathText.getText());
+						if (!f.exists()) {
+							f = null;
+						}
+						final File d = getFile(f);
+						translationPathText.setText(d.getPath());
+						setTranslationPath = translationPathText.getText();
+					}
+
+				});
+
+		//veriT path
+		final Label solverPreproPathTextLabel = new Label(compPaths, SWT.LEFT);
 		solverPreproPathTextLabel.setText(VERIT_PATH);
 
-		final Text solverPreproPathText = new Text(compPrepro, SWT.LEFT
+		final Text solverPreproPathText = new Text(compPaths, SWT.LEFT
 				| SWT.BORDER);
 		solverPreproPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				true, true));
@@ -282,9 +316,9 @@ public class SMTPreferencePage extends PreferencePage implements
 		solverPreproPathText.setText(setVeriTPath);
 
 		// Add button Browse
-		final Button browseButton = new Button(compPrepro, SWT.PUSH);
-		browseButton.setText(BROWSE);
-		browseButton.addSelectionListener(new SelectionAdapter() {
+		final Button veriTPathBrowseButton = new Button(compPaths, SWT.PUSH);
+		veriTPathBrowseButton.setText(BROWSE);
+		veriTPathBrowseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
 				File f = new File(solverPreproPathText.getText());
@@ -297,7 +331,6 @@ public class SMTPreferencePage extends PreferencePage implements
 			}
 
 		});
-		/*********************************************/
 
 		// Update table with solver details
 		fTable.refresh();
@@ -572,9 +605,11 @@ public class SMTPreferencePage extends PreferencePage implements
 		final String solverPreferences = preferencesService.getString(
 				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
 				null);
+		final String translationPath = preferencesService.getString(
+				PREFERENCES_ID, TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH, null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
-		return new SMTPreferences(solverPreferences, solverIndex);
+		return new SMTPreferences(translationPath, solverPreferences, solverIndex);
 	}
 
 	public static SMTPreferences getSMTPreferencesForVeriT()
@@ -584,11 +619,14 @@ public class SMTPreferencePage extends PreferencePage implements
 		final String solverPreferences = preferencesService.getString(
 				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
 				null);
+		final String translationPath = preferencesService.getString(
+				PREFERENCES_ID, TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH, null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
 		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
 				VERITPATH, DEFAULT_VERITPATH, null);
-		return new SMTPreferences(solverPreferences, solverIndex, veriTPath);
+		return new SMTPreferences(translationPath, solverPreferences,
+				solverIndex, veriTPath);
 	}
 
 	@Override

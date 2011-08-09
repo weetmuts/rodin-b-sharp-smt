@@ -7,10 +7,13 @@
  *
  * Contributors:
  * 	   Systerel (YFG) - Creation
+ *     Systerel (YGU) - Implementation and comments
  *     Vitor Alcantara de Almeida - Commented code 
  *******************************************************************************/
 
 package fr.systerel.smt.provers.internal.core;
+
+import static br.ufrn.smt.solver.translation.Translator.DEBUG;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,84 +24,83 @@ import java.util.List;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.xprover.ProcessMonitor;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.translation.SMTThroughVeriT;
+import br.ufrn.smt.solver.translation.Translator;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 
 /**
- * This class contains fields and methods to config the execution of veriT
- * pre-processing, opening and writing of pre-processed SMT files, and check
- * result of post-processing.
+ * This class represents a call to an SMT solver using the veriT approach. More
+ * precisely, this class is called when a client wants to discharge an Event-B
+ * sequent by using the veriT approach to translate it to an SMT-LIB benchmark
+ * and some selected SMT solver to discharge it.
  */
 public class SMTVeriTCall extends SMTProverCall {
-	private static final String VERIT_TRANSLATION_PATH = TRANSLATION_PATH
-			+ File.separatorChar + "verit";
+	private static final String DEFAULT_VERIT_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
+			+ File.separatorChar + SMTSolver.VERIT;
 	private static final String TEMP_FILE = "_prep";
 	private static final String SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String PRINT_FLAT = "--print-flat";
 	private static final String DISABLE_BANNER = "--disable-banner";
 	private static final String DISABLE_ACKERMANN = "--disable-ackermann";
-	private static final String POST_PROCESSED_FILE_POSTFIX = "_pop.";
+
+	/**
+	 * FOR DEBUG ONLY: this is the temporary SMT benchmark produced by the
+	 * plug-in in the veriT approach. This benchmark contains some veriT macros,
+	 * and is used as veriT input. VeriT translates the macros and produces a
+	 * standard SMT-LIB benchmark.
+	 */
+	protected File veriTBenchmarkFile;
+
+	/**
+	 * This field contains the final standard SMT-LIB benchmark produced by the
+	 * plug-in, after its macros were processed by veriT.
+	 */
+	private String veriTResult;
+
+	/**
+	 * This field is set to true when veriT successfully translated the macros
+	 * of the temporary SMT-LIB benchmark. Actually, it is set to true if
+	 * veriT's response contains the string "(benchmark" which means that no
+	 * error happened during the macros processing.
+	 */
+	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
+
+		final String translationPathPreferenceValue = preferences
+				.getTranslationPath();
+		if (translationPathPreferenceValue != null
+				&& !translationPathPreferenceValue.isEmpty()) {
+			translationPath = translationPathPreferenceValue
+					+ File.separatorChar + SMTSolver.VERIT;
+		} else {
+			translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
+		}
 	}
 
 	/**
-	 * Execute translation of Event-B predicates using the VeriT pre-processing
-	 * approach.
-	 * 
-	 * @throws IOException
+	 * FOR DEBUG ONLY: prints the temporary benchmark (containing macros) on the
+	 * standard output.
 	 */
-	@Override
-	public void makeSMTBenchmarkFileV1_2() throws IOException {
-		proofMonitor.setTask("Translating Event-B proof obligation");
-		final SMTBenchmark benchmark = SMTThroughVeriT
-				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
-						smtPreferences.getSolver().getId());
-		lemmaName = benchmark.getName();
-		final String benchmarkTargetedPath = VERIT_TRANSLATION_PATH
-				+ File.separatorChar + lemmaName;
-
-		/**
-		 * The name of the SMT file with macros.
-		 */
-		if (translationFolder == null) {
-			translationFolder = mkTranslationFolder(benchmarkTargetedPath,
-					!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
-		}
-
-		/**
-		 * First, write the SMT file with macros
-		 */
-		final File preProcessedSMTFile = new File(smtVeriTPreProcessFilePath());
-		preProcessedSMTFile.createNewFile();
-		final PrintWriter smtFileWriter = openSMTFileWriter(preProcessedSMTFile);
-		benchmark.print(smtFileWriter);
-		smtFileWriter.close();
-		if (!preProcessedSMTFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
-
-		/**
-		 * Then, call veriT, which produces a version of the SMT file without
-		 * macros
-		 */
-		callVeriT(preProcessedSMTFile);
+	private synchronized void showVeriTBenchmarkFile() {
+		showFile(veriTBenchmarkFile);
 	}
 
 	/**
-	 * This method should: call the veriT, produce a simplified version of the
-	 * SMT file without macros, and verify if there is any input error
+	 * This method calls veriT in order to make it process the macros of the
+	 * temporary SMT benchmark, and updates the field
+	 * <code>macrosTranslated</code> according to its success.
 	 * 
-	 * @param preprocessedFile
 	 * @throws IOException
 	 */
-	private void callVeriT(final File preprocessedFile) throws IOException {
-		final List<String> args = new ArrayList<String>();
+	private void callVeriT() throws IOException {
+		final List<String> cmd = new ArrayList<String>();
 
 		if (smtPreferences.getVeriTPath().isEmpty()
 				|| smtPreferences.getVeriTPath() == null) {
@@ -106,70 +108,136 @@ public class SMTVeriTCall extends SMTProverCall {
 					Messages.SmtProversCall_veriT_path_not_defined);
 		}
 
-		args.add(smtPreferences.getVeriTPath());
-		args.add(SIMPLIFY_ARGUMENT_STRING);
-		args.add(PRINT_FLAT);
-		args.add(DISABLE_BANNER);
-		args.add(DISABLE_ACKERMANN);
-		args.add(preprocessedFile.getPath());
+		cmd.add(smtPreferences.getVeriTPath());
+		cmd.add(SIMPLIFY_ARGUMENT_STRING);
+		cmd.add(PRINT_FLAT);
+		cmd.add(DISABLE_BANNER);
+		cmd.add(DISABLE_ACKERMANN);
+		cmd.add(veriTBenchmarkFile.getPath());
 
-		solverResult = execProcess(args);
-
-		/**
-		 * Set up temporary result file
-		 */
-		checkPreProcessingResult(preprocessedFile.getParent());
-	}
-
-	private String smtVeriTPreProcessFilePath() {
-		return translationFolder + File.separatorChar + lemmaName + TEMP_FILE
-				+ SMT_LIB_FILE_EXTENSION;
-	}
-
-	private void createPostProcessedFile(final String parentFolder,
-			final String extension) throws IOException {
-		smtBenchmarkFile = new File(parentFolder + File.separatorChar
-				+ lemmaName + POST_PROCESSED_FILE_POSTFIX + extension);
-		if (!smtBenchmarkFile.exists()) {
-			smtBenchmarkFile.createNewFile();
+		if (DEBUG) {
+			System.out.println("About to launch veriT command:");
+			System.out.print("   ");
+			for (String arg : cmd) {
+				System.out.print(' ');
+				System.out.print(arg);
+			}
+			System.out.println();
 		}
-		final FileWriter fileWriter = new FileWriter(smtBenchmarkFile);
-		fileWriter.write(solverResult);
-		fileWriter.close();
+
+		try {
+			final ProcessBuilder builder = new ProcessBuilder(cmd);
+			builder.redirectErrorStream(true);
+			final Process process = builder.start();
+			activeProcesses.add(process);
+			final ProcessMonitor monitor = new ProcessMonitor(null, process,
+					this);
+
+			if (DEBUG)
+				showProcessOutcome(monitor);
+
+			veriTResult = new String(monitor.output());
+			macrosTranslated = checkVeriTResult();
+
+			if (DEBUG)
+				System.out.println("veriT "
+						+ (macrosTranslated ? "succeeded" : "failed"));
+
+		} finally {
+			if (DEBUG)
+				System.out.println("veriT command finished.");
+		}
 	}
 
 	/**
-	 * this method checks the output of the SMT file after being simplified by
-	 * veriT (in the pre-processing step)
+	 * This method checks if the response of veriT, after it processed the
+	 * macros contained in the benchmark produced by the plug-in, contains
+	 * "(benchmark", which we assume to mean that no error happened.
 	 * 
-	 * @param parentFolder
-	 *            the folder where the post-processed SMT file is
 	 * @throws IOException
-	 *             if any IO problem occurr when accessing the SMT files and
+	 *             if any IO problem occurs when accessing the SMT files and
 	 *             folders
 	 */
-	private void checkPreProcessingResult(final String parentFolder)
-			throws IOException {
-		if (solverResult.contains("(benchmark")) {
-			solverResult = solverResult.substring(solverResult
+	private boolean checkVeriTResult() throws IOException {
+		if (veriTResult.contains("(benchmark")) {
+			veriTResult = veriTResult.substring(veriTResult
 					.indexOf("(benchmark"));
-			createPostProcessedFile(parentFolder, "smt");
-			return;
-		} else {
-			createPostProcessedFile(parentFolder, RES);
-			if (solverResult.contains("syntax error")
-					|| solverResult.contains("parse error")
-					|| solverResult.contains("Lexical_error")) {
-				throw new IllegalArgumentException(solverName
-						+ " could not pre-process " + lemmaName
-						+ ".smt with VeriT. See " + lemmaName
-						+ POST_PROCESSED_FILE_POSTFIX + " for more details.");
-			} else {
-				throw new IllegalArgumentException("Unexpected response of "
-						+ solverName + ". See " + lemmaName
-						+ POST_PROCESSED_FILE_POSTFIX + RES
-						+ " for more details.");
-			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Makes temporary files in the given path
+	 */
+	@Override
+	public synchronized void makeTempFileNames() throws IOException {
+		super.makeTempFileNames();
+
+		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
+				SMT_LIB_FILE_EXTENSION, translationFolder);
+		if (Translator.DEBUG)
+			System.out.println("Created temporary veriT benchmark file '"
+					+ veriTBenchmarkFile + "'");
+	}
+
+	/**
+	 * Executes the translation of the Event-B sequent using the VeriT approach.
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException {
+		/**
+		 * Produces an SMT benchmark containing some veriT macros.
+		 */
+		proofMonitor.setTask("Translating Event-B proof obligation");
+		final SMTBenchmark benchmark = SMTThroughVeriT
+				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
+						smtPreferences.getSolver().getId());
+
+		/**
+		 * Updates the name of the benchmark (the name originally given could
+		 * have been changed by the translator if it was a reserved symbol)
+		 */
+		lemmaName = benchmark.getName();
+
+		/**
+		 * Makes temporary files
+		 */
+		makeTempFileNames();
+
+		/**
+		 * Prints the benchmark with macros in a file
+		 */
+		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
+		benchmark.print(veriTBenchmarkWriter);
+		veriTBenchmarkWriter.close();
+		if (!veriTBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+
+		/**
+		 * Calls veriT to process the macros of the benchmark
+		 */
+		if (Translator.DEBUG) {
+			System.out.println("Launching " + SMTSolver.VERIT
+					+ " with input:\n");
+			showVeriTBenchmarkFile();
+		}
+		callVeriT();
+
+		/**
+		 * Prints the SMT-LIB benchmark in a file
+		 */
+		if (macrosTranslated) {
+			final FileWriter smtBenchmarkWriter = new FileWriter(
+					smtBenchmarkFile);
+			smtBenchmarkWriter.write(veriTResult);
+			smtBenchmarkWriter.close();
+		}
+		if (!smtBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
 }

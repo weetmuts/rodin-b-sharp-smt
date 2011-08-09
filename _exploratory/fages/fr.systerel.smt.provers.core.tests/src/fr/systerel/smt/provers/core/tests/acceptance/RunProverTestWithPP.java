@@ -173,14 +173,14 @@ public class RunProverTestWithPP extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSet() {
+	public void testBOOLSetZ3Call2() {
 		setPreferencesForZ3Test();
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("b↦c ∈ BOOL×BOOL");
 		hyps.add("b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b = TRUE", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test

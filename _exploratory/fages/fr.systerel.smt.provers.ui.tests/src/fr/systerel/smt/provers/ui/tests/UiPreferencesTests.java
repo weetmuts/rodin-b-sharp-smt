@@ -5,10 +5,12 @@ package fr.systerel.smt.provers.ui.tests;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
 import static fr.systerel.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static fr.systerel.smt.provers.internal.core.SMTSolver.CVC3;
@@ -60,6 +62,7 @@ public class UiPreferencesTests {
 		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
 		final String preferences = SolverDetail.toString(solvers);
+		store.setValue(TRANSLATIONPATH, null);
 		store.setValue(SOLVERPREFERENCES, preferences);
 		store.setValue(SOLVERINDEX, 0);
 		store.setValue(VERITPATH, BIN_PATH + VERIT);
@@ -99,6 +102,8 @@ public class UiPreferencesTests {
 		/**
 		 * Get back preferences from UI
 		 */
+		final String translationPath = preferencesService.getString(
+				PREFERENCES_ID, TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH, null);
 		final String solverPreferencesString = preferencesService.getString(
 				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
 				null);
@@ -107,7 +112,8 @@ public class UiPreferencesTests {
 		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
 				VERITPATH, DEFAULT_VERITPATH, null);
 		final SMTPreferences smtPreferences = new SMTPreferences(
-				solverPreferencesString, solverIndex, veriTPath);
+				translationPath, solverPreferencesString, solverIndex,
+				veriTPath);
 
 		final String expectedId = ALT_ERGO.toString();
 		String expectedSolverPath = BIN_PATH + expectedId;

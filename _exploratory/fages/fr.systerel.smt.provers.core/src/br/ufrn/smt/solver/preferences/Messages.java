@@ -7,6 +7,7 @@ public class Messages extends NLS {
 	public static String SMTPreferences_IllegalSMTSolverSettings;
 	public static String SMTPreferences_NoSMTSolverSelected;
 	public static String SMTPreferences_NoSMTSolverSet;
+	public static String SMTPreferences_TranslationPathNotSet;
 	public static String SMTPreferences_VeriTPathNotSet;
 	static {
 		// initialize resource bundle

@@ -7,6 +7,7 @@ import static fr.systerel.smt.provers.internal.core.SMTSolver.Z3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private SMTPreferences preferences;
 
-	static String smtFolder;
+	static File smtFolder;
 
 	/**
 	 * H |- ¬ G is UNSAT, so H |- G is VALID
@@ -286,8 +287,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	@BeforeClass
 	public static void cleanSMTFolder() {
-		CommonSolverRunTests.smtFolder = SMTProverCall.mkTranslationFolder(
-				SMTProverCall.TRANSLATION_PATH,
+		CommonSolverRunTests.smtFolder = SMTProverCall.makeTranslationFolder(
+				SMTProverCall.DEFAULT_TRANSLATION_PATH,
 				!CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
 	}
 

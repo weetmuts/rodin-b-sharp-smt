@@ -1,6 +1,15 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2009 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License  v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Systerel (YGU) - Creation, Implementation and comments
+ *     Vitor Alcantara de Almeida - Commented code 
+ *******************************************************************************/
+
 package fr.systerel.smt.provers.internal.core;
 
 import java.io.File;
@@ -15,27 +24,40 @@ import br.ufrn.smt.solver.translation.SMTThroughPP;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
 
 /**
- * @author guyot
- * 
+ * This class represents a call to an SMT solver using the PP approach. More
+ * precisely, this class is called when a client wants to discharge an Event-B
+ * sequent by using the PP approach to translate it to an SMT-LIB benchmark
+ * and some selected SMT solver to discharge it.
  */
 public class SMTPPCall extends SMTProverCall {
-	private static final String PP_TRANSLATION_PATH = TRANSLATION_PATH
+	private static final String DEFAULT_PP_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
 			+ File.separatorChar + "pp";
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
 			final SMTPreferences preferences, final String lemmaName) {
 		super(hypotheses, goal, pm, preferences, lemmaName);
+
+		final String translationPathPreferenceValue = preferences
+				.getTranslationPath();
+		if (translationPathPreferenceValue != null
+				&& !translationPathPreferenceValue.isEmpty()) {
+			translationPath = translationPathPreferenceValue + File.separatorChar + "pp";
+		} else {
+			translationPath = DEFAULT_PP_TRANSLATION_PATH;
+		}
 	}
 
 	/**
-	 * Makes an SMT-LIB benchmark file containing the Event-B sequent translated
-	 * in SMT-LIB V1.2 language, using the PP approach.
+	 * Executes the translation of the Event-B sequent using the PP approach.
 	 * 
 	 * @throws IOException
 	 */
 	@Override
-	public void makeSMTBenchmarkFileV1_2() throws IOException {
+	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException {
+		/**
+		 * Produces an SMT benchmark.
+		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		/**
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
@@ -44,25 +66,21 @@ public class SMTPPCall extends SMTProverCall {
 		final SMTBenchmark benchmark = SMTThroughPP
 				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
 						smtPreferences.getSolver().getId());
-		/**
-		 * Update of the lemma name
-		 */
-		lemmaName = benchmark.getName();
-		final String benchmarkTargetedPath = PP_TRANSLATION_PATH
-				+ File.separatorChar + lemmaName;
 
 		/**
-		 * Creation of the translation folder (cleans it if needed)
+		 * Updates the name of the benchmark (the name originally given could
+		 * have been changed by the translator if it was a reserved symbol)
 		 */
-		if (translationFolder == null) {
-			translationFolder = mkTranslationFolder(benchmarkTargetedPath,
-					!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
-		}
+		lemmaName = benchmark.getName();
+
 		/**
-		 * Prints the benchmark in a new file
+		 * Makes temporary files
 		 */
-		smtBenchmarkFile = new File(smtFilePath());
-		smtBenchmarkFile.createNewFile();
+		makeTempFileNames();
+
+		/**
+		 * Prints the SMT-LIB benchmark in a file
+		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
 		benchmark.print(smtFileWriter);
 		smtFileWriter.close();

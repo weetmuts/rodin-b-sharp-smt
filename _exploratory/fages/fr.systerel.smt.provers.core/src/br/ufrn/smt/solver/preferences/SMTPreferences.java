@@ -32,16 +32,22 @@ public class SMTPreferences {
 			SMTPreferences_NoSMTSolverSet);
 	public static final IllegalArgumentException VeriTPathNotSetException = new IllegalArgumentException(
 			SMTPreferences_VeriTPathNotSet);
+	public static final IllegalArgumentException TranslationPathNotSetException = new IllegalArgumentException(
+			Messages.SMTPreferences_TranslationPathNotSet);
 
 	public static final String SEPARATOR1 = ",,";
 	public static final String SEPARATOR2 = ";";
+	public static final String TRANSLATIONPATH = "translationpath";
 	public static final String VERITPATH = "veritpath";
 	public static final String SOLVERINDEX = "solverindex";
 	public static final String SOLVERPREFERENCES = "solverpreferences";
 	public static final String DEFAULT_SOLVERPREFERENCES = "";
+	public static final String DEFAULT_TRANSLATIONPATH = "";
 	public static final int DEFAULT_SOLVERINDEX = -1;
 	public static final String DEFAULT_VERITPATH = "";
 	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";
+
+	private String translationPath = null;
 
 	private String veriTPath = null;
 	/**
@@ -58,6 +64,8 @@ public class SMTPreferences {
 	/**
 	 * Constructs a new SMT preferences
 	 * 
+	 * @param translationPath
+	 *            the temporary files directory
 	 * @param solverSettings
 	 *            The string that contains the details of the solvers
 	 * @param selectedSolverIndex
@@ -65,9 +73,10 @@ public class SMTPreferences {
 	 * @throws PatternSyntaxException
 	 *             if the given settings are not formatted correctly
 	 */
-	public SMTPreferences(final String solverSettings,
-			final int selectedSolverIndex) throws PatternSyntaxException,
-			IllegalArgumentException {
+	public SMTPreferences(final String translationPath,
+			final String solverSettings, final int selectedSolverIndex)
+			throws PatternSyntaxException, IllegalArgumentException {
+		this.translationPath = translationPath;
 
 		if (solverSettings == null) {
 			throw IllegalSMTSolverSettingsException;
@@ -97,10 +106,11 @@ public class SMTPreferences {
 	 * @throws PatternSyntaxException
 	 *             if the given settings are not formatted correctly
 	 */
-	public SMTPreferences(final String solverSettings,
-			final int selectedSolverIndex, final String veriTPath)
-			throws PatternSyntaxException, IllegalArgumentException {
-		this(solverSettings, selectedSolverIndex);
+	public SMTPreferences(final String translationPath,
+			final String solverSettings, final int selectedSolverIndex,
+			final String veriTPath) throws PatternSyntaxException,
+			IllegalArgumentException {
+		this(translationPath, solverSettings, selectedSolverIndex);
 
 		if (veriTPath != null && !veriTPath.isEmpty()) {
 			this.veriTPath = veriTPath;
@@ -134,6 +144,10 @@ public class SMTPreferences {
 		return solverDetail;
 	}
 
+	public String getTranslationPath() {
+		return translationPath;
+	}
+
 	public SolverDetail getSolver() {
 		return solver;
 	}
@@ -143,12 +157,12 @@ public class SMTPreferences {
 	}
 
 	public void toString(final StringBuilder builder) {
-		builder.append("SMTPreferences [solver=");
-		builder.append(solver);
+		builder.append("SMTPreferences [");
+		builder.append(TRANSLATIONPATH).append("=").append(translationPath);
 		builder.append(", ");
-		builder.append(VERITPATH);
-		builder.append("=");
-		builder.append(veriTPath);
+		builder.append("solver=").append(solver);
+		builder.append(", ");
+		builder.append(VERITPATH).append("=").append(veriTPath);
 		builder.append("]");
 	}
 
@@ -163,6 +177,8 @@ public class SMTPreferences {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ (translationPath == null ? 0 : translationPath.hashCode());
 		result = prime * result
 				+ (veriTPath == null ? 0 : veriTPath.hashCode());
 		result = prime * result + (solver == null ? 0 : solver.hashCode());
@@ -181,6 +197,15 @@ public class SMTPreferences {
 			return false;
 		}
 		final SMTPreferences other = (SMTPreferences) obj;
+
+		if (translationPath == null) {
+			if (other.translationPath != null) {
+				return false;
+			}
+		} else if (!translationPath.equals(other.translationPath)) {
+			return false;
+		}
+
 		if (veriTPath == null) {
 			if (other.veriTPath != null) {
 				return false;
@@ -188,6 +213,7 @@ public class SMTPreferences {
 		} else if (!veriTPath.equals(other.veriTPath)) {
 			return false;
 		}
+
 		if (solver == null) {
 			if (other.solver != null) {
 				return false;
