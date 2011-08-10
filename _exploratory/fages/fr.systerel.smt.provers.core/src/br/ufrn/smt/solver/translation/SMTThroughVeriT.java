@@ -487,8 +487,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			predicate.accept(this);
 		} catch (IllegalArgumentException e) {
 			if (inGoal) {
+				if (DEBUG) {
+					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Replacing with \u22a5 in goal.");
+				}
 				return SMTFactoryPP.makePFalse();
 			} else {
+				if (DEBUG) {
+					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Replacing with \u22a4 in hypothesis.");
+				}
 				return SMTFactoryPP.makePTrue();
 			}
 		}

@@ -394,6 +394,10 @@ public abstract class SMTProverCall extends XProverCall {
 				 */
 			}
 		} catch (final IOException e) {
+			if (DEBUG) {
+				System.err.println(e.getMessage());
+				e.printStackTrace(System.err);
+			}
 			throw new IllegalArgumentException(e);
 		}
 	}
