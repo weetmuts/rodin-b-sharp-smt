@@ -16,7 +16,6 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.junit.After;
-import org.junit.BeforeClass;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetail;
@@ -30,8 +29,10 @@ import fr.systerel.smt.provers.internal.core.SMTSolver;
 import fr.systerel.smt.provers.internal.core.SMTVeriTCall;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
-
-	private static final boolean CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST = true;
+	public static final String DEFAULT_TEST_TRANSLATION_PATH = System
+			.getProperty("user.home")
+			+ File.separatorChar
+			+ "rodin_smtlib_temp_files";
 
 	private static final NullProofMonitor MONITOR = new NullProofMonitor();
 
@@ -116,7 +117,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SolverDetail sd = new SolverDetail(solverBinaryName,
 				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
 				isSMTV2_0Compatible);
-		preferences = new SMTPreferences(sd, veritBinPath.toString());
+		preferences = new SMTPreferences(DEFAULT_TEST_TRANSLATION_PATH, sd,
+				veritBinPath.toString());
 	}
 
 	/**
@@ -283,13 +285,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
 				expectedSorts);
-	}
-
-	@BeforeClass
-	public static void cleanSMTFolder() {
-		CommonSolverRunTests.smtFolder = SMTProverCall.makeTranslationFolder(
-				SMTProverCall.DEFAULT_TRANSLATION_PATH,
-				!CLEAN_FOLDER_FILES_BEFORE_EACH_CLASS_TEST);
 	}
 
 	@After

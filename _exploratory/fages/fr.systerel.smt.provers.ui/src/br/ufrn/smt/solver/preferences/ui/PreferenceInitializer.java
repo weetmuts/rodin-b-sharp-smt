@@ -9,13 +9,15 @@
  *     Vitor Alcantara de Almeida: Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -35,5 +37,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES);
 		store.setDefault(SOLVERINDEX, DEFAULT_SOLVERINDEX);
 		store.setDefault(VERITPATH, DEFAULT_VERITPATH);
+		store.setDefault(TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH);
 	}
 }

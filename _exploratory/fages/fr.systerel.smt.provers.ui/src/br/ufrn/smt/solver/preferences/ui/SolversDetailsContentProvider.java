@@ -9,12 +9,14 @@
  *     Systerel (YFT): Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import br.ufrn.smt.solver.preferences.SolverDetail;
 
 /**
  * This is a content provider for the Solvers' details viewer.

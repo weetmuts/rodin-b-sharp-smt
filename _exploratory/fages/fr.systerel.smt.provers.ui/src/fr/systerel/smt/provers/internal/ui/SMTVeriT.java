@@ -16,8 +16,8 @@ import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
 import org.eventb.ui.prover.ITacticProvider;
 
-import br.ufrn.smt.solver.preferences.SMTPreferencePage;
 import br.ufrn.smt.solver.preferences.SMTPreferences;
+import br.ufrn.smt.solver.preferences.ui.SMTPreferencePage;
 import fr.systerel.smt.provers.core.SMTProversCore;
 
 /**

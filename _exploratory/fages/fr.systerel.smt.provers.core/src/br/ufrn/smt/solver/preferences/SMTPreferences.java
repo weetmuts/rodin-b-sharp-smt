@@ -55,8 +55,10 @@ public class SMTPreferences {
 	 */
 	private SolverDetail solver;
 
-	public SMTPreferences(final SolverDetail solver, final String veriTPath) {
+	public SMTPreferences(final String translationPath,
+			final SolverDetail solver, final String veriTPath) {
 		super();
+		this.translationPath = translationPath;
 		this.solver = solver;
 		this.veriTPath = veriTPath;
 	}

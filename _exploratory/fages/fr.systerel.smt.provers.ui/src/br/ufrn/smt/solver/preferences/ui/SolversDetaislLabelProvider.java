@@ -9,11 +9,13 @@
  *     Systerel (YFT): Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+
+import br.ufrn.smt.solver.preferences.SolverDetail;
 
 class SolversDetailsLabelProvider implements ITableLabelProvider {
 

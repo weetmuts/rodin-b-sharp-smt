@@ -9,7 +9,7 @@
  * 	   Systerel (YFT) - Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;

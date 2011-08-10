@@ -8,7 +8,7 @@ Require-Bundle: org.eventb.ui,
  fr.systerel.smt.provers.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
-Export-Package: br.ufrn.smt.solver.preferences,
+Export-Package: br.ufrn.smt.solver.preferences.ui,
  fr.systerel.smt.provers.ui
 Bundle-Activator: fr.systerel.smt.provers.ui.SmtProversUIPlugin
 Bundle-ActivationPolicy: lazy

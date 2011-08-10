@@ -46,6 +46,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String DISABLE_BANNER = "--disable-banner";
 	private static final String DISABLE_ACKERMANN = "--disable-ackermann";
 
+	private File veriTTranslationFolder = null;
+
 	/**
 	 * FOR DEBUG ONLY: this is the temporary SMT benchmark produced by the
 	 * plug-in in the veriT approach. This benchmark contains some veriT macros,
@@ -81,6 +83,18 @@ public class SMTVeriTCall extends SMTProverCall {
 					+ File.separatorChar + SMTSolver.VERIT;
 		} else {
 			translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
+		}
+
+		veriTTranslationFolder = new File(translationPath);
+		if (!veriTTranslationFolder.mkdirs()) {
+				// TODO handle the error
+		} else {
+			if (DEBUG) {
+				System.out.println("Created temporary veriT translation folder '"
+						+ veriTTranslationFolder + "'");
+			} else {
+				veriTTranslationFolder.deleteOnExit();
+			}
 		}
 	}
 
@@ -175,10 +189,13 @@ public class SMTVeriTCall extends SMTProverCall {
 		super.makeTempFileNames();
 
 		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
-				SMT_LIB_FILE_EXTENSION, translationFolder);
-		if (Translator.DEBUG)
+				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
+		if (DEBUG) {
 			System.out.println("Created temporary veriT benchmark file '"
 					+ veriTBenchmarkFile + "'");
+		} else {
+			veriTBenchmarkFile.deleteOnExit();
+		}
 	}
 
 	/**

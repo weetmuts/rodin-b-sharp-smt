@@ -12,6 +12,8 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import static br.ufrn.smt.solver.translation.Translator.DEBUG;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,12 +28,13 @@ import fr.systerel.smt.provers.ast.SMTBenchmark;
 /**
  * This class represents a call to an SMT solver using the PP approach. More
  * precisely, this class is called when a client wants to discharge an Event-B
- * sequent by using the PP approach to translate it to an SMT-LIB benchmark
- * and some selected SMT solver to discharge it.
+ * sequent by using the PP approach to translate it to an SMT-LIB benchmark and
+ * some selected SMT solver to discharge it.
  */
 public class SMTPPCall extends SMTProverCall {
 	private static final String DEFAULT_PP_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
 			+ File.separatorChar + "pp";
+	private File ppTranslationFolder = null;
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
@@ -42,9 +45,22 @@ public class SMTPPCall extends SMTProverCall {
 				.getTranslationPath();
 		if (translationPathPreferenceValue != null
 				&& !translationPathPreferenceValue.isEmpty()) {
-			translationPath = translationPathPreferenceValue + File.separatorChar + "pp";
+			translationPath = translationPathPreferenceValue
+					+ File.separatorChar + "pp";
 		} else {
 			translationPath = DEFAULT_PP_TRANSLATION_PATH;
+		}
+
+		ppTranslationFolder = new File(translationPath);
+		if (!ppTranslationFolder.mkdirs()) {
+			// TODO handle the error
+		} else {
+			if (DEBUG) {
+				System.out.println("Created temporary PP translation folder '"
+						+ ppTranslationFolder + "'");
+			} else {
+				ppTranslationFolder.deleteOnExit();
+			}
 		}
 	}
 

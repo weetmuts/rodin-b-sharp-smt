@@ -62,7 +62,7 @@ public class UiPreferencesTests {
 		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
 		final String preferences = SolverDetail.toString(solvers);
-		store.setValue(TRANSLATIONPATH, null);
+		store.setValue(TRANSLATIONPATH, "");
 		store.setValue(SOLVERPREFERENCES, preferences);
 		store.setValue(SOLVERINDEX, 0);
 		store.setValue(VERITPATH, BIN_PATH + VERIT);
@@ -128,7 +128,8 @@ public class UiPreferencesTests {
 		final SolverDetail expectedSolverDetail = new SolverDetail(expectedId,
 				expectedSolverPath, args, smtV1_2, smtV2_0);
 		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
-				expectedSolverDetail, expectedVeriTPath);
+				DEFAULT_TRANSLATIONPATH, expectedSolverDetail,
+				expectedVeriTPath);
 
 		final SMTPreferences[] p = { smtPreferences };
 		final SMTPreferences[] expP = { expectedSMTPreferences };

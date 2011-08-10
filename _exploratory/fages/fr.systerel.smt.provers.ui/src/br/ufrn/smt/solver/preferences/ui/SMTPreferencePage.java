@@ -9,7 +9,7 @@
  *     Systerel (YFT): Creation
  *******************************************************************************/
 
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
@@ -20,6 +20,8 @@ import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
+import static br.ufrn.smt.solver.preferences.ui.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails;
+import static br.ufrn.smt.solver.preferences.ui.Messages.SmtProversCall_no_selected_solver;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -51,6 +54,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import br.ufrn.smt.solver.preferences.SMTPreferences;
+import br.ufrn.smt.solver.preferences.SolverDetail;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
@@ -114,8 +119,8 @@ public class SMTPreferencePage extends PreferencePage implements
 		setDescription("SMT-Solver Plugin Preference Page");
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(PREFERENCES_NAME);
-		setTranslationPath = getPreferenceStore().getString("TRANSLATIONPATH");
 		setVeriTPath = getPreferenceStore().getString(VERITPATH);
+		setTranslationPath = getPreferenceStore().getString(TRANSLATIONPATH);
 		try {
 			solverDetails = SMTPreferences.parsePreferencesString(preferences);
 		} catch (final PatternSyntaxException pse) {
@@ -274,37 +279,7 @@ public class SMTPreferencePage extends PreferencePage implements
 		// resize compButtons
 		compPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		// translation path
-		final Label translationPathTextLabel = new Label(compPaths, SWT.LEFT);
-		translationPathTextLabel.setText(TRANSLATION_PATH);
-
-		final Text translationPathText = new Text(compPaths, SWT.LEFT
-				| SWT.BORDER);
-		translationPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, true));
-		translationPathText.setEditable(false);
-		translationPathText.setText(setTranslationPath);
-
-		// Add button Browse
-		final Button translationPathbrowseButton = new Button(compPaths,
-				SWT.PUSH);
-		translationPathbrowseButton.setText(BROWSE);
-		translationPathbrowseButton
-				.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(final SelectionEvent event) {
-						File f = new File(translationPathText.getText());
-						if (!f.exists()) {
-							f = null;
-						}
-						final File d = getFile(f);
-						translationPathText.setText(d.getPath());
-						setTranslationPath = translationPathText.getText();
-					}
-
-				});
-
-		//veriT path
+		// veriT path
 		final Label solverPreproPathTextLabel = new Label(compPaths, SWT.LEFT);
 		solverPreproPathTextLabel.setText(VERIT_PATH);
 
@@ -331,6 +306,35 @@ public class SMTPreferencePage extends PreferencePage implements
 			}
 
 		});
+
+		// translation path
+		final Label translationPathTextLabel = new Label(compPaths, SWT.LEFT);
+		translationPathTextLabel.setText(TRANSLATION_PATH);
+
+		final Text translationPathText = new Text(compPaths, SWT.LEFT
+				| SWT.BORDER);
+		translationPathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, true));
+		translationPathText.setEditable(false);
+		translationPathText.setText(setTranslationPath);
+
+		// Add button Browse
+		final Button translationPathbrowseButton = new Button(compPaths,
+				SWT.PUSH);
+		translationPathbrowseButton.setText(BROWSE);
+		translationPathbrowseButton
+				.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(final SelectionEvent event) {
+						File file = new File(translationPathText.getText());
+						if (!file.exists()) {
+							file = null;
+						}
+						final File selected = getFolder(file);
+						translationPathText.setText(selected.getPath());
+						setTranslationPath = translationPathText.getText();
+					}
+				});
 
 		// Update table with solver details
 		fTable.refresh();
@@ -386,11 +390,35 @@ public class SMTPreferencePage extends PreferencePage implements
 	 *         not.
 	 */
 	File getFile(final File startingDirectory) {
-
 		final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
 				| SWT.SHEET);
 		if (startingDirectory != null) {
 			dialog.setFileName(startingDirectory.getPath());
+		}
+		String file = dialog.open();
+		if (file != null) {
+			file = file.trim();
+			if (file.length() > 0) {
+				return new File(file);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Helper to open the directory chooser dialog.
+	 * 
+	 * @param startingDirectory
+	 *            the directory to open the dialog on.
+	 * @return File The File the user selected or <code>null</code> if they do
+	 *         not.
+	 */
+	File getFolder(final File startingDirectory) {
+		final DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN
+				| SWT.SHEET);
+		if (startingDirectory != null) {
+			dialog.setFilterPath(startingDirectory.getPath());
 		}
 		String file = dialog.open();
 		if (file != null) {
@@ -530,7 +558,7 @@ public class SMTPreferencePage extends PreferencePage implements
 						|| solverPathText.getText() == "") {
 					// Message popup displayed when there is no defined
 					// solver path or smt lib chosen or smt Id
-					UIUtils.showError(br.ufrn.smt.solver.preferences.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails);
+					UIUtils.showError(SMTPreferencePage2_MandatoryFieldsInSolverDetails);
 				} else {
 					if (editMode) {
 						final int indexToEdit = fTable.getTable()
@@ -609,7 +637,8 @@ public class SMTPreferencePage extends PreferencePage implements
 				PREFERENCES_ID, TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH, null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
-		return new SMTPreferences(translationPath, solverPreferences, solverIndex);
+		return new SMTPreferences(translationPath, solverPreferences,
+				solverIndex);
 	}
 
 	public static SMTPreferences getSMTPreferencesForVeriT()
@@ -644,9 +673,10 @@ public class SMTPreferencePage extends PreferencePage implements
 		getPreferenceStore().putValue(PREFERENCES_NAME, preferences);
 		getPreferenceStore().setValue(SOLVERINDEX, selectedSolverIndex);
 		getPreferenceStore().putValue(VERITPATH, setVeriTPath);
+		getPreferenceStore().putValue(TRANSLATIONPATH, setTranslationPath);
 		if (selectedSolverIndex < 0
 				|| selectedSolverIndex >= solverDetails.size()) {
-			UIUtils.showWarning(Messages.SmtProversCall_no_selected_solver);
+			UIUtils.showWarning(SmtProversCall_no_selected_solver);
 		}
 		return super.performOk();
 	}

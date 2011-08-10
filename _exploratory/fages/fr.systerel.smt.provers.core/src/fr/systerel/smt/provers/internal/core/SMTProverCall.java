@@ -33,7 +33,6 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.translation.Translator;
 
 /**
  * 
@@ -43,9 +42,8 @@ import br.ufrn.smt.solver.translation.Translator;
 public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
-	protected static boolean CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF = true;
 	public static final String DEFAULT_TRANSLATION_PATH = System
-			.getProperty("user.home")
+			.getProperty("java.io.tmpdir")
 			+ File.separatorChar
 			+ "rodin_smtlib_temp_files";
 
@@ -84,7 +82,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 * sequent to discharge translated to SMT-LIB language, smtResultFile
 	 * contains the result of the solver
 	 */
-	protected File translationFolder = null;
+	protected File smtTranslationFolder = null;
 	protected File smtBenchmarkFile;
 	protected File smtResultFile;
 
@@ -110,24 +108,6 @@ public abstract class SMTProverCall extends XProverCall {
 
 		this.lemmaName = lemmaName;
 		solverName = preferences.getSolver().getId();
-	}
-
-	/**
-	 * Delete the file and all its children (if it is a folder)
-	 * 
-	 * @param file
-	 *            the file to be deleted
-	 */
-	private static void deleteFile(final File file) {
-		if (file.isFile()) {
-			file.delete();
-		} else {
-			final File[] childFiles = file.listFiles();
-			for (final File childFile : childFiles) {
-				deleteFile(childFile);
-			}
-			file.delete();
-		}
 	}
 
 	/**
@@ -334,28 +314,41 @@ public abstract class SMTProverCall extends XProverCall {
 	 * Makes temporary files in the given path
 	 */
 	protected synchronized void makeTempFileNames() throws IOException {
-		final String benchmarkTargetPath = translationPath
-				+ File.separatorChar + lemmaName;
+		final String benchmarkTargetPath = translationPath + File.separatorChar
+				+ lemmaName;
 
-		/**
-		 * Creation of the translation folder (cleans it if needed)
-		 */
-		if (translationFolder == null) {
-			translationFolder = makeTranslationFolder(benchmarkTargetPath,
-					!CLEAN_SMT_FOLDER_BEFORE_EACH_PROOF);
+		if (smtTranslationFolder == null) {
+			smtTranslationFolder = new File(benchmarkTargetPath);
+			if (!smtTranslationFolder.mkdirs()) {
+				// TODO handle the error
+			} else {
+				if (DEBUG) {
+					System.out
+							.println("Created temporary SMT translation folder '"
+									+ smtTranslationFolder + "'");
+				} else {
+					smtTranslationFolder.deleteOnExit();
+				}
+			}
 		}
 
 		smtBenchmarkFile = File.createTempFile(lemmaName,
-				SMT_LIB_FILE_EXTENSION, translationFolder);
-		if (Translator.DEBUG)
+				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
+		if (DEBUG) {
 			System.out.println("Created temporary SMT benchmark file '"
 					+ smtBenchmarkFile + "'");
+		} else {
+			smtBenchmarkFile.deleteOnExit();
+		}
 
 		smtResultFile = File.createTempFile(lemmaName + "_" + solverName,
-				RES_FILE_EXTENSION, translationFolder);
-		if (Translator.DEBUG)
+				RES_FILE_EXTENSION, smtTranslationFolder);
+		if (DEBUG) {
 			System.out.println("Created temporary SMT result file '"
 					+ smtResultFile + "'");
+		} else {
+			smtResultFile.deleteOnExit();
+		}
 
 		// Fill the result file with some random characters that can not be
 		// considered as a success.
@@ -371,39 +364,6 @@ public abstract class SMTProverCall extends XProverCall {
 	 * @throws IOException
 	 */
 	abstract protected void makeSMTBenchmarkFileV1_2() throws IOException;
-
-	/**
-	 * Makes the translation folder for SMT files.
-	 * 
-	 * @param cleanSmtFolder
-	 *            If the folder already exists and it has content inside, this
-	 *            boolean then is used to check if the content must be deleted
-	 *            or not before new proof.
-	 * 
-	 * @return the path string of the created directory
-	 */
-	public static File makeTranslationFolder(final String targetedPath,
-			final boolean cleanSmtFolder) {
-		final File translationFolder = new File(targetedPath);
-		/**
-		 * Tries to create the translation folder
-		 */
-		if (!translationFolder.mkdirs()) {
-			// TODO handle the error
-		}
-
-		if (cleanSmtFolder) {
-			if (translationFolder.exists()) {
-				if (translationFolder.isDirectory()) {
-					final File[] children = translationFolder.listFiles();
-					for (final File child : children) {
-						deleteFile(child);
-					}
-				}
-			}
-		}
-		return translationFolder;
-	}
 
 	/**
 	 * Runs the external SMT solver on the sequent given at instance creation.

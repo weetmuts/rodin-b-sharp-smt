@@ -8,13 +8,13 @@
  * Contributors:
  *     Vitor Alcantara de Almeida: Creation
  *******************************************************************************/
-package br.ufrn.smt.solver.preferences;
+package br.ufrn.smt.solver.preferences.ui;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.preferences.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.preferences.ui.messages"; //$NON-NLS-1$
 
 	public static String SMTPreferencePage2_MandatoryFieldsInSolverDetails;
 
