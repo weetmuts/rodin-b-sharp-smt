@@ -59,6 +59,9 @@ public class SMTPPCall extends SMTProverCall {
 				System.out.println("Created temporary PP translation folder '"
 						+ ppTranslationFolder + "'");
 			} else {
+				/**
+				 * The deletion will be done when exiting Rodin.
+				 */
 				ppTranslationFolder.deleteOnExit();
 			}
 		}

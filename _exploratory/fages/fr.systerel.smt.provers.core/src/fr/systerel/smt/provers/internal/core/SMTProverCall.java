@@ -327,6 +327,9 @@ public abstract class SMTProverCall extends XProverCall {
 							.println("Created temporary SMT translation folder '"
 									+ smtTranslationFolder + "'");
 				} else {
+					/**
+					 * The deletion will be done when exiting Rodin.
+					 */
 					smtTranslationFolder.deleteOnExit();
 				}
 			}
@@ -338,23 +341,24 @@ public abstract class SMTProverCall extends XProverCall {
 			System.out.println("Created temporary SMT benchmark file '"
 					+ smtBenchmarkFile + "'");
 		} else {
+			/**
+			 * The deletion will be done when exiting Rodin.
+			 */
 			smtBenchmarkFile.deleteOnExit();
 		}
 
-		smtResultFile = File.createTempFile(lemmaName + "_" + solverName,
-				RES_FILE_EXTENSION, smtTranslationFolder);
 		if (DEBUG) {
+			smtResultFile = File.createTempFile(lemmaName + "_" + solverName,
+					RES_FILE_EXTENSION, smtTranslationFolder);
 			System.out.println("Created temporary SMT result file '"
 					+ smtResultFile + "'");
-		} else {
-			smtResultFile.deleteOnExit();
-		}
 
-		// Fill the result file with some random characters that can not be
-		// considered as a success.
-		final PrintStream stream = new PrintStream(smtResultFile);
-		stream.println("FAILED");
-		stream.close();
+			// Fill the result file with some random characters that can not be
+			// considered as a success.
+			final PrintStream stream = new PrintStream(smtResultFile);
+			stream.println("FAILED");
+			stream.close();
+		}
 	}
 
 	/**
@@ -376,17 +380,28 @@ public abstract class SMTProverCall extends XProverCall {
 			 * discharge it with an SMT solver
 			 */
 			if (smtPreferences.getSolver().getsmtV1_2()) {
-				makeSMTBenchmarkFileV1_2();
-
-				if (DEBUG) {
-					System.out.println("Launching " + solverName
-							+ " with input:\n");
-					showSMTBenchmarkFile();
+				boolean smtBenchmarkFileMade = false;
+				try {
+					makeSMTBenchmarkFileV1_2();
+					smtBenchmarkFileMade = true;
+				} catch (IllegalArgumentException e) {
+					if (DEBUG) {
+						System.out
+								.println("Due to translation failure, the solver won't be launched.");
+					}
 				}
 
-				setMonitorMessage("Running SMT solver : "
-						+ smtPreferences.getSolver());
-				callProver(solverCommandLine());
+				if (smtBenchmarkFileMade) {
+					if (DEBUG) {
+						System.out.println("Launching " + solverName
+								+ " with input:\n");
+						showSMTBenchmarkFile();
+					}
+
+					setMonitorMessage("Running SMT solver : "
+							+ smtPreferences.getSolver());
+					callProver(solverCommandLine());
+				}
 
 			} else if (smtPreferences.getSolver().getsmtV2_0()) {
 				/**
@@ -429,14 +444,6 @@ public abstract class SMTProverCall extends XProverCall {
 	public synchronized void cleanup() {
 		for (final Process p : activeProcesses) {
 			p.destroy();
-		}
-		if (smtBenchmarkFile != null) {
-			smtBenchmarkFile.delete();
-			smtBenchmarkFile = null;
-		}
-		if (smtResultFile != null) {
-			smtResultFile.delete();
-			smtResultFile = null;
 		}
 	}
 }

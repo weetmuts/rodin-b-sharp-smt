@@ -87,12 +87,16 @@ public class SMTVeriTCall extends SMTProverCall {
 
 		veriTTranslationFolder = new File(translationPath);
 		if (!veriTTranslationFolder.mkdirs()) {
-				// TODO handle the error
+			// TODO handle the error
 		} else {
 			if (DEBUG) {
-				System.out.println("Created temporary veriT translation folder '"
-						+ veriTTranslationFolder + "'");
+				System.out
+						.println("Created temporary veriT translation folder '"
+								+ veriTTranslationFolder + "'");
 			} else {
+				/**
+				 * The deletion will be done when exiting Rodin.
+				 */
 				veriTTranslationFolder.deleteOnExit();
 			}
 		}
@@ -155,7 +159,7 @@ public class SMTVeriTCall extends SMTProverCall {
 
 			if (DEBUG)
 				System.out.println("veriT "
-						+ (macrosTranslated ? "succeeded" : "failed"));
+						+ (macrosTranslated ? "succeeded" : "failed:\n" + veriTResult));
 
 		} finally {
 			if (DEBUG)
@@ -194,6 +198,9 @@ public class SMTVeriTCall extends SMTProverCall {
 			System.out.println("Created temporary veriT benchmark file '"
 					+ veriTBenchmarkFile + "'");
 		} else {
+			/**
+			 * The deletion will be done when exiting Rodin.
+			 */
 			veriTBenchmarkFile.deleteOnExit();
 		}
 	}
@@ -204,7 +211,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	@Override
-	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException {
+	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException, IllegalArgumentException {
 		/**
 		 * Produces an SMT benchmark containing some veriT macros.
 		 */
@@ -252,6 +259,8 @@ public class SMTVeriTCall extends SMTProverCall {
 					smtBenchmarkFile);
 			smtBenchmarkWriter.write(veriTResult);
 			smtBenchmarkWriter.close();
+		} else {
+			throw new IllegalArgumentException(veriTResult);
 		}
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
