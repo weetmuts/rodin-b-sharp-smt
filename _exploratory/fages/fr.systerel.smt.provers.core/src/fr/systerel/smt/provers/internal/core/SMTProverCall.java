@@ -399,7 +399,7 @@ public abstract class SMTProverCall extends XProverCall {
 					}
 
 					setMonitorMessage("Running SMT solver : "
-							+ smtPreferences.getSolver());
+							+ smtPreferences.getSolver().getId() + ".");
 					callProver(solverCommandLine());
 				}
 
