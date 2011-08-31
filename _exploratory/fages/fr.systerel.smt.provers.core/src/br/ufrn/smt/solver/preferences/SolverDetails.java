@@ -20,7 +20,7 @@ import java.util.List;
  * This is a class to describe a solver detail
  * 
  */
-public class SolverDetail {
+public class SolverDetails {
 
 	private String id;
 
@@ -46,7 +46,7 @@ public class SolverDetail {
 	 * @param smtV2_0
 	 *            determines if the solver will be used for SMT 2.0
 	 */
-	public SolverDetail(final String id, final String path, final String args,
+	public SolverDetails(final String id, final String path, final String args,
 			final boolean smtV1_2, final boolean smtV2_0) {
 		this.id = id;
 		this.path = path;
@@ -95,10 +95,10 @@ public class SolverDetail {
 		this.smtV2_0 = smtV2_0;
 	}
 
-	public static final String toString(final List<SolverDetail> solversDetails) {
+	public static final String toString(final List<SolverDetails> solversDetails) {
 		final StringBuilder sb = new StringBuilder();
 
-		for (final SolverDetail solverDetail : solversDetails) {
+		for (final SolverDetails solverDetail : solversDetails) {
 			sb.append(solverDetail.getId());
 			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getPath());
@@ -115,7 +115,7 @@ public class SolverDetail {
 	}
 
 	public void toString(final StringBuilder builder) {
-		builder.append("SolverDetail [id=");
+		builder.append("SolverDetails [id=");
 		builder.append(id);
 		builder.append(", path=");
 		builder.append(path);
@@ -158,7 +158,7 @@ public class SolverDetail {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final SolverDetail other = (SolverDetail) obj;
+		final SolverDetails other = (SolverDetails) obj;
 		if (args == null) {
 			if (other.args != null) {
 				return false;

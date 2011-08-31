@@ -16,6 +16,8 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.preferences.ui.messages"; //$NON-NLS-1$
 
+	public static String SMTPreferencePage_SettingsDescription;
+
 	public static String SMTPreferencePage2_MandatoryFieldsInSolverDetails;
 
 	public static String SmtProversCall_no_selected_solver;

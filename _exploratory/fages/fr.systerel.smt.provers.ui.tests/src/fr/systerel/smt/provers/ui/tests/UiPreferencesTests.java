@@ -27,7 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.preferences.SolverDetails;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
@@ -58,10 +58,10 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		final List<SolverDetail> solvers = new ArrayList<SolverDetail>();
-		solvers.add(new SolverDetail(solverBinaryName, solverPath, solverArgs,
+		final List<SolverDetails> solvers = new ArrayList<SolverDetails>();
+		solvers.add(new SolverDetails(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
-		final String preferences = SolverDetail.toString(solvers);
+		final String preferences = SolverDetails.toString(solvers);
 		store.setValue(TRANSLATIONPATH, "");
 		store.setValue(SOLVERPREFERENCES, preferences);
 		store.setValue(SOLVERINDEX, 0);
@@ -125,7 +125,7 @@ public class UiPreferencesTests {
 		final boolean smtV2_0 = false;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final SolverDetail expectedSolverDetail = new SolverDetail(expectedId,
+		final SolverDetails expectedSolverDetail = new SolverDetails(expectedId,
 				expectedSolverPath, args, smtV1_2, smtV2_0);
 		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
 				DEFAULT_TRANSLATIONPATH, expectedSolverDetail,

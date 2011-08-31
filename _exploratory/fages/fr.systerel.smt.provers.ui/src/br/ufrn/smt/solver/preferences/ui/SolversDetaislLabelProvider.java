@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.preferences.SolverDetails;
 
 class SolversDetailsLabelProvider implements ITableLabelProvider {
 
@@ -26,7 +26,7 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public String getColumnText(final Object element, final int columnIndex) {
-		final SolverDetail solver = (SolverDetail) element;
+		final SolverDetails solver = (SolverDetails) element;
 		switch (columnIndex) {
 		case 0:
 			return solver.getId();

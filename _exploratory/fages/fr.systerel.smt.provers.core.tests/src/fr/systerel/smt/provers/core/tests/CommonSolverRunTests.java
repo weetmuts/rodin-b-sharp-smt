@@ -18,7 +18,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.junit.After;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.preferences.SolverDetails;
 import br.ufrn.smt.solver.translation.SMTThroughPP;
 import br.ufrn.smt.solver.translation.SMTTranslationApproach;
 import fr.systerel.smt.provers.ast.SMTBenchmark;
@@ -114,7 +114,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
-		final SolverDetail sd = new SolverDetail(solverBinaryName,
+		final SolverDetails sd = new SolverDetails(solverBinaryName,
 				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
 				isSMTV2_0Compatible);
 		preferences = new SMTPreferences(DEFAULT_TEST_TRANSLATION_PATH, sd,

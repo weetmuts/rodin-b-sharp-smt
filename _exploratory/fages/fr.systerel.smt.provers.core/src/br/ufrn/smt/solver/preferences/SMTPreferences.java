@@ -53,10 +53,10 @@ public class SMTPreferences {
 	/**
 	 * The solver's settings
 	 */
-	private SolverDetail solver;
+	private SolverDetails solver;
 
 	public SMTPreferences(final String translationPath,
-			final SolverDetail solver, final String veriTPath) {
+			final SolverDetails solver, final String veriTPath) {
 		super();
 		this.translationPath = translationPath;
 		this.solver = solver;
@@ -84,7 +84,7 @@ public class SMTPreferences {
 			throw IllegalSMTSolverSettingsException;
 		}
 
-		final List<SolverDetail> solvers = parsePreferencesString(solverSettings);
+		final List<SolverDetails> solvers = parsePreferencesString(solverSettings);
 		try {
 			solver = solvers.get(selectedSolverIndex);
 		} catch (final IndexOutOfBoundsException ioobe) {
@@ -130,15 +130,15 @@ public class SMTPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	public static List<SolverDetail> parsePreferencesString(
+	public static List<SolverDetails> parsePreferencesString(
 			final String preferences) throws PatternSyntaxException {
-		final List<SolverDetail> solverDetail = new ArrayList<SolverDetail>();
+		final List<SolverDetails> solverDetail = new ArrayList<SolverDetails>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SolverDetail(columns[0], columns[1],
+				solverDetail.add(new SolverDetails(columns[0], columns[1],
 						columns[2], Boolean.valueOf(columns[3]), Boolean
 								.valueOf(columns[4])));
 			}
@@ -150,7 +150,7 @@ public class SMTPreferences {
 		return translationPath;
 	}
 
-	public SolverDetail getSolver() {
+	public SolverDetails getSolver() {
 		return solver;
 	}
 

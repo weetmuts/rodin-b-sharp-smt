@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import br.ufrn.smt.solver.preferences.SolverDetail;
+import br.ufrn.smt.solver.preferences.SolverDetails;
 
 /**
  * This is a content provider for the Solvers' details viewer.
@@ -34,7 +34,7 @@ public class SolversDetailsContentProvider implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
-		return ((List<SolverDetail>) inputElement).toArray();
+		return ((List<SolverDetails>) inputElement).toArray();
 	}
 
 	@Override
