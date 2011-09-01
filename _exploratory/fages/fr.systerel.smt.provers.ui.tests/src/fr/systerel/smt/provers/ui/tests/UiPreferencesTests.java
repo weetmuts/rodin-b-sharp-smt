@@ -3,15 +3,15 @@
  */
 package fr.systerel.smt.provers.ui.tests;
 
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATIONPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.PREFERENCES_ID;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.VERIT_PATH_ID;
 import static fr.systerel.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static fr.systerel.smt.provers.internal.core.SMTSolver.CVC3;
 import static fr.systerel.smt.provers.internal.core.SMTSolver.VERIT;
@@ -62,10 +62,10 @@ public class UiPreferencesTests {
 		solvers.add(new SolverDetails(solverBinaryName, solverPath, solverArgs,
 				isSMTV1_2Compatible, isSMTV2_0Compatible));
 		final String preferences = SolverDetails.toString(solvers);
-		store.setValue(TRANSLATIONPATH, "");
-		store.setValue(SOLVERPREFERENCES, preferences);
-		store.setValue(SOLVERINDEX, 0);
-		store.setValue(VERITPATH, BIN_PATH + VERIT);
+		store.setValue(TRANSLATION_PATH_ID, "");
+		store.setValue(SOLVER_PREFERENCES_ID, preferences);
+		store.setValue(SOLVER_INDEX_ID, 0);
+		store.setValue(VERIT_PATH_ID, BIN_PATH + VERIT);
 	}
 
 	protected static void setPreferencesForVeriTTest() {
@@ -103,14 +103,14 @@ public class UiPreferencesTests {
 		 * Get back preferences from UI
 		 */
 		final String translationPath = preferencesService.getString(
-				PREFERENCES_ID, TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH, null);
+				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
 		final String solverPreferencesString = preferencesService.getString(
-				PREFERENCES_ID, SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES,
+				PREFERENCES_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
 				null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
-				SOLVERINDEX, DEFAULT_SOLVERINDEX, null);
+				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
 		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
-				VERITPATH, DEFAULT_VERITPATH, null);
+				VERIT_PATH_ID, DEFAULT_VERIT_PATH, null);
 		final SMTPreferences smtPreferences = new SMTPreferences(
 				translationPath, solverPreferencesString, solverIndex,
 				veriTPath);
@@ -128,7 +128,7 @@ public class UiPreferencesTests {
 		final SolverDetails expectedSolverDetail = new SolverDetails(expectedId,
 				expectedSolverPath, args, smtV1_2, smtV2_0);
 		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
-				DEFAULT_TRANSLATIONPATH, expectedSolverDetail,
+				DEFAULT_TRANSLATION_PATH, expectedSolverDetail,
 				expectedVeriTPath);
 
 		final SMTPreferences[] p = { smtPreferences };

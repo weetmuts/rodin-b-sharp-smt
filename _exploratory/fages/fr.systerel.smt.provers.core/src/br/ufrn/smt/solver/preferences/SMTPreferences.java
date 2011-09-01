@@ -16,6 +16,7 @@ import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_NoSMTSolver
 import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_NoSMTSolverSet;
 import static br.ufrn.smt.solver.preferences.Messages.SMTPreferences_VeriTPathNotSet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
@@ -37,14 +38,17 @@ public class SMTPreferences {
 
 	public static final String SEPARATOR1 = ",,";
 	public static final String SEPARATOR2 = ";";
-	public static final String TRANSLATIONPATH = "translationpath";
-	public static final String VERITPATH = "veritpath";
-	public static final String SOLVERINDEX = "solverindex";
-	public static final String SOLVERPREFERENCES = "solverpreferences";
-	public static final String DEFAULT_SOLVERPREFERENCES = "";
-	public static final String DEFAULT_TRANSLATIONPATH = "";
-	public static final int DEFAULT_SOLVERINDEX = -1;
-	public static final String DEFAULT_VERITPATH = "";
+	public static final String TRANSLATION_PATH_ID = "translationpath";
+	public static final String VERIT_PATH_ID = "veritpath";
+	public static final String SOLVER_INDEX_ID = "solverindex";
+	public static final String SOLVER_PREFERENCES_ID = "solverpreferences";
+	public static final String DEFAULT_SOLVER_PREFERENCES = "";
+	public static final String DEFAULT_TRANSLATION_PATH = System
+			.getProperty("java.io.tmpdir")
+			+ File.separatorChar
+			+ "rodin_smtlib_temp_files";
+	public static final int DEFAULT_SOLVER_INDEX = -1;
+	public static final String DEFAULT_VERIT_PATH = "";
 	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";
 
 	private String translationPath = null;
@@ -160,11 +164,11 @@ public class SMTPreferences {
 
 	public void toString(final StringBuilder builder) {
 		builder.append("SMTPreferences [");
-		builder.append(TRANSLATIONPATH).append("=").append(translationPath);
+		builder.append(TRANSLATION_PATH_ID).append("=").append(translationPath);
 		builder.append(", ");
 		builder.append("solver=").append(solver);
 		builder.append(", ");
-		builder.append(VERITPATH).append("=").append(veriTPath);
+		builder.append(VERIT_PATH_ID).append("=").append(veriTPath);
 		builder.append("]");
 	}
 

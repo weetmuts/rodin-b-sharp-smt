@@ -12,6 +12,7 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static br.ufrn.smt.solver.translation.Translator.DEBUG;
 
 import java.io.File;

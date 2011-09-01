@@ -42,10 +42,6 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
-	public static final String DEFAULT_TRANSLATION_PATH = System
-			.getProperty("java.io.tmpdir")
-			+ File.separatorChar
-			+ "rodin_smtlib_temp_files";
 
 	/**
 	 * Solver output at the end of the call

@@ -175,9 +175,17 @@ class SolversDetailsFieldEditor extends FieldEditor {
 			final boolean editMode, final String id, final String path,
 			final String args, final boolean v1_2, final boolean v2_0) {
 		final Shell shell = new Shell(parent.getShell());
+		if (editMode) {
+			final Table solversTable = solversTableViewer.getTable();
+			final int selectionIndex = solversTable.getSelectionIndex();
+			final String solverId = solversDetails.get(selectionIndex).getId();
+			shell.setText("Edit " + solverId + " settings");
+		} else {
+			shell.setText("New solver settings");
+		}
 		shell.setLayout(new GridLayout(1, false));
 		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		shell.setSize(400, 200);
+		shell.setSize(400, 250);
 
 		final Composite compName = new Composite(shell, SWT.NONE);
 		final Composite compPath = new Composite(shell, SWT.NONE);
@@ -191,13 +199,16 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		compSmtVersion.setLayout(new GridLayout(3, false));
 		compOkCancel.setLayout(new GridLayout(2, false));
 
-		compName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compArg.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		compSmtVersion.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		compOkCancel
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final GridData gridData = new GridData(SWT.DEFAULT, 30);
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.verticalAlignment = SWT.FILL;
+		compName.setLayoutData(gridData);
+		compPath.setLayoutData(gridData);
+		compArg.setLayoutData(gridData);
+		compSmtVersion.setLayoutData(gridData);
+		compOkCancel.setLayoutData(gridData);
 
 		// Solver Id
 		final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
@@ -395,7 +406,8 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		final Table solversTable = solversTableViewer.getTable();
 		final int itemCount = solversTable.getItemCount();
 		final int selectionIndex = solversTable.getSelectionIndex();
-		final boolean validSelectionIndex = selectionIndex >= 0 && selectionIndex < itemCount;
+		final boolean validSelectionIndex = selectionIndex >= 0
+				&& selectionIndex < itemCount;
 		if (itemCount == 1 || (itemCount > 1 && !validSelectionIndex)) {
 			selectedSolverIndex = 0;
 		} else if (validSelectionIndex) {
@@ -598,7 +610,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solversDetails = SMTPreferences.parsePreferencesString(preferences);
 		solversTableViewer.setInput(solversDetails);
 		selectedSolverIndex = getPreferenceStore().getInt(
-				SMTPreferences.SOLVERINDEX);
+				SMTPreferences.SOLVER_INDEX_ID);
 		setSelectedSolverIndex();
 		solversTableViewer.refresh();
 	}
@@ -611,7 +623,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				.parsePreferencesString(defaultPreferences);
 		solversTableViewer.setInput(solversDetails);
 		selectedSolverIndex = getPreferenceStore().getInt(
-				SMTPreferences.SOLVERINDEX);
+				SMTPreferences.SOLVER_INDEX_ID);
 		setSelectedSolverIndex();
 		solversTableViewer.refresh();
 	}
@@ -622,7 +634,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		if (preferences != null) {
 			getPreferenceStore().setValue(getPreferenceName(), preferences);
 		}
-		getPreferenceStore().setValue(SMTPreferences.SOLVERINDEX,
+		getPreferenceStore().setValue(SMTPreferences.SOLVER_INDEX_ID,
 				selectedSolverIndex);
 	}
 

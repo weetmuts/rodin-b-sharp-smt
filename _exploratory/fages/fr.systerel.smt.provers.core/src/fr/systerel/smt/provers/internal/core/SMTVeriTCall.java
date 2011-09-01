@@ -13,6 +13,7 @@
 
 package fr.systerel.smt.provers.internal.core;
 
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static br.ufrn.smt.solver.translation.Translator.DEBUG;
 
 import java.io.File;
@@ -159,7 +160,8 @@ public class SMTVeriTCall extends SMTProverCall {
 
 			if (DEBUG)
 				System.out.println("veriT "
-						+ (macrosTranslated ? "succeeded" : "failed:\n" + veriTResult));
+						+ (macrosTranslated ? "succeeded" : "failed:\n"
+								+ veriTResult));
 
 		} finally {
 			if (DEBUG)
@@ -211,7 +213,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	@Override
-	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException, IllegalArgumentException {
+	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException,
+			IllegalArgumentException {
 		/**
 		 * Produces an SMT benchmark containing some veriT macros.
 		 */

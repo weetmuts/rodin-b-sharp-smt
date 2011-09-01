@@ -11,14 +11,14 @@
 
 package br.ufrn.smt.solver.preferences.ui;
 
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERINDEX;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVERPREFERENCES;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATIONPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERITPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERINDEX;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVERPREFERENCES;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATIONPATH;
-import static br.ufrn.smt.solver.preferences.SMTPreferences.VERITPATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static br.ufrn.smt.solver.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -34,9 +34,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
-		store.setDefault(SOLVERPREFERENCES, DEFAULT_SOLVERPREFERENCES);
-		store.setDefault(SOLVERINDEX, DEFAULT_SOLVERINDEX);
-		store.setDefault(VERITPATH, DEFAULT_VERITPATH);
-		store.setDefault(TRANSLATIONPATH, DEFAULT_TRANSLATIONPATH);
+		store.setDefault(SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES);
+		store.setDefault(SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX);
+		store.setDefault(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
+		store.setDefault(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}
 }
