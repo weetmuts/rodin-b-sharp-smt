@@ -65,7 +65,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	String preferences = new String();
 
 	public SMTPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
+		super(FieldEditorPreferencePage.FLAT);
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 		preferences = getPreferenceStore().getString(SOLVER_PREFERENCES_ID);
 		setDescription(SMTPreferencePage_SettingsDescription);

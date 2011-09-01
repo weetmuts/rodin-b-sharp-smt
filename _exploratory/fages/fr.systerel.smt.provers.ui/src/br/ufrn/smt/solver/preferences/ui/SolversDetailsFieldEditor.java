@@ -40,11 +40,6 @@ import br.ufrn.smt.solver.preferences.SolverDetails;
 class SolversDetailsFieldEditor extends FieldEditor {
 	private static final boolean SELECTION_REQUESTED = true;
 
-	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
-	private static final int SOLVERS_HEIGHT_IN_CHARS = 10;
-	private static final int SOLVERS_HEIGHT_IN_DLUS = SOLVERS_HEIGHT_IN_CHARS
-			* VERTICAL_DIALOG_UNITS_PER_CHAR;
-
 	/**
 	 * Labels
 	 */
@@ -427,7 +422,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 			selectedSolverIndex = 0;
 		} else {
 			final int selectionIndex = solversTable.getSelectionIndex();
-			
+
 			/**
 			 * Else, if the 'SELECT' button was pushed, the current selection is
 			 * selected for SMT proofs. Notice that if the 'SELECT' button has
@@ -488,8 +483,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	protected void doFillIntoGrid(Composite parent, int numColumns) {
 		top = parent;
 
-		final GridData gridData = new GridData();
-		gridData.horizontalSpan = numColumns;
+		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		top.setLayoutData(gridData);
 
 		/**
@@ -525,12 +519,6 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		 * Create a grid data that takes up the extra space in the dialog and
 		 * spans both columns.
 		 */
-		final GridData solversData = new GridData(GridData.FILL_HORIZONTAL);
-		solversData.heightHint = convertVerticalDLUsToPixels(solversTable,
-				SOLVERS_HEIGHT_IN_DLUS);
-		solversData.horizontalSpan = numColumns;
-
-		solversTable.setLayoutData(solversData);
 		solversTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -584,7 +572,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				final int indexToRemove = solversTable.getSelectionIndex(); 
+				final int indexToRemove = solversTable.getSelectionIndex();
 				solversDetails.remove(indexToRemove);
 				solversTableViewer.refresh();
 				if (selectedSolverIndex > indexToRemove) {
@@ -633,6 +621,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				}
 			}
 		});
+		final GridData editButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		editButtonData.widthHint = convertHorizontalDLUsToPixels(editButton,
+				IDialogConstants.BUTTON_WIDTH);
+		editButton.setLayoutData(editButtonData);
 
 		/**
 		 * 'select' button
@@ -646,6 +638,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				setSelectedSolverIndex(SELECTION_REQUESTED);
 			}
 		});
+		final GridData selectButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		selectButtonData.widthHint = convertHorizontalDLUsToPixels(
+				selectButton, IDialogConstants.BUTTON_WIDTH);
+		selectButton.setLayoutData(selectButtonData);
 
 		/**
 		 * Update table with solver details
