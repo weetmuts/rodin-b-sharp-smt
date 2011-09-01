@@ -38,6 +38,8 @@ import br.ufrn.smt.solver.preferences.SolverDetails;
  * 
  */
 class SolversDetailsFieldEditor extends FieldEditor {
+	private static final boolean SELECTION_REQUESTED = true;
+
 	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
 	private static final int SOLVERS_HEIGHT_IN_CHARS = 10;
 	private static final int SOLVERS_HEIGHT_IN_DLUS = SOLVERS_HEIGHT_IN_CHARS
@@ -381,45 +383,90 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	}
 
 	/**
+	 * Tells whether the current selection index is valid or not
+	 * 
+	 * @param index
+	 *            the current selection index
+	 * @param itemCount
+	 *            the count of items in the solvers table
+	 * @return whether the current selection index is valid or not
+	 */
+	boolean isValidIndex(final int index, final int itemCount) {
+		return index >= 0 && index < itemCount;
+	}
+
+	/**
 	 * Sets the buttons statuses depending on the selection in the list.
 	 */
 	void selectionChanged() {
 		final Table solversTable = solversTableViewer.getTable();
-		final int selectionIndex = solversTable.getSelectionIndex();
-		final boolean interactionEnabled = selectionIndex >= 0
-				&& selectionIndex < solversTable.getItemCount();
-		removeButton.setEnabled(interactionEnabled);
-		editButton.setEnabled(interactionEnabled);
-		selectButton.setEnabled(interactionEnabled);
+		final boolean validSelectionIndex = isValidIndex(
+				solversTable.getSelectionIndex(), solversTable.getItemCount());
+		removeButton.setEnabled(validSelectionIndex);
+		editButton.setEnabled(validSelectionIndex);
+		selectButton.setEnabled(validSelectionIndex);
 	}
 
 	/**
 	 * This method sets the selected solver index to the current selection in
-	 * the solvers table if the selection is correct. If there is only one
-	 * solver in the list, it is selected, whatever the selection is. Otherwise,
-	 * it is set to the default value (-1).
+	 * the solvers table if it was requested, or to a valid index. If there is
+	 * only one solver in the table, it is selected. If there is no solver in
+	 * the table, it is set to the default value (-1).
 	 * 
-	 * Then the selected solver background color is set to BLUE.
-	 * 
+	 * Then, the selected solver background color is set to BLUE.
 	 */
-	void setSelectedSolverIndex() {
+	void setSelectedSolverIndex(final boolean selectionRequested) {
 		final Table solversTable = solversTableViewer.getTable();
 		final int itemCount = solversTable.getItemCount();
-		final int selectionIndex = solversTable.getSelectionIndex();
-		final boolean validSelectionIndex = selectionIndex >= 0
-				&& selectionIndex < itemCount;
-		if (itemCount == 1 || (itemCount > 1 && !validSelectionIndex)) {
+
+		/**
+		 * If there is only one solver set in the table, it is selected for SMT
+		 * proofs
+		 */
+		if (itemCount == 1) {
 			selectedSolverIndex = 0;
-		} else if (validSelectionIndex) {
-			selectedSolverIndex = selectionIndex;
 		} else {
-			selectedSolverIndex = -1;
+			final int selectionIndex = solversTable.getSelectionIndex();
+			
+			/**
+			 * Else, if the 'SELECT' button was pushed, the current selection is
+			 * selected for SMT proofs. Notice that if the 'SELECT' button has
+			 * been pushed, it means that the current selection is valid.
+			 */
+			if (selectionRequested) {
+				selectedSolverIndex = selectionIndex;
+			} else {
+				/**
+				 * Else if the current selected solver is not valid...
+				 */
+				if (!isValidIndex(selectedSolverIndex, itemCount)) {
+					/**
+					 * if there is some solvers set in the table, the first one
+					 * is selected for SMT proofs, else the selected solver
+					 * index is set to -1.
+					 */
+					if (itemCount > 1) {
+						selectedSolverIndex = 0;
+					} else {
+						selectedSolverIndex = -1;
+					}
+				}
+			}
 		}
 
+		updateSolversTableColors();
+	}
+
+	/**
+	 * Updates the colors of the solvers table, the selected solver background
+	 * color is set to BLUE.
+	 */
+	void updateSolversTableColors() {
 		final Color blue = top.getDisplay().getSystemColor(SWT.COLOR_BLUE);
 		final Color white = top.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 		final Color black = top.getDisplay().getSystemColor(SWT.COLOR_BLACK);
 
+		final Table solversTable = solversTableViewer.getTable();
 		final TableItem[] items = solversTable.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (i == selectedSolverIndex) {
@@ -523,9 +570,12 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				createSolverDetailsPage(buttonsGroup, false, "", "", "", false,
 						false);
 				solversTableViewer.refresh();
-				if (solversTable.getItemCount() == 1) {
-					setSelectedSolverIndex();
-				}
+				/**
+				 * setSelectedSolverIndex is called so that if the added solver
+				 * was the first one to be added, it is automatically selected
+				 * as the solver to be used for SMT proofs.
+				 */
+				setSelectedSolverIndex(!SELECTION_REQUESTED);
 				selectionChanged();
 			}
 		});
@@ -543,9 +593,24 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				solversDetails.remove(solversTable.getSelectionIndex());
+				final int indexToRemove = solversTable.getSelectionIndex(); 
+				solversDetails.remove(indexToRemove);
 				solversTableViewer.refresh();
-				setSelectedSolverIndex();
+				if (selectedSolverIndex > indexToRemove) {
+					selectedSolverIndex--;
+				} else if (selectedSolverIndex == indexToRemove) {
+					if (solversDetails.size() > 0) {
+						selectedSolverIndex = 0;
+					} else {
+						selectedSolverIndex = -1;
+					}
+				}
+
+				/**
+				 * setSelectedSolverIndex is called so that another solver is
+				 * automatically selected
+				 */
+				setSelectedSolverIndex(!SELECTION_REQUESTED);
 				selectionChanged();
 			}
 		});
@@ -587,14 +652,18 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		selectButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				setSelectedSolverIndex();
+				setSelectedSolverIndex(SELECTION_REQUESTED);
 			}
 		});
 
-		// Update table with solver details
+		/**
+		 * Update table with solver details
+		 */
 		solversTableViewer.refresh();
 
-		// pack everything
+		/**
+		 * pack everything
+		 */
 		solversTable.pack();
 		parent.pack();
 	}
@@ -611,7 +680,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solversTableViewer.setInput(solversDetails);
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
-		setSelectedSolverIndex();
+		updateSolversTableColors();
 		solversTableViewer.refresh();
 	}
 
@@ -624,7 +693,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solversTableViewer.setInput(solversDetails);
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
-		setSelectedSolverIndex();
+		setSelectedSolverIndex(!SELECTION_REQUESTED);
 		solversTableViewer.refresh();
 	}
 
