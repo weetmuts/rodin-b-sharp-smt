@@ -210,14 +210,16 @@ public abstract class SMTProverCall extends XProverCall {
 				showProcessOutcome(monitor);
 
 			solverResult = new String(monitor.output());
-			valid = checkResult();
-
 			if (DEBUG) {
-				System.out
-						.println("Prover " + (valid ? "succeeded" : "failed"));
 				printSMTResultFile();
 				System.out.println("Result file contains:");
 				showSMTResultFile();
+			}
+
+			valid = checkResult();
+			if (DEBUG) {
+				System.out
+						.println("Prover " + (valid ? "succeeded" : "failed"));
 			}
 
 		} finally {
@@ -396,7 +398,16 @@ public abstract class SMTProverCall extends XProverCall {
 
 					setMonitorMessage("Running SMT solver : "
 							+ smtPreferences.getSolver().getId() + ".");
-					callProver(solverCommandLine());
+
+					try {
+						callProver(solverCommandLine());
+					} catch (IllegalArgumentException e) {
+						if (DEBUG) {
+							System.out
+									.println("Exception raised during prover call : "
+											+ e.getMessage());
+						}
+					}
 				}
 
 			} else if (smtPreferences.getSolver().getsmtV2_0()) {
