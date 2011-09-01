@@ -489,17 +489,8 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		top = parent;
 
 		final GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalSpan = numColumns;
 		top.setLayoutData(gridData);
-
-		final Label label = getLabelControl(top);
-		final GridData labelData = new GridData();
-		labelData.horizontalSpan = numColumns;
-		label.setLayoutData(labelData);
 
 		/**
 		 * Creates the table viewer
