@@ -22,8 +22,6 @@ import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERIT_PATH_ID;
 import static br.ufrn.smt.solver.preferences.ui.Messages.SMTPreferencePage_SettingsDescription;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.Platform;
@@ -36,7 +34,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import br.ufrn.smt.solver.preferences.SMTPreferences;
-import br.ufrn.smt.solver.preferences.SolverDetails;
 import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
 
 /**
@@ -56,9 +53,6 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static final String VERIT_PATH_LABEL = "VeriT path";
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
 
-	static String setVeriTPath;
-	static String setTranslationPath;
-
 	/**
 	 * The name of the preference displayed in this preference page.
 	 */
@@ -76,10 +70,11 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
 		final String solverPreferences = preferencesService.getString(
-				PREFERENCES_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
-				null);
+				PREFERENCES_ID, SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES, null);
 		final String translationPath = preferencesService.getString(
-				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
+				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH,
+				null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
 		return new SMTPreferences(translationPath, solverPreferences,
@@ -91,10 +86,11 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
 		final String solverPreferences = preferencesService.getString(
-				PREFERENCES_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
-				null);
+				PREFERENCES_ID, SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES, null);
 		final String translationPath = preferencesService.getString(
-				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
+				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH,
+				null);
 		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
 				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
 		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
@@ -105,18 +101,9 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		List<SolverDetails> solverDetails = new ArrayList<SolverDetails>();
-		try {
-			solverDetails = SMTPreferences.parsePreferencesString(preferences);
-		} catch (final PatternSyntaxException pse) {
-			pse.printStackTrace(System.err);
-			UIUtils.showError(pse.getMessage());
-		}
-		final int selectedSolverIndex = getPreferenceStore()
-				.getInt(SOLVER_INDEX_ID);
 		final FieldEditor solversFieldEditor = new SolversDetailsFieldEditor(
-				SOLVER_PREFERENCES_ID, SMT_SOLVERS_PARAM_LABEL, getFieldEditorParent(),
-				solverDetails, selectedSolverIndex);
+				SOLVER_PREFERENCES_ID, SMT_SOLVERS_PARAM_LABEL,
+				getFieldEditorParent());
 		addField(solversFieldEditor);
 
 		final FileFieldEditor veriTBinaryBrowser = new FileFieldEditor(
@@ -124,7 +111,8 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		addField(veriTBinaryBrowser);
 
 		final DirectoryFieldEditor translationDirectoryBrowser = new DirectoryFieldEditor(
-				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL, getFieldEditorParent());
+				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
+				getFieldEditorParent());
 		addField(translationDirectoryBrowser);
 	}
 

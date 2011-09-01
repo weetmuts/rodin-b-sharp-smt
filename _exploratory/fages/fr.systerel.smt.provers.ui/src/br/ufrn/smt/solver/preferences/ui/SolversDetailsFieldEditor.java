@@ -1,9 +1,17 @@
 /**
- * 
+ * Copyright (c) 2011 Systerel and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     YGU (Systerel) - initial API and implementation
  */
 package br.ufrn.smt.solver.preferences.ui;
 
 import static br.ufrn.smt.solver.preferences.ui.Messages.SMTPreferencePage2_MandatoryFieldsInSolverDetails;
+import static org.eclipse.swt.SWT.FULL_SELECTION;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,10 +42,31 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetails;
 
 /**
- * @author guyot
+ * This class is used to build the solver parameters table printed in the
+ * preferences page. This table contains all the information set by the user
+ * when he added a new SMT solver. This class also defines four buttons which
+ * interact with the table:
+ * <ul>
+ * <li>The 'Add' button to add a new SMT solver configuration into the table.</li>
+ * <li>The 'Edit' button to modify a previously added SMT solver configuration.</li>
+ * <li>The 'Remove' button to remove an existing SMT solver configuration.</li>
+ * <li>The 'Select' button to select the solver which will be used to discharge
+ * a sequent using the SMT tactic.</li>
+ * </ul>
+ * The table is represented by a <code>Table</code>, contained in a
+ * <code>TableViewer</code>. The data are contained in a
+ * <code>SolverDetails</code> list, which is given as input to the
+ * <code>TableViewer</code>. As a consequence, it is necessary to update the
+ * <code>solversTableViewer</code> each time the list
+ * <code>solversDetails</code> is modified, by calling the <code>refresh</code>
+ * method.
  * 
+ * @author guyot
  */
 class SolversDetailsFieldEditor extends FieldEditor {
+	/**
+	 * This constant represents a click on the 'SELECT' button.
+	 */
 	private static final boolean SELECTION_REQUESTED = true;
 
 	/**
@@ -57,17 +86,19 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	private static final String OK_LABEL = "OK";
 	private static final String CANCEL_LABEL = "Cancel";
 
-	private static final String[] PROPS = { SOLVER_ID_LABEL, SOLVER_PATH_LABEL,
-			SOLVER_ARGS_LABEL, V1_2_LABEL, V2_0_LABEL };
-
-	private static final int[] BOUNDS = { 70, 190, 150, 40, 40 };
+	/**
+	 * Column labels and bounds
+	 */
+	private static final String[] COLUMNS_LABELS = { SOLVER_ID_LABEL,
+			SOLVER_PATH_LABEL, SOLVER_ARGS_LABEL, V1_2_LABEL, V2_0_LABEL };
+	private static final int[] COLUMN_BOUNDS = { 70, 190, 150, 40, 40 };
 
 	/**
-	 * The button for adding a new solver to the list.
+	 * The button for adding a new solver to the table.
 	 */
 	private Button addButton;
 	/**
-	 * The button for removing the currently selected solver from the list.
+	 * The button for removing the currently selected solver from the table.
 	 */
 	private Button removeButton;
 	/**
@@ -83,7 +114,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	/**
 	 * The top-level control for the field editor.
 	 */
-	Composite top;
+	private Composite top;
 	/**
 	 * The table showing the list of solvers details
 	 */
@@ -98,43 +129,49 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	int selectedSolverIndex = -1;
 
 	/**
+	 * Creates a new solvers details field editor.
 	 * 
 	 * @param name
+	 *            the name of the preference this field editor works on
 	 * @param labelText
+	 *            the label text of the field editor
 	 * @param parent
+	 *            the parent of the field editor's control
 	 */
 	public SolversDetailsFieldEditor(final String name, final String labelText,
-			final Composite parent, final List<SolverDetails> solversDetails,
-			final int selectedSolverIndex) {
+			final Composite parent) {
 		super(name, labelText, parent);
-		this.solversDetails = solversDetails;
-		this.selectedSolverIndex = selectedSolverIndex;
 	}
 
 	/**
-	 * Creates a table viewer and configure it.
+	 * Creates a table viewer and configures it.
 	 * 
 	 * @param parent
-	 *            the parent composite
+	 *            the parent of the table viewer's control
 	 */
-	private TableViewer createTableViewer(final Composite parent) {
-		final TableViewer tv = new TableViewer(parent, SWT.FULL_SELECTION);
+	private static TableViewer createTableViewer(final Composite parent) {
+		final TableViewer tableViewer = new TableViewer(parent, FULL_SELECTION);
 
-		createColumns(tv);
-		tv.setColumnProperties(PROPS);
-		tv.setContentProvider(new SolversDetailsContentProvider());
-		tv.setLabelProvider(new SolversDetailsLabelProvider());
+		createColumns(tableViewer);
+		tableViewer.setColumnProperties(COLUMNS_LABELS);
+		tableViewer.setContentProvider(new SolversDetailsContentProvider());
+		tableViewer.setLabelProvider(new SolversDetailsLabelProvider());
 
-		return tv;
+		return tableViewer;
 	}
 
-	private void createColumns(final TableViewer viewer) {
-
-		for (int i = 0; i < PROPS.length; i++) {
+	/**
+	 * Creates the columns of the table viewer.
+	 * 
+	 * @param viewer
+	 *            the table viewer
+	 */
+	private static void createColumns(final TableViewer viewer) {
+		for (int i = 0; i < COLUMNS_LABELS.length; i++) {
 			final TableViewerColumn column = new TableViewerColumn(viewer,
 					SWT.NONE);
-			column.getColumn().setText(PROPS[i]);
-			column.getColumn().setWidth(BOUNDS[i]);
+			column.getColumn().setText(COLUMNS_LABELS[i]);
+			column.getColumn().setWidth(COLUMN_BOUNDS[i]);
 			column.getColumn().setResizable(true);
 			column.getColumn().setMoveable(true);
 		}
@@ -146,6 +183,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 	/**
 	 * Helper to open the file chooser dialog.
+	 * 
+	 * FIXME This method must be removed when the method
+	 * <code>createSolverDetailsPage</code> will be fixed by using a
+	 * <code>FileFieldEditor</code>.
 	 * 
 	 * @param startingDirectory
 	 *            the directory to open the dialog on.
@@ -168,10 +209,43 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		return null;
 	}
 
+	/**
+	 * This method opens a new shell containing the input fields the user must
+	 * fill to add a new SMT solver to the table.
+	 * 
+	 * Currently, the <code>v1_2</code> and <code>v2_0</code> options are
+	 * mutually exclusive.
+	 * 
+	 * FIXME This method may be refactored using <code>FieldEditor</code>
+	 * objects instead of manually configured widgets.
+	 * 
+	 * @param parent
+	 *            the parent of the shell's control
+	 * @param editMode
+	 *            is <code>true</code> if this method was called by the 'Edit'
+	 *            button, and <code>false</code> if it was called by the 'Add'
+	 *            button
+	 * @param id
+	 *            the name of the solver to add or edit
+	 * @param path
+	 *            the absolute path to the solver
+	 * @param args
+	 *            (optional) the arguments the solver must be called with
+	 * @param v1_2
+	 *            tells whether this solver configuration is meant to be used
+	 *            with the version 1.2 of the SMT-LIB language
+	 * @param v2_0
+	 *            tells whether this solver configuration is meant to be used
+	 *            with the version 2.0 of the SMT-LIB language
+	 */
 	void createSolverDetailsPage(final Composite parent,
 			final boolean editMode, final String id, final String path,
 			final String args, final boolean v1_2, final boolean v2_0) {
 		final Shell shell = new Shell(parent.getShell());
+
+		/**
+		 * Sets the title depending on the configuration mode (edit or add).
+		 */
 		if (editMode) {
 			final Table solversTable = solversTableViewer.getTable();
 			final int selectionIndex = solversTable.getSelectionIndex();
@@ -180,22 +254,36 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		} else {
 			shell.setText("New solver settings");
 		}
-		shell.setLayout(new GridLayout(1, false));
+
+		/**
+		 * Shell layout settings: one column, filled horizontally and
+		 * vertically.
+		 */
+		shell.setLayout(new GridLayout());
 		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		shell.setSize(400, 250);
 
+		/**
+		 * Field composites
+		 */
 		final Composite compName = new Composite(shell, SWT.NONE);
 		final Composite compPath = new Composite(shell, SWT.NONE);
 		final Composite compArg = new Composite(shell, SWT.NONE);
 		final Composite compSmtVersion = new Composite(shell, SWT.NONE);
 		final Composite compOkCancel = new Composite(shell, SWT.NONE);
 
+		/**
+		 * Field layouts
+		 */
 		compName.setLayout(new GridLayout(2, false));
 		compPath.setLayout(new GridLayout(3, false));
 		compArg.setLayout(new GridLayout(2, false));
 		compSmtVersion.setLayout(new GridLayout(3, false));
 		compOkCancel.setLayout(new GridLayout(2, false));
 
+		/**
+		 * Field grid data
+		 */
 		final GridData gridData = new GridData(SWT.DEFAULT, 30);
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
@@ -207,7 +295,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		compSmtVersion.setLayoutData(gridData);
 		compOkCancel.setLayoutData(gridData);
 
-		// Solver Id
+		/**
+		 * Creates the solver name field (label and text field).
+		 */
 		final Label solverIdTextLabel = new Label(compName, SWT.LEFT);
 		solverIdTextLabel.setText(SOLVER_ID_LABEL);
 
@@ -216,7 +306,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				true));
 		solverIdText.setText(id);
 
-		// Solver Path
+		/**
+		 * Creates the solver path field (label, text field and browse button).
+		 */
 		final Label solverPathTextLabel = new Label(compPath, SWT.LEFT);
 		solverPathTextLabel.setText(SOLVER_PATH_LABEL);
 
@@ -226,7 +318,6 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solverPathText.setEditable(false);
 		solverPathText.setText(path);
 
-		// Add button Browse
 		final Button browseButton = new Button(compPath, SWT.PUSH);
 		browseButton.setText(BROWSE_LABEL);
 		browseButton.addSelectionListener(new SelectionAdapter() {
@@ -244,7 +335,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 		});
 
-		// arguments
+		/**
+		 * Creates the solver arguments field (label and text field).
+		 */
 		final Label solverArgTextLabel = new Label(compArg, SWT.LEFT);
 		solverArgTextLabel.setText(SOLVER_ARGS_LABEL);
 
@@ -254,7 +347,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solverArgsText.setEditable(true);
 		solverArgsText.setText(args);
 
-		// smt version
+		/**
+		 * Creates the SMT-LIB version fields (label, and mutually exclusive
+		 * checkboxes).
+		 */
 		final Label smtVersionLabel = new Label(compSmtVersion, SWT.LEFT);
 		smtVersionLabel.setText(SMT_LIB_LABEL);
 
@@ -266,9 +362,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		smt2_0_Button.setText(V2_0_LABEL);
 		smt2_0_Button.setSelection(v2_0);
 
-		// callbacks for the 2 buttons
 		smt1_2_Button.addSelectionListener(new SelectionListener() {
-
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				smt2_0_Button.setSelection(false);
@@ -276,13 +370,11 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
-				// TODO Auto-generated method stub
-
+				// Nothing to do.
 			}
 		});
 
 		smt2_0_Button.addSelectionListener(new SelectionListener() {
-
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				smt1_2_Button.setSelection(false);
@@ -290,28 +382,43 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
-				// TODO Auto-generated method stub
-
+				// Nothing to do.
 			}
 		});
 
-		// Add 2 buttons OK and Cancel
+		/**
+		 * The 'OK' button, when pushed, saves the input as a new solver if they
+		 * are valid. Otherwise, shows a pop-up error message.
+		 */
 		final Button okButton = new Button(compOkCancel, SWT.PUSH);
 		okButton.setText(OK_LABEL);
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
 				final Table solversTable = solversTableViewer.getTable();
-				// Check mandatory fields
+				/**
+				 * Checks mandatory fields
+				 */
+				/**
+				 * If something is missing,
+				 */
 				if (solverIdText.getText() == ""
 						|| !smt1_2_Button.getSelection()
 						&& !smt2_0_Button.getSelection()
 						|| solverPathText.getText() == "") {
-					// Message popup displayed when there is no defined
-					// solver path or smt lib chosen or smt Id
+					/**
+					 * Displays a pop-up error message displayed.
+					 */
 					UIUtils.showError(SMTPreferencePage2_MandatoryFieldsInSolverDetails);
 				} else {
+					/**
+					 * If in edition mode,
+					 */
 					if (editMode) {
+						/**
+						 * Retrieves previously set configuration from the list
+						 * <code>solversDetails</code>.
+						 */
 						final int indexToEdit = solversTable
 								.getSelectionIndex();
 						solversDetails.get(indexToEdit).setId(
@@ -324,37 +431,37 @@ class SolversDetailsFieldEditor extends FieldEditor {
 								smt1_2_Button.getSelection());
 						solversDetails.get(indexToEdit).setSmtV2_0(
 								smt2_0_Button.getSelection());
+
+						/**
+						 * Refreshes the table viewer.
+						 */
+						solversTableViewer.refresh();
 					} else {
+						/**
+						 * Creates a new <code>SolverDetails</code> object, and
+						 * adds it to the list.
+						 */
 						solversDetails.add(new SolverDetails(solverIdText
 								.getText(), solverPathText.getText(),
 								solverArgsText.getText(), smt1_2_Button
 										.getSelection(), smt2_0_Button
 										.getSelection()));
-					}
 
-					// save preferences
-					solversTableViewer.setInput(solversDetails);
-
-					// Update table with solver details
-					solversTableViewer.refresh();
-
-					if (solversTable.getItemCount() == 1) {
-						// Change color of the selected row
-						final Color blueColor = compOkCancel.getDisplay()
-								.getSystemColor(SWT.COLOR_BLUE);
-						final Color whiteColor = compOkCancel.getDisplay()
-								.getSystemColor(SWT.COLOR_WHITE);
-						final int i = 0;
-						solversTable.setSelection(i);
-
-						final TableItem[] items = solversTable.getItems();
-						items[0].setBackground(blueColor);
-						items[0].setForeground(whiteColor);
-
+						/**
+						 * Refreshes the table viewer.
+						 */
 						solversTableViewer.refresh();
+						/**
+						 * setSelectedSolverIndex is called so that if the added solver
+						 * was the first one to be added, it is automatically selected
+						 * as the solver to be used for SMT proofs.
+						 */
+						setSelectedSolverIndex(!SELECTION_REQUESTED);
+						selectionChanged();
 					}
-
-					// Close the shell
+					/**
+					 * Closes the shell.
+					 */
 					shell.close();
 				}
 
@@ -362,18 +469,25 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 		});
 
+		/**
+		 * The 'Cancel' button
+		 */
 		final Button cancelButton = new Button(compOkCancel, SWT.PUSH);
 		cancelButton.setText(CANCEL_LABEL);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				// Close the shell
+				/**
+				 * Closes the shell without saving anything.
+				 */
 				shell.close();
 			}
 
 		});
 
-		// Open the shell
+		/**
+		 * Opens the shell
+		 */
 		shell.open();
 	}
 
@@ -548,14 +662,6 @@ class SolversDetailsFieldEditor extends FieldEditor {
 			public void widgetSelected(final SelectionEvent event) {
 				createSolverDetailsPage(buttonsGroup, false, "", "", "", false,
 						false);
-				solversTableViewer.refresh();
-				/**
-				 * setSelectedSolverIndex is called so that if the added solver
-				 * was the first one to be added, it is automatically selected
-				 * as the solver to be used for SMT proofs.
-				 */
-				setSelectedSolverIndex(!SELECTION_REQUESTED);
-				selectionChanged();
 			}
 		});
 		final GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -617,7 +723,6 @@ class SolversDetailsFieldEditor extends FieldEditor {
 							solverToEdit.getId(), solverToEdit.getPath(),
 							solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
 							solverToEdit.getsmtV2_0());
-					solversTableViewer.refresh();
 				}
 			}
 		});
