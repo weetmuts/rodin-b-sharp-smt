@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Systerel (YFT): Creation
+ *     Systerel (YGU): Documentation
  *******************************************************************************/
 
 package br.ufrn.smt.solver.preferences.ui;
@@ -17,6 +18,9 @@ import org.eclipse.swt.graphics.Image;
 
 import br.ufrn.smt.solver.preferences.SolverDetails;
 
+/**
+ * This class provides text for each column of a solvers table viewer.
+ */
 class SolversDetailsLabelProvider implements ITableLabelProvider {
 
 	@Override

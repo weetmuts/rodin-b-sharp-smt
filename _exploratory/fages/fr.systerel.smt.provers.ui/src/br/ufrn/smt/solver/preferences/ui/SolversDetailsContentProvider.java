@@ -20,7 +20,6 @@ import br.ufrn.smt.solver.preferences.SolverDetails;
 
 /**
  * This is a content provider for the Solvers' details viewer.
- * 
  */
 public class SolversDetailsContentProvider implements
 		IStructuredContentProvider {

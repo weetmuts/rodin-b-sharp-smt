@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Systerel (YFT): Creation
+ *     Systerel (YGU): Implementation and documentation
  *******************************************************************************/
 
 package br.ufrn.smt.solver.preferences.ui;
@@ -20,7 +21,6 @@ import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static br.ufrn.smt.solver.preferences.SMTPreferences.VERIT_PATH_ID;
-import static br.ufrn.smt.solver.preferences.ui.Messages.SMTPreferencePage_SettingsDescription;
 
 import java.util.regex.PatternSyntaxException;
 
@@ -46,23 +46,15 @@ import fr.systerel.smt.provers.ui.SmtProversUIPlugin;
  * preference store that belongs to the main plug-in class. That way,
  * preferences can be accessed directly via the preference store.
  */
-
 public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
-	private static final String SMT_SOLVERS_PARAM_LABEL = "SMT-Solvers parameters";
+	private static final String SMT_SOLVERS_CONFIG_LABEL = "SMT-Solvers configurations";
 	private static final String VERIT_PATH_LABEL = "VeriT path";
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
-
-	/**
-	 * The name of the preference displayed in this preference page.
-	 */
-	String preferences = new String();
 
 	public SMTPreferencePage() {
 		super(FieldEditorPreferencePage.FLAT);
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
-		preferences = getPreferenceStore().getString(SOLVER_PREFERENCES_ID);
-		setDescription(SMTPreferencePage_SettingsDescription);
 	}
 
 	public static SMTPreferences getSMTPreferencesForPP()
@@ -102,7 +94,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected void createFieldEditors() {
 		final FieldEditor solversFieldEditor = new SolversDetailsFieldEditor(
-				SOLVER_PREFERENCES_ID, SMT_SOLVERS_PARAM_LABEL,
+				SOLVER_PREFERENCES_ID, SMT_SOLVERS_CONFIG_LABEL,
 				getFieldEditorParent());
 		addField(solversFieldEditor);
 

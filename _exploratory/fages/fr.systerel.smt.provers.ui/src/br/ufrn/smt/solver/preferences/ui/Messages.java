@@ -13,13 +13,9 @@ package br.ufrn.smt.solver.preferences.ui;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-
-	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.preferences.ui.messages"; //$NON-NLS-1$
-
-	public static String SMTPreferencePage_SettingsDescription;
+	private static final String BUNDLE_NAME = "br.ufrn.smt.solver.preferences.ui.messages";
 
 	public static String SMTPreferencePage2_MandatoryFieldsInSolverDetails;
-
 	public static String SmtProversCall_no_selected_solver;
 	public static String SmtProversCall_no_defined_solver_path;
 	public static String SmtProversCall_preprocessor_path_not_defined;
@@ -35,5 +31,4 @@ public class Messages extends NLS {
 	private Messages() {
 		// Do not instantiate
 	}
-
 }

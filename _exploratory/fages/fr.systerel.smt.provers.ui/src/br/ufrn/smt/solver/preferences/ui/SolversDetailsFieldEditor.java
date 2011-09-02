@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -42,7 +41,7 @@ import br.ufrn.smt.solver.preferences.SMTPreferences;
 import br.ufrn.smt.solver.preferences.SolverDetails;
 
 /**
- * This class is used to build the solver parameters table printed in the
+ * This class is used to build the solver configurations table printed in the
  * preferences page. This table contains all the information set by the user
  * when he added a new SMT solver. This class also defines four buttons which
  * interact with the table:
@@ -59,7 +58,8 @@ import br.ufrn.smt.solver.preferences.SolverDetails;
  * <code>TableViewer</code>. As a consequence, it is necessary to update the
  * <code>solversTableViewer</code> each time the list
  * <code>solversDetails</code> is modified, by calling the <code>refresh</code>
- * method.
+ * method. The index of the selected solver for SMT proofs is stored locally in
+ * the field <code>selectedSolverIndex</code>.
  * 
  * @author guyot
  */
@@ -452,9 +452,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 						 */
 						solversTableViewer.refresh();
 						/**
-						 * setSelectedSolverIndex is called so that if the added solver
-						 * was the first one to be added, it is automatically selected
-						 * as the solver to be used for SMT proofs.
+						 * setSelectedSolverIndex is called so that if the added
+						 * solver was the first one to be added, it is
+						 * automatically selected as the solver to be used for
+						 * SMT proofs.
 						 */
 						setSelectedSolverIndex(!SELECTION_REQUESTED);
 						selectionChanged();
@@ -492,6 +493,36 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	}
 
 	/**
+	 * Remove the currently selected solver from the list of solvers details,
+	 * refresh the table viewer, updates the index of the selected solver and
+	 * refresh the button states.
+	 * 
+	 * @param solversTable
+	 *            the solvers table
+	 */
+	void removeCurrentSelection(final Table solversTable) {
+		final int indexToRemove = solversTable.getSelectionIndex();
+		solversDetails.remove(indexToRemove);
+		solversTableViewer.refresh();
+		if (selectedSolverIndex > indexToRemove) {
+			selectedSolverIndex--;
+		} else if (selectedSolverIndex == indexToRemove) {
+			if (solversDetails.size() > 0) {
+				selectedSolverIndex = 0;
+			} else {
+				selectedSolverIndex = -1;
+			}
+		}
+
+		/**
+		 * setSelectedSolverIndex is called so that another solver is
+		 * automatically selected
+		 */
+		setSelectedSolverIndex(!SELECTION_REQUESTED);
+		selectionChanged();
+	}
+
+	/**
 	 * Tells whether the current selection index is valid or not
 	 * 
 	 * @param index
@@ -505,7 +536,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	}
 
 	/**
-	 * Sets the buttons statuses depending on the selection in the list.
+	 * Sets the buttons statuses depending on the selection in the table.
 	 */
 	void selectionChanged() {
 		final Table solversTable = solversTableViewer.getTable();
@@ -597,14 +628,23 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	protected void doFillIntoGrid(Composite parent, int numColumns) {
 		top = parent;
 
-		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		top.setLayoutData(gridData);
+		/**
+		 * Sets the parent's layout data
+		 */
+		top.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		/**
+		 * Sets the label
+		 */
+		final Label label = getLabelControl(top);
+		final GridData labelData = new GridData();
+		labelData.horizontalSpan = numColumns;
+		label.setLayoutData(labelData);
 
 		/**
 		 * Creates the table viewer
 		 */
 		solversTableViewer = createTableViewer(top);
-		solversTableViewer.setInput(solversDetails);
 
 		/**
 		 * Configures the table
@@ -614,25 +654,6 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solversTable.setLinesVisible(true);
 		solversTable
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		/**
-		 * Sets the previously selected row
-		 */
-		final Color blue = top.getDisplay().getSystemColor(SWT.COLOR_BLUE);
-		final Color white = top.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-		final int previouslySelectedSolverIndex = solversTable
-				.getSelectionIndex();
-		if (previouslySelectedSolverIndex >= 0
-				&& previouslySelectedSolverIndex < solversTable.getItemCount()) {
-			final TableItem[] Item = solversTable.getItems();
-			Item[previouslySelectedSolverIndex].setBackground(blue);
-			Item[previouslySelectedSolverIndex].setForeground(white);
-		}
-
-		/**
-		 * Create a grid data that takes up the extra space in the dialog and
-		 * spans both columns.
-		 */
 		solversTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -660,6 +681,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
+				/**
+				 * When pushed, opens the solver configuration shell
+				 */
 				createSolverDetailsPage(buttonsGroup, false, "", "", "", false,
 						false);
 			}
@@ -678,25 +702,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				final int indexToRemove = solversTable.getSelectionIndex();
-				solversDetails.remove(indexToRemove);
-				solversTableViewer.refresh();
-				if (selectedSolverIndex > indexToRemove) {
-					selectedSolverIndex--;
-				} else if (selectedSolverIndex == indexToRemove) {
-					if (solversDetails.size() > 0) {
-						selectedSolverIndex = 0;
-					} else {
-						selectedSolverIndex = -1;
-					}
-				}
-
 				/**
-				 * setSelectedSolverIndex is called so that another solver is
-				 * automatically selected
+				 * When pushed, remove the current selection
 				 */
-				setSelectedSolverIndex(!SELECTION_REQUESTED);
-				selectionChanged();
+				removeCurrentSelection(solversTable);
 			}
 		});
 		final GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -713,16 +722,21 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		editButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				final StructuredSelection selectedItem;
-				selectedItem = (StructuredSelection) solversTableViewer
-						.getSelection();
-				final SolverDetails solverToEdit = (SolverDetails) selectedItem
-						.getFirstElement();
-				if (solverToEdit != null) {
-					createSolverDetailsPage(buttonsGroup, true,
-							solverToEdit.getId(), solverToEdit.getPath(),
-							solverToEdit.getArgs(), solverToEdit.getsmtV1_2(),
-							solverToEdit.getsmtV2_0());
+				/**
+				 * When pushed, opens the configuration shell of the solver
+				 * currently selected in the table.
+				 */
+				final int selectionIndex = solversTable.getSelectionIndex();
+				if (isValidIndex(selectionIndex, solversDetails.size())) {
+					final SolverDetails solverToEdit = solversDetails
+							.get(selectionIndex);
+					if (solverToEdit != null) {
+						createSolverDetailsPage(buttonsGroup, true,
+								solverToEdit.getId(), solverToEdit.getPath(),
+								solverToEdit.getArgs(),
+								solverToEdit.getsmtV1_2(),
+								solverToEdit.getsmtV2_0());
+					}
 				}
 			}
 		});
@@ -740,6 +754,10 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		selectButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
+				/**
+				 * When pushed, sets the currently selected solver in the table
+				 * as the selected solver for SMT proofs.
+				 */
 				setSelectedSolverIndex(SELECTION_REQUESTED);
 			}
 		});
@@ -749,31 +767,22 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		selectButton.setLayoutData(selectButtonData);
 
 		/**
-		 * Update table with solver details
-		 */
-		solversTableViewer.refresh();
-
-		/**
-		 * pack everything
+		 * Packs everything.
 		 */
 		solversTable.pack();
 		parent.pack();
 	}
 
-	/**
-	 * Initializes this field editor with the preference value from the
-	 * preference store.
-	 */
 	@Override
 	protected void doLoad() {
 		final String preferences = getPreferenceStore().getString(
 				getPreferenceName());
 		solversDetails = SMTPreferences.parsePreferencesString(preferences);
 		solversTableViewer.setInput(solversDetails);
+		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
-		updateSolversTableColors();
-		solversTableViewer.refresh();
+		setSelectedSolverIndex(!SELECTION_REQUESTED);
 	}
 
 	@Override
@@ -783,10 +792,11 @@ class SolversDetailsFieldEditor extends FieldEditor {
 		solversDetails = SMTPreferences
 				.parsePreferencesString(defaultPreferences);
 		solversTableViewer.setInput(solversDetails);
+		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
 		setSelectedSolverIndex(!SELECTION_REQUESTED);
-		solversTableViewer.refresh();
+		selectionChanged();
 	}
 
 	@Override
@@ -802,7 +812,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	@Override
 	public int getNumberOfControls() {
 		/**
-		 * 1 - The list of solvers 2 - The button composite
+		 * 1 - The table of solver configurations
+		 * 
+		 * 2 - The button composite
 		 */
 		return 2;
 	}

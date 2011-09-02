@@ -7,6 +7,7 @@
  *
  * Contributors:
  * 	   Systerel (YFT) - Creation
+ * 	   Systerel (YGU) - Implementation and documentation
  *******************************************************************************/
 
 package br.ufrn.smt.solver.preferences.ui;

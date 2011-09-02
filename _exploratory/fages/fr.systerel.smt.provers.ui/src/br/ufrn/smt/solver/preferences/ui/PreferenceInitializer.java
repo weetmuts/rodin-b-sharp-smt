@@ -6,7 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Vitor Alcantara de Almeida: Creation
+ *     Vitor Alcantara de Almeida - Creation
+ *     Systerel (YGU) - Implementation
  *******************************************************************************/
 
 package br.ufrn.smt.solver.preferences.ui;
