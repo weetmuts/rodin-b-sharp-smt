@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 ETH Zurich and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 Systerel. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     ETH Zurich - initial API and implementation
- *     Systerel - mathematical language V2
+ * 	Systerel - initial API and implementation
  *******************************************************************************/
+
 package fr.systerel.smt.provers.core.tests;
 
 import static org.eventb.core.ast.LanguageVersion.V2;
