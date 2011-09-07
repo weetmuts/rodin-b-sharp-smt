@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: fr.systerel.smt.provers.core;singleton:=true
+Bundle-SymbolicName: org.eventb.smt.core;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: fr.systerel.smt.provers.core.SMTProversCore
+Bundle-Activator: org.eventb.smt.provers.core.SMTProversCore
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -13,13 +13,13 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- br.ufrn.smt.solver.preferences,
- br.ufrn.smt.solver.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,fr.systerel.smt.provers.ast",
- fr.systerel.smt.provers.ast,
- fr.systerel.smt.provers.ast.macros,
- fr.systerel.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
- fr.systerel.smt.provers.internal.core;
-  x-friends:="fr.systerel.smt.provers.ui,
-   fr.systerel.smt.provers.ui2,
-   fr.systerel.smt.provers.core.tests,
-   fr.systerel.smt.provers.ui.tests"
+ org.eventb.smt.ast,
+ org.eventb.smt.ast.macros,
+ org.eventb.smt.preferences,
+ org.eventb.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
+ org.eventb.smt.provers.internal.core;
+  x-friends:="fr.systerel.smt.provers.ui2,
+   org.eventb.smt.core.tests,
+   org.eventb.smt.ui,
+   org.eventb.smt.ui.tests",
+ org.eventb.smt.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,fr.systerel.smt.provers.ast"
