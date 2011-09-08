@@ -14,7 +14,6 @@ import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
@@ -23,6 +22,7 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.provers.ui.SmtProversUIPlugin.PLUGIN_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,6 @@ import org.eventb.smt.preferences.SolverDetails;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * @author vitor
@@ -109,14 +108,14 @@ public class UiPreferencesTests {
 		/**
 		 * Get back preferences from UI
 		 */
-		final String translationPath = preferencesService.getString(
-				PREFERENCES_ID, TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
+		final String translationPath = preferencesService.getString(PLUGIN_ID,
+				TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
 		final String solverPreferencesString = preferencesService.getString(
-				PREFERENCES_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
+				PLUGIN_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
 				null);
-		final int solverIndex = preferencesService.getInt(PREFERENCES_ID,
+		final int solverIndex = preferencesService.getInt(PLUGIN_ID,
 				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
-		final String veriTPath = preferencesService.getString(PREFERENCES_ID,
+		final String veriTPath = preferencesService.getString(PLUGIN_ID,
 				VERIT_PATH_ID, DEFAULT_VERIT_PATH, null);
 		final SMTPreferences smtPreferences = new SMTPreferences(
 				translationPath, solverPreferencesString, solverIndex,
@@ -132,8 +131,8 @@ public class UiPreferencesTests {
 		final boolean smtV2_0 = false;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final SolverDetails expectedSolverDetail = new SolverDetails(expectedId,
-				expectedSolverPath, args, smtV1_2, smtV2_0);
+		final SolverDetails expectedSolverDetail = new SolverDetails(
+				expectedId, expectedSolverPath, args, smtV1_2, smtV2_0);
 		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
 				DEFAULT_TRANSLATION_PATH, expectedSolverDetail,
 				expectedVeriTPath);

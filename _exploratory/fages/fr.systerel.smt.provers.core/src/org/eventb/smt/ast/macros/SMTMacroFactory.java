@@ -72,9 +72,9 @@ import org.eventb.smt.ast.SMTSymbol;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.ast.SMTVarSymbol;
+import org.eventb.smt.ast.VeriTBooleans;
 import org.eventb.smt.ast.VeritPredefinedTheory;
 import org.eventb.smt.ast.SMTTheory.Ints;
-
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -381,9 +381,8 @@ public class SMTMacroFactory {
 	private static SMTSortSymbol[] ISMIN_MAX_SORTS = { Ints.getInt(),
 			POLYMORPHIC };
 	private static SMTSortSymbol[] FINITE_SORTS = {
-			org.eventb.smt.ast.VeriTBooleans.getInstance()
-					.getBooleanSort(), POLYMORPHIC, Ints.getInt(),
-			Ints.getInt() };
+			VeriTBooleans.getInstance().getBooleanSort(), POLYMORPHIC,
+			Ints.getInt(), Ints.getInt() };
 
 	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC, Ints.getInt(),
 			Ints.getInt() };

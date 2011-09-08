@@ -266,4 +266,9 @@ public class SMTVeriTCall extends SMTProverCall {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
+
+	@Override
+	protected void makeSMTBenchmarkFileV2_0() throws IOException {
+		// TODO Auto-generated method stub
+	}
 }

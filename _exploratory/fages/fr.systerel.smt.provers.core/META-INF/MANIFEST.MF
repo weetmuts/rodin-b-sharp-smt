@@ -18,8 +18,7 @@ Export-Package:
  org.eventb.smt.preferences,
  org.eventb.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
  org.eventb.smt.provers.internal.core;
-  x-friends:="fr.systerel.smt.provers.ui2,
-   org.eventb.smt.core.tests,
+  x-friends:="org.eventb.smt.core.tests,
    org.eventb.smt.ui,
    org.eventb.smt.ui.tests",
- org.eventb.smt.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,fr.systerel.smt.provers.ast"
+ org.eventb.smt.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,org.eventb.smt.ast"

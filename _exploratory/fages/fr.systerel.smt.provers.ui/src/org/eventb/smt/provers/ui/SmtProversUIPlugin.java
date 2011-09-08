@@ -20,11 +20,14 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class SmtProversUIPlugin extends AbstractUIPlugin {
+	/**
+	 * plug-in id
+	 */
+	public static final String PLUGIN_ID = "org.eventb.smt.ui";
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eventb.smt.provers.ui"; //$NON-NLS-1$
-
-	// The shared instance
+	/**
+	 * the shared instance
+	 */
 	private static SmtProversUIPlugin plugin;
 
 	/**

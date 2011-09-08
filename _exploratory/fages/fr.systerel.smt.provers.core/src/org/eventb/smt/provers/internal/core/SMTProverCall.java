@@ -30,7 +30,6 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.preferences.SMTPreferences;
 
-
 /**
  * 
  * Each instance of this class represents a call to an external SMT solver.
@@ -363,6 +362,14 @@ public abstract class SMTProverCall extends XProverCall {
 	 * @throws IOException
 	 */
 	abstract protected void makeSMTBenchmarkFileV1_2() throws IOException;
+
+	/**
+	 * Translates the sequent in SMT-LIB V2.0 language and sets the benchmark
+	 * file with the result.
+	 * 
+	 * @throws IOException
+	 */
+	abstract protected void makeSMTBenchmarkFileV2_0() throws IOException;
 
 	/**
 	 * Runs the external SMT solver on the sequent given at instance creation.

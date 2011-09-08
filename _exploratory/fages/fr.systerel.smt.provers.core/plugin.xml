@@ -12,7 +12,7 @@
    <extension
          point="org.eventb.core.pomTactics">
       <tactic
-            id="fr.systerel.smt.provers.core.SmtProver">
+            id="org.eventb.smt.provers.core.SMTProver">
       </tactic>
    </extension>
 

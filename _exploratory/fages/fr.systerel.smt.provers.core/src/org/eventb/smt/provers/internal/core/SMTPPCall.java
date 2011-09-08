@@ -106,4 +106,45 @@ public class SMTPPCall extends SMTProverCall {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
+
+	/**
+	 * Executes the translation of the Event-B sequent using the PP approach.
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	public synchronized void makeSMTBenchmarkFileV2_0() throws IOException {
+		/**
+		 * Produces an SMT benchmark.
+		 */
+		proofMonitor.setTask("Translating Event-B proof obligation");
+		/**
+		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
+		 * SMT-LIB translation
+		 */
+		final SMTBenchmark benchmark = SMTThroughPP
+				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
+						smtPreferences.getSolver().getId());
+
+		/**
+		 * Updates the name of the benchmark (the name originally given could
+		 * have been changed by the translator if it was a reserved symbol)
+		 */
+		lemmaName = benchmark.getName();
+
+		/**
+		 * Makes temporary files
+		 */
+		makeTempFileNames();
+
+		/**
+		 * Prints the SMT-LIB benchmark in a file
+		 */
+		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
+		benchmark.print(smtFileWriter);
+		smtFileWriter.close();
+		if (!smtBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+	}
 }

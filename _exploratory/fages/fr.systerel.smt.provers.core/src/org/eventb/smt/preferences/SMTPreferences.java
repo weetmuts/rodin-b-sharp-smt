@@ -48,7 +48,6 @@ public class SMTPreferences {
 			+ "rodin_smtlib_temp_files";
 	public static final int DEFAULT_SOLVER_INDEX = -1;
 	public static final String DEFAULT_VERIT_PATH = "";
-	public static final String PREFERENCES_ID = "fr.systerel.smt.provers.ui";
 
 	private String translationPath = null;
 

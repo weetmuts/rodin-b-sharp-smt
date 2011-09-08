@@ -32,7 +32,7 @@ public class SMTProversCore extends Plugin {
 	/**
 	 * The plug-in identifier
 	 */
-	public static final String PLUGIN_ID = "org.eventb.smt.provers.core";
+	public static final String PLUGIN_ID = "org.eventb.smt.core";
 	/**
 	 * Debug variables
 	 */

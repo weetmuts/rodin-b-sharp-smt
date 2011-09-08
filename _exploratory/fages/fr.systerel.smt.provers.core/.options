@@ -1,2 +1,2 @@
-fr.systerel.smt.provers.core/debug = true
-fr.systerel.smt.provers.core/debug/translator = false
+org.eventb.smt.core/debug = true
+org.eventb.smt.core/debug/translator = false

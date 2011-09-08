@@ -4,16 +4,16 @@
    <extension
          point="org.eventb.ui.proofTactics">
       <dropdown
-            id="fr.systerel.smt.provers.ui.dropdown"
+            id="org.eventb.smt.provers.ui.dropdown"
             name="%dropdown.name"
-            priority="fr.systerel.smt.provers.ui.dropdown"
+            priority="org.eventb.smt.provers.ui.dropdown"
             toolbar="org.eventb.ui.sequentToolbar">
             tooltip="%dropdown.name">
       </dropdown>
       <tactic
-            dropdown="fr.systerel.smt.provers.ui.dropdown"
+            dropdown="org.eventb.smt.provers.ui.dropdown"
             icon="icons/SMT.GIF"
-            id="fr.systerel.smt.provers.ui.pptactic"
+            id="org.eventb.smt.provers.ui.pptactic"
             interrupt="true"
             name="%PPtactic.name"
             priority="0"
@@ -23,9 +23,9 @@
             tooltip="%PPtactic.tooltip">
       </tactic>
       <tactic
-            dropdown="fr.systerel.smt.provers.ui.dropdown"
+            dropdown="org.eventb.smt.provers.ui.dropdown"
             icon="icons/SMT.GIF"
-            id="fr.systerel.smt.provers.ui.verittactic"
+            id="org.eventb.smt.provers.ui.verittactic"
             interrupt="true"
             name="%VeriTtactic.name"
             priority="1"
@@ -45,14 +45,14 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.eventb.smt.preferences.ui.SMTPreferencePage"
-            id="fr.systerel.smt.provers.ui.page1"
+            id="org.eventb.smt.provers.ui.page1"
             name="%page.name">
       </page>
    </extension>
    <extension
          point="org.eventb.core.pomTactics">
       <tactic
-            id="fr.systerel.smt.provers.ui.SmtProver">
+            id="org.eventb.smt.provers.ui.SmtProver">
       </tactic>
    </extension>
 </plugin>
