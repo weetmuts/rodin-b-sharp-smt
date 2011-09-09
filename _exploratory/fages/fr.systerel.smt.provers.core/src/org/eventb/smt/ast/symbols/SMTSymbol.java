@@ -21,7 +21,8 @@ public abstract class SMTSymbol {
 
 	public static final String INT = "Int";
 	public static final String INTS = "INTS";
-	public static final String BOOL = "BOOL"; 
+	public static final String BOOL = "BOOL";
+	public static final String BOOL_V2 = "Bool"; 
 	public static final String BOOLS = "BOOLS";
 	public static final String EQUAL = "="; 
 	public static final String NOTEQUAL = "!="; 

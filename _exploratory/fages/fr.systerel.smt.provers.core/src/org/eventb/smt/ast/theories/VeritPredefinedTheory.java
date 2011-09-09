@@ -12,6 +12,7 @@ package org.eventb.smt.ast.theories;
 
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
@@ -43,19 +44,19 @@ public class VeritPredefinedTheory extends SMTTheory implements
 			POLYMORPHIC };
 
 	private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-			SMTSymbol.EQUAL, POLYMORPHIC_PAIRS, PREDEFINED);
+			SMTSymbol.EQUAL, POLYMORPHIC_PAIRS, PREDEFINED, V1_2);
 
 	/**
 	 * Predicate symbols
 	 */
 	private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-			SMTSymbol.LT, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.LT, INT_INT_TAB, PREDEFINED, V1_2);
 	private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-			SMTSymbol.LE, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.LE, INT_INT_TAB, PREDEFINED, V1_2);
 	private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-			SMTSymbol.GT, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.GT, INT_INT_TAB, PREDEFINED, V1_2);
 	private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-			SMTSymbol.GE, INT_INT_TAB, PREDEFINED);
+			SMTSymbol.GE, INT_INT_TAB, PREDEFINED, V1_2);
 
 	/**
 	 * Function symbols

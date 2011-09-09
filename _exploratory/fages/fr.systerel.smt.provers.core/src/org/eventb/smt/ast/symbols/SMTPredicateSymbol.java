@@ -13,14 +13,18 @@ package org.eventb.smt.ast.symbols;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.Arrays;
+
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class represents SMT Predicate Symbols. *
  */
 public class SMTPredicateSymbol extends SMTSymbol implements
 		Comparable<SMTPredicateSymbol> {
+	private final SMTLIBVersion smtlibVersion;
 
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
@@ -50,8 +54,10 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 *            the expected sorts of the arguments.
 	 */
 	public SMTPredicateSymbol(final String symbolName,
-			final SMTSortSymbol[] argSorts, final boolean predefined) {
+			final SMTSortSymbol[] argSorts, final boolean predefined,
+			final SMTLIBVersion smtlibVersion) {
 		super(symbolName, predefined);
+		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
 	}
@@ -88,8 +94,9 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 */
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined,
-			final boolean isAssociative) {
+			final boolean isAssociative, final SMTLIBVersion smtlibVersion) {
 		super(symbolName, predefined);
+		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		this.isAssociative = isAssociative;
 	}
@@ -117,6 +124,10 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 		for (final SMTSortSymbol sort : argSorts) {
 			buffer.append(SPACE);
 			buffer.append(sort);
+		}
+		if (smtlibVersion.equals(V2_0)) {
+			buffer.append(SPACE);
+			buffer.append(BOOL_V2);
 		}
 		buffer.append(CPAR);
 	}
@@ -161,8 +172,9 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * This class represents the predicate symbol equals (=)
 	 */
 	public static class SMTEqual extends SMTPredicateSymbol {
-		public SMTEqual(final SMTSortSymbol[] sort) {
-			super(EQUAL, sort, PREDEFINED);
+		public SMTEqual(final SMTSortSymbol[] sort,
+				final SMTLIBVersion smtlibVersion) {
+			super(EQUAL, sort, PREDEFINED, smtlibVersion);
 		}
 	}
 }

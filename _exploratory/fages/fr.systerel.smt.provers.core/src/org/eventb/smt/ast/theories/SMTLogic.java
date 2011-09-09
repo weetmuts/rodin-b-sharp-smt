@@ -23,9 +23,6 @@ import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
-import org.eventb.smt.ast.theories.SMTTheory.Booleans;
-import org.eventb.smt.ast.theories.SMTTheory.Ints;
-
 
 /**
  * The SMT logics.
@@ -308,8 +305,12 @@ public class SMTLogic {
 
 		public SMTSortSymbol getPowerSetIntegerSort() {
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof Ints) {
-					return ((Ints) theory).getPowerSetIntegerSort();
+				if (theory instanceof SMTTheoryV1_2.Ints) {
+					return ((SMTTheoryV1_2.Ints) theory)
+							.getPowerSetIntegerSort();
+				} else if (theory instanceof SMTTheoryV2_0.Ints) {
+					return ((SMTTheoryV2_0.Ints) theory)
+							.getPowerSetIntegerSort();
 				}
 			}
 			return null;
@@ -317,8 +318,12 @@ public class SMTLogic {
 
 		public SMTSortSymbol getPowerSetBooleanSort() {
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof Booleans) {
-					return ((Booleans) theory).getPowerSetBooleanSort();
+				if (theory instanceof SMTTheoryV1_2.Booleans) {
+					return ((SMTTheoryV1_2.Booleans) theory)
+							.getPowerSetBooleanSort();
+				} else if (theory instanceof SMTTheoryV2_0.Booleans) {
+					return ((SMTTheoryV2_0.Booleans) theory)
+							.getPowerSetBooleanSort();
 				}
 			}
 			return null;
@@ -332,21 +337,21 @@ public class SMTLogic {
 	 * sophisticated constructs such as subsorts, sort constructors, explicit
 	 * sort declarations for terms, and so on."
 	 */
-	public static class SMTLIBUnderlyingLogic extends SMTLogicPP {
-		private static final SMTTheory[] THEORIES = { SMTTheory.Ints
+	public static class SMTLIBUnderlyingLogicV1_2 extends SMTLogicPP {
+		private static final SMTTheory[] THEORIES = { SMTTheoryV1_2.Ints
 				.getInstance() };
 
-		private static final SMTLIBUnderlyingLogic INSTANCE = new SMTLIBUnderlyingLogic();
+		private static final SMTLIBUnderlyingLogicV1_2 INSTANCE = new SMTLIBUnderlyingLogicV1_2();
 
-		protected SMTLIBUnderlyingLogic() {
+		protected SMTLIBUnderlyingLogicV1_2() {
 			super(UNKNOWN, THEORIES);
 		}
 
-		protected SMTLIBUnderlyingLogic(final String name) {
+		protected SMTLIBUnderlyingLogicV1_2(final String name) {
 			super(name, THEORIES);
 		}
 
-		public static SMTLIBUnderlyingLogic getInstance() {
+		public static SMTLIBUnderlyingLogicV1_2 getInstance() {
 			return INSTANCE;
 		}
 	}
@@ -398,8 +403,8 @@ public class SMTLogic {
 	 */
 	public SMTFunctionSymbol getIntsSet() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof Ints) {
-				return Ints.getIntsSet();
+			if (theory instanceof SMTTheoryV1_2.Ints) {
+				return SMTTheoryV1_2.Ints.getIntsSet();
 			}
 		}
 		throw new IllegalArgumentException(
@@ -413,8 +418,8 @@ public class SMTLogic {
 	 */
 	public SMTFunctionSymbol getBoolsSet() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof Booleans) {
-				return Booleans.getBoolsSet();
+			if (theory instanceof SMTTheoryV1_2.Booleans) {
+				return SMTTheoryV1_2.Booleans.getBoolsSet();
 			}
 		}
 		return null;
@@ -427,8 +432,8 @@ public class SMTLogic {
 	 */
 	public SMTPredicateSymbol getTrue() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof Booleans) {
-				return Booleans.getTrue();
+			if (theory instanceof SMTTheoryV1_2.Booleans) {
+				return SMTTheoryV1_2.Booleans.getTrue();
 			}
 		}
 		return null;
