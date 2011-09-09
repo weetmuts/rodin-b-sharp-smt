@@ -28,13 +28,11 @@ import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTTheory.Booleans;
-import org.eventb.smt.ast.theories.SMTTheory.Ints;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.junit.Ignore;
 import org.junit.Test;
-
 
 /**
  * Ensure that translation from ppTrans produced predicates to SMT-LIB
@@ -50,7 +48,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 		defaultLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-				Ints.getInstance(), Booleans.getInstance());
+				SMTTheoryV1_2.Ints.getInstance(),
+				SMTTheoryV1_2.Booleans.getInstance());
 	}
 
 	private void testTranslationV1_2(final ITypeEnvironment te,

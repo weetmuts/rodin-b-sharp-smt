@@ -13,6 +13,7 @@ package org.eventb.smt.ast;
 
 import static org.eventb.smt.ast.macros.SMTMacroFactory.POLYMORPHICS;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.math.BigInteger;
 
@@ -23,6 +24,7 @@ import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.
@@ -52,12 +54,12 @@ public abstract class SMTFactory {
 	 * Propositionnal atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", new SMTSortSymbol[] {}, PREDEFINED);
+			"true", new SMTSortSymbol[] {}, PREDEFINED, V1_2);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", new SMTSortSymbol[] {}, PREDEFINED);
+			"false", new SMTSortSymbol[] {}, PREDEFINED, V1_2);
 
 	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
-			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true);
+			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true, V1_2);
 
 	/**
 	 * Quantifier symbols
@@ -74,10 +76,12 @@ public abstract class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public static SMTFormula makeEqual(final SMTTerm[] args) {
+	public static SMTFormula makeEqual(final SMTTerm[] args,
+			final SMTLIBVersion smtlibVersion) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
-		return new SMTAtom(new SMTPredicateSymbol.SMTEqual(sort), args);
+		return new SMTAtom(
+				new SMTPredicateSymbol.SMTEqual(sort, smtlibVersion), args);
 	}
 
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,

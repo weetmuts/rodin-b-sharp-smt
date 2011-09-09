@@ -17,12 +17,10 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTTheory.Booleans;
-import org.eventb.smt.ast.theories.SMTTheory.Ints;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.junit.Test;
-
 
 public class LogicTestsWithPP extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
@@ -31,8 +29,10 @@ public class LogicTestsWithPP extends AbstractTests {
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
 		boolLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-				Ints.getInstance(), Booleans.getInstance());
-		smtLibUnderlyingLogic = SMTLogic.SMTLIBUnderlyingLogic.getInstance();
+				SMTTheoryV1_2.Ints.getInstance(),
+				SMTTheoryV1_2.Booleans.getInstance());
+		smtLibUnderlyingLogic = SMTLogic.SMTLIBUnderlyingLogicV1_2
+				.getInstance();
 	}
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
@@ -54,27 +54,23 @@ public class LogicTestsWithPP extends AbstractTests {
 	@Test
 	public void testBool() {
 		/**
-		 * Reaches
-		 * org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitTRUE(AtomicExpression)
 		 */
 		testLogic(defaultTe, "TRUE = p", boolLogic);
 		/**
-		 * Reaches
-		 * org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOOL(AtomicExpression)
 		 */
 		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", boolLogic);
 		/**
-		 * Reaches
-		 * org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOUND_IDENT_DECL(BoundIdentDecl)
 		 */
 		testLogic(defaultTe,
 				"∀ x ⦂ ℤ, X ⦂ ℙ(ℤ), P ⦂ BOOL · (x ∈ X ⇒ P = TRUE)", boolLogic);
 		/**
-		 * Reaches
-		 * org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * enterIN(RelationalPredicate)
 		 */
 		testLogic(defaultTe, "p ∈ P", boolLogic);

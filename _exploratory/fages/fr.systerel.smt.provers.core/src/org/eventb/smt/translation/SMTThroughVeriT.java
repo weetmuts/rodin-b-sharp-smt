@@ -108,20 +108,20 @@ import org.eventb.smt.ast.SMTVeritCardFormula;
 import org.eventb.smt.ast.SMTVeritFiniteFormula;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleans;
 import org.eventb.smt.ast.theories.VeritPredefinedTheory;
-import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
-import org.eventb.smt.ast.theories.SMTTheory.Ints;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -404,7 +404,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translatePredSymbol(final String varName,
 			final SMTSortSymbol sort) {
 		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
-				varName, sort);
+				V1_2, varName, sort);
 		varMap.put(varName, predSymbol);
 		signature.addPairSortAndFunction();
 	}
@@ -933,7 +933,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} else if (isPairType(leftType)) {
 			sf.addPairEqualityAxiom(additionalAssumptions, signature);
 		}
-		return makeEqual(children);
+		return makeEqual(children, V1_2);
 	}
 
 	/**
@@ -1395,7 +1395,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
 		// 25)
 		final SMTFunctionSymbol kVarSymbol = signature.freshConstant("card_k",
-				Ints.getInt());
+				SMTTheoryV1_2.Ints.getInt());
 
 		final Type type = expression.getChild().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1404,7 +1404,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"card_f", es, Ints.getInt());
+				"card_f", es, SMTTheoryV1_2.Ints.getInt());
 
 		translateCardPart2(children, kVarSymbol, fVarSymbol);
 	}
@@ -1459,7 +1459,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// Creating the constant 'm'
 		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
-				constantName, Ints.getInt());
+				constantName, SMTTheoryV1_2.Ints.getInt());
 
 		// Creating the macro operator 'ismin'
 		final SMTMacroSymbol opSymbol = getMacroSymbol(operator, signature);
@@ -1587,7 +1587,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 						newVars.get(i));
 			}
 		}
-		return makeEqual(new SMTTerm[] { e0, unionTerm });
+		return makeEqual(new SMTTerm[] { e0, unionTerm }, V1_2);
 	}
 
 	/**
@@ -1611,11 +1611,11 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sort == null) {
 			sort = translateTypeName(type);
 		}
-		final SMTPredicateSymbol symbol = signature.freshPredicateSymbol(x,
-				sort);
+		final SMTPredicateSymbol symbol = signature.freshPredicateSymbol(V1_2,
+				x, sort);
 		final SMTTerm xTerm = sf.makeVeriTConstantTerm(symbol, signature);
 		additionalAssumptions.add(SMTFactory.makeEqual(new SMTTerm[] { xTerm,
-				e0 }));
+				e0 }, V1_2));
 		return xTerm;
 	}
 
@@ -1645,10 +1645,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// Creating the constant 'p'
 		final SMTSortSymbol[] empty = {};
 		final SMTPredicateSymbol pVarSymbol = signature.freshPredicateSymbol(
-				"finite_p", empty);
+				V1_2, "finite_p", empty);
 
 		final SMTFunctionSymbol kVarSymbol = signature.freshConstant(
-				"finite_k", Ints.getInt());
+				"finite_k", SMTTheoryV1_2.Ints.getInt());
 
 		final Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -1657,7 +1657,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"finite_f", es, Ints.getInt());
+				"finite_f", es, SMTTheoryV1_2.Ints.getInt());
 
 		// Creating the macro operator 'finite'
 		final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE_OP, signature);

@@ -13,6 +13,7 @@ package org.eventb.smt.ast;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.MAPSTO;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.Set;
 
@@ -139,7 +140,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTVar pairVar2 = new SMTVar(pSymbol2);
 
 		final SMTFormula equalsFormula = SMTFactory.makeEqual(new SMTTerm[] {
-				pairVar1, pairVar2 });
+				pairVar1, pairVar2 }, V1_2);
 
 		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(FST_SYMBOL,
 				pairVar1);
@@ -147,8 +148,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTFunApplication fstFunAppl2 = new SMTFunApplication(FST_SYMBOL,
 				pairVar2);
 
-		final SMTFormula subEqualsFormula1 = SMTFactory
-				.makeEqual(new SMTTerm[] { fstFunAppl1, fstFunAppl2 });
+		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(
+				new SMTTerm[] { fstFunAppl1, fstFunAppl2 }, V1_2);
 
 		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(SND_SYMBOL,
 				pairVar1);
@@ -156,8 +157,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTFunApplication sndFunAppl2 = new SMTFunApplication(SND_SYMBOL,
 				pairVar2);
 
-		final SMTFormula subEqualsFormula2 = SMTFactory
-				.makeEqual(new SMTTerm[] { sndFunAppl1, sndFunAppl2 });
+		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(
+				new SMTTerm[] { sndFunAppl1, sndFunAppl2 }, V1_2);
 
 		final SMTFormula andFormula = SMTFactory.makeAnd(new SMTFormula[] {
 				subEqualsFormula1, subEqualsFormula2 });
@@ -186,15 +187,15 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTVar boolVar = new SMTVar(boolvarSymbol);
 
 		final SMTFormula or = makeOr(new SMTFormula[] {
-				makeEqual(new SMTTerm[] { boolVar, trueTerm }),
-				makeEqual(new SMTTerm[] { boolVar, falseTerm }) });
+				makeEqual(new SMTTerm[] { boolVar, trueTerm }, V1_2),
+				makeEqual(new SMTTerm[] { boolVar, falseTerm }, V1_2) });
 
 		final SMTFormula forall = makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL,
 				new SMTVarSymbol[] { boolvarSymbol }, or);
 
-		final SMTFormula not = makeNot(new SMTFormula[] { makeEqual(new SMTTerm[] {
-				trueTerm, falseTerm }) });
+		final SMTFormula not = makeNot(new SMTFormula[] { makeEqual(
+				new SMTTerm[] { trueTerm, falseTerm }, V1_2) });
 
 		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not });
 
@@ -301,7 +302,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 						sortSymbols[j] = function.args[j].getSort();
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.getName(), sortSymbols, !PREDEFINED);
+							function.symbol.getName(), sortSymbols,
+							!PREDEFINED, V1_2);
 					final SMTAtom atom = new SMTAtom(predicateSymbol,
 							new SMTTerm[] {});
 					formulas[i] = atom;

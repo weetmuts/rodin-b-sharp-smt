@@ -67,12 +67,12 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTTheory;
-import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogic;
+import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
-import org.eventb.smt.ast.theories.SMTTheory.Booleans;
-import org.eventb.smt.ast.theories.SMTTheory.Ints;
+import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2.Booleans;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -291,9 +291,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		if (gatherer.usesBoolTheory()) {
 			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-					Ints.getInstance(), Booleans.getInstance());
+					SMTTheoryV1_2.Ints.getInstance(),
+					SMTTheoryV1_2.Booleans.getInstance());
 		}
-		return SMTLIBUnderlyingLogic.getInstance();
+		return SMTLIBUnderlyingLogicV1_2.getInstance();
 	}
 
 	private void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
@@ -359,7 +360,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				if (!varMap.containsKey(varName)) {
 					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
 						final SMTPredicateSymbol predSymbol = signature
-								.freshPredicateSymbol(varName);
+								.freshPredicateSymbol(V1_2, varName);
 						varMap.put(varName, predSymbol);
 						continue;
 					} else {
@@ -532,7 +533,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		if (specializedMembershipPredicate == null) {
 			specializedMembershipPredicate = signature.freshPredicateSymbol(
-					right.getName(), argSorts);
+					V1_2, right.getName(), argSorts);
 			specialMSPredsMap.put(right, specializedMembershipPredicate);
 		}
 
@@ -557,7 +558,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
 		if (membershipPredicateSymbol == null) {
-			membershipPredicateSymbol = signature.freshPredicateSymbol(
+			membershipPredicateSymbol = signature.freshPredicateSymbol(V1_2,
 					SMTPredicateSymbol.MS_PREDICATE_NAME, argSorts);
 			msTypeMap.put(type, membershipPredicateSymbol);
 		}
@@ -817,7 +818,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the formula <code>x = y</code>
 		final SMTFormula xEqualY = SMTFactory.makeEqual(new SMTTerm[] { xTerm,
-				yTerm });
+				yTerm }, V1_2);
 
 		// creates the formula <code>(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
 		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
@@ -915,7 +916,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the equality <code>A = B</code>
 		final SMTFormula equality = SMTFactory.makeEqual(new SMTTerm[] { termA,
-				termB });
+				termB }, V1_2);
 
 		// creates the implication
 		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
@@ -966,8 +967,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			yTerms[i] = yTerm;
 			yMembershipArgs[i] = yTerm;
 
-			equalities[i] = SMTFactory
-					.makeEqual(new SMTTerm[] { yTerm, xTerm });
+			equalities[i] = SMTFactory.makeEqual(
+					new SMTTerm[] { yTerm, xTerm }, V1_2);
 		}
 		xMembershipArgs[leftMembersNumber] = termX;
 		yMembershipArgs[leftMembersNumber] = termX;
@@ -1417,7 +1418,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 						(Identifier) right);
 			} else {
 				final SMTTerm[] children = smtTerms(left, right);
-				smtNode = SMTFactory.makeEqual(children);
+				smtNode = SMTFactory.makeEqual(children, V1_2);
 			}
 			break;
 		}

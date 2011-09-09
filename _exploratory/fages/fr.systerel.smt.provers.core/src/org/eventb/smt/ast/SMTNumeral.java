@@ -17,7 +17,7 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 import java.math.BigInteger;
 
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
-import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.
@@ -39,14 +39,15 @@ public final class SMTNumeral extends SMTTerm {
 
 	@Override
 	public SMTSortSymbol getSort() {
-		return SMTTheory.Ints.getInstance().getIntegerSort();
+		return SMTTheoryV1_2.Ints.getInstance().getIntegerSort();
 	}
 
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			builder.append(SMTTheory.Ints.getInstance().getUMinus().getName());
+			builder.append(SMTTheoryV1_2.Ints.getInstance().getUMinus()
+					.getName());
 			builder.append(SPACE);
 			builder.append(value.abs());
 			builder.append(CPAR);

@@ -809,11 +809,12 @@ public abstract class SMTSignature {
 	 *            the sort arguments.
 	 * @return the just added predicate symbol to the signature
 	 */
-	public SMTPredicateSymbol freshPredicateSymbol(final String name,
+	public SMTPredicateSymbol freshPredicateSymbol(
+			final SMTLIBVersion smtlibVersion, final String name,
 			final SMTSortSymbol... argSorts) {
 		final String freshName = freshPredicateName(name);
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
-				freshName, argSorts, !SMTSymbol.PREDEFINED);
+				freshName, argSorts, !SMTSymbol.PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = preds.add(freshPredicate);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
