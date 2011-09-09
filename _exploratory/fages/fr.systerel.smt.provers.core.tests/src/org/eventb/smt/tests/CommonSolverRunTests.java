@@ -34,6 +34,7 @@ import org.eventb.smt.provers.internal.core.SMTPPCall;
 import org.eventb.smt.provers.internal.core.SMTProverCall;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.provers.internal.core.SMTVeriTCall;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.eventb.smt.translation.SMTTranslationApproach;
 import org.junit.After;
@@ -206,16 +207,45 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 
-	protected void setPreferencesForVeriTTest() {
-		setSolverPreferences(VERIT.toString(), "", true, false);
+	protected void setPreferencesForAltErgoTest(
+			final SMTLIBVersion smtlibVersion) {
+		switch (smtlibVersion) {
+		case V1_2:
+			setSolverPreferences(ALT_ERGO.toString(), "", true, false);
+			break;
+
+		default:
+			setSolverPreferences(ALT_ERGO.toString(), "", false, true);
+			break;
+		}
 	}
 
-	protected void setPreferencesForCvc3Test() {
-		setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
+	protected void setPreferencesForVeriTTest(final SMTLIBVersion smtlibVersion) {
+		switch (smtlibVersion) {
+		case V1_2:
+			setSolverPreferences(VERIT.toString(), "", true, false);
+			break;
+
+		default:
+			setSolverPreferences(VERIT.toString(), "", false, true);
+			break;
+		}
+	}
+
+	protected void setPreferencesForCvc3Test(final SMTLIBVersion smtlibVersion) {
+		switch (smtlibVersion) {
+		case V1_2:
+			setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
+			break;
+
+		default:
+			setSolverPreferences(CVC3.toString(), "-lang smt2", false, true);
+			break;
+		}
 
 	}
 
-	protected void setPreferencesForZ3Test() {
+	protected void setPreferencesForZ3Test(final SMTLIBVersion smtlibVersion) {
 		final StringBuilder binaryName = new StringBuilder();
 		final String separator = System.getProperty("file.separator");
 		if (System.getProperty("os.name").startsWith("Windows")) {
@@ -228,26 +258,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		Z3.toString(binaryName);
 
-		setSolverPreferences(binaryName.toString(), "", true, false);
+		switch (smtlibVersion) {
+		case V1_2:
+			setSolverPreferences(binaryName.toString(), "", true, false);
+			break;
+
+		default:
+			setSolverPreferences(binaryName.toString(), "", false, true);
+			break;
+		}
 	}
 
-	protected void setPreferencesForAltErgoTest() {
-		setSolverPreferences(ALT_ERGO.toString(), "", true, false);
-	}
-
-	protected void setPreferencesForSolverTest(final SMTSolver solver) {
+	protected void setPreferencesForSolverTest(final SMTSolver solver,
+			final SMTLIBVersion smtlibVersion) {
 		switch (solver) {
 		case ALT_ERGO:
-			setPreferencesForAltErgoTest();
+			setPreferencesForAltErgoTest(smtlibVersion);
 			break;
 		case CVC3:
-			setPreferencesForCvc3Test();
+			setPreferencesForCvc3Test(smtlibVersion);
 			break;
 		case VERIT:
-			setPreferencesForVeriTTest();
+			setPreferencesForVeriTTest(smtlibVersion);
 			break;
 		case Z3:
-			setPreferencesForZ3Test();
+			setPreferencesForZ3Test(smtlibVersion);
 			break;
 		}
 	}

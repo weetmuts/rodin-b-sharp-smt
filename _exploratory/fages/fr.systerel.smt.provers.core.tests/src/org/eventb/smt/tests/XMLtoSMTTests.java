@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +36,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 
 /**
  * This class is used to make tests with XML files. It's a parameterized tests
@@ -245,7 +245,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		setPreferencesForSolverTest(solver);
+		setPreferencesForSolverTest(solver, V1_2);
 
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
@@ -264,7 +264,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
-		setPreferencesForSolverTest(solver);
+		setPreferencesForSolverTest(solver, V1_2);
 
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
