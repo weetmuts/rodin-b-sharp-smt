@@ -11,6 +11,8 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
 
 import java.io.File;
@@ -22,7 +24,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTThroughPP;
-
 
 /**
  * This class represents a call to an SMT solver using the PP approach. More
@@ -81,9 +82,9 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		final SMTBenchmark benchmark = SMTThroughPP
-				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
-						smtPreferences.getSolver().getId());
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				lemmaName, hypotheses, goal,
+				smtPreferences.getSolver().getId(), V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -122,9 +123,9 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		final SMTBenchmark benchmark = SMTThroughPP
-				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
-						smtPreferences.getSolver().getId());
+		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
+				lemmaName, hypotheses, goal,
+				smtPreferences.getSolver().getId(), V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could

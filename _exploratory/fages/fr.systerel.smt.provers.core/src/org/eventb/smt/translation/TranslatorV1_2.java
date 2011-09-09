@@ -40,13 +40,14 @@ import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
-
 /**
  * This class is a translator from Event-B syntax into SMT-LIB version 1.2
  * syntax.
  */
 public abstract class TranslatorV1_2 extends Translator {
 	protected static final boolean IN_GOAL = true;
+
+	protected SMTLIBVersion smtlibVersion;
 
 	/**
 	 * The target solver of the translation. It is used to check which
@@ -79,7 +80,8 @@ public abstract class TranslatorV1_2 extends Translator {
 	 * @param solver
 	 *            the target solver of the translated SMT-LIB file
 	 */
-	public TranslatorV1_2(final String solver) {
+	public TranslatorV1_2(final String solver, final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 		this.solver = solver;
 	}
 

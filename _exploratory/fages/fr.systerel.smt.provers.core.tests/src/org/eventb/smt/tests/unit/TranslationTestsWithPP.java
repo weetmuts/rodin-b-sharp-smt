@@ -13,6 +13,7 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -66,7 +67,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		assertTypeChecked(goalPredicate);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3");
+				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3", V1_2);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -80,7 +81,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		assertTypeChecked(goal);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goal, "Z3");
+				"lemma", new ArrayList<Predicate>(), goal, "Z3", V1_2);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -130,7 +131,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 				TranslationTestsWithPP.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
-		return SMTThroughPP.translateTE(logic, ppPred, null);
+		return SMTThroughPP.translateTE(logic, ppPred, null, V1_2);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -178,8 +179,8 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final Predicate ppPred, final String expectedSMTNode,
 			final String failMessage, final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(logic, ppPred, solver).toString(actualSMTNode,
-				-1, false);
+		SMTThroughPP.translate(logic, ppPred, solver, V1_2).toString(
+				actualSMTNode, -1, false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));

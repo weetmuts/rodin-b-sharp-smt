@@ -166,7 +166,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	final private SMTFactoryVeriT sf;
 
 	public SMTThroughVeriT(final String solver) {
-		super(solver);
+		super(solver, V1_2); //FIXME this is a stub
 		sf = SMTFactoryVeriT.getInstance();
 	}
 

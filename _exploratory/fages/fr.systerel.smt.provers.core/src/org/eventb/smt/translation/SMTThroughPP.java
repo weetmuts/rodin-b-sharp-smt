@@ -68,6 +68,7 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
+import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
@@ -124,8 +125,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * @param solver
 	 *            Solver which will be used to discharge the sequent
 	 */
-	public SMTThroughPP(final String solver) {
-		super(solver);
+	public SMTThroughPP(final String solver, final SMTLIBVersion smtlibVersion) {
+		super(solver, smtlibVersion);
 		sf = SMTFactoryPP.getInstance();
 	}
 
@@ -289,12 +290,18 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final Predicate goal) {
 		gatherer = Gatherer.gatherFrom(hypotheses, goal);
 
-		if (gatherer.usesBoolTheory()) {
-			return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-					SMTTheoryV1_2.Ints.getInstance(),
-					SMTTheoryV1_2.Booleans.getInstance());
+		switch (smtlibVersion) {
+		case V1_2:
+			if (gatherer.usesBoolTheory()) {
+				return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
+						SMTTheoryV1_2.Ints.getInstance(),
+						SMTTheoryV1_2.Booleans.getInstance());
+			}
+			return SMTLIBUnderlyingLogicV1_2.getInstance();
+
+		default:
+			return SMTLIBUnderlyingLogicV2_0.getInstance();
 		}
-		return SMTLIBUnderlyingLogicV1_2.getInstance();
 	}
 
 	private void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
@@ -1180,7 +1187,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		if (logic instanceof SMTLogicPP) {
-			signature = new SMTSignaturePP((SMTLogicPP) logic, V1_2);
+			signature = new SMTSignaturePP((SMTLogicPP) logic, smtlibVersion);
 		} else {
 			throw new IllegalArgumentException("Wrong logic.");
 		}
@@ -1240,9 +1247,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final String solver) {
-		final SMTBenchmark smtB = new SMTThroughPP(solver).translate(lemmaName,
-				hypotheses, goal);
+			final Predicate goal, final String solver,
+			final SMTLIBVersion smtlibVersion) {
+		final SMTBenchmark smtB = new SMTThroughPP(solver, smtlibVersion)
+				.translate(lemmaName, hypotheses, goal);
 		return smtB;
 	}
 
@@ -1250,8 +1258,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, final String solver) {
-		final SMTThroughPP translator = new SMTThroughPP(solver);
+			final Predicate predicate, final String solver,
+			final SMTLIBVersion smtlibVersion) {
+		final SMTThroughPP translator = new SMTThroughPP(solver, smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
@@ -1262,8 +1271,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			final Predicate predicate, final String solver) {
-		final SMTThroughPP translator = new SMTThroughPP(solver);
+			final Predicate predicate, final String solver,
+			final SMTLIBVersion smtlibVersion) {
+		final SMTThroughPP translator = new SMTThroughPP(solver, smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		translator.determineLogic(noHypothesis, predicate);
 		translator.translateSignature(logic, noHypothesis, predicate);
@@ -1273,8 +1283,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	/**
 	 * This method is used only to test the logic determination
 	 */
-	public static SMTLogic determineLogic(final Predicate goalPredicate) {
-		final SMTThroughPP translator = new SMTThroughPP(null);
+	public static SMTLogic determineLogic(final Predicate goalPredicate,
+			final SMTLIBVersion smtlibVersion) {
+		final SMTThroughPP translator = new SMTThroughPP(null, smtlibVersion);
 		return translator.determineLogic(new ArrayList<Predicate>(0),
 				goalPredicate);
 	}

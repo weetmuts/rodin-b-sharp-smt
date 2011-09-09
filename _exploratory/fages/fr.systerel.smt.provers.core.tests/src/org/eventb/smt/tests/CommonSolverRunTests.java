@@ -14,6 +14,7 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -36,7 +37,6 @@ import org.eventb.smt.provers.internal.core.SMTVeriTCall;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.eventb.smt.translation.SMTTranslationApproach;
 import org.junit.After;
-
 
 public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String DEFAULT_TEST_TRANSLATION_PATH = System
@@ -197,7 +197,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, parsedHypotheses, parsedGoal, preferences
-						.getSolver().getId());
+						.getSolver().getId(), V1_2);
 
 		final SMTSignature signature = benchmark.getSignature();
 

@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -41,7 +42,7 @@ public class LogicTestsWithPP extends AbstractTests {
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(goalPredicate));
 
-		final SMTLogic logic = SMTThroughPP.determineLogic(goalPredicate);
+		final SMTLogic logic = SMTThroughPP.determineLogic(goalPredicate, V1_2);
 
 		assertEquals("", expectedSMTLogic.toString(), logic.toString());
 	}
