@@ -10,15 +10,22 @@
 
 package org.eventb.smt.ast;
 
-import static org.eventb.smt.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.MAPSTO;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.util.Set;
 
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTMacroTerm;
-
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPolymorphicSortSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.ast.theories.VeritPredefinedTheory;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
@@ -294,7 +301,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 						sortSymbols[j] = function.args[j].getSort();
 					}
 					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.name, sortSymbols, !PREDEFINED);
+							function.symbol.getName(), sortSymbols, !PREDEFINED);
 					final SMTAtom atom = new SMTAtom(predicateSymbol,
 							new SMTTerm[] {});
 					formulas[i] = atom;

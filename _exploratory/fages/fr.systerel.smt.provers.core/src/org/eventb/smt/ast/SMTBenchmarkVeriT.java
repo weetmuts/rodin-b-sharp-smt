@@ -20,7 +20,7 @@ import org.eventb.smt.ast.macros.SMTMacroTerm;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
-
+import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
  * This class is the benchmark resultant of the translation in the VeriT

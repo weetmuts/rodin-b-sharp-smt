@@ -24,7 +24,6 @@ import org.eventb.smt.provers.internal.core.SMTInput;
 import org.eventb.smt.translation.Translator;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * This is the main class of the SMT solvers plugin.
  */
@@ -38,6 +37,8 @@ public class SMTProversCore extends Plugin {
 	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
+	private static final String DEV = PLUGIN_ID + "/dev/";
+	private static final String DEV_TRANSLATOR = DEV + "translator";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
 	/**
 	 * Default delay for time-out of the Smt provers (value 30 seconds).
@@ -68,6 +69,7 @@ public class SMTProversCore extends Plugin {
 	 */
 	private void configureDebugOptions() {
 		Translator.DEBUG = parseOption(DEBUG_TRANSLATOR);
+		Translator.DEV = parseOption(DEV_TRANSLATOR);
 	}
 
 	/**

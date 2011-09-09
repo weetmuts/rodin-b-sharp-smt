@@ -8,12 +8,17 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.theories;
 
-import static org.eventb.smt.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPolymorphicSortSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
  * This class implements the Theories used by VeriT.

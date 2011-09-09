@@ -10,6 +10,9 @@
 
 package org.eventb.smt.ast;
 
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+
 /**
  * This class handles terms created from Bound Identifier Declarations in
  * Event-B

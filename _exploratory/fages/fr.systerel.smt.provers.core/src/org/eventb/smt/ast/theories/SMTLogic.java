@@ -8,18 +8,23 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.theories;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
-import static org.eventb.smt.ast.SMTSymbol.LOGIC;
-import static org.eventb.smt.ast.SMTSymbol.THEORY;
+import static org.eventb.smt.ast.symbols.SMTSymbol.LOGIC;
+import static org.eventb.smt.ast.symbols.SMTSymbol.THEORY;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.smt.ast.SMTTheory.Booleans;
-import org.eventb.smt.ast.SMTTheory.Ints;
+import org.eventb.smt.ast.SMTBenchmark;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.theories.SMTTheory.Booleans;
+import org.eventb.smt.ast.theories.SMTTheory.Ints;
 
 
 /**

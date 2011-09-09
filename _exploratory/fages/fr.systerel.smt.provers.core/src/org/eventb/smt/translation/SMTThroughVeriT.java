@@ -59,6 +59,7 @@ import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_I
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_RELATION_OP;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTION_OP;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION_OP;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -99,30 +100,29 @@ import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryPP;
 import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTFunctionSymbol;
-import org.eventb.smt.ast.SMTLogic;
-import org.eventb.smt.ast.SMTPredicateSymbol;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.SMTSignatureVerit;
-import org.eventb.smt.ast.SMTSortSymbol;
 import org.eventb.smt.ast.SMTTerm;
-import org.eventb.smt.ast.SMTTheory;
 import org.eventb.smt.ast.SMTVar;
-import org.eventb.smt.ast.SMTVarSymbol;
 import org.eventb.smt.ast.SMTVeritCardFormula;
 import org.eventb.smt.ast.SMTVeritFiniteFormula;
-import org.eventb.smt.ast.VeriTBooleans;
-import org.eventb.smt.ast.VeritPredefinedTheory;
-import org.eventb.smt.ast.SMTLogic.SMTOperator;
-import org.eventb.smt.ast.SMTTheory.Ints;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
+import org.eventb.smt.ast.theories.SMTTheory.Ints;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
-
 
 /**
  * This class implements the transalation from Event-B predicates to Extended
@@ -281,16 +281,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			boolTheory = true;
 			return true;
 		}
-		
+
 		/**
-		 * If the predicate has a bool expression, set
-		 * <code>boolTheory</code> <i>true</i>
+		 * If the predicate has a bool expression, set <code>boolTheory</code>
+		 * <i>true</i>
 		 */
 		@Override
 		public boolean enterKBOOL(BoolExpression expr) {
 			boolTheory = true;
 			return true;
-		}		
+		}
 	}
 
 	/**
@@ -365,7 +365,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		signature = new SMTSignatureVerit(logic);
+		signature = new SMTSignatureVerit(logic, V1_2);
 
 		addBooleanAssumption(logic);
 
@@ -488,13 +488,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		} catch (IllegalArgumentException e) {
 			if (inGoal) {
 				if (DEBUG) {
-					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Catched IllegalArgumentException : '"
+							+ e.getMessage() + "'.");
 					System.err.println("Replacing with \u22a5 in goal.");
 				}
 				return SMTFactoryPP.makePFalse();
 			} else {
 				if (DEBUG) {
-					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Catched IllegalArgumentException : '"
+							+ e.getMessage() + "'.");
 					System.err.println("Replacing with \u22a4 in hypothesis.");
 				}
 				return SMTFactoryPP.makePTrue();
@@ -1349,16 +1351,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			throw new IllegalArgumentException(
 					"It's not possible to translate PowerSet1 unary expression (POW1) to SMT-LIB yet");
 		}
-			/**
-			 * Not reached because sets of sets are not supported yet
-			 */
+		/**
+		 * Not reached because sets of sets are not supported yet
+		 */
 		case Formula.KUNION: {
 			throw new IllegalArgumentException(
 					"It's not possible to translate generalized union (KUNION) to SMT-LIB yet");
 		}
-			/**
-			 * Not reached because sets of sets are not supported yet
-			 */
+		/**
+		 * Not reached because sets of sets are not supported yet
+		 */
 		case Formula.KINTER: {
 			throw new IllegalArgumentException(
 					"It's not possible to translate generalized inter (KINTER) to SMT-LIB yet");

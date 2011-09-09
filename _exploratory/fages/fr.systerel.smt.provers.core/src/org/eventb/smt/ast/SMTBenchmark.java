@@ -14,19 +14,21 @@ package org.eventb.smt.ast;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
-import static org.eventb.smt.ast.SMTSymbol.BENCHMARK;
+import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.smt.ast.commands.SMTAssertCommand;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+
 /**
  * This class builds an SMT-LIB SMTBenchmark
  * 
  */
 public class SMTBenchmark {
-
 	protected final String name;
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
@@ -64,14 +66,14 @@ public class SMTBenchmark {
 	/**
 	 * Appends the string for notes section to the string builder
 	 * 
-	 * @param sb
+	 * @param builder
 	 *            the builder which will receive the string
 	 */
-	protected void appendComments(final StringBuilder sb) {
+	protected void appendComments(final StringBuilder builder) {
 		for (final String comment : comments) {
-			sb.append(";");
-			sb.append(comment);
-			sb.append("\n");
+			builder.append("; ");
+			builder.append(comment);
+			builder.append("\n");
 		}
 	}
 
@@ -79,15 +81,25 @@ public class SMTBenchmark {
 	 * Appends the string representation of the assumptions section to the
 	 * string builder
 	 * 
-	 * @param sb
+	 * @param builder
 	 *            the builder that will receive the representation
 	 */
-	protected void assumptionsSection(final StringBuilder sb) {
+	protected void assumptionsSection(final StringBuilder builder) {
 		for (final SMTFormula assumption : assumptions) {
-			assumption.printComment(sb);
-			sb.append(" :assumption ");
-			assumption.toString(sb, 13, false);
-			sb.append("\n");
+			assumption.printComment(builder);
+			switch (signature.getSMTLIBVersion()) {
+			case V1_2:
+				builder.append(" :assumption ");
+				assumption.toString(builder, 13, false);
+				break;
+
+			default:
+				final SMTAssertCommand assertCommand = new SMTAssertCommand(
+						formula);
+				assertCommand.toString(builder);
+				break;
+			}
+			builder.append("\n");
 		}
 	}
 
@@ -95,26 +107,46 @@ public class SMTBenchmark {
 	 * Appends the string representation of the formula section to the strinh
 	 * builder
 	 * 
-	 * @param sb
+	 * @param builder
 	 *            the builder that will receive the representation
 	 */
-	protected void formulaSection(final StringBuilder sb) {
-		sb.append(" :formula (not ");
-		formula.toString(sb, 15, false);
-		sb.append(")\n");
+	protected void formulaSection(final StringBuilder builder) {
+		switch (signature.getSMTLIBVersion()) {
+		case V1_2:
+			builder.append(" :formula (not ");
+			formula.toString(builder, 15, false);
+			builder.append(")\n");
+			break;
+
+		default:
+			final SMTAssertCommand assertCommand = new SMTAssertCommand(
+					SMTFactory.makeNot(new SMTFormula[] { formula }));
+			assertCommand.toString(builder);
+			builder.append("\n");
+			break;
+		}
+	}
+
+	protected void benchmarkContent(final StringBuilder builder) {
+		appendComments(builder);
+		builder.append("\n");
+		signature.toString(builder);
+		builder.append("\n");
+		assumptionsSection(builder);
+		formulaSection(builder);
 	}
 
 	/**
 	 * Adds the opening format of a benchmark command to the given string
 	 * builder.
 	 */
-	public static void smtCmdOpening(final StringBuilder sb,
+	public static void smtCmdOpening(final StringBuilder builder,
 			final String element, final String name) {
-		sb.append(OPAR);
-		sb.append(element);
-		sb.append(SPACE);
-		sb.append(name);
-		sb.append("\n");
+		builder.append(OPAR);
+		builder.append(element);
+		builder.append(SPACE);
+		builder.append(name);
+		builder.append("\n");
 	}
 
 	public SMTSignature getSignature() {
@@ -157,15 +189,18 @@ public class SMTBenchmark {
 	 *            the benchmark
 	 */
 	public void print(final PrintWriter pw) {
-		final StringBuilder sb = new StringBuilder();
-		smtCmdOpening(sb, BENCHMARK, name);
-		appendComments(sb);
-		sb.append("\n");
-		signature.toString(sb);
-		sb.append("\n");
-		assumptionsSection(sb);
-		formulaSection(sb);
-		sb.append(CPAR);
-		pw.println(sb.toString());
+		final StringBuilder builder = new StringBuilder();
+		switch (signature.getSMTLIBVersion()) {
+		case V1_2:
+			smtCmdOpening(builder, BENCHMARK, name);
+			benchmarkContent(builder);
+			builder.append(CPAR);
+			break;
+
+		default:
+			benchmarkContent(builder);
+			break;
+		}
+		pw.println(builder.toString());
 	}
 }

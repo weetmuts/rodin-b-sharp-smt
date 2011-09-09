@@ -16,6 +16,7 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 
 /**
  * This class was created to handle VeriT Card Formula. In the paper

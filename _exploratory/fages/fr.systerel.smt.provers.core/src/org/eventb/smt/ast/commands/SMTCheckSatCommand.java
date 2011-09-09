@@ -7,18 +7,16 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.commands;
 
 /**
- * This is the interface for boolean sort
+ * @author Systerel (yguyot)
+ *
  */
-public interface ISMTBooleanSort {
-
-	/**
-	 * returns the boolean sort.
-	 * 
-	 * @return the boolean sort.
-	 */
-	public SMTSortSymbol getBooleanSort();
+public class SMTCheckSatCommand extends SMTCommand {
+	private final static String CHECK_SAT = "check-sat";
+	
+	public SMTCheckSatCommand() {
+		super(CHECK_SAT);
+	}
 }

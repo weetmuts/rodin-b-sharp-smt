@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.symbols;
 
 import static org.eventb.smt.ast.Messages.SMTSymbol_NullNameException;
 
@@ -19,31 +19,31 @@ public abstract class SMTSymbol {
 	protected final String name;
 	protected final boolean predefined;
 
-	public static final String INT = "Int"; //$NON-NLS-1$
+	public static final String INT = "Int";
 	public static final String INTS = "INTS";
-	public static final String BOOL = "BOOL"; //$NON-NLS-1$
+	public static final String BOOL = "BOOL"; 
 	public static final String BOOLS = "BOOLS";
-	public static final String EQUAL = "="; //$NON-NLS-1$
-	public static final String NOTEQUAL = "!="; //$NON-NLS-1$
-	public static final String LT = "<"; //$NON-NLS-1$
-	public static final String LE = "<="; //$NON-NLS-1$
-	public static final String GT = ">"; //$NON-NLS-1$
-	public static final String GE = ">="; //$NON-NLS-1$
-	public static final String UMINUS = "~"; //$NON-NLS-1$
-	public static final String MINUS = "-"; //$NON-NLS-1$
-	public static final String PLUS = "+"; //$NON-NLS-1$
-	public static final String MUL = "*"; //$NON-NLS-1$
-	public static final String DISTINCT = "distinct"; //$NON-NLS-1$
+	public static final String EQUAL = "="; 
+	public static final String NOTEQUAL = "!="; 
+	public static final String LT = "<"; 
+	public static final String LE = "<="; 
+	public static final String GT = ">"; 
+	public static final String GE = ">="; 
+	public static final String UMINUS = "~"; 
+	public static final String MINUS = "-"; 
+	public static final String PLUS = "+"; 
+	public static final String MUL = "*"; 
+	public static final String DISTINCT = "distinct"; 
 
-	public static final String BENCHMARK = "benchmark"; //$NON-NLS-1$
-	public static final String LOGIC = "logic"; //$NON-NLS-1$
-	public static final String THEORY = "theory"; //$NON-NLS-1$
-	public static final String U_SORT = "U"; //$NON-NLS-1$
+	public static final String BENCHMARK = "benchmark"; 
+	public static final String LOGIC = "logic"; 
+	public static final String THEORY = "theory"; 
+	public static final String U_SORT = "U"; 
 
 	public static final boolean PREDEFINED = true;
-	public static final String DIV = "divi"; //$NON-NLS-1$
-	public static final String EXPN = "expn"; //$NON-NLS-1$
-	public static final String MOD = "mod"; //$NON-NLS-1$
+	public static final String DIV = "divi"; 
+	public static final String EXPN = "expn"; 
+	public static final String MOD = "mod"; 
 
 	/**
 	 * Constructs a new instance of SMTSymbol

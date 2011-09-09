@@ -16,6 +16,9 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import java.math.BigInteger;
 
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.theories.SMTTheory;
+
 /**
  * This class represents a numeral in SMT-LIB grammar.
  */

@@ -8,15 +8,20 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.theories;
 
-import static org.eventb.smt.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.ast.SMTSymbol.BOOLS;
-import static org.eventb.smt.ast.SMTSymbol.INTS;
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
+import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
+import static org.eventb.smt.ast.symbols.SMTSymbol.INTS;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
  * This class represents SMT Theories

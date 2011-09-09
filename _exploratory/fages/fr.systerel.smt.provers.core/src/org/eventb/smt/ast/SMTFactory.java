@@ -11,10 +11,18 @@
 
 package org.eventb.smt.ast;
 
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.POLYMORPHICS;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.math.BigInteger;
+
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPolymorphicSortSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.

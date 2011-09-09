@@ -8,24 +8,19 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.theories;
 
-import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
 /**
- * This is the SMTSignature to be used by the SMT translation process through
- * PP.
- * 
+ * This is the interface for boolean sort
  */
-public class SMTSignaturePP extends SMTSignature {
-	public SMTSignaturePP(final SMTLogic.SMTLogicPP logic,
-			final SMTLIBVersion smtlibVersion) {
-		super(logic, smtlibVersion);
-	}
+public interface ISMTIntegerSort {
 
-	@Override
-	public SMTLogic.SMTLogicPP getLogic() {
-		return (SMTLogic.SMTLogicPP) logic;
-	}
+	/**
+	 * returns the integer sort.
+	 * 
+	 * @return the integer sort.
+	 */
+	public SMTSortSymbol getIntegerSort();
 }

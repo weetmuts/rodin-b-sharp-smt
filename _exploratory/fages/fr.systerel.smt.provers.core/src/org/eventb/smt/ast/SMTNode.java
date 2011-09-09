@@ -11,6 +11,8 @@
 
 package org.eventb.smt.ast;
 
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+
 /**
  * This is the base class for all nodes of an SMT-LIB AST (Abstract Syntax
  * Tree).

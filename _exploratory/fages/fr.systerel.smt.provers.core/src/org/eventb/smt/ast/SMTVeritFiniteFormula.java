@@ -16,6 +16,8 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 
 /**
  * This class was created to handle VeriT finite Formula. In the paper
@@ -139,17 +141,17 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 	public void toString(final StringBuilder builder, final int offset,
 			final boolean printPoint) {
 		builder.append(OPAR);
-		builder.append(finitePred.name);
+		builder.append(finitePred.getName());
 		builder.append(SPACE);
-		builder.append(pArgument.name);
+		builder.append(pArgument.getName());
 		for (final SMTTerm term : terms) {
 			builder.append(SPACE);
 			term.toString(builder, offset);
 		}
 		builder.append(SPACE);
-		builder.append(fArgument.name);
+		builder.append(fArgument.getName());
 		builder.append(SPACE);
-		builder.append(kArgument.name);
+		builder.append(kArgument.getName());
 		builder.append(CPAR);
 	}
 

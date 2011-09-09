@@ -16,7 +16,7 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.ast.SMTFunApplication;
 import org.eventb.smt.ast.SMTTerm;
-import org.eventb.smt.ast.SMTVarSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
 
 /**
  * <p>

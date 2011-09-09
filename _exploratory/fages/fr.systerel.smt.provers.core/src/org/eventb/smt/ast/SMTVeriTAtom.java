@@ -75,10 +75,10 @@ class SMTVeriTAtom extends SMTFormula {
 	public void toString(final StringBuilder builder, final int offset,
 			final boolean printPoint) {
 		if (macroSymbol.isPropositional()) {
-			builder.append(macroSymbol.name);
+			builder.append(macroSymbol.getName());
 		} else {
 			builder.append(OPAR);
-			builder.append(macroSymbol.name);
+			builder.append(macroSymbol.getName());
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder, offset);

@@ -23,7 +23,16 @@ import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
-
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This is the SMTSignature to be used by the SMT translation process through
@@ -127,8 +136,9 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * @param logic
 	 *            the logic of the signature
 	 */
-	public SMTSignatureVerit(final SMTLogic logic) {
-		super(logic);
+	public SMTSignatureVerit(final SMTLogic logic,
+			final SMTLIBVersion smtlibVersion) {
+		super(logic, smtlibVersion);
 		loadMacroSymbols();
 	}
 

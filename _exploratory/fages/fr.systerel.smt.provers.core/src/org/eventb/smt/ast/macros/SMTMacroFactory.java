@@ -10,10 +10,6 @@
 
 package org.eventb.smt.ast.macros;
 
-import static org.eventb.smt.ast.SMTSymbol.BOOLS;
-import static org.eventb.smt.ast.SMTSymbol.INT;
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.ast.VeritPredefinedTheory.POLYMORPHIC;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BCOMP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
@@ -57,6 +53,10 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
+import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.ast.theories.VeritPredefinedTheory.POLYMORPHIC;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -64,17 +64,17 @@ import java.util.Set;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTFunctionSymbol;
-import org.eventb.smt.ast.SMTPolymorphicSortSymbol;
 import org.eventb.smt.ast.SMTSignatureVerit;
-import org.eventb.smt.ast.SMTSortSymbol;
-import org.eventb.smt.ast.SMTSymbol;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
-import org.eventb.smt.ast.SMTVarSymbol;
-import org.eventb.smt.ast.VeriTBooleans;
-import org.eventb.smt.ast.VeritPredefinedTheory;
-import org.eventb.smt.ast.SMTTheory.Ints;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPolymorphicSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.SMTTheory.Ints;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for

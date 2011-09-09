@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.symbols;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;

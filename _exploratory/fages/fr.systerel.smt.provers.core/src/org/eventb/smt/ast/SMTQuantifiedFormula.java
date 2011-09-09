@@ -15,6 +15,9 @@ import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.POINT;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
+import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
+
 /**
  * This class is used to represent formulas which the operator is {@code FORALL}
  * or {@code EXISTS}.

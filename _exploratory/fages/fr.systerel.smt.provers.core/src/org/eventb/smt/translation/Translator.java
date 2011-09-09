@@ -18,10 +18,10 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTLogic;
 import org.eventb.smt.ast.SMTNode;
-import org.eventb.smt.ast.SMTSortSymbol;
-import org.eventb.smt.ast.SMTSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.theories.SMTLogic;
 
 
 /**
@@ -43,6 +43,7 @@ public abstract class Translator implements ISimpleVisitor {
 	protected HashMap<String, SMTSymbol> varMap = new HashMap<String, SMTSymbol>();
 
 	public static boolean DEBUG = false;
+	public static boolean DEV = false;
 
 	protected SMTNode<?> smtNode;
 

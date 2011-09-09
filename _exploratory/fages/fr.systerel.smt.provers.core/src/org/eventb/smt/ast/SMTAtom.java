@@ -14,6 +14,9 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+
 /**
  * This class represents an SMTAtom
  */
@@ -65,10 +68,10 @@ class SMTAtom extends SMTFormula {
 	public void toString(final StringBuilder builder, final int offset,
 			final boolean printPoint) {
 		if (predicateSymbol.isPropositional()) {
-			builder.append(predicateSymbol.name);
+			builder.append(predicateSymbol.getName());
 		} else {
 			builder.append(OPAR);
-			builder.append(predicateSymbol.name);
+			builder.append(predicateSymbol.getName());
 			for (final SMTTerm term : terms) {
 				builder.append(SPACE);
 				term.toString(builder, offset);

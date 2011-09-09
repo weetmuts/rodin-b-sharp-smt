@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.symbols;
 
 import java.util.ArrayList;
 import java.util.List;

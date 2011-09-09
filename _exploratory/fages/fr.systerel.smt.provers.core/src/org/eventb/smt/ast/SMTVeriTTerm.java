@@ -12,6 +12,9 @@ package org.eventb.smt.ast;
 
 import java.util.Set;
 
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.theories.VeriTBooleans;
+
 /**
  * The difference between verit term and normal terms is that the symbol of the
  * term is a predicate symbol, and not function symbol.
@@ -67,7 +70,7 @@ public class SMTVeriTTerm extends SMTTerm {
 
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
-		builder.append(symbol.name);
+		builder.append(symbol.getName());
 	}
 
 	@Override

@@ -11,7 +11,7 @@
 package org.eventb.smt.ast.macros;
 
 import org.eventb.smt.ast.SMTTerm;
-import org.eventb.smt.ast.SMTVarSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
 
 /**
  * This class is used to create macros that are enumerations. These macros are

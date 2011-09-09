@@ -8,17 +8,29 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.commands;
+
+import static org.eventb.smt.ast.SMTFactory.CPAR;
+import static org.eventb.smt.ast.SMTFactory.OPAR;
 
 /**
- * This is the interface for boolean sort
+ * @author Systerel (yguyot)
+ * 
  */
-public interface ISMTIntegerSort {
+public abstract class SMTCommand {
+	private final String name;
 
-	/**
-	 * returns the integer sort.
-	 * 
-	 * @return the integer sort.
-	 */
-	public SMTSortSymbol getIntegerSort();
+	public SMTCommand(final String name) {
+		this.name = name;
+	}
+
+	public void openCommand(final StringBuilder builder) {
+		builder.append(OPAR);
+		builder.append(name);
+	}
+
+	public void toString(final StringBuilder builder) {
+		openCommand(builder);
+		builder.append(CPAR);
+	}
 }

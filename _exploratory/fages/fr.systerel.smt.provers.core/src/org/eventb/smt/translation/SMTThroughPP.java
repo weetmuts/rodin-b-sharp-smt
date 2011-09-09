@@ -12,6 +12,7 @@ package org.eventb.smt.translation;
 
 import static org.eventb.smt.ast.SMTFactory.makeBool;
 import static org.eventb.smt.ast.SMTFactory.makeInteger;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,23 +58,22 @@ import org.eventb.smt.ast.SMTBenchmarkPP;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryPP;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTFunctionSymbol;
-import org.eventb.smt.ast.SMTLogic;
-import org.eventb.smt.ast.SMTPredicateSymbol;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.SMTSignaturePP;
-import org.eventb.smt.ast.SMTSortSymbol;
-import org.eventb.smt.ast.SMTSymbol;
 import org.eventb.smt.ast.SMTTerm;
-import org.eventb.smt.ast.SMTTheory;
 import org.eventb.smt.ast.SMTVar;
-import org.eventb.smt.ast.SMTLogic.SMTLIBUnderlyingLogic;
-import org.eventb.smt.ast.SMTLogic.SMTLogicPP;
-import org.eventb.smt.ast.SMTLogic.SMTOperator;
-import org.eventb.smt.ast.SMTTheory.Booleans;
-import org.eventb.smt.ast.SMTTheory.Ints;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTTheory;
+import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogic;
+import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
+import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
+import org.eventb.smt.ast.theories.SMTTheory.Booleans;
+import org.eventb.smt.ast.theories.SMTTheory.Ints;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
-
 
 /**
  * This class does the SMT translation through ppTrans. ppTrans is called first,
@@ -1036,13 +1036,15 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		} catch (IllegalArgumentException e) {
 			if (inGoal) {
 				if (DEBUG) {
-					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Catched IllegalArgumentException : '"
+							+ e.getMessage() + "'.");
 					System.err.println("Replacing with \u22a5 in goal.");
 				}
 				return SMTFactoryPP.makePFalse();
 			} else {
 				if (DEBUG) {
-					System.err.println("Catched IllegalArgumentException : '" + e.getMessage() + "'.");
+					System.err.println("Catched IllegalArgumentException : '"
+							+ e.getMessage() + "'.");
 					System.err.println("Replacing with \u22a4 in hypothesis.");
 				}
 				return SMTFactoryPP.makePTrue();
@@ -1177,7 +1179,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		if (logic instanceof SMTLogicPP) {
-			signature = new SMTSignaturePP((SMTLogicPP) logic);
+			signature = new SMTSignaturePP((SMTLogicPP) logic, V1_2);
 		} else {
 			throw new IllegalArgumentException("Wrong logic.");
 		}

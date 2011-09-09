@@ -12,6 +12,7 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.translation.Translator.DEBUG;
+import static org.eventb.smt.translation.Translator.DEV;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -381,8 +382,8 @@ public abstract class SMTProverCall extends XProverCall {
 			 * Translates the sequent in SMT-LIB V1.2 language and tries to
 			 * discharge it with an SMT solver
 			 */
+			boolean smtBenchmarkFileMade = false;
 			if (smtPreferences.getSolver().getsmtV1_2()) {
-				boolean smtBenchmarkFileMade = false;
 				try {
 					makeSMTBenchmarkFileV1_2();
 					smtBenchmarkFileMade = true;
@@ -393,32 +394,42 @@ public abstract class SMTProverCall extends XProverCall {
 					}
 				}
 
-				if (smtBenchmarkFileMade) {
-					if (DEBUG) {
-						System.out.println("Launching " + solverName
-								+ " with input:\n");
-						showSMTBenchmarkFile();
-					}
-
-					setMonitorMessage("Running SMT solver : "
-							+ smtPreferences.getSolver().getId() + ".");
-
-					try {
-						callProver(solverCommandLine());
-					} catch (IllegalArgumentException e) {
-						if (DEBUG) {
-							System.out
-									.println("Exception raised during prover call : "
-											+ e.getMessage());
-						}
-					}
-				}
-
-			} else if (smtPreferences.getSolver().getsmtV2_0()) {
+			} else if (DEV && smtPreferences.getSolver().getsmtV2_0()) {
 				/**
 				 * TODO SMT-LIB v2.0
 				 */
+				try {
+					makeSMTBenchmarkFileV2_0();
+					smtBenchmarkFileMade = true;
+				} catch (IllegalArgumentException e) {
+					if (DEBUG) {
+						System.out
+								.println("Due to translation failure, the solver won't be launched.");
+					}
+				}
 			}
+
+			if (smtBenchmarkFileMade) {
+				if (DEBUG) {
+					System.out.println("Launching " + solverName
+							+ " with input:\n");
+					showSMTBenchmarkFile();
+				}
+
+				setMonitorMessage("Running SMT solver : "
+						+ smtPreferences.getSolver().getId() + ".");
+
+				try {
+					callProver(solverCommandLine());
+				} catch (IllegalArgumentException e) {
+					if (DEBUG) {
+						System.out
+								.println("Exception raised during prover call : "
+										+ e.getMessage());
+					}
+				}
+			}
+
 		} catch (final IOException e) {
 			if (DEBUG) {
 				System.err.println(e.getMessage());

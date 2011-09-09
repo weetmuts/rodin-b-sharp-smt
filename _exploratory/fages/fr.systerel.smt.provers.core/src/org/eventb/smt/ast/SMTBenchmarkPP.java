@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.smt.ast.symbols.SMTSymbol;
+
 /**
  * This class is the benchmark resultant of the translation in the PP approach
  * 

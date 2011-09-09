@@ -8,14 +8,14 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.symbols;
 
 /**
  * The SMT sorts.
  */
 public class SMTSortSymbol extends SMTSymbol implements
 		Comparable<SMTSortSymbol> {
-	protected SMTSortSymbol(final String symbolName, final boolean predefined) {
+	public SMTSortSymbol(final String symbolName, final boolean predefined) {
 		super(symbolName, predefined);
 	}
 

@@ -14,6 +14,9 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+
 /**
  * This class represents function application.
  * 
@@ -115,10 +118,10 @@ public class SMTFunApplication extends SMTTerm {
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
 		if (symbol.isConstant()) {
-			builder.append(symbol.name);
+			builder.append(symbol.getName());
 		} else {
 			builder.append(OPAR);
-			builder.append(symbol.name);
+			builder.append(symbol.getName());
 			for (final SMTTerm arg : args) {
 				builder.append(SPACE);
 				arg.toString(builder, offset);

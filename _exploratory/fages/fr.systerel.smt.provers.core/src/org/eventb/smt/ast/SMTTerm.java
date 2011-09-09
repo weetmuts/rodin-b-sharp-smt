@@ -10,6 +10,8 @@
 
 package org.eventb.smt.ast;
 
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+
 /**
  * Common class for SMT-LIB terms.
  */

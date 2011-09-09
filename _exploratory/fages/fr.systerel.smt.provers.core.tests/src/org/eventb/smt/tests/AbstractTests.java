@@ -28,10 +28,10 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTFunctionSymbol;
-import org.eventb.smt.ast.SMTPredicateSymbol;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.ast.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
 
 public abstract class AbstractTests {

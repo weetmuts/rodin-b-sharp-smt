@@ -8,7 +8,9 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.theories;
+
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 
 /**
  * This interface is meant to be implemented by SMTLogic or SMTTheory instances

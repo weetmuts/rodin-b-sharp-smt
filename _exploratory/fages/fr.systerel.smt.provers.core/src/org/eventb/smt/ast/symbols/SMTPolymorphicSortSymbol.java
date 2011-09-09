@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ast;
+package org.eventb.smt.ast.symbols;
 
 /**
  * This class represent polymorphic sorts, which are used with macros, because
@@ -22,7 +22,7 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 	 * Initializes the sort class. By default, they have no string associated
 	 * and is not predefined.
 	 */
-	SMTPolymorphicSortSymbol() {
+	public SMTPolymorphicSortSymbol() {
 		super("", !PREDEFINED);
 	}
 

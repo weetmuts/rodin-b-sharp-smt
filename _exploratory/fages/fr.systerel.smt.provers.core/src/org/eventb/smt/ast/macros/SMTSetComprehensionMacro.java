@@ -13,7 +13,7 @@ package org.eventb.smt.ast.macros;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTQuantifiedFormula;
 import org.eventb.smt.ast.SMTTerm;
-import org.eventb.smt.ast.SMTVarSymbol;
+import org.eventb.smt.ast.symbols.SMTVarSymbol;
 
 /**
  * <p>

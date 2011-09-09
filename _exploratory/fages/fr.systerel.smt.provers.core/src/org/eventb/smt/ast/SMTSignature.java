@@ -11,12 +11,12 @@
 
 package org.eventb.smt.ast;
 
-import static org.eventb.smt.ast.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.ast.SMTSymbol.BENCHMARK;
-import static org.eventb.smt.ast.SMTSymbol.EQUAL;
-import static org.eventb.smt.ast.SMTSymbol.LOGIC;
-import static org.eventb.smt.ast.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.ast.SMTSymbol.THEORY;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
+import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
+import static org.eventb.smt.ast.symbols.SMTSymbol.EQUAL;
+import static org.eventb.smt.ast.symbols.SMTSymbol.LOGIC;
+import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
+import static org.eventb.smt.ast.symbols.SMTSymbol.THEORY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
+import org.eventb.smt.ast.commands.SMTDeclareSortCommand;
+import org.eventb.smt.ast.commands.SMTSetLogicCommand;
+import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
+import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
@@ -60,6 +71,7 @@ import java.util.TreeSet;
 // SMTSignature2_0. This might be necessary if naming rules are not the same in
 // the two versions of the language.
 public abstract class SMTSignature {
+	protected final SMTLIBVersion smtlibVersion;
 
 	/**
 	 * The logic of the signature
@@ -116,7 +128,8 @@ public abstract class SMTSignature {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignature(final SMTLogic logic) {
+	public SMTSignature(final SMTLogic logic, final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 		this.logic = logic;
 		loadReservedAndPredefinedSymbols();
 		loadLogicSymbols();
@@ -260,6 +273,46 @@ public abstract class SMTSignature {
 	}
 
 	/**
+	 * Appends the string representation of this signature sorts (when they are
+	 * not predefined) in SMT-LIB v2.0 version syntax. It doesn't modify the
+	 * buffer if the set contains only predefined symbols.
+	 * 
+	 * @param builder
+	 */
+	private void sortDeclarations(final StringBuilder builder) {
+		final TreeSet<SMTSortSymbol> sortedSorts = new TreeSet<SMTSortSymbol>(
+				sorts);
+		SMTDeclareSortCommand command;
+		for (final SMTSortSymbol sort : sortedSorts) {
+			if (!sort.isPredefined()) {
+				command = new SMTDeclareSortCommand(sort);
+				command.toString(builder);
+				builder.append(")\n");
+			}
+		}
+	}
+
+	/**
+	 * Appends the string representation of this signature funs (when they are
+	 * not predefined) in SMT-LIB v2.0 version syntax. It doesn't modify the
+	 * buffer if the set contains only predefined symbols.
+	 * 
+	 * @param builder
+	 */
+	private void funDeclarations(final StringBuilder builder) {
+		final TreeSet<SMTFunctionSymbol> sortedFuns = new TreeSet<SMTFunctionSymbol>(
+				funs);
+		SMTDeclareFunCommand command;
+		for (final SMTFunctionSymbol fun : sortedFuns) {
+			if (!fun.isPredefined()) {
+				command = new SMTDeclareFunCommand(fun);
+				command.toString(builder);
+				builder.append(")\n");
+			}
+		}
+	}
+
+	/**
 	 * Gives a fresh symbol name. Implements SMT-LIB rules. If the symbol name
 	 * contains "\'", it is replaced with "_" + i + "_", where i is an arbitrary
 	 * number , incremented as much as needed. If the symbol name already exists
@@ -302,21 +355,39 @@ public abstract class SMTSignature {
 	 * Appends to the StringBuilder the string representation of the logic
 	 * section
 	 * 
-	 * @param sb
+	 * @param builder
 	 *            the StringBuilder
 	 */
-	private void logicSection(final StringBuilder sb) {
-		sb.append(" :logic ");
-		sb.append(logic.getName());
-		sb.append("\n");
+	private void logicSection(final StringBuilder builder) {
+		switch (smtlibVersion) {
+		case V1_2:
+			builder.append(" :logic ");
+			builder.append(logic.getName());
+			break;
+
+		default:
+			final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
+					logic.getName());
+			setLogicCommand.toString(builder);
+			break;
+		}
+		builder.append("\n");
 	}
 
 	/**
 	 * One sort per line. May add a comment beside.
 	 */
-	private void extrasortsSection(final StringBuilder sb) {
+	private void extrasortsSection(final StringBuilder builder) {
 		if (!sorts.isEmpty()) {
-			extraSection(sb, sorts, "extrasorts");
+			switch (smtlibVersion) {
+			case V1_2:
+				extraSection(builder, sorts, "extrasorts");
+				break;
+
+			default:
+				sortDeclarations(builder);
+				break;
+			}
 		}
 	}
 
@@ -324,11 +395,19 @@ public abstract class SMTSignature {
 	 * Appends to the StringBuilder the string representation of the extrapreds
 	 * section
 	 * 
-	 * @param sb
+	 * @param builder
 	 */
-	private void extrapredsSection(final StringBuilder sb) {
+	private void extrapredsSection(final StringBuilder builder) {
 		if (!preds.isEmpty()) {
-			extraSection(sb, preds, "extrapreds");
+			switch (smtlibVersion) {
+			case V1_2:
+				extraSection(builder, preds, "extrapreds");
+				break;
+
+			default:
+				funDeclarations(builder);
+				break;
+			}
 		}
 	}
 
@@ -336,11 +415,19 @@ public abstract class SMTSignature {
 	 * Appends to the StringBuilder the string representation of the extrafuns
 	 * section
 	 * 
-	 * @param sb
+	 * @param builder
 	 */
-	private void extrafunsSection(final StringBuilder sb) {
+	private void extrafunsSection(final StringBuilder builder) {
 		if (!funs.isEmpty()) {
-			extraSection(sb, funs, "extrafuns");
+			switch (smtlibVersion) {
+			case V1_2:
+				extraSection(builder, funs, "extrafuns");
+				break;
+
+			default:
+				funDeclarations(builder);
+				break;
+			}
 		}
 	}
 
@@ -543,6 +630,15 @@ public abstract class SMTSignature {
 	 */
 	public Set<SMTFunctionSymbol> getFuns() {
 		return funs;
+	}
+
+	/**
+	 * Returns the version of SMTLIB used by the signature
+	 * 
+	 * @return the version of SMTLIB
+	 */
+	public SMTLIBVersion getSMTLIBVersion() {
+		return smtlibVersion;
 	}
 
 	/**

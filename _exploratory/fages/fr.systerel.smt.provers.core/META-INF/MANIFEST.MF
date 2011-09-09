@@ -15,10 +15,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
  org.eventb.smt.ast,
  org.eventb.smt.ast.macros,
+ org.eventb.smt.ast.symbols,
+ org.eventb.smt.ast.theories,
  org.eventb.smt.preferences,
  org.eventb.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
- org.eventb.smt.provers.internal.core;
-  x-friends:="org.eventb.smt.core.tests,
-   org.eventb.smt.ui,
-   org.eventb.smt.ui.tests",
+ org.eventb.smt.provers.internal.core;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.ui,org.eventb.smt.ui.tests",
  org.eventb.smt.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,org.eventb.smt.ast"

@@ -39,7 +39,7 @@ public abstract class SMTFormula extends SMTNode<SMTFormula> {
 
 	public void printComment(final StringBuilder builder) {
 		if (comment != null) {
-			builder.append(";").append(comment).append("\n");
+			builder.append("; ").append(comment).append("\n");
 		}
 	}
 }
