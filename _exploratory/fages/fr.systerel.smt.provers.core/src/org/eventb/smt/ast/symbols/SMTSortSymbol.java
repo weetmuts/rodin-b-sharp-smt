@@ -10,13 +10,16 @@
 
 package org.eventb.smt.ast.symbols;
 
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * The SMT sorts.
  */
 public class SMTSortSymbol extends SMTSymbol implements
 		Comparable<SMTSortSymbol> {
-	public SMTSortSymbol(final String symbolName, final boolean predefined) {
-		super(symbolName, predefined);
+	public SMTSortSymbol(final String symbolName, final boolean predefined,
+			final SMTLIBVersion smtlibVersion) {
+		super(symbolName, predefined, smtlibVersion);
 	}
 
 	@Override

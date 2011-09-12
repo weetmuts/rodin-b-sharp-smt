@@ -42,13 +42,13 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		 * Sorts of the integer theory
 		 */
 		private static final SMTSortSymbol INT_SORT = new SMTSortSymbol(
-				SMTSymbol.INT, PREDEFINED);
+				SMTSymbol.INT, PREDEFINED, V2_0);
 		public static final SMTSortSymbol POW_INT_SORT = new SMTSortSymbol(
-				POW_INT, !PREDEFINED);
+				POW_INT, !PREDEFINED, V2_0);
 
 		private static final SMTFunctionSymbol INTS_SET = new SMTFunctionSymbol(
 				INTS, new SMTSortSymbol[] {}, POW_INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED);
+				!PREDEFINED, V2_0);
 
 		private static final SMTSortSymbol[] SORTS = { INT_SORT, POW_INT_SORT };
 
@@ -85,21 +85,21 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		 **/
 
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.UMINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.UMINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				PREDEFINED);
+				PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-				SMTSymbol.DIV, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED);
+				SMTSymbol.DIV, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED);
+				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
 				SMTSymbol.EXPN, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED);
+				!PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-				SMTSymbol.MOD, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED);
+				SMTSymbol.MOD, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
 				UMINUS, MINUS, PLUS, MUL, DIV, MOD, EXPN };
 
@@ -194,9 +194,9 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		private static final String POW_BOOL = "PB";
 
 		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-				SMTSymbol.BOOL, !PREDEFINED);
+				SMTSymbol.BOOL, !PREDEFINED, V2_0);
 		private final static SMTSortSymbol POW_BOOL_SORT = new SMTSortSymbol(
-				POW_BOOL, !PREDEFINED);
+				POW_BOOL, !PREDEFINED, V2_0);
 		private static final SMTSortSymbol[] SORTS = { BOOL_SORT, POW_BOOL_SORT };
 
 		private static final SMTSortSymbol[] BOOL_TAB = { BOOL_SORT };
@@ -210,7 +210,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 
 		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
 				BOOLS, new SMTSortSymbol[] {}, POW_BOOL_SORT, !ASSOCIATIVE,
-				!PREDEFINED);
+				!PREDEFINED, V2_0);
 
 		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
 

@@ -56,7 +56,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol[] argSorts, final boolean predefined,
 			final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined);
+		super(symbolName, predefined, smtlibVersion);
 		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
@@ -95,7 +95,7 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean predefined,
 			final boolean isAssociative, final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined);
+		super(symbolName, predefined, smtlibVersion);
 		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		this.isAssociative = isAssociative;

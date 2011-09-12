@@ -12,39 +12,43 @@ package org.eventb.smt.ast.symbols;
 
 import static org.eventb.smt.ast.Messages.SMTSymbol_NullNameException;
 
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * This class stores predefined SMT Symbols
  */
 public abstract class SMTSymbol {
+	protected final SMTLIBVersion smtlibVersion;
+
 	protected final String name;
 	protected final boolean predefined;
 
 	public static final String INT = "Int";
 	public static final String INTS = "INTS";
 	public static final String BOOL = "BOOL";
-	public static final String BOOL_V2 = "Bool"; 
+	public static final String BOOL_V2 = "Bool";
 	public static final String BOOLS = "BOOLS";
-	public static final String EQUAL = "="; 
-	public static final String NOTEQUAL = "!="; 
-	public static final String LT = "<"; 
-	public static final String LE = "<="; 
-	public static final String GT = ">"; 
-	public static final String GE = ">="; 
-	public static final String UMINUS = "~"; 
-	public static final String MINUS = "-"; 
-	public static final String PLUS = "+"; 
-	public static final String MUL = "*"; 
-	public static final String DISTINCT = "distinct"; 
+	public static final String EQUAL = "=";
+	public static final String NOTEQUAL = "!=";
+	public static final String LT = "<";
+	public static final String LE = "<=";
+	public static final String GT = ">";
+	public static final String GE = ">=";
+	public static final String UMINUS = "~";
+	public static final String MINUS = "-";
+	public static final String PLUS = "+";
+	public static final String MUL = "*";
+	public static final String DISTINCT = "distinct";
 
-	public static final String BENCHMARK = "benchmark"; 
-	public static final String LOGIC = "logic"; 
-	public static final String THEORY = "theory"; 
-	public static final String U_SORT = "U"; 
+	public static final String BENCHMARK = "benchmark";
+	public static final String LOGIC = "logic";
+	public static final String THEORY = "theory";
+	public static final String U_SORT = "U";
 
 	public static final boolean PREDEFINED = true;
-	public static final String DIV = "divi"; 
-	public static final String EXPN = "expn"; 
-	public static final String MOD = "mod"; 
+	public static final String DIV = "divi";
+	public static final String EXPN = "expn";
+	public static final String MOD = "mod";
 
 	/**
 	 * Constructs a new instance of SMTSymbol
@@ -54,10 +58,12 @@ public abstract class SMTSymbol {
 	 * @param predefined
 	 *            true if it's predefined, false otherwise
 	 */
-	protected SMTSymbol(final String symbolName, final boolean predefined) {
+	protected SMTSymbol(final String symbolName, final boolean predefined,
+			final SMTLIBVersion smtlibVersion) {
 		if (symbolName != null) {
 			name = symbolName;
 			this.predefined = predefined;
+			this.smtlibVersion = smtlibVersion;
 		} else {
 			throw new IllegalArgumentException(SMTSymbol_NullNameException);
 		}

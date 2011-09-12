@@ -31,10 +31,10 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	private static final String NAME = "verit_theory";
 
 	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
-			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED);
+			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED, V1_2);
 
 	private final static SMTSortSymbol INT = new SMTSortSymbol(SMTSymbol.INT,
-			PREDEFINED);
+			PREDEFINED, V1_2);
 
 	private final static SMTSortSymbol[] INT_TAB = { INT };
 	private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
@@ -62,19 +62,19 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	 * Function symbols
 	 */
 	private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
-			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED);
+			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+			SMTSymbol.PLUS, INT_TAB, INT, ASSOCIATIVE, PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-			SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED);
+			SMTSymbol.MUL, INT_TAB, INT, ASSOCIATIVE, PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+			SMTSymbol.EXPN, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-			SMTSymbol.MOD, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED);
+			SMTSymbol.MOD, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 
 	private static final SMTSortSymbol[] SORTS = { BOOL, INT };
 

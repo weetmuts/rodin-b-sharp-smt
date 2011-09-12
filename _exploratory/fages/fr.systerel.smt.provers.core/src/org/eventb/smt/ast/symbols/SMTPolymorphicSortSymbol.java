@@ -10,6 +10,8 @@
 
 package org.eventb.smt.ast.symbols;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+
 /**
  * This class represent polymorphic sorts, which are used with macros, because
  * the arguments of macros are higher order and polymorphic.
@@ -23,7 +25,7 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 	 * and is not predefined.
 	 */
 	public SMTPolymorphicSortSymbol() {
-		super("", !PREDEFINED);
+		super("", !PREDEFINED, V1_2);
 	}
 
 	/**
@@ -33,7 +35,7 @@ public class SMTPolymorphicSortSymbol extends SMTSortSymbol {
 	 *            the name of the sort
 	 */
 	public SMTPolymorphicSortSymbol(final String symbolName) {
-		super(symbolName, !PREDEFINED);
+		super(symbolName, !PREDEFINED, V1_2);
 	}
 
 	@Override

@@ -12,26 +12,29 @@ package org.eventb.smt.ast.commands;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public class SMTDeclareFunCommand extends SMTCommand {
 	private final static String DECLARE_FUN = "declare-fun";
-	private final SMTFunctionSymbol functionSymbol;
+	private final SMTSymbol symbol;
 
-	public SMTDeclareFunCommand(final SMTFunctionSymbol functionSymbol) {
+	public SMTDeclareFunCommand(final SMTSymbol symbol) { // FIXME must be an
+															// SMTFunctionSymbol
+															// or an
+															// SMTPredicateSymbol
 		super(DECLARE_FUN);
-		this.functionSymbol = functionSymbol;
+		this.symbol = symbol;
 	}
 
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		functionSymbol.toString(builder);
+		symbol.toString(builder);
 		builder.append(CPAR);
 	}
 }

@@ -14,6 +14,7 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.QVAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 /**
  * Represents quantified var symbols (constants are represented with
@@ -35,7 +36,7 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 	 */
 	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort,
 			final boolean predefined) {
-		super(symbolName, predefined);
+		super(symbolName, predefined, V1_2);
 		this.sort = sort;
 	}
 

@@ -11,12 +11,18 @@ package org.eventb.smt.ast.commands;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public class SMTCheckSatCommand extends SMTCommand {
 	private final static String CHECK_SAT = "check-sat";
-	
-	public SMTCheckSatCommand() {
+
+	private final static SMTCheckSatCommand checkSatCommand = new SMTCheckSatCommand();
+
+	private SMTCheckSatCommand() {
 		super(CHECK_SAT);
+	}
+
+	public static SMTCheckSatCommand getCheckSatCommand() {
+		return checkSatCommand;
 	}
 }

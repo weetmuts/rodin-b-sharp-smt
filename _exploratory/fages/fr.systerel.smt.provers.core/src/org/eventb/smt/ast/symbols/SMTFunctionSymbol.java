@@ -16,6 +16,8 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import java.util.Arrays;
 
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * This class represents SMT function symbols.
  */
@@ -60,8 +62,9 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 */
 	public SMTFunctionSymbol(final String symbolName,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort,
-			final boolean associative, final boolean predefined) {
-		super(symbolName, predefined);
+			final boolean associative, final boolean predefined,
+			final SMTLIBVersion smtlibVersion) {
+		super(symbolName, predefined, smtlibVersion);
 		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;
@@ -103,15 +106,34 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder buffer) {
-		buffer.append(OPAR);
-		buffer.append(name);
-		for (final SMTSortSymbol sort : argSorts) {
+		switch (smtlibVersion) {
+		case V1_2:
+			buffer.append(OPAR);
+			buffer.append(name);
+			for (final SMTSortSymbol sort : argSorts) {
+				buffer.append(SPACE);
+				buffer.append(sort);
+			}
 			buffer.append(SPACE);
-			buffer.append(sort);
+			buffer.append(resultSort);
+			buffer.append(CPAR);
+			return;
+
+		default:
+			String separator = "";
+			buffer.append(name);
+			buffer.append(SPACE);
+			buffer.append(OPAR);
+			for (final SMTSortSymbol sort : argSorts) {
+				buffer.append(separator);
+				buffer.append(sort);
+				separator = SPACE;
+			}
+			buffer.append(CPAR);
+			buffer.append(SPACE);
+			buffer.append(resultSort);
+			return;
 		}
-		buffer.append(SPACE);
-		buffer.append(resultSort);
-		buffer.append(CPAR);
 	}
 
 	/**

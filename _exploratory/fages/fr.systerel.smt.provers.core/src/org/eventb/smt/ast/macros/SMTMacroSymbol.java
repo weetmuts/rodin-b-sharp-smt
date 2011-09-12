@@ -12,6 +12,7 @@ package org.eventb.smt.ast.macros;
 
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class is used to store the symbols that represent the macros. They
@@ -104,8 +105,9 @@ public class SMTMacroSymbol extends SMTSymbol {
 	 *            The expected sorts of the arguments
 	 */
 	SMTMacroSymbol(final String symbolName, final SMTSortSymbol[] argSorts,
-			final SMTSortSymbol returnSort, final boolean predefined) {
-		super(symbolName, predefined);
+			final SMTSortSymbol returnSort, final boolean predefined,
+			final SMTLIBVersion smtlibVersion) {
+		super(symbolName, predefined, smtlibVersion);
 		this.argSorts = argSorts;
 		this.returnSort = returnSort;
 	}
