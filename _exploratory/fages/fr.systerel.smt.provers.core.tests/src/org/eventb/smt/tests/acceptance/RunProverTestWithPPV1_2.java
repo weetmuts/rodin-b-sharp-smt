@@ -1,32 +1,34 @@
 /*******************************************************************************
- * Copyright (c) 2011 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2011 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
  * 	Systerel - initial API and implementation
+ * 	UFRN - portability of paths
  *******************************************************************************/
 
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
+import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class contains acceptance tests of the plugin using veriT preprocessing.
+ * This class contains acceptance tests of the plugin with pptranslation.
  * 
- * @author Vitor Alcantara
+ * @author Yoann Guyot
  * 
  */
-public class RunProverTestWithVeriT extends CommonSolverRunTests {
+public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
@@ -35,7 +37,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_VERIT, lemmaName, inputHyps, inputGoal, te,
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
 				expectedSolverResult);
 	}
 
@@ -182,6 +184,17 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testBOOLSetZ3Call2() {
+		setPreferencesForZ3Test(V1_2);
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("b↦c ∈ BOOL×BOOL");
+		hyps.add("b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
+	}
+
+	@Test
 	public void testBOOLSetAltErgoCall() {
 		setPreferencesForAltErgoTest(V1_2);
 
@@ -272,6 +285,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionZ3Call() {
 		setPreferencesForZ3Test(V1_2);
 
@@ -291,6 +305,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionCVC3Call() {
 		setPreferencesForCvc3Test(V1_2);
 
@@ -310,6 +325,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionAltErgoCall() {
 		setPreferencesForAltErgoTest(V1_2);
 
@@ -329,6 +345,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testDivisionVeriT() {
 		setPreferencesForVeriTTest(V1_2);
 
@@ -348,6 +365,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationZ3Call() {
 		setPreferencesForZ3Test(V1_2);
 
@@ -359,6 +377,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationCVC3Call() {
 		setPreferencesForCvc3Test(V1_2);
 
@@ -370,6 +389,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationAltErgoCall() {
 		setPreferencesForAltErgoTest(V1_2);
 
@@ -381,6 +401,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationVeriTCall() {
 		setPreferencesForVeriTTest(V1_2);
 
@@ -392,6 +413,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModZ3Call() {
 		setPreferencesForZ3Test(V1_2);
 
@@ -408,6 +430,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModVeriTCall() {
 		setPreferencesForVeriTTest(V1_2);
 
@@ -424,6 +447,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModAltErgoCall() {
 		setPreferencesForAltErgoTest(V1_2);
 
@@ -440,6 +464,7 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModForCVC3Call() {
 		setPreferencesForCvc3Test(V1_2);
 
@@ -463,8 +488,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -477,8 +500,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -491,8 +512,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -505,8 +524,6 @@ public class RunProverTestWithVeriT extends CommonSolverRunTests {
 				"n", "ℤ", "x", "ℤ");
 
 		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
