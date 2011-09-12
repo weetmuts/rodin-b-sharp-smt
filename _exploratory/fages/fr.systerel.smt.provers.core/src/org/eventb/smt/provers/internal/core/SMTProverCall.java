@@ -11,6 +11,8 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEV;
 
@@ -30,6 +32,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.preferences.SMTPreferences;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * 
@@ -39,6 +42,7 @@ import org.eventb.smt.preferences.SMTPreferences;
 public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
+	protected static final String SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO = ".smt2";
 
 	/**
 	 * Solver output at the end of the call
@@ -308,7 +312,8 @@ public abstract class SMTProverCall extends XProverCall {
 	/**
 	 * Makes temporary files in the given path
 	 */
-	protected synchronized void makeTempFileNames() throws IOException {
+	protected synchronized void makeTempFileNames(
+			final SMTLIBVersion smtlibVersion) throws IOException {
 		final String benchmarkTargetPath = translationPath + File.separatorChar
 				+ lemmaName;
 
@@ -330,8 +335,13 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 		}
 
-		smtBenchmarkFile = File.createTempFile(lemmaName,
-				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
+		if (smtlibVersion.equals(V2_0) && solverName.equals(ALT_ERGO.toString())) {
+			smtBenchmarkFile = File.createTempFile(lemmaName,
+					SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO, smtTranslationFolder);
+		} else {
+			smtBenchmarkFile = File.createTempFile(lemmaName,
+					SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
+		}
 		if (DEBUG) {
 			System.out.println("Created temporary SMT benchmark file '"
 					+ smtBenchmarkFile + "'");

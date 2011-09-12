@@ -27,7 +27,6 @@ import java.util.TreeSet;
 
 import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
 import org.eventb.smt.ast.commands.SMTDeclareSortCommand;
-import org.eventb.smt.ast.commands.SMTSetLogicCommand;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
@@ -287,7 +286,7 @@ public abstract class SMTSignature {
 			if (!sort.isPredefined()) {
 				command = new SMTDeclareSortCommand(sort);
 				command.toString(builder);
-				builder.append(")\n");
+				builder.append("\n");
 			}
 		}
 	}
@@ -299,15 +298,16 @@ public abstract class SMTSignature {
 	 * 
 	 * @param builder
 	 */
-	private void funDeclarations(final StringBuilder builder) {
-		final TreeSet<SMTFunctionSymbol> sortedFuns = new TreeSet<SMTFunctionSymbol>(
-				funs);
+	private static <SMTFunOrPredSymbol extends SMTSymbol> void funDeclarations(
+			final StringBuilder builder, final Set<SMTFunOrPredSymbol> elements) {
+		final TreeSet<SMTFunOrPredSymbol> sortedSymbols = new TreeSet<SMTFunOrPredSymbol>(
+				elements);
 		SMTDeclareFunCommand command;
-		for (final SMTFunctionSymbol fun : sortedFuns) {
-			if (!fun.isPredefined()) {
-				command = new SMTDeclareFunCommand(fun);
+		for (final SMTFunOrPredSymbol symbol : sortedSymbols) {
+			if (!symbol.isPredefined()) {
+				command = new SMTDeclareFunCommand(symbol);
 				command.toString(builder);
-				builder.append(")\n");
+				builder.append("\n");
 			}
 		}
 	}
@@ -363,15 +363,17 @@ public abstract class SMTSignature {
 		case V1_2:
 			builder.append(" :logic ");
 			builder.append(logic.getName());
+			builder.append("\n");
 			break;
 
 		default:
-			final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
-					logic.getName());
-			setLogicCommand.toString(builder);
+			// final SMTSetLogicCommand setLogicCommand = new
+			// SMTSetLogicCommand(
+			// logic.getName());
+			// setLogicCommand.toString(builder);
+			// builder.append("\n");
 			break;
 		}
-		builder.append("\n");
 	}
 
 	/**
@@ -405,7 +407,7 @@ public abstract class SMTSignature {
 				break;
 
 			default:
-				funDeclarations(builder);
+				funDeclarations(builder, preds);
 				break;
 			}
 		}
@@ -425,7 +427,7 @@ public abstract class SMTSignature {
 				break;
 
 			default:
-				funDeclarations(builder);
+				funDeclarations(builder, funs);
 				break;
 			}
 		}
@@ -759,7 +761,8 @@ public abstract class SMTSignature {
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
 		final String freshName = freshFunctionName(name);
 		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
-				freshName, argSorts, returnSort, !ASSOCIATIVE, !PREDEFINED);
+				freshName, argSorts, returnSort, !ASSOCIATIVE, !PREDEFINED,
+				smtlibVersion);
 		final boolean successfullyAdded = funs.add(freshConstant);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
@@ -791,7 +794,7 @@ public abstract class SMTSignature {
 	public SMTSortSymbol freshSort(final String name) {
 		final String freshName = freshSortName(name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
-				!SMTSymbol.PREDEFINED);
+				!SMTSymbol.PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = sorts.add(freshSort);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(

@@ -10,6 +10,8 @@
 
 package org.eventb.smt.ast;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -94,7 +96,7 @@ public class SMTSignatureVerit extends SMTSignature {
 			freshName = freshSymbolName(name);
 		}
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
-				!SMTSymbol.PREDEFINED);
+				!SMTSymbol.PREDEFINED, V1_2);
 		sorts.add(freshSort);
 		return freshSort;
 	}

@@ -57,15 +57,15 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
-			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED);
+			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 
 	public final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
 
 	public final static SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
-			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
+			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 
 	public final static SMTFunctionSymbol SND_SYMBOL = new SMTFunctionSymbol(
-			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED);
+			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);
 
 	private boolean pairAxiomAdded = false;
 
@@ -225,7 +225,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		sb.append(" ");
 		sb.append(targetSymbol.toString());
 		sb.append(")");
-		return new SMTSortSymbol(sb.toString(), false);
+		return new SMTSortSymbol(sb.toString(), false, V1_2);
 	}
 
 	/**

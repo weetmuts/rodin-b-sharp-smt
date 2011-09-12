@@ -14,6 +14,7 @@ package org.eventb.smt.ast;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
@@ -95,7 +96,7 @@ public class SMTBenchmark {
 
 			default:
 				final SMTAssertCommand assertCommand = new SMTAssertCommand(
-						formula);
+						assumption);
 				assertCommand.toString(builder);
 				break;
 			}
@@ -199,6 +200,7 @@ public class SMTBenchmark {
 
 		default:
 			benchmarkContent(builder);
+			getCheckSatCommand().toString(builder);
 			break;
 		}
 		pw.println(builder.toString());

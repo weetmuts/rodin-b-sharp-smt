@@ -11,6 +11,7 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.Translator.DEBUG;
 
 import java.io.File;
@@ -25,9 +26,9 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTPreferences;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.eventb.smt.translation.Translator;
-
 
 /**
  * This class represents a call to an SMT solver using the veriT approach. More
@@ -188,8 +189,9 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * Makes temporary files in the given path
 	 */
 	@Override
-	public synchronized void makeTempFileNames() throws IOException {
-		super.makeTempFileNames();
+	public synchronized void makeTempFileNames(final SMTLIBVersion smtlibVersion)
+			throws IOException {
+		super.makeTempFileNames(smtlibVersion);
 
 		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
 				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
@@ -229,7 +231,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames();
+		makeTempFileNames(V1_2);
 
 		/**
 		 * Prints the benchmark with macros in a file

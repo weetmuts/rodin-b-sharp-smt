@@ -95,7 +95,7 @@ public class SMTPPCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames();
+		makeTempFileNames(V1_2);
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
@@ -136,7 +136,7 @@ public class SMTPPCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames();
+		makeTempFileNames(V2_0);
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
