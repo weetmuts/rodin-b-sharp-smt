@@ -17,20 +17,18 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class is used to represent formulas which the operator is {@code FORALL}
  * or {@code EXISTS}.
  */
 public class SMTQuantifiedFormula extends SMTFormula {
+	private final SMTLIBVersion smtlibVersion;
 
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
 	private final SMTFormula formula;
-
-	public SMTFormula getFormula() {
-		return formula;
-	}
 
 	/**
 	 * Constructs a new SMT quantified formula
@@ -43,10 +41,16 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	 *            the bound formula
 	 */
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
-			final SMTVarSymbol[] qVars, final SMTFormula formula) {
+			final SMTVarSymbol[] qVars, final SMTFormula formula,
+			final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;
+	}
+
+	public SMTFormula getFormula() {
+		return formula;
 	}
 
 	@Override
@@ -63,15 +67,34 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		}
 		builder.append(OPAR);
 		builder.append(quantifier);
-		for (final SMTVarSymbol qVar : qVars) {
+
+		switch (smtlibVersion) {
+		case V1_2:
+			for (final SMTVarSymbol qVar : qVars) {
+				builder.append(SPACE);
+				qVar.toString(builder);
+			}
+			if (printPoint) {
+				builder.append(SPACE);
+				builder.append(POINT);
+				builder.append(SPACE);
+			}	
+			break;
+
+		default:
+			String separator = "";
+
 			builder.append(SPACE);
-			qVar.toString(builder);
+			builder.append(OPAR);
+			for (final SMTVarSymbol qVar : qVars) {
+				builder.append(separator);
+				qVar.toString(builder);
+				separator = SPACE;
+			}
+			builder.append(CPAR);
+			break;
 		}
-		if (printPoint) {
-			builder.append(SPACE);
-			builder.append(POINT);
-			builder.append(SPACE);
-		}
+
 		builder.append(SPACE);
 		builder.append(newLine);
 		SMTNode.indent(builder, newOffset);

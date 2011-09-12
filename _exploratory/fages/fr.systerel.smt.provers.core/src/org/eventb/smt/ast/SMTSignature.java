@@ -812,8 +812,7 @@ public abstract class SMTSignature {
 	 *            the sort arguments.
 	 * @return the just added predicate symbol to the signature
 	 */
-	public SMTPredicateSymbol freshPredicateSymbol(
-			final SMTLIBVersion smtlibVersion, final String name,
+	public SMTPredicateSymbol freshPredicateSymbol(final String name,
 			final SMTSortSymbol... argSorts) {
 		final String freshName = freshPredicateName(name);
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(

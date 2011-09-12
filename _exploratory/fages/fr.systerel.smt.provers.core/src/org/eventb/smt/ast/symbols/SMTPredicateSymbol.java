@@ -24,7 +24,6 @@ import org.eventb.smt.translation.SMTLIBVersion;
  */
 public class SMTPredicateSymbol extends SMTSymbol implements
 		Comparable<SMTPredicateSymbol> {
-	private final SMTLIBVersion smtlibVersion;
 
 	/**
 	 * The rank (as defined in SMT-LIB SMTSignature definition). Remind that it
@@ -57,7 +56,6 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 			final SMTSortSymbol[] argSorts, final boolean predefined,
 			final SMTLIBVersion smtlibVersion) {
 		super(symbolName, predefined, smtlibVersion);
-		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
 	}
@@ -96,7 +94,6 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 			final SMTSortSymbol argSorts[], final boolean predefined,
 			final boolean isAssociative, final SMTLIBVersion smtlibVersion) {
 		super(symbolName, predefined, smtlibVersion);
-		this.smtlibVersion = smtlibVersion;
 		this.argSorts = argSorts.clone();
 		this.isAssociative = isAssociative;
 	}

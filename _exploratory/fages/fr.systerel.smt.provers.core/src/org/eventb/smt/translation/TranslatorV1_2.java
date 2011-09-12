@@ -302,10 +302,10 @@ public abstract class TranslatorV1_2 extends Translator {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			smtNode = SMTFactory.makeForAll(termChildren, formulaChild);
+			smtNode = SMTFactory.makeForAll(termChildren, formulaChild, smtlibVersion);
 			break;
 		case Formula.EXISTS:
-			smtNode = SMTFactory.makeExists(termChildren, formulaChild);
+			smtNode = SMTFactory.makeExists(termChildren, formulaChild, smtlibVersion);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());

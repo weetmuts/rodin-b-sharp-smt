@@ -214,13 +214,13 @@ public abstract class SMTFactory {
 	}
 
 	public static SMTFormula makeForAll(final SMTTerm[] terms,
-			final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(FORALL, terms, formula);
+			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
+		return makeSMTQuantifiedFormula(FORALL, terms, formula, smtlibVersion);
 	}
 
 	public static SMTFormula makeExists(final SMTTerm[] terms,
-			final SMTFormula formula) {
-		return makeSMTQuantifiedFormula(EXISTS, terms, formula);
+			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
+		return makeSMTQuantifiedFormula(EXISTS, terms, formula, smtlibVersion);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public abstract class SMTFactory {
 	 */
 	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTTerm[] terms,
-			final SMTFormula formula) {
+			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];
@@ -248,7 +248,7 @@ public abstract class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return makeSMTQuantifiedFormula(qSymbol, qVars, formula);
+		return makeSMTQuantifiedFormula(qSymbol, qVars, formula, smtlibVersion);
 	}
 
 	/**
@@ -264,8 +264,8 @@ public abstract class SMTFactory {
 	 */
 	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
-			final SMTFormula formula) {
-		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
+			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
+		return new SMTQuantifiedFormula(qSymbol, qVars, formula, smtlibVersion);
 	}
 
 	/**

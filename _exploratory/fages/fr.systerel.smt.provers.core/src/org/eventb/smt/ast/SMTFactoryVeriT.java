@@ -168,7 +168,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula);
+						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula,
+						V1_2);
 
 		return quantifiedFormula;
 	}
@@ -192,7 +193,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 		final SMTFormula forall = makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL,
-				new SMTVarSymbol[] { boolvarSymbol }, or);
+				new SMTVarSymbol[] { boolvarSymbol }, or, V1_2);
 
 		final SMTFormula not = makeNot(new SMTFormula[] { makeEqual(
 				new SMTTerm[] { trueTerm, falseTerm }, V1_2) });

@@ -367,7 +367,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				if (!varMap.containsKey(varName)) {
 					if (isBoolTheoryAndDoesNotUseTruePred(varType)) {
 						final SMTPredicateSymbol predSymbol = signature
-								.freshPredicateSymbol(V1_2, varName);
+								.freshPredicateSymbol(varName);
 						varMap.put(varName, predSymbol);
 						continue;
 					} else {
@@ -540,7 +540,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		if (specializedMembershipPredicate == null) {
 			specializedMembershipPredicate = signature.freshPredicateSymbol(
-					V1_2, right.getName(), argSorts);
+					right.getName(), argSorts);
 			specialMSPredsMap.put(right, specializedMembershipPredicate);
 		}
 
@@ -565,7 +565,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final SMTSortSymbol... argSorts) {
 		SMTPredicateSymbol membershipPredicateSymbol = msTypeMap.get(type);
 		if (membershipPredicateSymbol == null) {
-			membershipPredicateSymbol = signature.freshPredicateSymbol(V1_2,
+			membershipPredicateSymbol = signature.freshPredicateSymbol(
 					SMTPredicateSymbol.MS_PREDICATE_NAME, argSorts);
 			msTypeMap.put(type, membershipPredicateSymbol);
 		}
@@ -710,7 +710,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				leftMembership, rightMembership });
 
 		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { smtVar }, equivalence);
+		return SMTFactory.makeForAll(new SMTTerm[] { smtVar }, equivalence,
+				smtlibVersion);
 	}
 
 	/**
@@ -750,7 +751,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeForAll(
-				new SMTTerm[] { smtVar }, membershipFormula);
+				new SMTTerm[] { smtVar }, membershipFormula, smtlibVersion);
 
 		axiom.setComment("Integer axiom");
 		return axiom;
@@ -793,7 +794,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeForAll(
-				new SMTTerm[] { smtVar }, membershipFormula);
+				new SMTTerm[] { smtVar }, membershipFormula, smtlibVersion);
 
 		axiom.setComment("Bool axiom");
 		return axiom;
@@ -833,7 +834,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { xTerm,
-				yTerm }, equivalence);
+				yTerm }, equivalence, smtlibVersion);
 
 		axiom.setComment("True equality axiom");
 		return axiom;
@@ -868,7 +869,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeExists(new SMTTerm[] { xTerm,
-				yTerm }, trueXAndNotTrueY);
+				yTerm }, trueXAndNotTrueY, smtlibVersion);
 
 		axiom.setComment("True existence axiom");
 		return axiom;
@@ -919,7 +920,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				setAmembershipFormula, setBmembershipFormula });
 
 		// creates the quantified formula
-		final SMTFormula forall = SMTFactory.makeForAll(eltTerms, equivalence);
+		final SMTFormula forall = SMTFactory.makeForAll(eltTerms, equivalence,
+				smtlibVersion);
 
 		// creates the equality <code>A = B</code>
 		final SMTFormula equality = SMTFactory.makeEqual(new SMTTerm[] { termA,
@@ -931,7 +933,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { termA,
-				termB }, implies);
+				termB }, implies, smtlibVersion);
 
 		axiom.setComment("Extensionality axiom");
 		return axiom;
@@ -999,7 +1001,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				yMembershipFormula, eqConjunction });
 
 		// creates the quantified formula
-		final SMTFormula yForall = SMTFactory.makeForAll(yTerms, implies);
+		final SMTFormula yForall = SMTFactory.makeForAll(yTerms, implies,
+				smtlibVersion);
 
 		// creates the first conjunction
 		final SMTFormula conjonction = SMTFactory.makeAnd(new SMTFormula[] {
@@ -1007,10 +1010,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 
 		// creates the set existential
 		final SMTFormula existsX = SMTFactory.makeExists(
-				new SMTTerm[] { termX }, conjonction);
+				new SMTTerm[] { termX }, conjonction, smtlibVersion);
 
 		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeForAll(xTerms, existsX);
+		final SMTFormula axiom = SMTFactory.makeForAll(xTerms, existsX,
+				smtlibVersion);
 
 		axiom.setComment("Elementary Sets axiom (Singleton part)");
 		return axiom;

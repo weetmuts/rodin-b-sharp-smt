@@ -166,7 +166,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	final private SMTFactoryVeriT sf;
 
 	public SMTThroughVeriT(final String solver) {
-		super(solver, V1_2); //FIXME this is a stub
+		super(solver, V1_2); // FIXME this is a stub
 		sf = SMTFactoryVeriT.getInstance();
 	}
 
@@ -404,7 +404,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	private void translatePredSymbol(final String varName,
 			final SMTSortSymbol sort) {
 		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
-				V1_2, varName, sort);
+				varName, sort);
 		varMap.put(varName, predSymbol);
 		signature.addPairSortAndFunction();
 	}
@@ -1611,8 +1611,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sort == null) {
 			sort = translateTypeName(type);
 		}
-		final SMTPredicateSymbol symbol = signature.freshPredicateSymbol(V1_2,
-				x, sort);
+		final SMTPredicateSymbol symbol = signature.freshPredicateSymbol(x,
+				sort);
 		final SMTTerm xTerm = sf.makeVeriTConstantTerm(symbol, signature);
 		additionalAssumptions.add(SMTFactory.makeEqual(new SMTTerm[] { xTerm,
 				e0 }, V1_2));
@@ -1645,7 +1645,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		// Creating the constant 'p'
 		final SMTSortSymbol[] empty = {};
 		final SMTPredicateSymbol pVarSymbol = signature.freshPredicateSymbol(
-				V1_2, "finite_p", empty);
+				"finite_p", empty);
 
 		final SMTFunctionSymbol kVarSymbol = signature.freshConstant(
 				"finite_k", SMTTheoryV1_2.Ints.getInt());
