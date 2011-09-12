@@ -227,7 +227,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			break;
 
 		default:
-			setSolverPreferences(VERIT.toString(), "", false, true);
+			setSolverPreferences(VERIT.toString(), "-i smtlib2", false, true);
 			break;
 		}
 	}
@@ -264,7 +264,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			break;
 
 		default:
-			setSolverPreferences(binaryName.toString(), "", false, true);
+			setSolverPreferences(binaryName.toString(), "-smt2", false, true);
 			break;
 		}
 	}

@@ -27,6 +27,7 @@ import java.util.TreeSet;
 
 import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
 import org.eventb.smt.ast.commands.SMTDeclareSortCommand;
+import org.eventb.smt.ast.commands.SMTSetLogicCommand;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
@@ -367,11 +368,10 @@ public abstract class SMTSignature {
 			break;
 
 		default:
-			// final SMTSetLogicCommand setLogicCommand = new
-			// SMTSetLogicCommand(
-			// logic.getName());
-			// setLogicCommand.toString(builder);
-			// builder.append("\n");
+			final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
+					logic.getName());
+			setLogicCommand.toString(builder);
+			builder.append("\n");
 			break;
 		}
 	}
