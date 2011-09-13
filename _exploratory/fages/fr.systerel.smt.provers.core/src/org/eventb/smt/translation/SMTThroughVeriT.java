@@ -101,7 +101,7 @@ import org.eventb.smt.ast.SMTFactoryPP;
 import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.ast.SMTSignatureVerit;
+import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.ast.SMTVeritCardFormula;
@@ -146,7 +146,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
-	private SMTSignatureVerit signature;
+	private SMTSignatureV1_2Verit signature;
 
 	/**
 	 * This method is used only to test the SMT translation
@@ -365,7 +365,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
-		signature = new SMTSignatureVerit(logic, V1_2);
+		signature = new SMTSignatureV1_2Verit(logic, V1_2);
 
 		addBooleanAssumption(logic);
 

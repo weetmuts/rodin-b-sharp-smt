@@ -66,7 +66,7 @@ import java.util.Set;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTSignatureVerit;
+import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
@@ -533,7 +533,7 @@ public class SMTMacroFactory {
 	 *            the signature used for the check
 	 */
 	public static void checkIfMacroIsDefinedInTheSignature(
-			final SMTMacroSymbol macro, final SMTSignatureVerit signature) {
+			final SMTMacroSymbol macro, final SMTSignatureV1_2Verit signature) {
 		final Set<SMTMacro> macros = signature.getMacros();
 		for (final SMTMacro smtMacro : macros) {
 			if (smtMacro.getMacroName().equals(macro.getName())) {
@@ -565,7 +565,7 @@ public class SMTMacroFactory {
 	 */
 	public static SMTPairEnumMacro makePairEnumerationMacro(
 			final String macroName, final SMTVarSymbol varName1,
-			final SMTTerm[] terms, final SMTSignatureVerit signature) {
+			final SMTTerm[] terms, final SMTSignatureV1_2Verit signature) {
 		signature.addPairSortAndFunction();
 		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
@@ -601,7 +601,7 @@ public class SMTMacroFactory {
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
 			final String macroName, final SMTTerm[] terms,
 			final SMTVarSymbol lambdaVar, final SMTFormula formula,
-			final SMTTerm expression, final SMTSignatureVerit signature) {
+			final SMTTerm expression, final SMTSignatureV1_2Verit signature) {
 		signature.addPairSortAndFunction();
 
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
@@ -684,7 +684,7 @@ public class SMTMacroFactory {
 	 *            The signature that will receive the macro
 	 */
 	public static void addPredefinedMacroInSignature(
-			final SMTPredefinedMacro operator, final SMTSignatureVerit signature) {
+			final SMTPredefinedMacro operator, final SMTSignatureV1_2Verit signature) {
 		final SMTPredefinedMacro pmacro = operator;
 		if (pmacro.usesPairFunctionAndSort()) {
 			signature.addPairSortAndFunction();
@@ -709,7 +709,7 @@ public class SMTMacroFactory {
 	 * @return the macro symbol associated with the operator
 	 */
 	public static final SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperator operator, final SMTSignatureVerit signature) {
+			final SMTVeriTOperator operator, final SMTSignatureV1_2Verit signature) {
 		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
 		case BOOLS_OP:

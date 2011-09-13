@@ -59,7 +59,8 @@ import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryPP;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.ast.SMTSignaturePP;
+import org.eventb.smt.ast.SMTSignatureV1_2PP;
+import org.eventb.smt.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
@@ -97,7 +98,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
-	private SMTSignaturePP signature;
+	private SMTSignature signature;
 
 	/**
 	 * In order to translate memberships, the approach implemented in this class
@@ -1028,7 +1029,12 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
 	private void linkLogicSymbols() {
-		final SMTLogicPP logic = signature.getLogic();
+		final SMTLogicPP logic;
+		if (smtlibVersion.equals(V1_2)) {
+			logic = ((SMTSignatureV1_2PP) signature).getLogic();
+		} else {
+			logic = ((SMTSignatureV2_0PP) signature).getLogic();
+		}
 		final FormulaFactory ff = FormulaFactory.getDefault();
 
 		final Type integerType = ff.makeIntegerType();
@@ -1195,7 +1201,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	protected void translateSignature(final SMTLogic logic,
 			final List<Predicate> hypotheses, final Predicate goal) {
 		if (logic instanceof SMTLogicPP) {
-			signature = new SMTSignaturePP((SMTLogicPP) logic, smtlibVersion);
+			if (smtlibVersion.equals(V1_2)) {
+				signature = new SMTSignatureV1_2PP((SMTLogicPP) logic);
+			} else {
+				signature = new SMTSignatureV2_0PP(logic);
+			}
 		} else {
 			throw new IllegalArgumentException("Wrong logic.");
 		}

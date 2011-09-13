@@ -37,11 +37,11 @@ import org.eventb.smt.ast.theories.VeritPredefinedTheory;
 import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
- * This is the SMTSignature to be used by the SMT translation process through
- * veriT.
+ * This is the SMTSignatureV1_2 to be used by the SMT translation process
+ * through veriT.
  * 
  */
-public class SMTSignatureVerit extends SMTSignature {
+public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 
 	/**
 	 * This boolean is used to check if it is necessary to add the function pair
@@ -138,9 +138,9 @@ public class SMTSignatureVerit extends SMTSignature {
 	 * @param logic
 	 *            the logic of the signature
 	 */
-	public SMTSignatureVerit(final SMTLogic logic,
+	public SMTSignatureV1_2Verit(final SMTLogic logic,
 			final SMTLIBVersion smtlibVersion) {
-		super(logic, smtlibVersion);
+		super(logic);
 		loadMacroSymbols();
 	}
 

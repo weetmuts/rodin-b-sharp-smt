@@ -34,7 +34,7 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	 *            the formula of the benchmark
 	 */
 	public SMTBenchmarkPP(final String lemmaName,
-			final SMTSignaturePP signature, final List<SMTFormula> assumptions,
+			final SMTSignature signature, final List<SMTFormula> assumptions,
 			final SMTFormula formula) {
 		super(lemmaName + "_pp", signature, assumptions, formula);
 		comments.add("translated from Event-B with the PP approach of Rodin SMT Plugin");

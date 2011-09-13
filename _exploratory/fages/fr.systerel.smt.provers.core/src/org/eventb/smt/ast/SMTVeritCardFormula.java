@@ -106,7 +106,7 @@ public class SMTVeritCardFormula extends SMTFormula {
 	public SMTVeritCardFormula(final SMTMacroSymbol cardSymbol,
 			final SMTFunctionSymbol fVarSymbol,
 			final SMTFunctionSymbol kVarSymbol, final SMTTerm[] terms,
-			final SMTSignatureVerit signature) {
+			final SMTSignatureV1_2Verit signature) {
 		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(cardSymbol,
 				signature);
 		this.cardSymbol = cardSymbol;

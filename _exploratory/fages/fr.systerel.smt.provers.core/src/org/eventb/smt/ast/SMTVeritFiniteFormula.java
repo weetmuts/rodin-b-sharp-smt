@@ -127,7 +127,7 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 			final SMTPredicateSymbol pArgument,
 			final SMTFunctionSymbol fArgument,
 			final SMTFunctionSymbol kArgument, final SMTTerm[] terms,
-			final SMTSignatureVerit signature) {
+			final SMTSignatureV1_2Verit signature) {
 		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(finitePredSymbol,
 				signature);
 		finitePred = finitePredSymbol;

@@ -82,7 +82,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	public void addPairEqualityAxiom(
 			final Set<SMTFormula> additionalAssumptions,
-			final SMTSignatureVerit signature) {
+			final SMTSignatureV1_2Verit signature) {
 		signature.addFstAndSndAuxiliarFunctions();
 		if (!pairAxiomAdded) {
 			additionalAssumptions.add(createPairEqualityAxiom());
@@ -239,7 +239,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 * @return a macro atom
 	 */
 	public static SMTFormula makeMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args, final SMTSignatureVerit signature) {
+			final SMTTerm[] args, final SMTSignatureV1_2Verit signature) {
 		return new SMTVeriTAtom(macroSymbol, args, signature);
 	}
 

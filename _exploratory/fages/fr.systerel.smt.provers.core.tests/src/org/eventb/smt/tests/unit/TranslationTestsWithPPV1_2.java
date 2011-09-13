@@ -27,7 +27,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.pptrans.Translator;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTSignature;
+import org.eventb.smt.ast.SMTSignatureV1_2;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
@@ -109,7 +109,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	public static void testTypeEnvironmentFuns(final SMTLogic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		final SMTSignature signature = translateTypeEnvironment(logic, te,
+		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
 	}
@@ -117,21 +117,23 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	public static void testTypeEnvironmentSorts(final SMTLogic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		final SMTSignature signature = translateTypeEnvironment(logic, te,
+		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
 	}
 
-	protected static SMTSignature translateTypeEnvironment(
+	protected static SMTSignatureV1_2 translateTypeEnvironment(
 			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
 		assertTrue(
-				TranslationTestsWithPPV1_2.producePPTargetSubLanguageError(ppPred),
+				TranslationTestsWithPPV1_2
+						.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
-		return SMTThroughPP.translateTE(logic, ppPred, null, V1_2);
+		return (SMTSignatureV1_2) SMTThroughPP.translateTE(logic, ppPred, null,
+				V1_2);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -158,7 +160,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		assertTrue(
-				TranslationTestsWithPPV1_2.producePPTargetSubLanguageError(ppPred),
+				TranslationTestsWithPPV1_2
+						.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,

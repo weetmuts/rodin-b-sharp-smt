@@ -28,8 +28,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.ast.SMTSignatureVerit;
+import org.eventb.smt.ast.SMTSignatureV1_2;
+import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.theories.SMTLogic;
@@ -135,8 +135,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 				.translateToSmtLibBenchmark("lemma",
 						new ArrayList<Predicate>(), goal, "Z3");
 
-		final SMTSignature signature = benchmark.getSignature();
-		final SMTSignatureVerit sigverit = (SMTSignatureVerit) signature;
+		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark.getSignature();
+		final SMTSignatureV1_2Verit sigverit = (SMTSignatureV1_2Verit) signature;
 		final Set<SMTMacro> sets = sigverit.getMacros();
 		for (final SMTMacro macro : sets) {
 			if (!(macro instanceof SMTPredefinedMacro)) {
@@ -180,7 +180,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	public static void testTypeEnvironmentFuns(final SMTLogic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		final SMTSignature signature = translateTypeEnvironment(logic, te,
+		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
 	}
@@ -210,7 +210,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	public static void testTypeEnvironmentSorts(final SMTLogic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		final SMTSignature signature = translateTypeEnvironment(logic, te,
+		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
 	}
@@ -218,16 +218,16 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	public static void testTypeEnvironmentPreds(final SMTLogic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
-		final SMTSignature signature = translateTypeEnvironment(logic, te,
+		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
 				predString);
 		testTypeEnvironmentPreds(signature, expectedFunctions, predString);
 	}
 
-	protected static SMTSignature translateTypeEnvironment(
+	protected static SMTSignatureV1_2 translateTypeEnvironment(
 			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		return SMTThroughVeriT.translateTE(logic, ppPred, null);
+		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred, null);
 	}
 
 	@Test

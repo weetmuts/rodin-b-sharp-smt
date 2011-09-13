@@ -11,17 +11,16 @@
 package org.eventb.smt.ast;
 
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.translation.SMTLIBVersion;
 
-/**
- * This is the SMTSignature to be used by the SMT translation process through
- * PP.
- * 
- */
-public class SMTSignaturePP extends SMTSignature {
-	public SMTSignaturePP(final SMTLogic.SMTLogicPP logic,
-			final SMTLIBVersion smtlibVersion) {
-		super(logic, smtlibVersion);
+public class SMTSignatureV2_0PP extends SMTSignatureV2_0 {
+	/**
+	 * Construts a new Signature given the SMT Logic
+	 * 
+	 * @param logic
+	 *            the logic used in the SMTSignature
+	 */
+	public SMTSignatureV2_0PP(final SMTLogic logic) {
+		super(logic);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	 *            the formula of the benchmark
 	 */
 	public SMTBenchmarkVeriT(final String lemmaName,
-			final SMTSignatureVerit signature,
+			final SMTSignatureV1_2Verit signature,
 			final List<SMTFormula> assumptions, final SMTFormula formula) {
 		super(lemmaName + "_vt", signature, assumptions, formula);
 		comments.add("translated from Event-B with the VeriT approach of Rodin SMT Plugin");
@@ -120,7 +120,7 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			getUsedSymbols(assumption, symbols);
 		}
 		getUsedSymbols(formula, symbols);
-		final Set<SMTMacro> macros = ((SMTSignatureVerit) signature)
+		final Set<SMTMacro> macros = ((SMTSignatureV1_2Verit) signature)
 				.getMacros();
 		for (final SMTMacro macro : macros) {
 			getUsedSymbols(macro, symbols);

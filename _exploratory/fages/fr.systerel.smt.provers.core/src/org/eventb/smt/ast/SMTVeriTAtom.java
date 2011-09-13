@@ -65,7 +65,7 @@ class SMTVeriTAtom extends SMTFormula {
 	 *            the terms
 	 */
 	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[],
-			final SMTSignatureVerit signature) {
+			final SMTSignatureV1_2Verit signature) {
 		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(symbol, signature);
 		macroSymbol = symbol;
 		this.terms = terms.clone();
