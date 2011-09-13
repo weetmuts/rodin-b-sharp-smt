@@ -68,9 +68,9 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
-import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
+import org.eventb.smt.ast.theories.SMTLogic.UFNIAv2_0;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2.Booleans;
@@ -300,7 +300,11 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			return SMTLIBUnderlyingLogicV1_2.getInstance();
 
 		default:
-			return SMTLIBUnderlyingLogicV2_0.getInstance();
+			// TODO : if there is no element of Ints theory in the sequent, then
+			// the underlying logic of SMT-LIB 2.0 should be used (which only
+			// contains the Core theory). A method usesIntsTheory will be needed
+			// in the gatherer to do this.
+			return UFNIAv2_0.getInstance();
 		}
 	}
 

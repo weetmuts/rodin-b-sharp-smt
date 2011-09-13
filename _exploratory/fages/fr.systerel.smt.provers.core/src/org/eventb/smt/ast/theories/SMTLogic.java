@@ -370,7 +370,7 @@ public class SMTLogic {
 	 * languages."
 	 */
 	public static class SMTLIBUnderlyingLogicV2_0 extends SMTLogicPP {
-		private static final SMTTheory[] THEORIES = { SMTTheoryV2_0.Ints
+		private static final SMTTheory[] THEORIES = { SMTTheoryV2_0.Core
 				.getInstance() };
 
 		private static final SMTLIBUnderlyingLogicV2_0 INSTANCE = new SMTLIBUnderlyingLogicV2_0();
@@ -384,6 +384,23 @@ public class SMTLogic {
 		}
 
 		public static SMTLIBUnderlyingLogicV2_0 getInstance() {
+			return INSTANCE;
+		}
+	}
+
+	public static class UFNIAv2_0 extends SMTLogicPP {
+		private static final String UFNIA_LOGIC_NAME = "UFNIA_LOGIC_NAME";
+		private static final SMTTheory[] THEORIES = {
+				SMTTheoryV2_0.Core.getInstance(),
+				SMTTheoryV2_0.Ints.getInstance() };
+
+		private static final UFNIAv2_0 INSTANCE = new UFNIAv2_0();
+
+		private UFNIAv2_0() {
+			super(UFNIA_LOGIC_NAME, THEORIES);
+		}
+
+		public static UFNIAv2_0 getInstance() {
 			return INSTANCE;
 		}
 	}
