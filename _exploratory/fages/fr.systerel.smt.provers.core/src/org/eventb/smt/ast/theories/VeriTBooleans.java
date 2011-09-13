@@ -10,10 +10,10 @@
 
 package org.eventb.smt.ast.theories;
 
+import static org.eventb.smt.ast.SMTFactory.EMPTY_SORT;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
-import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
@@ -28,10 +28,10 @@ public class VeriTBooleans extends SMTTheory implements ISMTBooleanSort {
 	private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
 
 	private final static SMTFunctionSymbol TRUE = new SMTFunctionSymbol("TRUE",
-			SMTMacroFactory.EMPTY_SORT, BOOL_SORT, false, false, V1_2);
+			EMPTY_SORT, BOOL_SORT, false, false, V1_2);
 
 	private final static SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-			"FALSE", SMTMacroFactory.EMPTY_SORT, BOOL_SORT, false, false, V1_2);
+			"FALSE", EMPTY_SORT, BOOL_SORT, false, false, V1_2);
 
 	private final static SMTPredicateSymbol[] PREDICATES = {};
 

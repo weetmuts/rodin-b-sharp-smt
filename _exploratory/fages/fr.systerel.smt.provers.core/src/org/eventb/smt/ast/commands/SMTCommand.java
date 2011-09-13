@@ -13,14 +13,63 @@ package org.eventb.smt.ast.commands;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Systerel (yguyot)
  * 
  */
 public abstract class SMTCommand {
-	private final String name;
+	private final SMTCommandName name;
 
-	public SMTCommand(final String name) {
+	public enum SMTCommandName {
+		ASSERT("assert"), //
+		CHECK_SAT("check-sat"), //
+		DECLARE_SORT("declare-sort"), //
+		DECLARE_FUN("declare-fun"), //
+		DEFINE_SORT("define-sort"), //
+		DEFINED_FUN("define-fun"), //
+		EXIT("exit"), //
+		GET_ASSERTIONS("get-assertions"), //
+		GET_ASSIGMENT("get-assignment"), //
+		GET_INFO("get-info"), //
+		GET_OPTION("get-option"), //
+		GET_PROOF("get-proof"), //
+		GET_UNSAT_CORE("get-unsat-core"), //
+		GET_VALUE("get-value"), //
+		POP("pop"), //
+		PUSH("push"), //
+		SET_LOGIC("set-logic"), //
+		SET_INFO("set-info"), SET_OPTION("set-option");
+
+		private String name;
+
+		SMTCommandName(final String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		/**
+		 * Retrieves all the SMT command names.
+		 * 
+		 * @return the list with all the command names.
+		 */
+		public static final List<String> getCommandNames() {
+			final SMTCommandName[] smtCmdNames = SMTCommandName.values();
+			final List<String> names = new ArrayList<String>(smtCmdNames.length);
+			for (final SMTCommandName name : smtCmdNames) {
+				names.add(name.toString());
+			}
+			return names;
+		}
+	}
+
+	public SMTCommand(final SMTCommandName name) {
 		this.name = name;
 	}
 

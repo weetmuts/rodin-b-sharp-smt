@@ -9,13 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.ast.commands;
 
+import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.CHECK_SAT;
+
 /**
  * @author Systerel (yguyot)
  * 
  */
 public class SMTCheckSatCommand extends SMTCommand {
-	private final static String CHECK_SAT = "check-sat";
-
 	private final static SMTCheckSatCommand checkSatCommand = new SMTCheckSatCommand();
 
 	private SMTCheckSatCommand() {

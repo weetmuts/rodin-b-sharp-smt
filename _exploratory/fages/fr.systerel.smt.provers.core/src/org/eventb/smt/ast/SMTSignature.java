@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eventb.smt.ast.commands.SMTCommand.SMTCommandName;
 import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
 import org.eventb.smt.ast.commands.SMTDeclareSortCommand;
 import org.eventb.smt.ast.commands.SMTSetLogicCommand;
@@ -86,7 +87,7 @@ public abstract class SMTSignature {
 	/**
 	 * reserved symbols and keywords
 	 */
-	private final static Set<String> reservedSymbols = getReservedSymbolsAndKeywords();
+	private final static Set<String> reservedSymbols = getReservedSymbolsAndKeywordsV1_2();
 
 	/**
 	 * Predefined attribute symbols
@@ -136,11 +137,12 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * This method returns a set with the reserved symbols and keywords
+	 * This method returns a set with the reserved symbols and keywords in
+	 * SMT-LIB 1.2
 	 * 
 	 * @return the reserved symbols and keyboards.
 	 */
-	public static Set<String> getReservedSymbolsAndKeywords() {
+	public static Set<String> getReservedSymbolsAndKeywordsV1_2() {
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
 				Arrays.asList(EQUAL, "and", BENCHMARK, "distinct", "false",
 						"flet", "if_then_else", "iff", "implies", "ite", "let",
@@ -150,6 +152,24 @@ public abstract class SMTSignature {
 				.addAll(SMTConnective.getConnectiveSymbols())
 				&& reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
 						.getQuantifierSymbols());
+		assert successfullyAddedReservedSymbolsAndKeywords;
+		return new HashSet<String>(reservedSymbolsAndKeywords);
+	}
+
+	/**
+	 * This method returns a set with the reserved symbols and keywords in
+	 * SMT-LIB 2.0
+	 * 
+	 * @return the reserved symbols and keyboards.
+	 */
+	public static Set<String> getReservedSymbolsAndKeywordsV2_0() {
+		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
+				Arrays.asList("par", "NUMERAL", "DECIMAL", "STRING", "_", "!",
+						"as", "let"));
+		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
+				.addAll(SMTQuantifierSymbol.getQuantifierSymbols())
+				&& reservedSymbolsAndKeywords.addAll(SMTCommandName
+						.getCommandNames());
 		assert successfullyAddedReservedSymbolsAndKeywords;
 		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}

@@ -11,6 +11,7 @@ package org.eventb.smt.ast.commands;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.DECLARE_SORT;
 
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
@@ -19,7 +20,6 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
  * 
  */
 public class SMTDeclareSortCommand extends SMTCommand {
-	private final static String DECLARE_SORT = "declare-sort";
 	private final SMTSortSymbol sortSymbol;
 
 	public SMTDeclareSortCommand(final SMTSortSymbol sortSymbol) {

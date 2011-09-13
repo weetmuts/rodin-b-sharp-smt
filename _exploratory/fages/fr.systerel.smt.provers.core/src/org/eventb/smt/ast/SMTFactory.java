@@ -36,6 +36,8 @@ public abstract class SMTFactory {
 	public final static String SPACE = " ";
 	public final static String QVAR = "?";
 	public final static String POINT = ".";
+	
+	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static SMTTerm[] EMPTY_TERMS = {};
 

@@ -321,8 +321,8 @@ public class SMTLogic {
 				if (theory instanceof SMTTheoryV1_2.Booleans) {
 					return ((SMTTheoryV1_2.Booleans) theory)
 							.getPowerSetBooleanSort();
-				} else if (theory instanceof SMTTheoryV2_0.Booleans) {
-					return ((SMTTheoryV2_0.Booleans) theory)
+				} else if (theory instanceof SMTTheoryV2_0.Core) {
+					return ((SMTTheoryV2_0.Core) theory)
 							.getPowerSetBooleanSort();
 				}
 			}

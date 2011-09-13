@@ -42,7 +42,7 @@ import org.junit.Test;
  * @author Yoann Guyot
  * 
  */
-public class TranslationTestsWithPP extends AbstractTests {
+public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
 	public static final SMTLogic defaultLogic;
 	static {
@@ -128,7 +128,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
 		assertTrue(
-				TranslationTestsWithPP.producePPTargetSubLanguageError(ppPred),
+				TranslationTestsWithPPV1_2.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
 		return SMTThroughPP.translateTE(logic, ppPred, null, V1_2);
@@ -158,7 +158,7 @@ public class TranslationTestsWithPP extends AbstractTests {
 			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		assertTrue(
-				TranslationTestsWithPP.producePPTargetSubLanguageError(ppPred),
+				TranslationTestsWithPPV1_2.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
 		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,

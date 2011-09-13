@@ -48,7 +48,7 @@ import org.junit.Test;
  * @author Vitor Alcantara de Almeida
  * 
  */
-public class TranslationTestsWithVeriT extends AbstractTests {
+public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe;
 	protected static final SMTLogic defaultLogic, veriTLogicWithBool;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";

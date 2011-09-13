@@ -11,13 +11,13 @@ package org.eventb.smt.ast.commands;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.SET_LOGIC;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
 public class SMTSetLogicCommand extends SMTCommand {
-	private final static String SET_LOGIC = "set-logic";
 	private final String logicName;
 
 	public SMTSetLogicCommand(final String logicName) {

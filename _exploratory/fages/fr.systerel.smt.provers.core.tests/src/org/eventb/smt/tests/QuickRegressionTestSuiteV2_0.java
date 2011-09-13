@@ -11,13 +11,14 @@
 package org.eventb.smt.tests;
 
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
+import org.eventb.smt.tests.unit.TranslationTestsWithPPV2_0;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses(value = { // TranslationTestsWithPP.class, LogicTestsWithPP.class,
-RunProverTestWithPPV2_0.class })
+@SuiteClasses(value = { TranslationTestsWithPPV2_0.class,
+		RunProverTestWithPPV2_0.class })
 public class QuickRegressionTestSuiteV2_0 {
 	// Just for tests
 }

@@ -11,15 +11,15 @@ package org.eventb.smt.ast.commands;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.ASSERT;
 
 import org.eventb.smt.ast.SMTFormula;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public class SMTAssertCommand extends SMTCommand {
-	private final static String ASSERT = "assert";
 	private final SMTFormula formula;
 
 	public SMTAssertCommand(final SMTFormula formula) {

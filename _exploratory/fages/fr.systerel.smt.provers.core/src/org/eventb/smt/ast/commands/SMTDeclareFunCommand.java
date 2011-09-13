@@ -11,6 +11,7 @@ package org.eventb.smt.ast.commands;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.DECLARE_FUN;
 
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
@@ -19,7 +20,6 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
  * 
  */
 public class SMTDeclareFunCommand extends SMTCommand {
-	private final static String DECLARE_FUN = "declare-fun";
 	private final SMTSymbol symbol;
 
 	public SMTDeclareFunCommand(final SMTSymbol symbol) { // FIXME must be an

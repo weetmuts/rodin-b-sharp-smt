@@ -9,8 +9,11 @@
  *******************************************************************************/
 package org.eventb.smt.ast.theories;
 
+import static org.eventb.smt.ast.SMTFactory.EMPTY_SORT;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
+import static org.eventb.smt.ast.symbols.SMTSymbol.DISTINCT;
+import static org.eventb.smt.ast.symbols.SMTSymbol.EQUAL;
 import static org.eventb.smt.ast.symbols.SMTSymbol.INTS;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
@@ -30,11 +33,130 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		super(name, sorts, predicates, functions);
 	}
 
+	public static class Core extends SMTTheoryV2_0 implements ISMTBooleanSort,
+			ISMTBooleanFuns {
+		private static final String CORE_THEORY_NAME = "Core";
+		private static final String POW_BOOL = "PB";
+
+		/**
+		 * Sorts of the core theory
+		 */
+		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
+				SMTSymbol.BOOL, !PREDEFINED, V2_0);
+		private final static SMTSortSymbol POW_BOOL_SORT = new SMTSortSymbol(
+				POW_BOOL, !PREDEFINED, V2_0);
+		private static final SMTSortSymbol[] SORTS = { BOOL_SORT, POW_BOOL_SORT };
+
+		private static final SMTSortSymbol[] BOOL_TAB = { BOOL_SORT };
+		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL_SORT,
+				BOOL_SORT };
+
+		private final static SMTPredicateSymbol[] PREDICATES = {};
+
+		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
+				BOOLS, new SMTSortSymbol[] {}, POW_BOOL_SORT, !ASSOCIATIVE,
+				!PREDEFINED, V2_0);
+
+		private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol(
+				"true", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
+				"false", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol NOT = new SMTFunctionSymbol(
+				"not", BOOL_TAB, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol IMPLIES = new SMTFunctionSymbol(
+				"=>", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol AND = new SMTFunctionSymbol(
+				"and", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol OR = new SMTFunctionSymbol("or",
+				BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol XOR = new SMTFunctionSymbol(
+				"xor", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET, AND };
+
+		private static final Core INSTANCE = new Core();
+
+		protected Core() {
+			super(CORE_THEORY_NAME, SORTS, PREDICATES, FUNCTIONS);
+		}
+
+		public static Core getInstance() {
+			return INSTANCE;
+		}
+
+		public static SMTFunctionSymbol getBoolsSet() {
+			return BOOLS_SET;
+		}
+
+		public SMTSortSymbol getPowerSetBooleanSort() {
+			return POW_BOOL_SORT;
+		}
+
+		@Override
+		public SMTFunctionSymbol getTrue() {
+			return TRUE;
+		}
+
+		@Override
+		public SMTFunctionSymbol getFalse() {
+			return FALSE;
+		}
+
+		@Override
+		public SMTFunctionSymbol getNot() {
+			return NOT;
+		}
+
+		@Override
+		public SMTFunctionSymbol getImplies() {
+			return IMPLIES;
+		}
+
+		@Override
+		public SMTFunctionSymbol getAnd() {
+			return AND;
+		}
+
+		@Override
+		public SMTFunctionSymbol getOr() {
+			return OR;
+		}
+
+		@Override
+		public SMTFunctionSymbol getXor() {
+			return XOR;
+		}
+
+		@Override
+		public SMTFunctionSymbol getEqual(final SMTSortSymbol[] sort) {
+			return new SMTFunctionSymbol(EQUAL, sort, BOOL_SORT, ASSOCIATIVE,
+					PREDEFINED, V2_0);
+		}
+
+		@Override
+		public SMTFunctionSymbol getDistinct(final SMTSortSymbol sort) {
+			return new SMTFunctionSymbol(DISTINCT, new SMTSortSymbol[] { sort,
+					sort }, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+		}
+
+		@Override
+		public SMTFunctionSymbol getITE(final SMTSortSymbol sort) {
+			return new SMTFunctionSymbol("ite", new SMTSortSymbol[] {
+					BOOL_SORT, sort, sort }, sort, !ASSOCIATIVE, PREDEFINED,
+					V2_0);
+		}
+
+		@Override
+		public SMTSortSymbol getBooleanSort() {
+			return BOOL_SORT;
+		}
+	}
+
 	/**
 	 * This class implements a logic using the SMT-LIB integer theory
 	 */
 	public static class Ints extends SMTTheoryV2_0 implements
-			ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort {
+			ISMTArithmeticFuns, ISMTArithmeticBoolFuns, ISMTIntegerSort {
 		private static final String INTS_THEORY_NAME = "Ints";
 		private static final String POW_INT = "PZ";
 
@@ -62,46 +184,32 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		/**
 		 * Predicates and functions of the integer theory
 		 */
-		private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
-				SMTSymbol.EQUAL, INT_INT_TAB, PREDEFINED, V2_0);
-
-		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-				SMTSymbol.LT, INT_INT_TAB, PREDEFINED, V2_0);
-		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-				SMTSymbol.LE, INT_INT_TAB, PREDEFINED, V2_0);
-		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-				SMTSymbol.GT, INT_INT_TAB, PREDEFINED, V2_0);
-		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-				SMTSymbol.GE, INT_INT_TAB, PREDEFINED, V2_0);
-		private static final SMTPredicateSymbol[] PREDICATES = { EQUAL, LT, LE,
-				GT, GE };
-
-		/**
-		 * Useless declarations private static final SMTFunctionSymbol ZERO =
-		 * new SMTFunctionSymbol( "0", SMTFactory.EMPTY_SORT, INT_SORT,
-		 * !ASSOCIATIVE, PREDEFINED); private static final SMTFunctionSymbol ONE
-		 * = new SMTFunctionSymbol("1", SMTFactory.EMPTY_SORT, INT_SORT,
-		 * !ASSOCIATIVE, PREDEFINED);
-		 **/
-
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.UMINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.UMINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED,
+				V2_0);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
 				PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
-				SMTSymbol.DIV, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED,
+				V2_0);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
-				SMTSymbol.EXPN, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
-				SMTSymbol.MOD, INT_INT_TAB, INT_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol LE = new SMTFunctionSymbol(
+				SMTSymbol.LE, INT_INT_TAB, Core.getInstance().getBooleanSort(),
+				ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol LT = new SMTFunctionSymbol(
+				SMTSymbol.LT, INT_INT_TAB, Core.getInstance().getBooleanSort(),
+				ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol GE = new SMTFunctionSymbol(
+				SMTSymbol.GE, INT_INT_TAB, Core.getInstance().getBooleanSort(),
+				ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol GT = new SMTFunctionSymbol(
+				SMTSymbol.GT, INT_INT_TAB, Core.getInstance().getBooleanSort(),
+				ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTPredicateSymbol[] PREDICATES = {};
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
-				UMINUS, MINUS, PLUS, MUL, DIV, MOD, EXPN };
+				UMINUS, MINUS, PLUS, MUL };
 
 		/**
 		 * The sole instance of the integer theory
@@ -154,91 +262,23 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		}
 
 		@Override
-		public SMTSymbol getDiv() {
-			return DIV;
-		}
-
-		@Override
-		public SMTPredicateSymbol getLessThan() {
+		public SMTFunctionSymbol getLessThan() {
 			return LT;
 		}
 
 		@Override
-		public SMTPredicateSymbol getLessEqual() {
+		public SMTFunctionSymbol getLessEqual() {
 			return LE;
 		}
 
 		@Override
-		public SMTPredicateSymbol getGreaterThan() {
+		public SMTFunctionSymbol getGreaterThan() {
 			return GT;
 		}
 
 		@Override
-		public SMTPredicateSymbol getGreaterEqual() {
+		public SMTFunctionSymbol getGreaterEqual() {
 			return GE;
-		}
-
-		@Override
-		public SMTSymbol getExpn() {
-			return EXPN;
-		}
-
-		@Override
-		public SMTSymbol getMod() {
-			return MOD;
-		}
-	}
-
-	public static class Booleans extends SMTTheory implements ISMTBooleanSort {
-		private static final String BOOLS_THEORY_NAME = "Bools";
-		private static final String POW_BOOL = "PB";
-
-		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-				SMTSymbol.BOOL, !PREDEFINED, V2_0);
-		private final static SMTSortSymbol POW_BOOL_SORT = new SMTSortSymbol(
-				POW_BOOL, !PREDEFINED, V2_0);
-		private static final SMTSortSymbol[] SORTS = { BOOL_SORT, POW_BOOL_SORT };
-
-		private static final SMTSortSymbol[] BOOL_TAB = { BOOL_SORT };
-		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL_SORT,
-				BOOL_SORT };
-
-		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
-				"TRUE", BOOL_TAB, !PREDEFINED, V2_0);
-
-		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
-
-		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
-				BOOLS, new SMTSortSymbol[] {}, POW_BOOL_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
-
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
-
-		private static final Booleans INSTANCE = new Booleans();
-
-		private Booleans() {
-			super(BOOLS_THEORY_NAME, SORTS, PREDICATES, FUNCTIONS);
-		}
-
-		public static Booleans getInstance() {
-			return INSTANCE;
-		}
-
-		public SMTSortSymbol getPowerSetBooleanSort() {
-			return POW_BOOL_SORT;
-		}
-
-		public static SMTFunctionSymbol getBoolsSet() {
-			return BOOLS_SET;
-		}
-
-		public static SMTPredicateSymbol getTrue() {
-			return TRUE;
-		}
-
-		@Override
-		public SMTSortSymbol getBooleanSort() {
-			return BOOL_SORT;
 		}
 	}
 }

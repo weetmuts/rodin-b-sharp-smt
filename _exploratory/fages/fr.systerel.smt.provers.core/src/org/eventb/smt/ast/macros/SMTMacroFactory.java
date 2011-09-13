@@ -10,6 +10,7 @@
 
 package org.eventb.smt.ast.macros;
 
+import static org.eventb.smt.ast.SMTFactory.EMPTY_SORT;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BCOMP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
@@ -86,8 +87,6 @@ import org.eventb.smt.ast.theories.VeritPredefinedTheory;
  * 
  */
 public class SMTMacroFactory {
-
-	public static SMTSortSymbol[] EMPTY_SORT = {};
 
 	public static boolean IS_GENERIC_SORT = true;
 	public static final String ENUM_PREFIX = "enum";
@@ -446,15 +445,18 @@ public class SMTMacroFactory {
 			TOTAL_SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC,
 			!PREDEFINED, V1_2);
 	private static SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
-			SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
+			SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
+			V1_2);
 	private static SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
 	private static SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
 			RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
 	private static SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
-			RANGE_RESTRICTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
+			RANGE_RESTRICTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
+			V1_2);
 	private static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
-			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
+			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
+			V1_2);
 	private static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE_INTEGER, VeritPredefinedTheory.getIntIntTab(), POLYMORPHIC,
 			!PREDEFINED, V1_2);
