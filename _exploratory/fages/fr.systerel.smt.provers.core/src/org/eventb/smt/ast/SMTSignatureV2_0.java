@@ -57,6 +57,8 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 						"as", "let"));
 		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
 				.addAll(SMTQuantifierSymbol.getQuantifierSymbols())
+				&& reservedSymbolsAndKeywords.addAll(SMTConnective
+						.getConnectiveSymbols(V2_0))
 				&& reservedSymbolsAndKeywords.addAll(SMTCommandName
 						.getCommandNames());
 		assert successfullyAddedReservedSymbolsAndKeywords;

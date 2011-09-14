@@ -610,7 +610,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		final String lambdaName = signature.freshQVarName(SMTMacroSymbol.ELEM);
 
 		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
-				expressionSort, false);
+				expressionSort, false, V1_2);
 
 		// Creating the macro
 		final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
@@ -887,7 +887,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		final String smtVarName = signature.freshQVarName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort);
+		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, V1_2);
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);
@@ -929,7 +929,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 				VeritPredefinedTheory.getInstance().getBooleanSort())) {
 			final SMTFormula[] childrenFormulas = sf
 					.convertVeritTermsIntoFormulas(children);
-			return SMTFactory.makeIff(childrenFormulas);
+			return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
 		} else if (isPairType(leftType)) {
 			sf.addPairEqualityAxiom(additionalAssumptions, signature);
 		}
@@ -949,7 +949,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		case Formula.NOTEQUAL:
 			smtNode = SMTFactory
-					.makeNot(new SMTFormula[] { translateEqual(predicate) });
+					.makeNot(new SMTFormula[] { translateEqual(predicate) }, smtlibVersion);
 			break;
 
 		case Formula.LT: {
@@ -998,13 +998,13 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.NOTSUBSET: {
 			final SMTFormula subset = translateRelationalPredicateMacro(
 					SUBSET_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset });
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset }, smtlibVersion);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
 			final SMTFormula subseteq = translateRelationalPredicateMacro(
 					SUBSETEQ_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq });
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq }, smtlibVersion);
 			break;
 		}
 		default: {
@@ -1274,7 +1274,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sortSymbol == null) {
 			sortSymbol = translateTypeName(expression.getType());
 		}
-		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false);
+		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false, V1_2);
 
 		final SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
 		signature.addMacro(macro);
@@ -1297,7 +1297,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final String varName) {
 		final SMTSortSymbol pairSort = parsePairTypes(expression.getType());
 
-		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false);
+		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false, V1_2);
 
 		final SMTPairEnumMacro macro = SMTMacroFactory
 				.makePairEnumerationMacro(macroName, var, children, signature);

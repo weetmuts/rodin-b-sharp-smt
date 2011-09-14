@@ -164,7 +164,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 						.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
-		testTranslationV1_2(defaultLogic, ppPred, expectedSMTNode, failMessage,
+		testTranslationV1_2(ppPred, expectedSMTNode, failMessage,
 				VERIT.toString());
 	}
 
@@ -178,12 +178,12 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	 * @param failMessage
 	 *            Human readable error message
 	 */
-	private static void testTranslationV1_2(final SMTLogic logic,
-			final Predicate ppPred, final String expectedSMTNode,
-			final String failMessage, final String solver) {
+	private static void testTranslationV1_2(final Predicate ppPred,
+			final String expectedSMTNode, final String failMessage,
+			final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(logic, ppPred, solver, V1_2).toString(
-				actualSMTNode, -1, false);
+		SMTThroughPP.translate(ppPred, solver, V1_2).toString(actualSMTNode,
+				-1, false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));

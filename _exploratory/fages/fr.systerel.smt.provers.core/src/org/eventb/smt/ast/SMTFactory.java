@@ -36,7 +36,7 @@ public abstract class SMTFactory {
 	public final static String SPACE = " ";
 	public final static String QVAR = "?";
 	public final static String POINT = ".";
-	
+
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static SMTTerm[] EMPTY_TERMS = {};
@@ -159,24 +159,29 @@ public abstract class SMTFactory {
 	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
 	 * XOR, IFF}
 	 */
-	public static SMTFormula makeNot(final SMTFormula[] formula) {
-		return new SMTConnectiveFormula(NOT, formula);
+	public static SMTFormula makeNot(final SMTFormula[] formula,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTConnectiveFormula(NOT, smtlibVersion, formula);
 	}
 
-	public static SMTFormula makeImplies(final SMTFormula[] formulas) {
-		return new SMTConnectiveFormula(IMPLIES, formulas);
+	public static SMTFormula makeImplies(final SMTFormula[] formulas,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTConnectiveFormula(IMPLIES, smtlibVersion, formulas);
 	}
 
-	public static SMTFormula makeAnd(final SMTFormula[] formulas) {
-		return new SMTConnectiveFormula(AND, formulas);
+	public static SMTFormula makeAnd(final SMTFormula[] formulas,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTConnectiveFormula(AND, smtlibVersion, formulas);
 	}
 
-	public static SMTFormula makeOr(final SMTFormula[] formulas) {
-		return new SMTConnectiveFormula(OR, formulas);
+	public static SMTFormula makeOr(final SMTFormula[] formulas,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTConnectiveFormula(OR, smtlibVersion, formulas);
 	}
 
-	public static SMTFormula makeIff(final SMTFormula[] formulas) {
-		return new SMTConnectiveFormula(IFF, formulas);
+	public static SMTFormula makeIff(final SMTFormula[] formulas,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTConnectiveFormula(IFF, smtlibVersion, formulas);
 	}
 
 	/**
@@ -211,8 +216,10 @@ public abstract class SMTFactory {
 		return makeConstant(booleanCste, signature);
 	}
 
-	public static SMTTerm makeVar(final String name, final SMTSortSymbol sort) {
-		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
+	public static SMTTerm makeVar(final String name, final SMTSortSymbol sort,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED,
+				smtlibVersion), smtlibVersion);
 	}
 
 	public static SMTFormula makeForAll(final SMTTerm[] terms,

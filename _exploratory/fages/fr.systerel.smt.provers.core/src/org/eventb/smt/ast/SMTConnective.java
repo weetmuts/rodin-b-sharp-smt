@@ -13,6 +13,8 @@ package org.eventb.smt.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * This class represents SMT Connectives.
  * 
@@ -20,32 +22,36 @@ import java.util.List;
  * 
  */
 public enum SMTConnective {
-	NOT("not"), //
-	IMPLIES("implies"), //
-	ITE("if_then_else"), //
-	AND("and"), //
-	OR("or"), //
-	XOR("xor"), //
-	IFF("iff");
+	NOT("not", "not"), //
+	IMPLIES("implies", "=>"), //
+	ITE("if_then_else", "ite"), //
+	AND("and", "and"), //
+	OR("or", "or"), //
+	XOR("xor", "xor"), //
+	IFF("iff", "=");
 
 	/**
 	 * The symbol of the connective
 	 */
-	private String symbol;
+	private String symbolV1_2;
+	private String symbolV2_0;
 
 	/**
 	 * Constructs a new SMT connective with a symbol.
-	 * 
-	 * @param symbol
-	 *            the connective symbol
 	 */
-	SMTConnective(final String symbol) {
-		this.symbol = symbol;
+	SMTConnective(final String symbolV1_2, final String symbolV2_0) {
+		this.symbolV1_2 = symbolV1_2;
+		this.symbolV2_0 = symbolV2_0;
 	}
 
-	@Override
-	public String toString() {
-		return symbol;
+	public String toString(final SMTLIBVersion smtlibVersion) {
+		switch (smtlibVersion) {
+		case V1_2:
+			return symbolV1_2;
+
+		default:
+			return symbolV2_0;
+		}
 	}
 
 	/**
@@ -53,12 +59,13 @@ public enum SMTConnective {
 	 * 
 	 * @return the list with all the connective symbols.
 	 */
-	public static final List<String> getConnectiveSymbols() {
+	public static final List<String> getConnectiveSymbols(
+			final SMTLIBVersion smtlibVersion) {
 		final SMTConnective[] smtConnectives = SMTConnective.values();
 		final List<String> connectives = new ArrayList<String>(
 				smtConnectives.length);
 		for (final SMTConnective connective : smtConnectives) {
-			connectives.add(connective.toString());
+			connectives.add(connective.toString(smtlibVersion));
 		}
 		return connectives;
 	}

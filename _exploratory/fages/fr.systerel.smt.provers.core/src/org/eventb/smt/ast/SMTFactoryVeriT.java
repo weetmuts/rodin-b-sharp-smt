@@ -132,12 +132,12 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public SMTFormula createPairEqualityAxiom() {
 
 		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT,
-				!PREDEFINED);
+				!PREDEFINED, V1_2);
 		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT,
-				!PREDEFINED);
+				!PREDEFINED, V1_2);
 
-		final SMTVar pairVar1 = new SMTVar(pSymbol1);
-		final SMTVar pairVar2 = new SMTVar(pSymbol2);
+		final SMTVar pairVar1 = new SMTVar(pSymbol1, V1_2);
+		final SMTVar pairVar2 = new SMTVar(pSymbol2, V1_2);
 
 		final SMTFormula equalsFormula = SMTFactory.makeEqual(new SMTTerm[] {
 				pairVar1, pairVar2 }, V1_2);
@@ -161,10 +161,10 @@ final public class SMTFactoryVeriT extends SMTFactory {
 				new SMTTerm[] { sndFunAppl1, sndFunAppl2 }, V1_2);
 
 		final SMTFormula andFormula = SMTFactory.makeAnd(new SMTFormula[] {
-				subEqualsFormula1, subEqualsFormula2 });
+				subEqualsFormula1, subEqualsFormula2 }, V1_2);
 
-		final SMTFormula impliesFormula = SMTFactory
-				.makeImplies(new SMTFormula[] { andFormula, equalsFormula });
+		final SMTFormula impliesFormula = SMTFactory.makeImplies(
+				new SMTFormula[] { andFormula, equalsFormula }, V1_2);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
@@ -184,21 +184,24 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTTerm falseTerm = new SMTFunApplication(falseSymbol,
 				new SMTTerm[] {});
 		final SMTVarSymbol boolvarSymbol = new SMTVarSymbol(boolVarName,
-				boolSort, false);
-		final SMTVar boolVar = new SMTVar(boolvarSymbol);
+				boolSort, false, V1_2);
+		final SMTVar boolVar = new SMTVar(boolvarSymbol, V1_2);
 
-		final SMTFormula or = makeOr(new SMTFormula[] {
-				makeEqual(new SMTTerm[] { boolVar, trueTerm }, V1_2),
-				makeEqual(new SMTTerm[] { boolVar, falseTerm }, V1_2) });
+		final SMTFormula or = makeOr(
+				new SMTFormula[] {
+						makeEqual(new SMTTerm[] { boolVar, trueTerm }, V1_2),
+						makeEqual(new SMTTerm[] { boolVar, falseTerm }, V1_2) },
+				V1_2);
 
 		final SMTFormula forall = makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL,
 				new SMTVarSymbol[] { boolvarSymbol }, or, V1_2);
 
-		final SMTFormula not = makeNot(new SMTFormula[] { makeEqual(
-				new SMTTerm[] { trueTerm, falseTerm }, V1_2) });
+		final SMTFormula not = makeNot(
+				new SMTFormula[] { makeEqual(new SMTTerm[] { trueTerm,
+						falseTerm }, V1_2) }, V1_2);
 
-		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not });
+		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not }, V1_2);
 
 		return and;
 	}

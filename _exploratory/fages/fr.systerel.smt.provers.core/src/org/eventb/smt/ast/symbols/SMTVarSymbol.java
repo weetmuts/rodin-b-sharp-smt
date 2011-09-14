@@ -16,6 +16,8 @@ import static org.eventb.smt.ast.SMTFactory.QVAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * Represents quantified var symbols (constants are represented with
  * SMTFunctionSymbol)
@@ -35,8 +37,8 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 	 *            yes if it is predefined, otherwise no.
 	 */
 	public SMTVarSymbol(final String symbolName, final SMTSortSymbol sort,
-			final boolean predefined) {
-		super(symbolName, predefined, V1_2);
+			final boolean predefined, final SMTLIBVersion smtlibVersion) {
+		super(symbolName, predefined, smtlibVersion);
 		this.sort = sort;
 	}
 
@@ -70,7 +72,9 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 	@Override
 	public void toString(final StringBuilder buffer) {
 		buffer.append(OPAR);
-		buffer.append(QVAR);
+		if (smtlibVersion.equals(V1_2)) {
+			buffer.append(QVAR);
+		}
 		buffer.append(name);
 		buffer.append(SPACE);
 		buffer.append(sort);

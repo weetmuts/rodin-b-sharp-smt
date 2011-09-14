@@ -102,7 +102,7 @@ public abstract class SMTSignatureV1_2 extends SMTSignature {
 						LOGIC, "not", "or", "sat", THEORY, "true", "unknown",
 						"unsat", "xor"));
 		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
-				.addAll(SMTConnective.getConnectiveSymbols())
+				.addAll(SMTConnective.getConnectiveSymbols(V1_2))
 				&& reservedSymbolsAndKeywords.addAll(SMTQuantifierSymbol
 						.getQuantifierSymbols());
 		assert successfullyAddedReservedSymbolsAndKeywords;

@@ -244,10 +244,10 @@ public abstract class TranslatorV1_2 extends Translator {
 		final SMTFormula[] children = smtFormulas(predicate.getChildren());
 		switch (predicate.getTag()) {
 		case Formula.LAND:
-			smtNode = SMTFactory.makeAnd(children);
+			smtNode = SMTFactory.makeAnd(children, smtlibVersion);
 			break;
 		case Formula.LOR:
-			smtNode = SMTFactory.makeOr(children);
+			smtNode = SMTFactory.makeOr(children, smtlibVersion);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -282,10 +282,10 @@ public abstract class TranslatorV1_2 extends Translator {
 				predicate.getRight());
 		switch (predicate.getTag()) {
 		case Formula.LIMP:
-			smtNode = SMTFactory.makeImplies(children);
+			smtNode = SMTFactory.makeImplies(children, smtlibVersion);
 			break;
 		case Formula.LEQV:
-			smtNode = SMTFactory.makeIff(children);
+			smtNode = SMTFactory.makeIff(children, smtlibVersion);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -302,10 +302,12 @@ public abstract class TranslatorV1_2 extends Translator {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			smtNode = SMTFactory.makeForAll(termChildren, formulaChild, smtlibVersion);
+			smtNode = SMTFactory.makeForAll(termChildren, formulaChild,
+					smtlibVersion);
 			break;
 		case Formula.EXISTS:
-			smtNode = SMTFactory.makeExists(termChildren, formulaChild, smtlibVersion);
+			smtNode = SMTFactory.makeExists(termChildren, formulaChild,
+					smtlibVersion);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -323,7 +325,7 @@ public abstract class TranslatorV1_2 extends Translator {
 				.getChild()) };
 		switch (predicate.getTag()) {
 		case Formula.NOT:
-			smtNode = SMTFactory.makeNot(children);
+			smtNode = SMTFactory.makeNot(children, smtlibVersion);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());

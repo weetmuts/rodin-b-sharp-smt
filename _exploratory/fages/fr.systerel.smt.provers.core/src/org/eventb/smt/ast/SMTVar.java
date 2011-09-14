@@ -10,8 +10,11 @@
 
 package org.eventb.smt.ast;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class handles terms created from Bound Identifier Declarations in
@@ -20,6 +23,7 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
  * @author guyot
  **/
 public class SMTVar extends SMTTerm {
+	final SMTLIBVersion smtlibVersion;
 	final SMTVarSymbol symbol;
 
 	/**
@@ -28,7 +32,8 @@ public class SMTVar extends SMTTerm {
 	 * @param symbol
 	 *            the symbol of the constructor
 	 */
-	public SMTVar(final SMTVarSymbol symbol) {
+	public SMTVar(final SMTVarSymbol symbol, final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 		this.symbol = symbol;
 	}
 
@@ -48,7 +53,9 @@ public class SMTVar extends SMTTerm {
 
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
-		builder.append(SMTFactory.QVAR);
+		if (smtlibVersion.equals(V1_2)) {
+			builder.append(SMTFactory.QVAR);
+		}
 		builder.append(symbol.getName());
 	}
 

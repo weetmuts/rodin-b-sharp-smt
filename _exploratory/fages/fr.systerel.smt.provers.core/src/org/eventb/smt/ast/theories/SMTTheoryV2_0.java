@@ -72,7 +72,8 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		private static final SMTFunctionSymbol XOR = new SMTFunctionSymbol(
 				"xor", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
 
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET, AND };
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET, TRUE,
+				FALSE, NOT, IMPLIES, AND, OR, XOR };
 
 		private static final Core INSTANCE = new Core();
 
@@ -156,7 +157,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 	 * This class implements a logic using the SMT-LIB integer theory
 	 */
 	public static class Ints extends SMTTheoryV2_0 implements
-			ISMTArithmeticFuns, ISMTArithmeticBoolFuns, ISMTIntegerSort {
+			ISMTArithmeticFuns, ISMTArithmeticPreds, ISMTIntegerSort {
 		private static final String INTS_THEORY_NAME = "Ints";
 		private static final String POW_INT = "PZ";
 
@@ -195,19 +196,15 @@ public class SMTTheoryV2_0 extends SMTTheory {
 				V2_0);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol LE = new SMTFunctionSymbol(
-				SMTSymbol.LE, INT_INT_TAB, Core.getInstance().getBooleanSort(),
-				ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol LT = new SMTFunctionSymbol(
-				SMTSymbol.LT, INT_INT_TAB, Core.getInstance().getBooleanSort(),
-				ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol GE = new SMTFunctionSymbol(
-				SMTSymbol.GE, INT_INT_TAB, Core.getInstance().getBooleanSort(),
-				ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol GT = new SMTFunctionSymbol(
-				SMTSymbol.GT, INT_INT_TAB, Core.getInstance().getBooleanSort(),
-				ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTPredicateSymbol[] PREDICATES = {};
+		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
+				SMTSymbol.LE, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
+				SMTSymbol.LT, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
+				SMTSymbol.GE, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
+				SMTSymbol.GT, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTPredicateSymbol[] PREDICATES = { LE, LT, GE, GT };
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
 				UMINUS, MINUS, PLUS, MUL };
 
@@ -262,22 +259,22 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		}
 
 		@Override
-		public SMTFunctionSymbol getLessThan() {
+		public SMTPredicateSymbol getLessThan() {
 			return LT;
 		}
 
 		@Override
-		public SMTFunctionSymbol getLessEqual() {
+		public SMTPredicateSymbol getLessEqual() {
 			return LE;
 		}
 
 		@Override
-		public SMTFunctionSymbol getGreaterThan() {
+		public SMTPredicateSymbol getGreaterThan() {
 			return GT;
 		}
 
 		@Override
-		public SMTFunctionSymbol getGreaterEqual() {
+		public SMTPredicateSymbol getGreaterEqual() {
 			return GE;
 		}
 	}

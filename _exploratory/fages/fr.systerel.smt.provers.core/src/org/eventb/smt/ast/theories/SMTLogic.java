@@ -389,7 +389,7 @@ public class SMTLogic {
 	}
 
 	public static class UFNIAv2_0 extends SMTLogicPP {
-		private static final String UFNIA_LOGIC_NAME = "UFNIA_LOGIC_NAME";
+		private static final String UFNIA_LOGIC_NAME = "UFNIA";
 		private static final SMTTheory[] THEORIES = {
 				SMTTheoryV2_0.Core.getInstance(),
 				SMTTheoryV2_0.Ints.getInstance() };
