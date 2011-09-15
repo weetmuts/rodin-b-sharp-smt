@@ -12,6 +12,7 @@ package org.eventb.smt.translation;
 
 import static org.eventb.smt.ast.SMTFactory.makeBool;
 import static org.eventb.smt.ast.SMTFactory.makeInteger;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
@@ -99,6 +100,8 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	 * that is completed during the translation process.
 	 */
 	private SMTSignature signature;
+
+	private final Map<SMTOperator, SMTSymbol> operatorMap = new HashMap<SMTLogic.SMTOperator, SMTSymbol>();
 
 	/**
 	 * In order to translate memberships, the approach implemented in this class
@@ -1060,6 +1063,47 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		typeMap.put(booleanType, logic.getBooleanSort());
 		typeMap.put(ff.makePowerSetType(booleanType),
 				logic.getPowerSetBooleanSort());
+
+		// TODO: a test could be added so that only the operators appearing in
+		// the sequent are mapped)
+		for (final SMTOperator operator : SMTOperator.values()) {
+			putOperatorSymbol(operator);
+		}
+	}
+
+	private void putOperatorSymbol(final SMTOperator operator) {
+		SMTSymbol operatorSymbol = signature.getLogic().getOperator(operator);
+		if (operatorSymbol == null) {
+			final String symbolName = operator.toString();
+			final SMTSortSymbol integerSort = signature.getLogic()
+					.getIntegerSort();
+			final SMTSortSymbol[] intTab = { integerSort };
+			final SMTSortSymbol[] intIntTab = { integerSort, integerSort };
+
+			switch (operator) {
+			case DIV:
+			case EXPN:
+			case MINUS:
+			case MOD:
+			case UMINUS:
+				operatorSymbol = signature.freshFunctionSymbol(symbolName,
+						intIntTab, integerSort, !ASSOCIATIVE);
+				break;
+			case GE:
+			case GT:
+			case LE:
+			case LT:
+				operatorSymbol = signature.freshFunctionSymbol(symbolName,
+						intIntTab, integerSort, !ASSOCIATIVE);
+				break;
+			case MUL:
+			case PLUS:
+				operatorSymbol = signature.freshFunctionSymbol(symbolName,
+						intTab, integerSort, ASSOCIATIVE);
+				break;
+			}
+		}
+		operatorMap.put(operator, operatorSymbol);
 	}
 
 	/**
@@ -1333,12 +1377,14 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final int tag = expression.getTag();
 		switch (tag) {
 		case Formula.PLUS:
-			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.PLUS), children, signature);
+			final SMTFunctionSymbol plusSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.PLUS);
+			smtNode = sf.makePlus(plusSymbol, children, signature);
 			break;
 		case Formula.MUL:
-			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MUL), children, signature);
+			final SMTFunctionSymbol mulSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.MUL);
+			smtNode = sf.makeMul(mulSymbol, children, signature);
 			break;
 		default:
 			/**
@@ -1386,8 +1432,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		final SMTTerm[] children = smtTerms(left, right);
 		switch (expression.getTag()) {
 		case Formula.MINUS:
-			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MINUS), children, signature);
+			final SMTFunctionSymbol minusSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.MINUS);
+			smtNode = sf.makeMinus(minusSymbol, children, signature);
 			break;
 		case Formula.MAPSTO:
 
@@ -1400,16 +1447,19 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			}
 			break;
 		case Formula.DIV:
-			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), children, signature);
+			final SMTFunctionSymbol divSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.DIV);
+			smtNode = sf.makeDiv(divSymbol, children, signature);
 			break;
 		case Formula.MOD:
-			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MOD), children, signature);
+			final SMTFunctionSymbol modSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.MOD);
+			smtNode = sf.makeMod(modSymbol, children, signature);
 			break;
 		case Formula.EXPN:
-			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), children, signature);
+			final SMTFunctionSymbol expnSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.EXPN);
+			smtNode = sf.makeExpn(expnSymbol, children, signature);
 			break;
 		default:
 			/**
@@ -1468,32 +1518,33 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		case Formula.LT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
-					.getOperator(SMTOperator.LT), children, signature);
+			final SMTPredicateSymbol ltSymbol = (SMTPredicateSymbol) operatorMap
+					.get(SMTOperator.LT);
+			smtNode = sf.makeLessThan(ltSymbol, children, signature);
 		}
 			break;
 		case Formula.LE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.LE), children,
-					signature);
+			final SMTPredicateSymbol leSymbol = (SMTPredicateSymbol) operatorMap
+					.get(SMTOperator.LE);
+			smtNode = sf.makeLessEqual(leSymbol, children, signature);
 		}
 			break;
 		case Formula.GT: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GT), children,
-					signature);
+			final SMTPredicateSymbol gtSymbol = (SMTPredicateSymbol) operatorMap
+					.get(SMTOperator.GT);
+			smtNode = sf.makeGreaterThan(gtSymbol, children, signature);
 		}
 			break;
 		case Formula.GE: {
 			final SMTTerm[] children = smtTerms(predicate.getLeft(),
 					predicate.getRight());
-			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GE), children,
-					signature);
+			final SMTPredicateSymbol geSymbol = (SMTPredicateSymbol) operatorMap
+					.get(SMTOperator.GE);
+			smtNode = sf.makeGreaterEqual(geSymbol, children, signature);
 		}
 			break;
 		case Formula.IN:
@@ -1517,8 +1568,9 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				.getChild()) };
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
-			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.UMINUS), children, signature);
+			final SMTFunctionSymbol uminusSymbol = (SMTFunctionSymbol) operatorMap
+					.get(SMTOperator.UMINUS);
+			smtNode = sf.makeUMinus(uminusSymbol, children, signature);
 			break;
 		default:
 			/**

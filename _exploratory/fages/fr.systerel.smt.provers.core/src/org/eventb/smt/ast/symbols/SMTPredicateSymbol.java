@@ -85,14 +85,14 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 *            The name of the symbol
 	 * @param argSorts
 	 *            the expected sorts of the arguments.
-	 * @param predefined
-	 *            true if it's predefined, false otherwise
 	 * @param isAssociative
 	 *            true if the predicate is associative, false otherwise
+	 * @param predefined
+	 *            true if it's predefined, false otherwise
 	 */
 	public SMTPredicateSymbol(final String symbolName,
-			final SMTSortSymbol argSorts[], final boolean predefined,
-			final boolean isAssociative, final SMTLIBVersion smtlibVersion) {
+			final SMTSortSymbol argSorts[], final boolean isAssociative,
+			final boolean predefined, final SMTLIBVersion smtlibVersion) {
 		super(symbolName, predefined, smtlibVersion);
 		this.argSorts = argSorts.clone();
 		this.isAssociative = isAssociative;

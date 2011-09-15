@@ -484,18 +484,19 @@ public abstract class SMTSignature {
 	 * @return a fresh function symbol.
 	 */
 	public SMTFunctionSymbol freshFunctionSymbol(final String name,
-			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort) {
+			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort,
+			final boolean associative) {
 		final String freshName = freshFunctionName(name);
-		final SMTFunctionSymbol freshConstant = new SMTFunctionSymbol(
-				freshName, argSorts, returnSort, !ASSOCIATIVE, !PREDEFINED,
+		final SMTFunctionSymbol freshSymbol = new SMTFunctionSymbol(
+				freshName, argSorts, returnSort, associative, !PREDEFINED,
 				smtlibVersion);
-		final boolean successfullyAdded = funs.add(freshConstant);
+		final boolean successfullyAdded = funs.add(freshSymbol);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
 					Messages.FreshSymbolCreationFailed
-							+ freshConstant.toString());
+							+ freshSymbol.toString());
 		}
-		return freshConstant;
+		return freshSymbol;
 	}
 
 	/**
@@ -509,7 +510,8 @@ public abstract class SMTSignature {
 	 */
 	public SMTFunctionSymbol freshConstant(final String name,
 			final SMTSortSymbol sort) {
-		return freshFunctionSymbol(name, new SMTSortSymbol[0], sort);
+		return freshFunctionSymbol(name, new SMTSortSymbol[0], sort,
+				!ASSOCIATIVE);
 	}
 
 	/**

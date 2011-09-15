@@ -61,7 +61,7 @@ public abstract class SMTFactory {
 			"false", new SMTSortSymbol[] {}, PREDEFINED, V1_2);
 
 	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
-			SMTSymbol.DISTINCT, POLYMORPHICS, PREDEFINED, true, V1_2);
+			SMTSymbol.DISTINCT, POLYMORPHICS, true, PREDEFINED, V1_2);
 
 	/**
 	 * Quantifier symbols

@@ -59,6 +59,7 @@ import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_I
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_RELATION_OP;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTION_OP;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION_OP;
+import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
@@ -948,8 +949,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			break;
 
 		case Formula.NOTEQUAL:
-			smtNode = SMTFactory
-					.makeNot(new SMTFormula[] { translateEqual(predicate) }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(
+					new SMTFormula[] { translateEqual(predicate) },
+					smtlibVersion);
 			break;
 
 		case Formula.LT: {
@@ -998,13 +1000,15 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		case Formula.NOTSUBSET: {
 			final SMTFormula subset = translateRelationalPredicateMacro(
 					SUBSET_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset },
+					smtlibVersion);
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
 			final SMTFormula subseteq = translateRelationalPredicateMacro(
 					SUBSETEQ_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq },
+					smtlibVersion);
 			break;
 		}
 		default: {
@@ -1274,7 +1278,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		if (sortSymbol == null) {
 			sortSymbol = translateTypeName(expression.getType());
 		}
-		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false, V1_2);
+		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false,
+				V1_2);
 
 		final SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
 		signature.addMacro(macro);
@@ -1297,7 +1302,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final String varName) {
 		final SMTSortSymbol pairSort = parsePairTypes(expression.getType());
 
-		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false, V1_2);
+		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false,
+				V1_2);
 
 		final SMTPairEnumMacro macro = SMTMacroFactory
 				.makePairEnumerationMacro(macroName, var, children, signature);
@@ -1404,7 +1410,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"card_f", es, SMTTheoryV1_2.Ints.getInt());
+				"card_f", es, SMTTheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
 
 		translateCardPart2(children, kVarSymbol, fVarSymbol);
 	}
@@ -1657,7 +1663,7 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"finite_f", es, SMTTheoryV1_2.Ints.getInt());
+				"finite_f", es, SMTTheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
 
 		// Creating the macro operator 'finite'
 		final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE_OP, signature);

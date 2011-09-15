@@ -197,13 +197,13 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
 		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-				SMTSymbol.LE, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.LE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
 		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-				SMTSymbol.LT, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.LT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
 		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-				SMTSymbol.GE, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.GE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
 		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-				SMTSymbol.GT, INT_INT_TAB, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.GT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
 		private static final SMTPredicateSymbol[] PREDICATES = { LE, LT, GE, GT };
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
 				UMINUS, MINUS, PLUS, MUL };
