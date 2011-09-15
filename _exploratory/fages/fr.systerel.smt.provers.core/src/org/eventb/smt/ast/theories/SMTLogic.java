@@ -388,19 +388,19 @@ public class SMTLogic {
 		}
 	}
 
-	public static class UFNIAv2_0 extends SMTLogicPP {
-		private static final String UFNIA_LOGIC_NAME = "UFNIA";
+	public static class AUFLIAv2_0 extends SMTLogicPP {
+		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
 		private static final SMTTheory[] THEORIES = {
 				SMTTheoryV2_0.Core.getInstance(),
 				SMTTheoryV2_0.Ints.getInstance() };
 
-		private static final UFNIAv2_0 INSTANCE = new UFNIAv2_0();
+		private static final AUFLIAv2_0 INSTANCE = new AUFLIAv2_0();
 
-		private UFNIAv2_0() {
-			super(UFNIA_LOGIC_NAME, THEORIES);
+		private AUFLIAv2_0() {
+			super(AUFLIA_LOGIC_NAME, THEORIES);
 		}
 
-		public static UFNIAv2_0 getInstance() {
+		public static AUFLIAv2_0 getInstance() {
 			return INSTANCE;
 		}
 	}
