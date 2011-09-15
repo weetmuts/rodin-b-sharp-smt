@@ -10,6 +10,8 @@
 
 package org.eventb.smt.ast;
 
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +47,12 @@ public enum SMTConnective {
 	}
 
 	public String toString(final SMTLIBVersion smtlibVersion) {
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			return symbolV1_2;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			return symbolV2_0;
 		}
 	}

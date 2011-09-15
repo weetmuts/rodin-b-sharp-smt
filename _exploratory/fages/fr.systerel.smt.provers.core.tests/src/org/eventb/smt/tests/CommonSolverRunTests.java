@@ -209,38 +209,35 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	protected void setPreferencesForAltErgoTest(
 			final SMTLIBVersion smtlibVersion) {
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(ALT_ERGO.toString(), "", true, false);
-			break;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			setSolverPreferences(ALT_ERGO.toString(), "", false, true);
-			break;
 		}
 	}
 
 	protected void setPreferencesForVeriTTest(final SMTLIBVersion smtlibVersion) {
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(VERIT.toString(), "", true, false);
-			break;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			setSolverPreferences(VERIT.toString(), "-i smtlib2", false, true);
-			break;
 		}
 	}
 
 	protected void setPreferencesForCvc3Test(final SMTLIBVersion smtlibVersion) {
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
-			break;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			setSolverPreferences(CVC3.toString(), "-lang smt2", false, true);
-			break;
 		}
 
 	}
@@ -258,14 +255,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		Z3.toString(binaryName);
 
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(binaryName.toString(), "", true, false);
-			break;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			setSolverPreferences(binaryName.toString(), "-smt2", false, true);
-			break;
 		}
 	}
 

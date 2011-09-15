@@ -13,6 +13,7 @@ package org.eventb.smt.ast.symbols;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.Arrays;
 
@@ -106,8 +107,7 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder buffer) {
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			buffer.append(OPAR);
 			buffer.append(name);
 			for (final SMTSortSymbol sort : argSorts) {
@@ -117,9 +117,10 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 			buffer.append(SPACE);
 			buffer.append(resultSort);
 			buffer.append(CPAR);
-			return;
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			String separator = "";
 			buffer.append(name);
 			buffer.append(SPACE);
@@ -132,7 +133,6 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 			buffer.append(CPAR);
 			buffer.append(SPACE);
 			buffer.append(resultSort);
-			return;
 		}
 	}
 

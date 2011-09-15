@@ -14,6 +14,7 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.POINT;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
@@ -68,8 +69,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		builder.append(OPAR);
 		builder.append(quantifier);
 
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			for (final SMTVarSymbol qVar : qVars) {
 				builder.append(SPACE);
 				qVar.toString(builder);
@@ -78,10 +78,11 @@ public class SMTQuantifiedFormula extends SMTFormula {
 				builder.append(SPACE);
 				builder.append(POINT);
 				builder.append(SPACE);
-			}	
-			break;
-
-		default:
+			}
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			String separator = "";
 
 			builder.append(SPACE);
@@ -92,7 +93,6 @@ public class SMTQuantifiedFormula extends SMTFormula {
 				separator = SPACE;
 			}
 			builder.append(CPAR);
-			break;
 		}
 
 		builder.append(SPACE);

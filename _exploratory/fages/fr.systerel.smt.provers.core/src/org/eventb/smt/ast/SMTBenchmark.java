@@ -16,6 +16,7 @@ import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.io.PrintWriter;
@@ -89,17 +90,16 @@ public class SMTBenchmark {
 	protected void assumptionsSection(final StringBuilder builder) {
 		for (final SMTFormula assumption : assumptions) {
 			assumption.printComment(builder);
-			switch (signature.getSMTLIBVersion()) {
-			case V1_2:
+			if (signature.getSMTLIBVersion().equals(V1_2)) {
 				builder.append(" :assumption ");
 				assumption.toString(builder, 13, false);
-				break;
-
-			default:
+			} else {
+				/**
+				 * signature.getSMTLIBVersion().equals(V2_0)
+				 */
 				final SMTAssertCommand assertCommand = new SMTAssertCommand(
 						assumption);
 				assertCommand.toString(builder);
-				break;
 			}
 			builder.append("\n");
 		}
@@ -113,19 +113,18 @@ public class SMTBenchmark {
 	 *            the builder that will receive the representation
 	 */
 	protected void formulaSection(final StringBuilder builder) {
-		switch (signature.getSMTLIBVersion()) {
-		case V1_2:
+		if (signature.getSMTLIBVersion().equals(V1_2)) {
 			builder.append(" :formula (not ");
 			formula.toString(builder, 15, false);
 			builder.append(")\n");
-			break;
-
-		default:
+		} else {
+			/**
+			 * signature.getSMTLIBVersion().equals(V2_0)
+			 */
 			final SMTAssertCommand assertCommand = new SMTAssertCommand(
 					SMTFactory.makeNot(new SMTFormula[] { formula }, V2_0));
 			assertCommand.toString(builder);
 			builder.append("\n");
-			break;
 		}
 	}
 
@@ -192,17 +191,16 @@ public class SMTBenchmark {
 	 */
 	public void print(final PrintWriter pw) {
 		final StringBuilder builder = new StringBuilder();
-		switch (signature.getSMTLIBVersion()) {
-		case V1_2:
+		if (signature.getSMTLIBVersion().equals(V1_2)) {
 			smtCmdOpening(builder, BENCHMARK, name);
 			benchmarkContent(builder);
 			builder.append(CPAR);
-			break;
-
-		default:
+		} else {
+			/**
+			 * signature.getSMTLIBVersion().equals(V2_0)
+			 */
 			benchmarkContent(builder);
 			getCheckSatCommand().toString(builder);
-			break;
 		}
 		pw.println(builder.toString());
 	}

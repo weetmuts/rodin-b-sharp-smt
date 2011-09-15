@@ -69,10 +69,10 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
-import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2.Booleans;
@@ -294,16 +294,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			final Predicate goal) {
 		gatherer = Gatherer.gatherFrom(hypotheses, goal);
 
-		switch (smtlibVersion) {
-		case V1_2:
+		if (smtlibVersion.equals(V1_2)) {
 			if (gatherer.usesBoolTheory()) {
 				return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
 						SMTTheoryV1_2.Ints.getInstance(),
 						SMTTheoryV1_2.Booleans.getInstance());
 			}
 			return SMTLIBUnderlyingLogicV1_2.getInstance();
-
-		default:
+		} else {
+			/**
+			 * smtlibVersion.equals(V2_0)
+			 */
 			// TODO : if there is no element of Ints theory in the sequent, then
 			// the underlying logic of SMT-LIB 2.0 should be used (which only
 			// contains the Core theory). A method usesIntsTheory will be needed
@@ -592,17 +593,17 @@ public class SMTThroughPP extends TranslatorV1_2 {
 	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
 		if (!gatherer.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
-				switch (smtlibVersion) {
-				case V1_2:
+				if (smtlibVersion.equals(V1_2)) {
 					for (final SMTTheory theories : signature.getLogic()
 							.getTheories()) {
 						if (theories instanceof Booleans) {
 							return true;
 						}
 					}
-					break;
-
-				default:
+				} else {
+					/**
+					 * smtlibVersion.equals(V2_0)
+					 */
 					return true;
 				}
 			}
