@@ -277,7 +277,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	@Test
-	@Ignore("")
+	@Ignore("Test sur simplifications, sera fait par ppTrans ?")
 	public void testQuantifiers2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 

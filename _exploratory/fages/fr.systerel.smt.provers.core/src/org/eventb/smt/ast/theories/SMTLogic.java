@@ -203,28 +203,28 @@ public class SMTLogic {
 			return null;
 		case MINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getMinus();
 				}
 			}
 			return null;
 		case MUL:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getMul();
 				}
 			}
 			return null;
 		case PLUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getPlus();
 				}
 			}
 			return null;
 		case UMINUS:
 			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
+				if (theory instanceof ISMTArithmeticFuns) {
 					return ((ISMTArithmeticFuns) theory).getUMinus();
 				}
 			}
