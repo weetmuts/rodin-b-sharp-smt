@@ -454,6 +454,8 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof SMTTheoryV1_2.Ints) {
 				return SMTTheoryV1_2.Ints.getIntsSet();
+			} else if (theory instanceof SMTTheoryV2_0.Ints) {
+				return SMTTheoryV2_0.Ints.getIntsSet();
 			}
 		}
 		throw new IllegalArgumentException(
@@ -469,6 +471,8 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof SMTTheoryV1_2.Booleans) {
 				return SMTTheoryV1_2.Booleans.getBoolsSet();
+			} else if (theory instanceof SMTTheoryV2_0.Core) {
+				return SMTTheoryV2_0.Core.getBoolsSet();
 			}
 		}
 		return null;
@@ -483,6 +487,8 @@ public class SMTLogic {
 		for (final SMTTheory theory : theories) {
 			if (theory instanceof SMTTheoryV1_2.Booleans) {
 				return SMTTheoryV1_2.Booleans.getTrue();
+			} else if (theory instanceof SMTTheoryV2_0.Core) {
+				return SMTTheoryV2_0.Core.getTrue();
 			}
 		}
 		return null;

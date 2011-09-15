@@ -9,11 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.ast.theories;
 
-import static org.eventb.smt.ast.SMTFactory.EMPTY_SORT;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
-import static org.eventb.smt.ast.symbols.SMTSymbol.DISTINCT;
-import static org.eventb.smt.ast.symbols.SMTSymbol.EQUAL;
 import static org.eventb.smt.ast.symbols.SMTSymbol.INTS;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
@@ -33,8 +30,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		super(name, sorts, predicates, functions);
 	}
 
-	public static class Core extends SMTTheoryV2_0 implements ISMTBooleanSort,
-			ISMTBooleanFuns {
+	public static class Core extends SMTTheoryV2_0 implements ISMTBooleanSort {
 		private static final String CORE_THEORY_NAME = "Core";
 		private static final String POW_BOOL = "PB";
 
@@ -51,29 +47,16 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		public final static SMTSortSymbol[] BOOL_BOOL_TAB = { BOOL_SORT,
 				BOOL_SORT };
 
-		private final static SMTPredicateSymbol[] PREDICATES = {};
+		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
+				"TRUE", BOOL_TAB, !PREDEFINED, V2_0);
+
+		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
 				BOOLS, new SMTSortSymbol[] {}, POW_BOOL_SORT, !ASSOCIATIVE,
 				!PREDEFINED, V2_0);
 
-		private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol(
-				"true", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-				"false", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol NOT = new SMTFunctionSymbol(
-				"not", BOOL_TAB, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol IMPLIES = new SMTFunctionSymbol(
-				"=>", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol AND = new SMTFunctionSymbol(
-				"and", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol OR = new SMTFunctionSymbol("or",
-				BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		private static final SMTFunctionSymbol XOR = new SMTFunctionSymbol(
-				"xor", BOOL_BOOL_TAB, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-
-		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET, TRUE,
-				FALSE, NOT, IMPLIES, AND, OR, XOR };
+		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
 
 		private static final Core INSTANCE = new Core();
 
@@ -93,58 +76,8 @@ public class SMTTheoryV2_0 extends SMTTheory {
 			return POW_BOOL_SORT;
 		}
 
-		@Override
-		public SMTFunctionSymbol getTrue() {
+		public static SMTPredicateSymbol getTrue() {
 			return TRUE;
-		}
-
-		@Override
-		public SMTFunctionSymbol getFalse() {
-			return FALSE;
-		}
-
-		@Override
-		public SMTFunctionSymbol getNot() {
-			return NOT;
-		}
-
-		@Override
-		public SMTFunctionSymbol getImplies() {
-			return IMPLIES;
-		}
-
-		@Override
-		public SMTFunctionSymbol getAnd() {
-			return AND;
-		}
-
-		@Override
-		public SMTFunctionSymbol getOr() {
-			return OR;
-		}
-
-		@Override
-		public SMTFunctionSymbol getXor() {
-			return XOR;
-		}
-
-		@Override
-		public SMTFunctionSymbol getEqual(final SMTSortSymbol[] sort) {
-			return new SMTFunctionSymbol(EQUAL, sort, BOOL_SORT, ASSOCIATIVE,
-					PREDEFINED, V2_0);
-		}
-
-		@Override
-		public SMTFunctionSymbol getDistinct(final SMTSortSymbol sort) {
-			return new SMTFunctionSymbol(DISTINCT, new SMTSortSymbol[] { sort,
-					sort }, BOOL_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
-		}
-
-		@Override
-		public SMTFunctionSymbol getITE(final SMTSortSymbol sort) {
-			return new SMTFunctionSymbol("ite", new SMTSortSymbol[] {
-					BOOL_SORT, sort, sort }, sort, !ASSOCIATIVE, PREDEFINED,
-					V2_0);
 		}
 
 		@Override
