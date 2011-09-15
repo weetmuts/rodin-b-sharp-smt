@@ -277,7 +277,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	@Test
-	@Ignore("Test sur simplifications, sera fait par ppTrans ?")
+	@Ignore("Waiting for ppTrans to be updated ?")
+	// TODO Re-add when ppTrans is updated
 	public void testQuantifiers2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -540,111 +541,49 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	@Test
-	public void testPredefinedAttributesSymbols() {
-		final ITypeEnvironment te = mTypeEnvironment("assumption", "funs",
-				"formula", "funs");
+	public void testReservedWords() {
+		final ITypeEnvironment te = mTypeEnvironment("DECIMAL", "par",
+				"NUMERAL", "par");
 
-		testTranslationV2_0(te, "assumption = formula", "(= nf nf1)");
+		testTranslationV2_0(te, "DECIMAL = NUMERAL", "(= nf1 nf0)");
 	}
 
 	@Test
-	public void testPredefinedAttributesSymbolsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"=>", "NS", "ite", "NS");
+	public void testReservedWordsSorts() {
+		final ITypeEnvironment te = mTypeEnvironment("ite", "ℙ(par)",
+				"let", "par", "as", "par");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
-		expectedSorts.add("PN");
+		expectedSorts.add("PP");
 		expectedSorts.add("Int");
 		expectedSorts.add("PZ");
 		expectedSorts.add("BOOL");
 		expectedSorts.add("PB");
 		expectedSorts.add("NS");
 
-		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts, "=> = ite");
+		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts, "let = as");
 
 	}
 
 	@Test
-	public void testReservedSymbolsAndKeywords() {
-		final ITypeEnvironment te = mTypeEnvironment("distinct", "false", "nf",
-				"false");
-
-		testTranslationV2_0(te, "distinct = flet", "(= nf1 nf)");
-	}
-
-	@Test
-	public void testpredefinedAttributesSymbolsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
-				"extrasorts", "logic", "extrafuns", "logic");
-
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("NS"); // logic
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("PL"); // ℙ(logic)
-
-		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
-				"extrasorts = extrafuns");
-	}
-
-	@Test
-	public void testpredefinedAttributesSymbolsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
-				"extrasorts", "logic", "extrafuns", "logic");
+	public void testReservedWordsFuns() {
+		final ITypeEnvironment te = mTypeEnvironment("DECIMAL", "ℙ(as)",
+				"NUMERAL", "as", "STRING", "as");
 
 		final Set<String> expectedFuns = new HashSet<String>();
 
-		expectedFuns.add("(BOOLS PB)");
-		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(nf0 NS)");
-		expectedFuns.add("(INTS PZ)");
-		expectedFuns.add("(expn Int Int Int)");
-		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(nf1 PL)");
-		expectedFuns.add("(nf NS)");
+		expectedFuns.add("BOOLS () PB");
+		expectedFuns.add("mod (Int Int) Int");
+		expectedFuns.add("nf1 () NS");
+		expectedFuns.add("INTS () PZ");
+		expectedFuns.add("expn (Int Int) Int");
+		expectedFuns.add("divi (Int Int) Int");
+		expectedFuns.add("nf0 () PA");
+		expectedFuns.add("nf () NS");
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns,
-				"extrasorts = extrafuns");
-	}
-
-	@Test
-	public void testReservedSymbolsAndKeywordsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"=>", "NS", "ite", "NS");
-
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("PN");
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("NS");
-
-		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts, "=> = ite");
-	}
-
-	@Test
-	public void testReservedSymbolsAndKeywordsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"=>", "NS", "ite", "NS");
-
-		final Set<String> expectedFuns = new HashSet<String>();
-
-		expectedFuns.add("(BOOLS PB)");
-		expectedFuns.add("(nf0 NS)");
-		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(INTS PZ)");
-		expectedFuns.add("(expn Int Int Int)");
-		expectedFuns.add("(NS0 PN)");
-		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(nf NS)");
-
-		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns, "=> = ite");
+				"NUMERAL = STRING");
 	}
 
 	@Test

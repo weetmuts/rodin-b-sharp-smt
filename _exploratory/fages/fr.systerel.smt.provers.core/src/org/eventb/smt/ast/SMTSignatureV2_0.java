@@ -52,15 +52,23 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	 * @return the reserved symbols and keyboards.
 	 */
 	public static Set<String> getReservedSymbolsAndKeywordsV2_0() {
+		/**
+		 * "The basic set of reserved words consists of par NUMERAL DECIMAL
+		 * STRING _ ! as let forall exists"
+		 */
 		final List<String> reservedSymbolsAndKeywords = new ArrayList<String>(
 				Arrays.asList("par", "NUMERAL", "DECIMAL", "STRING", "_", "!",
 						"as", "let"));
 		final boolean successfullyAddedReservedSymbolsAndKeywords = reservedSymbolsAndKeywords
 				.addAll(SMTQuantifierSymbol.getQuantifierSymbols())
-				&& reservedSymbolsAndKeywords.addAll(SMTConnective
-						.getConnectiveSymbols(V2_0))
+				/**
+				 * "Each command name in the scripting language defined in
+				 * SMT-LIB documentation is also a reserved word"
+				 */
 				&& reservedSymbolsAndKeywords.addAll(SMTCommandName
-						.getCommandNames());
+						.getCommandNames())
+				&& reservedSymbolsAndKeywords.addAll(SMTConnective
+						.getConnectiveSymbols(V2_0));
 		assert successfullyAddedReservedSymbolsAndKeywords;
 		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}
