@@ -23,7 +23,7 @@ import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.junit.Test;
 
-public class LogicTestsWithPP extends AbstractTests {
+public class LogicTestsWithPPV1_2 extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
 	private static final SMTLogic smtLibUnderlyingLogic;
 	private static final SMTLogic boolLogic;
