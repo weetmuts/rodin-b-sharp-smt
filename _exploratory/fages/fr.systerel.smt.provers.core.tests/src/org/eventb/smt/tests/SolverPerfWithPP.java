@@ -10,7 +10,6 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 
 import java.util.ArrayList;
@@ -20,20 +19,19 @@ import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class SolverPerfWithPP extends CommonSolverRunTests {
-	private final SMTSolver solver;
-
-	public SolverPerfWithPP(final SMTSolver solver) {
-		this.solver = solver;
-	}
-
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
+
+	public SolverPerfWithPP(SMTSolver solver, SMTLIBVersion smtlibVersion) {
+		super(solver, smtlibVersion);
+	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
@@ -44,7 +42,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testSetsEquality() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -60,7 +58,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans is updated (one-point rule needed)")
 	public void testIntsSetEquality() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(ℤ)");
 		final List<String> hyps = new ArrayList<String>();
@@ -71,7 +69,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBoolsSetEquality() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non",
 				"BOOL ↔ BOOL");
@@ -88,7 +86,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDFPSBool() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -103,7 +101,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -119,7 +117,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimpleMonadic() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -136,7 +134,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple00() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -151,7 +149,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple01() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -166,7 +164,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple11() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -181,7 +179,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple12() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -196,7 +194,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple32() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -211,7 +209,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple30() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -226,7 +224,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple1y() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -239,7 +237,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimple3y() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -252,7 +250,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplex1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -265,7 +263,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplex2() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -278,7 +276,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testDifferentForallPlusSimplexy() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -291,7 +289,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -303,7 +301,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets2() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -316,7 +314,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets3() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -329,7 +327,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated")
 	public void testSets4() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -341,7 +339,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets5() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ ↔ ℙ(ℤ)");
 		te.addAll(arith_te);
@@ -358,7 +356,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated")
 	public void testSets6() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 
@@ -371,7 +369,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets7() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -381,7 +379,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testSolverCallBelong1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
@@ -391,7 +389,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testRule20MacroInsideMacro() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -402,7 +400,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testRule20ManyForalls() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -414,7 +412,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testCallBelong1XtraSortXtraFun() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "a", "A", "c", "BOOL");
@@ -442,7 +440,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSolverCallSimpleU() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
@@ -458,7 +456,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSolverCallBelong3() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(
 				//
@@ -475,7 +473,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testSolverCall() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
@@ -490,7 +488,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testCh8CircArbiter1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"a1", "ℤ", "r1", "ℤ");
@@ -511,7 +509,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testQuickSort1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"k", "ℤ", "n", "ℤ", "x", "ℤ");
@@ -533,7 +531,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBoschSwitch1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
@@ -555,7 +553,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBepiColombo1() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
@@ -577,7 +575,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	// @Ignore("AltErgo MESSAGE: unknown (sat)")
 	@Ignore("Implementation canceled")
 	public void testCh915Bin10() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -595,7 +593,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testCh7LikeEvenSimpler() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -611,7 +609,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testCh7LikeMoreSimpleYet() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -628,7 +626,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDifferentForall() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -646,7 +644,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testCh7Conc29() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -660,7 +658,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBepiColombo3Mini() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -674,7 +672,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBepiColombo3Medium() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -689,7 +687,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	// @Ignore("Takes more than 30 seconds to return a result")
 	public void testBepiColombo3Medium2() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -712,7 +710,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBepiColombo3() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -727,7 +725,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDynamicStableLSR_081014_15() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
 				"ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
@@ -750,7 +748,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	// @Ignore("division is uninterpreted, so the alt-ergo returned sat")
 	@Ignore("Implementation canceled")
 	public void testExactDivision() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -769,7 +767,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	// @Ignore("Division in alt-ergo does not have the same properties as in Event-B")
 	@Ignore("Implementation canceled")
 	public void testDivisionWithRemainder() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -784,7 +782,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testch910_ring_6() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
 				"ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
@@ -795,7 +793,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testLinearSort29() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
 				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");

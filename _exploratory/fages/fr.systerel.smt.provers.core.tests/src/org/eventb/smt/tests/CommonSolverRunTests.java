@@ -62,6 +62,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
+	protected final SMTLIBVersion smtlibVersion;
+
+	protected final SMTSolver solver;
+
 	/**
 	 * In linux: '/home/username/bin/'
 	 */
@@ -96,6 +100,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		public void setTask(final String name) {
 			// Nothing do to
 		}
+	}
+
+	public CommonSolverRunTests(final SMTSolver solver,
+			final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
+		this.solver = solver;
 	}
 
 	/**
@@ -198,7 +208,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, parsedHypotheses, parsedGoal, preferences
-						.getSolver().getId(), V1_2);
+						.getSolver().getId(), smtlibVersion);
 
 		final SMTSignature signature = benchmark.getSignature();
 
@@ -207,8 +217,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 
-	protected void setPreferencesForAltErgoTest(
-			final SMTLIBVersion smtlibVersion) {
+	protected void setPreferencesForAltErgoTest() {
 		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(ALT_ERGO.toString(), "", true, false);
 		} else {
@@ -219,7 +228,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	protected void setPreferencesForVeriTTest(final SMTLIBVersion smtlibVersion) {
+	protected void setPreferencesForVeriTTest() {
 		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(VERIT.toString(), "", true, false);
 		} else {
@@ -230,7 +239,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	protected void setPreferencesForCvc3Test(final SMTLIBVersion smtlibVersion) {
+	protected void setPreferencesForCvc3Test() {
 		if (smtlibVersion.equals(V1_2)) {
 			setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
 		} else {
@@ -242,7 +251,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	}
 
-	protected void setPreferencesForZ3Test(final SMTLIBVersion smtlibVersion) {
+	protected void setPreferencesForZ3Test() {
 		final StringBuilder binaryName = new StringBuilder();
 		final String separator = System.getProperty("file.separator");
 		if (System.getProperty("os.name").startsWith("Windows")) {
@@ -265,20 +274,19 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	protected void setPreferencesForSolverTest(final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion) {
+	protected void setPreferencesForSolverTest(final SMTSolver solver) {
 		switch (solver) {
 		case ALT_ERGO:
-			setPreferencesForAltErgoTest(smtlibVersion);
+			setPreferencesForAltErgoTest();
 			break;
 		case CVC3:
-			setPreferencesForCvc3Test(smtlibVersion);
+			setPreferencesForCvc3Test();
 			break;
 		case VERIT:
-			setPreferencesForVeriTTest(smtlibVersion);
+			setPreferencesForVeriTTest();
 			break;
 		case Z3:
-			setPreferencesForZ3Test(smtlibVersion);
+			setPreferencesForZ3Test();
 			break;
 		}
 	}

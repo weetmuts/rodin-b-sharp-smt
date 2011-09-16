@@ -72,20 +72,15 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	private final LemmaData data;
 
 	/**
-	 * The chosen solver for the tests
-	 */
-	private final SMTSolver solver;
-
-	/**
 	 * Constructs a new test.
 	 * 
 	 * @param data
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver) {
+		super(solver, V1_2);
 		this.data = data;
 		System.out.println("Loop: " + round++ / 2);
-		this.solver = solver;
 	}
 
 	@Parameters
@@ -245,7 +240,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
@@ -264,7 +259,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
-		setPreferencesForSolverTest(solver, V1_2);
+		setPreferencesForSolverTest(solver);
 
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
