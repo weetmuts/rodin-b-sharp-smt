@@ -235,7 +235,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			/**
 			 * smtlibVersion.equals(V2_0)
 			 */
-			setSolverPreferences(VERIT.toString(), "-i smtlib2", false, true);
+			setSolverPreferences(VERIT.toString(), "-i smtlib2 --disable-print-success", false, true);
 		}
 	}
 

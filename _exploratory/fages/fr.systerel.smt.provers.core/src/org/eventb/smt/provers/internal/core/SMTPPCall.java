@@ -13,7 +13,7 @@ package org.eventb.smt.provers.internal.core;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.translation.Translator.DEBUG;
+import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class SMTPPCall extends SMTProverCall {
 		if (!ppTranslationFolder.mkdirs()) {
 			// TODO handle the error
 		} else {
-			if (DEBUG) {
+			if (DEBUG_DETAILS) {
 				System.out.println("Created temporary PP translation folder '"
 						+ ppTranslationFolder + "'");
 			} else {

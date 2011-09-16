@@ -14,6 +14,7 @@ package org.eventb.smt.provers.internal.core;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
+import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.translation.Translator.DEV;
 
 import java.io.BufferedReader;
@@ -207,7 +208,7 @@ public abstract class SMTProverCall extends XProverCall {
 			final ProcessMonitor monitor = new ProcessMonitor(null, process,
 					this);
 
-			if (DEBUG)
+			if (DEBUG_DETAILS)
 				showProcessOutcome(monitor);
 
 			solverResult = new String(monitor.output());
@@ -218,7 +219,7 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			valid = checkResult();
-			if (DEBUG) {
+			if (DEBUG_DETAILS) {
 				System.out
 						.println("Prover " + (valid ? "succeeded" : "failed"));
 			}
@@ -322,7 +323,7 @@ public abstract class SMTProverCall extends XProverCall {
 			if (!smtTranslationFolder.mkdirs()) {
 				// TODO handle the error
 			} else {
-				if (DEBUG) {
+				if (DEBUG_DETAILS) {
 					System.out
 							.println("Created temporary SMT translation folder '"
 									+ smtTranslationFolder + "'");
@@ -335,7 +336,8 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 		}
 
-		if (smtlibVersion.equals(V2_0) && solverName.equals(ALT_ERGO.toString())) {
+		if (smtlibVersion.equals(V2_0)
+				&& solverName.equals(ALT_ERGO.toString())) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO, smtTranslationFolder);
 		} else {
@@ -420,7 +422,7 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			if (smtBenchmarkFileMade) {
-				if (DEBUG) {
+				if (DEBUG_DETAILS) {
 					System.out.println("Launching " + solverName
 							+ " with input:\n");
 					showSMTBenchmarkFile();
