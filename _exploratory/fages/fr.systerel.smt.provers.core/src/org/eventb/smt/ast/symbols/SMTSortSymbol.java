@@ -10,6 +10,8 @@
 
 package org.eventb.smt.ast.symbols;
 
+import static org.eventb.smt.ast.SMTFactory.SPACE;
+
 import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
@@ -17,9 +19,17 @@ import org.eventb.smt.translation.SMTLIBVersion;
  */
 public class SMTSortSymbol extends SMTSymbol implements
 		Comparable<SMTSortSymbol> {
+	private final int arity;
+
+	public SMTSortSymbol(final String symbolName, final int arity,
+			final boolean predefined, final SMTLIBVersion smtlibVersion) {
+		super(symbolName, predefined, smtlibVersion);
+		this.arity = arity;
+	}
+
 	public SMTSortSymbol(final String symbolName, final boolean predefined,
 			final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+		this(symbolName, 0, predefined, smtlibVersion);
 	}
 
 	@Override
@@ -47,5 +57,9 @@ public class SMTSortSymbol extends SMTSymbol implements
 	@Override
 	public void toString(final StringBuilder builder) {
 		builder.append(this.toString());
+		if (smtlibVersion.equals(SMTLIBVersion.V2_0)) {
+			builder.append(SPACE);
+			builder.append(arity);
+		}
 	}
 }
