@@ -10,14 +10,15 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
+import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import org.eventb.smt.tests.SolverPerfWithPP;
 
-public class Cvc3PerfWithPP extends SolverPerfWithPP {
+public class Z3PerfWithPPV2_0 extends SolverPerfWithPP {
 
-	public Cvc3PerfWithPP() {
-		super(CVC3);
+	public Z3PerfWithPPV2_0() {
+		super(Z3, V2_0);
 	}
 
 }

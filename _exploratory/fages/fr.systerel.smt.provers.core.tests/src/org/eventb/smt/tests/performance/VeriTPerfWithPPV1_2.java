@@ -10,12 +10,15 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.tests.SolverPerfWithPP;
 
-public class AltErgoPerfWithPP extends SolverPerfWithPP {
-	public AltErgoPerfWithPP() {
-		super(ALT_ERGO);
+public class VeriTPerfWithPPV1_2 extends SolverPerfWithPP {
+
+	public VeriTPerfWithPPV1_2() {
+		super(VERIT, V1_2);
 	}
+
 }

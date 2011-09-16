@@ -11,11 +11,14 @@
 package org.eventb.smt.tests.performance;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
-import org.eventb.smt.tests.SolverPerfWithVeriT;
+import org.eventb.smt.tests.SolverPerfWithPP;
 
-public class VeriTPerfWithVeriT extends SolverPerfWithVeriT {
-	public VeriTPerfWithVeriT() {
-		super(VERIT);
+public class VeriTPerfWithPPV2_0 extends SolverPerfWithPP {
+
+	public VeriTPerfWithPPV2_0() {
+		super(VERIT, V2_0);
 	}
+
 }
