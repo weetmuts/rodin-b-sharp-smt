@@ -76,6 +76,7 @@ import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2.Booleans;
+import org.eventb.smt.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -1165,7 +1166,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		 * the sequent,
 		 */
 		for (final SMTTheory t : signature.getLogic().getTheories()) {
-			if (t instanceof Booleans) {
+			if (t instanceof Booleans || t instanceof SMTTheoryV2_0.Core) {
 				/**
 				 * If the gatherer found an occurrence of the atomic expression
 				 * <code>BOOL</code>, the translator adds the bool axiom to
