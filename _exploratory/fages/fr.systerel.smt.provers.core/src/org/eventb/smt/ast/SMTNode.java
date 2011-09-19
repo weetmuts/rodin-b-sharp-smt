@@ -11,6 +11,14 @@
 
 package org.eventb.smt.ast;
 
+import static org.eventb.smt.ast.SMTFactory.CPAR;
+import static org.eventb.smt.ast.SMTFactory.OPAR;
+import static org.eventb.smt.ast.SMTFactory.SPACE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eventb.smt.ast.attributes.SMTAttribute;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
 /**
@@ -18,6 +26,9 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
  * Tree).
  */
 public abstract class SMTNode<T extends SMTNode<T>> {
+	private static final String ANNOTATION_OPERATOR = "!";
+	private final List<SMTAttribute> annotations = new ArrayList<SMTAttribute>();
+
 	/**
 	 * verify the rank for associative symbol (predicate or function symbol).
 	 * That is, given a sort and the arguments, this methods checks if all the
@@ -69,5 +80,37 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 		for (int i = 0; i < offset; i++) {
 			builder.append(" ");
 		}
+	}
+
+	public void addAnnotation(final SMTAttribute attribute) {
+		annotations.add(attribute);
+	}
+
+	public boolean isAnnotated() {
+		return !annotations.isEmpty();
+	}
+
+	/**
+	 * This method must be called only if isAnnotated() returned true.
+	 * 
+	 * @param builder
+	 */
+	public static void printAnnotationOperator(final StringBuilder builder) {
+		builder.append(OPAR);
+		builder.append(ANNOTATION_OPERATOR);
+		builder.append(SPACE);
+	}
+
+	/**
+	 * This method must be called only if isAnnotated() returned true.
+	 * 
+	 * @param builder
+	 */
+	public void printAnnotations(final StringBuilder builder) {
+		builder.append(SPACE);
+		for (final SMTAttribute attribute : annotations) {
+			attribute.toString(builder);
+		}
+		builder.append(CPAR);
 	}
 }

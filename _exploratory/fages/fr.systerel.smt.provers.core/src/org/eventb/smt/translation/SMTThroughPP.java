@@ -12,8 +12,10 @@ package org.eventb.smt.translation;
 
 import static org.eventb.smt.ast.SMTFactory.makeBool;
 import static org.eventb.smt.ast.SMTFactory.makeInteger;
+import static org.eventb.smt.ast.attributes.SMTLabel.GOAL_LABEL;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +63,7 @@ import org.eventb.smt.ast.SMTFactoryPP;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.SMTSignatureV1_2PP;
+import org.eventb.smt.ast.SMTSignatureV2_0;
 import org.eventb.smt.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
@@ -1195,12 +1198,23 @@ public class SMTThroughPP extends TranslatorV1_2 {
 			 * <code>:assumption (true)</code>)
 			 */
 			if (hypothesis.getTag() != Formula.BTRUE) {
-				translatedAssumptions.add(translate(hypothesis, !IN_GOAL));
+				final SMTFormula assumption = translate(hypothesis, !IN_GOAL);
+				if (smtlibVersion.equals(V2_0)) {
+					assumption.addAnnotation(((SMTSignatureV2_0) signature)
+							.freshLabel(!GOAL_LABEL));
+				}
+				translatedAssumptions.add(assumption);
 			}
 		}
 		// translates the formula
 		clearFormula();
-		final SMTFormula smtFormula = translate(ppTranslatedGoal, IN_GOAL);
+		final SMTFormula smtFormula = SMTFactory.makeNot(
+				new SMTFormula[] { translate(ppTranslatedGoal, IN_GOAL) },
+				smtlibVersion);
+		if (smtlibVersion.equals(V2_0)) {
+			smtFormula.addAnnotation(((SMTSignatureV2_0) signature)
+					.freshLabel(GOAL_LABEL));
+		}
 
 		/**
 		 * The translator adds some set theory axioms for each defined

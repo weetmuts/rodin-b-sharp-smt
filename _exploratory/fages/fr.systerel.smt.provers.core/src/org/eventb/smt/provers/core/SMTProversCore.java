@@ -37,7 +37,8 @@ public class SMTProversCore extends Plugin {
 	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
-	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR + "_details"; 
+	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR
+			+ "_details";
 	private static final String DEV = PLUGIN_ID + "/dev/";
 	private static final String DEV_TRANSLATOR = DEV + "translator";
 	private static final String RODIN_SEQUENT = "rodin_sequent";

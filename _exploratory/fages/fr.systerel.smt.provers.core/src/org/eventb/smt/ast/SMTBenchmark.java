@@ -17,7 +17,6 @@ import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
  * 
  */
 public class SMTBenchmark {
+	public static final boolean PRINT_ANNOTATIONS = true;
 	protected final String name;
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
@@ -87,7 +87,8 @@ public class SMTBenchmark {
 	 * @param builder
 	 *            the builder that will receive the representation
 	 */
-	protected void assumptionsSection(final StringBuilder builder) {
+	protected void assumptionsSection(final StringBuilder builder,
+			final boolean printAnnotations) {
 		for (final SMTFormula assumption : assumptions) {
 			assumption.printComment(builder);
 			if (signature.getSMTLIBVersion().equals(V1_2)) {
@@ -99,7 +100,7 @@ public class SMTBenchmark {
 				 */
 				final SMTAssertCommand assertCommand = new SMTAssertCommand(
 						assumption);
-				assertCommand.toString(builder);
+				assertCommand.toString(builder, printAnnotations);
 			}
 			builder.append("\n");
 		}
@@ -112,29 +113,30 @@ public class SMTBenchmark {
 	 * @param builder
 	 *            the builder that will receive the representation
 	 */
-	protected void formulaSection(final StringBuilder builder) {
+	protected void formulaSection(final StringBuilder builder,
+			final boolean printAnnotations) {
 		if (signature.getSMTLIBVersion().equals(V1_2)) {
-			builder.append(" :formula (not ");
+			builder.append(" :formula ");
 			formula.toString(builder, 15, false);
-			builder.append(")\n");
+			builder.append("\n");
 		} else {
 			/**
 			 * signature.getSMTLIBVersion().equals(V2_0)
 			 */
-			final SMTAssertCommand assertCommand = new SMTAssertCommand(
-					SMTFactory.makeNot(new SMTFormula[] { formula }, V2_0));
+			final SMTAssertCommand assertCommand = new SMTAssertCommand(formula);
 			assertCommand.toString(builder);
 			builder.append("\n");
 		}
 	}
 
-	protected void benchmarkContent(final StringBuilder builder) {
+	protected void benchmarkContent(final StringBuilder builder,
+			final boolean printAnnotations) {
 		appendComments(builder);
 		builder.append("\n");
 		signature.toString(builder);
 		builder.append("\n");
-		assumptionsSection(builder);
-		formulaSection(builder);
+		assumptionsSection(builder, printAnnotations);
+		formulaSection(builder, printAnnotations);
 	}
 
 	/**
@@ -189,17 +191,17 @@ public class SMTBenchmark {
 	 *            the printwriter that will receive the string representation of
 	 *            the benchmark
 	 */
-	public void print(final PrintWriter pw) {
+	public void print(final PrintWriter pw, final boolean printAnnotations) {
 		final StringBuilder builder = new StringBuilder();
 		if (signature.getSMTLIBVersion().equals(V1_2)) {
 			smtCmdOpening(builder, BENCHMARK, name);
-			benchmarkContent(builder);
+			benchmarkContent(builder, !PRINT_ANNOTATIONS);
 			builder.append(CPAR);
 		} else {
 			/**
 			 * signature.getSMTLIBVersion().equals(V2_0)
 			 */
-			benchmarkContent(builder);
+			benchmarkContent(builder, printAnnotations);
 			getCheckSatCommand().toString(builder);
 		}
 		pw.println(builder.toString());

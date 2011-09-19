@@ -550,8 +550,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testReservedWordsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("ite", "ℙ(par)",
-				"let", "par", "as", "par");
+		final ITypeEnvironment te = mTypeEnvironment("ite", "ℙ(par)", "let",
+				"par", "as", "par");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 
@@ -589,14 +589,14 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testNumeral() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		testTranslateGoalPP(te, "n ≥ 1", "(<= 1 n)");
+		testTranslateGoalPP(te, "n ≥ 1", "(not (<= 1 n))");
 	}
 
 	@Test
 	public void testQuantifier() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
-				"(forall ((x Int)) (exists ((x0 Int)) (and (= x0 (+ x 1)) (S x0))))");
+				"(not (forall ((x Int)) (exists ((x0 Int)) (and (= x0 (+ x 1)) (S x0)))))");
 	}
 
 	@Test
@@ -652,28 +652,28 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
-				"(forall ((z PAB) (c PAB)) (forall ((x AB)) (= (MS x z) (MS x c))))");
+				"(not (forall ((z PAB) (c PAB)) (forall ((x AB)) (= (MS x z) (MS x c)))))");
 	}
 
 	@Test
 	public void testBoundBaseType2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂A×B,c⦂A×B·z=c",
-				"(forall ((z A) (z0 B) (c A) (c0 B)) (and (= z c) (= z0 c0)))");
+				"(not (forall ((z A) (z0 B) (c A) (c0 B)) (and (= z c) (= z0 c0))))");
 	}
 
 	@Test
 	public void testBoundBaseType3() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∀z⦂A,c⦂A·z↦c=c↦z",
-				"(forall ((z A) (c A)) (and (= z c) (= c z)))");
+				"(not (forall ((z A) (c A)) (and (= z c) (= c z))))");
 	}
 
 	@Test
 	public void testBoundBaseType4() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∃ x ⦂ ℤ×ℤ×ℤ, X ⦂ ℙ(ℤ×ℤ×ℤ) · x ∈ X",
-				"(exists ((x Int) (x0 Int) (x1 Int) (X PZZZ)) (MS x x0 x1 X))");
+				"(not (exists ((x Int) (x0 Int) (x1 Int) (X PZZZ)) (MS x x0 x1 X)))");
 	}
 
 	@Test
@@ -681,7 +681,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te,
 				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
-				"(exists ((x PZZ) (X PZZ0)) (MS x X))");
+				"(not (exists ((x PZZ) (X PZZ0)) (MS x X)))");
 	}
 
 	@Test
@@ -689,13 +689,13 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te,
 				"∃ x ⦂ ℙ(ℙ(ℤ)×ℙ(ℤ)), X ⦂ ℙ(ℙ(ℙ(ℤ)×ℙ(ℤ))) · x ∈ X",
-				"(exists ((x PZZ) (X PZZ0)) (MS x X))");
+				"(not (exists ((x PZZ) (X PZZ0)) (MS x X)))");
 	}
 
 	@Test
 	public void testBoundRightHandSide() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
 		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
-				"(forall ((z PA) (c A)) (and (MS c a) (MS c z)))");
+				"(not (forall ((z PA) (c A)) (and (MS c a) (MS c z))))");
 	}
 }

@@ -10,6 +10,7 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.Translator.DEBUG;
@@ -237,7 +238,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Prints the benchmark with macros in a file
 		 */
 		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-		benchmark.print(veriTBenchmarkWriter);
+		benchmark.print(veriTBenchmarkWriter, !PRINT_ANNOTATIONS);
 		veriTBenchmarkWriter.close();
 		if (!veriTBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);

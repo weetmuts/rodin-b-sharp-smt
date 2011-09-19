@@ -11,6 +11,8 @@
 
 package org.eventb.smt.ast;
 
+import static org.eventb.smt.ast.attributes.SMTLabel.DEFAULT_GOAL_LABEL;
+import static org.eventb.smt.ast.attributes.SMTLabel.DEFAULT_HYPOTHESIS_LABEL;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eventb.smt.ast.attributes.SMTAttribute;
+import org.eventb.smt.ast.attributes.SMTLabel;
 import org.eventb.smt.ast.commands.SMTCommand.SMTCommandName;
 import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
 import org.eventb.smt.ast.commands.SMTDeclareSortCommand;
@@ -28,6 +32,7 @@ import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTTheoryV2_0;
 
 public abstract class SMTSignatureV2_0 extends SMTSignature {
 	/**
@@ -135,6 +140,12 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	@Override
 	void loadReservedAndPredefinedSymbols() {
 		names.addAll(reservedSymbols);
+		/**
+		 * Adding hyp and hyp0 to the list, is a trick to make hypotheses
+		 * labelling beginning with hyp1
+		 */
+		names.add("hyp");
+		names.add("hyp0");
 	}
 
 	@Override
@@ -154,6 +165,18 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 		names.add(freshName);
 
 		return freshName;
+	}
+
+	public SMTAttribute freshLabel(final boolean goalLabel) {
+		final String label;
+		if (goalLabel) {
+			label = DEFAULT_GOAL_LABEL;
+		} else {
+			label = DEFAULT_HYPOTHESIS_LABEL;
+		}
+		final SMTSymbol labelSymbol = freshConstant(label, SMTTheoryV2_0.Core
+				.getInstance().getBooleanSort());
+		return new SMTLabel(labelSymbol);
 	}
 
 	/**

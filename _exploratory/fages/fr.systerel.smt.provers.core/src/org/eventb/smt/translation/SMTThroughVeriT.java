@@ -467,7 +467,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 		// translates the goal
 		clearFormula();
-		final SMTFormula smtFormula = translate(goal, IN_GOAL);
+		final SMTFormula smtFormula = SMTFactory.makeNot(
+				new SMTFormula[] { translate(goal, IN_GOAL) }, smtlibVersion);
 		translatedAssumptions.addAll(getAdditionalAssumptions());
 
 		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,

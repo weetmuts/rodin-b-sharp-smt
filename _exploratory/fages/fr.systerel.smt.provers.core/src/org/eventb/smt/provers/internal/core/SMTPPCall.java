@@ -10,7 +10,10 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
@@ -101,7 +104,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		benchmark.print(smtFileWriter);
+		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
@@ -142,7 +145,12 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		benchmark.print(smtFileWriter);
+		if (solverName.equals(ALT_ERGO.toString())
+				|| solverName.equals(VERIT.toString())) {
+			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS);
+		} else {
+			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);
+		}
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
