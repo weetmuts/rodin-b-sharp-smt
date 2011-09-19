@@ -9,11 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.ast.commands;
 
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.ASSERT;
 
 import org.eventb.smt.ast.SMTFormula;
+import org.eventb.smt.ast.SMTNode;
 
 /**
  * @author Systerel (yguyot)
@@ -29,9 +31,20 @@ public class SMTAssertCommand extends SMTCommand {
 
 	@Override
 	public void toString(final StringBuilder builder) {
+		toString(builder, !PRINT_ANNOTATIONS);
+	}
+
+	public void toString(final StringBuilder builder,
+			final boolean printAnnotations) {
 		openCommand(builder);
 		builder.append(SPACE);
-		formula.toString(builder, 0, false);
+		if (printAnnotations && formula.isAnnotated()) {
+			SMTNode.printAnnotationOperator(builder);
+			formula.toString(builder, 0, false);
+			formula.printAnnotations(builder);
+		} else {
+			formula.toString(builder, 0, false);
+		}
 		builder.append(CPAR);
 	}
 }
