@@ -138,7 +138,7 @@ import org.eventb.smt.provers.internal.core.IllegalTagException;
  * <p>
  * The SMT-LIB version of the translation is 1.2
  */
-public class SMTThroughVeriT extends TranslatorV1_2 {
+public class SMTThroughVeriT extends Translator {
 
 	/**
 	 * This variable stores additional assumptions produced by the translation

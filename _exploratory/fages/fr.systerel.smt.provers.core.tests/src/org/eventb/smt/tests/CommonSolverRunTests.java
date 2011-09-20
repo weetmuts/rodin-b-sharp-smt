@@ -196,6 +196,53 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
+	private void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<Predicate> parsedHypotheses,
+			final Predicate parsedGoal, final boolean expectedSolverResult,
+			final List<Predicate> expectedUnsatCore,
+			final boolean expectedGoalNeed) throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		final SMTProverCall smtProverCall;
+
+		try {
+			switch (translationApproach) {
+			case USING_VERIT:
+				// Create an instance of SmtVeriTCall
+				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					// nothing to do
+				};
+				break;
+
+			default: // USING_PP
+				// Create an instance of SmtPPCall
+				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
+						MONITOR, preferences, lemmaName) {
+					// nothing to do
+				};
+				break;
+			}
+
+			smtProverCalls.add(smtProverCall);
+			smtProverCall.run();
+
+			assertEquals(
+					"The result of the SMT prover wasn't the expected one.",
+					expectedSolverResult, smtProverCall.isValid());
+			assertEquals("The extracted unsat-core wasn't the expected one.",
+					expectedUnsatCore, smtProverCall.neededHypotheses());
+			assertEquals("The extracted goal need wasn't the expected one.",
+					expectedGoalNeed, smtProverCall.isGoalNeeded());
+		} catch (final IllegalArgumentException iae) {
+			fail(iae.getMessage());
+		}
+	}
+
 	private void doTeTest(final String lemmaName,
 			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
 			final Set<String> expectedFuns, final Set<String> expectedPreds,
@@ -329,6 +376,29 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		doTest(translationApproach, lemmaName, hypotheses, goal,
 				expectedSolverResult);
+	}
+
+	protected void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult,
+			final List<String> expectedUnsatCoreStr,
+			final boolean expectedGoalNeed) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
+
+		for (final String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, te));
+		}
+
+		final Predicate goal = parse(inputGoal, te);
+
+		final List<Predicate> expectedHypotheses = new ArrayList<Predicate>();
+		for (final String expectedHyp : expectedUnsatCoreStr) {
+			expectedHypotheses.add(parse(expectedHyp, te));
+		}
+
+		doTest(translationApproach, lemmaName, hypotheses, goal,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed);
 	}
 
 	protected void doTTeTest(final String lemmaName,

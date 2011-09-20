@@ -21,13 +21,12 @@ import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Map;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
-import org.eventb.smt.ast.SMTBenchmark;
-import org.eventb.smt.ast.SMTFormula;
-import org.eventb.smt.ast.attributes.SMTAttribute;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTThroughPP;
 
@@ -88,9 +87,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal,
-				smtPreferences.getSolver().getId(), V1_2);
+		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
+				hypotheses, goal, smtPreferences.getSolver().getId(), V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -129,18 +127,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, hypotheses, goal,
-				smtPreferences.getSolver().getId(), V2_0);
-
-		for (final SMTFormula assumption : benchmark.getAssumptions()) {
-			final Iterator annotationsIterator = assumption
-					.getAnnotationsIterator();
-			while (annotationsIterator.hasNext()) {
-				final SMTAttribute annotation = (SMTAttribute) annotationsIterator
-						.next();
-			}
-		}
+		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
+				hypotheses, goal, smtPreferences.getSolver().getId(), V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -166,6 +154,23 @@ public class SMTPPCall extends SMTProverCall {
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+	}
+
+	@Override
+	void extractUnsatCoreFromVeriTProof() {
+		neededHypotheses = new HashSet<Predicate>();
+		goalNeeded = false;
+		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
+		for (final String label : labelMap.keySet()) {
+			if (solverResult.contains(label)) {
+				final ITrackedPredicate trPredicate = labelMap.get(label);
+				if (trPredicate.isHypothesis()) {
+					neededHypotheses.add(trPredicate.getOriginal());
+				} else {
+					goalNeeded = true;
+				}
+			}
 		}
 	}
 }

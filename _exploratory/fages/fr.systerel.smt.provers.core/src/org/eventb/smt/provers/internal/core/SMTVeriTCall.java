@@ -25,7 +25,6 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughVeriT;
@@ -219,9 +218,8 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Produces an SMT benchmark containing some veriT macros.
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
-		final SMTBenchmark benchmark = SMTThroughVeriT
-				.translateToSmtLibBenchmark(lemmaName, hypotheses, goal,
-						smtPreferences.getSolver().getId());
+		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
+				hypotheses, goal, smtPreferences.getSolver().getId());
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -272,6 +270,11 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	@Override
 	protected void makeSMTBenchmarkFileV2_0() throws IOException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	void extractUnsatCoreFromVeriTProof() {
 		// TODO Auto-generated method stub
 	}
 }

@@ -10,10 +10,12 @@
 
 package org.eventb.smt.ast;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
@@ -33,10 +35,10 @@ public class SMTBenchmarkPP extends SMTBenchmark {
 	 * @param formula
 	 *            the formula of the benchmark
 	 */
-	public SMTBenchmarkPP(final String lemmaName,
-			final SMTSignature signature, final List<SMTFormula> assumptions,
-			final SMTFormula formula) {
-		super(lemmaName + "_pp", signature, assumptions, formula);
+	public SMTBenchmarkPP(final String lemmaName, final SMTSignature signature,
+			final List<SMTFormula> assumptions, final SMTFormula formula,
+			final HashMap<String, ITrackedPredicate> labelMap) {
+		super(lemmaName + "_pp", signature, assumptions, formula, labelMap);
 		comments.add("translated from Event-B with the PP approach of Rodin SMT Plugin");
 	}
 

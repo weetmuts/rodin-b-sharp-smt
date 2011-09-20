@@ -33,10 +33,9 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
+import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTLIBVersion;
-
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BEncoderStream;
 
 /**
  * 
@@ -51,7 +50,7 @@ public abstract class SMTProverCall extends XProverCall {
 	/**
 	 * Solver output at the end of the call
 	 */
-	private String solverResult;
+	protected String solverResult;
 
 	/**
 	 * Tells whether the given sequent was discharged (valid = true) or not
@@ -59,37 +58,39 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	private volatile boolean valid;
 
-	private volatile Set<Predicate> neededHypotheses;
+	volatile Set<Predicate> neededHypotheses = null;
 
-	private volatile boolean goalNeeded;
+	volatile boolean goalNeeded;
 
-	protected final List<Process> activeProcesses = new ArrayList<Process>();
+	volatile SMTBenchmark benchmark;
+
+	final List<Process> activeProcesses = new ArrayList<Process>();
 
 	/**
 	 * The UI preferences of the SMT plugin
 	 */
-	protected final SMTPreferences smtPreferences;
+	final SMTPreferences smtPreferences;
 
-	protected String translationPath = null;
+	String translationPath = null;
 
 	/**
 	 * Name of the called external SMT solver
 	 */
-	protected final String solverName;
+	final String solverName;
 
 	/**
 	 * Name of the lemma to prove
 	 */
-	protected String lemmaName;
+	String lemmaName;
 
 	/**
 	 * Access to these files must be synchronized. smtBenchmarkFile contains the
 	 * sequent to discharge translated to SMT-LIB language, smtResultFile
 	 * contains the result of the solver
 	 */
-	protected File smtTranslationFolder = null;
-	protected File smtBenchmarkFile;
-	protected File smtResultFile;
+	File smtTranslationFolder = null;
+	File smtBenchmarkFile;
+	File smtResultFile;
 
 	/**
 	 * Creates an instance of this class.
@@ -260,10 +261,6 @@ public abstract class SMTProverCall extends XProverCall {
 		}
 	}
 
-	private void parseResult() {
-		//TODO
-	}
-
 	/**
 	 * Creates a new PrintWriter given the file.
 	 * 
@@ -395,6 +392,8 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	abstract protected void makeSMTBenchmarkFileV2_0() throws IOException;
 
+	abstract void extractUnsatCoreFromVeriTProof();
+
 	/**
 	 * Runs the external SMT solver on the sequent given at instance creation.
 	 */
@@ -418,9 +417,6 @@ public abstract class SMTProverCall extends XProverCall {
 				}
 
 			} else if (DEV && smtPreferences.getSolver().getsmtV2_0()) {
-				/**
-				 * TODO SMT-LIB v2.0
-				 */
 				try {
 					makeSMTBenchmarkFileV2_0();
 					smtBenchmarkFileMade = true;
@@ -453,6 +449,12 @@ public abstract class SMTProverCall extends XProverCall {
 				}
 			}
 
+			if (DEV & isValid()) {
+				if (solverName.equals("verit")) {
+					extractUnsatCoreFromVeriTProof();
+				}
+			}
+
 		} catch (final IOException e) {
 			if (DEBUG) {
 				System.err.println(e.getMessage());
@@ -473,12 +475,12 @@ public abstract class SMTProverCall extends XProverCall {
 
 	@Override
 	public Set<Predicate> neededHypotheses() {
-		return null; // TODO
+		return neededHypotheses;
 	}
 
 	@Override
 	public boolean isGoalNeeded() {
-		return goalNeeded; // TODO
+		return goalNeeded;
 	}
 
 	/**

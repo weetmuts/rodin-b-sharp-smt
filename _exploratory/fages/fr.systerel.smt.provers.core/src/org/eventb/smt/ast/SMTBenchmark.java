@@ -20,9 +20,12 @@ import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.ast.commands.SMTAssertCommand;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
@@ -36,6 +39,7 @@ public class SMTBenchmark {
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
 	protected final SMTFormula formula;
+	protected HashMap<String, ITrackedPredicate> labelMap = new HashMap<String, ITrackedPredicate>();
 	protected final List<String> comments = new ArrayList<String>();
 
 	/**
@@ -50,11 +54,13 @@ public class SMTBenchmark {
 	 *            the formula formula
 	 */
 	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
-			final List<SMTFormula> assumptions, final SMTFormula formula) {
+			final List<SMTFormula> assumptions, final SMTFormula formula,
+			final HashMap<String, ITrackedPredicate> labelMap) {
 		this.signature = signature;
 		name = this.signature.freshBenchmarkName(lemmaName);
 		this.assumptions = assumptions;
 		this.formula = formula;
+		this.labelMap = labelMap;
 	}
 
 	protected void getUsedSymbols(final SMTNumeral num,
@@ -175,12 +181,21 @@ public class SMTBenchmark {
 	}
 
 	/**
-	 * get the formula of the benchmark
+	 * gets the formula of the benchmark
 	 * 
 	 * @return the formula of the benchmark
 	 */
 	public SMTFormula getFormula() {
 		return formula;
+	}
+
+	/**
+	 * Gets the label map of the benchmark
+	 * 
+	 * @return the labelMap
+	 */
+	public Map<String, ITrackedPredicate> getLabelMap() {
+		return labelMap;
 	}
 
 	/**

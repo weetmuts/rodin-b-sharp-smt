@@ -40,6 +40,15 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 				expectedSolverResult);
 	}
 
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult,
+			final List<String> expectedUnsatCore, final boolean expectedGoalNeed)
+			throws IllegalArgumentException {
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
+				expectedSolverResult, expectedUnsatCore, expectedGoalNeed);
+	}
+
 	@Test(timeout = 3000)
 	public void testSetsEquality() {
 		setPreferencesForSolverTest(solver);
@@ -56,7 +65,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	//@Ignore("(one-point rule needed)")
+	// @Ignore("(one-point rule needed)")
 	public void testIntsSetEquality() {
 		setPreferencesForSolverTest(solver);
 
@@ -622,7 +631,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	//@Ignore("(sets equality)")
+	// @Ignore("(sets equality)")
 	public void testDifferentForall() {
 		setPreferencesForSolverTest(solver);
 
@@ -640,7 +649,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test(timeout = 3000)
-	//@Ignore("(sets equality)")
+	// @Ignore("(sets equality)")
 	public void testCh7Conc29() {
 		setPreferencesForSolverTest(solver);
 
@@ -721,7 +730,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	//@Ignore("Re-add when ppTrans updated (sets equality)")
+	// @Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDynamicStableLSR_081014_15() {
 		setPreferencesForSolverTest(solver);
 
@@ -778,7 +787,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	//@Ignore("Re-add when ppTrans updated (sets equality)")
+	// @Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testch910_ring_6() {
 		setPreferencesForSolverTest(solver);
 

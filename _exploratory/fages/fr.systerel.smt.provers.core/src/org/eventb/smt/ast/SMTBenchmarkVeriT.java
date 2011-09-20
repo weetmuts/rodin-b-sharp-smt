@@ -42,7 +42,7 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	public SMTBenchmarkVeriT(final String lemmaName,
 			final SMTSignatureV1_2Verit signature,
 			final List<SMTFormula> assumptions, final SMTFormula formula) {
-		super(lemmaName + "_vt", signature, assumptions, formula);
+		super(lemmaName + "_vt", signature, assumptions, formula, null);
 		comments.add("translated from Event-B with the VeriT approach of Rodin SMT Plugin");
 	}
 

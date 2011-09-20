@@ -71,6 +71,7 @@ import org.eventb.smt.ast.SMTSignatureV2_0;
 import org.eventb.smt.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
+import org.eventb.smt.ast.attributes.SMTLabel;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
@@ -91,7 +92,7 @@ import org.eventb.smt.provers.internal.core.IllegalTagException;
  * to reduce an Event-B sequent to Predicate Calculus. Then the SMT translation
  * is done.
  */
-public class SMTThroughPP extends TranslatorV1_2 {
+public class SMTThroughPP extends Translator {
 	/**
 	 * The SMT factory used by the translator to make SMT symbols
 	 */
@@ -1176,6 +1177,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		boolean falseGoalNeeded = true;
+		final HashMap<String, ITrackedPredicate> labelMap = new HashMap<String, ITrackedPredicate>();
 		for (final ITrackedPredicate trackedPredicate : sequent.getPredicates()) {
 			clearFormula();
 			final Predicate predicate = trackedPredicate.getPredicate();
@@ -1186,8 +1188,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
 					if (smtlibVersion.equals(V2_0)) {
-						assumption.addAnnotation(((SMTSignatureV2_0) signature)
-								.freshLabel(!GOAL_LABEL));
+						final SMTLabel label = (SMTLabel) ((SMTSignatureV2_0) signature)
+								.freshLabel(!GOAL_LABEL);
+						assumption.addAnnotation(label);
+						labelMap.put(label.getName(), trackedPredicate);
 					}
 					translatedAssumptions.add(assumption);
 				}
@@ -1201,8 +1205,10 @@ public class SMTThroughPP extends TranslatorV1_2 {
 						new SMTFormula[] { translate(predicate, IN_GOAL) },
 						smtlibVersion);
 				if (smtlibVersion.equals(V2_0)) {
-					smtFormula.addAnnotation(((SMTSignatureV2_0) signature)
-							.freshLabel(GOAL_LABEL));
+					final SMTLabel label = (SMTLabel) ((SMTSignatureV2_0) signature)
+							.freshLabel(GOAL_LABEL);
+					smtFormula.addAnnotation(label);
+					labelMap.put(label.getName(), trackedPredicate);
 				}
 			}
 		}
@@ -1228,7 +1234,7 @@ public class SMTThroughPP extends TranslatorV1_2 {
 		}
 
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
-				signature, translatedAssumptions, smtFormula);
+				signature, translatedAssumptions, smtFormula, labelMap);
 		benchmark.removeUnusedSymbols();
 		return benchmark;
 	}
