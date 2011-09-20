@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -352,6 +353,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -363,6 +365,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -374,6 +377,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -385,6 +389,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testExponentiationVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -396,6 +401,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -412,6 +418,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -428,6 +435,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -444,6 +452,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation canceled")
 	public void testModForCVC3Call() {
 		setPreferencesForCvc3Test();
 

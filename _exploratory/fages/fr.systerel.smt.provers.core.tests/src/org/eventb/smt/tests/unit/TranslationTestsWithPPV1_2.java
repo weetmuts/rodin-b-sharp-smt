@@ -32,7 +32,6 @@ import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughPP;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -281,16 +280,6 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	}
 
 	@Test
-	@Ignore("")
-	public void testQuantifiers2() {
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		testTranslationV1_2(te, "∃  X ⦂ ℙ(A×A)· (∃ x · x↦x ∈ X)",
-				"(exists (?X PAA) (?x A) (MS ?x ?x ?X))");
-
-	}
-
-	@Test
 	public void testExists() {
 		/**
 		 * exists
@@ -347,16 +336,6 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		 * ge
 		 */
 		testTranslationV1_2Default("a ≥ b", "(>= a b)");
-	}
-
-	/**
-	 * notequal
-	 */
-	@Test
-	@Ignore("Waiting for ppTrans to be updated")
-	// TODO Re-add when ppTrans is updated
-	public void testPredRelopNotEqual() {
-		testTranslationV1_2Default("a ≠ b", "(not (= a b))");
 	}
 
 	/**
@@ -525,22 +504,6 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		testTranslationV1_2(te, "b = TRUE", "b");
 		testTranslationV1_2(te, "TRUE = b", "b");
 		testTranslationV1_2(te, "b = c", "(iff b c)");
-	}
-
-	@Test
-	@Ignore("Waiting for ppTrans to be updated")
-	// TODO Readd when ppTrans is updated
-	public void testSimplifyAnd() {
-		testTranslationV1_2Default(
-				"((a = b) ∧ (u = v) ∧ (a = b)) ∧ ((u = v) ∧ (a = b))",
-				"(and (= a b) (iff u v))");
-	}
-
-	@Test
-	@Ignore("Waiting for ppTrans to be updated")
-	// TODO Re-add when ppTrans is updated
-	public void testSimplifyImplies() {
-		testTranslationV1_2Default("∀ x · x + 1 > 0 ⇒ ∀ y · y + 1 > 0", "true");
 	}
 
 	@Test
@@ -718,22 +681,28 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	@Test
 	public void testBoundBaseType() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(te, "∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
-				"(not (forall (?z PAB) (?c PAB) (forall (?x AB) (iff (MS ?x ?z) (MS ?x ?c)))))");
+		testTranslateGoalPP(
+				te,
+				"∀z⦂ℙ(A×B),c⦂ℙ(A×B)·z=c",
+				"(not (forall (?z PAB) (?c PAB) (?x A) (?x0 B) (iff (MS ?x ?x0 ?z) (MS ?x ?x0 ?c))))");
 	}
 
 	@Test
 	public void testBoundBaseType2() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(te, "∀z⦂A×B,c⦂A×B·z=c",
-				"(not (forall (?z A) (?z0 B) (?c A) (?c0 B) (and (= ?z ?c) (= ?z0 ?c0))))");
+		testTranslateGoalPP(
+				te,
+				"∀z⦂A×B,c⦂A×B·z=c",
+				"(not (and (forall (?z A) (?z0 B) (?c A) (?c0 B) (= ?z ?c)) (forall (?z1 A) (?z2 B) (?c1 A) (?c2 B) (= ?z2 ?c2))))");
 	}
 
 	@Test
 	public void testBoundBaseType3() {
 		final ITypeEnvironment te = mTypeEnvironment();
-		testTranslateGoalPP(te, "∀z⦂A,c⦂A·z↦c=c↦z",
-				"(not (forall (?z A) (?c A) (and (= ?z ?c) (= ?c ?z))))");
+		testTranslateGoalPP(
+				te,
+				"∀z⦂A,c⦂A·z↦c=c↦z",
+				"(not (and (forall (?z A) (?c A) (= ?z ?c)) (forall (?z0 A) (?c0 A) (= ?c0 ?z0))))");
 	}
 
 	@Test
@@ -762,7 +731,9 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	@Test
 	public void testBoundRightHandSide() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
-		testTranslateGoalPP(te, "∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
-				"(not (forall (?z PA) (?c A) (and (MS ?c a) (MS ?c ?z))))");
+		testTranslateGoalPP(
+				te,
+				"∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
+				"(not (and (forall (?z PA) (?c A) (MS ?c a)) (forall (?z0 PA) (?c0 A) (MS ?c0 ?z0))))");
 	}
 }
