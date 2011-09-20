@@ -30,6 +30,10 @@ public class SMTLabel extends SMTAttribute {
 		this.values.add(name);
 	}
 
+	public String getName() {
+		return values.get(0).getName();
+	}
+
 	@Override
 	public void printValues(StringBuilder builder) {
 		builder.append(values.get(0).getName());
