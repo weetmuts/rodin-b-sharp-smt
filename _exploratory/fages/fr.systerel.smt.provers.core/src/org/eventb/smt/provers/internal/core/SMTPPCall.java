@@ -21,10 +21,13 @@ import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
+import org.eventb.smt.ast.SMTFormula;
+import org.eventb.smt.ast.attributes.SMTAttribute;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTThroughPP;
 
@@ -129,6 +132,15 @@ public class SMTPPCall extends SMTProverCall {
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
 				lemmaName, hypotheses, goal,
 				smtPreferences.getSolver().getId(), V2_0);
+
+		for (final SMTFormula assumption : benchmark.getAssumptions()) {
+			final Iterator annotationsIterator = assumption
+					.getAnnotationsIterator();
+			while (annotationsIterator.hasNext()) {
+				final SMTAttribute annotation = (SMTAttribute) annotationsIterator
+						.next();
+			}
+		}
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could

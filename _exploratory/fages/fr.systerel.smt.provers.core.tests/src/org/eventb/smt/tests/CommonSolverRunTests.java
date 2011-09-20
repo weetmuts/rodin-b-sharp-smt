@@ -235,8 +235,19 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			/**
 			 * smtlibVersion.equals(V2_0)
 			 */
-			setSolverPreferences(VERIT.toString(), "-i smtlib2 --disable-print-success", false, true);
+			setSolverPreferences(VERIT.toString(),
+					"-i smtlib2 --disable-print-success", false, true);
 		}
+	}
+
+	protected void setPreferencesForVeriTProofTest() {
+		/**
+		 * smtlibVersion.equals(V2_0)
+		 */
+		setSolverPreferences(
+				"veriT-proof-producing",
+				"-i smtlib2 --disable-print-success --proof=- --proof-version=1",
+				false, true);
 	}
 
 	protected void setPreferencesForCvc3Test() {

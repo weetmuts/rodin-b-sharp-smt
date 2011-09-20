@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
@@ -34,6 +35,8 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTLIBVersion;
+
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BEncoderStream;
 
 /**
  * 
@@ -55,6 +58,10 @@ public abstract class SMTProverCall extends XProverCall {
 	 * (valid = false)
 	 */
 	private volatile boolean valid;
+
+	private volatile Set<Predicate> neededHypotheses;
+
+	private volatile boolean goalNeeded;
 
 	protected final List<Process> activeProcesses = new ArrayList<Process>();
 
@@ -251,6 +258,10 @@ public abstract class SMTProverCall extends XProverCall {
 					+ solverName + ". See " + lemmaName
 					+ ".res for more details.");
 		}
+	}
+
+	private void parseResult() {
+		//TODO
 	}
 
 	/**
@@ -458,6 +469,16 @@ public abstract class SMTProverCall extends XProverCall {
 	@Override
 	public boolean isValid() {
 		return valid;
+	}
+
+	@Override
+	public Set<Predicate> neededHypotheses() {
+		return null; // TODO
+	}
+
+	@Override
+	public boolean isGoalNeeded() {
+		return goalNeeded; // TODO
 	}
 
 	/**

@@ -16,6 +16,7 @@ import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eventb.smt.ast.attributes.SMTAttribute;
@@ -88,6 +89,10 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 
 	public boolean isAnnotated() {
 		return !annotations.isEmpty();
+	}
+
+	public Iterator<SMTAttribute> getAnnotationsIterator() {
+		return annotations.iterator();
 	}
 
 	/**

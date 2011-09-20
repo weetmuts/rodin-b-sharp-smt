@@ -23,11 +23,11 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 
-
 /**
  * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
+	protected HashMap<Predicate, SMTFormula> predMap = new HashMap<Predicate, SMTFormula>();
 
 	/**
 	 * typeMap is a map between Event-B types encountered during the translation
