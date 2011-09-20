@@ -34,6 +34,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTTerm;
@@ -128,13 +130,15 @@ public abstract class TranslatorV1_2 extends Translator {
 		 * hypotheses and goal
 		 */
 		public static List<Type> getBoundIDentDeclTypes(
-				final List<Predicate> hypotheses, final Predicate goal) {
+				final ISimpleSequent sequent) {
 			final IFormulaInspector<Type> BID_TYPE_INSPECTOR = new BidTypeInspector();
 			final List<Type> typesFound = new ArrayList<Type>();
-			for (final Predicate p : hypotheses) {
-				typesFound.addAll(p.inspect(BID_TYPE_INSPECTOR));
+
+			for (final ITrackedPredicate trackedPredicate : sequent
+					.getPredicates()) {
+				final Predicate predicate = trackedPredicate.getPredicate();
+				typesFound.addAll(predicate.inspect(BID_TYPE_INSPECTOR));
 			}
-			typesFound.addAll(goal.inspect(BID_TYPE_INSPECTOR));
 
 			return typesFound;
 		}

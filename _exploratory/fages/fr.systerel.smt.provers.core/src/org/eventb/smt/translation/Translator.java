@@ -16,6 +16,8 @@ import java.util.List;
 import org.eventb.core.ast.ISimpleVisitor;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTNode;
@@ -27,7 +29,7 @@ import org.eventb.smt.ast.theories.SMTLogic;
  * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
-	protected HashMap<Predicate, SMTFormula> predMap = new HashMap<Predicate, SMTFormula>();
+	protected HashMap<String, ITrackedPredicate> labelMap = new HashMap<String, ITrackedPredicate>();
 
 	/**
 	 * typeMap is a map between Event-B types encountered during the translation
@@ -64,15 +66,14 @@ public abstract class Translator implements ISimpleVisitor {
 	 * Determines and returns the SMT-LIB logic to use in order to discharge the
 	 * current sequent.
 	 */
-	protected abstract SMTLogic determineLogic(
-			final List<Predicate> hypotheses, final Predicate goal);
+	protected abstract SMTLogic determineLogic(final ISimpleSequent sequent);
 
 	/**
 	 * This method extracts the type environment from the Event-B sequent and
 	 * builds the SMT-LIB signature to use.
 	 */
 	protected abstract void translateSignature(final SMTLogic logic,
-			final List<Predicate> hypotheses, final Predicate goal);
+			final ISimpleSequent sequent);
 
 	/**
 	 * This method returns the current SMT node.

@@ -12,7 +12,6 @@ package org.eventb.smt.translation;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.AtomicExpression;
@@ -22,10 +21,11 @@ import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.DefaultVisitor;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.Type;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 
 /**
  * This class is used to traverse the Event-B sequent in order to gather some
@@ -34,7 +34,7 @@ import org.eventb.core.ast.Type;
  * <li>the appearing of occurrences of the Event-B integer symbol;</li>
  * <li>the appearing of elements of the bool theory;</li>
  * <li>the need for using the True predicate;</li>
- * <li>the list of the sets to be translated into specialized membership
+ * <li>the list of the sets to be translated into specialised membership
  * predicates.</li>
  * </ul>
  **/
@@ -99,9 +99,9 @@ public class Gatherer extends DefaultVisitor {
 
 	/**
 	 * This method is used to gather from the relational predicate, the sets for
-	 * which specialized membership predicates (monadic or dyadic) should be
+	 * which specialised membership predicates (monadic or dyadic) should be
 	 * used. If the right side of the relation is a free identifier, then this
-	 * identifier is added to the specialized membership predicates set. Else if
+	 * identifier is added to the specialised membership predicates set. Else if
 	 * it is bound identifier, the type of the bound identifier is added to the
 	 * set of bound types.
 	 * 
@@ -114,7 +114,7 @@ public class Gatherer extends DefaultVisitor {
 		if (right instanceof FreeIdentifier) {
 			/**
 			 * If this identifier type does not look like ℙ(alpha × beta), then
-			 * it should be translated into a specialized membership predicate.
+			 * it should be translated into a specialised membership predicate.
 			 */
 			// if (right.getType().getSource() == null) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
@@ -127,7 +127,7 @@ public class Gatherer extends DefaultVisitor {
 
 	/**
 	 * This method extracts all the setsForSpecialMSPreds that will be
-	 * translated in optimized membership predicates, that is, the
+	 * translated in optimised membership predicates, that is, the
 	 * setsForSpecialMSPreds complying with the following rules:
 	 * 
 	 * <ul>
@@ -155,27 +155,23 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * This method executes the traversal in the hpoytheses and predicates to
-	 * process the informations described in {@link Gatherer}. It also makes the
-	 * mapping of each free identifier to its correlated predicate symbol
+	 * This method executes the traversal in the hypotheses and goal of the
+	 * given sequent to process the informations described in {@link Gatherer}.
+	 * It also makes the mapping of each free identifier to its correlated
+	 * predicate symbol.
 	 * 
-	 * @param hypotheses
-	 *            The hypotheses
-	 * @param goal
-	 *            the goal
+	 * @param sequent
+	 *            the sequent of which predicates must be traversed
 	 * @return a new gatherer with the results of the traversal.
 	 */
-	public static Gatherer gatherFrom(final List<Predicate> hypotheses,
-			final Predicate goal) {
+	public static Gatherer gatherFrom(final ISimpleSequent sequent) {
 		final Gatherer gatherer = new Gatherer();
 
-		for (final Predicate hypothesis : hypotheses) {
-			hypothesis.accept(gatherer);
+		for (final ITrackedPredicate trPredicate : sequent.getPredicates()) {
+			trPredicate.getPredicate().accept(gatherer);
 		}
-		goal.accept(gatherer);
 
 		gatherer.removeIdentsFromSetsForSpecialMSPreds();
-
 		return gatherer;
 	}
 
@@ -214,7 +210,7 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * returns the gathered sets for which specialized membership predicates
+	 * returns the gathered sets for which specialised membership predicates
 	 * should be used
 	 * 
 	 * @return the set of identifiers

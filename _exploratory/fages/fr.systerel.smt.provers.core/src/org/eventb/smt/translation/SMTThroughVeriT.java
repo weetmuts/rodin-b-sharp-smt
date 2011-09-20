@@ -95,6 +95,9 @@ import org.eventb.core.ast.SimplePredicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.ast.expanders.Expanders;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
+import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTBenchmarkVeriT;
 import org.eventb.smt.ast.SMTFactory;
@@ -126,7 +129,7 @@ import org.eventb.smt.ast.theories.VeritPredefinedTheory;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
- * This class implements the transalation from Event-B predicates to Extended
+ * This class implements the translation from Event-B predicates to Extended
  * SMT-LIB formulas.
  * <p>
  * The Extended SMT-LIB formulas contains macros and other elements that does
@@ -156,8 +159,10 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Predicate predicate, final String solver) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		translator.determineLogic(noHypothesis, predicate);
-		translator.translateSignature(logic, noHypothesis, predicate);
+		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
+				predicate, FormulaFactory.getDefault());
+		translator.determineLogic(sequent);
+		translator.translateSignature(logic, sequent);
 		return translator.getSignature();
 	}
 
@@ -209,7 +214,9 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 			final Predicate predicate, final String solver) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		translator.translateSignature(logic, noHypothesis, predicate);
+		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
+				predicate, FormulaFactory.getDefault());
+		translator.translateSignature(logic, sequent);
 		try {
 			predicate.accept(translator);
 		} catch (IllegalArgumentException e) {
@@ -222,25 +229,23 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 		private boolean boolTheory = false;
 
 		/**
-		 * This method executes the traversal in the hpoytheses and predicates
-		 * to process the informations described in {@link Gatherer}. It also
-		 * makes the mapping of each free identifier to its correlated predicate
+		 * This method executes the traversal in the hypotheses and goal to
+		 * process the informations described in {@link Gatherer}. It also makes
+		 * the mapping of each free identifier to its correlated predicate
 		 * symbol
 		 * 
-		 * @param hypotheses
-		 *            The hypotheses
-		 * @param goal
-		 *            the goal
+		 * @param sequent
+		 *            the sequent of which predicates must be traversed by the
+		 *            gatherer
 		 * @return a new gatherer with the results of the traversal.
 		 */
-		public static Gatherer gatherFrom(final List<Predicate> hypotheses,
-				final Predicate goal) {
+		public static Gatherer gatherFrom(final ISimpleSequent sequent) {
 			final Gatherer gatherer = new Gatherer();
 
-			for (final Predicate hypothesis : hypotheses) {
-				hypothesis.accept(gatherer);
+			for (final ITrackedPredicate trPredicate : sequent.getPredicates()) {
+				trPredicate.getPredicate().accept(gatherer);
 			}
-			goal.accept(gatherer);
+
 			return gatherer;
 		}
 
@@ -299,9 +304,8 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	 * returned the solver's own logic.
 	 */
 	@Override
-	protected SMTLogic determineLogic(final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final Gatherer gatherer = Gatherer.gatherFrom(hypotheses, goal);
+	protected SMTLogic determineLogic(final ISimpleSequent sequent) {
+		final Gatherer gatherer = Gatherer.gatherFrom(sequent);
 
 		if (gatherer.usesBoolTheory()) {
 			return new SMTLogic(SMTLogic.UNKNOWN,
@@ -365,17 +369,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 
 	@Override
 	public void translateSignature(final SMTLogic logic,
-			final List<Predicate> hypotheses, final Predicate goal) {
+			final ISimpleSequent sequent) {
 		signature = new SMTSignatureV1_2Verit(logic, V1_2);
 
 		addBooleanAssumption(logic);
 
-		final ITypeEnvironment typeEnvironment = extractTypeEnvironment(
-				hypotheses, goal);
+		final ITypeEnvironment typeEnvironment = sequent.getTypeEnvironment();
 		translateTypeEnvironment(typeEnvironment);
 
-		final List<Type> biTypes = BidTypeInspector.getBoundIDentDeclTypes(
-				hypotheses, goal);
+		final List<Type> biTypes = BidTypeInspector
+				.getBoundIDentDeclTypes(sequent);
 		final Iterator<Type> bIterator = biTypes.iterator();
 
 		extractTypeFromBoundIdentDecl(bIterator);
@@ -447,14 +450,16 @@ public class SMTThroughVeriT extends TranslatorV1_2 {
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
 			final List<Predicate> hypotheses, final Predicate goal) {
+		final ISimpleSequent sequent = SimpleSequents.make(hypotheses, goal,
+				FormulaFactory.getDefault());
 
-		final SMTLogic logic = determineLogic(hypotheses, goal);
+		final SMTLogic logic = determineLogic(sequent);
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
 		/**
 		 * SMT translation
 		 */
 		// translates the signature
-		translateSignature(logic, hypotheses, goal);
+		translateSignature(logic, sequent);
 		translatedAssumptions.addAll(getAdditionalAssumptions());
 
 		// translates each hypothesis
