@@ -299,7 +299,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 */
 		setSolverPreferences(
 				"veriT-proof-producing",
-				"-i smtlib2 --disable-print-success --proof=- --proof-version=1",
+				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
 				false, true);
 	}
 

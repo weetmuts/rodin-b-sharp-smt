@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.smt.ast.attributes.SMTAttribute;
+import org.eventb.smt.ast.commands.SMTAssertCommand;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
 /**
@@ -107,6 +108,8 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * @param builder
 	 */
 	public void printAnnotations(final StringBuilder builder) {
+		builder.append("\n");
+		indent(builder, SMTAssertCommand.ASSERT_COMMAND_OFFSET);
 		builder.append(SPACE);
 		for (final SMTAttribute attribute : annotations) {
 			attribute.toString(builder);
