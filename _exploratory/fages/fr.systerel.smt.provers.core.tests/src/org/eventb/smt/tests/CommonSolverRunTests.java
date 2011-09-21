@@ -16,6 +16,7 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -234,8 +235,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
-			assertEquals("The extracted unsat-core wasn't the expected one.",
-					expectedUnsatCore, smtProverCall.neededHypotheses());
+			assertTrue(
+					"The extracted unsat-core wasn't the expected one.",
+					smtProverCall.neededHypotheses().containsAll(
+							expectedUnsatCore));
+			assertTrue("The extracted unsat-core wasn't the expected one.",
+					expectedUnsatCore.containsAll(smtProverCall
+							.neededHypotheses()));
 			assertEquals("The extracted goal need wasn't the expected one.",
 					expectedGoalNeed, smtProverCall.isGoalNeeded());
 		} catch (final IllegalArgumentException iae) {

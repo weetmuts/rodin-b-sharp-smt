@@ -130,7 +130,7 @@ public class SMTBenchmark {
 			 * signature.getSMTLIBVersion().equals(V2_0)
 			 */
 			final SMTAssertCommand assertCommand = new SMTAssertCommand(formula);
-			assertCommand.toString(builder);
+			assertCommand.toString(builder, printAnnotations);
 			builder.append("\n");
 		}
 	}

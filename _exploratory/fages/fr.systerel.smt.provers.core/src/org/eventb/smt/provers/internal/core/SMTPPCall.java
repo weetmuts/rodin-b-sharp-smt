@@ -146,7 +146,8 @@ public class SMTPPCall extends SMTProverCall {
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
 		if (solverName.equals(ALT_ERGO.toString())
-				|| solverName.equals(VERIT.toString())) {
+				|| solverName.equals(VERIT.toString())
+				|| solverName.equals("veriT-proof-producing")) {
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS);
 		} else {
 			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);

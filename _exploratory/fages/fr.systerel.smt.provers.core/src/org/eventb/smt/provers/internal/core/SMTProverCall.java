@@ -450,7 +450,7 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			if (DEV & isValid()) {
-				if (solverName.equals("verit")) {
+				if (solverName.equals("veriT-proof-producing")) {
 					extractUnsatCoreFromVeriTProof();
 				}
 			}
