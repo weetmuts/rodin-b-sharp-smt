@@ -22,6 +22,7 @@ import org.eventb.smt.ast.SMTNode;
  * 
  */
 public class SMTAssertCommand extends SMTCommand {
+	public static final int ASSERT_COMMAND_OFFSET = 8;
 	private final SMTFormula formula;
 
 	public SMTAssertCommand(final SMTFormula formula) {
@@ -40,10 +41,10 @@ public class SMTAssertCommand extends SMTCommand {
 		builder.append(SPACE);
 		if (printAnnotations && formula.isAnnotated()) {
 			SMTNode.printAnnotationOperator(builder);
-			formula.toString(builder, 0, false);
+			formula.toString(builder, ASSERT_COMMAND_OFFSET + 3, false);
 			formula.printAnnotations(builder);
 		} else {
-			formula.toString(builder, 0, false);
+			formula.toString(builder, ASSERT_COMMAND_OFFSET, false);
 		}
 		builder.append(CPAR);
 	}
