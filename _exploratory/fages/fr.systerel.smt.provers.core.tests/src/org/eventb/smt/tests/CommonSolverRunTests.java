@@ -237,8 +237,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					expectedSolverResult, smtProverCall.isValid());
 			assertTrue(
 					"The extracted unsat-core wasn't the expected one.",
-					smtProverCall.neededHypotheses().containsAll(
-							expectedUnsatCore));
+					smtProverCall.neededHypotheses() != null
+							&& smtProverCall.neededHypotheses().containsAll(
+									expectedUnsatCore));
 			assertTrue("The extracted unsat-core wasn't the expected one.",
 					expectedUnsatCore.containsAll(smtProverCall
 							.neededHypotheses()));
