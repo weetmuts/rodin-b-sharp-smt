@@ -8,16 +8,17 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests;
+package org.eventb.smt.tests.performance;
 
 import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
 
 
-public class XMLtoSMTTestsZ3 extends XMLtoSMTTests {
+public class XMLtoSMTTestsCVC3 extends XMLtoSMTTests {
 
-	public XMLtoSMTTestsZ3(final LemmaData data) {
-		super(data, SMTSolver.Z3);
+	public XMLtoSMTTestsCVC3(final LemmaData data) {
+		super(data, SMTSolver.CVC3);
 	}
 
 }

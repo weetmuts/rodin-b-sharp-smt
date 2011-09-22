@@ -13,7 +13,6 @@ package org.eventb.smt.tests.performance;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
-import org.eventb.smt.tests.SolverPerfWithPP;
 
 public class Cvc3PerfWithPPV2_0 extends SolverPerfWithPP {
 

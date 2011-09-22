@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests;
+package org.eventb.smt.tests.performance;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
 

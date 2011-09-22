@@ -13,7 +13,6 @@ package org.eventb.smt.tests.performance;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
-import org.eventb.smt.tests.SolverPerfWithVeriT;
 
 public class Cvc3PerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public Cvc3PerfWithVeriTV1_2() {

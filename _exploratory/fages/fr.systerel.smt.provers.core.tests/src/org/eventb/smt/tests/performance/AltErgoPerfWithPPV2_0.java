@@ -13,7 +13,6 @@ package org.eventb.smt.tests.performance;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
-import org.eventb.smt.tests.SolverPerfWithPP;
 
 public class AltErgoPerfWithPPV2_0 extends SolverPerfWithPP {
 	public AltErgoPerfWithPPV2_0() {
