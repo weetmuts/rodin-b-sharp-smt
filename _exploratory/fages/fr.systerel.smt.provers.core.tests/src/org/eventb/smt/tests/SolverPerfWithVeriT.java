@@ -12,7 +12,7 @@ package org.eventb.smt.tests;
 
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,8 +49,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("x", "IN_1");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("IN_1 = {x}");
+		final List<String> hyps = Arrays.asList("IN_1 = {x}");
 		doTest("namecol", hyps, "(∃ IN_0 ⦂ IN_1 · IN_0 ∈ IN_1)", te, VALID);
 	}
 
@@ -60,11 +59,11 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(A ◁ AB) = (A ◁ AB)");
-		hyps.add("(A ◁ AB) = (A ◁ AB)");
-		hyps.add("(A ⩤ AB) = (A ⩤ AB)");
-		hyps.add("(AB ▷ A) = (AB ▷ A)");
+		final List<String> hyps = Arrays.asList( //
+				"(A ◁ AB) = (A ◁ AB)", //
+				"(A ◁ AB) = (A ◁ AB)", //
+				"(A ⩤ AB) = (A ⩤ AB)", //
+				"(AB ▷ A) = (AB ▷ A)");
 
 		doTest("rule15_res_subs", hyps, "(AB ⩥ A) = (AB ⩥ A)", te, VALID);
 	}
@@ -75,8 +74,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(AB × AB) = (AB × AB)");
+		final List<String> hyps = Arrays.asList("(AB × AB) = (AB × AB)");
 
 		doTest("rule15_cart_prod_int_range", hyps, "(a ‥ a) = (a ‥ a)", te,
 				VALID);
@@ -86,8 +84,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testTePlusSort() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("g ∈ e");
+		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		final Set<String> expectedSorts = new HashSet<String>();
 		expectedSorts.add("S");
@@ -95,9 +92,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final Set<String> expectedFuns = new HashSet<String>();
 		expectedFuns.add("(g S)");
 
-		final Set<String> expectedPreds = new HashSet<String>();
-		expectedPreds.add("(e S)");
-		expectedPreds.add("(f S)");
+		final Set<String> expectedPreds = new HashSet<String>(Arrays.asList(
+				"(e S)", "(f S)"));
 
 		doTTeTest("tetestSort", hyps, "g ∈ f", pow_te, expectedFuns,
 				expectedPreds, expectedSorts);
@@ -109,7 +105,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("rule20", hyps, "{1↦2} ⊂ (λx·x>0 ∣ x+x)", te, VALID);
 	}
@@ -119,7 +115,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("rule20_many_foralls_verit",
 				hyps,
@@ -132,7 +128,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("rule20_macro_inside_macro", hyps,
 				"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
@@ -142,8 +138,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testSolverCallBelong1() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("g ∈ e");
+		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		// perform test
 		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
@@ -156,8 +151,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
+		final List<String> hyps = Arrays.asList("a ∈ A");
 
 		// perform test
 		doTest("simpleU_verit", hyps, "⊤", te, VALID);
@@ -169,8 +163,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
+		final List<String> hyps = Arrays.asList("a ∈ A");
 
 		// perform test
 		doTest("simpleU_altergo", hyps, "⊤", te, VALID);
@@ -182,7 +175,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("pair", "Pair");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("pairName", hyps, "pair = pair", te, VALID);
 	}
 
@@ -192,8 +185,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
+		final List<String> hyps = Arrays.asList("a ∈ A");
 
 		// perform test
 		doTest("simpleU_cvc3", hyps, "⊤", te, VALID);
@@ -203,9 +195,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testSolverCallWithVeriT() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList(//
+				"x < y", //
+				"y < z");
 
 		// perform test
 		doTest("with_verit", hyps, "x < z", arith_te, VALID);
@@ -215,9 +207,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testSolverCallWithCvc3() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList(//
+				"x < y", //
+				"y < z");
 
 		// perform test
 		doTest("with_cvc3", hyps, "x < z", arith_te, VALID);
@@ -228,7 +220,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testExpn() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("expn", hyps, "x ^ y = z", arith_te, VALID);
 	}
 
@@ -236,9 +228,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testSolverCallWithZ3() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList(//
+				"x < y", //
+				"y < z");
 
 		// perform test
 		doTest("with_z3", hyps, "x < z", arith_te, VALID);
@@ -248,9 +240,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testSolverCallWithAltErgo() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList(//
+				"x < y", //
+				"y < z");
 
 		// perform test
 		doTest("with_altergo", hyps, "x < z", arith_te, VALID);
@@ -269,10 +261,10 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		// QF_LIA
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a1 ≤ r1");
-		hyps.add("r1 ≤ a1 + 1");
-		hyps.add("r1 ≠ a1");
+		final List<String> hyps = Arrays.asList(//
+				"a1 ≤ r1", //
+				"r1 ≤ a1 + 1", //
+				"r1 ≠ a1");
 
 		doTest("ch8_circ_arbiter1", hyps, "r1 = a1 + 1", te, VALID);
 	}
@@ -290,11 +282,11 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		// QF_LIA
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(k ≥ 1) ∧ (k ≤ n)");
-		hyps.add("(x ≥ 1) ∧ (x ≤ n − 1)");
-		hyps.add("¬ ((x ≥ 1) ∧ (x ≤ k − 1))");
-		hyps.add("¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
+		final List<String> hyps = Arrays.asList(//
+				"(k ≥ 1) ∧ (k ≤ n)", //
+				"(x ≥ 1) ∧ (x ≤ n − 1)", //
+				"¬ ((x ≥ 1) ∧ (x ≤ k − 1))", //
+				"¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
 
 		doTest("quick_sort1", hyps, "x = k", te, VALID);
 	}
@@ -337,7 +329,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("int_in_relation", hyps, "ℤ ⇸  D = ℤ ⇸  D", te, VALID);
 	}
@@ -354,8 +346,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n ≥ 1");
+		final List<String> hyps = Arrays.asList("n ≥ 1");
 		doTest("ch915_bin10", hyps, "1 ≤ (n+1) ÷ 2", te, VALID);
 	}
 
@@ -372,11 +363,11 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		// QF_LIA
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("t ≥ 0");
-		hyps.add("t0 ≥ 0");
-		hyps.add("t0 < t");
-		hyps.add("(i ≥ t0) ∧ (i ≤ t)");
+		final List<String> hyps = Arrays.asList(//
+				"t ≥ 0", //
+				"t0 ≥ 0", //
+				"t0 < t", //
+				"(i ≥ t0) ∧ (i ≤ t)");
 
 		doTest("bosch_switch1", hyps, "i ≥ 0", te, VALID);
 	}
@@ -392,11 +383,11 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("S={a,b,c}");
-		hyps.add("¬ a=b");
-		hyps.add("¬ b=c");
-		hyps.add("¬ c=a");
+		final List<String> hyps = Arrays.asList(//
+				"S={a,b,c}", //
+				"¬ a=b", //
+				"¬ b=c", //
+				"¬ c=a");
 
 		doTest("bepi_colombo1", hyps, "{a,b,c} = {c,a,b}", te, VALID);
 	}
@@ -409,9 +400,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("S={a,b}");
-		hyps.add("¬ a=b");
+		final List<String> hyps = Arrays.asList(//
+				"S={a,b}", //
+				"¬ a=b");
 
 		doTest("subset", hyps, "{a} ⊂ {a,b}", te, VALID);
 	}
@@ -430,7 +421,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("ch7_likeMoreSimpleYet", hyps, "{0 ↦ d} ∈ ({0,1} →  D)", te,
 				!VALID);
@@ -444,9 +435,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("TC = {3 ↦ 5}");
-		hyps.add("TM = {1 ↦ 1}");
+		final List<String> hyps = Arrays.asList(//
+				"TC = {3 ↦ 5}", //
+				"TM = {1 ↦ 1}");
 
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
@@ -459,9 +450,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}");
-		hyps.add("TM = {1 ↦ 1}");
+		final List<String> hyps = Arrays
+				.asList("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}", //
+						"TM = {1 ↦ 1}");
 
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
@@ -472,9 +463,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6}");
-		hyps.add("TM = ∅");
+		final List<String> hyps = Arrays
+				.asList("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6}", //
+						"TM = ∅");
 
 		doTest("bepi_colombo3Medium2", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
@@ -487,7 +478,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("relation", hyps, "{ 1 ↦ 2 } ∈ { 1 } ↔ { 2 }", te, VALID);
 	}
@@ -504,9 +495,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}");
-		hyps.add("TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
+		final List<String> hyps = Arrays
+				.asList("TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6,200 ↦ 7,201 ↦ 1,201 ↦ 2,201 ↦ 3,201 ↦ 4,201 ↦ 5,201 ↦ 6,201 ↦ 7,201 ↦ 8,201 ↦ 9,201 ↦ 10,202 ↦ 1,202 ↦ 2,202 ↦ 3,202 ↦ 4,203 ↦ 1,203 ↦ 2,203 ↦ 3,203 ↦ 4,203 ↦ 5,203 ↦ 6,203 ↦ 7,203 ↦ 8,203 ↦ 9}", //
+						"TM = {1 ↦ 1,1 ↦ 2,1 ↦ 7,1 ↦ 8,3 ↦ 25,5 ↦ 1,5 ↦ 2,5 ↦ 3,5 ↦ 4,6 ↦ 6,6 ↦ 10,17 ↦ 2,21 ↦ 3}");
 
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
@@ -517,8 +508,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("∃x·x∈s");
+		final List<String> hyps = Arrays.asList("∃x·x∈s");
 
 		doTest("rule17_exists", hyps, "∃x,y·x∈s∧y∈s", te, VALID);
 	}
@@ -529,9 +519,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("∀x·x∈s");
-		hyps.add("∀x,y·x∈s∧y∈s");
+		final List<String> hyps = Arrays.asList(//
+				"∀x·x∈s", //
+				"∀x,y·x∈s∧y∈s");
 
 		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
 				"∀x,y·x∈s ∧ y∈s", te);
@@ -548,11 +538,10 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testRule16NotEqual() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "b", "ℤ",
-				"c", "ℤ", "a", "ℤ");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "a", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(a = 1) ∧ (b = 2)");
+		final List<String> hyps = Arrays.asList("(a = 1) ∧ (b = 2)");
 
 		doTest("rule16_not_equal", hyps, "(a ∗ b ≠ 0)", te, VALID);
 	}
@@ -563,8 +552,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("(AB \ue103 AB) = (AB \ue103 AB)");
+		final List<String> hyps = Arrays
+				.asList("(AB \ue103 AB) = (AB \ue103 AB)");
 
 		doTest("rule15_ovr_fcomp", hyps, "(AB \u003b AB) = (AB \u003b AB)", te,
 				VALID);
@@ -576,7 +565,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("rule15_bcomp", hyps, "(AB \u2218 AB) = (AB \u2218 AB)", te,
 				VALID);
@@ -588,8 +577,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "b", "ℤ", "A",
 				"ℙ(ℤ)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
+		final List<String> hyps = Arrays.asList("{a∗b∣a+b ≥ 0} = {a∗a∣a ≥ 0}");
 
 		doTest("rule18", hyps, "{a∣a ≥ 0} ⊂ A", te, VALID);
 	}
@@ -599,8 +587,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("min({2,3}) = min({2,3})");
+		final List<String> hyps = Arrays.asList("min({2,3}) = min({2,3})");
 
 		doTest("rule22_23", hyps, "max({2,3}) = max({2,3})", te, VALID);
 	}
@@ -612,7 +599,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("rule24", hyps, "finite({1,2,3})", te, VALID);
 	}
@@ -623,7 +610,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("rule25", hyps, "card({1,2,3}) = card({1,2,3})", te, VALID);
 	}
 
@@ -632,7 +619,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("testpred", hyps, "2 ↦ 1 ∈ pred", te, VALID);
 	}
 
@@ -642,7 +629,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("testpredset", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
 	}
 
@@ -651,7 +638,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment();
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("testsucc", hyps, "1 ↦ 2 ∈ succ", te, VALID);
 	}
 
@@ -661,8 +648,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("A = {1,2,3}");
+		final List<String> hyps = Arrays.asList("A = {1,2,3}");
 		doTest("distinct_singletons", hyps, "partition(A,{1},{2},{3})", te,
 				VALID);
 	}
@@ -672,8 +658,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("A = {1,2,3,4}");
+		final List<String> hyps = Arrays.asList("A = {1,2,3,4}");
 		doTest("distincttest", hyps, "partition(A,{1,2},{4},{3})", te, VALID);
 	}
 
@@ -682,8 +667,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("A = {1,2,3}");
+		final List<String> hyps = Arrays.asList("A = {1,2,3}");
 		doTest("distinctsimpletest", hyps, "partition(A,{1,2},{3})", te, VALID);
 	}
 
@@ -692,7 +676,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("intsettest", hyps, "A ⊆ ℤ", te, VALID);
 	}
 
@@ -702,8 +686,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 
 		final ITypeEnvironment te = mTypeEnvironment("x", "T");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("T = {x}");
+		final List<String> hyps = Arrays.asList("T = {x}");
 		doTest("exists", hyps, "(∃ z ⦂ T · z ∈ T)", te, VALID);
 	}
 
@@ -712,12 +695,13 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testLinearSort29() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
-				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("r ∈ 1 ‥ m → BOOL");
-		hyps.add("x ∈ 1 ‥ m");
-		hyps.add("j+1 ∈ dom(f)");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //
+				"m", "ℤ", "x", "ℤ", "j", "ℤ");
+		final List<String> hyps = Arrays.asList(//
+				"r ∈ 1 ‥ m → BOOL", //
+				"x ∈ 1 ‥ m", //
+				"j+1 ∈ dom(f)");
 		doTest("linear_sort_29", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})", te, VALID);
 	}
 
@@ -725,11 +709,12 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testDynamicStableLSR_081014_20() {
 		setPreferencesForSolverTest(solver);
 
-		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "P",
-				"ℙ(S × S)", "Q", "ℙ(S × S)", "k", "S × S", "m", "S", "n", "S");
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("¬ k = m ↦ n");
-		hyps.add("k ∈ P ∪ {m ↦ n} ∪ (Q ∖ {m ↦ n})");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"S", "ℙ(S)", "P", "ℙ(S × S)", "Q", "ℙ(S × S)",//
+				"k", "S × S", "m", "S", "n", "S");
+		final List<String> hyps = Arrays.asList(//
+				"¬ k = m ↦ n", //
+				"k ∈ P ∪ {m ↦ n} ∪ (Q ∖ {m ↦ n})");
 		doTest("dynamicStableLSR_081014_20", hyps, "k ∈ P ∪ Q", te, VALID);
 	}
 
@@ -742,23 +727,23 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("¬ a=b");
-		hyps.add("¬ a=c");
-		hyps.add("¬ a=d");
-		hyps.add("¬ a=e");
-		hyps.add("¬ b=c");
-		hyps.add("¬ b=d");
-		hyps.add("¬ b=e");
-		hyps.add("¬ c=d");
-		hyps.add("¬ c=e");
-		hyps.add("¬ d=e");
-		hyps.add("¬ x=y");
-		hyps.add("¬ y=z");
-		hyps.add("¬ z=x");
-		hyps.add("S={a,c,d,b,e}");
-		hyps.add("R={x,y,z}");
-		hyps.add("m ∈ {x,y,z}");
+		final List<String> hyps = Arrays.asList(//
+				"¬ a=b", //
+				"¬ a=c", //
+				"¬ a=d", //
+				"¬ a=e", //
+				"¬ b=c", //
+				"¬ b=d", //
+				"¬ b=e", //
+				"¬ c=d", //
+				"¬ c=e", //
+				"¬ d=e", //
+				"¬ x=y", //
+				"¬ y=z", //
+				"¬ z=x", //
+				"S={a,c,d,b,e}", //
+				"R={x,y,z}", //
+				"m ∈ {x,y,z}");
 
 		doTest("bepicombo_6", hyps,
 				"m ∈ {x} ∪ dom({y} × {a,c,e}) ∪ dom({z} × {e,c,d,b,e})", te,
@@ -774,7 +759,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("bepicombo_6_2", hyps,
 				"dom({y} × {a,c,e}) = dom({y} × {a,c,e})", te, VALID);
 	}
@@ -788,7 +773,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("bepicombo_6_3", hyps, "dom({y} × {a,c,e}) = {y}", te, VALID);
 	}
 
@@ -798,7 +783,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("subseteqMapsto", hyps, "{0↦1,1↦2} ⊆ {0↦1,1↦2,2↦3}", te, VALID);
 	}
 
@@ -807,7 +792,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("subseteq2", hyps, "{1↦2} ⊆ {1↦2}", te, VALID);
 	}
 
@@ -817,7 +802,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("subsetmapsto1", hyps, "{0↦1,1↦2} ⊂ {0↦1,1↦2,2↦3}", te, VALID);
 	}
 
@@ -827,7 +812,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("subsetmapsto2", hyps, "{0↦1} ⊂ {0↦1,1↦2,2↦3}", te, VALID);
 	}
 
@@ -837,7 +822,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 		doTest("notequalmapsto", hyps, "{0↦1} ≠ {0↦1,1↦2,2↦3}", te, VALID);
 	}
 
@@ -846,9 +831,9 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	public void testBOOLSet() {
 		setPreferencesForSolverTest(solver);
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b↦c ∈ BOOL×BOOL");
-		hyps.add("b↦c = TRUE↦FALSE");
+		final List<String> hyps = Arrays.asList(//
+				"b↦c ∈ BOOL×BOOL", //
+				"b↦c = TRUE↦FALSE");
 
 		doTest("test_bool_set_2", hyps, "b = TRUE", arith_te, VALID);
 	}

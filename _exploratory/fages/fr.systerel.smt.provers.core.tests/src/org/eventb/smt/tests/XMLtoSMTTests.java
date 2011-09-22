@@ -67,7 +67,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	private final static String SMTFolder = RODIN_XML_TMP_FOLDER
 			+ File.separatorChar + "smt";
-	private final static String DTDFolder = "src/fr/systerel/smt/provers/core/tests/utils";
+	private final static String DTDFolder = "src/org/eventb/smt/utils";
 
 	private final LemmaData data;
 

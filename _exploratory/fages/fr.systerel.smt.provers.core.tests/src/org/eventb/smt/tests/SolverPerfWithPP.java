@@ -13,6 +13,7 @@ package org.eventb.smt.tests;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,95 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 			throws IllegalArgumentException {
 		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
 				expectedSolverResult, expectedUnsatCore, expectedGoalNeed);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm1() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList();
+		doTest("Bug2105507Thm1", hyps,
+				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))", te, VALID);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm2() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList(//
+				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))");
+
+		doTest("Bug2105507Thm2", hyps,
+				"∀n· ((n ∈ {0, 2, 4, 5}) ⇒ (n ∉ {6, 8, 9}))", te, VALID);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm3() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList(//
+				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))");
+
+		doTest("Bug2105507Thm3", hyps, "∀n· n ∉ ({0, 2, 4, 5} ∩ {6, 8, 9})",
+				te, VALID);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm4() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("Bug2105507Thm4", hyps, "{0, 2, 4, 5} ∩ {6, 8, 9} = {}", te,
+				VALID);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm5() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList();
+
+		final Set<Integer> usedValues = new HashSet<Integer>();
+		final StringBuilder goalBuilder = new StringBuilder();
+		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		goalBuilder.append(" ∩ ");
+		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		goalBuilder.append(" ∩ ");
+		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		goalBuilder.append(" ∩ ");
+		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		goalBuilder.append(" = {}");
+
+		doTest("Bug2105507Thm5", hyps, goalBuilder.toString(), te, VALID);
+	}
+
+	@Test(timeout = 3000)
+	public void testBug2105507Thm6() {
+		setPreferencesForSolverTest(solver);
+
+		final ITypeEnvironment te = mTypeEnvironment();
+
+		final List<String> hyps = Arrays.asList();
+
+		final Set<Integer> usedValues = new HashSet<Integer>();
+		final StringBuilder goalBuilder = new StringBuilder();
+		setToString(goalBuilder, produceDisjointSet(usedValues, 100, 10000));
+		goalBuilder.append(" ∩ ");
+		setToString(goalBuilder, produceDisjointSet(usedValues, 100, 10000));
+		goalBuilder.append(" = {}");
+
+		doTest("Bug2105507Thm6", hyps, goalBuilder.toString(), te, VALID);
 	}
 
 	@Test(timeout = 3000)

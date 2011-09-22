@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.eventb.core.ast.Formula;
@@ -32,7 +33,6 @@ import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
-
 
 public abstract class AbstractTests {
 
@@ -156,6 +156,42 @@ public abstract class AbstractTests {
 		return sb.toString();
 	}
 
+	protected static String assumptionsString(final List<SMTFormula> assumptions) {
+		final StringBuilder assumptionsStringBuilder = new StringBuilder();
+		for (final SMTFormula assumption : assumptions) {
+			assumptionsStringBuilder.append(assumption);
+			assumptionsStringBuilder.append("\n");
+		}
+		return assumptionsStringBuilder.toString();
+	}
+
+	protected static int[] produceDisjointSet(final Set<Integer> usedValues,
+			final int numberOfValues, final int upperBound) {
+		final Random random = new Random();
+		final int[] disjointSet = new int[numberOfValues];
+		for (int i = 0; i < numberOfValues; i++) {
+			int randomValue = random.nextInt(upperBound);
+			while (usedValues.contains(randomValue)) {
+				randomValue = random.nextInt(upperBound);
+			}
+			disjointSet[i] = randomValue;
+			usedValues.add(randomValue);
+		}
+		return disjointSet;
+	}
+
+	protected static void setToString(final StringBuilder builder,
+			final int[] set) {
+		String separator = "";
+		builder.append("{");
+		for (final int value : set) {
+			builder.append(separator);
+			builder.append(value);
+			separator = ", ";
+		}
+		builder.append("}");
+	}
+
 	public static int numberOfNonPredefinedFunSymbols(
 			final Set<SMTFunctionSymbol> funs) {
 		int count = 0;
@@ -228,14 +264,5 @@ public abstract class AbstractTests {
 				assertTrue(sb, expectedPreds.contains(builder.toString()));
 			}
 		}
-	}
-
-	protected String assumptionsString(final List<SMTFormula> assumptions) {
-		final StringBuilder assumptionsStringBuilder = new StringBuilder();
-		for (final SMTFormula assumption : assumptions) {
-			assumptionsStringBuilder.append(assumption);
-			assumptionsStringBuilder.append("\n");
-		}
-		return assumptionsStringBuilder.toString();
 	}
 }
