@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
 	public static final SMTLogic defaultLogic;
 	static {
-		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
+		defaultTe = mTypeEnvironment( //
+				"S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)", //
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 		defaultLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
 				SMTTheoryV1_2.Ints.getInstance(),
@@ -89,7 +91,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 			assertTrue(
 					expectedAssumptionMessage(expectedAssumptions,
 							assumption.toString()),
-					expectedAssumptions.remove(assumption.toString()));
+					expectedAssumptions.contains(assumption.toString()));
 		}
 	}
 
@@ -258,7 +260,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testQuantifiers() {
-		final ITypeEnvironment te = mTypeEnvironment("RR", "r ↔ s");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"RR", "r ↔ s");
 		te.addAll(defaultTe);
 
 		/**
@@ -407,7 +410,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 		te.addAll(defaultTe);
 
 		testTranslationV1_2Default("a ∈ A", "(A a)");
@@ -422,8 +426,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testPredInInt() {
-		final ITypeEnvironment te = mTypeEnvironment("int", "S", "SPZ",
-				"S ↔ ℙ(ℤ)", "AZ", "ℤ ↔ ℙ(ℤ)");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"int", "S", "SPZ", "S ↔ ℙ(ℤ)", "AZ", "ℤ ↔ ℙ(ℤ)");
 		te.addAll(defaultTe);
 
 		/**
@@ -459,23 +463,26 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testPredIdentEqu() {
-		final ITypeEnvironment te = mTypeEnvironment("p", "S", "q", "S");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"p", "S", "q", "S");
 
 		testTranslationV1_2(te, "p = q", "(= p q)");
 	}
 
 	@Test
 	public void testTRUELit() {
-		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(BOOL)", "x",
-				"BOOL");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				//
+				"f", "ℙ(BOOL)", "x", "BOOL");
 
 		testTranslationV1_2(te, "x ∈ f", "(f x)");
 	}
 
 	@Test
 	public void testTRUEPred() {
-		final ITypeEnvironment te = mTypeEnvironment("B", "ℙ(BOOL)", "b",
-				"BOOL", "c", "BOOL");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				//
+				"B", "ℙ(BOOL)", "b", "BOOL", "c", "BOOL");
 
 		/**
 		 * Formulas containing boolean equalities and memberships involving
@@ -508,25 +515,21 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testPredefinedAttributesSymbols() {
-		final ITypeEnvironment te = mTypeEnvironment("assumption", "funs",
-				"formula", "funs");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				//
+				"assumption", "funs", "formula", "funs");
 
 		testTranslationV1_2(te, "assumption = formula", "(= nf nf1)");
 	}
 
 	@Test
 	public void testPredefinedAttributesSymbolsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				//
+				"if_then_else", "ℙ(NS)", "implies", "NS", "ite", "NS");
 
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("PN");
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("NS");
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList(
+				"PN", "Int", "PZ", "BOOL", "PB", "NS"));
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"implies = ite");
@@ -535,25 +538,21 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywords() {
-		final ITypeEnvironment te = mTypeEnvironment("distinct", "false", "nf",
-				"false");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"distinct", "false", "nf", "false");
 
 		testTranslationV1_2(te, "distinct = flet", "(= nf1 nf)");
 	}
 
 	@Test
 	public void testpredefinedAttributesSymbolsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
-				"extrasorts", "logic", "extrafuns", "logic");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"status", "ℙ(logic)", //
+				"extrasorts", "logic", //
+				"extrafuns", "logic");
 
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("NS"); // logic
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("PL"); // ℙ(logic)
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList( //
+				"NS", "Int", "PZ", "BOOL", "PB", "PL"));
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"extrasorts = extrafuns");
@@ -561,19 +560,20 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testpredefinedAttributesSymbolsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("status", "ℙ(logic)",
-				"extrasorts", "logic", "extrafuns", "logic");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"status", "ℙ(logic)", //
+				"extrasorts", "logic", //
+				"extrafuns", "logic");
 
-		final Set<String> expectedFuns = new HashSet<String>();
-
-		expectedFuns.add("(BOOLS PB)");
-		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(nf0 NS)");
-		expectedFuns.add("(INTS PZ)");
-		expectedFuns.add("(expn Int Int Int)");
-		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(nf1 PL)");
-		expectedFuns.add("(nf NS)");
+		final Set<String> expectedFuns = new HashSet<String>(Arrays.asList(
+				"(BOOLS PB)", //
+				"(mod Int Int Int)", //
+				"(nf0 NS)", //
+				"(INTS PZ)", //
+				"(expn Int Int Int)", //
+				"(divi Int Int Int)", //
+				"(nf1 PL)", //
+				"(nf NS)"));
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns,
 				"extrasorts = extrafuns");
@@ -581,17 +581,11 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywordsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"if_then_else", "ℙ(NS)", "implies", "NS", "ite", "NS");
 
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("PN");
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("NS");
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList(
+				"PN", "Int", "PZ", "BOOL", "PB", "NS"));
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts,
 				"implies = ite");
@@ -599,19 +593,18 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testReservedSymbolsAndKeywordsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("if_then_else", "ℙ(NS)",
-				"implies", "NS", "ite", "NS");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"if_then_else", "ℙ(NS)", "implies", "NS", "ite", "NS");
 
-		final Set<String> expectedFuns = new HashSet<String>();
-
-		expectedFuns.add("(BOOLS PB)");
-		expectedFuns.add("(nf0 NS)");
-		expectedFuns.add("(mod Int Int Int)");
-		expectedFuns.add("(INTS PZ)");
-		expectedFuns.add("(expn Int Int Int)");
-		expectedFuns.add("(NS0 PN)");
-		expectedFuns.add("(divi Int Int Int)");
-		expectedFuns.add("(nf NS)");
+		final Set<String> expectedFuns = new HashSet<String>(Arrays.asList(
+				"(BOOLS PB)", //
+				"(nf0 NS)", //
+				"(mod Int Int Int)", //
+				"(INTS PZ)", //
+				"(expn Int Int Int)", //
+				"(NS0 PN)", //
+				"(divi Int Int Int)", //
+				"(nf NS)"));
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns, "implies = ite");
 	}
@@ -632,32 +625,21 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	@Test
 	public void testIntAxiom() {
 		final ITypeEnvironment te = defaultTe;
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x Int) (MS ?x INTS))");
-		expectedAssumptions
-				.add("(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))");
-		expectedAssumptions
-				.add("(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x1))))))");
-		// expectedAssumptions
-		// .add("(forall (?A0 PZZ) (?B0 PZZ) (implies (forall (?x2 Int) (?x3 PZ) (iff (MS0 ?x2 ?x3 ?A0) (MS0 ?x2 ?x3 ?B0))) (= ?A0 ?B0)))");
-		// expectedAssumptions
-		// .add("(forall (?x4 Int) (?x5 PZ) (exists (?X0 PZZ) (and (MS0 ?x4 ?x5 ?X0) (forall (?y0 Int) (?y1 PZ) (implies (MS0 ?y0 ?y1 ?X0) (and (= ?y0 ?x4) (= ?y1 ?x5)))))))");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall (?x Int) (MS ?x INTS))", //
+						"(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))", //
+						"(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x1))))))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
 
 	@Test
 	public void testTrueAxiom() {
-		final ITypeEnvironment te = mTypeEnvironment("Y", "ℙ(BOOL×BOOL)");
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions
-				.add("(forall (?x BOOL) (?y BOOL) (iff (iff (TRUE ?x) (TRUE ?y)) (= ?x ?y)))");
-		expectedAssumptions
-				.add("(exists (?x0 BOOL) (?y0 BOOL) (and (TRUE ?x0) (not (TRUE ?y0))))");
-		// expectedAssumptions
-		// .add("(forall (?A PBB) (?B PBB) (implies (forall (?x3 BOOL) (?x4 BOOL) (iff (MS ?x3 ?x4 ?A) (MS ?x3 ?x4 ?B))) (= ?A ?B)))");
-		// expectedAssumptions
-		// .add("(forall (?x5 BOOL) (?x6 BOOL) (exists (?X PBB) (and (MS ?x5 ?x6 ?X) (forall (?y1 BOOL) (?y2 BOOL) (implies (MS ?y1 ?y2 ?X) (and (= ?y1 ?x5) (= ?y2 ?x6)))))))");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"Y", "ℙ(BOOL×BOOL)");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall (?x BOOL) (?y BOOL) (iff (iff (TRUE ?x) (TRUE ?y)) (= ?x ?y)))", //
+						"(exists (?x0 BOOL) (?y0 BOOL) (and (TRUE ?x0) (not (TRUE ?y0))))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -665,16 +647,12 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	@Test
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall (?x BOOL) (MS ?x BOOLS))");
-		expectedAssumptions
-				.add("(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))");
-		expectedAssumptions
-				.add("(exists (?x1 BOOL) (?y0 BOOL) (and (TRUE ?x1) (not (TRUE ?y0))))");
-		expectedAssumptions
-				.add("(forall (?A PB) (?B PB) (implies (forall (?x2 BOOL) (iff (MS ?x2 ?A) (MS ?x2 ?B))) (= ?A ?B)))");
-		expectedAssumptions
-				.add("(forall (?x3 BOOL) (exists (?X PB) (and (MS ?x3 ?X) (forall (?y1 BOOL) (implies (MS ?y1 ?X) (= ?y1 ?x3))))))");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall (?x BOOL) (MS ?x BOOLS))", //
+						"(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))", //
+						"(exists (?x1 BOOL) (?y0 BOOL) (and (TRUE ?x1) (not (TRUE ?y0))))", //
+						"(forall (?A PB) (?B PB) (implies (forall (?x2 BOOL) (iff (MS ?x2 ?A) (MS ?x2 ?B))) (= ?A ?B)))", //
+						"(forall (?x3 BOOL) (exists (?X PB) (and (MS ?x3 ?X) (forall (?y1 BOOL) (implies (MS ?y1 ?X) (= ?y1 ?x3))))))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
@@ -730,7 +708,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	@Test
 	public void testBoundRightHandSide() {
-		final ITypeEnvironment te = mTypeEnvironment("a", "ℙ(A)");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"a", "ℙ(A)");
 		testTranslateGoalPP(
 				te,
 				"∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",

@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +89,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 			assertTrue(
 					expectedAssumptionMessage(expectedAssumptions,
 							assumption.toString()),
-					expectedAssumptions.remove(assumption.toString()));
+					expectedAssumptions.contains(assumption.toString()));
 		}
 	}
 
@@ -462,16 +463,16 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testTRUELit() {
-		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(BOOL)", "x",
-				"BOOL");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"f", "ℙ(BOOL)", "x", "BOOL");
 
 		testTranslationV2_0(te, "x ∈ f", "(f x)");
 	}
 
 	@Test
 	public void testTRUEPred() {
-		final ITypeEnvironment te = mTypeEnvironment("B", "ℙ(BOOL)", "b",
-				"BOOL", "c", "BOOL");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"B", "ℙ(BOOL)", "b", "BOOL", "c", "BOOL");
 
 		/**
 		 * Formulas containing boolean equalities and memberships involving
@@ -504,25 +505,19 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testReservedWords() {
-		final ITypeEnvironment te = mTypeEnvironment("DECIMAL", "par",
-				"NUMERAL", "par");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"DECIMAL", "par", "NUMERAL", "par");
 
 		testTranslationV2_0(te, "DECIMAL = NUMERAL", "(= nf1 nf0)");
 	}
 
 	@Test
 	public void testReservedWordsSorts() {
-		final ITypeEnvironment te = mTypeEnvironment("ite", "ℙ(par)", "let",
-				"par", "as", "par");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"ite", "ℙ(par)", "let", "par", "as", "par");
 
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("PP");
-		expectedSorts.add("Int");
-		expectedSorts.add("PZ");
-		expectedSorts.add("BOOL");
-		expectedSorts.add("PB");
-		expectedSorts.add("NS");
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList( //
+				"PP", "Int", "PZ", "BOOL", "PB", "NS"));
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts, "let = as");
 
@@ -530,19 +525,18 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testReservedWordsFuns() {
-		final ITypeEnvironment te = mTypeEnvironment("DECIMAL", "ℙ(as)",
-				"NUMERAL", "as", "STRING", "as");
+		final ITypeEnvironment te = mTypeEnvironment( //
+				"DECIMAL", "ℙ(as)", "NUMERAL", "as", "STRING", "as");
 
-		final Set<String> expectedFuns = new HashSet<String>();
-
-		expectedFuns.add("BOOLS () PB");
-		expectedFuns.add("mod (Int Int) Int");
-		expectedFuns.add("nf1 () NS");
-		expectedFuns.add("INTS () PZ");
-		expectedFuns.add("expn (Int Int) Int");
-		expectedFuns.add("divi (Int Int) Int");
-		expectedFuns.add("nf0 () PA");
-		expectedFuns.add("nf () NS");
+		final Set<String> expectedFuns = new HashSet<String>(Arrays.asList( //
+				"BOOLS () PB", //
+				"mod (Int Int) Int", //
+				"nf1 () NS", //
+				"INTS () PZ", //
+				"expn (Int Int) Int", //
+				"divi (Int Int) Int", //
+				"nf0 () PA", //
+				"nf () NS"));
 
 		testTypeEnvironmentFuns(defaultLogic, te, expectedFuns,
 				"NUMERAL = STRING");
@@ -564,16 +558,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testIntAxiom() {
 		final ITypeEnvironment te = defaultTe;
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall ((x Int)) (MS x INTS))");
-		expectedAssumptions
-				.add("(forall ((A PZ) (B PZ)) (=> (forall ((x0 Int)) (= (MS x0 A) (MS x0 B))) (= A B)))");
-		expectedAssumptions
-				.add("(forall ((x1 Int)) (exists ((X PZ)) (and (MS x1 X) (forall ((y Int)) (=> (MS y X) (= y x1))))))");
-		// expectedAssumptions
-		// .add("(forall (A0 PZZ) (B0 PZZ) (=> (forall (x2 Int) (x3 PZ) (= (MS0 x2 x3 A0) (MS0 x2 x3 B0))) (= A0 B0)))");
-		// expectedAssumptions
-		// .add("(forall (x4 Int) (x5 PZ) (exists (X0 PZZ) (and (MS0 x4 x5 X0) (forall (y0 Int) (y1 PZ) (=> (MS0 y0 y1 X0) (and (= y0 x4) (= y1 x5)))))))");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall ((x Int)) (MS x INTS))", //
+						"(forall ((A PZ) (B PZ)) (=> (forall ((x0 Int)) (= (MS x0 A) (MS x0 B))) (= A B)))", //
+						"(forall ((x1 Int)) (exists ((X PZ)) (and (MS x1 X) (forall ((y Int)) (=> (MS y X) (= y x1))))))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
@@ -581,15 +569,9 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testTrueAxiom() {
 		final ITypeEnvironment te = mTypeEnvironment("Y", "ℙ(BOOL×BOOL)");
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions
-				.add("(forall ((x BOOL) (y BOOL)) (= (= (TRUE x) (TRUE y)) (= x y)))");
-		expectedAssumptions
-				.add("(exists ((x0 BOOL) (y0 BOOL)) (and (TRUE x0) (not (TRUE y0))))");
-		// expectedAssumptions
-		// .add("(forall (A PBB) (B PBB) (=> (forall (x3 BOOL) (x4 BOOL) (= (MS x3 x4 A) (MS x3 x4 B))) (= A B)))");
-		// expectedAssumptions
-		// .add("(forall (x5 BOOL) (x6 BOOL) (exists (X PBB) (and (MS x5 x6 X) (forall (y1 BOOL) (y2 BOOL) (=> (MS y1 y2 X) (and (= y1 x5) (= y2 x6)))))))");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall ((x BOOL) (y BOOL)) (= (= (TRUE x) (TRUE y)) (= x y)))",
+						"(exists ((x0 BOOL) (y0 BOOL)) (and (TRUE x0) (not (TRUE y0))))");
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -597,16 +579,12 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(forall ((x BOOL)) (MS x BOOLS))");
-		expectedAssumptions
-				.add("(forall ((x0 BOOL) (y BOOL)) (= (= (TRUE x0) (TRUE y)) (= x0 y)))");
-		expectedAssumptions
-				.add("(exists ((x1 BOOL) (y0 BOOL)) (and (TRUE x1) (not (TRUE y0))))");
-		expectedAssumptions
-				.add("(forall ((A PB) (B PB)) (=> (forall ((x2 BOOL)) (= (MS x2 A) (MS x2 B))) (= A B)))");
-		expectedAssumptions
-				.add("(forall ((x3 BOOL)) (exists ((X PB)) (and (MS x3 X) (forall ((y1 BOOL)) (=> (MS y1 X) (= y1 x3))))))");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(forall ((x BOOL)) (MS x BOOLS))", //
+						"(forall ((x0 BOOL) (y BOOL)) (= (= (TRUE x0) (TRUE y)) (= x0 y)))", //
+						"(exists ((x1 BOOL) (y0 BOOL)) (and (TRUE x1) (not (TRUE y0))))", //
+						"(forall ((A PB) (B PB)) (=> (forall ((x2 BOOL)) (= (MS x2 A) (MS x2 B))) (= A B)))", //
+						"(forall ((x3 BOOL)) (exists ((X PB)) (and (MS x3 X) (forall ((y1 BOOL)) (=> (MS y1 X) (= y1 x3))))))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

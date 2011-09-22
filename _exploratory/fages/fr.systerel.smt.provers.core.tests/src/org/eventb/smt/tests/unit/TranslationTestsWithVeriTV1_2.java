@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,14 +34,13 @@ import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.VeriTBooleans;
 import org.eventb.smt.ast.theories.VeritPredefinedTheory;
-import org.eventb.smt.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogic;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.junit.Test;
-
 
 /**
  * Ensure that translation to veriT extended version of SMT-LIB is correct
@@ -54,15 +54,15 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 
 	static {
-		simpleTe = mTypeEnvironment("e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "AB",
-				"ℤ ↔ ℤ");
+		simpleTe = mTypeEnvironment(//
+				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "AB", "ℤ ↔ ℤ");
 
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "p", "S", "q", "S", "r",
 				"ℙ(R)", "s", "ℙ(R)", "a", "ℤ", "A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ", "b",
 				"ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 
-		cdisTe = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔  R", "x",
-				"S", "y", "R");
+		cdisTe = mTypeEnvironment(//
+				"S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔  R", "x", "S", "y", "R");
 
 		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
@@ -135,7 +135,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 				.translateToSmtLibBenchmark("lemma",
 						new ArrayList<Predicate>(), goal, "Z3");
 
-		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark.getSignature();
+		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark
+				.getSignature();
 		final SMTSignatureV1_2Verit sigverit = (SMTSignatureV1_2Verit) signature;
 		final Set<SMTMacro> sets = sigverit.getMacros();
 		for (final SMTMacro macro : sets) {
@@ -201,10 +202,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 				expectedAssumptions.size(), assumptions.size());
 		for (final SMTFormula assumption : assumptions) {
 			assertTrue(assumption.toString(),
-					expectedAssumptions.remove(assumption.toString()));
+					expectedAssumptions.contains(assumption.toString()));
 		}
-
-		assertTrue(expectedAssumptions.isEmpty());
 	}
 
 	public static void testTypeEnvironmentSorts(final SMTLogic logic,
@@ -227,18 +226,19 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred, null);
+		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
+				null);
 	}
 
 	@Test
 	public void testTypeEnvironmentFunctionSimpleTe() {
-		final Set<String> expectedFunctions = new HashSet<String>();
-
-		expectedFunctions.add("(g S)");
-		expectedFunctions.add("(pair 's 't (Pair 's 't))");
-		expectedFunctions.add("(expn Int Int Int)");
-		expectedFunctions.add("(mod Int Int Int)");
-		expectedFunctions.add("(divi Int Int Int)");
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList( //
+						"(g S)", //
+						"(pair 's 't (Pair 's 't))", //
+						"(expn Int Int Int)", //
+						"(mod Int Int Int)", //
+						"(divi Int Int Int)"));
 
 		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedFunctions,
 				"g = g");
@@ -249,12 +249,11 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("S");
-		expectedSorts.add("(Pair 's 't)");
-		expectedSorts.add("Int");
-		expectedSorts.add("Bool");
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList( //
+				"S", //
+				"(Pair 's 't)", //
+				"Int", //
+				"Bool"));
 
 		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
@@ -264,9 +263,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTePreds() {
-		final Set<String> expectedPredicates = new HashSet<String>();
-
-		expectedPredicates.add("(S0 S)");
+		final Set<String> expectedPredicates = new HashSet<String>(
+				Arrays.asList("(S0 S)"));
 
 		testTypeEnvironmentPreds(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
@@ -274,25 +272,21 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTeSorts() {
-		final Set<String> expectedSorts = new HashSet<String>();
-
-		expectedSorts.add("Bool");
-		expectedSorts.add("(Pair 's 't)");
-		expectedSorts.add("Int");
-		expectedSorts.add("S");
+		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList(
+				"Bool", "(Pair 's 't)", "Int", "S"));
 
 		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
 
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTeFuns() {
-		final Set<String> expectedPredicates = new HashSet<String>();
-
-		expectedPredicates.add("(pair 's 't (Pair 's 't))");
-		expectedPredicates.add("(mod Int Int Int)");
-		expectedPredicates.add("(g S)");
-		expectedPredicates.add("(expn Int Int Int)");
-		expectedPredicates.add("(divi Int Int Int)");
+		final Set<String> expectedPredicates = new HashSet<String>(
+				Arrays.asList(//
+						"(pair 's 't (Pair 's 't))", //
+						"(mod Int Int Int)", //
+						"(g S)", //
+						"(expn Int Int Int)", //
+						"(divi Int Int Int)"));
 
 		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
@@ -300,9 +294,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
-		final Set<String> expectedPredicates = new HashSet<String>();
-
-		expectedPredicates.add("(AB (Pair Int Int))");
+		final Set<String> expectedPredicates = new HashSet<String>(
+				Arrays.asList("(AB (Pair Int Int))"));
 
 		testTypeEnvironmentPreds(defaultLogic, defaultTe, expectedPredicates,
 				"AB = AB");
@@ -349,8 +342,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	@Test
 	public void testReservedMacroName() {
-		final ITypeEnvironment te = mTypeEnvironment("in", "emptyset", "range",
-				"emptyset");
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"in", "emptyset", "range", "emptyset");
 
 		testTranslationV1_2VerDefaultSolver(te, "in = range", "(= in0 range0)");
 	}
@@ -646,7 +639,6 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		bids[1] = bids[0];
 		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
 				base.getPredicate(), null);
-		// System.out.println("Predicate " + p);
 		testTranslationV1_2Verit(p,
 				"(forall (?x R) (?x0 R) (and (in ?x s) (in ?x0 s)))",
 				"twice same decl", VERIT.toString());
@@ -1011,8 +1003,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final ITypeEnvironment errorTe = mTypeEnvironment();
 
-		testTranslationV1_2ChooseLogic(errorTe, "TRUE ∈ BOOL", "(in TRUE BOOLS)",
-				veriTLogicWithBool);
+		testTranslationV1_2ChooseLogic(errorTe, "TRUE ∈ BOOL",
+				"(in TRUE BOOLS)", veriTLogicWithBool);
 	}
 
 	@Test
@@ -1020,8 +1012,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final ITypeEnvironment errorTe = mTypeEnvironment();
 
-		testTranslationV1_2ChooseLogic(errorTe, "FALSE ∈ BOOL", "(in FALSE BOOLS)",
-				veriTLogicWithBool);
+		testTranslationV1_2ChooseLogic(errorTe, "FALSE ∈ BOOL",
+				"(in FALSE BOOLS)", veriTLogicWithBool);
 	}
 
 	@Test
@@ -1160,8 +1152,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	@Test
 	public void testFiniteAssumptions() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(finite finite_p enum finite_f finite_k)");
+		final List<String> expectedAssumptions = Arrays
+				.asList("(finite finite_p enum finite_f finite_k)");
 		testContainsAssumptionsVeriT(te, "finite({1,2,3})", expectedAssumptions);
 	}
 
@@ -1179,11 +1171,11 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	@Test
 	public void testDistinctAssumptions() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(distinct set set0 set1)");
-		expectedAssumptions.add("(= set1 enum1)");
-		expectedAssumptions.add("(= set0 enum0)");
-		expectedAssumptions.add("(= set enum)");
+		final List<String> expectedAssumptions = Arrays.asList(
+				"(distinct set set0 set1)", //
+				"(= set1 enum1)", //
+				"(= set0 enum0)", //
+				"(= set enum)");
 
 		testContainsAssumptionsVeriT(te, "partition(A,{1},{2},{3})",
 				expectedAssumptions);
@@ -1192,9 +1184,9 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	@Test
 	public void testCardAssumptions() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
-		final List<String> expectedAssumptions = new ArrayList<String>();
-		expectedAssumptions.add("(card enum card_f card_k)");
-		expectedAssumptions.add("(card enum0 card_f0 card_k0)");
+		final List<String> expectedAssumptions = Arrays.asList(
+				"(card enum card_f card_k)", //
+				"(card enum0 card_f0 card_k0)");
 		testContainsAssumptionsVeriT(te, "card({1,2,3}) = card({1,2,3})",
 				expectedAssumptions);
 	}

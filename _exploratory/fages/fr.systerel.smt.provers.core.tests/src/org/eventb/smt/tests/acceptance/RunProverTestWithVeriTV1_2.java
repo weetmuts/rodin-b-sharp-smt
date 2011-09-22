@@ -13,7 +13,7 @@ package org.eventb.smt.tests.acceptance;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
@@ -48,9 +48,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testUnsatAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("altergo_unsat", hyps, "x < z", arith_te, VALID);
 	}
@@ -59,9 +59,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testSatAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("altergo_sat", hyps, "x > z", arith_te, NOT_VALID);
 	}
@@ -70,9 +70,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testUnsatCvc3Call() {
 		setPreferencesForCvc3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("cvc3_unsat", hyps, "x < z", arith_te, VALID);
 	}
@@ -81,9 +81,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testSatCvc3Call() {
 		setPreferencesForCvc3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("cvc3_sat", hyps, "x > z", arith_te, NOT_VALID);
 	}
@@ -92,9 +92,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testUnsatVeriTCall() {
 		setPreferencesForVeriTTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("verit_unsat", hyps, "x < z", arith_te, VALID);
 	}
@@ -103,9 +103,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testSatVeritCall() {
 		setPreferencesForVeriTTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("verit_sat", hyps, "x > z", arith_te, NOT_VALID);
 	}
@@ -114,9 +114,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testUnsatZ3Call() {
 		setPreferencesForZ3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("z3_unsat", hyps, "x < z", arith_te, VALID);
 	}
@@ -125,9 +125,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testSatZ3Call() {
 		setPreferencesForZ3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("x < y");
-		hyps.add("y < z");
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
 
 		doTest("z3_sat", hyps, "x > z", arith_te, NOT_VALID);
 	}
@@ -136,9 +136,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testTRUEPredZ3Call() {
 		setPreferencesForZ3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b = TRUE");
-		hyps.add("c ≠ FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
 
 		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
 	}
@@ -147,9 +147,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testTRUEPredCVC3Call() {
 		setPreferencesForCvc3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b = TRUE");
-		hyps.add("c ≠ FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
 
 		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
 	}
@@ -158,9 +158,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testTRUEPredAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b = TRUE");
-		hyps.add("c ≠ FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
 
 		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
 	}
@@ -169,9 +169,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testTRUEPredVeriTCall() {
 		setPreferencesForVeriTTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b = TRUE");
-		hyps.add("c ≠ FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
 
 		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
 	}
@@ -180,8 +180,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testBOOLSetZ3Call() {
 		setPreferencesForZ3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b↦c = TRUE↦FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b↦c = TRUE↦FALSE");
 
 		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
 	}
@@ -190,8 +190,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testBOOLSetAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b↦c = TRUE↦FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b↦c = TRUE↦FALSE");
 
 		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
 	}
@@ -200,8 +200,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testBOOLSetVeriTCall() {
 		setPreferencesForVeriTTest();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b↦c = TRUE↦FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b↦c = TRUE↦FALSE");
 
 		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
 	}
@@ -210,8 +210,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	public void testBOOLSetCVC3Call() {
 		setPreferencesForCvc3Test();
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("b↦c = TRUE↦FALSE");
+		final List<String> hyps = Arrays.asList( //
+				"b↦c = TRUE↦FALSE");
 
 		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
 	}
@@ -222,11 +222,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-		hyps.add("q ∈ ℙ({1})");
-		hyps.add("q ≠ ∅");
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
 
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
@@ -237,11 +237,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-		hyps.add("q ∈ ℙ({1})");
-		hyps.add("q ≠ ∅");
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
 
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
@@ -252,11 +252,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-		hyps.add("q ∈ ℙ({1})");
-		hyps.add("q ≠ ∅");
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
 
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
@@ -267,11 +267,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("p ∈ ℙ({1})");
-		hyps.add("p ≠ ∅");
-		hyps.add("q ∈ ℙ({1})");
-		hyps.add("q ≠ ∅");
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
 
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
@@ -283,14 +283,14 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 ÷  2 =  2");
-		hyps.add("−4 ÷  2 = −2");
-		hyps.add("−4 ÷ −2 =  2");
-		hyps.add(" 4 ÷ −2 = −2");
-		hyps.add(" 3 ÷  2 =  1");
-		hyps.add("−3 ÷  2 = −1");
-		hyps.add("−3 ÷ −2 =  1");
+		final List<String> hyps = Arrays.asList( //
+				" 4 ÷  2 =  2", //
+				"−4 ÷  2 = −2", //
+				"−4 ÷ −2 =  2", //
+				" 4 ÷ −2 = −2", //
+				" 3 ÷  2 =  1", //
+				"−3 ÷  2 = −1", //
+				"−3 ÷ −2 =  1");
 
 		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
@@ -302,14 +302,14 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 ÷  2 =  2");
-		hyps.add("−4 ÷  2 = −2");
-		hyps.add("−4 ÷ −2 =  2");
-		hyps.add(" 4 ÷ −2 = −2");
-		hyps.add(" 3 ÷  2 =  1");
-		hyps.add("−3 ÷  2 = −1");
-		hyps.add("−3 ÷ −2 =  1");
+		final List<String> hyps = Arrays.asList( //
+				" 4 ÷  2 =  2", //
+				"−4 ÷  2 = −2", //
+				"−4 ÷ −2 =  2", //
+				" 4 ÷ −2 = −2", //
+				" 3 ÷  2 =  1", //
+				"−3 ÷  2 = −1", //
+				"−3 ÷ −2 =  1");
 
 		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
@@ -321,14 +321,14 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 ÷  2 =  2");
-		hyps.add("−4 ÷  2 = −2");
-		hyps.add("−4 ÷ −2 =  2");
-		hyps.add(" 4 ÷ −2 = −2");
-		hyps.add(" 3 ÷  2 =  1");
-		hyps.add("−3 ÷  2 = −1");
-		hyps.add("−3 ÷ −2 =  1");
+		final List<String> hyps = Arrays.asList( //
+				" 4 ÷  2 =  2", //
+				"−4 ÷  2 = −2", //
+				"−4 ÷ −2 =  2", //
+				" 4 ÷ −2 = −2", //
+				" 3 ÷  2 =  1", //
+				"−3 ÷  2 = −1", //
+				"−3 ÷ −2 =  1");
 
 		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
@@ -340,14 +340,14 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 ÷  2 =  2");
-		hyps.add("−4 ÷  2 = −2");
-		hyps.add("−4 ÷ −2 =  2");
-		hyps.add(" 4 ÷ −2 = −2");
-		hyps.add(" 3 ÷  2 =  1");
-		hyps.add("−3 ÷  2 = −1");
-		hyps.add("−3 ÷ −2 =  1");
+		final List<String> hyps = Arrays.asList( //
+				" 4 ÷  2 =  2", //
+				"−4 ÷  2 = −2", //
+				"−4 ÷ −2 =  2", //
+				" 4 ÷ −2 = −2", //
+				" 3 ÷  2 =  1", //
+				"−3 ÷  2 = −1", //
+				"−3 ÷ −2 =  1");
 
 		doTest("division", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
@@ -359,7 +359,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
 	}
@@ -371,7 +371,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
 	}
@@ -383,7 +383,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
 	}
@@ -395,7 +395,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
-		final List<String> hyps = new ArrayList<String>();
+		final List<String> hyps = Arrays.asList();
 
 		doTest("exponentiation", hyps, "2 ^ 2=4", te, VALID);
 	}
@@ -408,11 +408,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 mod  2 =  0");
-		hyps.add("−4 mod  2 =  0");
-		hyps.add("−4 mod −2 =  0");
-		hyps.add(" 4 mod −2 =  0");
+		final List<String> hyps = Arrays.asList( //
+				" 4 mod  2 =  0", //
+				"−4 mod  2 =  0", //
+				"−4 mod −2 =  0", //
+				" 4 mod −2 =  0");
 
 		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
 	}
@@ -425,11 +425,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 mod  2 =  0");
-		hyps.add("−4 mod  2 =  0");
-		hyps.add("−4 mod −2 =  0");
-		hyps.add(" 4 mod −2 =  0");
+		final List<String> hyps = Arrays.asList( //
+				" 4 mod  2 =  0", //
+				"−4 mod  2 =  0", //
+				"−4 mod −2 =  0", //
+				" 4 mod −2 =  0");
 
 		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
 	}
@@ -442,11 +442,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 mod  2 =  0");
-		hyps.add("−4 mod  2 =  0");
-		hyps.add("−4 mod −2 =  0");
-		hyps.add(" 4 mod −2 =  0");
+		final List<String> hyps = Arrays.asList( //
+				" 4 mod  2 =  0", //
+				"−4 mod  2 =  0", //
+				"−4 mod −2 =  0", //
+				" 4 mod −2 =  0");
 
 		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
 	}
@@ -459,11 +459,11 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add(" 4 mod  2 =  0");
-		hyps.add("−4 mod  2 =  0");
-		hyps.add("−4 mod −2 =  0");
-		hyps.add(" 4 mod −2 =  0");
+		final List<String> hyps = Arrays.asList( //
+				" 4 mod  2 =  0", //
+				"−4 mod  2 =  0", //
+				"−4 mod −2 =  0", //
+				" 4 mod −2 =  0");
 
 		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
 	}
@@ -475,9 +475,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
+		final List<String> hyps = Arrays.asList( //
+				"n = 2", //
+				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -489,9 +489,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
+		final List<String> hyps = Arrays.asList( //
+				"n = 2", //
+				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -503,9 +503,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
+		final List<String> hyps = Arrays.asList( //
+				"n = 2", //
+				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
@@ -517,9 +517,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
 
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("n = 2");
-		hyps.add("x = −5");
+		final List<String> hyps = Arrays.asList( //
+				"n = 2", //
+				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
