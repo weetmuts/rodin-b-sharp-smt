@@ -12,8 +12,17 @@
    <extension
          point="org.eventb.core.pomTactics">
       <tactic
-            id="org.eventb.smt.provers.core.SMTProver">
+            id="org.eventb.smt.provers.core.SMTPP">
       </tactic>
+   </extension>
+   <extension
+         point="org.eventb.core.seqprover.autoTactics">
+      <autoTactic
+            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTPP"
+            description="%SmtPP.description"
+            id="SMTPP"
+            name="%SmtPP.name">
+      </autoTactic>
    </extension>
 
 </plugin>
