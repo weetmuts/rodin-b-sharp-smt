@@ -49,10 +49,4 @@
             name="%page.name">
       </page>
    </extension>
-   <extension
-         point="org.eventb.core.pomTactics">
-      <tactic
-            id="org.eventb.smt.provers.ui.SmtProver">
-      </tactic>
-   </extension>
 </plugin>
