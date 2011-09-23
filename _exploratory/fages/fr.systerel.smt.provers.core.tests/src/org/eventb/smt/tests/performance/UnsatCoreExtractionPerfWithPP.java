@@ -107,7 +107,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
 	public void testSetsEqualityUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
