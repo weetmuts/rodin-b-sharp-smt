@@ -70,4 +70,17 @@ public class AutoTactics {
 			return SMTProversCore.externalSMTThroughVeriT(null, true);
 		}
 	}
+	
+	public static class SMTVeriTParameterizer implements ITacticParameterizer {
+
+		@Override
+		public ITactic getTactic(IParameterValuation parameters) {
+			// FIXME take timeout into account
+			final long timeout = parameters.getLong(TIMEOUT);
+			final boolean restricted = parameters.getBoolean(RESTRICTED);
+
+			return SMTProversCore.externalSMTThroughVeriT(null, restricted);
+		}
+		
+	}
 }

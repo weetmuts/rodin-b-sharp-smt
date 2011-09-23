@@ -52,6 +52,23 @@
                type="Long">
          </tacticParameter>
       </parameterizer>
+      <parameterizer
+            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTVeriTParameterizer"
+            id="SMTVeriTParam"
+            name="%SMTVeriTParam.name">
+         <tacticParameter
+               default="true"
+               description="%restrictedDesc"
+               label="restricted"
+               type="Boolean">
+         </tacticParameter>
+         <tacticParameter
+               default="3000"
+               description="%timeoutDesc"
+               label="timeout"
+               type="Long">
+         </tacticParameter>
+      </parameterizer>
    </extension>
 
 </plugin>
