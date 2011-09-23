@@ -44,6 +44,7 @@ public class SMTProversCore extends Plugin {
 	private static final String RODIN_SEQUENT = "rodin_sequent";
 	/**
 	 * Default delay for time-out of the Smt provers (value 30 seconds).
+	 * FIXME javadoc and code conflict
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;

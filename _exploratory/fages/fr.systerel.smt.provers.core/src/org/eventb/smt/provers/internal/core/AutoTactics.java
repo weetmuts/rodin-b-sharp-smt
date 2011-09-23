@@ -10,7 +10,9 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import org.eventb.core.seqprover.IParameterValuation;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 import org.eventb.smt.provers.core.SMTProversCore;
 
@@ -24,6 +26,12 @@ import org.eventb.smt.provers.core.SMTProversCore;
  * 
  */
 public class AutoTactics {
+
+	// label for the 'restricted' tactic parameter
+	private static final String RESTRICTED = "restricted";
+
+	// label for the 'timeout' tactic parameter
+	private static final String TIMEOUT = "timeout";
 
 	/**
 	 * This class is not meant to be instantiated
@@ -40,6 +48,19 @@ public class AutoTactics {
 		protected ITactic getSingInstance() {
 			return SMTProversCore.externalSMTThroughPP(null, true);
 		}
+	}
+	
+	public static class SMTPPParameterizer implements ITacticParameterizer {
+
+		@Override
+		public ITactic getTactic(IParameterValuation parameters) {
+			// FIXME take timeout into account
+			final long timeout = parameters.getLong(TIMEOUT);
+			final boolean restricted = parameters.getBoolean(RESTRICTED);
+
+			return SMTProversCore.externalSMTThroughPP(null, restricted);
+		}
+		
 	}
 
 	public static class SMTVeriT extends AbsractLazilyConstrTactic {

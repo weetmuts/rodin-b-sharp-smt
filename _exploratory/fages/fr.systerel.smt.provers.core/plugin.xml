@@ -33,5 +33,25 @@
             name="%SMTVeriT.name">
       </autoTactic>
    </extension>
+   <extension
+         point="org.eventb.core.seqprover.tacticParameterizers">
+      <parameterizer
+            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTPPParameterizer"
+            id="SMTPPParam"
+            name="%SMTPPParam.name">
+         <tacticParameter
+               default="true"
+               description="%restrictedDesc"
+               label="restricted"
+               type="Boolean">
+         </tacticParameter>
+         <tacticParameter
+               default="3000"
+               description="%timeoutDesc"
+               label="timeout"
+               type="Long">
+         </tacticParameter>
+      </parameterizer>
+   </extension>
 
 </plugin>
