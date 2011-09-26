@@ -12,8 +12,12 @@ package org.eventb.smt.preferences;
 
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR1;
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR2;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.List;
+
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This is a class to describe a solver detail
@@ -72,6 +76,14 @@ public class SolverDetails {
 
 	public boolean getsmtV2_0() {
 		return smtV2_0;
+	}
+
+	public SMTLIBVersion getSmtlibVersion() {
+		if (smtV1_2) {
+			return V1_2;
+		} else {
+			return V2_0;
+		}
 	}
 
 	public void setId(final String id) {

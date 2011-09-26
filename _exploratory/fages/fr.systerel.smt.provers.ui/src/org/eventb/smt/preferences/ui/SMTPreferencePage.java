@@ -10,27 +10,16 @@
 
 package org.eventb.smt.preferences.ui;
 
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
-import static org.eventb.smt.provers.ui.SmtProversUIPlugin.PLUGIN_ID;
 
-import java.util.regex.PatternSyntaxException;
-
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 
 /**
@@ -52,38 +41,6 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	public SMTPreferencePage() {
 		super(FieldEditorPreferencePage.FLAT);
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
-	}
-
-	public static SMTPreferences getSMTPreferencesForPP()
-			throws PatternSyntaxException, IllegalArgumentException {
-		final IPreferencesService preferencesService = Platform
-				.getPreferencesService();
-		final String solverPreferences = preferencesService.getString(
-				PLUGIN_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
-				null);
-		final String translationPath = preferencesService.getString(PLUGIN_ID,
-				TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
-		final int solverIndex = preferencesService.getInt(PLUGIN_ID,
-				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
-		return new SMTPreferences(translationPath, solverPreferences,
-				solverIndex);
-	}
-
-	public static SMTPreferences getSMTPreferencesForVeriT()
-			throws PatternSyntaxException, IllegalArgumentException {
-		final IPreferencesService preferencesService = Platform
-				.getPreferencesService();
-		final String solverPreferences = preferencesService.getString(
-				PLUGIN_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
-				null);
-		final String translationPath = preferencesService.getString(PLUGIN_ID,
-				TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
-		final int solverIndex = preferencesService.getInt(PLUGIN_ID,
-				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
-		final String veriTPath = preferencesService.getString(PLUGIN_ID,
-				VERIT_PATH_ID, DEFAULT_VERIT_PATH, null);
-		return new SMTPreferences(translationPath, solverPreferences,
-				solverIndex, veriTPath);
 	}
 
 	@Override

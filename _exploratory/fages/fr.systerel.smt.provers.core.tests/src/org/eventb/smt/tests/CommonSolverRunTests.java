@@ -29,7 +29,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.preferences.SolverDetails;
 import org.eventb.smt.provers.internal.core.SMTPPCall;
 import org.eventb.smt.provers.internal.core.SMTProverCall;
@@ -50,8 +49,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private final List<SMTProverCall> smtProverCalls = new ArrayList<SMTProverCall>();
 
-	private SMTPreferences preferences;
-
 	static File smtFolder;
 
 	/**
@@ -66,6 +63,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected final SMTLIBVersion smtlibVersion;
 
 	protected final SMTSolver solver;
+
+	protected String solverName;
+	protected String solverPath;
+	protected String solverArguments;
+	protected String poName;
+	protected String translationPath;
+	protected String veritPath;
 
 	/**
 	 * In linux: '/home/username/bin/'
@@ -105,8 +109,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public CommonSolverRunTests(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
 		this.solver = solver;
+		this.smtlibVersion = smtlibVersion;
+		this.translationPath = DEFAULT_TEST_TRANSLATION_PATH;
 	}
 
 	/**
@@ -121,26 +126,29 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final String solverArgs, final boolean isSMTV1_2Compatible,
 			final boolean isSMTV2_0Compatible) {
 		final String OS = System.getProperty("os.name");
-		final StringBuilder solverPath = new StringBuilder();
+		final StringBuilder solverPathBuilder = new StringBuilder();
 		final StringBuilder veritBinPath = new StringBuilder();
 
 		if (OS.startsWith("Windows")) {
-			binPathToString(solverPath);
-			solverPath.append(solverBinaryName);
-			solverPath.append(".exe");
+			binPathToString(solverPathBuilder);
+			solverPathBuilder.append(solverBinaryName);
+			solverPathBuilder.append(".exe");
 		} else {
-			binPathToString(solverPath);
-			solverPath.append(solverBinaryName);
+			binPathToString(solverPathBuilder);
+			solverPathBuilder.append(solverBinaryName);
 		}
 
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
 		final SolverDetails sd = new SolverDetails(solverBinaryName,
-				solverPath.toString(), solverArgs, isSMTV1_2Compatible,
+				solverPathBuilder.toString(), solverArgs, isSMTV1_2Compatible,
 				isSMTV2_0Compatible);
-		preferences = new SMTPreferences(DEFAULT_TEST_TRANSLATION_PATH, sd,
-				veritBinPath.toString());
+
+		this.solverName = sd.getId();
+		this.solverPath = sd.getPath();
+		this.solverArguments = sd.getArgs();
+		this.veritPath = veritBinPath.toString();
 	}
 
 	/**
@@ -172,7 +180,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
+						MONITOR, smtlibVersion, solver, solverName, solverPath,
+						solverArguments, lemmaName, translationPath, veritPath) {
 					// nothing to do
 				};
 				break;
@@ -180,7 +189,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
+						MONITOR, smtlibVersion, solver, solverName, solverPath,
+						solverArguments, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -215,7 +225,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
+						MONITOR, smtlibVersion, solver, solverName, solverPath,
+						solverArguments, lemmaName, translationPath, veritPath) {
 					// nothing to do
 				};
 				break;
@@ -223,7 +234,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, preferences, lemmaName) {
+						MONITOR, smtlibVersion, solver, solverName, solverPath,
+						solverArguments, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -261,8 +273,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, parsedHypotheses, parsedGoal, preferences
-						.getSolver().getId(), smtlibVersion);
+				lemmaName, parsedHypotheses, parsedGoal, solverName,
+				smtlibVersion);
 
 		final SMTSignature signature = benchmark.getSignature();
 
@@ -352,6 +364,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			break;
 		case Z3:
 			setPreferencesForZ3Test();
+			break;
+		case UNKNOWN:
+			// TODO
 			break;
 		}
 	}
