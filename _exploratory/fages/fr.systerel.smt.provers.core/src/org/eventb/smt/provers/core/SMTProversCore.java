@@ -17,10 +17,11 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.tactics.BasicTactics;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughPP;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.provers.internal.core.SMTInput;
+import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.Translator;
 import org.osgi.framework.BundleContext;
 
@@ -159,23 +160,31 @@ public class SMTProversCore extends Plugin {
 	 * 
 	 * </p>
 	 * 
-	 * @param smtPreferences
-	 *            preferences set for this calling
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(final String poName,
-			final SMTPreferences smtPreferences, final boolean restricted) {
-		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughPP(smtPreferences), //
-				new SMTInput(restricted, DEFAULT_DELAY, poName));
+	public static ITactic externalSMTThroughPP(
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String poName,
+			final String translationPath, final boolean restricted) {
+		return BasicTactics.reasonerTac( //
+				new ExternalSMTThroughPP(), //
+				new SMTInput(restricted, DEFAULT_DELAY, smtlibVersion, solver,
+						solverName, solverPath, solverParameters, poName,
+						translationPath));
 	}
 
 	public static ITactic externalSMTThroughPP(
-			final SMTPreferences smtPreferences, final boolean restricted) {
-		return externalSMTThroughPP(RODIN_SEQUENT, smtPreferences, restricted);
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String translationPath,
+			final boolean restricted) {
+		return externalSMTThroughPP(smtlibVersion, solver, solverName,
+				solverPath, solverParameters, RODIN_SEQUENT, translationPath,
+				restricted);
 	}
 
 	/**
@@ -190,24 +199,32 @@ public class SMTProversCore extends Plugin {
 	 * 
 	 * </p>
 	 * 
-	 * @param smtPreferences
-	 *            preferences set for this calling
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughVeriT(final String poName,
-			final SMTPreferences smtPreferences, final boolean restricted) {
+	public static ITactic externalSMTThroughVeriT(
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String poName,
+			final String translationPath, final String veritPath,
+			final boolean restricted) {
 		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughVeriT(smtPreferences), //
-				new SMTInput(restricted, DEFAULT_DELAY, poName));
+				new ExternalSMTThroughVeriT(), //
+				new SMTInput(restricted, DEFAULT_DELAY, smtlibVersion, solver,
+						solverName, solverPath, solverParameters, poName,
+						translationPath, veritPath));
 	}
 
 	public static ITactic externalSMTThroughVeriT(
-			final SMTPreferences smtPreferences, final boolean restricted) {
-		return externalSMTThroughVeriT(RODIN_SEQUENT, smtPreferences,
-				restricted);
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String translationPath,
+			final String veritPath, final boolean restricted) {
+		return externalSMTThroughVeriT(smtlibVersion, solver, solverName,
+				solverPath, solverParameters, RODIN_SEQUENT, translationPath,
+				veritPath, restricted);
 	}
 
 	/**

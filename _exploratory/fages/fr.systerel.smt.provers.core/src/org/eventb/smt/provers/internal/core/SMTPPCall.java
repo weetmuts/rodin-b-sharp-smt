@@ -27,7 +27,7 @@ import java.util.Map;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.preferences.SMTPreferences;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughPP;
 
 /**
@@ -43,17 +43,16 @@ public class SMTPPCall extends SMTProverCall {
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTPreferences preferences, final String lemmaName) {
-		super(hypotheses, goal, pm, preferences, lemmaName);
-
-		final String translationPathPreferenceValue = preferences
-				.getTranslationPath();
-		if (translationPathPreferenceValue != null
-				&& !translationPathPreferenceValue.isEmpty()) {
-			translationPath = translationPathPreferenceValue
-					+ File.separatorChar + "pp";
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String poName,
+			final String translationPath) {
+		super(hypotheses, goal, pm, smtlibVersion, solver, solverName,
+				solverPath, solverParameters, poName, translationPath);
+		if (this.translationPath != null && !this.translationPath.isEmpty()) {
+			this.translationPath = translationPath + File.separatorChar + "pp";
 		} else {
-			translationPath = DEFAULT_PP_TRANSLATION_PATH;
+			this.translationPath = DEFAULT_PP_TRANSLATION_PATH;
 		}
 
 		ppTranslationFolder = new File(translationPath);
@@ -88,7 +87,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * SMT-LIB translation
 		 */
 		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, smtPreferences.getSolver().getId(), V1_2);
+				hypotheses, goal, solver.toString(), V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -99,7 +98,7 @@ public class SMTPPCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames(V1_2);
+		makeTempFileNames();
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
@@ -128,7 +127,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * SMT-LIB translation
 		 */
 		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, smtPreferences.getSolver().getId(), V2_0);
+				hypotheses, goal, solver.toString(), V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -139,15 +138,14 @@ public class SMTPPCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames(V2_0);
+		makeTempFileNames();
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		if (solverName.equals(ALT_ERGO.toString())
-				|| solverName.equals(VERIT.toString())
-				|| solverName.equals("veriT-proof-producing")) {
+		if (solver.equals(ALT_ERGO) || solver.equals(VERIT)
+				|| solver.toString().equals("veriT-proof-producing")) {
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS);
 		} else {
 			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);

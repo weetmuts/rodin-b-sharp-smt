@@ -12,6 +12,7 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
@@ -34,7 +35,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.ast.SMTBenchmark;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
@@ -66,17 +66,17 @@ public abstract class SMTProverCall extends XProverCall {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	/**
-	 * The UI preferences of the SMT plugin
-	 */
-	final SMTPreferences smtPreferences;
-
 	String translationPath = null;
 
-	/**
-	 * Name of the called external SMT solver
-	 */
+	final SMTLIBVersion smtlibVersion;
+
+	final SMTSolver solver;
+
 	final String solverName;
+
+	final String solverPath;
+
+	final String solverParameters;
 
 	/**
 	 * Name of the lemma to prove
@@ -101,19 +101,24 @@ public abstract class SMTProverCall extends XProverCall {
 	 *            goal of the sequent to discharge
 	 * @param pm
 	 *            proof monitor used for cancellation
-	 * @param preferences
-	 *            preferences set for this calling
-	 * @param lemmaName
+	 * @param poName
 	 *            name of the lemma to prove
 	 */
 	protected SMTProverCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTPreferences preferences, final String lemmaName) {
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String poName,
+			final String translationPath) {
 		super(hypotheses, goal, pm);
-		smtPreferences = preferences;
 
-		this.lemmaName = lemmaName;
-		solverName = preferences.getSolver().getId();
+		this.smtlibVersion = smtlibVersion;
+		this.solver = solver;
+		this.solverName = solverName;
+		this.solverPath = solverPath;
+		this.solverParameters = solverParameters;
+		this.lemmaName = poName;
+		this.translationPath = translationPath;
 	}
 
 	/**
@@ -168,7 +173,7 @@ public abstract class SMTProverCall extends XProverCall {
 		/**
 		 * Selected solver binary path
 		 */
-		commandLine.add(smtPreferences.getSolver().getPath());
+		commandLine.add(solverPath);
 		/**
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
@@ -176,9 +181,8 @@ public abstract class SMTProverCall extends XProverCall {
 		/**
 		 * Selected solver parameters
 		 */
-		if (!smtPreferences.getSolver().getArgs().isEmpty()) {
-			final String[] argumentsString = smtPreferences.getSolver()
-					.getArgs().split(" ");
+		if (!solverParameters.isEmpty()) {
+			final String[] argumentsString = solverParameters.split(" ");
 			for (final String argString : argumentsString) {
 				commandLine.add(argString);
 			}
@@ -321,8 +325,7 @@ public abstract class SMTProverCall extends XProverCall {
 	/**
 	 * Makes temporary files in the given path
 	 */
-	protected synchronized void makeTempFileNames(
-			final SMTLIBVersion smtlibVersion) throws IOException {
+	protected synchronized void makeTempFileNames() throws IOException {
 		final String benchmarkTargetPath = translationPath + File.separatorChar
 				+ lemmaName;
 
@@ -405,7 +408,7 @@ public abstract class SMTProverCall extends XProverCall {
 			 * discharge it with an SMT solver
 			 */
 			boolean smtBenchmarkFileMade = false;
-			if (smtPreferences.getSolver().getsmtV1_2()) {
+			if (smtlibVersion.equals(V1_2)) {
 				try {
 					makeSMTBenchmarkFileV1_2();
 					smtBenchmarkFileMade = true;
@@ -416,7 +419,10 @@ public abstract class SMTProverCall extends XProverCall {
 					}
 				}
 
-			} else if (DEV && smtPreferences.getSolver().getsmtV2_0()) {
+			} else if (DEV) {
+				/**
+				 * smtlibVersion.equals(V2_0)
+				 */
 				try {
 					makeSMTBenchmarkFileV2_0();
 					smtBenchmarkFileMade = true;
@@ -435,8 +441,7 @@ public abstract class SMTProverCall extends XProverCall {
 					showSMTBenchmarkFile();
 				}
 
-				setMonitorMessage("Running SMT solver : "
-						+ smtPreferences.getSolver().getId() + ".");
+				setMonitorMessage("Running SMT solver : " + solverName + ".");
 
 				try {
 					callProver(solverCommandLine());

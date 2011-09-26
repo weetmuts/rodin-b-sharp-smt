@@ -13,14 +13,9 @@ package org.eventb.smt.provers.internal.core;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
-import org.eventb.core.seqprover.IReasonerInputReader;
-import org.eventb.core.seqprover.IReasonerInputWriter;
-import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.core.seqprover.xprover.XProverReasoner;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.provers.core.SMTProversCore;
-
 
 /**
  * Runs an external SMT prover as a reasoner.
@@ -28,14 +23,10 @@ import org.eventb.smt.provers.core.SMTProversCore;
  * @author YGU
  */
 public class ExternalSMTThroughVeriT extends XProverReasoner {
-	private final SMTPreferences preferences;
-	private static final String ARG_KEY = "arg";
-
 	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
 			+ ".externalSMT";
 
-	public ExternalSMTThroughVeriT(final SMTPreferences smtPreferences) {
-		preferences = smtPreferences;
+	public ExternalSMTThroughVeriT() {
 	}
 
 	@Override
@@ -44,36 +35,14 @@ public class ExternalSMTThroughVeriT extends XProverReasoner {
 	}
 
 	@Override
-	public void serializeInput(final IReasonerInput rInput,
-			final IReasonerInputWriter writer) throws SerializeException {
-
-		final SMTInput input = (SMTInput) rInput;
-		final String delayString = Long.toString(input.timeOutDelay);
-		final String restrictedString = Boolean.toString(input.restricted);
-		writer.putString(ARG_KEY, restrictedString + ":" + delayString + ":"
-				+ input.getSequentName());
-	}
-
-	@Override
-	public IReasonerInput deserializeInput(
-			final IReasonerInputReader reasonerInputReader)
-			throws SerializeException {
-
-		final String arg = reasonerInputReader.getString(ARG_KEY);
-		final String[] args = arg.split(":");
-		if (args.length != 3) {
-			throw new SerializeException(new IllegalStateException(
-					"Malformed argument: " + arg));
-		}
-		return new SMTInput(Boolean.parseBoolean(args[2]),
-				Long.parseLong(args[1]), args[2]);
-	}
-
-	@Override
 	public XProverCall newProverCall(final IReasonerInput input,
 			final Iterable<Predicate> hypotheses, final Predicate goal,
 			final IProofMonitor pm) {
-		final String sequentName = ((SMTInput) input).getSequentName();
-		return new SMTVeriTCall(hypotheses, goal, pm, preferences, sequentName);
+		final SMTInput smtInput = (SMTInput) input;
+		return new SMTVeriTCall(hypotheses, goal, pm,
+				smtInput.getSmtlibVersion(), smtInput.getSolver(),
+				smtInput.getSolverName(), smtInput.getSolverPath(),
+				smtInput.getSolverArguments(), smtInput.getPOName(),
+				smtInput.getTranslationPath(), smtInput.getVeritPath());
 	}
 }

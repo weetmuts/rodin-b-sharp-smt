@@ -10,15 +10,15 @@
 
 package org.eventb.smt.tests.performance;
 
-import org.eventb.smt.provers.internal.core.SMTSolver;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+
 import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
 
+public class XMLtoSMTTestsVeritV1_2 extends XMLtoSMTTests {
 
-public class XMLtoSMTTestsCVC3 extends XMLtoSMTTests {
-
-	public XMLtoSMTTestsCVC3(final LemmaData data) {
-		super(data, SMTSolver.CVC3);
+	public XMLtoSMTTestsVeritV1_2(final LemmaData data) {
+		super(data, VERIT, V1_2);
 	}
-
 }

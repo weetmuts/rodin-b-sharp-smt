@@ -12,7 +12,6 @@ package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.Translator.DEBUG;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.eventb.smt.translation.Translator;
@@ -44,6 +42,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String PRINT_FLAT = "--print-flat";
 	private static final String DISABLE_BANNER = "--disable-banner";
 	private static final String DISABLE_ACKERMANN = "--disable-ackermann";
+
+	private String veritPath;
 
 	private File veriTTranslationFolder = null;
 
@@ -71,17 +71,18 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTPreferences preferences, final String lemmaName) {
-		super(hypotheses, goal, pm, preferences, lemmaName);
+			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
+			final String solverName, final String solverPath,
+			final String solverParameters, final String poName,
+			final String translationPath, final String veritPath) {
+		super(hypotheses, goal, pm, smtlibVersion, solver, solverName,
+				solverPath, solverParameters, poName, translationPath);
 
-		final String translationPathPreferenceValue = preferences
-				.getTranslationPath();
-		if (translationPathPreferenceValue != null
-				&& !translationPathPreferenceValue.isEmpty()) {
-			translationPath = translationPathPreferenceValue
-					+ File.separatorChar + SMTSolver.VERIT;
+		if (translationPath != null && !translationPath.isEmpty()) {
+			this.translationPath = translationPath + File.separatorChar
+					+ SMTSolver.VERIT;
 		} else {
-			translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
+			this.translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
 		}
 
 		veriTTranslationFolder = new File(translationPath);
@@ -119,13 +120,12 @@ public class SMTVeriTCall extends SMTProverCall {
 	private void callVeriT() throws IOException {
 		final List<String> cmd = new ArrayList<String>();
 
-		if (smtPreferences.getVeriTPath().isEmpty()
-				|| smtPreferences.getVeriTPath() == null) {
+		if (veritPath == null || veritPath.isEmpty()) {
 			throw new IllegalArgumentException(
 					Messages.SmtProversCall_veriT_path_not_defined);
 		}
 
-		cmd.add(smtPreferences.getVeriTPath());
+		cmd.add(veritPath);
 		cmd.add(SIMPLIFY_ARGUMENT_STRING);
 		cmd.add(PRINT_FLAT);
 		cmd.add(DISABLE_BANNER);
@@ -189,9 +189,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * Makes temporary files in the given path
 	 */
 	@Override
-	public synchronized void makeTempFileNames(final SMTLIBVersion smtlibVersion)
-			throws IOException {
-		super.makeTempFileNames(smtlibVersion);
+	public synchronized void makeTempFileNames() throws IOException {
+		super.makeTempFileNames();
 
 		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
 				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
@@ -219,7 +218,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, smtPreferences.getSolver().getId());
+				hypotheses, goal, solverName);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -230,7 +229,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames(V1_2);
+		makeTempFileNames();
 
 		/**
 		 * Prints the benchmark with macros in a file

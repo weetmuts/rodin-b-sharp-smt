@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.translation;
 
-import org.eventb.smt.translation.SMTLIBVersion;
-
 /**
  * Known SMT-LIB language versions.
  */
@@ -19,11 +17,13 @@ public enum SMTLIBVersion {
 	/**
 	 * The original SMT-LIB language used by the SMT Plug-in
 	 */
-	V1_2,
+	V1_2("V1.2"),
 	/**
 	 * The SMT-LIB language used by the SMT Plug-in since TODO when done.
 	 */
-	V2_0;
+	V2_0("V2.0");
+
+	final String value;
 
 	/**
 	 * The latest language version supported by the AST library.
@@ -33,5 +33,22 @@ public enum SMTLIBVersion {
 	private static SMTLIBVersion latest() {
 		final SMTLIBVersion[] values = values();
 		return values[values.length - 1];
+	}
+
+	private SMTLIBVersion(final String value) {
+		this.value = value;
+	}
+
+	public static SMTLIBVersion getVersion(final String value) {
+		if (value.equals(V1_2.value)) {
+			return V1_2;
+		} else {
+			return V2_0;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return value;
 	}
 }

@@ -16,7 +16,6 @@ import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 import org.eventb.smt.provers.core.SMTProversCore;
 
-
 /**
  * This class file contains static classes that extend the autoTactics extension
  * point in the sequent prover
@@ -46,10 +45,11 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SMTProversCore.externalSMTThroughPP(null, true);
+			return SMTProversCore.externalSMTThroughPP(null, null, null, null,
+					null, null, true);
 		}
 	}
-	
+
 	public static class SMTPPParameterizer implements ITacticParameterizer {
 
 		@Override
@@ -58,19 +58,21 @@ public class AutoTactics {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughPP(null, restricted);
+			return SMTProversCore.externalSMTThroughPP(null, null, null, null,
+					null, null, restricted);
 		}
-		
+
 	}
 
 	public static class SMTVeriT extends AbsractLazilyConstrTactic {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SMTProversCore.externalSMTThroughVeriT(null, true);
+			return SMTProversCore.externalSMTThroughVeriT(null, null, null,
+					null, null, null, null, true);
 		}
 	}
-	
+
 	public static class SMTVeriTParameterizer implements ITacticParameterizer {
 
 		@Override
@@ -79,8 +81,9 @@ public class AutoTactics {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughVeriT(null, restricted);
+			return SMTProversCore.externalSMTThroughVeriT(null, null, null,
+					null, null, null, null, restricted);
 		}
-		
+
 	}
 }
