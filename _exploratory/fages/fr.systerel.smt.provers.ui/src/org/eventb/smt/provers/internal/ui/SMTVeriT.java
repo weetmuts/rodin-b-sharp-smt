@@ -64,10 +64,11 @@ public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
 						veriTPath);
 
 				return SMTProversCore.externalSMTThroughVeriT(smtPreferences
-						.getSolver().getSmtlibVersion(), null, smtPreferences
-						.getSolver().getId(), smtPreferences.getSolver()
-						.getPath(), smtPreferences.getSolver().getArgs(),
-						smtPreferences.getTranslationPath(), smtPreferences
+						.getSolver().getSmtlibVersion(), smtPreferences
+						.getSolver().getSolver(), smtPreferences.getSolver()
+						.getId(), smtPreferences.getSolver().getPath(),
+						smtPreferences.getSolver().getArgs(), smtPreferences
+								.getTranslationPath(), smtPreferences
 								.getVeriTPath(), true);
 
 			} catch (final PatternSyntaxException pse) {

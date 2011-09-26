@@ -54,10 +54,11 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 				final SMTPreferences smtPreferences = new SMTPreferences(
 						translationPath, solverPreferences, solverIndex);
 				return SMTProversCore.externalSMTThroughPP(smtPreferences
-						.getSolver().getSmtlibVersion(), null, smtPreferences
-						.getSolver().getId(), smtPreferences.getSolver()
-						.getPath(), smtPreferences.getSolver().getArgs(),
-						smtPreferences.getTranslationPath(), true);
+						.getSolver().getSmtlibVersion(), smtPreferences
+						.getSolver().getSolver(), smtPreferences.getSolver()
+						.getId(), smtPreferences.getSolver().getPath(),
+						smtPreferences.getSolver().getArgs(), smtPreferences
+								.getTranslationPath(), true);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMTProversCore.smtSolverError();
