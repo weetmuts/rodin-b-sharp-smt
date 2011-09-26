@@ -51,7 +51,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
 	public void testBug2105507Thm1UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -64,7 +63,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
 	public void testBug2105507Thm2UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -73,13 +71,14 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList(//
 				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))");
 
+		final List<String> unsat = Arrays.asList();
+
 		doTest("Bug2105507Thm2UnsatCore", hyps,
-				"∀n· ((n ∈ {0, 2, 4, 5}) ⇒ (n ∉ {6, 8, 9}))", te, VALID, hyps,
+				"∀n· ((n ∈ {0, 2, 4, 5}) ⇒ (n ∉ {6, 8, 9}))", te, VALID, unsat,
 				GOAL_NEEDED);
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
 	public void testBug2105507Thm3UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -88,13 +87,15 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList(//
 				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))");
 
+		final List<String> unsat = Arrays.asList();
+
 		doTest("Bug2105507Thm3UnsatCore", hyps,
-				"∀n· n ∉ ({0, 2, 4, 5} ∩ {6, 8, 9})", te, VALID, hyps,
+				"∀n· n ∉ ({0, 2, 4, 5} ∩ {6, 8, 9})", te, VALID, unsat,
 				GOAL_NEEDED);
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testBug2105507Thm4UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -408,7 +409,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testSets3UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -661,7 +662,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 'basic_set' theory
 	 */
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo1UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -777,7 +778,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3MiniUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -794,7 +795,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3MediumUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -812,7 +813,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
 	public void testBepiColombo3Medium2UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -825,8 +825,10 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				"TC = {3 ↦ 5,3 ↦ 6,3 ↦ 129,6 ↦ 2,6 ↦ 5,6 ↦ 9,9 ↦ 129,17 ↦ 1,17 ↦ 128,21 ↦ 1,21 ↦ 2,21 ↦ 128,21 ↦ 129,200 ↦ 1,200 ↦ 2,200 ↦ 3,200 ↦ 4,200 ↦ 5,200 ↦ 6}", //
 						"TM = ∅");
 
+		final List<String> unsat = Arrays.asList("TM = ∅");
+
 		doTest("bepi_colombo3Medium2UnsatCore", hyps, "TC ∩ TM = ∅", te, VALID,
-				hyps, GOAL_NEEDED);
+				unsat, GOAL_NEEDED);
 	}
 
 	/**
@@ -839,7 +841,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -891,7 +893,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	// @Ignore("Erreur de segmentation")
 	public void testLinearSort29UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
