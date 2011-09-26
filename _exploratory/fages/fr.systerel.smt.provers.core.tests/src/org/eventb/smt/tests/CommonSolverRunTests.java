@@ -29,7 +29,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.preferences.SolverDetails;
 import org.eventb.smt.provers.internal.core.SMTPPCall;
 import org.eventb.smt.provers.internal.core.SMTProverCall;
 import org.eventb.smt.provers.internal.core.SMTSolver;
@@ -60,13 +59,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
-	protected final SMTLIBVersion smtlibVersion;
-
-	protected final SMTSolver solver;
-
 	protected String solverName;
+	protected SMTSolver solver;
 	protected String solverPath;
 	protected String solverArguments;
+	protected SMTLIBVersion smtlibVersion;
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;
@@ -119,12 +116,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * 
 	 * @param solverBinaryName
 	 * @param solverArgs
-	 * @param isSMTV1_2Compatible
-	 * @param isSMTV2_0Compatible
+	 * @param smtlibVersion
 	 */
 	private void setSolverPreferences(final String solverBinaryName,
-			final String solverArgs, final boolean isSMTV1_2Compatible,
-			final boolean isSMTV2_0Compatible) {
+			final SMTSolver solver, final String solverArgs,
+			final SMTLIBVersion smtlibVersion) {
 		final String OS = System.getProperty("os.name");
 		final StringBuilder solverPathBuilder = new StringBuilder();
 		final StringBuilder veritBinPath = new StringBuilder();
@@ -141,13 +137,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
-		final SolverDetails sd = new SolverDetails(solverBinaryName,
-				solverPathBuilder.toString(), solverArgs, isSMTV1_2Compatible,
-				isSMTV2_0Compatible);
-
-		this.solverName = sd.getId();
-		this.solverPath = sd.getPath();
-		this.solverArguments = sd.getArgs();
+		this.solverName = solverBinaryName;
+		this.solver = solver;
+		this.solverPath = solverPathBuilder.toString();
+		this.solverArguments = solverArgs;
+		this.smtlibVersion = smtlibVersion;
 		this.veritPath = veritBinPath.toString();
 	}
 
@@ -284,26 +278,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected void setPreferencesForAltErgoTest() {
-		if (smtlibVersion.equals(V1_2)) {
-			setSolverPreferences(ALT_ERGO.toString(), "", true, false);
-		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
-			setSolverPreferences(ALT_ERGO.toString(), "", false, true);
-		}
+		setSolverPreferences(ALT_ERGO.toString(), ALT_ERGO, "", smtlibVersion);
 	}
 
 	protected void setPreferencesForVeriTTest() {
+		final String args;
 		if (smtlibVersion.equals(V1_2)) {
-			setSolverPreferences(VERIT.toString(), "", true, false);
+			args = "";
 		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
-			setSolverPreferences(VERIT.toString(),
-					"-i smtlib2 --disable-print-success", false, true);
+			args = "-i smtlib2 --disable-print-success";
 		}
+		setSolverPreferences(VERIT.toString(), VERIT, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForVeriTProofTest() {
@@ -312,20 +297,19 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 */
 		setSolverPreferences(
 				"veriT-proof-producing",
+				VERIT,
 				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
-				false, true);
+				smtlibVersion);
 	}
 
 	protected void setPreferencesForCvc3Test() {
+		final String args;
 		if (smtlibVersion.equals(V1_2)) {
-			setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
+			args = "-lang smt";
 		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
-			setSolverPreferences(CVC3.toString(), "-lang smt2", false, true);
+			args = "-lang smt2";
 		}
-
+		setSolverPreferences(CVC3.toString(), CVC3, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForZ3Test() {
@@ -341,14 +325,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		Z3.toString(binaryName);
 
+		final String args;
 		if (smtlibVersion.equals(V1_2)) {
-			setSolverPreferences(binaryName.toString(), "", true, false);
+			args = "";
 		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
-			setSolverPreferences(binaryName.toString(), "-smt2", false, true);
+			args = "-smt2";
 		}
+		setSolverPreferences(binaryName.toString(), Z3, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForSolverTest(final SMTSolver solver) {

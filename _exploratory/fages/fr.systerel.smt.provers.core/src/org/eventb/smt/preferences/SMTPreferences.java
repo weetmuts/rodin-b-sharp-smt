@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.translation.SMTLIBVersion;
+
 /**
  * The SMT preferences class
  */
@@ -140,9 +143,9 @@ public class SMTPreferences {
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SolverDetails(columns[0], columns[1],
-						columns[2], Boolean.valueOf(columns[3]), Boolean
-								.valueOf(columns[4])));
+				solverDetail.add(new SolverDetails(columns[0], SMTSolver
+						.getSolver(columns[1]), columns[2], columns[3],
+						SMTLIBVersion.getVersion(columns[4])));
 			}
 		}
 		return solverDetail;

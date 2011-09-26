@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eventb.smt.preferences.SolverDetails;
 
-
 /**
  * This class provides text for each column of a solvers table viewer.
  */
@@ -33,13 +32,13 @@ class SolversDetailsLabelProvider implements ITableLabelProvider {
 		case 0:
 			return solver.getId();
 		case 1:
-			return solver.getPath();
+			return solver.getSolver().toString();
 		case 2:
-			return solver.getArgs();
+			return solver.getPath();
 		case 3:
-			return Boolean.toString(solver.getsmtV1_2());
+			return solver.getArgs();
 		case 4:
-			return Boolean.toString(solver.getsmtV2_0());
+			return solver.getSmtlibVersion().toString();
 		}
 		return null;
 	}

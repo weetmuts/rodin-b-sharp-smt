@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.preferences.SolverDetails;
 
-
 /**
  * This class is used to build the solver configurations table printed in the
  * preferences page. This table contains all the information set by the user
@@ -72,17 +71,17 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	private static final String EDIT_LABEL = "Edit...";
 	private static final String SELECT_LABEL = "Select";
 	private static final String SOLVER_ID_LABEL = "Solver ID";
+	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
-	private static final String V1_2_LABEL = "v1.2";
-	private static final String V2_0_LABEL = "v2.0";
+	private static final String SMTLIB_LABEL = "SMT-LIB";
 
 	/**
 	 * Column labels and bounds
 	 */
 	private static final String[] COLUMNS_LABELS = { SOLVER_ID_LABEL,
-			SOLVER_PATH_LABEL, SOLVER_ARGS_LABEL, V1_2_LABEL, V2_0_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 70, 190, 150, 40, 40 };
+			SOLVER_LABEL, SOLVER_PATH_LABEL, SOLVER_ARGS_LABEL, SMTLIB_LABEL };
+	private static final int[] COLUMN_BOUNDS = { 70, 70, 190, 150, 50 };
 
 	/**
 	 * The button for adding a new solver to the table.

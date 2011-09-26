@@ -80,7 +80,7 @@ public class SMTVeriTCall extends SMTProverCall {
 
 		if (translationPath != null && !translationPath.isEmpty()) {
 			this.translationPath = translationPath + File.separatorChar
-					+ SMTSolver.VERIT;
+					+ SMTSolver.VERIT.toString();
 		} else {
 			this.translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
 		}
@@ -100,6 +100,8 @@ public class SMTVeriTCall extends SMTProverCall {
 				veriTTranslationFolder.deleteOnExit();
 			}
 		}
+
+		this.veritPath = veritPath;
 	}
 
 	/**

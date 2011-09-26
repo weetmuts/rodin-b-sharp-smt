@@ -50,7 +50,7 @@ public class SMTPPCall extends SMTProverCall {
 		super(hypotheses, goal, pm, smtlibVersion, solver, solverName,
 				solverPath, solverParameters, poName, translationPath);
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
-			this.translationPath = translationPath + File.separatorChar + "pp";
+			this.translationPath = this.translationPath + File.separatorChar + "pp";
 		} else {
 			this.translationPath = DEFAULT_PP_TRANSLATION_PATH;
 		}

@@ -23,6 +23,7 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.provers.ui.SmtProversUIPlugin.PLUGIN_ID;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.preferences.SolverDetails;
+import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,8 +52,8 @@ public class UiPreferencesTests {
 			+ System.getProperty("file.separator");
 
 	protected static void setSolverPreferences(final String solverBinaryName,
-			final String solverArgs, final boolean isSMTV1_2Compatible,
-			final boolean isSMTV2_0Compatible) {
+			final SMTSolver solver, final String solverArgs,
+			final SMTLIBVersion smtlibVersion) {
 		final String OS = System.getProperty("os.name");
 		final IPreferenceStore store = SmtProversUIPlugin
 				.getDefaultPreferenceStore();
@@ -65,8 +68,8 @@ public class UiPreferencesTests {
 		System.out.println(solverPath);
 
 		final List<SolverDetails> solvers = new ArrayList<SolverDetails>();
-		solvers.add(new SolverDetails(solverBinaryName, solverPath, solverArgs,
-				isSMTV1_2Compatible, isSMTV2_0Compatible));
+		solvers.add(new SolverDetails(solverBinaryName, solver, solverPath,
+				solverArgs, smtlibVersion));
 		final String preferences = SolverDetails.toString(solvers);
 		store.setValue(TRANSLATION_PATH_ID, "");
 		store.setValue(SOLVER_PREFERENCES_ID, preferences);
@@ -75,11 +78,11 @@ public class UiPreferencesTests {
 	}
 
 	protected static void setPreferencesForVeriTTest() {
-		setSolverPreferences(VERIT.toString(), "", true, false);
+		setSolverPreferences(VERIT.toString(), VERIT, "", V1_2);
 	}
 
 	protected void setPreferencesForCvc3Test() {
-		setSolverPreferences(CVC3.toString(), "-lang smt", true, false);
+		setSolverPreferences(CVC3.toString(), CVC3, "-lang smt", V1_2);
 
 	}
 
@@ -91,11 +94,11 @@ public class UiPreferencesTests {
 					+ System.getProperty("file.separator") + Z3;
 		}
 
-		setSolverPreferences(solver, "", true, false);
+		setSolverPreferences(solver, Z3, "", V1_2);
 	}
 
 	protected void setPreferencesForAltErgoTest() {
-		setSolverPreferences(ALT_ERGO.toString(), "", true, false);
+		setSolverPreferences(ALT_ERGO.toString(), ALT_ERGO, "", V1_2);
 	}
 
 	@Test
@@ -122,17 +125,18 @@ public class UiPreferencesTests {
 				veriTPath);
 
 		final String expectedId = ALT_ERGO.toString();
+		final SMTSolver expectedSolver = ALT_ERGO;
 		String expectedSolverPath = BIN_PATH + expectedId;
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			expectedSolverPath += ".exe";
 		}
 		final String args = "";
-		final boolean smtV1_2 = true;
-		final boolean smtV2_0 = false;
+		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
 		final SolverDetails expectedSolverDetail = new SolverDetails(
-				expectedId, expectedSolverPath, args, smtV1_2, smtV2_0);
+				expectedId, expectedSolver, expectedSolverPath, args,
+				smtlibVersion);
 		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
 				DEFAULT_TRANSLATION_PATH, expectedSolverDetail,
 				expectedVeriTPath);

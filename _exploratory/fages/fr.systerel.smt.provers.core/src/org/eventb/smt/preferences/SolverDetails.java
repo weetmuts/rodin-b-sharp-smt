@@ -12,11 +12,10 @@ package org.eventb.smt.preferences;
 
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR1;
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR2;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.List;
 
+import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
@@ -24,42 +23,46 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * 
  */
 public class SolverDetails {
-
 	private String id;
+
+	private SMTSolver solver;
 
 	private String path;
 
 	private String args;
 
-	private boolean smtV1_2;
-
-	private boolean smtV2_0;
+	private SMTLIBVersion smtlibVersion;
 
 	/**
 	 * Constructs a new SolverDetails
 	 * 
 	 * @param id
 	 *            the id of the solver
+	 * @param solver
+	 *            the solver
 	 * @param path
 	 *            the path of the solver
 	 * @param args
 	 *            arguments that the solver can use
-	 * @param smtV1_2
-	 *            determines if the solver will be used for SMT 1.2
-	 * @param smtV2_0
-	 *            determines if the solver will be used for SMT 2.0
+	 * @param smtlibVersion
+	 *            version of SMT-LIB to use with this solver configuration
 	 */
-	public SolverDetails(final String id, final String path, final String args,
-			final boolean smtV1_2, final boolean smtV2_0) {
+	public SolverDetails(final String id, final SMTSolver solver,
+			final String path, final String args,
+			final SMTLIBVersion smtlibVersion) {
 		this.id = id;
+		this.solver = solver;
 		this.path = path;
 		this.args = args;
-		this.smtV1_2 = smtV1_2;
-		this.smtV2_0 = smtV2_0;
+		this.smtlibVersion = smtlibVersion;
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public SMTSolver getSolver() {
+		return solver;
 	}
 
 	public String getPath() {
@@ -70,24 +73,16 @@ public class SolverDetails {
 		return args;
 	}
 
-	public boolean getsmtV1_2() {
-		return smtV1_2;
-	}
-
-	public boolean getsmtV2_0() {
-		return smtV2_0;
-	}
-
 	public SMTLIBVersion getSmtlibVersion() {
-		if (smtV1_2) {
-			return V1_2;
-		} else {
-			return V2_0;
-		}
+		return smtlibVersion;
 	}
 
 	public void setId(final String id) {
 		this.id = id;
+	}
+
+	public void setSolver(final SMTSolver solver) {
+		this.solver = solver;
 	}
 
 	public void setPath(final String path) {
@@ -98,12 +93,8 @@ public class SolverDetails {
 		this.args = args;
 	}
 
-	public void setSmtV1_2(final boolean smtV1_2) {
-		this.smtV1_2 = smtV1_2;
-	}
-
-	public void setSmtV2_0(final boolean smtV2_0) {
-		this.smtV2_0 = smtV2_0;
+	public void setSmtlibVersion(final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 	}
 
 	public static final String toString(final List<SolverDetails> solversDetails) {
@@ -112,13 +103,13 @@ public class SolverDetails {
 		for (final SolverDetails solverDetail : solversDetails) {
 			sb.append(solverDetail.getId());
 			sb.append(SEPARATOR1);
+			sb.append(solverDetail.getSolver());
+			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getPath());
 			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getArgs());
 			sb.append(SEPARATOR1);
-			sb.append(Boolean.toString(solverDetail.getsmtV1_2()));
-			sb.append(SEPARATOR1);
-			sb.append(Boolean.toString(solverDetail.getsmtV2_0()));
+			sb.append(solverDetail.getSmtlibVersion());
 			sb.append(SEPARATOR2);
 		}
 
@@ -128,14 +119,14 @@ public class SolverDetails {
 	public void toString(final StringBuilder builder) {
 		builder.append("SolverDetails [id=");
 		builder.append(id);
+		builder.append(", solver=");
+		builder.append(solver);
 		builder.append(", path=");
 		builder.append(path);
 		builder.append(", args=");
 		builder.append(args);
-		builder.append(", smtV1_2=");
-		builder.append(smtV1_2);
-		builder.append(", smtV2_0=");
-		builder.append(smtV2_0);
+		builder.append(", smtlibVersion=");
+		builder.append(smtlibVersion);
 		builder.append("]");
 	}
 
@@ -143,11 +134,12 @@ public class SolverDetails {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (args == null ? 0 : args.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (solver == null ? 0 : solver.hashCode());
 		result = prime * result + (path == null ? 0 : path.hashCode());
-		result = prime * result + (smtV1_2 ? 1231 : 1237);
-		result = prime * result + (smtV2_0 ? 1231 : 1237);
+		result = prime * result + (args == null ? 0 : args.hashCode());
+		result = prime * result
+				+ (smtlibVersion == null ? 0 : smtlibVersion.hashCode());
 		return result;
 	}
 
@@ -170,18 +162,18 @@ public class SolverDetails {
 			return false;
 		}
 		final SolverDetails other = (SolverDetails) obj;
-		if (args == null) {
-			if (other.args != null) {
-				return false;
-			}
-		} else if (!args.equals(other.args)) {
-			return false;
-		}
 		if (id == null) {
 			if (other.id != null) {
 				return false;
 			}
 		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (solver == null) {
+			if (other.solver != null) {
+				return false;
+			}
+		} else if (!solver.equals(other.solver)) {
 			return false;
 		}
 		if (path == null) {
@@ -191,10 +183,18 @@ public class SolverDetails {
 		} else if (!path.equals(other.path)) {
 			return false;
 		}
-		if (smtV1_2 != other.smtV1_2) {
+		if (args == null) {
+			if (other.args != null) {
+				return false;
+			}
+		} else if (!args.equals(other.args)) {
 			return false;
 		}
-		if (smtV2_0 != other.smtV2_0) {
+		if (smtlibVersion == null) {
+			if (other.smtlibVersion != null) {
+				return false;
+			}
+		} else if (!smtlibVersion.equals(other.smtlibVersion)) {
 			return false;
 		}
 		return true;
