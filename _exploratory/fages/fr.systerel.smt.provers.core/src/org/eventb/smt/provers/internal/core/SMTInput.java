@@ -136,7 +136,6 @@ public class SMTInput extends XProverInput {
 		writer.putString(SOLVER, solver.toString());
 		writer.putString(SOLVER_NAME, solverName);
 		writer.putString(SOLVER_PATH, solverPath);
-		writer.putString(VERIT_PATH, veritPath);
 		writer.putString(SOLVER_ARGS, solverArguments);
 		writer.putString(PO_NAME, poName);
 		writer.putString(TRANSLATION_PATH, translationPath);
