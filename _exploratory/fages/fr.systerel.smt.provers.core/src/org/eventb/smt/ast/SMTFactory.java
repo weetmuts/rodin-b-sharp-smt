@@ -312,6 +312,19 @@ public abstract class SMTFactory {
 		return new SMTAtom(predicateSymbol, args);
 	}
 
+	public static SMTFormula makeAtom2(
+			final SMTPredicateSymbol predicateSymbol, final SMTTerm[] args,
+			final SMTSignature signature) {
+		signature.verifyPredicateSignature(predicateSymbol);
+		return new SMTAtom(predicateSymbol, args) {
+			@Override
+			public void toString(final StringBuilder builder, final int offset,
+					final boolean printPoint) {
+				terms[0].toString(builder, offset);
+			}
+		};
+	}
+
 	/**
 	 * this method makes a new constant symbol
 	 * 

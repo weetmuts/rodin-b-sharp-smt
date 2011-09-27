@@ -478,21 +478,21 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		 * Formulas containing boolean equalities and memberships involving
 		 * boolean values.
 		 */
-		testTranslationV2_0(te, "b = TRUE ∧ b ∈ B", "(and (TRUE b) (B b))");
-		testTranslationV2_0(te, "TRUE = b ∧ b ∈ B", "(and (TRUE b) (B b))");
+		testTranslationV2_0(te, "b = TRUE ∧ b ∈ B", "(and b (B b))");
+		testTranslationV2_0(te, "TRUE = b ∧ b ∈ B", "(and b (B b))");
 		testTranslationV2_0(te, "b = c ∧ b ∈ B",
-				"(and (= (TRUE b) (TRUE c)) (B b))");
+				"(and (= b c) (B b))");
 
 		/**
 		 * Formulas containing boolean equalities and quantified boolean
 		 * variables.
 		 */
 		testTranslationV2_0(te, "b = TRUE ∧ (∀d·d = b)",
-				"(and (TRUE b) (forall ((d BOOL)) (= (TRUE d) (TRUE b))))");
+				"(and b (forall ((d Bool)) (= d b)))");
 		testTranslationV2_0(te, "TRUE = b ∧ (∀d·d = b)",
-				"(and (TRUE b) (forall ((d BOOL)) (= (TRUE d) (TRUE b))))");
+				"(and b (forall ((d Bool)) (= d b)))");
 		testTranslationV2_0(te, "b = c ∧ (∀d·d = b)",
-				"(and (= (TRUE b) (TRUE c)) (forall ((d BOOL)) (= (TRUE d) (TRUE b))))");
+				"(and (= b c) (forall ((d Bool)) (= d b)))");
 
 		/**
 		 * Boolean equalities without any membership involving boolean values,
@@ -517,7 +517,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 				"ite", "ℙ(par)", "let", "par", "as", "par");
 
 		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList( //
-				"PP", "Int", "PZ", "BOOL", "PB", "NS"));
+				"PP", "Int", "PZ", "Bool", "PB", "NS"));
 
 		testTypeEnvironmentSorts(defaultLogic, te, expectedSorts, "let = as");
 
@@ -569,9 +569,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testTrueAxiom() {
 		final ITypeEnvironment te = mTypeEnvironment("Y", "ℙ(BOOL×BOOL)");
-		final List<String> expectedAssumptions = Arrays
-				.asList("(forall ((x BOOL) (y BOOL)) (= (= (TRUE x) (TRUE y)) (= x y)))",
-						"(exists ((x0 BOOL) (y0 BOOL)) (and (TRUE x0) (not (TRUE y0))))");
+		final List<String> expectedAssumptions = Arrays.asList();
 
 		testContainsAssumptionsPP(te, "FALSE↦TRUE ∈ Y", expectedAssumptions);
 	}
@@ -580,11 +578,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = Arrays
-				.asList("(forall ((x BOOL)) (MS x BOOLS))", //
-						"(forall ((x0 BOOL) (y BOOL)) (= (= (TRUE x0) (TRUE y)) (= x0 y)))", //
-						"(exists ((x1 BOOL) (y0 BOOL)) (and (TRUE x1) (not (TRUE y0))))", //
-						"(forall ((A PB) (B PB)) (=> (forall ((x2 BOOL)) (= (MS x2 A) (MS x2 B))) (= A B)))", //
-						"(forall ((x3 BOOL)) (exists ((X PB)) (and (MS x3 X) (forall ((y1 BOOL)) (=> (MS y1 X) (= y1 x3))))))");
+				.asList();
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 
