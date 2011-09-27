@@ -95,7 +95,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testBug2105507Thm4UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -135,7 +134,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("Erreur de segmentation")
+	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testBoolsSetEqualityUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -160,7 +159,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testDFPSBoolUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -177,7 +176,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimpleUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -194,7 +193,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * predicate is unsuccessful without its refinement (axioms to add).
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimpleMonadicUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -211,7 +210,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple00UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -227,7 +226,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple01UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -243,7 +242,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple11UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -259,7 +258,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple12UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -275,7 +274,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple32UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -291,7 +290,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple30UnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -307,7 +306,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple1yUnsatCore() {
 		setPreferencesForVeriTProofTest();
 
@@ -321,7 +320,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimple3yUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -336,7 +335,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimplex1UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -351,7 +350,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimplex2UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -366,7 +365,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallPlusSimplexyUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -409,7 +408,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testSets3UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -424,7 +422,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testSets4UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -438,7 +436,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testSets5UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -456,7 +454,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testSets6UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -472,7 +470,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testSets7UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -485,7 +483,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testSolverCallBelong1UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -497,7 +495,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. Erreur de segmentation")
+	@Ignore("unknown")
 	public void testRule20MacroInsideMacroUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -511,7 +509,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. Erreur de segmentation")
+	@Ignore("unknown")
 	public void testRule20ManyForallsUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -662,7 +660,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 'basic_set' theory
 	 */
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo1UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -676,8 +673,10 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				"¬ c=a", //
 				"S={a,b,c}");
 
+		final List<String> unsat = Arrays.asList();
+
 		doTest("bepi_colombo1UnsatCore", hyps, "{a,b,c} = {c,a,b}", te, VALID,
-				hyps, GOAL_NEEDED);
+				unsat, GOAL_NEEDED);
 	}
 
 	/**
@@ -705,7 +704,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testCh7LikeEvenSimplerUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -724,7 +723,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testCh7LikeMoreSimpleYetUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -742,7 +741,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDifferentForallUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -762,7 +761,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 'full_set_theory' theory
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testCh7Conc29UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -778,7 +777,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3MiniUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -795,7 +793,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3MediumUnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -841,7 +838,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
 	public void testBepiColombo3UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -859,7 +855,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testDynamicStableLSR_081014_15UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -879,7 +875,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("unknown. warning : proof_done: status is still open. error : DAG_gc_dec: under limit")
+	@Ignore("unknown")
 	public void testch910_ring_6UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
@@ -893,7 +889,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	// @Ignore("Erreur de segmentation")
+	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testLinearSort29UnsatCore() {
 
 		setPreferencesForVeriTProofTest();
