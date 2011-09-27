@@ -38,7 +38,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		 * Sorts of the core theory
 		 */
 		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-				SMTSymbol.BOOL, !PREDEFINED, V2_0);
+				SMTSymbol.BOOL_V2, PREDEFINED, V2_0);
 		private final static SMTSortSymbol POW_BOOL_SORT = new SMTSortSymbol(
 				POW_BOOL, !PREDEFINED, V2_0);
 		private static final SMTSortSymbol[] SORTS = { BOOL_SORT, POW_BOOL_SORT };
@@ -48,7 +48,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 				BOOL_SORT };
 
 		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
-				"TRUE", BOOL_TAB, !PREDEFINED, V2_0);
+				"TRUE", BOOL_TAB, PREDEFINED, V2_0);
 
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
