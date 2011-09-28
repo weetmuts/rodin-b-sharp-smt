@@ -24,7 +24,7 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.preferences.SolverConfiguration;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.eventb.smt.translation.Translator;
 
@@ -71,12 +71,9 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String poName,
+			final SolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
-		super(hypotheses, goal, pm, smtlibVersion, solver, solverName,
-				solverPath, solverParameters, poName, translationPath);
+		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
 
 		if (translationPath != null && !translationPath.isEmpty()) {
 			this.translationPath = translationPath + File.separatorChar
@@ -220,7 +217,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, solverName);
+				hypotheses, goal);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could

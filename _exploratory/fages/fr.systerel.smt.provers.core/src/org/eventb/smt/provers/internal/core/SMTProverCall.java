@@ -12,6 +12,7 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
@@ -35,7 +36,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.ast.SMTBenchmark;
-import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.preferences.SolverConfiguration;
 
 /**
  * 
@@ -66,17 +67,9 @@ public abstract class SMTProverCall extends XProverCall {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
+	SolverConfiguration solverConfig;
+
 	String translationPath = null;
-
-	final SMTLIBVersion smtlibVersion;
-
-	final SMTSolver solver;
-
-	final String solverName;
-
-	final String solverPath;
-
-	final String solverParameters;
 
 	/**
 	 * Name of the lemma to prove
@@ -106,17 +99,10 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	protected SMTProverCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String poName,
+			final SolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
 		super(hypotheses, goal, pm);
-
-		this.smtlibVersion = smtlibVersion;
-		this.solver = solver;
-		this.solverName = solverName;
-		this.solverPath = solverPath;
-		this.solverParameters = solverParameters;
+		this.solverConfig = solverConfig;
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
 	}
@@ -173,7 +159,7 @@ public abstract class SMTProverCall extends XProverCall {
 		/**
 		 * Selected solver binary path
 		 */
-		commandLine.add(solverPath);
+		commandLine.add(solverConfig.getPath());
 		/**
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
@@ -181,8 +167,9 @@ public abstract class SMTProverCall extends XProverCall {
 		/**
 		 * Selected solver parameters
 		 */
-		if (!solverParameters.isEmpty()) {
-			final String[] argumentsString = solverParameters.split(" ");
+		final String args = solverConfig.getArgs();
+		if (!args.isEmpty()) {
+			final String[] argumentsString = args.split(" ");
 			for (final String argString : argumentsString) {
 				commandLine.add(argString);
 			}
@@ -251,17 +238,19 @@ public abstract class SMTProverCall extends XProverCall {
 		if (solverResult.contains("syntax error")
 				|| solverResult.contains("parse error")
 				|| solverResult.contains("Lexical_error")) {
-			throw new IllegalArgumentException(solverName + " could not parse "
-					+ lemmaName + ".smt. See " + lemmaName
-					+ ".res for more details.");
+			throw new IllegalArgumentException(solverConfig.getSolver()
+					.toString()
+					+ " could not parse "
+					+ lemmaName
+					+ ".smt. See " + lemmaName + ".res for more details.");
 		} else if (solverResult.contains("unsat")) {
 			return true;
 		} else if (solverResult.contains("sat")) {
 			return false;
 		} else {
 			throw new IllegalArgumentException("Unexpected response of "
-					+ solverName + ". See " + lemmaName
-					+ ".res for more details.");
+					+ solverConfig.getSolver().toString() + ". See "
+					+ lemmaName + ".res for more details.");
 		}
 	}
 
@@ -347,8 +336,9 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 		}
 
-		if (smtlibVersion.equals(V2_0)
-				&& solverName.equals(ALT_ERGO.toString())) {
+		final SMTSolver solver = solverConfig.getSolver();
+		if (solverConfig.getSmtlibVersion().equals(V2_0)
+				&& solver.equals(ALT_ERGO)) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO, smtTranslationFolder);
 		} else {
@@ -366,8 +356,9 @@ public abstract class SMTProverCall extends XProverCall {
 		}
 
 		if (DEBUG) {
-			smtResultFile = File.createTempFile(lemmaName + "_" + solverName,
-					RES_FILE_EXTENSION, smtTranslationFolder);
+			smtResultFile = File.createTempFile(
+					lemmaName + "_" + solver.toString(), RES_FILE_EXTENSION,
+					smtTranslationFolder);
 			System.out.println("Created temporary SMT result file '"
 					+ smtResultFile + "'");
 
@@ -408,7 +399,7 @@ public abstract class SMTProverCall extends XProverCall {
 			 * discharge it with an SMT solver
 			 */
 			boolean smtBenchmarkFileMade = false;
-			if (smtlibVersion.equals(V1_2)) {
+			if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 				try {
 					makeSMTBenchmarkFileV1_2();
 					smtBenchmarkFileMade = true;
@@ -435,6 +426,7 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			if (smtBenchmarkFileMade) {
+				final String solverName = solverConfig.getSolver().toString();
 				if (DEBUG_DETAILS) {
 					System.out.println("Launching " + solverName
 							+ " with input:\n");
@@ -455,7 +447,8 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			if (DEV & isValid()) {
-				if (solverName.equals("veriT-proof-producing")) {
+				if (solverConfig.getSolver().equals(VERIT)
+						&& solverConfig.getArgs().contains("--proof=")) {
 					extractUnsatCoreFromVeriTProof();
 				}
 			}
@@ -494,7 +487,7 @@ public abstract class SMTProverCall extends XProverCall {
 	@Override
 	public String displayMessage() {
 		final StringBuilder message = new StringBuilder();
-		message.append("SMT-").append(solverName);
+		message.append("SMT-").append(solverConfig.getSolver().toString());
 		return message.toString();
 	}
 

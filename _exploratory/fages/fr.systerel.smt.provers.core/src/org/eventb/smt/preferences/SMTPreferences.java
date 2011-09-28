@@ -14,12 +14,15 @@ import static org.eventb.smt.preferences.Messages.SMTPreferences_IllegalSMTSolve
 import static org.eventb.smt.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
 import static org.eventb.smt.preferences.Messages.SMTPreferences_NoSMTSolverSet;
 import static org.eventb.smt.preferences.Messages.SMTPreferences_VeriTPathNotSet;
+import static org.eventb.smt.provers.core.SMTProversCore.PREFERENCES_PLUGIN_ID;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 
@@ -52,98 +55,24 @@ public class SMTPreferences {
 	public static final int DEFAULT_SOLVER_INDEX = -1;
 	public static final String DEFAULT_VERIT_PATH = "";
 
-	private String translationPath = null;
-
-	private String veriTPath = null;
 	/**
-	 * The solver's settings
-	 */
-	private SolverDetails solver;
-
-	public SMTPreferences(final String translationPath,
-			final SolverDetails solver, final String veriTPath) {
-		super();
-		this.translationPath = translationPath;
-		this.solver = solver;
-		this.veriTPath = veriTPath;
-	}
-
-	/**
-	 * Constructs a new SMT preferences
-	 * 
-	 * @param translationPath
-	 *            the temporary files directory
-	 * @param solverSettings
-	 *            The string that contains the details of the solvers
-	 * @param selectedSolverIndex
-	 *            the index of the selected solver
-	 * @throws PatternSyntaxException
-	 *             if the given settings are not formatted correctly
-	 */
-	public SMTPreferences(final String translationPath,
-			final String solverSettings, final int selectedSolverIndex)
-			throws PatternSyntaxException, IllegalArgumentException {
-		this.translationPath = translationPath;
-
-		if (solverSettings == null) {
-			throw IllegalSMTSolverSettingsException;
-		}
-
-		final List<SolverDetails> solvers = parsePreferencesString(solverSettings);
-		try {
-			solver = solvers.get(selectedSolverIndex);
-		} catch (final IndexOutOfBoundsException ioobe) {
-			if (solvers.size() > 0) {
-				throw NoSMTSolverSelectedException;
-			} else {
-				throw NoSMTSolverSetException;
-			}
-		}
-	}
-
-	/**
-	 * Constructs a new SMT preferences
-	 * 
-	 * @param solverSettings
-	 *            The string that contains the details of the solvers
-	 * @param selectedSolverIndex
-	 *            the index of the selected solver
-	 * @param veriTPath
-	 *            The path of the veriT solver for pre-processing
-	 * @throws PatternSyntaxException
-	 *             if the given settings are not formatted correctly
-	 */
-	public SMTPreferences(final String translationPath,
-			final String solverSettings, final int selectedSolverIndex,
-			final String veriTPath) throws PatternSyntaxException,
-			IllegalArgumentException {
-		this(translationPath, solverSettings, selectedSolverIndex);
-
-		if (veriTPath != null && !veriTPath.isEmpty()) {
-			this.veriTPath = veriTPath;
-		} else {
-			throw VeriTPathNotSetException;
-		}
-	}
-
-	/**
-	 * Creates a list with all solver detail elements from the preferences
+	 * Creates a list with all solverConfig detail elements from the preferences
 	 * String
 	 * 
 	 * @param preferences
-	 *            The String that contains the details of the solver
+	 *            The String that contains the details of the solverConfig
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	public static List<SolverDetails> parsePreferencesString(
+	public static List<SolverConfiguration> parsePreferencesString(
 			final String preferences) throws PatternSyntaxException {
-		final List<SolverDetails> solverDetail = new ArrayList<SolverDetails>();
+		final List<SolverConfiguration> solverDetail = new ArrayList<SolverConfiguration>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SolverDetails(columns[0], SMTSolver
+				solverDetail.add(new SolverConfiguration(columns[0], SMTSolver
 						.getSolver(columns[1]), columns[2], columns[3],
 						SMTLIBVersion.getVersion(columns[4])));
 			}
@@ -151,83 +80,54 @@ public class SMTPreferences {
 		return solverDetail;
 	}
 
-	public String getTranslationPath() {
-		return translationPath;
-	}
-
-	public SolverDetails getSolver() {
-		return solver;
-	}
-
-	public String getVeriTPath() {
-		return veriTPath;
-	}
-
-	public void toString(final StringBuilder builder) {
-		builder.append("SMTPreferences [");
-		builder.append(TRANSLATION_PATH_ID).append("=").append(translationPath);
-		builder.append(", ");
-		builder.append("solver=").append(solver);
-		builder.append(", ");
-		builder.append(VERIT_PATH_ID).append("=").append(veriTPath);
-		builder.append("]");
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		toString(builder);
-		return builder.toString();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ (translationPath == null ? 0 : translationPath.hashCode());
-		result = prime * result
-				+ (veriTPath == null ? 0 : veriTPath.hashCode());
-		result = prime * result + (solver == null ? 0 : solver.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final SMTPreferences other = (SMTPreferences) obj;
-
-		if (translationPath == null) {
-			if (other.translationPath != null) {
-				return false;
+	public static SolverConfiguration getSolverConfiguration() {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_PLUGIN_ID, SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES, null);
+		final int selectedSolverIndex = preferencesService.getInt(
+				PREFERENCES_PLUGIN_ID, SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX,
+				null);
+		final List<SolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
+		try {
+			return solverConfigs.get(selectedSolverIndex);
+		} catch (final IndexOutOfBoundsException ioobe) {
+			if (solverConfigs.size() > 0) {
+				throw NoSMTSolverSelectedException;
+			} else {
+				throw NoSMTSolverSetException;
 			}
-		} else if (!translationPath.equals(other.translationPath)) {
-			return false;
 		}
+	}
 
-		if (veriTPath == null) {
-			if (other.veriTPath != null) {
-				return false;
+	public static SolverConfiguration getSolverConfiguration(
+			final String solverId) {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_PLUGIN_ID, SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES, null);
+		final List<SolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
+		for (final SolverConfiguration solverConfig : solverConfigs) {
+			if (solverConfig.getId().equals(solverId)) {
+				return solverConfig;
 			}
-		} else if (!veriTPath.equals(other.veriTPath)) {
-			return false;
 		}
+		return null;
+	}
 
-		if (solver == null) {
-			if (other.solver != null) {
-				return false;
-			}
-		} else if (!solver.equals(other.solver)) {
-			return false;
-		}
-		return true;
+	public static String getTranslationPath() {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		return preferencesService.getString(PREFERENCES_PLUGIN_ID,
+				TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
+	}
+
+	public static String getVeriTPath() {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		return preferencesService.getString(PREFERENCES_PLUGIN_ID,
+				VERIT_PATH_ID, DEFAULT_VERIT_PATH, null);
 	}
 }

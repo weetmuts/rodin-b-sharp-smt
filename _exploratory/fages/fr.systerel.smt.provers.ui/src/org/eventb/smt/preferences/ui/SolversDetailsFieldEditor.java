@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SolverDetails;
+import org.eventb.smt.preferences.SolverConfiguration;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -48,7 +48,7 @@ import org.eventb.smt.preferences.SolverDetails;
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
  * <code>TableViewer</code>. The data are contained in a
- * <code>SolverDetails</code> list, which is given as input to the
+ * <code>SolverConfiguration</code> list, which is given as input to the
  * <code>TableViewer</code>. As a consequence, it is necessary to update the
  * <code>solversTableViewer</code> each time the list
  * <code>solversDetails</code> is modified, by calling the <code>refresh</code>
@@ -112,7 +112,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	/**
 	 * The list of solvers details
 	 */
-	List<SolverDetails> solversDetails = new ArrayList<SolverDetails>();
+	List<SolverConfiguration> solversDetails = new ArrayList<SolverConfiguration>();
 	/**
 	 * The index of the solver selected for SMT proofs
 	 */
@@ -367,7 +367,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 						buttonsGroup.getShell(), null);
 				if (solverDetailsDialog.open() == Window.OK) {
 					/**
-					 * Creates a new <code>SolverDetails</code> object, and adds
+					 * Creates a new <code>SolverConfiguration</code> object, and adds
 					 * it to the list.
 					 */
 					solversDetails.add(solverDetailsDialog.getSolverDetails());
@@ -426,7 +426,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				 */
 				final int selectionIndex = solversTable.getSelectionIndex();
 				if (isValidIndex(selectionIndex, solversDetails.size())) {
-					final SolverDetails solverToEdit = solversDetails
+					final SolverConfiguration solverToEdit = solversDetails
 							.get(selectionIndex);
 					if (solverToEdit != null) {
 						final SolverDetailsDialog solverDetailsDialog = new SolverDetailsDialog(
@@ -502,7 +502,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 	@Override
 	protected void doStore() {
-		final String preferences = SolverDetails.toString(solversDetails);
+		final String preferences = SolverConfiguration.toString(solversDetails);
 		if (preferences != null) {
 			getPreferenceStore().setValue(getPreferenceName(), preferences);
 		}

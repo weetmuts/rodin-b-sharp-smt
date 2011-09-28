@@ -133,12 +133,9 @@ public class SMTThroughPP extends Translator {
 
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
-	 * 
-	 * @param solver
-	 *            Solver which will be used to discharge the sequent
 	 */
-	public SMTThroughPP(final String solver, final SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion);
+	public SMTThroughPP(final SMTLIBVersion smtlibVersion) {
+		super(smtlibVersion);
 		sf = SMTFactoryPP.getInstance();
 	}
 
@@ -1342,10 +1339,9 @@ public class SMTThroughPP extends Translator {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final String solver,
-			final SMTLIBVersion smtlibVersion) {
-		final SMTBenchmark smtB = new SMTThroughPP(solver, smtlibVersion)
-				.translate(lemmaName, hypotheses, goal);
+			final Predicate goal, final SMTLIBVersion smtlibVersion) {
+		final SMTBenchmark smtB = new SMTThroughPP(smtlibVersion).translate(
+				lemmaName, hypotheses, goal);
 		return smtB;
 	}
 
@@ -1353,8 +1349,8 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Predicate predicate,
-			final String solver, final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(solver, smtlibVersion);
+			final SMTLIBVersion smtlibVersion) {
+		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());
@@ -1367,9 +1363,8 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			final Predicate predicate, final String solver,
-			final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(solver, smtlibVersion);
+			final Predicate predicate, final SMTLIBVersion smtlibVersion) {
+		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());
@@ -1383,7 +1378,7 @@ public class SMTThroughPP extends Translator {
 	 */
 	public static SMTLogic determineLogic(final Predicate goalPredicate,
 			final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(null, smtlibVersion);
+		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				goalPredicate, FormulaFactory.getDefault());

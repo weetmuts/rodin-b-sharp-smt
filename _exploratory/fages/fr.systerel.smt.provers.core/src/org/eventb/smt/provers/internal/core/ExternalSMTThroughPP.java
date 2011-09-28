@@ -39,9 +39,7 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 			final Iterable<Predicate> hypotheses, final Predicate goal,
 			final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
-		return new SMTPPCall(hypotheses, goal, pm, smtInput.getSmtlibVersion(),
-				smtInput.getSolver(), smtInput.getSolverName(),
-				smtInput.getSolverPath(), smtInput.getSolverArguments(),
+		return new SMTPPCall(hypotheses, goal, pm, smtInput.getSolverConfig(),
 				smtInput.getPOName(), smtInput.getTranslationPath());
 	}
 }

@@ -20,8 +20,6 @@ import org.eventb.core.seqprover.tactics.BasicTactics;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughPP;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.provers.internal.core.SMTInput;
-import org.eventb.smt.provers.internal.core.SMTSolver;
-import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.Translator;
 import org.osgi.framework.BundleContext;
 
@@ -33,6 +31,7 @@ public class SMTProversCore extends Plugin {
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.core";
+	public static final String PREFERENCES_PLUGIN_ID = "org.eventb.smt.ui";
 	/**
 	 * Debug variables
 	 */
@@ -42,10 +41,9 @@ public class SMTProversCore extends Plugin {
 			+ "_details";
 	private static final String DEV = PLUGIN_ID + "/dev/";
 	private static final String DEV_TRANSLATOR = DEV + "translator";
-	private static final String RODIN_SEQUENT = "rodin_sequent";
 	/**
-	 * Default delay for time-out of the Smt provers (value 30 seconds).
-	 * FIXME javadoc and code conflict
+	 * Default delay for time-out of the Smt provers (value 30 seconds). FIXME
+	 * javadoc and code conflict
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;
@@ -165,26 +163,10 @@ public class SMTProversCore extends Plugin {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String poName,
-			final String translationPath, final boolean restricted) {
+	public static ITactic externalSMTThroughPP(final boolean restricted) {
 		return BasicTactics.reasonerTac( //
 				new ExternalSMTThroughPP(), //
-				new SMTInput(restricted, DEFAULT_DELAY, smtlibVersion, solver,
-						solverName, solverPath, solverParameters, poName,
-						translationPath));
-	}
-
-	public static ITactic externalSMTThroughPP(
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String translationPath,
-			final boolean restricted) {
-		return externalSMTThroughPP(smtlibVersion, solver, solverName,
-				solverPath, solverParameters, RODIN_SEQUENT, translationPath,
-				restricted);
+				new SMTInput(restricted, DEFAULT_DELAY));
 	}
 
 	/**
@@ -204,27 +186,10 @@ public class SMTProversCore extends Plugin {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughVeriT(
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String poName,
-			final String translationPath, final String veritPath,
-			final boolean restricted) {
+	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughVeriT(), //
-				new SMTInput(restricted, DEFAULT_DELAY, smtlibVersion, solver,
-						solverName, solverPath, solverParameters, poName,
-						translationPath, veritPath));
-	}
-
-	public static ITactic externalSMTThroughVeriT(
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String translationPath,
-			final String veritPath, final boolean restricted) {
-		return externalSMTThroughVeriT(smtlibVersion, solver, solverName,
-				solverPath, solverParameters, RODIN_SEQUENT, translationPath,
-				veritPath, restricted);
+				new SMTInput(restricted, DEFAULT_DELAY));
 	}
 
 	/**

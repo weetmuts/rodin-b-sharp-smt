@@ -10,10 +10,7 @@
 
 package org.eventb.smt.ui.tests;
 
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
@@ -22,17 +19,14 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
-import static org.eventb.smt.provers.ui.SmtProversUIPlugin.PLUGIN_ID;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SolverDetails;
+import org.eventb.smt.preferences.SolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.eventb.smt.translation.SMTLIBVersion;
@@ -67,10 +61,10 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		final List<SolverDetails> solvers = new ArrayList<SolverDetails>();
-		solvers.add(new SolverDetails(solverBinaryName, solver, solverPath,
-				solverArgs, smtlibVersion));
-		final String preferences = SolverDetails.toString(solvers);
+		final List<SolverConfiguration> solvers = new ArrayList<SolverConfiguration>();
+		solvers.add(new SolverConfiguration(solverBinaryName, solver,
+				solverPath, solverArgs, smtlibVersion));
+		final String preferences = SolverConfiguration.toString(solvers);
 		store.setValue(TRANSLATION_PATH_ID, "");
 		store.setValue(SOLVER_PREFERENCES_ID, preferences);
 		store.setValue(SOLVER_INDEX_ID, 0);
@@ -105,25 +99,9 @@ public class UiPreferencesTests {
 	public void testRecoverPreferences1() {
 		setPreferencesForAltErgoTest();
 
-		final IPreferencesService preferencesService = Platform
-				.getPreferencesService();
-
 		/**
 		 * Get back preferences from UI
 		 */
-		final String translationPath = preferencesService.getString(PLUGIN_ID,
-				TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH, null);
-		final String solverPreferencesString = preferencesService.getString(
-				PLUGIN_ID, SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES,
-				null);
-		final int solverIndex = preferencesService.getInt(PLUGIN_ID,
-				SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX, null);
-		final String veriTPath = preferencesService.getString(PLUGIN_ID,
-				VERIT_PATH_ID, DEFAULT_VERIT_PATH, null);
-		final SMTPreferences smtPreferences = new SMTPreferences(
-				translationPath, solverPreferencesString, solverIndex,
-				veriTPath);
-
 		final String expectedId = ALT_ERGO.toString();
 		final SMTSolver expectedSolver = ALT_ERGO;
 		String expectedSolverPath = BIN_PATH + expectedId;
@@ -134,17 +112,18 @@ public class UiPreferencesTests {
 		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final SolverDetails expectedSolverDetail = new SolverDetails(
+		final SolverConfiguration expectedSolverConfig = new SolverConfiguration(
 				expectedId, expectedSolver, expectedSolverPath, args,
 				smtlibVersion);
-		final SMTPreferences expectedSMTPreferences = new SMTPreferences(
-				DEFAULT_TRANSLATION_PATH, expectedSolverDetail,
-				expectedVeriTPath);
+		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
-		final SMTPreferences[] p = { smtPreferences };
-		final SMTPreferences[] expP = { expectedSMTPreferences };
+		final SolverConfiguration solverConfig = SMTPreferences
+				.getSolverConfiguration();
+		final String translationPath = SMTPreferences.getTranslationPath();
+		final String veritPath = SMTPreferences.getVeriTPath();
 
-		Assert.assertArrayEquals(expP, p);
-
+		Assert.assertEquals(expectedSolverConfig, solverConfig);
+		Assert.assertEquals(expectedTranslationPath, translationPath);
+		Assert.assertEquals(expectedVeriTPath, veritPath);
 	}
 }

@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.preferences.SolverDetails;
+import org.eventb.smt.preferences.SolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 
@@ -54,15 +54,15 @@ public class SolverDetailsDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final SolverDetails solverDetails;
+	final SolverConfiguration solverDetails;
 
 	public SolverDetailsDialog(final Shell parentShell,
-			final SolverDetails solverDetails) {
+			final SolverConfiguration solverDetails) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		if (solverDetails != null) {
 			this.solverDetails = solverDetails;
 		} else {
-			this.solverDetails = new SolverDetails("", UNKNOWN, "", "", V1_2);
+			this.solverDetails = new SolverConfiguration("", UNKNOWN, "", "", V1_2);
 		}
 		setText("Solver settings");
 	}
@@ -241,7 +241,7 @@ public class SolverDetailsDialog extends Dialog {
 		}
 	}
 
-	public SolverDetails getSolverDetails() {
+	public SolverConfiguration getSolverDetails() {
 		return solverDetails;
 	}
 

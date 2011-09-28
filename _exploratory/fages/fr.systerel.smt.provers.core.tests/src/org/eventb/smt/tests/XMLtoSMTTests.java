@@ -241,8 +241,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		setPreferencesForSolverTest(solver);
-
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
@@ -260,8 +258,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
-		setPreferencesForSolverTest(solver);
-
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();

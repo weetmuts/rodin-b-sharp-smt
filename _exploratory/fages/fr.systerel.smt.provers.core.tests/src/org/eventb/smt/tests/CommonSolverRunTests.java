@@ -29,6 +29,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTSignature;
+import org.eventb.smt.preferences.SolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTPPCall;
 import org.eventb.smt.provers.internal.core.SMTProverCall;
 import org.eventb.smt.provers.internal.core.SMTSolver;
@@ -59,11 +60,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
-	protected String solverName;
-	protected SMTSolver solver;
-	protected String solverPath;
-	protected String solverArguments;
-	protected SMTLIBVersion smtlibVersion;
+	protected SolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;
@@ -106,8 +103,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public CommonSolverRunTests(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		this.solver = solver;
-		this.smtlibVersion = smtlibVersion;
+		solverConfig = new SolverConfiguration("test-config", solver, "", "",
+				smtlibVersion);
+		if (solver != null) {
+			setPreferencesForSolverTest(solver);
+		}
 		this.translationPath = DEFAULT_TEST_TRANSLATION_PATH;
 	}
 
@@ -137,11 +137,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
-		this.solverName = solverBinaryName;
-		this.solver = solver;
-		this.solverPath = solverPathBuilder.toString();
-		this.solverArguments = solverArgs;
-		this.smtlibVersion = smtlibVersion;
+		solverConfig.setSolver(solver);
+		solverConfig.setPath(solverPathBuilder.toString());
+		solverConfig.setArgs(solverArgs);
+		solverConfig.setSmtlibVersion(smtlibVersion);
 		this.veritPath = veritBinPath.toString();
 	}
 
@@ -174,8 +173,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, smtlibVersion, solver, solverName, solverPath,
-						solverArguments, lemmaName, translationPath, veritPath) {
+						MONITOR, solverConfig, lemmaName, translationPath,
+						veritPath) {
 					// nothing to do
 				};
 				break;
@@ -183,8 +182,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, smtlibVersion, solver, solverName, solverPath,
-						solverArguments, lemmaName, translationPath) {
+						MONITOR, solverConfig, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -219,8 +217,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, smtlibVersion, solver, solverName, solverPath,
-						solverArguments, lemmaName, translationPath, veritPath) {
+						MONITOR, solverConfig, lemmaName, translationPath,
+						veritPath) {
 					// nothing to do
 				};
 				break;
@@ -228,8 +226,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, smtlibVersion, solver, solverName, solverPath,
-						solverArguments, lemmaName, translationPath) {
+						MONITOR, solverConfig, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -267,8 +264,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, parsedHypotheses, parsedGoal, solverName,
-				smtlibVersion);
+				lemmaName, parsedHypotheses, parsedGoal,
+				solverConfig.getSmtlibVersion());
 
 		final SMTSignature signature = benchmark.getSignature();
 
@@ -278,10 +275,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected void setPreferencesForAltErgoTest() {
-		setSolverPreferences(ALT_ERGO.toString(), ALT_ERGO, "", smtlibVersion);
+		setSolverPreferences(ALT_ERGO.toString(), ALT_ERGO, "",
+				solverConfig.getSmtlibVersion());
 	}
 
 	protected void setPreferencesForVeriTTest() {
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
 		if (smtlibVersion.equals(V1_2)) {
 			args = "";
@@ -299,10 +298,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				"veriT-proof-producing",
 				VERIT,
 				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
-				smtlibVersion);
+				solverConfig.getSmtlibVersion());
 	}
 
 	protected void setPreferencesForCvc3Test() {
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
 		if (smtlibVersion.equals(V1_2)) {
 			args = "-lang smt";
@@ -325,6 +325,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		Z3.toString(binaryName);
 
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
 		if (smtlibVersion.equals(V1_2)) {
 			args = "";

@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eventb.smt.preferences.SolverDetails;
+import org.eventb.smt.preferences.SolverConfiguration;
 
 
 /**
@@ -32,7 +32,7 @@ public class SolversDetailsContentProvider implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
-		return ((List<SolverDetails>) inputElement).toArray();
+		return ((List<SolverConfiguration>) inputElement).toArray();
 	}
 
 	@Override

@@ -76,12 +76,6 @@ public abstract class Translator implements ISimpleVisitor {
 	protected SMTLIBVersion smtlibVersion;
 
 	/**
-	 * The target solver of the translation. It is used to check which
-	 * translation must be used depending of the solver
-	 */
-	protected String solver;
-
-	/**
 	 * When the translator finishes translating a quantified predicate, it
 	 * deletes all the bound identifiers of that predicate. In nested quantified
 	 * predicates, the translator must delete the bound identifier declarations
@@ -100,8 +94,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 */
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
-	public Translator(final String solver, final SMTLIBVersion smtlibVersion) {
-		this.solver = solver;
+	public Translator(final SMTLIBVersion smtlibVersion) {
 		this.smtlibVersion = smtlibVersion;
 	}
 

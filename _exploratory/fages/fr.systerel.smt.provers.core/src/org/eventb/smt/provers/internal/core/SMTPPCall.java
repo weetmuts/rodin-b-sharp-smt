@@ -27,7 +27,7 @@ import java.util.Map;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.preferences.SolverConfiguration;
 import org.eventb.smt.translation.SMTThroughPP;
 
 /**
@@ -43,14 +43,12 @@ public class SMTPPCall extends SMTProverCall {
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SMTLIBVersion smtlibVersion, final SMTSolver solver,
-			final String solverName, final String solverPath,
-			final String solverParameters, final String poName,
+			final SolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		super(hypotheses, goal, pm, smtlibVersion, solver, solverName,
-				solverPath, solverParameters, poName, translationPath);
+		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
-			this.translationPath = this.translationPath + File.separatorChar + "pp";
+			this.translationPath = this.translationPath + File.separatorChar
+					+ "pp";
 		} else {
 			this.translationPath = DEFAULT_PP_TRANSLATION_PATH;
 		}
@@ -87,7 +85,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * SMT-LIB translation
 		 */
 		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, solver.toString(), V1_2);
+				hypotheses, goal, V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -127,7 +125,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * SMT-LIB translation
 		 */
 		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, solver.toString(), V2_0);
+				hypotheses, goal, V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -144,8 +142,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		if (solver.equals(ALT_ERGO) || solver.equals(VERIT)
-				|| solver.toString().equals("veriT-proof-producing")) {
+		final SMTSolver solver = solverConfig.getSolver();
+		if (solver.equals(ALT_ERGO) || solver.equals(VERIT)) {
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS);
 		} else {
 			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);

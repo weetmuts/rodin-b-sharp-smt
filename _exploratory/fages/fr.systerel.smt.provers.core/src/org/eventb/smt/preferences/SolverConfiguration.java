@@ -22,7 +22,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * This is a class to describe a solver detail
  * 
  */
-public class SolverDetails {
+public class SolverConfiguration {
 	private String id;
 
 	private SMTSolver solver;
@@ -34,7 +34,7 @@ public class SolverDetails {
 	private SMTLIBVersion smtlibVersion;
 
 	/**
-	 * Constructs a new SolverDetails
+	 * Constructs a new SolverConfiguration
 	 * 
 	 * @param id
 	 *            the id of the solver
@@ -47,7 +47,7 @@ public class SolverDetails {
 	 * @param smtlibVersion
 	 *            version of SMT-LIB to use with this solver configuration
 	 */
-	public SolverDetails(final String id, final SMTSolver solver,
+	public SolverConfiguration(final String id, final SMTSolver solver,
 			final String path, final String args,
 			final SMTLIBVersion smtlibVersion) {
 		this.id = id;
@@ -97,10 +97,10 @@ public class SolverDetails {
 		this.smtlibVersion = smtlibVersion;
 	}
 
-	public static final String toString(final List<SolverDetails> solversDetails) {
+	public static final String toString(final List<SolverConfiguration> solversDetails) {
 		final StringBuilder sb = new StringBuilder();
 
-		for (final SolverDetails solverDetail : solversDetails) {
+		for (final SolverConfiguration solverDetail : solversDetails) {
 			sb.append(solverDetail.getId());
 			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getSolver());
@@ -117,7 +117,7 @@ public class SolverDetails {
 	}
 
 	public void toString(final StringBuilder builder) {
-		builder.append("SolverDetails [id=");
+		builder.append("SolverConfiguration [id=");
 		builder.append(id);
 		builder.append(", solver=");
 		builder.append(solver);
@@ -161,7 +161,7 @@ public class SolverDetails {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final SolverDetails other = (SolverDetails) obj;
+		final SolverConfiguration other = (SolverConfiguration) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;

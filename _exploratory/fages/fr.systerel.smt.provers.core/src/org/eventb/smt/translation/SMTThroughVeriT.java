@@ -157,7 +157,7 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
 			final Predicate predicate, final String solver) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());
@@ -171,8 +171,8 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	final private SMTFactoryVeriT sf;
 
-	public SMTThroughVeriT(final String solver) {
-		super(solver, V1_2); // FIXME this is a stub
+	public SMTThroughVeriT() {
+		super(V1_2); // FIXME this is a stub
 		sf = SMTFactoryVeriT.getInstance();
 	}
 
@@ -201,9 +201,9 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final String solver) {
-		final SMTBenchmark smtB = new SMTThroughVeriT(solver).translate(
-				lemmaName, hypotheses, goal);
+			final Predicate goal) {
+		final SMTBenchmark smtB = new SMTThroughVeriT().translate(lemmaName,
+				hypotheses, goal);
 		return smtB;
 	}
 
@@ -211,8 +211,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, final String solver) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(solver);
+			final Predicate predicate) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());

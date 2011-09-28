@@ -45,8 +45,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SMTProversCore.externalSMTThroughPP(null, null, null, null,
-					null, null, true);
+			return SMTProversCore.externalSMTThroughPP(true);
 		}
 	}
 
@@ -58,8 +57,7 @@ public class AutoTactics {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughPP(null, null, null, null,
-					null, null, restricted);
+			return SMTProversCore.externalSMTThroughPP(restricted);
 		}
 
 	}
@@ -68,8 +66,7 @@ public class AutoTactics {
 
 		@Override
 		protected ITactic getSingInstance() {
-			return SMTProversCore.externalSMTThroughVeriT(null, null, null,
-					null, null, null, null, true);
+			return SMTProversCore.externalSMTThroughVeriT(true);
 		}
 	}
 
@@ -81,8 +78,7 @@ public class AutoTactics {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughVeriT(null, null, null,
-					null, null, null, null, restricted);
+			return SMTProversCore.externalSMTThroughVeriT(restricted);
 		}
 
 	}
