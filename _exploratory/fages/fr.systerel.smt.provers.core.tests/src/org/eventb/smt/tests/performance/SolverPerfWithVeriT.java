@@ -47,8 +47,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testNames() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("x", "IN_1");
 		final List<String> hyps = Arrays.asList("IN_1 = {x}");
 		doTest("namecol", hyps, "(∃ IN_0 ⦂ IN_1 · IN_0 ∈ IN_1)", te, VALID);
@@ -56,8 +54,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15RestrictionsAndSubstractions() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = Arrays.asList( //
@@ -71,8 +67,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15CartesianProductAndIntegerRange() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ", "a", "ℤ");
 
 		final List<String> hyps = Arrays.asList("(AB × AB) = (AB × AB)");
@@ -83,8 +77,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testTePlusSort() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		final Set<String> expectedSorts = new HashSet<String>();
@@ -103,8 +95,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testRule20() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 
@@ -113,8 +103,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule20ManyForalls() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 
@@ -126,8 +114,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule20MacroInsideMacro() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 
@@ -137,8 +123,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallBelong1() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		// perform test
@@ -148,8 +132,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	// This test is to see if it's handling the U sort ok
 	@Test
 	public void testSolverCallSimpleUWithVeriT() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
 		final List<String> hyps = Arrays.asList("a ∈ A");
@@ -160,8 +142,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallSimpleUWithAltErgo() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
 		final List<String> hyps = Arrays.asList("a ∈ A");
@@ -172,8 +152,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testPairSymbolName() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("pair", "Pair");
 
 		final List<String> hyps = Arrays.asList();
@@ -182,8 +160,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallSimpleUWithCVC3() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
 		final List<String> hyps = Arrays.asList("a ∈ A");
@@ -194,8 +170,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithVeriT() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
 				"y < z");
@@ -206,8 +180,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithCvc3() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
 				"y < z");
@@ -219,16 +191,12 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3 Error: ERROR: Benchmark constains arithmetic, but QF_UF does not support it.")
 	public void testExpn() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList();
 		doTest("expn", hyps, "x ^ y = z", arith_te, VALID);
 	}
 
 	@Test
 	public void testSolverCallWithZ3() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
 				"y < z");
@@ -239,8 +207,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSolverCallWithAltErgo() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
 				"y < z");
@@ -255,8 +221,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testCh8CircArbiter1() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"a1", "ℤ", "r1", "ℤ");
 
@@ -276,8 +240,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testQuickSort1() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"k", "ℤ", "n", "ℤ", "x", "ℤ");
 
@@ -326,8 +288,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("This test has many problems. See the text above")
 	public void testIntInRelation() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("D", "ℙ(D)");
 
 		final List<String> hyps = Arrays.asList();
@@ -342,8 +302,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Division is uninterpreted, so the solver is returning sat")
 	public void testCh915Bin10() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
@@ -357,8 +315,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testBoschSwitch1() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
 
@@ -379,8 +335,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	 */
 	@Test
 	public void testBepiColombo1() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
 
@@ -396,8 +350,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("error : pre_process: results is not FOL")
 	public void testSubSet() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S");
 
@@ -417,8 +369,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	// Z3: ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA
 	// does not support them.
 	public void testCh7LikeMoreSimpleYet() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
@@ -431,8 +381,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected true, but returned false")
 	public void testBepiColombo3Mini() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -446,8 +394,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3Medium() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -459,8 +405,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	public void testBepiColombo3Medium2() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -475,8 +419,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	// ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does
 	// not support them.
 	public void testRelation() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -491,8 +433,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	// @Ignore("Z3: Expected true, but it was false")
 	public void testBepiColombo3() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -505,8 +445,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testExistsRule17() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
 		final List<String> hyps = Arrays.asList("∃x·x∈s");
@@ -516,8 +454,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testForallRule17() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("s", "ℙ(R)");
 
 		final List<String> hyps = Arrays.asList(//
@@ -537,8 +473,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule16NotEqual() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"A", "ℙ(ℤ)", "b", "ℤ", "c", "ℤ", "a", "ℤ");
 
@@ -549,8 +483,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15RelationOverridingCompANdComposition() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = Arrays
@@ -562,8 +494,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule15BackwardComposition() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("AB", "ℤ ↔ ℤ");
 
 		final List<String> hyps = Arrays.asList();
@@ -573,8 +503,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	}
 
 	public void testRule18() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ", "b", "ℤ", "A",
 				"ℙ(ℤ)");
 
@@ -585,8 +513,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testRule22and23() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList("min({2,3}) = min({2,3})");
 
@@ -596,8 +522,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected true, but it was false")
 	public void testRule24() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -607,8 +531,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testCard() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -617,8 +539,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testPred() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 		doTest("testpred", hyps, "2 ↦ 1 ∈ pred", te, VALID);
@@ -627,8 +547,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// Expected <true> but was <false>
 	public void testPredSet() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 		doTest("testpredset", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
@@ -636,8 +554,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSucc() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 		doTest("testsucc", hyps, "1 ↦ 2 ∈ succ", te, VALID);
@@ -646,8 +562,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// error : pre_process: result is not FOL
 	public void testDistinctForSingleton() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = Arrays.asList("A = {1,2,3}");
 		doTest("distinct_singletons", hyps, "partition(A,{1},{2},{3})", te,
@@ -656,8 +570,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testDistinct() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = Arrays.asList("A = {1,2,3,4}");
 		doTest("distincttest", hyps, "partition(A,{1,2},{4},{3})", te, VALID);
@@ -665,8 +577,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSimplerDistinct() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = Arrays.asList("A = {1,2,3}");
 		doTest("distinctsimpletest", hyps, "partition(A,{1,2},{3})", te, VALID);
@@ -674,8 +584,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testIntSet() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)");
 		final List<String> hyps = Arrays.asList();
 		doTest("intsettest", hyps, "A ⊆ ℤ", te, VALID);
@@ -684,8 +592,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Lemmas cannot be SMT reserved names")
 	public void testExists() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("x", "T");
 		final List<String> hyps = Arrays.asList("T = {x}");
 		doTest("exists", hyps, "(∃ z ⦂ T · z ∈ T)", te, VALID);
@@ -694,8 +600,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// Function application (FUNIMAGE) is not implemented yet
 	public void testLinearSort29() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //
 				"m", "ℤ", "x", "ℤ", "j", "ℤ");
@@ -708,8 +612,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testDynamicStableLSR_081014_20() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "P", "ℙ(S × S)", "Q", "ℙ(S × S)",//
 				"k", "S × S", "m", "S", "n", "S");
@@ -722,8 +624,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// Expected <True> but was <False>
 	public void testBepiColombo6() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
@@ -754,8 +654,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Function ?DOM_0 is not declared")
 	public void testBepiColombo6_2() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
@@ -768,8 +666,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// Expected <True> but was <False>
 	public void testBepiColombo6Parte_3() {
-		setPreferencesForSolverTest(solver);
-
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "R", "ℙ(R)",
 				"a", "S", "b", "S", "c", "S", "d", "S", "e", "S", "m", "R",
 				"x", "R", "y", "R", "z", "R");
@@ -781,7 +677,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3 ERROR: Benchmark contains uninterpreted function symbols, but QF_LIA does not support them.")
 	public void testSubseteqMapsto() {
-		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -790,7 +685,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	@Test
 	public void testSubseteq2() {
-		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -800,7 +694,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testSubsetMapsto1() {
-		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -810,7 +703,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testSubsetMapsto2() {
-		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -820,7 +712,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testNotEqualMapsto() {
-		setPreferencesForSolverTest(solver);
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -830,8 +721,6 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	@Test
 	// @Ignore("Z3: Expected TRUE, but was FALSE")
 	public void testBOOLSet() {
-		setPreferencesForSolverTest(solver);
-
 		final List<String> hyps = Arrays.asList(//
 				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");

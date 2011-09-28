@@ -68,7 +68,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		assertTypeChecked(goalPredicate);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3", V1_2);
+				"lemma", new ArrayList<Predicate>(), goalPredicate, V1_2);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -82,7 +82,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		assertTypeChecked(goal);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goal, "Z3", V1_2);
+				"lemma", new ArrayList<Predicate>(), goal, V1_2);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -133,8 +133,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 						.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
-		return (SMTSignatureV1_2) SMTThroughPP.translateTE(logic, ppPred, null,
-				V1_2);
+		return (SMTSignatureV1_2) SMTThroughPP.translateTE(logic, ppPred, V1_2);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -183,8 +182,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 			final String expectedSMTNode, final String failMessage,
 			final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(ppPred, solver, V1_2).toString(actualSMTNode,
-				-1, false);
+		SMTThroughPP.translate(ppPred, V1_2).toString(actualSMTNode, -1, false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));

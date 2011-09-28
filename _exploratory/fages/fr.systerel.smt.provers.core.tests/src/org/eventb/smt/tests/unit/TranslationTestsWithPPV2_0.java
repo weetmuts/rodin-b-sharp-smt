@@ -66,7 +66,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		assertTypeChecked(goalPredicate);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goalPredicate, "Z3", V2_0);
+				"lemma", new ArrayList<Predicate>(), goalPredicate, V2_0);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -80,7 +80,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		assertTypeChecked(goal);
 
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goal, "Z3", V2_0);
+				"lemma", new ArrayList<Predicate>(), goal, V2_0);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -131,7 +131,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 						.producePPTargetSubLanguageError(ppPred),
 				Translator.isInGoal(ppPred));
 
-		return SMTThroughPP.translateTE(logic, ppPred, null, V2_0);
+		return SMTThroughPP.translateTE(logic, ppPred, V2_0);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -180,8 +180,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 			final String expectedSMTNode, final String failMessage,
 			final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(ppPred, solver, V2_0).toString(actualSMTNode,
-				-1, false);
+		SMTThroughPP.translate(ppPred, V2_0).toString(actualSMTNode, -1, false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));
@@ -480,8 +479,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		 */
 		testTranslationV2_0(te, "b = TRUE ∧ b ∈ B", "(and b (B b))");
 		testTranslationV2_0(te, "TRUE = b ∧ b ∈ B", "(and b (B b))");
-		testTranslationV2_0(te, "b = c ∧ b ∈ B",
-				"(and (= b c) (B b))");
+		testTranslationV2_0(te, "b = c ∧ b ∈ B", "(and (= b c) (B b))");
 
 		/**
 		 * Formulas containing boolean equalities and quantified boolean
@@ -577,8 +575,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testBoolAxiom() {
 		final ITypeEnvironment te = defaultTe;
-		final List<String> expectedAssumptions = Arrays
-				.asList();
+		final List<String> expectedAssumptions = Arrays.asList();
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

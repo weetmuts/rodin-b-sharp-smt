@@ -133,7 +133,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark("lemma",
-						new ArrayList<Predicate>(), goal, "Z3");
+						new ArrayList<Predicate>(), goal);
 
 		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark
 				.getSignature();
@@ -173,8 +173,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, solver).toString(actualSMTNode,
-				-1, false);
+		SMTThroughVeriT.translate(logic, ppred).toString(actualSMTNode, -1,
+				false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -195,7 +195,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark("lemma",
-						new ArrayList<Predicate>(), goal, "Z3");
+						new ArrayList<Predicate>(), goal);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
