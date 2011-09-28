@@ -166,8 +166,8 @@ public abstract class AbstractTests {
 	}
 
 	protected static int[] produceDisjointSet(final Set<Integer> usedValues,
-			final int numberOfValues, final int upperBound) {
-		final Random random = new Random();
+			final int numberOfValues, final int upperBound, final long seed) {
+		final Random random = new Random(seed);
 		final int[] disjointSet = new int[numberOfValues];
 		for (int i = 0; i < numberOfValues; i++) {
 			int randomValue = random.nextInt(upperBound);

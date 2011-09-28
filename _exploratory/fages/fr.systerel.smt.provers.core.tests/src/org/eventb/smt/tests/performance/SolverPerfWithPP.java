@@ -100,13 +100,18 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final Set<Integer> usedValues = new HashSet<Integer>();
 		final StringBuilder goalBuilder = new StringBuilder();
-		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		final long seed = 20110928;
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 10, 10000, seed));
 		goalBuilder.append(" ∩ ");
-		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 10, 10000, seed));
 		goalBuilder.append(" ∩ ");
-		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 10, 10000, seed));
 		goalBuilder.append(" ∩ ");
-		setToString(goalBuilder, produceDisjointSet(usedValues, 10, 10000));
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 10, 10000, seed));
 		goalBuilder.append(" = {}");
 
 		doTest("Bug2105507Thm5", hyps, goalBuilder.toString(), te, VALID);
@@ -120,9 +125,12 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 
 		final Set<Integer> usedValues = new HashSet<Integer>();
 		final StringBuilder goalBuilder = new StringBuilder();
-		setToString(goalBuilder, produceDisjointSet(usedValues, 100, 10000));
+		final long seed = 20110928;
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 100, 10000, seed));
 		goalBuilder.append(" ∩ ");
-		setToString(goalBuilder, produceDisjointSet(usedValues, 100, 10000));
+		setToString(goalBuilder,
+				produceDisjointSet(usedValues, 100, 10000, seed));
 		goalBuilder.append(" = {}");
 
 		doTest("Bug2105507Thm6", hyps, goalBuilder.toString(), te, VALID);
