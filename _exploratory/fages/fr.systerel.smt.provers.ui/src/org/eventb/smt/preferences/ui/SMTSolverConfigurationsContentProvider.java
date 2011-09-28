@@ -14,13 +14,13 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 
 
 /**
  * This is a content provider for the Solvers' details viewer.
  */
-public class SolversDetailsContentProvider implements
+public class SMTSolverConfigurationsContentProvider implements
 		IStructuredContentProvider {
 
 	@Override
@@ -32,7 +32,7 @@ public class SolversDetailsContentProvider implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
-		return ((List<SolverConfiguration>) inputElement).toArray();
+		return ((List<SMTSolverConfiguration>) inputElement).toArray();
 	}
 
 	@Override

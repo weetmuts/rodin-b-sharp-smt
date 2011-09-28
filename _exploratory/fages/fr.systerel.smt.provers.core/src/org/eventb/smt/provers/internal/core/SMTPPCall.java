@@ -27,7 +27,7 @@ import java.util.Map;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughPP;
 
 /**
@@ -43,7 +43,7 @@ public class SMTPPCall extends SMTProverCall {
 
 	protected SMTPPCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SolverConfiguration solverConfig, final String poName,
+			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
 		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {

@@ -29,7 +29,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTPPCall;
 import org.eventb.smt.provers.internal.core.SMTProverCall;
 import org.eventb.smt.provers.internal.core.SMTSolver;
@@ -60,7 +60,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
-	protected SolverConfiguration solverConfig;
+	protected SMTSolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;
@@ -103,7 +103,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public CommonSolverRunTests(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		solverConfig = new SolverConfiguration("test-config", solver, "", "",
+		solverConfig = new SMTSolverConfiguration("test-config", solver, "", "",
 				smtlibVersion);
 		if (solver != null) {
 			setPreferencesForSolverTest(solver);

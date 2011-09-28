@@ -45,7 +45,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		final FieldEditor solversFieldEditor = new SolversDetailsFieldEditor(
+		final FieldEditor solversFieldEditor = new SMTSolverConfigurationsFieldEditor(
 				SOLVER_PREFERENCES_ID, SMT_SOLVERS_CONFIG_LABEL,
 				getFieldEditorParent());
 		addField(solversFieldEditor);

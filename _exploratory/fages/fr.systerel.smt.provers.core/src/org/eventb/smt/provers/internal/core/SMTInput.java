@@ -15,13 +15,13 @@ import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
 import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 
 public class SMTInput extends XProverInput {
 	private static final String SOLVER_ID = "solver_id";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
 
-	private final SolverConfiguration solverConfig;
+	private final SMTSolverConfiguration solverConfig;
 	private final String poName;
 	private final String translationPath;
 	private final String veritPath;
@@ -65,7 +65,7 @@ public class SMTInput extends XProverInput {
 		}
 	}
 
-	public SolverConfiguration getSolverConfig() {
+	public SMTSolverConfiguration getSolverConfig() {
 		return solverConfig;
 	}
 

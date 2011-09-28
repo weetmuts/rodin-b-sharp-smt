@@ -12,8 +12,12 @@ package org.eventb.smt.preferences;
 
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR1;
 import static org.eventb.smt.preferences.SMTPreferences.SEPARATOR2;
+import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
@@ -22,7 +26,13 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * This is a class to describe a solver detail
  * 
  */
-public class SolverConfiguration {
+public class SMTSolverConfiguration {
+	public static final String DEFAULT_SOLVER_ID = "";
+	public static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
+	public static final String DEFAULT_SOLVER_PATH = "";
+	public static final String DEFAULT_SOLVER_ARGS = "";
+	public static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = V1_2;
+
 	private String id;
 
 	private SMTSolver solver;
@@ -34,7 +44,7 @@ public class SolverConfiguration {
 	private SMTLIBVersion smtlibVersion;
 
 	/**
-	 * Constructs a new SolverConfiguration
+	 * Constructs a new SMTSolverConfiguration
 	 * 
 	 * @param id
 	 *            the id of the solver
@@ -47,7 +57,7 @@ public class SolverConfiguration {
 	 * @param smtlibVersion
 	 *            version of SMT-LIB to use with this solver configuration
 	 */
-	public SolverConfiguration(final String id, final SMTSolver solver,
+	public SMTSolverConfiguration(final String id, final SMTSolver solver,
 			final String path, final String args,
 			final SMTLIBVersion smtlibVersion) {
 		this.id = id;
@@ -55,6 +65,11 @@ public class SolverConfiguration {
 		this.path = path;
 		this.args = args;
 		this.smtlibVersion = smtlibVersion;
+	}
+
+	public SMTSolverConfiguration() {
+		this(DEFAULT_SOLVER_ID, DEFAULT_SOLVER, DEFAULT_SOLVER_PATH,
+				DEFAULT_SOLVER_ARGS, DEFAULT_SMTLIB_VERSION);
 	}
 
 	public String getId() {
@@ -97,10 +112,11 @@ public class SolverConfiguration {
 		this.smtlibVersion = smtlibVersion;
 	}
 
-	public static final String toString(final List<SolverConfiguration> solversDetails) {
+	public static final String toString(
+			final List<SMTSolverConfiguration> solversDetails) {
 		final StringBuilder sb = new StringBuilder();
 
-		for (final SolverConfiguration solverDetail : solversDetails) {
+		for (final SMTSolverConfiguration solverDetail : solversDetails) {
 			sb.append(solverDetail.getId());
 			sb.append(SEPARATOR1);
 			sb.append(solverDetail.getSolver());
@@ -117,7 +133,7 @@ public class SolverConfiguration {
 	}
 
 	public void toString(final StringBuilder builder) {
-		builder.append("SolverConfiguration [id=");
+		builder.append("SMTSolverConfiguration [id=");
 		builder.append(id);
 		builder.append(", solver=");
 		builder.append(solver);
@@ -128,6 +144,15 @@ public class SolverConfiguration {
 		builder.append(", smtlibVersion=");
 		builder.append(smtlibVersion);
 		builder.append("]");
+	}
+
+	public static Set<String> getUsedIds(
+			List<SMTSolverConfiguration> solverConfigs) {
+		final Set<String> usedIds = new HashSet<String>();
+		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
+			usedIds.add(solverConfig.getId());
+		}
+		return usedIds;
 	}
 
 	@Override
@@ -161,7 +186,7 @@ public class SolverConfiguration {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final SolverConfiguration other = (SolverConfiguration) obj;
+		final SMTSolverConfiguration other = (SMTSolverConfiguration) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;

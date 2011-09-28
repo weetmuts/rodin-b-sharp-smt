@@ -64,15 +64,15 @@ public class SMTPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	public static List<SolverConfiguration> parsePreferencesString(
+	public static List<SMTSolverConfiguration> parsePreferencesString(
 			final String preferences) throws PatternSyntaxException {
-		final List<SolverConfiguration> solverDetail = new ArrayList<SolverConfiguration>();
+		final List<SMTSolverConfiguration> solverDetail = new ArrayList<SMTSolverConfiguration>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SolverConfiguration(columns[0], SMTSolver
+				solverDetail.add(new SMTSolverConfiguration(columns[0], SMTSolver
 						.getSolver(columns[1]), columns[2], columns[3],
 						SMTLIBVersion.getVersion(columns[4])));
 			}
@@ -80,7 +80,7 @@ public class SMTPreferences {
 		return solverDetail;
 	}
 
-	public static SolverConfiguration getSolverConfiguration() {
+	public static SMTSolverConfiguration getSolverConfiguration() {
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
 		final String solverPreferences = preferencesService.getString(
@@ -89,7 +89,7 @@ public class SMTPreferences {
 		final int selectedSolverIndex = preferencesService.getInt(
 				PREFERENCES_PLUGIN_ID, SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX,
 				null);
-		final List<SolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
+		final List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
 		try {
 			return solverConfigs.get(selectedSolverIndex);
 		} catch (final IndexOutOfBoundsException ioobe) {
@@ -101,15 +101,15 @@ public class SMTPreferences {
 		}
 	}
 
-	public static SolverConfiguration getSolverConfiguration(
+	public static SMTSolverConfiguration getSolverConfiguration(
 			final String solverId) {
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
 		final String solverPreferences = preferencesService.getString(
 				PREFERENCES_PLUGIN_ID, SOLVER_PREFERENCES_ID,
 				DEFAULT_SOLVER_PREFERENCES, null);
-		final List<SolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
-		for (final SolverConfiguration solverConfig : solverConfigs) {
+		final List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
+		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
 			if (solverConfig.getId().equals(solverId)) {
 				return solverConfig;
 			}

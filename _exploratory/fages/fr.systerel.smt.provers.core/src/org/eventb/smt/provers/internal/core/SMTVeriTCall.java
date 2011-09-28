@@ -24,7 +24,7 @@ import java.util.List;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.eventb.smt.translation.Translator;
 
@@ -71,7 +71,7 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SolverConfiguration solverConfig, final String poName,
+			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
 		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
 

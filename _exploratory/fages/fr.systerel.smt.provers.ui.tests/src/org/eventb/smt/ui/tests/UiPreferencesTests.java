@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.eventb.smt.translation.SMTLIBVersion;
@@ -61,10 +61,10 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		final List<SolverConfiguration> solvers = new ArrayList<SolverConfiguration>();
-		solvers.add(new SolverConfiguration(solverBinaryName, solver,
+		final List<SMTSolverConfiguration> solvers = new ArrayList<SMTSolverConfiguration>();
+		solvers.add(new SMTSolverConfiguration(solverBinaryName, solver,
 				solverPath, solverArgs, smtlibVersion));
-		final String preferences = SolverConfiguration.toString(solvers);
+		final String preferences = SMTSolverConfiguration.toString(solvers);
 		store.setValue(TRANSLATION_PATH_ID, "");
 		store.setValue(SOLVER_PREFERENCES_ID, preferences);
 		store.setValue(SOLVER_INDEX_ID, 0);
@@ -112,12 +112,12 @@ public class UiPreferencesTests {
 		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final SolverConfiguration expectedSolverConfig = new SolverConfiguration(
+		final SMTSolverConfiguration expectedSolverConfig = new SMTSolverConfiguration(
 				expectedId, expectedSolver, expectedSolverPath, args,
 				smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
-		final SolverConfiguration solverConfig = SMTPreferences
+		final SMTSolverConfiguration solverConfig = SMTPreferences
 				.getSolverConfiguration();
 		final String translationPath = SMTPreferences.getTranslationPath();
 		final String veritPath = SMTPreferences.getVeriTPath();

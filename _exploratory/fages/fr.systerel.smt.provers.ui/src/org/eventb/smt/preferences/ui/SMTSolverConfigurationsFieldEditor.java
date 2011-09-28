@@ -11,6 +11,7 @@
 package org.eventb.smt.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
+import static org.eventb.smt.preferences.SMTSolverConfiguration.getUsedIds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -48,16 +49,16 @@ import org.eventb.smt.preferences.SolverConfiguration;
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
  * <code>TableViewer</code>. The data are contained in a
- * <code>SolverConfiguration</code> list, which is given as input to the
+ * <code>SMTSolverConfiguration</code> list, which is given as input to the
  * <code>TableViewer</code>. As a consequence, it is necessary to update the
- * <code>solversTableViewer</code> each time the list
- * <code>solversDetails</code> is modified, by calling the <code>refresh</code>
- * method. The index of the selected solver for SMT proofs is stored locally in
- * the field <code>selectedSolverIndex</code>.
+ * <code>solversTableViewer</code> each time the list <code>solverConfigs</code>
+ * is modified, by calling the <code>refresh</code> method. The index of the
+ * selected solver for SMT proofs is stored locally in the field
+ * <code>selectedSolverIndex</code>.
  * 
  * @author guyot
  */
-class SolversDetailsFieldEditor extends FieldEditor {
+class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	/**
 	 * This constant represents a click on the 'SELECT' button.
 	 */
@@ -92,7 +93,7 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	 */
 	private Button removeButton;
 	/**
-	 * The button for editing the currently selected solver details.
+	 * The button for editing the currently selected solver configuration.
 	 */
 	private Button editButton;
 	/**
@@ -106,20 +107,20 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	 */
 	private Composite top;
 	/**
-	 * The table showing the list of solvers details
+	 * The table showing the list of solver configurations
 	 */
 	TableViewer solversTableViewer;
 	/**
-	 * The list of solvers details
+	 * The list of solver configurations
 	 */
-	List<SolverConfiguration> solversDetails = new ArrayList<SolverConfiguration>();
+	List<SMTSolverConfiguration> solverConfigs = new ArrayList<SMTSolverConfiguration>();
 	/**
 	 * The index of the solver selected for SMT proofs
 	 */
 	int selectedSolverIndex = -1;
 
 	/**
-	 * Creates a new solvers details field editor.
+	 * Creates a new solver configurations field editor.
 	 * 
 	 * @param name
 	 *            the name of the preference this field editor works on
@@ -128,8 +129,8 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	 * @param parent
 	 *            the parent of the field editor's control
 	 */
-	public SolversDetailsFieldEditor(final String name, final String labelText,
-			final Composite parent) {
+	public SMTSolverConfigurationsFieldEditor(final String name,
+			final String labelText, final Composite parent) {
 		super(name, labelText, parent);
 	}
 
@@ -144,8 +145,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 		createColumns(tableViewer);
 		tableViewer.setColumnProperties(COLUMNS_LABELS);
-		tableViewer.setContentProvider(new SolversDetailsContentProvider());
-		tableViewer.setLabelProvider(new SolversDetailsLabelProvider());
+		tableViewer
+				.setContentProvider(new SMTSolverConfigurationsContentProvider());
+		tableViewer.setLabelProvider(new SMTSolverConfigurationsLabelProvider());
 
 		return tableViewer;
 	}
@@ -172,21 +174,21 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	}
 
 	/**
-	 * Remove the currently selected solver from the list of solvers details,
-	 * refresh the table viewer, updates the index of the selected solver and
-	 * refresh the button states.
+	 * Remove the currently selected solver from the list of solver
+	 * configurations, refresh the table viewer, updates the index of the
+	 * selected solver and refresh the button states.
 	 * 
 	 * @param solversTable
 	 *            the solvers table
 	 */
 	void removeCurrentSelection(final Table solversTable) {
 		final int indexToRemove = solversTable.getSelectionIndex();
-		solversDetails.remove(indexToRemove);
+		solverConfigs.remove(indexToRemove);
 		solversTableViewer.refresh();
 		if (selectedSolverIndex > indexToRemove) {
 			selectedSolverIndex--;
 		} else if (selectedSolverIndex == indexToRemove) {
-			if (solversDetails.size() > 0) {
+			if (solverConfigs.size() > 0) {
 				selectedSolverIndex = 0;
 			} else {
 				selectedSolverIndex = -1;
@@ -363,14 +365,15 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				/**
 				 * When pushed, opens the solver configuration shell
 				 */
-				final SolverDetailsDialog solverDetailsDialog = new SolverDetailsDialog(
-						buttonsGroup.getShell(), null);
-				if (solverDetailsDialog.open() == Window.OK) {
+				final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
+						buttonsGroup.getShell(), null,
+						getUsedIds(solverConfigs));
+				if (solverConfigDialog.open() == Window.OK) {
 					/**
-					 * Creates a new <code>SolverConfiguration</code> object, and adds
-					 * it to the list.
+					 * Creates a new <code>SMTSolverConfiguration</code> object,
+					 * and adds it to the list.
 					 */
-					solversDetails.add(solverDetailsDialog.getSolverDetails());
+					solverConfigs.add(solverConfigDialog.getSolverConfig());
 
 					/**
 					 * Refreshes the table viewer.
@@ -425,13 +428,14 @@ class SolversDetailsFieldEditor extends FieldEditor {
 				 * currently selected in the table.
 				 */
 				final int selectionIndex = solversTable.getSelectionIndex();
-				if (isValidIndex(selectionIndex, solversDetails.size())) {
-					final SolverConfiguration solverToEdit = solversDetails
+				if (isValidIndex(selectionIndex, solverConfigs.size())) {
+					final SMTSolverConfiguration solverToEdit = solverConfigs
 							.get(selectionIndex);
 					if (solverToEdit != null) {
-						final SolverDetailsDialog solverDetailsDialog = new SolverDetailsDialog(
-								buttonsGroup.getShell(), solverToEdit);
-						if (solverDetailsDialog.open() == Window.OK) {
+						final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
+								buttonsGroup.getShell(), solverToEdit,
+								getUsedIds(solverConfigs));
+						if (solverConfigDialog.open() == Window.OK) {
 							/**
 							 * Refreshes the table viewer.
 							 */
@@ -478,8 +482,8 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	protected void doLoad() {
 		final String preferences = getPreferenceStore().getString(
 				getPreferenceName());
-		solversDetails = SMTPreferences.parsePreferencesString(preferences);
-		solversTableViewer.setInput(solversDetails);
+		solverConfigs = SMTPreferences.parsePreferencesString(preferences);
+		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
@@ -490,9 +494,9 @@ class SolversDetailsFieldEditor extends FieldEditor {
 	protected void doLoadDefault() {
 		final String defaultPreferences = getPreferenceStore()
 				.getDefaultString(getPreferenceName());
-		solversDetails = SMTPreferences
+		solverConfigs = SMTPreferences
 				.parsePreferencesString(defaultPreferences);
-		solversTableViewer.setInput(solversDetails);
+		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(
 				SMTPreferences.SOLVER_INDEX_ID);
@@ -502,7 +506,8 @@ class SolversDetailsFieldEditor extends FieldEditor {
 
 	@Override
 	protected void doStore() {
-		final String preferences = SolverConfiguration.toString(solversDetails);
+		final String preferences = SMTSolverConfiguration
+				.toString(solverConfigs);
 		if (preferences != null) {
 			getPreferenceStore().setValue(getPreferenceName(), preferences);
 		}

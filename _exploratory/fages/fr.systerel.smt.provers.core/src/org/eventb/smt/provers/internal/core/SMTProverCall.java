@@ -36,7 +36,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.ast.SMTBenchmark;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 
 /**
  * 
@@ -67,7 +67,7 @@ public abstract class SMTProverCall extends XProverCall {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	SolverConfiguration solverConfig;
+	SMTSolverConfiguration solverConfig;
 
 	String translationPath = null;
 
@@ -99,7 +99,7 @@ public abstract class SMTProverCall extends XProverCall {
 	 */
 	protected SMTProverCall(final Iterable<Predicate> hypotheses,
 			final Predicate goal, final IProofMonitor pm,
-			final SolverConfiguration solverConfig, final String poName,
+			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
 		super(hypotheses, goal, pm);
 		this.solverConfig = solverConfig;

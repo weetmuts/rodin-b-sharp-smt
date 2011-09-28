@@ -17,12 +17,11 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.provers.internal.core.SMTSolver.getSolver;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.getVersion;
 
 import java.io.File;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,7 +36,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.preferences.SolverConfiguration;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 
@@ -45,7 +44,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * @author guyot
  * 
  */
-public class SolverDetailsDialog extends Dialog {
+public class SMTSolverConfigurationDialog extends Dialog {
 	private static final String SOLVER_ID_LABEL = "Solver ID";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
@@ -54,17 +53,20 @@ public class SolverDetailsDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final SolverConfiguration solverDetails;
+	final Set<String> usedIds;
+	final SMTSolverConfiguration solverConfig;
 
-	public SolverDetailsDialog(final Shell parentShell,
-			final SolverConfiguration solverDetails) {
+	public SMTSolverConfigurationDialog(final Shell parentShell,
+			final SMTSolverConfiguration solverConfig, final Set<String> usedIds) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
-		if (solverDetails != null) {
-			this.solverDetails = solverDetails;
+		if (solverConfig != null) {
+			this.solverConfig = solverConfig;
+			usedIds.remove(solverConfig.getId());
 		} else {
-			this.solverDetails = new SolverConfiguration("", UNKNOWN, "", "", V1_2);
+			this.solverConfig = new SMTSolverConfiguration();
 		}
-		setText("Solver settings");
+		this.usedIds = usedIds;
+		setText("Solver configuration");
 	}
 
 	private void createContents(final Shell shell) {
@@ -81,6 +83,7 @@ public class SolverDetailsDialog extends Dialog {
 		idLabel.setLayoutData(data);
 
 		final Text idText = new Text(shell, SWT.BORDER);
+		idText.setText(solverConfig.getId());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		idText.setLayoutData(data);
@@ -99,6 +102,7 @@ public class SolverDetailsDialog extends Dialog {
 		for (final SMTSolver solver : SMTSolver.values()) {
 			solverCombo.add(solver.toString());
 		}
+		solverCombo.setText(solverConfig.getSolver().toString());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
@@ -113,6 +117,7 @@ public class SolverDetailsDialog extends Dialog {
 		solverPathLabel.setLayoutData(data);
 
 		final Text solverPathText = new Text(shell, SWT.BORDER);
+		solverPathText.setText(solverConfig.getPath());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		solverPathText.setLayoutData(data);
@@ -143,6 +148,7 @@ public class SolverDetailsDialog extends Dialog {
 		argsLabel.setLayoutData(data);
 
 		final Text argsText = new Text(shell, SWT.BORDER);
+		argsText.setText(solverConfig.getArgs());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		argsText.setLayoutData(data);
@@ -161,6 +167,7 @@ public class SolverDetailsDialog extends Dialog {
 		for (final SMTLIBVersion smtlibVersion : SMTLIBVersion.values()) {
 			smtlibCombo.add(smtlibVersion.toString());
 		}
+		smtlibCombo.setText(solverConfig.getSmtlibVersion().toString());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		smtlibCombo.setLayoutData(data);
@@ -177,19 +184,19 @@ public class SolverDetailsDialog extends Dialog {
 			public void widgetSelected(SelectionEvent event) {
 				final String id = idText.getText();
 				final String path = solverPathText.getText();
-				if (!id.isEmpty()) {
+				if (validId(id)) {
 					if (validPath(path)) {
-						solverDetails.setId(id);
-						solverDetails.setSolver(getSolver(solverCombo.getText()));
-						solverDetails.setPath(path);
-						solverDetails.setArgs(argsText.getText());
-						solverDetails.setSmtlibVersion(getVersion(smtlibCombo
+						solverConfig.setId(id);
+						solverConfig.setSolver(getSolver(solverCombo.getText()));
+						solverConfig.setPath(path);
+						solverConfig.setArgs(argsText.getText());
+						solverConfig.setSmtlibVersion(getVersion(smtlibCombo
 								.getText()));
 						returnCode = OK;
 						shell.close();
 					}
 				} else {
-					UIUtils.showError("Please, fill the id and path fields.");
+					UIUtils.showError("A solver ID and the solver path are required.\nThe solver ID must be unique.");
 				}
 			}
 		});
@@ -212,28 +219,37 @@ public class SolverDetailsDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	boolean validPath(final String path) {
+	boolean validId(final String id) {
+		return (!id.isEmpty()) && (!usedIds.contains(id));
+	}
+
+	static boolean validPath(final String path) {
 		if (path != null) {
-			final File file = new File(path);
-			try {
-				if (file.exists()) {
-					if (file.isFile()) {
-						if (file.canExecute()) {
-							return true;
+			if (!path.isEmpty()) {
+				final File file = new File(path);
+				try {
+					if (file.exists()) {
+						if (file.isFile()) {
+							if (file.canExecute()) {
+								return true;
+							} else {
+								UIUtils.showError("Rodin cannot execute the indicated file.");
+								return false;
+							}
 						} else {
-							UIUtils.showError("Rodin cannot execute the indicated file.");
+							UIUtils.showError("The indicated file is not a valid file.");
 							return false;
 						}
 					} else {
-						UIUtils.showError("The indicated file is not a valid file.");
+						UIUtils.showError("The indicated file does not exist.");
 						return false;
 					}
-				} else {
-					UIUtils.showError("The indicated file does not exist.");
+				} catch (SecurityException se) {
+					UIUtils.showError("Rodin cannot read or execute the indicated file.");
 					return false;
 				}
-			} catch (SecurityException se) {
-				UIUtils.showError("Rodin cannot read or execute the indicated file.");
+			} else {
+				UIUtils.showError("The solver path is required.");
 				return false;
 			}
 		} else {
@@ -241,8 +257,8 @@ public class SolverDetailsDialog extends Dialog {
 		}
 	}
 
-	public SolverConfiguration getSolverDetails() {
-		return solverDetails;
+	public SMTSolverConfiguration getSolverConfig() {
+		return solverConfig;
 	}
 
 	public int open() {
