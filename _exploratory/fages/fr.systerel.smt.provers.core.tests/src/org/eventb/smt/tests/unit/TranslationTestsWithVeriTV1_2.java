@@ -49,7 +49,8 @@ import org.junit.Test;
  * 
  */
 public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
-	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe;
+	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe,
+			powpowTe;
 	protected static final SMTLogic defaultLogic, veriTLogicWithBool;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 
@@ -62,7 +63,10 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 				"ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
 
 		cdisTe = mTypeEnvironment(//
-				"S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔  R", "x", "S", "y", "R");
+				"S", "ℙ(S)", "R", "ℙ(R)", "f", "S ↔ R", "x", "S", "y", "R");
+
+		powpowTe = mTypeEnvironment(//
+				"S", "ℙ(S)", "R", "ℙ(R)", "e", "ℙ(ℙ(S) ↔ ℤ) ↔ ℙ(R)");
 
 		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
@@ -226,8 +230,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
-				null);
+		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred);
 	}
 
 	@Test
@@ -242,6 +245,15 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedFunctions,
 				"g = g");
+	}
+
+	@Test
+	public void testpowpowTe() {
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList(""));
+
+		testTypeEnvironmentFuns(defaultLogic, powpowTe, expectedFunctions,
+				"e = e");
 	}
 
 	/**
