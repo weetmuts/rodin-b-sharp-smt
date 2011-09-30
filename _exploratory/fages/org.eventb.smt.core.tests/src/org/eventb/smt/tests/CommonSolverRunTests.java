@@ -410,7 +410,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * it is right
 		 */
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse(
-				"false", te));
+				"⊥", te));
 		successfulProverCall("Iter 1", translationApproach, lemmaName,
 				expectedHypotheses, goalXML, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed);
@@ -430,7 +430,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final List<Predicate> neededHypotheses = new ArrayList<Predicate>(
 				smtProverCall.neededHypotheses());
 		final Predicate goalVeriT = (smtProverCall.isGoalNeeded() ? parsedGoal
-				: parse("false", te));
+				: parse("⊥", te));
 		successfulProverCall("Iter 3", translationApproach, lemmaName,
 				neededHypotheses, goalVeriT, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed);
