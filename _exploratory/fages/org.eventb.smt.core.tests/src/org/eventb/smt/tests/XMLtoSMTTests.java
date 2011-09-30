@@ -10,6 +10,8 @@
 
 package org.eventb.smt.tests;
 
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
@@ -172,9 +176,13 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			// Goal
 			elements = node.getElementsByTagName("goal");
 			String goal = null;
+			boolean goalNeeded = true;
 			if (elements.getLength() > 0) {
 				element = (Element) elements.item(0);
 				goal = element.getTextContent();
+				if (element.getAttribute("needed").equals("false")) {
+					goalNeeded = false;
+				}
 			}
 
 			final ArrayList<String> theories = new ArrayList<String>();
@@ -207,15 +215,20 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			final ITypeEnvironment te = mTypeEnvironment(teVar);
 
 			final List<String> predicates = new ArrayList<String>();
+			final List<String> unsat = new ArrayList<String>();
 
 			// Hypotheses
 			elements = node.getElementsByTagName("hypothesis");
 			for (int j = 0; j < elements.getLength(); j++) {
 				element = (Element) elements.item(j);
-				predicates.add(element.getTextContent());
+				final String predicate = element.getTextContent();
+				predicates.add(predicate);
+				if (element.getAttribute("needed").equals("true")) {
+					unsat.add(predicate);
+				}
 			}
 			final LemmaData[] data = { new LemmaData(title, predicates, goal,
-					te, origin, comment, theories) };
+					te, origin, comment, theories, unsat, goalNeeded) };
 
 			docDatas.add(data);
 		}
@@ -241,16 +254,22 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		String name = data.getLemmaName();
-		if (name.isEmpty()) {
-			name = data.getOrigin();
+		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+			Assert.assertTrue(
+					"SMT-LIB 2.0 is not handled by the veriT approach yet",
+					false);
+		} else {
+			String name = data.getLemmaName();
+			if (name.isEmpty()) {
+				name = data.getOrigin();
+			}
+			if (PRINT_INFO) {
+				System.out.println("Testing lemma: " + name + ".\n");
+			}
+			name = name + "vt";
+			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
+					data.getTe(), VALID);
 		}
-		if (PRINT_INFO) {
-			System.out.println("Testing lemma: " + name + ".\n");
-		}
-		name = name + "vt";
-		doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
-				data.getTe(), VALID);
 	}
 
 	/**
@@ -258,6 +277,10 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
+		if (solverConfig.getSmtlibVersion().equals(V2_0)
+				&& solverConfig.getSolver().equals(VERIT)) {
+			setPreferencesForVeriTProofTest();
+		}
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
@@ -267,6 +290,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		}
 		name = name + "pp";
 		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-				data.getTe(), VALID);
+				data.getTe(), VALID, data.getNeededHypotheses(),
+				data.isGoalNeeded());
 	}
 }

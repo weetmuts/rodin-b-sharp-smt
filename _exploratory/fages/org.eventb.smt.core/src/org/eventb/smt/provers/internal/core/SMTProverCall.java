@@ -450,6 +450,13 @@ public abstract class SMTProverCall extends XProverCall {
 				if (solverConfig.getSolver().equals(VERIT)
 						&& solverConfig.getArgs().contains("--proof=")) {
 					extractUnsatCoreFromVeriTProof();
+					if (DEBUG) {
+						System.out.println("unsat-core:");
+						for (final Predicate hyp : neededHypotheses) {
+							System.out.println(hyp);
+						}
+						System.out.println("Goal needed: " + goalNeeded);
+					}
 				}
 			}
 

@@ -103,8 +103,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	public CommonSolverRunTests(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		solverConfig = new SMTSolverConfiguration("test-config", solver, "", "",
-				smtlibVersion);
+		solverConfig = new SMTSolverConfiguration("test-config", solver, "",
+				"", smtlibVersion);
 		if (solver != null) {
 			setPreferencesForSolverTest(solver);
 		}

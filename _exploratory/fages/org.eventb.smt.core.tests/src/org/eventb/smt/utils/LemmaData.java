@@ -15,10 +15,21 @@ import java.util.List;
 import org.eventb.core.ast.ITypeEnvironment;
 
 public class LemmaData {
+	private String lemmaName;
+	private List<String> hypotheses;
+	private String goal;
+	private ITypeEnvironment te;
+	private String origin;
+	@SuppressWarnings("unused")
+	private String comments;
+	private List<String> theories;
+	private List<String> neededHypotheses;
+	private boolean goalNeeded;
 
 	public LemmaData(final String lemmaName, final List<String> hypotheses,
 			final String goal, final ITypeEnvironment te, final String origin,
-			final String comments, final List<String> theories) {
+			final String comments, final List<String> theories,
+			final List<String> neededHypotheses, final boolean goalNeeded) {
 		super();
 		this.lemmaName = lemmaName;
 		this.hypotheses = hypotheses;
@@ -27,70 +38,39 @@ public class LemmaData {
 		this.origin = origin;
 		this.comments = comments;
 		this.theories = theories;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(final String comments) {
-		this.comments = comments;
-	}
-
-	public List<String> getTheories() {
-		return theories;
-	}
-
-	public void setTheories(final List<String> theories) {
-		this.theories = theories;
-	}
-
-	private String lemmaName;
-	private List<String> hypotheses;
-	private String goal;
-	private ITypeEnvironment te;
-	private String origin;
-	private String comments;
-	private List<String> theories;
-
-	public String getOrigin() {
-		return origin;
-	}
-
-	public void setOrigin(final String origin) {
-		this.origin = origin;
-	}
-
-	public ITypeEnvironment getTe() {
-		return te;
-	}
-
-	public void setTe(final ITypeEnvironment te) {
-		this.te = te;
+		this.neededHypotheses = neededHypotheses;
+		this.goalNeeded = goalNeeded;
 	}
 
 	public String getLemmaName() {
 		return lemmaName;
 	}
 
-	public void setLemmaName(final String lemmaName) {
-		this.lemmaName = lemmaName;
-	}
-
 	public List<String> getHypotheses() {
 		return hypotheses;
-	}
-
-	public void setHypotheses(final List<String> hypotheses) {
-		this.hypotheses = hypotheses;
 	}
 
 	public String getGoal() {
 		return goal;
 	}
 
-	public void setGoal(final String goal) {
-		this.goal = goal;
+	public ITypeEnvironment getTe() {
+		return te;
 	}
 
+	public String getOrigin() {
+		return origin;
+	}
+
+	public List<String> getTheories() {
+		return theories;
+	}
+
+	public List<String> getNeededHypotheses() {
+		return neededHypotheses;
+	}
+
+	public boolean isGoalNeeded() {
+		return goalNeeded;
+	}
 }
