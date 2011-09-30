@@ -16,6 +16,7 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
 import java.io.File;
@@ -158,9 +159,17 @@ public class SMTPPCall extends SMTProverCall {
 	void extractUnsatCoreFromVeriTProof() {
 		neededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
+		String separator = "";
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
+		if (DEBUG) {
+			System.out.print("unsat-core: (");
+		}
 		for (final String label : labelMap.keySet()) {
 			if (solverResult.contains(label)) {
+				if (DEBUG) {
+					System.out.print(separator + label);
+					separator = ", ";
+				}
 				final ITrackedPredicate trPredicate = labelMap.get(label);
 				if (trPredicate.isHypothesis()) {
 					neededHypotheses.add(trPredicate.getOriginal());
@@ -168,6 +177,9 @@ public class SMTPPCall extends SMTProverCall {
 					goalNeeded = true;
 				}
 			}
+		}
+		if (DEBUG) {
+			System.out.println(").");
 		}
 	}
 }

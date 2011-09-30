@@ -199,19 +199,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	private void doTest(final SMTTranslationApproach translationApproach,
+	private SMTProverCall successfulProverCall(final String callMessage,
+			final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
 			final Predicate parsedGoal, final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
-			final boolean expectedGoalNeed) throws IllegalArgumentException {
-		// Type check goal and hypotheses
-		assertTypeChecked(parsedGoal);
-		for (final Predicate parsedHypothesis : parsedHypotheses) {
-			assertTypeChecked(parsedHypothesis);
-		}
-
-		final SMTProverCall smtProverCall;
-
+			final boolean expectedGoalNeed) {
+		SMTProverCall smtProverCall = null;
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
@@ -235,22 +229,26 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			assertEquals(
-					"The result of the SMT prover wasn't the expected one.",
+			assertEquals(callMessage
+					+ " The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
 			assertTrue(
-					"The extracted unsat-core wasn't the expected one.",
+					callMessage
+							+ " The extracted unsat-core wasn't the expected one.",
 					smtProverCall.neededHypotheses() != null
 							&& smtProverCall.neededHypotheses().containsAll(
 									expectedUnsatCore));
-			assertTrue("The extracted unsat-core wasn't the expected one.",
+			assertTrue(callMessage
+					+ " The extracted unsat-core wasn't the expected one.",
 					expectedUnsatCore.containsAll(smtProverCall
 							.neededHypotheses()));
-			assertEquals("The extracted goal need wasn't the expected one.",
+			assertEquals(callMessage
+					+ " The extracted goal need wasn't the expected one.",
 					expectedGoalNeed, smtProverCall.isGoalNeeded());
 		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
 		}
+		return smtProverCall;
 	}
 
 	private void doTeTest(final String lemmaName,
@@ -390,21 +388,52 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed) {
-		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-
+		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
 		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, te));
+			parsedHypotheses.add(parse(hyp, te));
 		}
-
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate parsedGoal = parse(inputGoal, te);
 
 		final List<Predicate> expectedHypotheses = new ArrayList<Predicate>();
 		for (final String expectedHyp : expectedUnsatCoreStr) {
 			expectedHypotheses.add(parse(expectedHyp, te));
 		}
 
-		doTest(translationApproach, lemmaName, hypotheses, goal,
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		/**
+		 * Iter 1 : calls the prover with the expected unsat-core, to check if
+		 * it is right
+		 */
+		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse(
+				"false", te));
+		successfulProverCall("Iter 1", translationApproach, lemmaName,
+				expectedHypotheses, goalXML, expectedSolverResult,
+				expectedHypotheses, expectedGoalNeed);
+
+		/**
+		 * Iter 2 : calls the prover and check if the unsat-core is the expected
+		 * one
+		 */
+		final SMTProverCall smtProverCall = successfulProverCall("Iter 2",
+				translationApproach, lemmaName, parsedHypotheses, parsedGoal,
 				expectedSolverResult, expectedHypotheses, expectedGoalNeed);
+
+		/**
+		 * Iter 3 : calls the prover with the returned unsat-core, to check if
+		 * it is right
+		 */
+		final List<Predicate> neededHypotheses = new ArrayList<Predicate>(
+				smtProverCall.neededHypotheses());
+		final Predicate goalVeriT = (smtProverCall.isGoalNeeded() ? parsedGoal
+				: parse("false", te));
+		successfulProverCall("Iter 3", translationApproach, lemmaName,
+				neededHypotheses, goalVeriT, expectedSolverResult,
+				expectedHypotheses, expectedGoalNeed);
 	}
 
 	protected void doTTeTest(final String lemmaName,
