@@ -149,7 +149,7 @@ public class Gatherer extends DefaultVisitor {
 		while (setsForSpecialMSPredsIterator.hasNext()) {
 			final FreeIdentifier set = setsForSpecialMSPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
-				setsForSpecialMSPreds.remove(set);
+				setsForSpecialMSPredsIterator.remove();
 			}
 		}
 	}
