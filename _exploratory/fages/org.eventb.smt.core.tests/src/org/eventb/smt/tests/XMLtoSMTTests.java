@@ -32,7 +32,6 @@ import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.utils.LemmaData;
 import org.eventb.smt.utils.LemmaParser;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -254,7 +253,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * Translates the each lemma of each xml file.
 	 */
 	@Test(timeout = 3000)
-	@Ignore
 	public void testTranslateWithVerit() {
 		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
@@ -292,8 +290,13 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		}
 		name = name + "pp";
 
-		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-				data.getTe(), VALID, data.getNeededHypotheses(),
-				data.isGoalNeeded());
+		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+					data.getTe(), VALID, data.getNeededHypotheses(),
+					data.isGoalNeeded());
+		} else {
+			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+					data.getTe(), VALID);
+		}
 	}
 }

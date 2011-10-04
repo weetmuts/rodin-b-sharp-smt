@@ -11,6 +11,8 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static java.util.regex.Pattern.MULTILINE;
+import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
@@ -235,17 +237,10 @@ public abstract class SMTProverCall extends XProverCall {
 	 * So is set and returned "valid" attribut.
 	 */
 	private boolean checkResult() {
-		if (solverResult.contains("syntax error")
-				|| solverResult.contains("parse error")
-				|| solverResult.contains("Lexical_error")) {
-			throw new IllegalArgumentException(solverConfig.getSolver()
-					.toString()
-					+ " could not parse "
-					+ lemmaName
-					+ ".smt. See " + lemmaName + ".res for more details.");
-		} else if (solverResult.contains("unsat")) {
+		if (compile("^unsat$", MULTILINE).matcher(solverResult).find()) {
 			return true;
-		} else if (solverResult.contains("sat")) {
+		} else if (compile("^sat$", MULTILINE).matcher(solverResult).find()
+				|| compile("^unknown$", MULTILINE).matcher(solverResult).find()) {
 			return false;
 		} else {
 			throw new IllegalArgumentException("Unexpected response of "
