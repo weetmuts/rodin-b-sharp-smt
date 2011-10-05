@@ -13,13 +13,24 @@ package org.eventb.smt.tests.performance;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
+import org.eventb.smt.utils.Theory.TheoryLevel;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class XMLtoSMTTestsZ3V1_2 extends XMLtoSMTTests {
-
 	public XMLtoSMTTestsZ3V1_2(final LemmaData data) {
 		super(data, Z3, V1_2);
 	}
 
+	@Parameters
+	public static List<LemmaData[]> getDocumentDatas() {
+		return getDocumentDatas(Arrays.asList(TheoryLevel.values()));
+	}
 }

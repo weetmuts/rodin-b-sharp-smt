@@ -10,27 +10,27 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
-import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class XMLtoSMTTestsAltErgoV2_0 extends XMLtoSMTTests {
-	public XMLtoSMTTestsAltErgoV2_0(final LemmaData data) {
-		super(data, ALT_ERGO, V2_0);
+public class XMLtoSMTTestsL3VeritV2_0 extends XMLtoSMTTests {
+	public XMLtoSMTTestsL3VeritV2_0(final LemmaData data) {
+		super(data, VERIT, V2_0);
 	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
-		return getDocumentDatas(Arrays.asList(TheoryLevel.values()));
+		return getDocumentDatas(Arrays.asList(L3));
 	}
 }
