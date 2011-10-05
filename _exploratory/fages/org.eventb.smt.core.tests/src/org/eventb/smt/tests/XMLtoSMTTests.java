@@ -14,9 +14,6 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
-import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
-import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
-import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -48,9 +45,6 @@ import org.eventb.smt.utils.Theory;
 import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -63,8 +57,7 @@ import org.xml.sax.SAXException;
  * @author vitor
  * 
  */
-@RunWith(Parameterized.class)
-public class XMLtoSMTTests extends CommonSolverRunTests {
+public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * If true, is printed details of the test for each test iteration.
 	 */
@@ -101,8 +94,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				+ round++ / 2);
 	}
 
-	@Parameters
-	public static List<LemmaData[]> getDocumentDatas() {
+	public static List<LemmaData[]> getDocumentDatas(
+			final List<TheoryLevel> levels) {
 		final List<LemmaData[]> totalDocData = new ArrayList<LemmaData[]>();
 		final File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
 		final File dir = new File(XMLFolder);
@@ -136,8 +129,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				output = output.substring(0, output.indexOf("."));
 				final File outputFolder = new File(new File(SMTFolder), output);
 				outputFolder.mkdir();
-				final List<LemmaData[]> docDatas = parse(document);
-
+				final List<LemmaData[]> docDatas = parse(document, levels);
 				totalDocData.addAll(docDatas);
 			}
 		}
@@ -278,47 +270,20 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the document that contains the lemma info
 	 * @return the parsed content
 	 */
-	public static List<LemmaData[]> parse(final Document document) {
+	public static List<LemmaData[]> parse(final Document document,
+			final List<TheoryLevel> levels) {
 		final NodeList nodelist = document.getElementsByTagName("lemma");
 		final ArrayList<LemmaData[]> docDatas = new ArrayList<LemmaData[]>();
 
 		for (int i = 0; i < nodelist.getLength(); i++) {
 			final Element node = (Element) nodelist.item(i);
 			Element element;
-			// Title
-			NodeList elements = node.getElementsByTagName("title");
-			String title = null;
-			if (elements.getLength() > 0) {
-				title = patch(((Element) elements.item(0)).getTextContent());
-			}
 
-			// Origin
-			elements = node.getElementsByTagName("origin");
-			String origin = null;
-			if (elements.getLength() > 0) {
-				origin = patch(((Element) elements.item(0)).getTextContent());
-			}
-
-			elements = node.getElementsByTagName("comment");
-			String comment = null;
-			if (elements.getLength() > 0) {
-				comment = ((Element) elements.item(0)).getTextContent();
-			}
-
-			// Goal
-			elements = node.getElementsByTagName("goal");
-			String goal = null;
-			boolean goalNeeded = true;
-			if (elements.getLength() > 0) {
-				element = (Element) elements.item(0);
-				goal = element.getTextContent();
-				if (element.getAttribute("needed").equals("false")) {
-					goalNeeded = false;
-				}
-			}
-
+			/**
+			 * Theories
+			 */
 			final ArrayList<String> theories = new ArrayList<String>();
-			elements = node.getElementsByTagName("theories");
+			NodeList elements = node.getElementsByTagName("theories");
 			if (elements.getLength() > 0) {
 				elements = ((Element) elements.item(0))
 						.getElementsByTagName("theory");
@@ -328,41 +293,78 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 				}
 			}
 
-			// Type environment
-			String[] teVar = { "" };
-			elements = node.getElementsByTagName("typenv");
-			if (elements.getLength() > 0) {
-				elements = ((Element) elements.item(0))
-						.getElementsByTagName("variable");
-				teVar = new String[elements.getLength() * 2];
+			if (levels
+					.contains(Theory.getComboLevel(Theory.fromNames(theories)))) {
 
+				// Title
+				elements = node.getElementsByTagName("title");
+				String title = null;
+				if (elements.getLength() > 0) {
+					title = patch(((Element) elements.item(0)).getTextContent());
+				}
+
+				// Origin
+				elements = node.getElementsByTagName("origin");
+				String origin = null;
+				if (elements.getLength() > 0) {
+					origin = patch(((Element) elements.item(0))
+							.getTextContent());
+				}
+
+				elements = node.getElementsByTagName("comment");
+				String comment = null;
+				if (elements.getLength() > 0) {
+					comment = ((Element) elements.item(0)).getTextContent();
+				}
+
+				// Goal
+				elements = node.getElementsByTagName("goal");
+				String goal = null;
+				boolean goalNeeded = true;
+				if (elements.getLength() > 0) {
+					element = (Element) elements.item(0);
+					goal = element.getTextContent();
+					if (element.getAttribute("needed").equals("false")) {
+						goalNeeded = false;
+					}
+				}
+
+				// Type environment
+				String[] teVar = { "" };
+				elements = node.getElementsByTagName("typenv");
+				if (elements.getLength() > 0) {
+					elements = ((Element) elements.item(0))
+							.getElementsByTagName("variable");
+					teVar = new String[elements.getLength() * 2];
+
+					for (int j = 0; j < elements.getLength(); j++) {
+						element = (Element) elements.item(j);
+
+						teVar[j * 2] = element.getAttribute("name");
+						teVar[j * 2 + 1] = element.getAttribute("type");
+					}
+				}
+
+				final ITypeEnvironment te = mTypeEnvironment(teVar);
+
+				final List<String> predicates = new ArrayList<String>();
+				final List<String> unsat = new ArrayList<String>();
+
+				// Hypotheses
+				elements = node.getElementsByTagName("hypothesis");
 				for (int j = 0; j < elements.getLength(); j++) {
 					element = (Element) elements.item(j);
-
-					teVar[j * 2] = element.getAttribute("name");
-					teVar[j * 2 + 1] = element.getAttribute("type");
+					final String predicate = element.getTextContent();
+					predicates.add(predicate);
+					if (element.getAttribute("needed").equals("true")) {
+						unsat.add(predicate);
+					}
 				}
+				final LemmaData[] data = { new LemmaData(title, predicates,
+						goal, te, origin, comment, theories, unsat, goalNeeded) };
+
+				docDatas.add(data);
 			}
-
-			final ITypeEnvironment te = mTypeEnvironment(teVar);
-
-			final List<String> predicates = new ArrayList<String>();
-			final List<String> unsat = new ArrayList<String>();
-
-			// Hypotheses
-			elements = node.getElementsByTagName("hypothesis");
-			for (int j = 0; j < elements.getLength(); j++) {
-				element = (Element) elements.item(j);
-				final String predicate = element.getTextContent();
-				predicates.add(predicate);
-				if (element.getAttribute("needed").equals("true")) {
-					unsat.add(predicate);
-				}
-			}
-			final LemmaData[] data = { new LemmaData(title, predicates, goal,
-					te, origin, comment, theories, unsat, goalNeeded) };
-
-			docDatas.add(data);
 		}
 		return docDatas;
 	}
@@ -408,44 +410,27 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	public void testTranslateWithPP(final TheoryLevel level) {
-		if ((Theory.getComboLevel(Theory.fromNames(data.getTheories())))
-				.equals(level)) {
-			if (solverConfig.getSmtlibVersion().equals(V2_0)
-					&& solverConfig.getSolver().equals(VERIT)) {
-				setPreferencesForVeriTProofTest();
-			}
-			String name = data.getLemmaName();
-			if (name.isEmpty()) {
-				name = data.getOrigin();
-			}
-			if (PRINT_INFO) {
-				System.out.println("Testing lemma: " + name + ".\n");
-			}
-
-			if (solverConfig.getSmtlibVersion().equals(V2_0)) {
-				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-						data.getTe(), VALID, data.getNeededHypotheses(),
-						data.isGoalNeeded());
-			} else {
-				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-						data.getTe(), VALID);
-			}
+	@Test(timeout = 3000)
+	public void testTranslateWithPP() {
+		if (solverConfig.getSmtlibVersion().equals(V2_0)
+				&& solverConfig.getSolver().equals(VERIT)) {
+			setPreferencesForVeriTProofTest();
 		}
-	}
+		String name = data.getLemmaName();
+		if (name.isEmpty()) {
+			name = data.getOrigin();
+		}
+		if (PRINT_INFO) {
+			System.out.println("Testing lemma: " + name + ".\n");
+		}
 
-	@Test(timeout = 3000)
-	public void testTranslateWithPPL1() {
-		testTranslateWithPP(L1);
-	}
-
-	@Test(timeout = 3000)
-	public void testTranslateWithPPL2() {
-		testTranslateWithPP(L2);
-	}
-
-	@Test(timeout = 3000)
-	public void testTranslateWithPPL3() {
-		testTranslateWithPP(L3);
+		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+					data.getTe(), VALID, data.getNeededHypotheses(),
+					data.isGoalNeeded());
+		} else {
+			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+					data.getTe(), VALID);
+		}
 	}
 }
