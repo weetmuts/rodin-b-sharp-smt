@@ -16,7 +16,6 @@ import static org.eventb.smt.preferences.Messages.SMTPreferences_NoSMTSolverSet;
 import static org.eventb.smt.preferences.Messages.SMTPreferences_VeriTPathNotSet;
 import static org.eventb.smt.provers.core.SMTProversCore.PREFERENCES_PLUGIN_ID;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
@@ -49,9 +48,7 @@ public class SMTPreferences {
 	public static final String SOLVER_PREFERENCES_ID = "solverpreferences";
 	public static final String DEFAULT_SOLVER_PREFERENCES = "";
 	public static final String DEFAULT_TRANSLATION_PATH = System
-			.getProperty("java.io.tmpdir")
-			+ File.separatorChar
-			+ "rodin_smtlib_temp_files";
+			.getProperty("java.io.tmpdir");
 	public static final int DEFAULT_SOLVER_INDEX = -1;
 	public static final String DEFAULT_VERIT_PATH = "";
 
@@ -72,9 +69,9 @@ public class SMTPreferences {
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SMTSolverConfiguration(columns[0], SMTSolver
-						.getSolver(columns[1]), columns[2], columns[3],
-						SMTLIBVersion.getVersion(columns[4])));
+				solverDetail.add(new SMTSolverConfiguration(columns[0],
+						SMTSolver.getSolver(columns[1]), columns[2],
+						columns[3], SMTLIBVersion.getVersion(columns[4])));
 			}
 		}
 		return solverDetail;

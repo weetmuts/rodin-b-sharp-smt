@@ -12,6 +12,7 @@ package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
@@ -36,7 +37,7 @@ import org.eventb.smt.translation.SMTThroughVeriT;
  */
 public class SMTVeriTCall extends SMTProverCall {
 	private static final String DEFAULT_VERIT_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
-			+ File.separatorChar + SMTSolver.VERIT;
+			+ File.separatorChar + VERIT.toString();
 	private static final String TEMP_FILE = "_prep";
 	private static final String SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String PRINT_FLAT = "--print-flat";

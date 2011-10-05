@@ -18,6 +18,8 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
@@ -43,6 +45,19 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
 	}
 
+	private class ValidatedOnKeyStrokeDirectoryFieldEditor extends DirectoryFieldEditor {
+		public ValidatedOnKeyStrokeDirectoryFieldEditor(String name, String label,
+				Composite parent) {
+			super();
+			init(name, label);
+			setErrorMessage(JFaceResources
+					.getString("DirectoryFieldEditor.errorMessage"));
+			setChangeButtonText(JFaceResources.getString("openBrowse"));
+			setValidateStrategy(VALIDATE_ON_KEY_STROKE);
+			createControl(parent);
+		}
+	}
+
 	@Override
 	protected void createFieldEditors() {
 		final FieldEditor solversFieldEditor = new SMTSolverConfigurationsFieldEditor(
@@ -54,7 +69,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 				VERIT_PATH_ID, VERIT_PATH_LABEL, true, getFieldEditorParent());
 		addField(veriTBinaryBrowser);
 
-		final DirectoryFieldEditor translationDirectoryBrowser = new DirectoryFieldEditor(
+		final ValidatedOnKeyStrokeDirectoryFieldEditor translationDirectoryBrowser = new ValidatedOnKeyStrokeDirectoryFieldEditor(
 				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
 				getFieldEditorParent());
 		addField(translationDirectoryBrowser);
