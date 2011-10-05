@@ -14,6 +14,9 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -41,6 +44,8 @@ import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.utils.LemmaData;
 import org.eventb.smt.utils.LemmaParser;
+import org.eventb.smt.utils.Theory;
+import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -403,27 +408,44 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test(timeout = 3000)
-	public void testTranslateWithPP() {
-		if (solverConfig.getSmtlibVersion().equals(V2_0)
-				&& solverConfig.getSolver().equals(VERIT)) {
-			setPreferencesForVeriTProofTest();
-		}
-		String name = data.getLemmaName();
-		if (name.isEmpty()) {
-			name = data.getOrigin();
-		}
-		if (PRINT_INFO) {
-			System.out.println("Testing lemma: " + name + ".\n");
-		}
+	public void testTranslateWithPP(final TheoryLevel level) {
+		if ((Theory.getComboLevel(Theory.fromNames(data.getTheories())))
+				.equals(level)) {
+			if (solverConfig.getSmtlibVersion().equals(V2_0)
+					&& solverConfig.getSolver().equals(VERIT)) {
+				setPreferencesForVeriTProofTest();
+			}
+			String name = data.getLemmaName();
+			if (name.isEmpty()) {
+				name = data.getOrigin();
+			}
+			if (PRINT_INFO) {
+				System.out.println("Testing lemma: " + name + ".\n");
+			}
 
-		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
-			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID, data.getNeededHypotheses(),
-					data.isGoalNeeded());
-		} else {
-			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID);
+			if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+						data.getTe(), VALID, data.getNeededHypotheses(),
+						data.isGoalNeeded());
+			} else {
+				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+						data.getTe(), VALID);
+			}
 		}
+	}
+
+	@Test(timeout = 3000)
+	public void testTranslateWithPPL1() {
+		testTranslateWithPP(L1);
+	}
+
+	@Test(timeout = 3000)
+	public void testTranslateWithPPL2() {
+		testTranslateWithPP(L2);
+	}
+
+	@Test(timeout = 3000)
+	public void testTranslateWithPPL3() {
+		testTranslateWithPP(L3);
 	}
 }
