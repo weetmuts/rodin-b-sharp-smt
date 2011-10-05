@@ -239,7 +239,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	private SMTProverCall successfulProverCall(final String callMessage,
 			final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult,
+			final Predicate parsedGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
 			final boolean expectedGoalNeed) {
 		SMTProverCall smtProverCall = null;
@@ -281,13 +282,21 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					assertTrue(
 							callMessage
 									+ " The expected unsat-core is smaller than the veriT one.",
-							false);
+							true);
 				}
 			} else if (expectedContainsExtracted) {
+				// FIXME : this should be called only if the veriT unsat-core is
+				// smaller AND checked!
+				/*
+				 * System.out.println("Updating lemma " + lemmaName +
+				 * " in files..."); XMLtoSMTTests.exportUnsatCore(lemmaName,
+				 * smtProverCall.neededHypotheses(),
+				 * smtProverCall.isGoalNeeded(), te);
+				 */
 				assertTrue(
 						callMessage
 								+ " VeriT unsat-core is smaller than the expected one.",
-						true);
+						false);
 			} else {
 				assertTrue(
 						callMessage
@@ -461,36 +470,43 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * Iter 1 : calls the prover with the expected unsat-core, to check if
 		 * it is right
 		 */
+		System.out.println("Iter 1");
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse("⊥",
 				te));
 		successfulProverCall("Iter 1", translationApproach, lemmaName,
-				expectedHypotheses, goalXML, expectedSolverResult,
+				expectedHypotheses, goalXML, te, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed);
+		System.out.println();
 
 		/**
 		 * Iter 2 : calls the prover and check if the unsat-core is the expected
 		 * one
 		 */
+		System.out.println("Iter 2");
 		final SMTProverCall smtProverCall = successfulProverCall("Iter 2",
 				translationApproach, lemmaName, parsedHypotheses, parsedGoal,
-				expectedSolverResult, expectedHypotheses, expectedGoalNeed);
+				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed);
+		System.out.println();
 
 		/**
 		 * Iter 3 : calls the prover with the returned unsat-core, to check if
 		 * it is right
 		 */
+		System.out.println("Iter 3");
 		final List<Predicate> neededHypotheses = new ArrayList<Predicate>(
 				smtProverCall.neededHypotheses());
 		final Predicate goalVeriT = (smtProverCall.isGoalNeeded() ? parsedGoal
 				: parse("⊥", te));
 		successfulProverCall("Iter 3", translationApproach, lemmaName,
-				neededHypotheses, goalVeriT, expectedSolverResult,
+				neededHypotheses, goalVeriT, te, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed);
+		System.out.println();
 
 		/**
 		 * Unsat-core checking : calls the other provers on the unsat-core, to
 		 * check if it is right
 		 */
+		System.out.println("unsat-core checking");
 		setPreferencesForZ3Test();
 		successfulProverCall("z3 unsat-core checking", translationApproach,
 				lemmaName, neededHypotheses, goalVeriT, expectedSolverResult);
@@ -501,6 +517,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		successfulProverCall("alt-ergo unsat-core checking",
 				translationApproach, lemmaName, neededHypotheses, goalVeriT,
 				expectedSolverResult);
+		System.out.println();
 	}
 
 	protected void doTTeTest(final String lemmaName,

@@ -23,15 +23,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.Assert;
 
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.Predicate;
 import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.utils.LemmaData;
 import org.eventb.smt.utils.LemmaParser;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -56,22 +66,19 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	private final boolean PRINT_INFO = true;
 	private static int round = 0;
 
-	private static final String RODIN_XML_TMP_FOLDER = System
-			.getProperty("user.home")
-			+ File.separatorChar
-			+ "rodin_xml_tmp_files";
 	/**
 	 * The path of the input folder containing the XML files for the Event-B
 	 * lemmas to be translated in SMT-LIB format, and their associated DTD file.
 	 */
-	private final static String XMLFolder = RODIN_XML_TMP_FOLDER
-			+ File.separatorChar + "xml";
+	public final static String XMLFolder = System.getProperty("user.home")
+			+ File.separatorChar + "c444" + File.separatorChar + "7"
+			+ File.separatorChar + "exploratory" + File.separatorChar
+			+ "xml_lemmas";
 	/**
 	 * The path of the output folder where to store the generated SMT files.
 	 */
-	private final static String SMTFolder = RODIN_XML_TMP_FOLDER
-			+ File.separatorChar + "smt";
-	private final static String DTDFolder = "src/org/eventb/smt/utils";
+	final static String SMTFolder = DEFAULT_TEST_TRANSLATION_PATH;
+	public final static String DTDFolder = "src/org/eventb/smt/utils";
 
 	private final LemmaData data;
 
@@ -85,7 +92,8 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			final SMTLIBVersion smtlibVersion) {
 		super(solver, smtlibVersion);
 		this.data = data;
-		System.out.println("Loop: " + round++ / 2);
+		System.out.println("\n\n----------------------------\n\nLoop: "
+				+ round++ / 2);
 	}
 
 	@Parameters
@@ -129,6 +137,125 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 			}
 		}
 		return totalDocData;
+	}
+
+	public static void exportUnsatCore(final String title,
+			final Set<Predicate> neededHypotheses, final boolean goalNeeded,
+			final ITypeEnvironment te) {
+
+		final File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
+		final File dir = new File(XMLFolder);
+		if (dir.isDirectory()) {
+			final File[] files = dir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(final File file, final String name) {
+					return name.endsWith(".xml");
+				}
+			});
+			for (final File file : files) {
+				URL XMLFile = null;
+				try {
+					XMLFile = LemmaParser.setDoctype(file.toURI().toURL(),
+							DTDFile.toURI().toURL());
+				} catch (final MalformedURLException e) {
+					e.printStackTrace();
+				} catch (final IOException e) {
+					e.printStackTrace();
+				}
+				Document document = null;
+				try {
+					document = LemmaParser.load(XMLFile, DTDFile.toURI()
+							.toURL());
+					Source source = new DOMSource(document);
+					Result result = new StreamResult(file);
+					TransformerFactory factory = TransformerFactory
+							.newInstance();
+					Transformer transformer = factory.newTransformer();
+
+					final NodeList nodelist = document
+							.getElementsByTagName("lemma");
+
+					for (int i = 0; i < nodelist.getLength(); i++) {
+						final Element node = (Element) nodelist.item(i);
+						Element element;
+
+						NodeList elements = node.getElementsByTagName("title");
+						if (elements.getLength() > 0) {
+							final String currentTitle = patch(((Element) elements
+									.item(0)).getTextContent());
+							if (currentTitle.equals(title)) {
+								System.out.println("\n" + file.getName());
+								/**
+								 * Sets hypotheses
+								 */
+								elements = node
+										.getElementsByTagName("hypothesis");
+								for (int j = 0; j < elements.getLength(); j++) {
+									element = (Element) elements.item(j);
+									final String predicate = element
+											.getTextContent();
+									if (neededHypotheses.contains(parse(
+											predicate, te))) {
+										if (!element.getAttribute("needed")
+												.equals("true")) {
+											element.setAttribute("needed",
+													"true");
+											System.out.println(element
+													.getTextContent()
+													+ " now set to 'needed'");
+										}
+									} else {
+										if (element.getAttribute("needed")
+												.equals("true")) {
+											element.removeAttribute("needed");
+											System.out
+													.println(element
+															.getTextContent()
+															+ " now set to 'not needed'");
+										}
+									}
+								}
+
+								/**
+								 * Sets goal
+								 */
+								elements = node.getElementsByTagName("goal");
+								if (elements.getLength() > 0) {
+									element = (Element) elements.item(0);
+									if (element.getAttribute("needed").equals(
+											"false")) {
+										if (goalNeeded) {
+											element.removeAttribute("needed");
+											System.out.println(element
+													.getTextContent()
+													+ " now set to 'needed'");
+										}
+									} else {
+										if (!goalNeeded) {
+											element.setAttribute("needed",
+													"false");
+											System.out
+													.println(element
+															.getTextContent()
+															+ " now set to 'not needed'");
+										}
+									}
+								}
+							}
+						}
+					}
+
+					transformer.transform(source, result);
+
+				} catch (final MalformedURLException e) {
+					e.printStackTrace();
+				} catch (final SAXException e) {
+					e.printStackTrace();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
@@ -253,6 +380,7 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 	 * Translates the each lemma of each xml file.
 	 */
 	@Test(timeout = 3000)
+	@Ignore
 	public void testTranslateWithVerit() {
 		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
@@ -288,7 +416,6 @@ public class XMLtoSMTTests extends CommonSolverRunTests {
 		if (PRINT_INFO) {
 			System.out.println("Testing lemma: " + name + ".\n");
 		}
-		name = name + "pp";
 
 		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
 			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),

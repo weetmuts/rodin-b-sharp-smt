@@ -13,6 +13,7 @@ package org.eventb.smt.provers.internal.core;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.translation.Translator.DEBUG;
+import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,7 +27,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughVeriT;
-import org.eventb.smt.translation.Translator;
 
 /**
  * This class represents a call to an SMT solver using the veriT approach. More
@@ -87,9 +87,11 @@ public class SMTVeriTCall extends SMTProverCall {
 			// TODO handle the error
 		} else {
 			if (DEBUG) {
-				System.out
-						.println("Created temporary veriT translation folder '"
-								+ veriTTranslationFolder + "'");
+				if (DEBUG_DETAILS) {
+					System.out
+							.println("Created temporary veriT translation folder '"
+									+ veriTTranslationFolder + "'");
+				}
 			} else {
 				/**
 				 * The deletion will be done when exiting Rodin.
@@ -131,7 +133,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		cmd.add(DISABLE_ACKERMANN);
 		cmd.add(veriTBenchmarkFile.getPath());
 
-		if (DEBUG) {
+		if (DEBUG_DETAILS) {
 			System.out.println("About to launch veriT command:");
 			System.out.print("   ");
 			for (String arg : cmd) {
@@ -149,19 +151,19 @@ public class SMTVeriTCall extends SMTProverCall {
 			final ProcessMonitor monitor = new ProcessMonitor(null, process,
 					this);
 
-			if (DEBUG)
+			if (DEBUG_DETAILS)
 				showProcessOutcome(monitor);
 
 			veriTResult = new String(monitor.output());
 			macrosTranslated = checkVeriTResult();
 
-			if (DEBUG)
+			if (DEBUG_DETAILS)
 				System.out.println("veriT "
 						+ (macrosTranslated ? "succeeded" : "failed:\n"
 								+ veriTResult));
 
 		} finally {
-			if (DEBUG)
+			if (DEBUG_DETAILS)
 				System.out.println("veriT command finished.");
 		}
 	}
@@ -194,8 +196,10 @@ public class SMTVeriTCall extends SMTProverCall {
 		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
 				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
 		if (DEBUG) {
-			System.out.println("Created temporary veriT benchmark file '"
-					+ veriTBenchmarkFile + "'");
+			if (DEBUG_DETAILS) {
+				System.out.println("Created temporary veriT benchmark file '"
+						+ veriTBenchmarkFile + "'");
+			}
 		} else {
 			/**
 			 * The deletion will be done when exiting Rodin.
@@ -243,7 +247,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		/**
 		 * Calls veriT to process the macros of the benchmark
 		 */
-		if (Translator.DEBUG) {
+		if (DEBUG_DETAILS) {
 			System.out.println("Launching " + SMTSolver.VERIT
 					+ " with input:\n");
 			showVeriTBenchmarkFile();

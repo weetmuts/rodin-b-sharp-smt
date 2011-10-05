@@ -191,7 +191,7 @@ public abstract class SMTProverCall extends XProverCall {
 	private void callProver(final List<String> commandLine) throws IOException,
 			IllegalArgumentException {
 
-		if (DEBUG) {
+		if (DEBUG_DETAILS) {
 			System.out.println("About to launch solver command:");
 			System.out.print("   ");
 			for (String arg : commandLine) {
@@ -215,6 +215,8 @@ public abstract class SMTProverCall extends XProverCall {
 			solverResult = new String(monitor.output());
 			if (DEBUG) {
 				printSMTResultFile();
+			}
+			if (DEBUG_DETAILS) {
 				System.out.println("Result file contains:");
 				showSMTResultFile();
 			}
@@ -226,7 +228,7 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 		} finally {
-			if (DEBUG)
+			if (DEBUG_DETAILS)
 				System.out.println("Solver command finished.");
 		}
 	}
@@ -318,10 +320,12 @@ public abstract class SMTProverCall extends XProverCall {
 			if (!smtTranslationFolder.mkdirs()) {
 				// TODO handle the error
 			} else {
-				if (DEBUG_DETAILS) {
-					System.out
-							.println("Created temporary SMT translation folder '"
-									+ smtTranslationFolder + "'");
+				if (DEBUG) {
+					if (DEBUG_DETAILS) {
+						System.out
+								.println("Created temporary SMT translation folder '"
+										+ smtTranslationFolder + "'");
+					}
 				} else {
 					/**
 					 * The deletion will be done when exiting Rodin.
@@ -341,8 +345,10 @@ public abstract class SMTProverCall extends XProverCall {
 					SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
 		}
 		if (DEBUG) {
-			System.out.println("Created temporary SMT benchmark file '"
-					+ smtBenchmarkFile + "'");
+			if (DEBUG_DETAILS) {
+				System.out.println("Created temporary SMT benchmark file '"
+						+ smtBenchmarkFile + "'");
+			}
 		} else {
 			/**
 			 * The deletion will be done when exiting Rodin.
@@ -354,8 +360,10 @@ public abstract class SMTProverCall extends XProverCall {
 			smtResultFile = File.createTempFile(
 					lemmaName + "_" + solver.toString(), RES_FILE_EXTENSION,
 					smtTranslationFolder);
-			System.out.println("Created temporary SMT result file '"
-					+ smtResultFile + "'");
+			if (DEBUG_DETAILS) {
+				System.out.println("Created temporary SMT result file '"
+						+ smtResultFile + "'");
+			}
 
 			// Fill the result file with some random characters that can not be
 			// considered as a success.
