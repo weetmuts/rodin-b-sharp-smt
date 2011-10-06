@@ -395,6 +395,6 @@ public abstract class Translator implements ISimpleVisitor {
 	 */
 	@Override
 	public void visitIntegerLiteral(final IntegerLiteral expression) {
-		smtNode = SMTFactory.makeNumeral(expression.getValue());
+		smtNode = SMTFactory.makeNumeral(expression.getValue(), smtlibVersion);
 	}
 }

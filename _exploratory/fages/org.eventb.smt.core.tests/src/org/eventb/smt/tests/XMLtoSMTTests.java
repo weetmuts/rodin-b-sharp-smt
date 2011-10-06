@@ -91,7 +91,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 		super(solver, smtlibVersion);
 		this.data = data;
 		System.out.println("\n\n----------------------------\n\nLoop: "
-				+ round++ / 2);
+				+ round++);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(

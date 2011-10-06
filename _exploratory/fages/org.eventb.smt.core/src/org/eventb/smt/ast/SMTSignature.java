@@ -75,26 +75,6 @@ public abstract class SMTSignature {
 	// ?
 
 	/**
-	 * Creates and returns a messge describing the exception message. It is used
-	 * when a rank check fails.
-	 * 
-	 * @param actualSymbol
-	 *            the actual symbol
-	 * @param expectedSymbol
-	 *            the expected symbol
-	 * @return the exception message
-	 */
-	private static String makeIncompatibleSymbolExceptionMessage(
-			final SMTSymbol actualSymbol, final SMTSymbol expectedSymbol) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Sorts of the actual symbol: ");
-		sb.append(actualSymbol);
-		sb.append(" does not match the expected symbol:");
-		sb.append(expectedSymbol);
-		return sb.toString();
-	}
-
-	/**
 	 * verify rank of a symbol(function or predicate) , assuming that the symbol
 	 * is associative.
 	 * 
@@ -391,12 +371,9 @@ public abstract class SMTSignature {
 			// Verify if the predicates have the same name
 			if (symbol.getName().equals(predSymbol.getName())) {
 
-				if (!verifyRank(symbol.getArgSorts(), predSymbol.getArgSorts())) {
-					throw new IllegalArgumentException(
-							makeIncompatibleSymbolExceptionMessage(symbol,
-									predSymbol));
+				if (verifyRank(symbol.getArgSorts(), predSymbol.getArgSorts())) {
+					return;
 				}
-				return;
 			}
 		}
 		throw new IllegalArgumentException("Predicate " + symbol
@@ -419,19 +396,13 @@ public abstract class SMTSignature {
 				final SMTSortSymbol[] expectedArgSorts = symbol.getArgSorts();
 				final SMTSortSymbol[] argSorts = functionSymbol.getArgSorts();
 
-				final boolean wellSorted;
 				if (symbol.isAssociative()) {
-					wellSorted = verifyAssociativeRank(expectedArgSorts[0],
-							argSorts);
+					if (verifyAssociativeRank(expectedArgSorts[0], argSorts))
+						return;
 				} else {
-					wellSorted = verifyRank(expectedArgSorts, argSorts);
+					if (verifyRank(expectedArgSorts, argSorts))
+						return;
 				}
-				if (!wellSorted) {
-					throw new IllegalArgumentException(
-							makeIncompatibleSymbolExceptionMessage(
-									functionSymbol, symbol));
-				}
-				return;
 			}
 		}
 		throw new IllegalArgumentException("Function " + functionSymbol
@@ -487,14 +458,12 @@ public abstract class SMTSignature {
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol returnSort,
 			final boolean associative) {
 		final String freshName = freshFunctionName(name);
-		final SMTFunctionSymbol freshSymbol = new SMTFunctionSymbol(
-				freshName, argSorts, returnSort, associative, !PREDEFINED,
-				smtlibVersion);
+		final SMTFunctionSymbol freshSymbol = new SMTFunctionSymbol(freshName,
+				argSorts, returnSort, associative, !PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = funs.add(freshSymbol);
 		if (!successfullyAdded) {
 			throw new IllegalArgumentException(
-					Messages.FreshSymbolCreationFailed
-							+ freshSymbol.toString());
+					Messages.FreshSymbolCreationFailed + freshSymbol.toString());
 		}
 		return freshSymbol;
 	}

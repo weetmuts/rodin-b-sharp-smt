@@ -191,8 +191,9 @@ public abstract class SMTFactory {
 	 *            the value for this numeral
 	 * @return the newly created numeral
 	 */
-	public static SMTNumeral makeNumeral(final BigInteger value) {
-		return new SMTNumeral(value);
+	public static SMTNumeral makeNumeral(final BigInteger value,
+			final SMTLIBVersion smtlibVersion) {
+		return new SMTNumeral(value, smtlibVersion);
 	}
 
 	/**

@@ -13,11 +13,14 @@ package org.eventb.smt.ast;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.math.BigInteger;
 
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.
@@ -27,27 +30,39 @@ public final class SMTNumeral extends SMTTerm {
 	/** The internal value. */
 	private final BigInteger value;
 
+	private final SMTLIBVersion smtlibVersion;
+
 	/**
 	 * Creates a new numeral.
 	 * 
 	 * @param value
 	 *            the value
 	 */
-	SMTNumeral(final BigInteger value) {
+	SMTNumeral(final BigInteger value, final SMTLIBVersion smtlibVersion) {
 		this.value = value;
+		this.smtlibVersion = smtlibVersion;
 	}
 
 	@Override
 	public SMTSortSymbol getSort() {
-		return SMTTheoryV1_2.Ints.getInstance().getIntegerSort();
+		if (smtlibVersion.equals(V1_2)) {
+			return SMTTheoryV1_2.Ints.getInstance().getIntegerSort();
+		} else {
+			return SMTTheoryV2_0.Ints.getInstance().getIntegerSort();
+		}
 	}
 
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			builder.append(SMTTheoryV1_2.Ints.getInstance().getUMinus()
-					.getName());
+			if (smtlibVersion.equals(V1_2)) {
+				builder.append(SMTTheoryV1_2.Ints.getInstance().getUMinus()
+						.getName());
+			} else {
+				builder.append(SMTTheoryV2_0.Ints.getInstance().getUMinus()
+						.getName());
+			}
 			builder.append(SPACE);
 			builder.append(value.abs());
 			builder.append(CPAR);
