@@ -119,7 +119,7 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		 * Predicates and functions of the integer theory
 		 */
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.UMINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED,
+				SMTSymbol.MINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED,
 				V2_0);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,

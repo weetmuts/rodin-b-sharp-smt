@@ -390,11 +390,11 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		/**
 		 * uminus (right child)
 		 */
-		testTranslationV2_0Default("a = −b", "(= a (~ b))");
+		testTranslationV2_0Default("a = −b", "(= a (- b))");
 		/**
 		 * uminus (left child)
 		 */
-		testTranslationV2_0Default("−a = b", "(= (~ a) b)");
+		testTranslationV2_0Default("−a = b", "(= (- a) b)");
 	}
 
 	/**
