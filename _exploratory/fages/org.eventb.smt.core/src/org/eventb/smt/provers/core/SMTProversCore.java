@@ -146,6 +146,12 @@ public class SMTProversCore extends Plugin {
 		return SMTFailureTactic.getProofTreeOriginError();
 	}
 
+	public static ITactic externalSMTThroughPP(boolean restricted, long timeout) {
+		return BasicTactics.reasonerTac( //
+				new ExternalSMTThroughPP(), //
+				new SMTInput(restricted, timeout));
+	}
+
 	/**
 	 * <p>
 	 * Returns a tactic for applying the SMT prover to a proof tree node
@@ -164,9 +170,14 @@ public class SMTProversCore extends Plugin {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughPP(final boolean restricted) {
-		return BasicTactics.reasonerTac( //
-				new ExternalSMTThroughPP(), //
-				new SMTInput(restricted, DEFAULT_DELAY));
+		return externalSMTThroughPP(restricted, DEFAULT_DELAY);
+	}
+
+	public static ITactic externalSMTThroughVeriT(boolean restricted,
+			long timeout) {
+		return BasicTactics.reasonerTac(//
+				new ExternalSMTThroughVeriT(), //
+				new SMTInput(restricted, timeout));
 	}
 
 	/**
@@ -187,9 +198,7 @@ public class SMTProversCore extends Plugin {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
-		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughVeriT(), //
-				new SMTInput(restricted, DEFAULT_DELAY));
+		return externalSMTThroughVeriT(restricted, DEFAULT_DELAY);
 	}
 
 	/**

@@ -53,11 +53,10 @@ public class AutoTactics {
 
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
-			// FIXME take timeout into account
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughPP(restricted);
+			return SMTProversCore.externalSMTThroughPP(restricted, timeout);
 		}
 
 	}
@@ -74,11 +73,10 @@ public class AutoTactics {
 
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
-			// FIXME take timeout into account
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 
-			return SMTProversCore.externalSMTThroughVeriT(restricted);
+			return SMTProversCore.externalSMTThroughVeriT(restricted, timeout);
 		}
 
 	}
