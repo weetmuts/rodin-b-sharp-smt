@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
@@ -160,7 +161,7 @@ public class SMTPPCall extends SMTProverCall {
 
 	@Override
 	void extractUnsatCoreFromVeriTProof() {
-		neededHypotheses = new HashSet<Predicate>();
+		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
 		String separator = "";
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
@@ -175,7 +176,7 @@ public class SMTPPCall extends SMTProverCall {
 				}
 				final ITrackedPredicate trPredicate = labelMap.get(label);
 				if (trPredicate.isHypothesis()) {
-					neededHypotheses.add(trPredicate.getOriginal());
+					foundNeededHypotheses.add(trPredicate.getOriginal());
 				} else {
 					goalNeeded = true;
 				}
@@ -183,6 +184,9 @@ public class SMTPPCall extends SMTProverCall {
 		}
 		if (DEBUG) {
 			System.out.println(").");
+		}
+		if (!foundNeededHypotheses.isEmpty()) {
+			neededHypotheses = foundNeededHypotheses;
 		}
 	}
 }

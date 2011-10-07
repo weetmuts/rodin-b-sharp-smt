@@ -63,7 +63,7 @@ public abstract class SMTProverCall extends XProverCall {
 
 	volatile Set<Predicate> neededHypotheses = null;
 
-	volatile boolean goalNeeded;
+	volatile boolean goalNeeded = true;
 
 	volatile SMTBenchmark benchmark;
 
