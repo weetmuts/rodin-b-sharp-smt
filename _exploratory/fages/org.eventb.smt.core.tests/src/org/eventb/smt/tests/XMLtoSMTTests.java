@@ -421,7 +421,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			name = data.getOrigin();
 		}
 		if (PRINT_INFO) {
-			System.out.println("Testing lemma: " + name + ".\n");
+			System.out.println("Testing lemma: " + name
+					+ data.getTheories().toString() + ".\n");
 		}
 
 		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
