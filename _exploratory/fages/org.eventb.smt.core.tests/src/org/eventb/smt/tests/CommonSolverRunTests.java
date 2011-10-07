@@ -267,8 +267,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			assertEquals(callMessage
-					+ " The result of the SMT prover wasn't the expected one.",
+			assertEquals(
+					callMessage
+							+ " ("
+							+ lemmaName
+							+ ") The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
 
 			final boolean extractedContainsExpected = smtProverCall
@@ -281,7 +284,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				if (!expectedContainsExtracted) {
 					assertTrue(
 							callMessage
-									+ " The expected unsat-core is smaller than the veriT one.",
+									+ " ("
+									+ lemmaName
+									+ ") The expected unsat-core is smaller than the veriT one.",
 							true);
 				}
 			} else if (expectedContainsExtracted) {
@@ -295,16 +300,20 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				 */
 				assertTrue(
 						callMessage
-								+ " VeriT unsat-core is smaller than the expected one.",
+								+ " ("
+								+ lemmaName
+								+ ") VeriT unsat-core is smaller than the expected one.",
 						false);
 			} else {
 				assertTrue(
 						callMessage
-								+ " VeriT unsat-core and the expected one are different and mutualy not included.",
+								+ " ("
+								+ lemmaName
+								+ ") VeriT unsat-core and the expected one are different and mutualy not included.",
 						true);
 			}
-			assertEquals(callMessage
-					+ " The extracted goal need wasn't the expected one.",
+			assertEquals(callMessage + " (" + lemmaName
+					+ ") The extracted goal need wasn't the expected one.",
 					expectedGoalNeed, smtProverCall.isGoalNeeded());
 		} catch (final IllegalArgumentException iae) {
 			fail(iae.getMessage());
