@@ -78,7 +78,7 @@
 	<target name="copySources">
 		<!-- Copy feature and plug-in sources -->
 		<mkdir dir="${buildDirectory}/features" />
-		<copy todir="${buildDirectory}/features/org.eventb.smt">
+		<copy todir="${buildDirectory}/features/org.eventb.smt.core">
 			<fileset dir="${builder}/../../org.eventb.smt-feature" />
 		</copy>
 
