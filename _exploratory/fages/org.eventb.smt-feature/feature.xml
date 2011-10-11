@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eventb.smt.core"
+      id="org.eventb.smt"
       label="%featureName"
       version="0.1.0.qualifier"
       provider-name="%providerName"
-      plugin="org.eventb.smt.core">
+      plugin="org.eventb.smt">
 
    <description>
       %description
@@ -14,17 +14,24 @@
       %copyright
    </copyright>
 
-   <license>
+   <license url="%licenseURL">
       %license
    </license>
 
+   <url>
+      <discovery label="%updateSiteName" url="http://rodin-b-sharp.sourceforge.net/updates"/>
+   </url>
+
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eventb.core.seqprover"/>
-      <import plugin="org.eventb.pptrans"/>
-      <import plugin="org.eventb.pp"/>
-      <import plugin="org.eventb.ui"/>
+      <import feature="org.eventb.ide"/>
    </requires>
+
+   <plugin
+         id="org.eventb.smt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eventb.smt.core"
