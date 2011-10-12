@@ -274,12 +274,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 							+ ") The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
 
-			final boolean extractedContainsExpected = smtProverCall
-					.neededHypotheses() != null
-					&& smtProverCall.neededHypotheses().containsAll(
-							expectedUnsatCore);
-			final boolean expectedContainsExtracted = expectedUnsatCore
-					.containsAll(smtProverCall.neededHypotheses());
+			final Set<Predicate> neededHypotheses = smtProverCall
+					.neededHypotheses();
+			final boolean extractedContainsExpected = neededHypotheses == null
+					|| (expectedUnsatCore != null && neededHypotheses
+							.containsAll(expectedUnsatCore));
+			final boolean expectedContainsExtracted = expectedUnsatCore == null
+					|| (neededHypotheses != null && expectedUnsatCore
+							.containsAll(neededHypotheses));
 			if (extractedContainsExpected) {
 				if (!expectedContainsExtracted) {
 					assertTrue(
@@ -502,8 +504,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * it is right
 		 */
 		System.out.println("Iter 3");
-		final List<Predicate> neededHypotheses = new ArrayList<Predicate>(
-				smtProverCall.neededHypotheses());
+		final Set<Predicate> neededHypothesesSet = smtProverCall
+				.neededHypotheses();
+		final List<Predicate> neededHypotheses;
+		if (neededHypothesesSet != null) {
+			neededHypotheses = new ArrayList<Predicate>(neededHypothesesSet);
+		} else {
+			neededHypotheses = new ArrayList<Predicate>();
+		}
 		final Predicate goalVeriT = (smtProverCall.isGoalNeeded() ? parsedGoal
 				: parse("⊥", te));
 		successfulProverCall("Iter 3", translationApproach, lemmaName,
