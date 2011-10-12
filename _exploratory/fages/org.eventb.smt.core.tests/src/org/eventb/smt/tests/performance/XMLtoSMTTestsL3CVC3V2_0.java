@@ -12,25 +12,25 @@ package org.eventb.smt.tests.performance;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
-import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class XMLtoSMTTestsCVC3V2_0 extends XMLtoSMTTests {
-	public XMLtoSMTTestsCVC3V2_0(final LemmaData data) {
+public class XMLtoSMTTestsL3CVC3V2_0 extends XMLtoSMTTests {
+	public XMLtoSMTTestsL3CVC3V2_0(final LemmaData data) {
 		super(data, CVC3, V2_0);
 	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
-		return getDocumentDatas(Arrays.asList(TheoryLevel.values()));
+		return getDocumentDatas(Arrays.asList(L3));
 	}
 }
