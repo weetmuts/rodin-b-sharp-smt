@@ -425,7 +425,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 					+ data.getTheories().toString() + ".\n");
 		}
 
-		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+		if (solverConfig.getSmtlibVersion().equals(V2_0)
+				&& solverConfig.getSolver().equals(VERIT)) {
 			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
 					data.getTe(), VALID, data.getNeededHypotheses(),
 					data.isGoalNeeded());
