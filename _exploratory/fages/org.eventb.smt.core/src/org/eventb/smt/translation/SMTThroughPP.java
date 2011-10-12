@@ -892,70 +892,6 @@ public class SMTThroughPP extends Translator {
 	}
 
 	/**
-	 * Generates the SMT-LIB formula for the extensionality axiom event-B
-	 * formula:
-	 * <code>∀ A ⦂ ℙ(S), B ⦂ ℙ(S) · ((∀c ⦂ S · (c ∈ A ⇔ c ∈ B)) ⇒ (A = B))</code>
-	 * 
-	 * @return the SMTFormula representing the translated axiom
-	 */
-	private SMTFormula generateExtensionalityAxiom(
-			final SMTPredicateSymbol membershipPredSymbol) {
-		final SMTSortSymbol[] membershipArgSorts = membershipPredSymbol
-				.getArgSorts();
-		final int leftMembersNumber = membershipArgSorts.length - 1;
-		final SMTSortSymbol setSort = membershipArgSorts[leftMembersNumber];
-		// creates the quantified set variables with fresh names
-		final String setA = signature.freshSymbolName("A");
-		final String setB = signature.freshSymbolName("B");
-		final SMTTerm termA = SMTFactory.makeVar(setA, setSort, smtlibVersion);
-		final SMTTerm termB = SMTFactory.makeVar(setB, setSort, smtlibVersion);
-
-		// creates the quantified element variables with fresh names
-		final SMTTerm[] eltTerms = new SMTTerm[leftMembersNumber];
-		final SMTTerm[] setAmembershipArgs = new SMTTerm[membershipArgSorts.length];
-		final SMTTerm[] setBmembershipArgs = new SMTTerm[membershipArgSorts.length];
-		for (int i = 0; i < leftMembersNumber; i++) {
-			final String xVar = signature.freshSymbolName("x");
-			final SMTTerm xTerm = SMTFactory.makeVar(xVar,
-					membershipArgSorts[i], smtlibVersion);
-			eltTerms[i] = xTerm;
-			setAmembershipArgs[i] = xTerm;
-			setBmembershipArgs[i] = xTerm;
-		}
-		setAmembershipArgs[leftMembersNumber] = termA;
-		setBmembershipArgs[leftMembersNumber] = termB;
-
-		// creates the membership formulas
-		final SMTFormula setAmembershipFormula = SMTFactory.makeAtom(
-				membershipPredSymbol, setAmembershipArgs, signature);
-		final SMTFormula setBmembershipFormula = SMTFactory.makeAtom(
-				membershipPredSymbol, setBmembershipArgs, signature);
-
-		// creates the formula <code>c ∈ A ⇔ c ∈ B</code>
-		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
-				setAmembershipFormula, setBmembershipFormula }, smtlibVersion);
-
-		// creates the quantified formula
-		final SMTFormula forall = SMTFactory.makeForAll(eltTerms, equivalence,
-				smtlibVersion);
-
-		// creates the equality <code>A = B</code>
-		final SMTFormula equality = SMTFactory.makeEqual(new SMTTerm[] { termA,
-				termB }, V1_2);
-
-		// creates the implication
-		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
-				forall, equality }, smtlibVersion);
-
-		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { termA,
-				termB }, implies, smtlibVersion);
-
-		axiom.setComment("Extensionality axiom");
-		return axiom;
-	}
-
-	/**
 	 * Generates the SMT-LIB formula for the singleton part of elementary sets
 	 * axiom event-B formula:
 	 * <code>∀ x ⦂ ℤ · (∃ X ⦂ ℙ(ℤ) · (x ∈ X ∧ (∀ y ⦂ ℤ · (y ∈ X ⇒ x = y))))</code>
@@ -1226,9 +1162,6 @@ public class SMTThroughPP extends Translator {
 		int i = 0;
 		for (final Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap
 				.entrySet()) {
-			translatedAssumptions.add(i,
-					generateExtensionalityAxiom(entry.getValue()));
-			i++;
 			translatedAssumptions.add(i,
 					generateSingletonAxiom(entry.getValue()));
 			i++;

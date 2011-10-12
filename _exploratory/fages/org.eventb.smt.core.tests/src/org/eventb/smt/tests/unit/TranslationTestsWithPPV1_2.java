@@ -625,9 +625,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = Arrays
 				.asList("(forall (?x Int) (MS ?x INTS))", //
-						"(forall (?A PZ) (?B PZ) (implies (forall (?x0 Int) (iff (MS ?x0 ?A) (MS ?x0 ?B))) (= ?A ?B)))", //
-						"(forall (?x1 Int) (exists (?X PZ) (and (MS ?x1 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x1))))))");
-
+						"(forall (?x0 Int) (exists (?X PZ) (and (MS ?x0 ?X) (forall (?y Int) (implies (MS ?y ?X) (= ?y ?x0))))))");
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
 
@@ -649,8 +647,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 				.asList("(forall (?x BOOL) (MS ?x BOOLS))", //
 						"(forall (?x0 BOOL) (?y BOOL) (iff (iff (TRUE ?x0) (TRUE ?y)) (= ?x0 ?y)))", //
 						"(exists (?x1 BOOL) (?y0 BOOL) (and (TRUE ?x1) (not (TRUE ?y0))))", //
-						"(forall (?A PB) (?B PB) (implies (forall (?x2 BOOL) (iff (MS ?x2 ?A) (MS ?x2 ?B))) (= ?A ?B)))", //
-						"(forall (?x3 BOOL) (exists (?X PB) (and (MS ?x3 ?X) (forall (?y1 BOOL) (implies (MS ?y1 ?X) (= ?y1 ?x3))))))");
+						"(forall (?x2 BOOL) (exists (?X PB) (and (MS ?x2 ?X) (forall (?y1 BOOL) (implies (MS ?y1 ?X) (= ?y1 ?x2))))))");
 		testContainsAssumptionsPP(te, "a↦BOOL↦a ∈ Y", expectedAssumptions);
 	}
 

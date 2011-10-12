@@ -558,8 +558,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = Arrays
 				.asList("(forall ((x Int)) (MS x INTS))", //
-						"(forall ((A PZ) (B PZ)) (=> (forall ((x0 Int)) (= (MS x0 A) (MS x0 B))) (= A B)))", //
-						"(forall ((x1 Int)) (exists ((X PZ)) (and (MS x1 X) (forall ((y Int)) (=> (MS y X) (= y x1))))))");
+						"(forall ((x0 Int)) (exists ((X PZ)) (and (MS x0 X) (forall ((y Int)) (=> (MS y X) (= y x0))))))");
 
 		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
 	}
