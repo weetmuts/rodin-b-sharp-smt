@@ -40,6 +40,7 @@ import org.eventb.smt.translation.SMTTranslationApproach;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
+	public static final boolean GET_UNSAT_CORE = true;
 	public static final String DEFAULT_TEST_TRANSLATION_PATH = System
 			.getProperty("user.home")
 			+ File.separatorChar
@@ -102,11 +103,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	public CommonSolverRunTests(final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion) {
-		solverConfig = new SMTSolverConfiguration("test-config", solver, "",
+			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
+		solverConfig = new SMTSolverConfiguration(solver.name(), solver, "",
 				"", smtlibVersion);
 		if (solver != null) {
-			setPreferencesForSolverTest(solver);
+			if (getUnsatCore && solver.equals(SMTSolver.VERIT)) {
+				setPreferencesForVeriTProofTest();
+			} else {
+				setPreferencesForSolverTest(solver);
+			}
 		}
 		this.translationPath = DEFAULT_TEST_TRANSLATION_PATH;
 	}
@@ -284,12 +289,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 							.containsAll(neededHypotheses));
 			if (extractedContainsExpected) {
 				if (!expectedContainsExtracted) {
-					assertTrue(
-							callMessage
-									+ " ("
-									+ lemmaName
-									+ ") The expected unsat-core is smaller than the veriT one.",
-							true);
+					assertTrue(callMessage + " (" + lemmaName
+							+ ") The expected unsat-core is smaller than the "
+							+ solverConfig.getId() + " one.", true);
 				}
 			} else if (expectedContainsExtracted) {
 				// FIXME : this should be called only if the veriT unsat-core is
@@ -304,14 +306,18 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 						callMessage
 								+ " ("
 								+ lemmaName
-								+ ") VeriT unsat-core is smaller than the expected one.",
+								+ ") "
+								+ solverConfig.getId()
+								+ " unsat-core is smaller than the expected one.",
 						false);
 			} else {
 				assertTrue(
 						callMessage
 								+ " ("
 								+ lemmaName
-								+ ") VeriT unsat-core and the expected one are different and mutualy not included.",
+								+ ") "
+								+ solverConfig.getId()
+								+ " unsat-core and the expected one are different and mutualy not included.",
 						true);
 			}
 			assertEquals(callMessage + " (" + lemmaName
@@ -392,8 +398,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			binaryName.append(separator);
 			binaryName.append("bin");
 			binaryName.append(separator);
+			Z3.toString(binaryName);
+		} else {
+			binaryName.append("z3-3.2");
 		}
-		Z3.toString(binaryName);
 
 		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
@@ -512,10 +520,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		} else {
 			neededHypotheses = new ArrayList<Predicate>();
 		}
-		final Predicate goalVeriT = (smtProverCall.isGoalNeeded() ? parsedGoal
+		final Predicate goalSolver = (smtProverCall.isGoalNeeded() ? parsedGoal
 				: parse("⊥", te));
 		successfulProverCall("Iter 3", translationApproach, lemmaName,
-				neededHypotheses, goalVeriT, te, expectedSolverResult,
+				neededHypotheses, goalSolver, te, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed);
 		System.out.println();
 
@@ -524,16 +532,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * check if it is right
 		 */
 		System.out.println("unsat-core checking");
-		setPreferencesForZ3Test();
-		successfulProverCall("z3 unsat-core checking", translationApproach,
-				lemmaName, neededHypotheses, goalVeriT, expectedSolverResult);
-		setPreferencesForCvc3Test();
-		successfulProverCall("cvc3 unsat-core checking", translationApproach,
-				lemmaName, neededHypotheses, goalVeriT, expectedSolverResult);
-		setPreferencesForAltErgoTest();
-		successfulProverCall("alt-ergo unsat-core checking",
-				translationApproach, lemmaName, neededHypotheses, goalVeriT,
-				expectedSolverResult);
+		final SMTSolver solver = solverConfig.getSolver();
+		if (!solver.equals(Z3)) {
+			setPreferencesForZ3Test();
+			successfulProverCall("z3 unsat-core checking", translationApproach,
+					lemmaName, neededHypotheses, goalSolver,
+					expectedSolverResult);
+		}
+		if (!solver.equals(CVC3)) {
+			setPreferencesForCvc3Test();
+			successfulProverCall("cvc3 unsat-core checking",
+					translationApproach, lemmaName, neededHypotheses,
+					goalSolver, expectedSolverResult);
+		}
+		if (!solver.equals(ALT_ERGO)) {
+			setPreferencesForAltErgoTest();
+			successfulProverCall("alt-ergo unsat-core checking",
+					translationApproach, lemmaName, neededHypotheses,
+					goalSolver, expectedSolverResult);
+		}
+		if (!solver.equals(VERIT)) {
+			setPreferencesForVeriTTest();
+			successfulProverCall("veriT unsat-core checking",
+					translationApproach, lemmaName, neededHypotheses,
+					goalSolver, expectedSolverResult);
+		}
 		System.out.println();
 	}
 

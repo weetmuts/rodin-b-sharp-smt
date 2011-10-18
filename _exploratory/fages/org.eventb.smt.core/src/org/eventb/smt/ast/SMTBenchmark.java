@@ -15,6 +15,9 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
+import static org.eventb.smt.ast.commands.SMTGetUnsatCoreCommand.getGetUnsatCoreCommand;
+import static org.eventb.smt.ast.commands.SMTSetOptionCommand.setTrue;
+import static org.eventb.smt.ast.commands.SMTSetOptionCommand.SMTOptionName.PRODUCE_UNSAT_CORE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
@@ -35,6 +38,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
  */
 public class SMTBenchmark {
 	public static final boolean PRINT_ANNOTATIONS = true;
+	public static final boolean PRINT_GET_UNSAT_CORE_COMMANDS = true;
 	protected final String name;
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
@@ -137,8 +141,6 @@ public class SMTBenchmark {
 
 	protected void benchmarkContent(final StringBuilder builder,
 			final boolean printAnnotations) {
-		appendComments(builder);
-		builder.append("\n");
 		signature.toString(builder);
 		builder.append("\n");
 		assumptionsSection(builder, printAnnotations);
@@ -206,7 +208,8 @@ public class SMTBenchmark {
 	 *            the printwriter that will receive the string representation of
 	 *            the benchmark
 	 */
-	public void print(final PrintWriter pw, final boolean printAnnotations) {
+	public void print(final PrintWriter pw, final boolean printAnnotations,
+			final boolean printGetUnsatCoreCommands) {
 		final StringBuilder builder = new StringBuilder();
 		if (signature.getSMTLIBVersion().equals(V1_2)) {
 			smtCmdOpening(builder, BENCHMARK, name);
@@ -216,8 +219,19 @@ public class SMTBenchmark {
 			/**
 			 * signature.getSMTLIBVersion().equals(V2_0)
 			 */
+			appendComments(builder);
+			builder.append("\n");
+			if (printGetUnsatCoreCommands) {
+				setTrue(PRODUCE_UNSAT_CORE).toString(builder);
+				builder.append("\n");
+			}
 			benchmarkContent(builder, printAnnotations);
 			getCheckSatCommand().toString(builder);
+			builder.append("\n");
+			if (printGetUnsatCoreCommands) {
+				getGetUnsatCoreCommand().toString(builder);
+				builder.append("\n");
+			}
 		}
 		pw.println(builder.toString());
 	}

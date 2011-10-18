@@ -10,8 +10,6 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 
 import java.util.ArrayList;
@@ -19,7 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.provers.internal.core.SMTSolver;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -30,8 +30,9 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public UnsatCoreExtractionPerfWithPP() {
-		super(VERIT, V2_0);
+	public UnsatCoreExtractionPerfWithPP(final SMTSolver solver,
+			final SMTLIBVersion smtlibVersion) {
+		super(solver, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
@@ -52,8 +53,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBug2105507Thm1UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -64,8 +63,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBug2105507Thm2UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList(//
@@ -80,8 +77,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBug2105507Thm3UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList(//
@@ -96,8 +91,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBug2105507Thm4UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -108,8 +101,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testSetsEqualityUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"p", "ℙ(ℤ)", "q", "ℙ(ℤ)", "n", "ℤ", "m", "ℤ");
 
@@ -134,10 +125,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testBoolsSetEqualityUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(BOOL)", "non", "BOOL ↔ BOOL");
 
@@ -159,10 +147,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testDFPSBoolUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -178,8 +163,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimpleUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -195,8 +178,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimpleMonadicUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList(//
@@ -212,8 +193,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple00UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -228,8 +207,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple01UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -244,8 +221,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple11UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -260,8 +235,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple12UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -276,8 +249,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple32UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -292,8 +263,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple30UnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -308,8 +277,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple1yUnsatCore() {
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("differentForallPlusSimple1yUnsatCore", hyps,
@@ -322,9 +289,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimple3yUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("differentForallPlusSimple3yUnsatCore", hyps,
@@ -337,9 +301,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimplex1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("differentForallPlusSimplex1UnsatCore", hyps,
@@ -352,9 +313,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimplex2UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("differentForallPlusSimplex2UnsatCore", hyps,
@@ -367,9 +325,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallPlusSimplexyUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("differentForallPlusSimplexyUnsatCore", hyps,
@@ -381,9 +336,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("sets1UnsatCore", hyps, "{x} ∈ {{x}, {y}}", arith_te, VALID,
@@ -395,9 +347,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets2UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("sets2UnsatCore", hyps, "{{x},{y}} ∈ {{{x}, {y}}, {{x}}}",
@@ -409,9 +358,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets3UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("sets3UnsatCore", hyps, "{{x} ↦ y} ∈ {{x}} → {y}", arith_te,
@@ -424,9 +370,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testSets4UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("sets4UnsatCore", hyps, "∀ x · (x ∈ ℤ → ℙ(ℤ) ⇒ (∃ y · y ≠ x))",
@@ -438,9 +381,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testSets5UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ ↔ ℙ(ℤ)");
 		te.addAll(arith_te);
 
@@ -456,9 +396,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testSets6UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList();
 
 		doTest("sets6UnsatCore", hyps,
@@ -472,9 +409,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testSets7UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 
@@ -485,9 +419,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testSolverCallBelong1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		doTest("belong_1UnsatCore", hyps, "g ∈ f", pow_te, NOT_VALID, hyps,
@@ -497,9 +428,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testRule20MacroInsideMacroUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 		doTest("rule20_macro_inside_macroUnsatCore", hyps,
@@ -511,9 +439,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testRule20ManyForallsUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
 
@@ -528,9 +453,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSolverCallSimpleUUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
 		final List<String> hyps = Arrays.asList("a ∈ A"); // This is translated
@@ -547,9 +469,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSolverCallBelong3UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment( //
 				"a", "S", "b", "T", "d", "U", "A", "ℙ(S)", //
 				"r", "S ↔ T", "s", "(S × T) ↔ U");
@@ -565,9 +484,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testSolverCallUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
 				"y < z");
@@ -582,9 +498,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testCh8CircArbiter1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"a1", "ℤ", "r1", "ℤ");
 
@@ -605,9 +518,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testQuickSort1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"k", "ℤ", "n", "ℤ", "x", "ℤ");
 
@@ -634,9 +544,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBoschSwitch1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
 
@@ -661,9 +568,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBepiColombo1UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
 
@@ -686,9 +590,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("Implementation canceled")
 	public void testCh915Bin10UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
 
@@ -706,9 +607,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testCh7LikeEvenSimplerUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
@@ -725,9 +623,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testCh7LikeMoreSimpleYetUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
@@ -743,9 +638,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDifferentForallUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
@@ -763,9 +655,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testCh7Conc29UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
 
@@ -778,9 +667,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBepiColombo3MiniUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -794,9 +680,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBepiColombo3MediumUnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -811,9 +694,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	@Test(timeout = 3000)
 	public void testBepiColombo3Medium2UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -839,9 +719,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testBepiColombo3UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
 
@@ -857,9 +734,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testDynamicStableLSR_081014_15UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "h", "ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
 
@@ -877,9 +751,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	@Test(timeout = 3000)
 	@Ignore("unknown")
 	public void testch910_ring_6UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"P", "ℙ(ℤ)", "itv", "ℙ(ℤ × ℙ(ℤ × ℙ(ℤ)))", "f", "ℤ");
 
@@ -889,11 +760,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("error : bquant_clean: quantified Boolean variable, unsupported")
 	public void testLinearSort29UnsatCore() {
-
-		setPreferencesForVeriTProofTest();
-
 		final ITypeEnvironment te = mTypeEnvironment( //
 				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //
 				"m", "ℤ", "x", "ℤ", "j", "ℤ");

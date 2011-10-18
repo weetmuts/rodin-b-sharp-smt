@@ -41,7 +41,8 @@ public abstract class SMTCommand {
 		POP("pop"), //
 		PUSH("push"), //
 		SET_LOGIC("set-logic"), //
-		SET_INFO("set-info"), SET_OPTION("set-option");
+		SET_INFO("set-info"), //
+		SET_OPTION("set-option");
 
 		private String name;
 

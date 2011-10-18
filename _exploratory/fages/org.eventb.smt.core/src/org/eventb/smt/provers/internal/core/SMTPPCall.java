@@ -11,9 +11,11 @@
 package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
@@ -107,7 +109,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);
+		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
+				!PRINT_GET_UNSAT_CORE_COMMANDS);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
@@ -148,10 +151,15 @@ public class SMTPPCall extends SMTProverCall {
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
 		final SMTSolver solver = solverConfig.getSolver();
-		if (solver.equals(ALT_ERGO) || solver.equals(VERIT)) {
-			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS);
+		if (solver.equals(Z3)) { // FIXME Add Z3 version checking
+			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
+					PRINT_GET_UNSAT_CORE_COMMANDS);
+		} else if (solver.equals(ALT_ERGO) || solver.equals(VERIT)) {
+			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
+					!PRINT_GET_UNSAT_CORE_COMMANDS);
 		} else {
-			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS);
+			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
+					!PRINT_GET_UNSAT_CORE_COMMANDS);
 		}
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
@@ -160,7 +168,29 @@ public class SMTPPCall extends SMTProverCall {
 	}
 
 	@Override
-	void extractUnsatCoreFromVeriTProof() {
+	protected void extractUnsatCore() { // FIXME use regex see checkResult
+		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
+		goalNeeded = false;
+		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
+		for (final String label : labelMap.keySet()) {
+			if (solverResult.contains(label)) {
+				final ITrackedPredicate trPredicate = labelMap.get(label);
+				if (trPredicate.isHypothesis()) {
+					foundNeededHypotheses.add(trPredicate.getOriginal());
+				} else {
+					goalNeeded = true;
+				}
+			}
+		}
+		if (!foundNeededHypotheses.isEmpty()) {
+			neededHypotheses = foundNeededHypotheses;
+		}
+	}
+
+	@Override
+	protected void extractUnsatCoreFromVeriTProof() { // FIXME use
+														// extractUnsatCore
+														// instead
 		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
 		String separator = "";

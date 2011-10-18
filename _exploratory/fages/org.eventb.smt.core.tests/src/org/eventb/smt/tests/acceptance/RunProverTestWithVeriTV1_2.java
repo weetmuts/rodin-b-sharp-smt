@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
+import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
 
@@ -34,7 +35,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public RunProverTestWithVeriTV1_2() {
-		super(null, V1_2);
+		super(UNKNOWN, V1_2, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

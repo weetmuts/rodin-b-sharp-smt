@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
+import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 
@@ -34,7 +35,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public RunProverTestWithPPV2_0() {
-		super(null, V2_0);
+		super(UNKNOWN, V2_0, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

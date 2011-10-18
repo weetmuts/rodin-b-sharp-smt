@@ -32,7 +32,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public SolverPerfWithPP(SMTSolver solver, SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion);
+		super(solver, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

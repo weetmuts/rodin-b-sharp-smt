@@ -88,7 +88,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion);
+		super(solver, smtlibVersion, GET_UNSAT_CORE);
 		this.data = data;
 		System.out.println("\n\n----------------------------\n\nLoop: "
 				+ round++);
@@ -412,10 +412,6 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithPP() {
-		if (solverConfig.getSmtlibVersion().equals(V2_0)
-				&& solverConfig.getSolver().equals(VERIT)) {
-			setPreferencesForVeriTProofTest();
-		}
 		String name = data.getLemmaName();
 		if (name.isEmpty()) {
 			name = data.getOrigin();
