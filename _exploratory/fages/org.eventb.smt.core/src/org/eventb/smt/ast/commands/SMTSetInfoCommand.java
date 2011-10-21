@@ -11,33 +11,38 @@ package org.eventb.smt.ast.commands;
 
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
-import static org.eventb.smt.ast.commands.SMTCommand.SMTCommandName.SET_OPTION;
 
-import org.eventb.smt.ast.attributes.SMTOption;
-import org.eventb.smt.ast.attributes.SMTOption.SMTOptionKeyword;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eventb.smt.ast.attributes.SMTAttribute;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTSetOptionCommand extends SMTCommand {
-	private final SMTOption option;
+public class SMTSetInfoCommand extends SMTCommand {
+	private final SMTAttribute<String> attribute;
 
-	public SMTSetOptionCommand(final SMTOptionKeyword keyword,
-			final boolean value) {
-		super(SET_OPTION);
-		this.option = new SMTOption(keyword, value);
+	private final static String STATUS = "status";
+	private final static String UNSAT = "unsat";
+	private final static SMTSetInfoCommand STATUS_UNSAT = new SMTSetInfoCommand(
+			STATUS, Arrays.asList(UNSAT));
+
+	public SMTSetInfoCommand(final String keyword, final List<String> values) {
+		super(SMTCommand.SMTCommandName.SET_INFO);
+		attribute = new SMTAttribute<String>(keyword, values);
 	}
 
-	public static SMTSetOptionCommand setTrue(final SMTOptionKeyword option) {
-		return new SMTSetOptionCommand(option, true);
+	public static SMTSetInfoCommand setStatusUnsat() {
+		return STATUS_UNSAT;
 	}
 
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		builder.append(option);
+		builder.append(attribute);
 		builder.append(CPAR);
 	}
 }

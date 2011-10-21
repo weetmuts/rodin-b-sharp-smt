@@ -9,21 +9,21 @@
  *******************************************************************************/
 package org.eventb.smt.ast.attributes;
 
-import java.util.List;
+import static org.eventb.smt.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.ast.symbols.SMTSymbol;
+import java.util.List;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public abstract class SMTAttribute {
+public class SMTAttribute<T> {
 	private static final String KEYWORD_SPECIAL_CHARACTER = ":";
 
 	private final String keyword;
-	final List<SMTSymbol> values;
+	final List<T> values;
 
-	public SMTAttribute(final String keyword, final List<SMTSymbol> values) {
+	public SMTAttribute(final String keyword, final List<T> values) {
 		this.keyword = keyword;
 		this.values = values;
 	}
@@ -32,9 +32,20 @@ public abstract class SMTAttribute {
 		builder.append(KEYWORD_SPECIAL_CHARACTER).append(keyword);
 	}
 
-	public abstract void printValues(final StringBuilder builder);
+	public void printValues(final StringBuilder builder) {
+		String separator = "";
+		for (final T value : values) {
+			builder.append(separator);
+			builder.append(value);
+			separator = SPACE;
+		}
+	}
 
-	public abstract void toString(final StringBuilder builder);
+	public void toString(StringBuilder builder) {
+		printKeyword(builder);
+		builder.append(SPACE);
+		printValues(builder);
+	}
 
 	@Override
 	public String toString() {

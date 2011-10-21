@@ -9,9 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.ast.attributes;
 
-import static org.eventb.smt.ast.SMTFactory.SPACE;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
@@ -19,15 +17,14 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
  * @author Systerel (yguyot)
  * 
  */
-public class SMTLabel extends SMTAttribute {
+public class SMTLabel extends SMTAttribute<SMTSymbol> {
 	public static final boolean GOAL_LABEL = true;
 	public static final String LABEL_KEYWORD = "named";
 	public static final String DEFAULT_HYPOTHESIS_LABEL = "hyp";
 	public static final String DEFAULT_GOAL_LABEL = "goal";
 
 	public SMTLabel(final SMTSymbol name) {
-		super(LABEL_KEYWORD, new ArrayList<SMTSymbol>(1));
-		this.values.add(name);
+		super(LABEL_KEYWORD, Arrays.asList(name));
 	}
 
 	public String getName() {
@@ -37,12 +34,5 @@ public class SMTLabel extends SMTAttribute {
 	@Override
 	public void printValues(StringBuilder builder) {
 		builder.append(values.get(0).getName());
-	}
-
-	@Override
-	public void toString(StringBuilder builder) {
-		printKeyword(builder);
-		builder.append(SPACE);
-		printValues(builder);
 	}
 }
