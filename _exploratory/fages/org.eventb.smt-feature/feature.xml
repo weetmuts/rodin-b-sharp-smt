@@ -23,7 +23,11 @@
    </url>
 
    <requires>
-      <import feature="org.eventb.ide"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eventb.core.seqprover"/>
+      <import plugin="org.eventb.pptrans"/>
+      <import plugin="org.eventb.pp"/>
+      <import plugin="org.eventb.ui"/>
    </requires>
 
    <plugin

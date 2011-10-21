@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eventb.smt.ast.attributes.SMTAttribute;
 import org.eventb.smt.ast.attributes.SMTLabel;
 import org.eventb.smt.ast.commands.SMTCommand.SMTCommandName;
 import org.eventb.smt.ast.commands.SMTDeclareFunCommand;
@@ -167,7 +166,11 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 		return freshName;
 	}
 
-	public SMTAttribute freshLabel(final boolean goalLabel) {
+	/**
+	 * These labels are used to annotate assertions. That's why their type is
+	 * Bool.
+	 */
+	public SMTLabel freshLabel(final boolean goalLabel) {
 		final String label;
 		if (goalLabel) {
 			label = DEFAULT_GOAL_LABEL;

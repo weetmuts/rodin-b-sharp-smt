@@ -1125,7 +1125,7 @@ public class SMTThroughPP extends Translator {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
 					if (smtlibVersion.equals(V2_0)) {
-						final SMTLabel label = (SMTLabel) ((SMTSignatureV2_0) signature)
+						final SMTLabel label = ((SMTSignatureV2_0) signature)
 								.freshLabel(!GOAL_LABEL);
 						assumption.addAnnotation(label);
 						labelMap.put(label.getName(), trackedPredicate);
@@ -1142,7 +1142,7 @@ public class SMTThroughPP extends Translator {
 						new SMTFormula[] { translate(predicate, IN_GOAL) },
 						smtlibVersion);
 				if (smtlibVersion.equals(V2_0)) {
-					final SMTLabel label = (SMTLabel) ((SMTSignatureV2_0) signature)
+					final SMTLabel label = ((SMTSignatureV2_0) signature)
 							.freshLabel(GOAL_LABEL);
 					smtFormula.addAnnotation(label);
 					labelMap.put(label.getName(), trackedPredicate);

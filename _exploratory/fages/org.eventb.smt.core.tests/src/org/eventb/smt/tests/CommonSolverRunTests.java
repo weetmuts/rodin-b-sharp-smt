@@ -371,7 +371,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * smtlibVersion.equals(V2_0)
 		 */
 		setSolverPreferences(
-				"veriT-proof-producing",
+				"veriT-dev-current",
 				VERIT,
 				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
 				solverConfig.getSmtlibVersion());

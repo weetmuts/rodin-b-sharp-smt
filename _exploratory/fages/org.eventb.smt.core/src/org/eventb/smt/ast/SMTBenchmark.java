@@ -14,10 +14,11 @@ package org.eventb.smt.ast;
 import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
+import static org.eventb.smt.ast.attributes.SMTOption.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
 import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.ast.commands.SMTGetUnsatCoreCommand.getGetUnsatCoreCommand;
+import static org.eventb.smt.ast.commands.SMTSetInfoCommand.setStatusUnsat;
 import static org.eventb.smt.ast.commands.SMTSetOptionCommand.setTrue;
-import static org.eventb.smt.ast.commands.SMTSetOptionCommand.SMTOptionName.PRODUCE_UNSAT_CORE;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
@@ -225,6 +226,8 @@ public class SMTBenchmark {
 				setTrue(PRODUCE_UNSAT_CORE).toString(builder);
 				builder.append("\n");
 			}
+			setStatusUnsat().toString(builder);
+			builder.append("\n");
 			benchmarkContent(builder, printAnnotations);
 			getCheckSatCommand().toString(builder);
 			builder.append("\n");
