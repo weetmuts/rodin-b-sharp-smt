@@ -87,11 +87,22 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion, GET_UNSAT_CORE);
+			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
+		super(solver, smtlibVersion, getUnsatCore);
 		this.data = data;
 		System.out.println("\n\n----------------------------\n\nLoop: "
 				+ round++);
+	}
+
+	/**
+	 * Constructs a new test.
+	 * 
+	 * @param data
+	 *            the parameter of one test.
+	 */
+	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
+			final SMTLIBVersion smtlibVersion) {
+		this(data, solver, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(
