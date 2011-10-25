@@ -51,6 +51,8 @@ public abstract class SMTProverCall extends XProverCall {
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO = ".smt2";
 
+	protected final StringBuilder debugBuilder;
+
 	/**
 	 * Solver output at the end of the call
 	 */
@@ -104,7 +106,17 @@ public abstract class SMTProverCall extends XProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
+		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+				translationPath);
+	}
+
+	protected SMTProverCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final StringBuilder debugBuilder,
+			final SMTSolverConfiguration solverConfig, final String poName,
+			final String translationPath) {
 		super(hypotheses, goal, pm);
+		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
@@ -113,33 +125,36 @@ public abstract class SMTProverCall extends XProverCall {
 	/**
 	 * FOR DEBUG ONLY
 	 */
-	private static void showProcessOutput(ProcessMonitor monitor, boolean error) {
+	private static void showProcessOutput(final StringBuilder debugBuilder,
+			ProcessMonitor monitor, boolean error) {
 		final String kind = error ? "error" : "output";
-		System.out.println("-- Begin dump of process " + kind + " --");
+		debugBuilder.append("-- Begin dump of process ").append(kind)
+				.append(" --\n");
 		final byte[] bytes = error ? monitor.error() : monitor.output();
 		if (bytes.length != 0) {
 			final String output = new String(bytes);
 			if (output.endsWith("\n")) {
-				System.out.print(error);
+				debugBuilder.append(error);
 			} else {
-				System.out.println(error);
+				debugBuilder.append(error).append("\n");
 			}
 		}
-		System.out.println("-- End dump of process " + kind + " --");
+		debugBuilder.append("-- End dump of process ").append(kind)
+				.append(" --\n");
 	}
 
 	/**
 	 * FOR DEBUG ONLY
 	 */
 	private synchronized void showSMTBenchmarkFile() {
-		showFile(smtBenchmarkFile);
+		showFile(debugBuilder, smtBenchmarkFile);
 	}
 
 	/**
 	 * FOR DEBUG ONLY
 	 */
 	private synchronized void showSMTResultFile() {
-		showFile(smtResultFile);
+		showFile(debugBuilder, smtResultFile);
 	}
 
 	/**
@@ -193,13 +208,12 @@ public abstract class SMTProverCall extends XProverCall {
 			IllegalArgumentException {
 
 		if (DEBUG_DETAILS) {
-			System.out.println("About to launch solver command:");
-			System.out.print("   ");
+			debugBuilder.append("About to launch solver command:\n   ");
 			for (String arg : commandLine) {
-				System.out.print(' ');
-				System.out.print(arg);
+				debugBuilder.append(" ");
+				debugBuilder.append(arg);
 			}
-			System.out.println();
+			debugBuilder.append("\n");
 		}
 
 		try {
@@ -211,26 +225,27 @@ public abstract class SMTProverCall extends XProverCall {
 					this);
 
 			if (DEBUG_DETAILS)
-				showProcessOutcome(monitor);
+				showProcessOutcome(debugBuilder, monitor);
 
 			solverResult = new String(monitor.output());
 			if (DEBUG) {
 				printSMTResultFile();
 			}
 			if (DEBUG_DETAILS) {
-				System.out.println("Result file contains:");
+				debugBuilder.append("Result file contains:\n");
 				showSMTResultFile();
 			}
 
 			valid = checkResult();
 			if (DEBUG_DETAILS) {
-				System.out
-						.println("Prover " + (valid ? "succeeded" : "failed"));
+				debugBuilder.append("Prover ").append(
+						valid ? "succeeded" : "failed");
+				debugBuilder.append("\n");
 			}
 
 		} finally {
 			if (DEBUG_DETAILS)
-				System.out.println("Solver command finished.");
+				debugBuilder.append("Solver command finished.\n");
 		}
 	}
 
@@ -283,30 +298,32 @@ public abstract class SMTProverCall extends XProverCall {
 	 * @param file
 	 *            the file to show
 	 */
-	protected static void showFile(File file) {
+	protected static void showFile(final StringBuilder builder, File file) {
 		if (file == null) {
-			System.out.println("***File has been cleaned up***");
+			builder.append("***File has been cleaned up***\n");
 			return;
 		}
 		try {
 			final BufferedReader rdr = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = rdr.readLine()) != null) {
-				System.out.println(line);
+				builder.append(line).append("\n");
 			}
 		} catch (IOException e) {
-			System.out.println("***Exception when reading file: "
-					+ e.getMessage() + "***");
+			builder.append("***Exception when reading file: ");
+			builder.append(e.getMessage()).append("***\n");
 		}
 	}
 
 	/**
 	 * FOR DEBUG ONLY
 	 */
-	protected static void showProcessOutcome(ProcessMonitor monitor) {
-		showProcessOutput(monitor, false);
-		showProcessOutput(monitor, true);
-		System.out.println("Exit code is: " + monitor.exitCode());
+	protected static void showProcessOutcome(final StringBuilder builder,
+			ProcessMonitor monitor) {
+		showProcessOutput(builder, monitor, false);
+		showProcessOutput(builder, monitor, true);
+		builder.append("Exit code is: ").append(monitor.exitCode())
+				.append("\n");
 	}
 
 	/**
@@ -323,9 +340,9 @@ public abstract class SMTProverCall extends XProverCall {
 			} else {
 				if (DEBUG) {
 					if (DEBUG_DETAILS) {
-						System.out
-								.println("Created temporary SMT translation folder '"
-										+ smtTranslationFolder + "'");
+						debugBuilder
+								.append("Created temporary SMT translation folder '");
+						debugBuilder.append(smtTranslationFolder).append("'\n");
 					}
 				} else {
 					/**
@@ -347,8 +364,8 @@ public abstract class SMTProverCall extends XProverCall {
 		}
 		if (DEBUG) {
 			if (DEBUG_DETAILS) {
-				System.out.println("Created temporary SMT benchmark file '"
-						+ smtBenchmarkFile + "'");
+				debugBuilder.append("Created temporary SMT benchmark file '");
+				debugBuilder.append(smtBenchmarkFile).append("'\n");
 			}
 		} else {
 			/**
@@ -362,8 +379,8 @@ public abstract class SMTProverCall extends XProverCall {
 					lemmaName + "_" + solver.toString(), RES_FILE_EXTENSION,
 					smtTranslationFolder);
 			if (DEBUG_DETAILS) {
-				System.out.println("Created temporary SMT result file '"
-						+ smtResultFile + "'");
+				debugBuilder.append("Created temporary SMT result file '");
+				debugBuilder.append(smtResultFile).append("'\n");
 			}
 
 			// Fill the result file with some random characters that can not be
@@ -411,8 +428,8 @@ public abstract class SMTProverCall extends XProverCall {
 					smtBenchmarkFileMade = true;
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
-						System.out
-								.println("Due to translation failure, the solver won't be launched.");
+						debugBuilder.append("Due to translation failure, ");
+						debugBuilder.append("the solver won't be launched.\n");
 					}
 				}
 
@@ -425,8 +442,8 @@ public abstract class SMTProverCall extends XProverCall {
 					smtBenchmarkFileMade = true;
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
-						System.out
-								.println("Due to translation failure, the solver won't be launched.");
+						debugBuilder.append("Due to translation failure, ");
+						debugBuilder.append("the solver won't be launched.\n");
 					}
 				}
 			}
@@ -434,8 +451,8 @@ public abstract class SMTProverCall extends XProverCall {
 			if (smtBenchmarkFileMade) {
 				final String solverName = solverConfig.getSolver().toString();
 				if (DEBUG_DETAILS) {
-					System.out.println("Launching " + solverName
-							+ " with input:\n");
+					debugBuilder.append("Launching ").append(solverName);
+					debugBuilder.append(" with input:\n\n");
 					showSMTBenchmarkFile();
 				}
 
@@ -445,9 +462,9 @@ public abstract class SMTProverCall extends XProverCall {
 					callProver(solverCommandLine());
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
-						System.out
-								.println("Exception raised during prover call : "
-										+ e.getMessage());
+						debugBuilder
+								.append("Exception raised during prover call : ");
+						debugBuilder.append(e.getMessage()).append("\n");
 					}
 				}
 			}
@@ -473,10 +490,12 @@ public abstract class SMTProverCall extends XProverCall {
 
 		} catch (final IOException e) {
 			if (DEBUG) {
-				System.err.println(e.getMessage());
-				e.printStackTrace(System.err);
+				debugBuilder.append(e.getMessage()).append("\n");
 			}
 			throw new IllegalArgumentException(e);
+		} finally {
+			debugBuilder.append("End of prover call.\n");
+			System.out.print(debugBuilder);
 		}
 	}
 

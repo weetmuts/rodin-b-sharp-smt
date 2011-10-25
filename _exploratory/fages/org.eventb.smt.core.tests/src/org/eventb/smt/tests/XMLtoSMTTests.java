@@ -62,6 +62,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 * If true, is printed details of the test for each test iteration.
 	 */
 	private final boolean PRINT_INFO = true;
+	private final StringBuilder debugBuilder;
 	private static int round = 0;
 
 	/**
@@ -90,8 +91,9 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
 		super(solver, smtlibVersion, getUnsatCore);
 		this.data = data;
-		System.out.println("\n\n----------------------------\n\nLoop: "
-				+ round++);
+		debugBuilder = new StringBuilder();
+		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
+		debugBuilder.append(round++).append("\n");
 	}
 
 	/**
@@ -410,11 +412,12 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 				name = data.getOrigin();
 			}
 			if (PRINT_INFO) {
-				System.out.println("Testing lemma: " + name + ".\n");
+				debugBuilder.append("Testing lemma: ").append(name)
+						.append(".\n\n");
 			}
 			name = name + "vt";
 			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID);
+					data.getTe(), VALID, debugBuilder);
 		}
 	}
 
@@ -428,18 +431,18 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			name = data.getOrigin();
 		}
 		if (PRINT_INFO) {
-			System.out.println("Testing lemma: " + name
-					+ data.getTheories().toString() + ".\n");
+			debugBuilder.append("Testing lemma: ").append(name);
+			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 		}
 
 		if (solverConfig.getSmtlibVersion().equals(V2_0)
 				&& solverConfig.getSolver().equals(VERIT)) {
 			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
 					data.getTe(), VALID, data.getNeededHypotheses(),
-					data.isGoalNeeded());
+					data.isGoalNeeded(), debugBuilder);
 		} else {
 			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID);
+					data.getTe(), VALID, debugBuilder);
 		}
 	}
 }

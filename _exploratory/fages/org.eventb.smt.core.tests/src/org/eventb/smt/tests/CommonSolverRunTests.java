@@ -163,8 +163,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	private void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult)
-			throws IllegalArgumentException {
+			final Predicate parsedGoal, final boolean expectedSolverResult,
+			final StringBuilder debugBuilder) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (final Predicate parsedHypothesis : parsedHypotheses) {
@@ -178,8 +178,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath,
-						veritPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath, veritPath) {
 					// nothing to do
 				};
 				break;
@@ -187,7 +187,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath) {
 					// nothing to do
 				};
 				break;
@@ -207,15 +208,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	private SMTProverCall successfulProverCall(final String callMessage,
 			final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult) {
+			final Predicate parsedGoal, final boolean expectedSolverResult,
+			final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath,
-						veritPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath, veritPath) {
 					// nothing to do
 				};
 				break;
@@ -223,7 +225,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath) {
 					// nothing to do
 				};
 				break;
@@ -247,15 +250,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final Predicate parsedGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
-			final boolean expectedGoalNeed) {
+			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath,
-						veritPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath, veritPath) {
 					// nothing to do
 				};
 				break;
@@ -263,7 +266,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			default: // USING_PP
 				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, solverConfig, lemmaName, translationPath) {
+						MONITOR, debugBuilder, solverConfig, lemmaName,
+						translationPath) {
 					// nothing to do
 				};
 				break;
@@ -433,6 +437,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
+	protected void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) {
+		doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
+				expectedSolverResult, new StringBuilder());
+	}
+
 	/**
 	 * Parses the given sequent in the given type environment and launch the
 	 * test with the such produced 'Predicate' instances
@@ -449,7 +461,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult) {
+			final boolean expectedSolverResult, final StringBuilder debugBuilder) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
 		for (final String hyp : inputHyps) {
@@ -459,7 +471,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final Predicate goal = parse(inputGoal, te);
 
 		doTest(translationApproach, lemmaName, hypotheses, goal,
-				expectedSolverResult);
+				expectedSolverResult, debugBuilder);
 	}
 
 	protected void doTest(final SMTTranslationApproach translationApproach,
@@ -468,6 +480,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed) {
+		doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
+				expectedSolverResult, expectedUnsatCoreStr, expectedGoalNeed,
+				new StringBuilder());
+	}
+
+	protected void doTest(final SMTTranslationApproach translationApproach,
+			final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult,
+			final List<String> expectedUnsatCoreStr,
+			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
 		for (final String hyp : inputHyps) {
 			parsedHypotheses.add(parse(hyp, te));
@@ -489,29 +512,30 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * Iter 1 : calls the prover with the expected unsat-core, to check if
 		 * it is right
 		 */
-		System.out.println("Iter 1");
+		debugBuilder.append("Iter 1\n");
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse("⊥",
 				te));
 		successfulProverCall("Iter 1", translationApproach, lemmaName,
 				expectedHypotheses, goalXML, te, expectedSolverResult,
-				expectedHypotheses, expectedGoalNeed);
-		System.out.println();
+				expectedHypotheses, expectedGoalNeed, debugBuilder);
+		debugBuilder.append("\n");
 
 		/**
 		 * Iter 2 : calls the prover and check if the unsat-core is the expected
 		 * one
 		 */
-		System.out.println("Iter 2");
+		debugBuilder.append("Iter 2\n");
 		final SMTProverCall smtProverCall = successfulProverCall("Iter 2",
 				translationApproach, lemmaName, parsedHypotheses, parsedGoal,
-				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed);
-		System.out.println();
+				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				debugBuilder);
+		debugBuilder.append("\n");
 
 		/**
 		 * Iter 3 : calls the prover with the returned unsat-core, to check if
 		 * it is right
 		 */
-		System.out.println("Iter 3");
+		debugBuilder.append("Iter 3\n");
 		final Set<Predicate> neededHypothesesSet = smtProverCall
 				.neededHypotheses();
 		final List<Predicate> neededHypotheses;
@@ -524,40 +548,40 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				: parse("⊥", te));
 		successfulProverCall("Iter 3", translationApproach, lemmaName,
 				neededHypotheses, goalSolver, te, expectedSolverResult,
-				expectedHypotheses, expectedGoalNeed);
-		System.out.println();
+				expectedHypotheses, expectedGoalNeed, debugBuilder);
+		debugBuilder.append("\n");
 
 		/**
 		 * Unsat-core checking : calls the other provers on the unsat-core, to
 		 * check if it is right
 		 */
-		System.out.println("unsat-core checking");
+		debugBuilder.append("unsat-core checking\n");
 		final SMTSolver solver = solverConfig.getSolver();
 		if (!solver.equals(Z3)) {
 			setPreferencesForZ3Test();
 			successfulProverCall("z3 unsat-core checking", translationApproach,
 					lemmaName, neededHypotheses, goalSolver,
-					expectedSolverResult);
+					expectedSolverResult, debugBuilder);
 		}
 		if (!solver.equals(CVC3)) {
 			setPreferencesForCvc3Test();
 			successfulProverCall("cvc3 unsat-core checking",
 					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult);
+					goalSolver, expectedSolverResult, debugBuilder);
 		}
 		if (!solver.equals(ALT_ERGO)) {
 			setPreferencesForAltErgoTest();
 			successfulProverCall("alt-ergo unsat-core checking",
 					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult);
+					goalSolver, expectedSolverResult, debugBuilder);
 		}
 		if (!solver.equals(VERIT)) {
 			setPreferencesForVeriTTest();
 			successfulProverCall("veriT unsat-core checking",
 					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult);
+					goalSolver, expectedSolverResult, debugBuilder);
 		}
-		System.out.println();
+		debugBuilder.append("\n");
 	}
 
 	protected void doTTeTest(final String lemmaName,

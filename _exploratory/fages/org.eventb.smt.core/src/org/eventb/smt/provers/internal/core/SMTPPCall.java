@@ -49,7 +49,17 @@ public class SMTPPCall extends SMTProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
+		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+				translationPath);
+	}
+
+	protected SMTPPCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final StringBuilder debugBuilder,
+			final SMTSolverConfiguration solverConfig, final String poName,
+			final String translationPath) {
+		super(hypotheses, goal, pm, debugBuilder, solverConfig, poName,
+				translationPath);
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
 			this.translationPath = this.translationPath + File.separatorChar
 					+ "pp";
@@ -63,9 +73,9 @@ public class SMTPPCall extends SMTProverCall {
 		} else {
 			if (DEBUG) {
 				if (DEBUG_DETAILS) {
-					System.out
-							.println("Created temporary PP translation folder '"
-									+ ppTranslationFolder + "'");
+					debugBuilder
+							.append("Created temporary PP translation folder '");
+					debugBuilder.append(ppTranslationFolder).append("'\n");
 				}
 			} else {
 				/**
@@ -196,12 +206,12 @@ public class SMTPPCall extends SMTProverCall {
 		String separator = "";
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
 		if (DEBUG) {
-			System.out.print("unsat-core: (");
+			debugBuilder.append("unsat-core: (");
 		}
 		for (final String label : labelMap.keySet()) {
 			if (solverResult.contains(label)) {
 				if (DEBUG) {
-					System.out.print(separator + label);
+					debugBuilder.append(separator + label);
 					separator = ", ";
 				}
 				final ITrackedPredicate trPredicate = labelMap.get(label);
@@ -213,7 +223,7 @@ public class SMTPPCall extends SMTProverCall {
 			}
 		}
 		if (DEBUG) {
-			System.out.println(").");
+			debugBuilder.append(").\n");
 		}
 		if (!foundNeededHypotheses.isEmpty()) {
 			neededHypotheses = foundNeededHypotheses;

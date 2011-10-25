@@ -75,7 +75,17 @@ public class SMTVeriTCall extends SMTProverCall {
 			final Predicate goal, final IProofMonitor pm,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
-		super(hypotheses, goal, pm, solverConfig, poName, translationPath);
+		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+				translationPath, veritPath);
+	}
+
+	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
+			final Predicate goal, final IProofMonitor pm,
+			final StringBuilder debugBuilder,
+			final SMTSolverConfiguration solverConfig, final String poName,
+			final String translationPath, final String veritPath) {
+		super(hypotheses, goal, pm, debugBuilder, solverConfig, poName,
+				translationPath);
 
 		if (translationPath != null && !translationPath.isEmpty()) {
 			this.translationPath = translationPath + File.separatorChar
@@ -90,9 +100,9 @@ public class SMTVeriTCall extends SMTProverCall {
 		} else {
 			if (DEBUG) {
 				if (DEBUG_DETAILS) {
-					System.out
-							.println("Created temporary veriT translation folder '"
-									+ veriTTranslationFolder + "'");
+					debugBuilder
+							.append("Created temporary veriT translation folder '");
+					debugBuilder.append(veriTTranslationFolder).append("'\n");
 				}
 			} else {
 				/**
@@ -110,7 +120,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * standard output.
 	 */
 	private synchronized void showVeriTBenchmarkFile() {
-		showFile(veriTBenchmarkFile);
+		showFile(debugBuilder, veriTBenchmarkFile);
 	}
 
 	/**
@@ -136,13 +146,11 @@ public class SMTVeriTCall extends SMTProverCall {
 		cmd.add(veriTBenchmarkFile.getPath());
 
 		if (DEBUG_DETAILS) {
-			System.out.println("About to launch veriT command:");
-			System.out.print("   ");
+			debugBuilder.append("About to launch veriT command:\n   ");
 			for (String arg : cmd) {
-				System.out.print(' ');
-				System.out.print(arg);
+				debugBuilder.append(' ').append(arg);
 			}
-			System.out.println();
+			debugBuilder.append("\n");
 		}
 
 		try {
@@ -154,19 +162,21 @@ public class SMTVeriTCall extends SMTProverCall {
 					this);
 
 			if (DEBUG_DETAILS)
-				showProcessOutcome(monitor);
+				showProcessOutcome(debugBuilder, monitor);
 
 			veriTResult = new String(monitor.output());
 			macrosTranslated = checkVeriTResult();
 
-			if (DEBUG_DETAILS)
-				System.out.println("veriT "
-						+ (macrosTranslated ? "succeeded" : "failed:\n"
-								+ veriTResult));
+			if (DEBUG_DETAILS) {
+				debugBuilder.append("veriT ");
+				debugBuilder.append(macrosTranslated ? "succeeded\n"
+						: "failed:\n");
+				debugBuilder.append(veriTResult).append("\n");
+			}
 
 		} finally {
 			if (DEBUG_DETAILS)
-				System.out.println("veriT command finished.");
+				debugBuilder.append("veriT command finished.\n");
 		}
 	}
 
@@ -199,8 +209,8 @@ public class SMTVeriTCall extends SMTProverCall {
 				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
 		if (DEBUG) {
 			if (DEBUG_DETAILS) {
-				System.out.println("Created temporary veriT benchmark file '"
-						+ veriTBenchmarkFile + "'");
+				debugBuilder.append("Created temporary veriT benchmark file '");
+				debugBuilder.append(veriTBenchmarkFile).append("'\n");
 			}
 		} else {
 			/**
@@ -251,8 +261,8 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Calls veriT to process the macros of the benchmark
 		 */
 		if (DEBUG_DETAILS) {
-			System.out.println("Launching " + SMTSolver.VERIT
-					+ " with input:\n");
+			debugBuilder.append("Launching ").append(SMTSolver.VERIT)
+					.append(" with input:\n\n");
 			showVeriTBenchmarkFile();
 		}
 		callVeriT();
