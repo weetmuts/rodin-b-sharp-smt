@@ -10,9 +10,9 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
+import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +23,14 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class XMLtoSMTTestsL3VeritV1_2 extends XMLtoSMTTests {
-	public XMLtoSMTTestsL3VeritV1_2(final LemmaData data) {
-		super(data, VERIT, V1_2);
+public class XMLtoSMTTestsL1CVC3V1_2 extends XMLtoSMTTests {
+
+	public XMLtoSMTTestsL1CVC3V1_2(final LemmaData data) {
+		super(data, CVC3, V1_2);
 	}
 
 	@Parameters
 	public static List<LemmaData[]> getDocumentDatas() {
-		return getDocumentDatas(Arrays.asList(L3));
+		return getDocumentDatas(Arrays.asList(L1));
 	}
 }

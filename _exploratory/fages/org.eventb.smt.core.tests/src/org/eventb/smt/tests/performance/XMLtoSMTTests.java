@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests;
+package org.eventb.smt.tests.performance;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
@@ -38,12 +38,12 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.utils.LemmaData;
 import org.eventb.smt.utils.LemmaParser;
 import org.eventb.smt.utils.Theory;
 import org.eventb.smt.utils.Theory.TheoryLevel;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -400,7 +400,6 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 * Translates the each lemma of each xml file.
 	 */
 	@Test(timeout = 3000)
-	@Ignore
 	public void testTranslateWithVerit() {
 		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
@@ -412,8 +411,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 				name = data.getOrigin();
 			}
 			if (PRINT_INFO) {
-				debugBuilder.append("Testing lemma: ").append(name)
-						.append(".\n\n");
+				debugBuilder.append("Testing lemma (veriT approach): ").append(name);
+				debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 			}
 			name = name + "vt";
 			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
@@ -431,7 +430,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			name = data.getOrigin();
 		}
 		if (PRINT_INFO) {
-			debugBuilder.append("Testing lemma: ").append(name);
+			debugBuilder.append("Testing lemma (PP approach): ").append(name);
 			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 		}
 

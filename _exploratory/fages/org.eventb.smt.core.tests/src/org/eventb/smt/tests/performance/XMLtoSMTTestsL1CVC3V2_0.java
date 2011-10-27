@@ -17,7 +17,6 @@ import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eventb.smt.tests.XMLtoSMTTests;
 import org.eventb.smt.utils.LemmaData;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

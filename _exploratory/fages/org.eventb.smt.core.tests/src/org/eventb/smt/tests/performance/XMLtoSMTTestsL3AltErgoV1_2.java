@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 
@@ -23,9 +23,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class XMLtoSMTTestsL3VeritV1_2 extends XMLtoSMTTests {
-	public XMLtoSMTTestsL3VeritV1_2(final LemmaData data) {
-		super(data, VERIT, V1_2);
+public class XMLtoSMTTestsL3AltErgoV1_2 extends XMLtoSMTTests {
+	public XMLtoSMTTestsL3AltErgoV1_2(final LemmaData data) {
+		super(data, ALT_ERGO, V1_2);
 	}
 
 	@Parameters
