@@ -1,5 +1,4 @@
 org.eventb.smt.core/debug = true
 org.eventb.smt.core/debug/translator = false
 org.eventb.smt.core/debug/translator_details = false
-org.eventb.smt.core/dev = false
 org.eventb.smt.core/dev/translator = false

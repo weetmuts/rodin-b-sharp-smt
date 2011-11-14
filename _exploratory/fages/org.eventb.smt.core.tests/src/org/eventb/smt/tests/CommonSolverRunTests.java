@@ -37,7 +37,7 @@ import org.eventb.smt.provers.internal.core.SMTVeriTCall;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.eventb.smt.translation.SMTTranslationApproach;
-import org.eventb.smt.utils.Theory.TheoryLevel;
+import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
@@ -62,7 +62,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
-	protected TheoryLevel theoryLevel;
+	protected Set<Theory> theories;
 	protected SMTSolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
@@ -105,9 +105,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	public CommonSolverRunTests(final SMTSolver solver,
-			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion,
+			final Set<Theory> theories, final SMTLIBVersion smtlibVersion,
 			final boolean getUnsatCore) {
-		this.theoryLevel = theoryLevel;
+		this.theories = theories;
 		solverConfig = new SMTSolverConfiguration(solver.name(), solver, "",
 				"", smtlibVersion);
 		if (solver != null) {
@@ -161,7 +161,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		debugBuilder.append("Lemma ").append(lemmaName).append("\n");
 		debugBuilder.append("Solver ").append(solverConfig.getSolver())
 				.append("\n");
-		debugBuilder.append(theoryLevel.getName()).append("\n");
+		debugBuilder.append(Theory.getComboLevel(theories).getName()).append(
+				"\n");
+		debugBuilder.append("Theories ");
+		String separator = "";
+		for (final Theory theory : theories) {
+			debugBuilder.append(separator);
+			debugBuilder.append(theory.getName());
+			separator = ", ";
+		}
+		debugBuilder.append("\n");
 		debugBuilder.append("SMTLIB ").append(solverConfig.getSmtlibVersion())
 				.append("\n");
 		debugBuilder.append("Approach ").append(translationApproach)

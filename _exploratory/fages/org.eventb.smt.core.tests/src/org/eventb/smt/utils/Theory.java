@@ -13,8 +13,8 @@ import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class enumerates mathematical theories.
@@ -146,23 +146,23 @@ public enum Theory {
 		throw new IllegalArgumentException(name);
 	}
 
-	public final static List<Theory> fromNames(final List<String> names) {
-		final List<Theory> theories = new ArrayList<Theory>();
+	public final static Set<Theory> fromNames(final Set<String> names) {
+		final Set<Theory> theories = new HashSet<Theory>();
 		for (final String name : names) {
 			theories.add(fromName(name));
 		}
 		return theories;
 	}
 
-	public final static List<Theory> fromLevel(final TheoryLevel level) {
-		final List<Theory> theories = new ArrayList<Theory>();
+	public final static Set<Theory> fromLevel(final TheoryLevel level) {
+		final Set<Theory> theories = new HashSet<Theory>();
 		for (final Theory theory : Theory.values())
 			if (theory.level.equals(level))
 				theories.add(theory);
 		return theories;
 	}
 
-	public final static TheoryLevel getComboLevel(final List<Theory> theories) {
+	public final static TheoryLevel getComboLevel(final Set<Theory> theories) {
 		TheoryLevel level = L1;
 		for (final Theory theory : theories) {
 			if (theory.level.equals(L2)) {

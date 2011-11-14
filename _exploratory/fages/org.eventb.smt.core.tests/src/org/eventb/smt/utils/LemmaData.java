@@ -11,6 +11,7 @@
 package org.eventb.smt.utils;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 
@@ -22,13 +23,13 @@ public class LemmaData {
 	private String origin;
 	@SuppressWarnings("unused")
 	private String comments;
-	private List<String> theories;
+	private Set<String> theories;
 	private List<String> neededHypotheses;
 	private boolean goalNeeded;
 
 	public LemmaData(final String lemmaName, final List<String> hypotheses,
 			final String goal, final ITypeEnvironment te, final String origin,
-			final String comments, final List<String> theories,
+			final String comments, final Set<String> theories,
 			final List<String> neededHypotheses, final boolean goalNeeded) {
 		super();
 		this.lemmaName = lemmaName;
@@ -62,7 +63,7 @@ public class LemmaData {
 		return origin;
 	}
 
-	public List<String> getTheories() {
+	public Set<String> getTheories() {
 		return theories;
 	}
 
