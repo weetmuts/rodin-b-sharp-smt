@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class XMLtoSMTTestsL1VeritV1_2 extends XMLtoSMTTests {
 	public XMLtoSMTTestsL1VeritV1_2(final LemmaData data) {
-		super(data, VERIT, V1_2, !GET_UNSAT_CORE);
+		super(data, VERIT, L1, V1_2, !GET_UNSAT_CORE);
 	}
 
 	@Parameters

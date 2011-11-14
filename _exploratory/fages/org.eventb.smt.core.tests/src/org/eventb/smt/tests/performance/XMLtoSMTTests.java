@@ -11,6 +11,8 @@
 package org.eventb.smt.tests.performance;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
@@ -58,10 +60,6 @@ import org.xml.sax.SAXException;
  * 
  */
 public abstract class XMLtoSMTTests extends CommonSolverRunTests {
-	/**
-	 * If true, is printed details of the test for each test iteration.
-	 */
-	private final boolean PRINT_INFO = true;
 	private final StringBuilder debugBuilder;
 	private static int round = 0;
 
@@ -88,8 +86,9 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		super(solver, smtlibVersion, getUnsatCore);
+			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion,
+			final boolean getUnsatCore) {
+		super(solver, theoryLevel, smtlibVersion, getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
@@ -103,8 +102,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion) {
-		this(data, solver, smtlibVersion, GET_UNSAT_CORE);
+			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion) {
+		this(data, solver, theoryLevel, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(
@@ -410,10 +409,11 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			if (name.isEmpty()) {
 				name = data.getOrigin();
 			}
-			if (PRINT_INFO) {
-				debugBuilder.append("Testing lemma (veriT approach): ").append(name);
-				debugBuilder.append(data.getTheories().toString()).append(".\n\n");
-			}
+
+			debugBuilder.append("Testing lemma (veriT approach): ")
+					.append(name);
+			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
+
 			name = name + "vt";
 			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
 					data.getTe(), VALID, debugBuilder);
@@ -429,19 +429,41 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 		if (name.isEmpty()) {
 			name = data.getOrigin();
 		}
-		if (PRINT_INFO) {
+
+		debugBuilder.append("Testing lemma (PP approach): ").append(name);
+		debugBuilder.append(data.getTheories().toString()).append(".\n\n");
+
+		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+				data.getTe(), VALID, debugBuilder);
+	}
+
+	/**
+	 * Translates the each lemma of each xml file.
+	 */
+	@Test(timeout = 3000)
+	public void testTranslateWithPPandGetUnsatCore() {
+		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
+			Assert.assertTrue(
+					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",
+					false);
+		} else {
+			String name = data.getLemmaName();
+			if (name.isEmpty()) {
+				name = data.getOrigin();
+			}
+
 			debugBuilder.append("Testing lemma (PP approach): ").append(name);
 			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
-		}
 
-		if (solverConfig.getSmtlibVersion().equals(V2_0)
-				&& solverConfig.getSolver().equals(VERIT)) {
-			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID, data.getNeededHypotheses(),
-					data.isGoalNeeded(), debugBuilder);
-		} else {
-			doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID, debugBuilder);
+			if (solverConfig.getSolver().equals(VERIT)
+					|| solverConfig.getSolver().equals(Z3)) {
+				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+						data.getTe(), VALID, data.getNeededHypotheses(),
+						data.isGoalNeeded(), debugBuilder);
+			} else {
+				Assert.assertTrue("Unsat core extraction is not handled with "
+						+ solverConfig.getSolver().toString() + " yet", false);
+			}
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	public SolverPerfWithVeriT(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion, !GET_UNSAT_CORE);
+		super(solver, null, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

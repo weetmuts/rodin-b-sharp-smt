@@ -37,7 +37,7 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public RunProverTestWithPPV1_2() {
-		super(UNKNOWN, V1_2, !GET_UNSAT_CORE);
+		super(UNKNOWN, null, V1_2, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

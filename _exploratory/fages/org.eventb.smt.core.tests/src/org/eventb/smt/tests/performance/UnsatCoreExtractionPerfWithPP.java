@@ -32,7 +32,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	public UnsatCoreExtractionPerfWithPP(final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, smtlibVersion, GET_UNSAT_CORE);
+		super(solver, null, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
@@ -713,8 +713,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 'basic_relation' theory
 	 * 
 	 * The testBepiColombo3 doesn't run forever. It's because the alt-ergo
-	 * solver takes too much time to prove. The translation is very fast, and
-	 * the other solvers prove this problem in a much shorter time.
+	 * solver takes too much time to prove. The translationPerformed is very
+	 * fast, and the other solvers prove this problem in a much shorter time.
 	 * 
 	 */
 	@Test(timeout = 3000)
