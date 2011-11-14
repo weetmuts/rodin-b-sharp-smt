@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class XMLtoSMTTestsL1CVC3V1_2 extends XMLtoSMTTests {
 
 	public XMLtoSMTTestsL1CVC3V1_2(final LemmaData data) {
-		super(data, CVC3, L1, V1_2);
+		super(data, CVC3, V1_2);
 	}
 
 	@Parameters

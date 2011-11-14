@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -86,9 +87,9 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
-			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion,
-			final boolean getUnsatCore) {
-		super(solver, theoryLevel, smtlibVersion, getUnsatCore);
+			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
+		super(solver, Theory.fromNames(data.getTheories()), smtlibVersion,
+				getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
@@ -102,8 +103,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
-			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion) {
-		this(data, solver, theoryLevel, smtlibVersion, GET_UNSAT_CORE);
+			final SMTLIBVersion smtlibVersion) {
+		this(data, solver, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(
@@ -294,7 +295,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			/**
 			 * Theories
 			 */
-			final ArrayList<String> theories = new ArrayList<String>();
+			final Set<String> theories = new HashSet<String>();
 			NodeList elements = node.getElementsByTagName("theories");
 			if (elements.getLength() > 0) {
 				elements = ((Element) elements.item(0))
