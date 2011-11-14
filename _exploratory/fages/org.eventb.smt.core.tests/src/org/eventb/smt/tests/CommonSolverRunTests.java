@@ -37,6 +37,7 @@ import org.eventb.smt.provers.internal.core.SMTVeriTCall;
 import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.eventb.smt.translation.SMTTranslationApproach;
+import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
@@ -61,6 +62,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static boolean NOT_VALID = false;
 
+	protected TheoryLevel theoryLevel;
 	protected SMTSolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
@@ -103,7 +105,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	public CommonSolverRunTests(final SMTSolver solver,
-			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
+			final TheoryLevel theoryLevel, final SMTLIBVersion smtlibVersion,
+			final boolean getUnsatCore) {
+		this.theoryLevel = theoryLevel;
 		solverConfig = new SMTSolverConfiguration(solver.name(), solver, "",
 				"", smtlibVersion);
 		if (solver != null) {
@@ -147,6 +151,37 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		solverConfig.setArgs(solverArgs);
 		solverConfig.setSmtlibVersion(smtlibVersion);
 		this.veritPath = veritBinPath.toString();
+	}
+
+	private void printPerf(final StringBuilder debugBuilder,
+			final String lemmaName,
+			final SMTTranslationApproach translationApproach,
+			final SMTProverCall smtProverCall) {
+		debugBuilder.append("<PERF_ENTRY>\n");
+		debugBuilder.append("Lemma ").append(lemmaName).append("\n");
+		debugBuilder.append("Solver ").append(solverConfig.getSolver())
+				.append("\n");
+		debugBuilder.append(theoryLevel.getName()).append("\n");
+		debugBuilder.append("SMTLIB ").append(solverConfig.getSmtlibVersion())
+				.append("\n");
+		debugBuilder.append("Approach ").append(translationApproach)
+				.append("\n");
+		debugBuilder.append("Status ");
+		if (smtProverCall.isTranslationPerformed()) {
+			if (!smtProverCall.isExceptionRaised()) {
+				if (smtProverCall.isValid()) {
+					debugBuilder.append("success\n");
+				} else {
+					debugBuilder.append("fail\n");
+				}
+			} else {
+				debugBuilder.append("error\n");
+			}
+		} else {
+			debugBuilder.append("untranslated\n");
+		}
+		debugBuilder.append("</PERF_ENTRY>\n");
+		System.out.println(debugBuilder);
 	}
 
 	/**
@@ -196,6 +231,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
+
+			printPerf(debugBuilder, lemmaName, translationApproach,
+					smtProverCall);
 
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",

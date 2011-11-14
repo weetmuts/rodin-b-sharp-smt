@@ -50,8 +50,18 @@ public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO = ".smt2";
-
+	
+	/**
+	 * FOR DEBUG ONLY
+	 */
 	protected final StringBuilder debugBuilder;
+
+	protected boolean translationPerformed = false;
+
+	/**
+	 * FOR PERFORMANCE TESTS ONLY
+	 */
+	protected boolean exceptionRaised = false;
 
 	/**
 	 * Solver output at the end of the call
@@ -421,11 +431,11 @@ public abstract class SMTProverCall extends XProverCall {
 			 * Translates the sequent in SMT-LIB V1.2 language and tries to
 			 * discharge it with an SMT solver
 			 */
-			boolean smtBenchmarkFileMade = false;
+			translationPerformed = false;
 			if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 				try {
 					makeSMTBenchmarkFileV1_2();
-					smtBenchmarkFileMade = true;
+					translationPerformed = true;
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
 						debugBuilder.append("Due to translation failure, ");
@@ -439,7 +449,7 @@ public abstract class SMTProverCall extends XProverCall {
 				 */
 				try {
 					makeSMTBenchmarkFileV2_0();
-					smtBenchmarkFileMade = true;
+					translationPerformed = true;
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
 						debugBuilder.append("Due to translation failure, ");
@@ -448,7 +458,7 @@ public abstract class SMTProverCall extends XProverCall {
 				}
 			}
 
-			if (smtBenchmarkFileMade) {
+			if (translationPerformed) {
 				final String solverName = solverConfig.getSolver().toString();
 				if (DEBUG_DETAILS) {
 					debugBuilder.append("Launching ").append(solverName);
@@ -462,6 +472,7 @@ public abstract class SMTProverCall extends XProverCall {
 					callProver(solverCommandLine());
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
+						exceptionRaised = true;
 						debugBuilder
 								.append("Exception raised during prover call : ");
 						debugBuilder.append(e.getMessage()).append("\n");
@@ -494,9 +505,25 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 			throw new IllegalArgumentException(e);
 		} finally {
-			debugBuilder.append("End of prover call.\n");
-			System.out.print(debugBuilder);
+			if (DEBUG) {
+				debugBuilder.append("End of prover call.\n");
+				System.out.print(debugBuilder);
+			}
 		}
+	}
+
+	/**
+	 * FOR PERFORMANCE TESTS ONLY
+	 */
+	public boolean isTranslationPerformed() {
+		return translationPerformed;
+	}
+
+	/**
+	 * FOR PERFORMANCE TESTS ONLY
+	 */
+	public boolean isExceptionRaised() {
+		return exceptionRaised;
 	}
 
 	/**

@@ -14,8 +14,7 @@ package org.eventb.smt.translation;
  * Enumeration used to describe what approach is being used *
  */
 public enum SMTTranslationApproach {
-	USING_PP("SMT translation using PP approach"), USING_VERIT(
-			"SMT translation using VeriT approach");
+	USING_PP("PP"), USING_VERIT("veriT");
 
 	/**
 	 * The name of the approach
