@@ -41,6 +41,10 @@ import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
+	public static final String LAST_ALTERGO = "alt-ergo-nightly-r217";
+	public static final String LAST_CVC3 = "cvc3-2011-10-05";
+	public static final String LAST_VERIT = "veriT-dev-r2744";
+	public static final String LAST_Z3 = "z3-3.2";
 	public static final boolean GET_UNSAT_CORE = true;
 	public static final String DEFAULT_TEST_TRANSLATION_PATH = System
 			.getProperty("user.home")
@@ -67,6 +71,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;
+
+	/**
+	 * True if the extracted unsat-core is the same (or smaller) than the
+	 * expected one, and if the solver can discharge it
+	 */
+	protected boolean gotUnsatCore = false;
+	/**
+	 * True if the three other solvers could discharge the sequent with the
+	 * unsat-core
+	 */
+	protected boolean unsatCoreChecked = false;
 
 	/**
 	 * In linux: '/home/username/bin/'
@@ -146,6 +161,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
+		solverConfig.setId(solverBinaryName);
 		solverConfig.setSolver(solver);
 		solverConfig.setPath(solverPathBuilder.toString());
 		solverConfig.setArgs(solverArgs);
@@ -159,7 +175,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final SMTProverCall smtProverCall) {
 		debugBuilder.append("<PERF_ENTRY>\n");
 		debugBuilder.append("Lemma ").append(lemmaName).append("\n");
-		debugBuilder.append("Solver ").append(solverConfig.getSolver())
+		debugBuilder.append("Solver ").append(solverConfig.getId())
 				.append("\n");
 		debugBuilder.append(Theory.getComboLevel(theories).getName()).append(
 				"\n");
@@ -189,6 +205,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		} else {
 			debugBuilder.append("untranslated\n");
 		}
+		debugBuilder.append("Unsat-Core ");
+		debugBuilder.append(gotUnsatCore).append("\n");
+		debugBuilder.append("Checked ");
+		debugBuilder.append(unsatCoreChecked).append("\n");
 		debugBuilder.append("</PERF_ENTRY>\n");
 		System.out.println(debugBuilder);
 	}
@@ -402,7 +422,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected void setPreferencesForAltErgoTest() {
-		setSolverPreferences(ALT_ERGO.toString(), ALT_ERGO, "",
+		setSolverPreferences(LAST_ALTERGO, ALT_ERGO, "",
 				solverConfig.getSmtlibVersion());
 	}
 
@@ -414,7 +434,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		} else {
 			args = "-i smtlib2 --disable-print-success";
 		}
-		setSolverPreferences(VERIT.toString(), VERIT, args, smtlibVersion);
+		setSolverPreferences(LAST_VERIT, VERIT, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForVeriTProofTest() {
@@ -422,7 +442,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * smtlibVersion.equals(V2_0)
 		 */
 		setSolverPreferences(
-				"veriT-dev-current",
+				LAST_VERIT,
 				VERIT,
 				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
 				solverConfig.getSmtlibVersion());
@@ -436,7 +456,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		} else {
 			args = "-lang smt2";
 		}
-		setSolverPreferences(CVC3.toString(), CVC3, args, smtlibVersion);
+		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForZ3Test() {
@@ -451,7 +471,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			binaryName.append(separator);
 			Z3.toString(binaryName);
 		} else {
-			binaryName.append("z3-3.2");
+			binaryName.append(LAST_Z3);
 		}
 
 		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
@@ -598,6 +618,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		debugBuilder.append("\n");
 
+		gotUnsatCore = true;
+
 		/**
 		 * Unsat-core checking : calls the other provers on the unsat-core, to
 		 * check if it is right
@@ -629,6 +651,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					goalSolver, expectedSolverResult, debugBuilder);
 		}
 		debugBuilder.append("\n");
+		unsatCoreChecked = true;
+
+		printPerf(debugBuilder, lemmaName, translationApproach, smtProverCall);
 	}
 
 	protected void doTTeTest(final String lemmaName,
