@@ -12,6 +12,7 @@ package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
@@ -119,8 +120,9 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
+		// TODO Adapt z3 specific options in SMT-LIB 1.2
 		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
-				!PRINT_GET_UNSAT_CORE_COMMANDS);
+				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
@@ -163,13 +165,17 @@ public class SMTPPCall extends SMTProverCall {
 		final SMTSolver solver = solverConfig.getSolver();
 		if (solver.equals(Z3)) { // FIXME Add Z3 version checking
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
-					PRINT_GET_UNSAT_CORE_COMMANDS);
+					PRINT_GET_UNSAT_CORE_COMMANDS, PRINT_Z3_SPECIFIC_COMMANDS);
 		} else if (solver.equals(ALT_ERGO) || solver.equals(VERIT)) {
-			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
-					!PRINT_GET_UNSAT_CORE_COMMANDS);
+			benchmark
+					.print(smtFileWriter, PRINT_ANNOTATIONS,
+							!PRINT_GET_UNSAT_CORE_COMMANDS,
+							!PRINT_Z3_SPECIFIC_COMMANDS);
 		} else {
-			benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
-					!PRINT_GET_UNSAT_CORE_COMMANDS);
+			benchmark
+					.print(smtFileWriter, !PRINT_ANNOTATIONS,
+							!PRINT_GET_UNSAT_CORE_COMMANDS,
+							!PRINT_Z3_SPECIFIC_COMMANDS);
 		}
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {

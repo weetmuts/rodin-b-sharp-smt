@@ -15,9 +15,12 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 import static org.eventb.smt.ast.attributes.SMTOption.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
+import static org.eventb.smt.ast.attributes.SMTOption.SMTOptionKeyword.Z3_AUTO_CONFIG;
+import static org.eventb.smt.ast.attributes.SMTOption.SMTOptionKeyword.Z3_MBQI;
 import static org.eventb.smt.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.ast.commands.SMTGetUnsatCoreCommand.getGetUnsatCoreCommand;
 import static org.eventb.smt.ast.commands.SMTSetInfoCommand.setStatusUnsat;
+import static org.eventb.smt.ast.commands.SMTSetOptionCommand.setFalse;
 import static org.eventb.smt.ast.commands.SMTSetOptionCommand.setTrue;
 import static org.eventb.smt.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
@@ -40,6 +43,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 public class SMTBenchmark {
 	public static final boolean PRINT_ANNOTATIONS = true;
 	public static final boolean PRINT_GET_UNSAT_CORE_COMMANDS = true;
+	public static final boolean PRINT_Z3_SPECIFIC_COMMANDS = true;
 	protected final String name;
 	protected final SMTSignature signature;
 	protected final List<SMTFormula> assumptions;
@@ -210,7 +214,8 @@ public class SMTBenchmark {
 	 *            the benchmark
 	 */
 	public void print(final PrintWriter pw, final boolean printAnnotations,
-			final boolean printGetUnsatCoreCommands) {
+			final boolean printGetUnsatCoreCommands,
+			final boolean printZ3SpecificCommands) {
 		final StringBuilder builder = new StringBuilder();
 		if (signature.getSMTLIBVersion().equals(V1_2)) {
 			smtCmdOpening(builder, BENCHMARK, name);
@@ -222,6 +227,12 @@ public class SMTBenchmark {
 			 */
 			appendComments(builder);
 			builder.append("\n");
+			if (printZ3SpecificCommands) {
+				setFalse(Z3_AUTO_CONFIG).toString(builder);
+				builder.append("\n");
+				setFalse(Z3_MBQI).toString(builder);
+				builder.append("\n");
+			}
 			if (printGetUnsatCoreCommands) {
 				setTrue(PRODUCE_UNSAT_CORE).toString(builder);
 				builder.append("\n");

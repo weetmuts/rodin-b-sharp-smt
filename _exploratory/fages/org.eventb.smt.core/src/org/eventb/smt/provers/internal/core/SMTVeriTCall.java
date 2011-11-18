@@ -12,6 +12,7 @@ package org.eventb.smt.provers.internal.core;
 
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
+import static org.eventb.smt.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.Translator.DEBUG;
@@ -251,7 +252,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
 		benchmark.print(veriTBenchmarkWriter, !PRINT_ANNOTATIONS,
-				!PRINT_GET_UNSAT_CORE_COMMANDS);
+				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		veriTBenchmarkWriter.close();
 		if (!veriTBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
