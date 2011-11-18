@@ -33,6 +33,10 @@ public class SMTSetOptionCommand extends SMTCommand {
 		return new SMTSetOptionCommand(option, true);
 	}
 
+	public static SMTSetOptionCommand setFalse(final SMTOptionKeyword option) {
+		return new SMTSetOptionCommand(option, false);
+	}
+
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);

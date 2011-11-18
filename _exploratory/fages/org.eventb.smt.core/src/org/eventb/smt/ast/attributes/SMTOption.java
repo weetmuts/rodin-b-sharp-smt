@@ -27,7 +27,10 @@ public class SMTOption extends SMTAttribute<String> {
 		REGULAR_OUTPUT_CHANNEL("regular-output-channel"), //
 		DIAGNOSTIC_OUTPUT_CHANNEL("diagnostic-output-channel"), //
 		RANDOM_SEED("random-seed"), //
-		VERBOSITY("verbosity");
+		VERBOSITY("verbosity"), //
+		// z3 specific option keywords
+		Z3_AUTO_CONFIG("auto-config"), //
+		Z3_MBQI("mbqi");
 
 		private String name;
 
