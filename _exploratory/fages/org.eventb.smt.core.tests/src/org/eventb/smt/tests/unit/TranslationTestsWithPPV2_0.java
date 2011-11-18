@@ -250,6 +250,26 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	/**
+	 * When a set is used on the left hand side of a membership, the translator
+	 * must not use this set as a monadic membership predicate.
+	 * 
+	 * In this example, we expect the membership of the set PS to be translated
+	 * with a monadic predicate, whereas, the membership of the set S must be
+	 * translated with the generalised membership predicate 'MS'.
+	 */
+	@Test
+	public void testMonadicMembershipPredicate() {
+		final ITypeEnvironment te = mTypeEnvironment("PS", "ℙ(ℙ(ℤ))", "S",
+				"ℙ(ℤ)", "x", "ℤ", "PPS", "ℙ(ℙ(ℤ) × ℙ(ℤ))");
+
+		testTranslationV2_0(te, "S ∈ PS ⇒ ¬ x ∈ S",
+				"(=> (PS S) (not (MS x S)))");
+
+		testTranslationV2_0(te, "S ↦ S ∈ PPS ⇒ ¬ x ∈ S",
+				"(=> (PPS S S) (not (MS x S)))");
+	}
+
+	/**
 	 * "pred-quant"
 	 */
 	@Test
