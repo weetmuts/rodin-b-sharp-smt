@@ -45,6 +45,7 @@ public class Gatherer extends DefaultVisitor {
 	private boolean usesTruePredicate = false;
 	private final Set<FreeIdentifier> setsForSpecialMSPreds = new HashSet<FreeIdentifier>();
 	private final Set<Type> boundSetsTypes = new HashSet<Type>();
+	private final Set<FreeIdentifier> leftMSHandSideSets = new HashSet<FreeIdentifier>();
 
 	/**
 	 * This method recursively traverses the type tree to check if it contains
@@ -110,16 +111,18 @@ public class Gatherer extends DefaultVisitor {
 	 */
 	private void gatherSetsForSpecialMSPreds(final RelationalPredicate pred) {
 		final Expression right = pred.getRight();
+		final FreeIdentifier lefts[] = pred.getLeft().getFreeIdentifiers();
+
+		for (final FreeIdentifier ident : lefts) {
+			if (ident.getType().getBaseType() != null
+					|| ident.getType().getSource() != null) {
+				leftMSHandSideSets.add(ident);
+			}
+		}
 
 		if (right instanceof FreeIdentifier) {
-			/**
-			 * If this identifier type does not look like ℙ(alpha × beta), then
-			 * it should be translated into a specialised membership predicate.
-			 */
-			// if (right.getType().getSource() == null) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
 			setsForSpecialMSPreds.add(rightSet);
-			// }
 		} else if (right instanceof BoundIdentifier) {
 			boundSetsTypes.add(((BoundIdentifier) right).getType());
 		}
@@ -149,6 +152,8 @@ public class Gatherer extends DefaultVisitor {
 		while (setsForSpecialMSPredsIterator.hasNext()) {
 			final FreeIdentifier set = setsForSpecialMSPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
+				setsForSpecialMSPredsIterator.remove();
+			} else if (leftMSHandSideSets.contains(set)) {
 				setsForSpecialMSPredsIterator.remove();
 			}
 		}

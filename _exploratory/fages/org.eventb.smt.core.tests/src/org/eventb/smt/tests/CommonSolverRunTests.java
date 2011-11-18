@@ -179,14 +179,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				.append("\n");
 		debugBuilder.append(Theory.getComboLevel(theories).getName()).append(
 				"\n");
-		debugBuilder.append("Theories ");
-		String separator = "";
-		for (final Theory theory : theories) {
-			debugBuilder.append(separator);
-			debugBuilder.append(theory.getName());
-			separator = ", ";
+		if (theories != null) {
+			debugBuilder.append("Theories ");
+			String separator = "";
+			for (final Theory theory : theories) {
+				debugBuilder.append(separator);
+				debugBuilder.append(theory.getName());
+				separator = ", ";
+			}
+			debugBuilder.append("\n");
 		}
-		debugBuilder.append("\n");
 		debugBuilder.append("SMTLIB ").append(solverConfig.getSmtlibVersion())
 				.append("\n");
 		debugBuilder.append("Approach ").append(translationApproach)

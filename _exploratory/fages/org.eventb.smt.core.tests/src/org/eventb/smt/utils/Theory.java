@@ -164,11 +164,13 @@ public enum Theory {
 
 	public final static TheoryLevel getComboLevel(final Set<Theory> theories) {
 		TheoryLevel level = L1;
-		for (final Theory theory : theories) {
-			if (theory.level.equals(L2)) {
-				level = L2;
-			} else if (theory.level.equals(L3)) {
-				return L3;
+		if (theories != null) {
+			for (final Theory theory : theories) {
+				if (theory.level.equals(L2)) {
+					level = L2;
+				} else if (theory.level.equals(L3)) {
+					return L3;
+				}
 			}
 		}
 		return level;
