@@ -23,6 +23,9 @@ public enum SMTSolver {
 	Z3("z3"), //
 	UNKNOWN;
 
+	public static final String Z3_PARAM_AUTO_CONFIG = "AUTO_CONFIG";
+	public static final String Z3_PARAM_MBQI = "MBQI";
+
 	private final String solverName;
 
 	private SMTSolver(final String name) {
@@ -46,6 +49,10 @@ public enum SMTSolver {
 			}
 		}
 		return UNKNOWN;
+	}
+
+	public static String setZ3ParameterToFalse(final String paramName) {
+		return paramName + "=false";
 	}
 
 	@Override

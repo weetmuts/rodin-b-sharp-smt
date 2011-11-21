@@ -16,6 +16,9 @@ import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.provers.internal.core.SMTSolver.Z3_PARAM_AUTO_CONFIG;
+import static org.eventb.smt.provers.internal.core.SMTSolver.Z3_PARAM_MBQI;
+import static org.eventb.smt.provers.internal.core.SMTSolver.setZ3ParameterToFalse;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
@@ -40,6 +43,7 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * 
@@ -50,7 +54,7 @@ public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO = ".smt2";
-	
+
 	/**
 	 * FOR DEBUG ONLY
 	 */
@@ -192,6 +196,16 @@ public abstract class SMTProverCall extends XProverCall {
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
 		commandLine.add(smtBenchmarkFile.getAbsolutePath());
+
+		/**
+		 * This is a patch to deactivate the z3 MBQI module which is buggy.
+		 */
+		if (solverConfig.getSmtlibVersion().equals(SMTLIBVersion.V1_2)
+				&& solverConfig.getSolver().equals(SMTSolver.Z3)) {
+			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
+			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
+		}
+
 		/**
 		 * Selected solver parameters
 		 */
