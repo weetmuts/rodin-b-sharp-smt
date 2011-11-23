@@ -16,7 +16,6 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -170,13 +169,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private void printPerf(final StringBuilder debugBuilder,
-			final String lemmaName,
+			final String lemmaName, final String solverConfigId,
+			final SMTLIBVersion smtlibVersion,
 			final SMTTranslationApproach translationApproach,
 			final SMTProverCall smtProverCall) {
 		debugBuilder.append("<PERF_ENTRY>\n");
 		debugBuilder.append("Lemma ").append(lemmaName).append("\n");
-		debugBuilder.append("Solver ").append(solverConfig.getId())
-				.append("\n");
+		debugBuilder.append("Solver ").append(solverConfigId).append("\n");
 		debugBuilder.append(Theory.getComboLevel(theories).getName()).append(
 				"\n");
 		if (theories != null) {
@@ -189,8 +188,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 			debugBuilder.append("\n");
 		}
-		debugBuilder.append("SMTLIB ").append(solverConfig.getSmtlibVersion())
-				.append("\n");
+		debugBuilder.append("SMTLIB ").append(smtlibVersion).append("\n");
 		debugBuilder.append("Approach ").append(translationApproach)
 				.append("\n");
 		debugBuilder.append("Status ");
@@ -263,7 +261,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			printPerf(debugBuilder, lemmaName, translationApproach,
+			printPerf(debugBuilder, lemmaName, solverConfig.getId(),
+					solverConfig.getSmtlibVersion(), translationApproach,
 					smtProverCall);
 
 			assertEquals(
@@ -274,12 +273,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	private SMTProverCall successfulProverCall(final String callMessage,
+	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
 			final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
 			final Predicate parsedGoal, final boolean expectedSolverResult,
 			final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
+		final StringBuilder errorBuilder = new StringBuilder("");
+
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
@@ -304,16 +305,20 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			assertEquals(callMessage
-					+ " The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
+			if (smtProverCall.isValid() != expectedSolverResult) {
+				errorBuilder.append(callMessage);
+				errorBuilder
+						.append(" The result of the SMT prover wasn't the expected one.");
+				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+			}
 		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
+			errorBuilder.append(iae.getMessage());
+			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
-		return smtProverCall;
+		return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 	}
 
-	private SMTProverCall successfulProverCall(final String callMessage,
+	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
 			final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
 			final Predicate parsedGoal, final ITypeEnvironment te,
@@ -321,6 +326,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final List<Predicate> expectedUnsatCore,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
+		final StringBuilder errorBuilder = new StringBuilder("");
+
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
@@ -345,12 +352,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			assertEquals(
-					callMessage
-							+ " ("
-							+ lemmaName
-							+ ") The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
+			if (smtProverCall.isValid() != expectedSolverResult) {
+				errorBuilder.append(callMessage).append(" (");
+				errorBuilder.append(lemmaName);
+				errorBuilder
+						.append(") The result of the SMT prover wasn't the expected one.");
+				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+			}
 
 			final Set<Predicate> neededHypotheses = smtProverCall
 					.neededHypotheses();
@@ -362,44 +370,46 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 							.containsAll(neededHypotheses));
 			if (extractedContainsExpected) {
 				if (!expectedContainsExtracted) {
-					assertTrue(callMessage + " (" + lemmaName
-							+ ") The expected unsat-core is smaller than the "
-							+ solverConfig.getId() + " one.", true);
+					/*
+					 * errorBuilder.append(callMessage);
+					 * errorBuilder.append(" (").append(lemmaName); errorBuilder
+					 * .
+					 * append(") The expected unsat-core is smaller than the ");
+					 * errorBuilder
+					 * .append(solverConfig.getId()).append(" one."); return new
+					 * SMTProverCallTestResult(smtProverCall, errorBuilder);
+					 */
 				}
 			} else if (expectedContainsExtracted) {
-				// FIXME : this should be called only if the veriT unsat-core is
-				// smaller AND checked!
-				/*
-				 * System.out.println("Updating lemma " + lemmaName +
-				 * " in files..."); XMLtoSMTTests.exportUnsatCore(lemmaName,
-				 * smtProverCall.neededHypotheses(),
-				 * smtProverCall.isGoalNeeded(), te);
-				 */
-				assertTrue(
-						callMessage
-								+ " ("
-								+ lemmaName
-								+ ") "
-								+ solverConfig.getId()
-								+ " unsat-core is smaller than the expected one.",
-						false);
+				errorBuilder.append(callMessage);
+				errorBuilder.append(" (").append(lemmaName).append(") ");
+				errorBuilder.append(solverConfig.getId());
+				errorBuilder
+						.append(" unsat-core is smaller than the expected one.");
+				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 			} else {
-				assertTrue(
-						callMessage
-								+ " ("
-								+ lemmaName
-								+ ") "
-								+ solverConfig.getId()
-								+ " unsat-core and the expected one are different and mutualy not included.",
-						true);
+				/*
+				 * errorBuilder.append(callMessage);
+				 * errorBuilder.append(" (").append(lemmaName).append(") ");
+				 * errorBuilder.append(solverConfig.getId());
+				 * errorBuilder.append(
+				 * " unsat-core and the expected one are different and mutualy not included."
+				 * ); return new SMTProverCallTestResult(smtProverCall,
+				 * errorBuilder);
+				 */
 			}
-			assertEquals(callMessage + " (" + lemmaName
-					+ ") The extracted goal need wasn't the expected one.",
-					expectedGoalNeed, smtProverCall.isGoalNeeded());
+			if (smtProverCall.isGoalNeeded() != expectedGoalNeed) {
+				errorBuilder.append(callMessage);
+				errorBuilder.append(" (").append(lemmaName);
+				errorBuilder
+						.append(") The extracted goal need wasn't the expected one.");
+				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+			}
 		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
+			errorBuilder.append(iae.getMessage());
+			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
-		return smtProverCall;
+		return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 	}
 
 	private void doTeTest(final String lemmaName,
@@ -554,6 +564,25 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				new StringBuilder());
 	}
 
+	class SMTProverCallTestResult {
+		private SMTProverCall smtProverCall;
+		private StringBuilder errorBuffer = new StringBuilder("");
+
+		public SMTProverCallTestResult(final SMTProverCall smtProverCall,
+				final StringBuilder errorBuffer) {
+			this.smtProverCall = smtProverCall;
+			this.errorBuffer = errorBuffer;
+		}
+
+		public SMTProverCall getSmtProverCall() {
+			return smtProverCall;
+		}
+
+		public StringBuilder getErrorBuffer() {
+			return errorBuffer;
+		}
+	}
+
 	protected void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
@@ -577,6 +606,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
+		final String testedSolverConfigId = solverConfig.getId();
+		final SMTLIBVersion testedSmtlibVersion = solverConfig
+				.getSmtlibVersion();
+
 		/**
 		 * Iter 1 : calls the prover with the expected unsat-core, to check if
 		 * it is right
@@ -584,9 +617,18 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		debugBuilder.append("Iter 1\n");
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse("⊥",
 				te));
-		successfulProverCall("Iter 1", translationApproach, lemmaName,
-				expectedHypotheses, goalXML, te, expectedSolverResult,
-				expectedHypotheses, expectedGoalNeed, debugBuilder);
+		final SMTProverCallTestResult iter1Result = smtProverCallTest("Iter 1",
+				translationApproach, lemmaName, expectedHypotheses, goalXML,
+				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				debugBuilder);
+		final String iter1ErrorBuffer = iter1Result.getErrorBuffer().toString();
+		if (!iter1ErrorBuffer.isEmpty()) {
+			debugBuilder.append(iter1ErrorBuffer).append("\n");
+			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+					testedSmtlibVersion, translationApproach,
+					iter1Result.getSmtProverCall());
+			fail(iter1ErrorBuffer);
+		}
 		debugBuilder.append("\n");
 
 		/**
@@ -594,10 +636,18 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * one
 		 */
 		debugBuilder.append("Iter 2\n");
-		final SMTProverCall smtProverCall = successfulProverCall("Iter 2",
+		final SMTProverCallTestResult iter2Result = smtProverCallTest("Iter 2",
 				translationApproach, lemmaName, parsedHypotheses, parsedGoal,
 				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
 				debugBuilder);
+		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
+		if (!iter2ErrorBuffer.isEmpty()) {
+			debugBuilder.append(iter2ErrorBuffer).append("\n");
+			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+					testedSmtlibVersion, translationApproach,
+					iter2Result.getSmtProverCall());
+			fail(iter2ErrorBuffer);
+		}
 		debugBuilder.append("\n");
 
 		/**
@@ -605,19 +655,32 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * it is right
 		 */
 		debugBuilder.append("Iter 3\n");
-		final Set<Predicate> neededHypothesesSet = smtProverCall
-				.neededHypotheses();
+		final Set<Predicate> neededHypothesesSet = iter2Result
+				.getSmtProverCall().neededHypotheses();
 		final List<Predicate> neededHypotheses;
 		if (neededHypothesesSet != null) {
 			neededHypotheses = new ArrayList<Predicate>(neededHypothesesSet);
 		} else {
 			neededHypotheses = new ArrayList<Predicate>();
 		}
-		final Predicate goalSolver = (smtProverCall.isGoalNeeded() ? parsedGoal
-				: parse("⊥", te));
-		successfulProverCall("Iter 3", translationApproach, lemmaName,
-				neededHypotheses, goalSolver, te, expectedSolverResult,
-				expectedHypotheses, expectedGoalNeed, debugBuilder);
+		final Predicate goalSolver = (iter2Result.getSmtProverCall()
+				.isGoalNeeded() ? parsedGoal : parse("⊥", te));
+		final SMTProverCallTestResult iter3Result = smtProverCallTest("Iter 3",
+				translationApproach, lemmaName, neededHypotheses, goalSolver,
+				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				debugBuilder);
+		final String iter3ErrorBuffer = iter3Result.getErrorBuffer().toString();
+		if (!iter3ErrorBuffer.isEmpty()) {
+			debugBuilder.append(iter3ErrorBuffer).append("\n");
+			/**
+			 * Here we print performances of the iter 2 smt prover call because
+			 * we just want the unsat core to be refused
+			 */
+			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+					testedSmtlibVersion, translationApproach,
+					iter2Result.getSmtProverCall());
+			fail(iter3ErrorBuffer);
+		}
 		debugBuilder.append("\n");
 
 		gotUnsatCore = true;
@@ -630,32 +693,90 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SMTSolver solver = solverConfig.getSolver();
 		if (!solver.equals(Z3)) {
 			setPreferencesForZ3Test();
-			successfulProverCall("z3 unsat-core checking", translationApproach,
-					lemmaName, neededHypotheses, goalSolver,
-					expectedSolverResult, debugBuilder);
+			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
+					"z3 unsat-core checking", translationApproach, lemmaName,
+					neededHypotheses, goalSolver, expectedSolverResult,
+					debugBuilder);
+			final String z3UCCheckErrorBuffer = z3UCCheckResult
+					.getErrorBuffer().toString();
+			if (!z3UCCheckErrorBuffer.isEmpty()) {
+				debugBuilder.append(z3UCCheckErrorBuffer).append("\n");
+				/**
+				 * Here we print performances of the iter 3 smt prover call
+				 * because we just want the unsat core checking to be refused
+				 */
+				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+						testedSmtlibVersion, translationApproach,
+						iter3Result.getSmtProverCall());
+				fail(z3UCCheckErrorBuffer);
+			}
 		}
 		if (!solver.equals(CVC3)) {
 			setPreferencesForCvc3Test();
-			successfulProverCall("cvc3 unsat-core checking",
-					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult, debugBuilder);
+			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
+					"cvc3 unsat-core checking", translationApproach, lemmaName,
+					neededHypotheses, goalSolver, expectedSolverResult,
+					debugBuilder);
+			final String cvc3UCCheckErrorBuffer = cvc3UCCheckResult
+					.getErrorBuffer().toString();
+			if (!cvc3UCCheckErrorBuffer.isEmpty()) {
+				debugBuilder.append(cvc3UCCheckErrorBuffer).append("\n");
+				/**
+				 * Here we print performances of the iter 3 smt prover call
+				 * because we just want the unsat core checking to be refused
+				 */
+				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+						testedSmtlibVersion, translationApproach,
+						iter3Result.getSmtProverCall());
+				fail(cvc3UCCheckErrorBuffer);
+			}
 		}
 		if (!solver.equals(ALT_ERGO)) {
 			setPreferencesForAltErgoTest();
-			successfulProverCall("alt-ergo unsat-core checking",
-					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult, debugBuilder);
+			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
+					"alt-ergo unsat-core checking", translationApproach,
+					lemmaName, neededHypotheses, goalSolver,
+					expectedSolverResult, debugBuilder);
+			final String altergoUCCheckErrorBuffer = altergoUCCheckResult
+					.getErrorBuffer().toString();
+			if (!altergoUCCheckErrorBuffer.isEmpty()) {
+				debugBuilder.append(altergoUCCheckErrorBuffer).append("\n");
+				/**
+				 * Here we print performances of the iter 3 smt prover call
+				 * because we just want the unsat core checking to be refused
+				 */
+				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+						testedSmtlibVersion, translationApproach,
+						iter3Result.getSmtProverCall());
+				fail(altergoUCCheckErrorBuffer);
+			}
 		}
 		if (!solver.equals(VERIT)) {
 			setPreferencesForVeriTTest();
-			successfulProverCall("veriT unsat-core checking",
-					translationApproach, lemmaName, neededHypotheses,
-					goalSolver, expectedSolverResult, debugBuilder);
+			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
+					"veriT unsat-core checking", translationApproach,
+					lemmaName, neededHypotheses, goalSolver,
+					expectedSolverResult, debugBuilder);
+			final String veritUCCheckErrorBuffer = veritUCCheckResult
+					.getErrorBuffer().toString();
+			if (!veritUCCheckErrorBuffer.isEmpty()) {
+				debugBuilder.append(veritUCCheckErrorBuffer).append("\n");
+				/**
+				 * Here we print performances of the iter 3 smt prover call
+				 * because we just want the unsat core checking to be refused
+				 */
+				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+						testedSmtlibVersion, translationApproach,
+						iter3Result.getSmtProverCall());
+				fail(veritUCCheckErrorBuffer);
+			}
 		}
 		debugBuilder.append("\n");
 		unsatCoreChecked = true;
 
-		printPerf(debugBuilder, lemmaName, translationApproach, smtProverCall);
+		printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+				testedSmtlibVersion, translationApproach,
+				iter3Result.getSmtProverCall());
 	}
 
 	protected void doTTeTest(final String lemmaName,
