@@ -104,7 +104,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SMTSolver solver,
 			final SMTLIBVersion smtlibVersion) {
-		this(data, solver, smtlibVersion, GET_UNSAT_CORE);
+		this(data, solver, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(
@@ -441,7 +441,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	/**
 	 * Translates the each lemma of each xml file.
 	 */
-	@Test(timeout = 3000)
+	//@Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
 		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(
