@@ -69,7 +69,6 @@ public abstract class Translator implements ISimpleVisitor {
 
 	public static boolean DEBUG = false;
 	public static boolean DEBUG_DETAILS = false;
-	public static boolean DEV = false;
 
 	protected SMTNode<?> smtNode;
 

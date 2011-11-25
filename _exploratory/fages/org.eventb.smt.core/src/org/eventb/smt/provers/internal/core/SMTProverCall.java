@@ -23,7 +23,6 @@ import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.translation.Translator.DEV;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -457,7 +456,7 @@ public abstract class SMTProverCall extends XProverCall {
 					}
 				}
 
-			} else if (DEV) {
+			} else {
 				/**
 				 * smtlibVersion.equals(V2_0)
 				 */
@@ -494,7 +493,7 @@ public abstract class SMTProverCall extends XProverCall {
 				}
 			}
 
-			if (DEV & isValid()) {
+			if (isValid()) {
 				if (solverConfig.getSolver().equals(VERIT)
 						&& solverConfig.getArgs().contains("--proof=")) {
 					extractUnsatCoreFromVeriTProof();

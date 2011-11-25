@@ -39,8 +39,6 @@ public class SMTProversCore extends Plugin {
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
 	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR
 			+ "_details";
-	private static final String DEV = PLUGIN_ID + "/dev/";
-	private static final String DEV_TRANSLATOR = DEV + "translator";
 	/**
 	 * Default delay for time-out of the Smt provers (value 30 seconds). FIXME
 	 * javadoc and code conflict
@@ -72,7 +70,6 @@ public class SMTProversCore extends Plugin {
 	private void configureDebugOptions() {
 		Translator.DEBUG = parseOption(DEBUG_TRANSLATOR);
 		Translator.DEBUG_DETAILS = parseOption(DEBUG_TRANSLATOR_DETAILS);
-		Translator.DEV = parseOption(DEV_TRANSLATOR);
 	}
 
 	/**

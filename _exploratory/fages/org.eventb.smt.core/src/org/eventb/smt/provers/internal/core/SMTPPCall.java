@@ -120,7 +120,6 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		// TODO Adapt z3 specific options in SMT-LIB 1.2
 		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
 				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		smtFileWriter.close();
