@@ -181,10 +181,14 @@ public class SMTProversCore extends Plugin {
 			} else {
 				return BasicTactics.failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
+		} else if (configId.equals("")) {
+			return BasicTactics.reasonerTac(new ExternalSMTThroughPP(),
+					new SMTInput(restricted, timeout));
+		} else {
+			return BasicTactics.reasonerTac( //
+					new ExternalSMTThroughPP(), //
+					new SMTInput(restricted, timeout, configId));
 		}
-		return BasicTactics.reasonerTac( //
-				new ExternalSMTThroughPP(), //
-				new SMTInput(restricted, timeout, configId));
 	}
 
 	/**
@@ -254,10 +258,14 @@ public class SMTProversCore extends Plugin {
 			} else {
 				return BasicTactics.failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
+		} else if (configId.equals("")) {
+			return BasicTactics.reasonerTac(new ExternalSMTThroughVeriT(),
+					new SMTInput(restricted, timeout));
+		} else {
+			return BasicTactics.reasonerTac(//
+					new ExternalSMTThroughVeriT(), //
+					new SMTInput(restricted, timeout, configId));
 		}
-		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughVeriT(), //
-				new SMTInput(restricted, timeout, configId));
 	}
 
 	/**
