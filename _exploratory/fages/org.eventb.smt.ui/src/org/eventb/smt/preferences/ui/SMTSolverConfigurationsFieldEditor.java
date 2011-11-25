@@ -71,7 +71,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	private static final String REMOVE_LABEL = "Remove";
 	private static final String EDIT_LABEL = "Edit...";
 	private static final String SELECT_LABEL = "Select";
-	private static final String SOLVER_ID_LABEL = "Solver ID";
+	private static final String CONFIG_ID_LABEL = "Config ID";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
@@ -80,7 +80,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	/**
 	 * Column labels and bounds
 	 */
-	private static final String[] COLUMNS_LABELS = { SOLVER_ID_LABEL,
+	private static final String[] COLUMNS_LABELS = { CONFIG_ID_LABEL,
 			SOLVER_LABEL, SOLVER_PATH_LABEL, SOLVER_ARGS_LABEL, SMTLIB_LABEL };
 	private static final int[] COLUMN_BOUNDS = { 70, 70, 190, 150, 50 };
 

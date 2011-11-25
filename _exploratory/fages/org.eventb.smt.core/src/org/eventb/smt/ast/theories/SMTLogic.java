@@ -38,9 +38,6 @@ public class SMTLogic {
 	private final String name;
 	protected final SMTTheory[] theories;
 
-	// TODO add fields needed to print a complete logic (language, extensions,
-	// notes)
-
 	/**
 	 * Constructs a new SMTLogic
 	 * 

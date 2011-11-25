@@ -27,7 +27,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * 
  */
 public class SMTSolverConfiguration {
-	public static final String DEFAULT_SOLVER_ID = "";
+	public static final String DEFAULT_CONFIG_ID = "";
 	public static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
 	public static final String DEFAULT_SOLVER_PATH = "";
 	public static final String DEFAULT_SOLVER_ARGS = "";
@@ -68,7 +68,7 @@ public class SMTSolverConfiguration {
 	}
 
 	public SMTSolverConfiguration() {
-		this(DEFAULT_SOLVER_ID, DEFAULT_SOLVER, DEFAULT_SOLVER_PATH,
+		this(DEFAULT_CONFIG_ID, DEFAULT_SOLVER, DEFAULT_SOLVER_PATH,
 				DEFAULT_SOLVER_ARGS, DEFAULT_SMTLIB_VERSION);
 	}
 

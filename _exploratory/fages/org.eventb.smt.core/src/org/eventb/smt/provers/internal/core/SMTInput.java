@@ -18,8 +18,10 @@ import org.eventb.smt.preferences.SMTPreferences;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 
 public class SMTInput extends XProverInput {
-	private static final String SOLVER_ID = "solver_id";
+	private static final String CONFIG_ID = "config_id";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
+	private static final String SEQUENT_NAME_ERROR = "Illegal sequent name";
+	private static final String SOLVER_CONFIG_ERROR = "Illegal solver configuration selected in the tactic";
 
 	private final SMTSolverConfiguration solverConfig;
 	private final String poName;
@@ -27,27 +29,34 @@ public class SMTInput extends XProverInput {
 	private final String veritPath;
 	private final String error;
 
+	/**
+	 * Constructs an SMT input with a serialized input
+	 * 
+	 * @param reader
+	 *            the reader which will deserialize the input to use
+	 * @throws SerializeException
+	 *             thrown if the deserialization didn't get well
+	 */
 	protected SMTInput(final IReasonerInputReader reader)
 			throws SerializeException {
 		super(reader);
-		final String solverId = reader.getString(SOLVER_ID);
-		solverConfig = SMTPreferences.getSolverConfiguration(solverId);
+		final String configId = reader.getString(CONFIG_ID);
+		solverConfig = SMTPreferences.getSolverConfiguration(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = SMTPreferences.getTranslationPath();
 		veritPath = SMTPreferences.getVeriTPath();
 		error = validate();
 	}
 
-	public SMTInput(final boolean restricted, final long timeOutDelay,
-			final String poName) {
-		super(restricted, timeOutDelay);
-		solverConfig = SMTPreferences.getSolverConfiguration();
-		this.poName = poName;
-		translationPath = SMTPreferences.getTranslationPath();
-		veritPath = SMTPreferences.getVeriTPath();
-		error = validate();
-	}
-
+	/**
+	 * Constructs an SMT input for the currently selected solver configuration
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeOutDelay
+	 *            delay before timeout in milliseconds
+	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay) {
 		super(restricted, timeOutDelay);
 		solverConfig = SMTPreferences.getSolverConfiguration();
@@ -57,11 +66,52 @@ public class SMTInput extends XProverInput {
 		error = validate();
 	}
 
+	/**
+	 * Constructs an SMT input for the given solver configuration
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeOutDelay
+	 *            delay before timeout in milliseconds
+	 * @param configId
+	 *            id of the solver configuration to set up
+	 */
+	public SMTInput(final boolean restricted, final long timeOutDelay,
+			final String configId) {
+		super(restricted, timeOutDelay);
+		solverConfig = SMTPreferences.getSolverConfiguration(configId);
+		poName = RODIN_SEQUENT;
+		translationPath = SMTPreferences.getTranslationPath();
+		veritPath = SMTPreferences.getVeriTPath();
+		error = validate();
+	}
+
+	/**
+	 * Validates this SMT input.
+	 * 
+	 * @return the string to add to the error buffer, or <code>null</code> if
+	 *         the input is valid.
+	 */
 	private String validate() {
-		if (poName != null && !poName.equals("")) {
-			return null;
+		final StringBuilder errorBuilder = new StringBuilder();
+
+		if (poName == null || poName.equals("")) {
+			errorBuilder.append(SEQUENT_NAME_ERROR);
+		}
+
+		if (solverConfig == null) {
+			if (errorBuilder.length() > 0) {
+				errorBuilder.append("; ").append(SOLVER_CONFIG_ERROR);
+			} else {
+				errorBuilder.append(SOLVER_CONFIG_ERROR);
+			}
+		}
+
+		if (errorBuilder.length() != 0) {
+			return errorBuilder.toString();
 		} else {
-			return "Illegal sequent name";
+			return null;
 		}
 	}
 
@@ -96,6 +146,6 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super.serialize(writer);
 
-		writer.putString(SOLVER_ID, solverConfig.getId());
+		writer.putString(CONFIG_ID, solverConfig.getId());
 	}
 }

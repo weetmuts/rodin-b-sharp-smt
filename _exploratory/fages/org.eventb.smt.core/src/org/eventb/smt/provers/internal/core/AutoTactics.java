@@ -26,11 +26,20 @@ import org.eventb.smt.provers.core.SMTProversCore;
  */
 public class AutoTactics {
 
-	// label for the 'restricted' tactic parameter
+	/**
+	 * label for the 'restricted' tactic parameter
+	 */
 	private static final String RESTRICTED = "restricted";
 
-	// label for the 'timeout' tactic parameter
+	/**
+	 * label for the 'timeout' tactic parameter
+	 */
 	private static final String TIMEOUT = "timeout";
+
+	/**
+	 * label for the 'configId' tactic parameter
+	 */
+	private static final String CONFIG_ID = "configId";
 
 	/**
 	 * This class is not meant to be instantiated
@@ -39,8 +48,6 @@ public class AutoTactics {
 		//
 	}
 
-	// TODO add SMTAltErgoPP, SMTCVC3PP, SMTVeriTPP and SMTZ3PP etc.. with
-	// appropriate preferences
 	public static class SMTPP extends AbsractLazilyConstrTactic {
 
 		@Override
@@ -55,8 +62,9 @@ public class AutoTactics {
 		public ITactic getTactic(IParameterValuation parameters) {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
+			final String configId = parameters.getString(CONFIG_ID);
 
-			return SMTProversCore.externalSMTThroughPP(restricted, timeout);
+			return SMTProversCore.externalSMTThroughPP(restricted, timeout, configId);
 		}
 
 	}
@@ -75,8 +83,9 @@ public class AutoTactics {
 		public ITactic getTactic(IParameterValuation parameters) {
 			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
+			final String configId = parameters.getString(CONFIG_ID);
 
-			return SMTProversCore.externalSMTThroughVeriT(restricted, timeout);
+			return SMTProversCore.externalSMTThroughVeriT(restricted, timeout, configId);
 		}
 
 	}

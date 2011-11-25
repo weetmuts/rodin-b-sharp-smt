@@ -294,9 +294,4 @@ public class SMTVeriTCall extends SMTProverCall {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	protected void extractUnsatCoreFromVeriTProof() {
-		// TODO Auto-generated method stub
-	}
 }

@@ -40,8 +40,7 @@ public class SMTProversCore extends Plugin {
 	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR
 			+ "_details";
 	/**
-	 * Default delay for time-out of the Smt provers (value 30 seconds). FIXME
-	 * javadoc and code conflict
+	 * Default delay for time-out of the SMT provers (value 3 seconds).
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;
@@ -143,6 +142,36 @@ public class SMTProversCore extends Plugin {
 		return SMTFailureTactic.getProofTreeOriginError();
 	}
 
+	/**
+	 * This tactic should be called by the parameterised auto tactic.
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeout
+	 *            delay before timeout in milliseconds
+	 * @param configId
+	 *            the selected solver id
+	 * @return the SMT tactic
+	 */
+	public static ITactic externalSMTThroughPP(boolean restricted,
+			long timeout, final String configId) {
+		return BasicTactics.reasonerTac( //
+				new ExternalSMTThroughPP(), //
+				new SMTInput(restricted, timeout, configId));
+	}
+
+	/**
+	 * This tactic should be called when it is not parameterised and the user
+	 * just want the current solver configuration to be used
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeout
+	 *            delay before timeout in milliseconds
+	 * @return the SMT tactic
+	 */
 	public static ITactic externalSMTThroughPP(boolean restricted, long timeout) {
 		return BasicTactics.reasonerTac( //
 				new ExternalSMTThroughPP(), //
@@ -170,6 +199,36 @@ public class SMTProversCore extends Plugin {
 		return externalSMTThroughPP(restricted, DEFAULT_DELAY);
 	}
 
+	/**
+	 * This tactic should be called by the parameterised auto tactic.
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeout
+	 *            delay before timeout in milliseconds
+	 * @param configId
+	 *            the selected solver id
+	 * @return the SMT tactic
+	 */
+	public static ITactic externalSMTThroughVeriT(boolean restricted,
+			long timeout, final String configId) {
+		return BasicTactics.reasonerTac(//
+				new ExternalSMTThroughVeriT(), //
+				new SMTInput(restricted, timeout, configId));
+	}
+
+	/**
+	 * This tactic should be called when it is not parameterised and the user
+	 * just want the current solver configuration to be used
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeout
+	 *            delay before timeout in milliseconds
+	 * @return the SMT tactic
+	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout) {
 		return BasicTactics.reasonerTac(//

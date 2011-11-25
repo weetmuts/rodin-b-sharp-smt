@@ -26,9 +26,6 @@ public class SMTTheory {
 	private final SMTPredicateSymbol[] predicates;
 	private final SMTFunctionSymbol[] functions;
 
-	// TODO add fields needed to print a complete theory (definition, axioms,
-	// notes)
-
 	protected SMTTheory(final String name, final SMTSortSymbol[] sorts,
 			final SMTPredicateSymbol[] predicates,
 			final SMTFunctionSymbol[] functions) {

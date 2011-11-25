@@ -432,8 +432,6 @@ public abstract class SMTProverCall extends XProverCall {
 
 	abstract protected void extractUnsatCore();
 
-	abstract protected void extractUnsatCoreFromVeriTProof();
-
 	/**
 	 * Runs the external SMT solver on the sequent given at instance creation.
 	 */
@@ -494,20 +492,23 @@ public abstract class SMTProverCall extends XProverCall {
 			}
 
 			if (isValid()) {
-				if (solverConfig.getSolver().equals(VERIT)
-						&& solverConfig.getArgs().contains("--proof=")) {
-					extractUnsatCoreFromVeriTProof();
-				} else if (solverConfig.getSmtlibVersion().equals(V2_0)
-						&& solverConfig.getSolver().equals(Z3)) { // TODO add
-					// version
-					// control
-					// because
-					// versions
-					// anterior
-					// to Z3
-					// v3.0
-					// can't give
-					// unsat-cores.
+				if ((solverConfig.getSolver().equals(VERIT) //
+						&& solverConfig.getArgs().contains("--proof=")) //
+						|| (solverConfig.getSmtlibVersion().equals(V2_0) //
+						&& solverConfig.getSolver().equals(Z3))) { // FIXME it
+																	// is not
+																	// possible
+																	// to check
+																	// z3
+																	// version,
+																	// so make
+																	// errors be
+																	// catched
+																	// if not a
+																	// version
+																	// capable
+																	// of manage
+																	// unsat-cores.
 					extractUnsatCore();
 				}
 			}

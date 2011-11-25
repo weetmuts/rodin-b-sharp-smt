@@ -19,7 +19,7 @@ public enum SMTLIBVersion {
 	 */
 	V1_2("V1.2"),
 	/**
-	 * The SMT-LIB language used by the SMT Plug-in since TODO when done.
+	 * The current SMT-LIB language used by the SMT Plug-in
 	 */
 	V2_0("V2.0");
 

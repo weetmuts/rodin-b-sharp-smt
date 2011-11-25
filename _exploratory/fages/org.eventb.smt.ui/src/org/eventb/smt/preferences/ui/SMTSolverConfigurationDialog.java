@@ -45,7 +45,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * 
  */
 public class SMTSolverConfigurationDialog extends Dialog {
-	private static final String SOLVER_ID_LABEL = "Solver ID";
+	private static final String CONFIG_ID_LABEL = "Config ID";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
@@ -77,7 +77,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		 * Solver ID
 		 */
 		final Label idLabel = new Label(shell, SWT.NONE);
-		idLabel.setText(SOLVER_ID_LABEL);
+		idLabel.setText(CONFIG_ID_LABEL);
 		data = new GridData();
 		data.horizontalSpan = 1;
 		idLabel.setLayoutData(data);

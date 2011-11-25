@@ -51,6 +51,12 @@
                label="timeout"
                type="Long">
          </tacticParameter>
+         <tacticParameter
+         	   default=""
+         	   description="%configIdDesc"
+               label="configId"
+               type="String">
+         </tacticParameter>
       </parameterizer>
       <parameterizer
             class="org.eventb.smt.provers.internal.core.AutoTactics$SMTVeriTParameterizer"

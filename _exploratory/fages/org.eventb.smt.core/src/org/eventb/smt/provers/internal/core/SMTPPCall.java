@@ -10,6 +10,7 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
@@ -182,13 +183,34 @@ public class SMTPPCall extends SMTProverCall {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Parses the solver result to find mentioned assertion labels. If the goal
+	 * label is mentioned, <code>goalNeeded</code> becomes <code>true</code>,
+	 * else <code>false</code>. If some hypothesis label is mentioned, the
+	 * corresponding hypotheses are saved in <code>neededHypotheses</code>, else
+	 * <code>neededHypotheses</code> stays <code>null</code>.
+	 * </p>
+	 * <p>
+	 * When this method is called, the solverResult is assumed to contain an
+	 * unsat-core written in the SMT-LIB 2.0 format, that is :</br>
+	 * <code>(get-unsat-core response) gucr ::= f*</code>
+	 * </p>
+	 * <p>
+	 * As the plug-in is supposed to label all the assertions produced from
+	 * translating the original Event-B sequent, we can ignore the following
+	 * point mentioned in the SMT-LIB standard : "The semantics of this
+	 * command’s output is that the reported assertions together with all the
+	 * unlabeled ones in the set of all assertions are jointly unsatisfiable".
+	 * </p>
+	 */
 	@Override
-	protected void extractUnsatCore() { // FIXME use regex see checkResult
+	protected void extractUnsatCore() {
 		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
 		for (final String label : labelMap.keySet()) {
-			if (solverResult.contains(label)) {
+			if (compile(label).matcher(solverResult).find()) {
 				final ITrackedPredicate trPredicate = labelMap.get(label);
 				if (trPredicate.isHypothesis()) {
 					foundNeededHypotheses.add(trPredicate.getOriginal());
@@ -197,39 +219,7 @@ public class SMTPPCall extends SMTProverCall {
 				}
 			}
 		}
-		if (!foundNeededHypotheses.isEmpty()) {
-			neededHypotheses = foundNeededHypotheses;
-		}
-	}
 
-	@Override
-	protected void extractUnsatCoreFromVeriTProof() { // FIXME use
-														// extractUnsatCore
-														// instead
-		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
-		goalNeeded = false;
-		String separator = "";
-		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
-		if (DEBUG) {
-			debugBuilder.append("unsat-core: (");
-		}
-		for (final String label : labelMap.keySet()) {
-			if (solverResult.contains(label)) {
-				if (DEBUG) {
-					debugBuilder.append(separator + label);
-					separator = ", ";
-				}
-				final ITrackedPredicate trPredicate = labelMap.get(label);
-				if (trPredicate.isHypothesis()) {
-					foundNeededHypotheses.add(trPredicate.getOriginal());
-				} else {
-					goalNeeded = true;
-				}
-			}
-		}
-		if (DEBUG) {
-			debugBuilder.append(").\n");
-		}
 		if (!foundNeededHypotheses.isEmpty()) {
 			neededHypotheses = foundNeededHypotheses;
 		}

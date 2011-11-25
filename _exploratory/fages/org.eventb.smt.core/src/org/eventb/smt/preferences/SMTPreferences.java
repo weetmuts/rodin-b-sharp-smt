@@ -99,7 +99,7 @@ public class SMTPreferences {
 	}
 
 	public static SMTSolverConfiguration getSolverConfiguration(
-			final String solverId) {
+			final String configId) {
 		final IPreferencesService preferencesService = Platform
 				.getPreferencesService();
 		final String solverPreferences = preferencesService.getString(
@@ -107,7 +107,7 @@ public class SMTPreferences {
 				DEFAULT_SOLVER_PREFERENCES, null);
 		final List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(solverPreferences);
 		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
-			if (solverConfig.getId().equals(solverId)) {
+			if (solverConfig.getId().equals(configId)) {
 				return solverConfig;
 			}
 		}
