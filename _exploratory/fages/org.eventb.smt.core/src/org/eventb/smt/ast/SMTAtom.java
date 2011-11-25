@@ -18,7 +18,7 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 
 /**
- * This class represents an SMTAtom
+ * This class represents an atom of the SMT-LIB language (v1.2)
  */
 class SMTAtom extends SMTFormula {
 
@@ -28,12 +28,27 @@ class SMTAtom extends SMTFormula {
 	final SMTPredicateSymbol predicateSymbol;
 
 	/**
-	 * the therms that are arguments of the predicate symbol
+	 * The argument terms of the predicate symbol
 	 */
 	final SMTTerm[] terms;
 
 	/**
-	 * get the predicate symbol of the atom
+	 * Creates a new SMTAtom. If the given terms sort, number and order don't
+	 * match the one expected by the predicate symbol, throws an exception.
+	 * 
+	 * @param symbol
+	 *            the predicate symbol of the new atom
+	 * @param terms
+	 *            the argument terms of the predicate
+	 */
+	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm[] terms) {
+		checkPredicateRank(symbol, terms);
+		predicateSymbol = symbol;
+		this.terms = terms.clone();
+	}
+
+	/**
+	 * Gets the predicate symbol of the atom
 	 * 
 	 * @return the predicate symbol of the atom
 	 */
@@ -42,7 +57,7 @@ class SMTAtom extends SMTFormula {
 	}
 
 	/**
-	 * get the terms of the atom
+	 * Gets the terms of the atom
 	 * 
 	 * @return the terms of the atom
 	 */
@@ -51,17 +66,61 @@ class SMTAtom extends SMTFormula {
 	}
 
 	/**
-	 * Creates a new SMT Atom
+	 * Checks if the arguments sort, order and number match the expected.
 	 * 
 	 * @param symbol
-	 *            the predicate symbol of the atom
+	 *            The operator
 	 * @param terms
-	 *            the terms that are arguments of the predicate
+	 *            The terms to be checked
 	 */
-	SMTAtom(final SMTPredicateSymbol symbol, final SMTTerm[] terms) {
-		verifyPredicateRank(symbol, terms);
-		predicateSymbol = symbol;
-		this.terms = terms.clone();
+	private static void checkPredicateRank(final SMTPredicateSymbol symbol,
+			final SMTTerm terms[]) {
+		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
+		final boolean wellSorted;
+		if (symbol.isAssociative()) {
+			wellSorted = checkAssociativeRank(expectedSortArgs[0], terms);
+		} else {
+			wellSorted = checkNonAssociativeRank(expectedSortArgs, terms);
+		}
+		if (!wellSorted) {
+			throw new IllegalArgumentException(
+					incompatiblePredicateRankException(symbol, terms,
+							new StringBuilder()));
+		}
+	}
+
+	/**
+	 * Constructs a string message that explains the error if the rank of the
+	 * symbol is not compatible with its arguments, and returns an
+	 * {@link IllegalArgumentException} with thee message.
+	 * 
+	 * @param expectedSymbol
+	 *            the symbol
+	 * @param args
+	 *            the arguments
+	 * @return an {@link IllegalArgumentException} with the detailed message.
+	 * 
+	 * @see #checkPredicateRank(SMTPredicateSymbol, SMTTerm[])
+	 */
+	protected static String incompatiblePredicateRankException(
+			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args,
+			final StringBuilder sb) {
+		sb.append("Arguments of function symbol: ");
+		sb.append(expectedSymbol);
+		sb.append(": ");
+		String sep = "";
+		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
+			sb.append(sep);
+			sep = " ";
+			expectedArg.toString(sb);
+		}
+		sb.append(" does not match: ");
+		for (final SMTTerm arg : args) {
+			sb.append(sep);
+			sep = " ";
+			arg.getSort().toString(sb);
+		}
+		return sb.toString();
 	}
 
 	@Override
@@ -85,64 +144,5 @@ class SMTAtom extends SMTFormula {
 		final StringBuilder builder = new StringBuilder();
 		toString(builder, -1, false);
 		return builder.toString();
-	}
-
-	/**
-	 * This method verifies if the real arguments match in sort, order and
-	 * number the expected arguments.
-	 * 
-	 * @param symbol
-	 *            The operator
-	 * @param terms
-	 *            The terms to be checked
-	 */
-	private static void verifyPredicateRank(final SMTPredicateSymbol symbol,
-			final SMTTerm terms[]) {
-		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
-		final boolean wellSorted;
-		if (symbol.isAssociative()) {
-			wellSorted = verifyAssociativeRank(expectedSortArgs[0], terms);
-		} else {
-			wellSorted = verifyNonAssociativeRank(expectedSortArgs, terms);
-		}
-		if (!wellSorted) {
-			throw new IllegalArgumentException(
-					incompatiblePredicateRankException(symbol, terms,
-							new StringBuilder()));
-		}
-	}
-
-	/**
-	 * Constructs a string message that explains the error if the rank of the
-	 * symbol is not compatible with its arguments, and returns an
-	 * {@link IllegalArgumentException} with thee message.
-	 * 
-	 * @param expectedSymbol
-	 *            the symbol
-	 * @param args
-	 *            the arguments
-	 * @return an {@link IllegalArgumentException} with the detailed message.
-	 * 
-	 * @see #verifyPredicateRank(SMTPredicateSymbol, SMTTerm[])
-	 */
-	protected static String incompatiblePredicateRankException(
-			final SMTPredicateSymbol expectedSymbol, final SMTTerm[] args,
-			final StringBuilder sb) {
-		sb.append("Arguments of function symbol: ");
-		sb.append(expectedSymbol);
-		sb.append(": ");
-		String sep = "";
-		for (final SMTSortSymbol expectedArg : expectedSymbol.getArgSorts()) {
-			sb.append(sep);
-			sep = " ";
-			expectedArg.toString(sb);
-		}
-		sb.append(" does not match: ");
-		for (final SMTTerm arg : args) {
-			sb.append(sep);
-			sep = " ";
-			arg.getSort().toString(sb);
-		}
-		return sb.toString();
 	}
 }

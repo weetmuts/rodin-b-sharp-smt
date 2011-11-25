@@ -73,9 +73,9 @@ public class SMTFunApplication extends SMTTerm {
 		final SMTSortSymbol[] expectedSortArgs = symbol.getArgSorts();
 		final boolean wellSorted;
 		if (symbol.isAssociative()) {
-			wellSorted = verifyAssociativeRank(expectedSortArgs[0], terms);
+			wellSorted = checkAssociativeRank(expectedSortArgs[0], terms);
 		} else {
-			wellSorted = verifyNonAssociativeRank(expectedSortArgs, terms);
+			wellSorted = checkNonAssociativeRank(expectedSortArgs, terms);
 		}
 		if (!wellSorted) {
 			throw new IllegalArgumentException(

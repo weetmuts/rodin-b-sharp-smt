@@ -37,30 +37,59 @@ import org.eventb.smt.ast.commands.SMTAssertCommand;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
 /**
- * This class builds an SMT-LIB SMTBenchmark
+ * This class builds an SMT-LIB benchmark.
  * 
  */
 public class SMTBenchmark {
+	/**
+	 * Printing parameter constants
+	 */
 	public static final boolean PRINT_ANNOTATIONS = true;
 	public static final boolean PRINT_GET_UNSAT_CORE_COMMANDS = true;
 	public static final boolean PRINT_Z3_SPECIFIC_COMMANDS = true;
+
+	/**
+	 * Name of the benchmark
+	 */
 	protected final String name;
+	/**
+	 * SMT-LIB signature as defined in the format.
+	 */
 	protected final SMTSignature signature;
+	/**
+	 * SMT-LIB formulas produced by translating the Event-B sequent hypotheses.
+	 */
 	protected final List<SMTFormula> assumptions;
+	/**
+	 * SMT-LIB formula produced by translating the negation of the Event-B
+	 * sequent goal.
+	 */
 	protected final SMTFormula formula;
+	/**
+	 * This field maps label strings to the original Event-B predicate to which
+	 * they were assigned.
+	 */
 	protected HashMap<String, ITrackedPredicate> labelMap = new HashMap<String, ITrackedPredicate>();
+	/**
+	 * SMT-LIB comments which are printed at the top of the benchmark.
+	 */
 	protected final List<String> comments = new ArrayList<String>();
 
 	/**
 	 * Constructs a new SMT Benchmark. It is composed by the name of the
-	 * benchmark, the signature, the assumptions and the formula.
+	 * benchmark, the signature, the assumptions, the main formula and the map
+	 * of Event-B formulas labels.
 	 * 
 	 * @param lemmaName
 	 *            the name of the benchmark
+	 * @param signature
+	 *            the signature of the benchmark
 	 * @param assumptions
 	 *            the list of assumptions
 	 * @param formula
 	 *            the formula formula
+	 * @param labelMap
+	 *            the map of Event-B formulas labels
 	 */
 	public SMTBenchmark(final String lemmaName, final SMTSignature signature,
 			final List<SMTFormula> assumptions, final SMTFormula formula,
@@ -72,17 +101,20 @@ public class SMTBenchmark {
 		this.labelMap = labelMap;
 	}
 
-	protected void getUsedSymbols(final SMTNumeral num,
+	// FIXME could not this method be moved in another class (SMTNumeral) ?
+	protected static void getUsedSymbols(final SMTNumeral num,
 			final Set<SMTSymbol> symbols) {
 		symbols.add(num.getSort());
 	}
 
-	protected void getUsedSymbols(final SMTVar var, final Set<SMTSymbol> symbols) {
+	// FIXME could not this method be moved in another class (SMTVar) ?
+	protected static void getUsedSymbols(final SMTVar var,
+			final Set<SMTSymbol> symbols) {
 		symbols.add(var.getSort());
 	}
 
 	/**
-	 * Appends the string for notes section to the string builder
+	 * Appends the string for SMT-LIB notes section to the string builder
 	 * 
 	 * @param builder
 	 *            the builder which will receive the string
@@ -122,7 +154,7 @@ public class SMTBenchmark {
 	}
 
 	/**
-	 * Appends the string representation of the formula section to the strinh
+	 * Appends the string representation of the formula section to the string
 	 * builder
 	 * 
 	 * @param builder
@@ -144,6 +176,16 @@ public class SMTBenchmark {
 		}
 	}
 
+	/**
+	 * Appends the string representation of the benchmark content to the string
+	 * builder
+	 * 
+	 * @param builder
+	 *            the builder that will receive the representation
+	 * @param printAnnotations
+	 *            true if SMT-LIB annotations and labels should be printed in
+	 *            the benchmark
+	 */
 	protected void benchmarkContent(final StringBuilder builder,
 			final boolean printAnnotations) {
 		signature.toString(builder);
@@ -165,12 +207,17 @@ public class SMTBenchmark {
 		builder.append("\n");
 	}
 
+	/**
+	 * Getter of the SMT-LIB signature of this benchmark
+	 * 
+	 * @return the SMT-LIB signature of the benchmark
+	 */
 	public SMTSignature getSignature() {
 		return signature;
 	}
 
 	/**
-	 * returns the name of the benchmark
+	 * Returns the name of the benchmark
 	 * 
 	 * @return the name of the benchmark
 	 */
@@ -179,7 +226,7 @@ public class SMTBenchmark {
 	}
 
 	/**
-	 * get the assumptions of the benchmark
+	 * Gets the assumptions of the benchmark
 	 * 
 	 * @return the assumptions of the benchmark
 	 */
@@ -188,7 +235,7 @@ public class SMTBenchmark {
 	}
 
 	/**
-	 * gets the formula of the benchmark
+	 * Gets the formula of the benchmark
 	 * 
 	 * @return the formula of the benchmark
 	 */
@@ -199,19 +246,28 @@ public class SMTBenchmark {
 	/**
 	 * Gets the label map of the benchmark
 	 * 
-	 * @return the labelMap
+	 * @return the labelMap the map of label strings to the original Event-B
+	 *         predicate to which they were assigned.
 	 */
 	public Map<String, ITrackedPredicate> getLabelMap() {
 		return labelMap;
 	}
 
 	/**
-	 * This method is created to print the string representation of the
-	 * benchmark in the PrintWriter
+	 * Prints the string representation of the benchmark in the PrintWriter
 	 * 
 	 * @param pw
-	 *            the printwriter that will receive the string representation of
+	 *            the print writer that will receive the string representation
+	 *            of the benchmark
+	 * @param printAnnotations
+	 *            true if SMT-LIB annotations and labels should be printed in
 	 *            the benchmark
+	 * @param printGetUnsatCoreCommands
+	 *            true if commands to activate the unsat core extraction should
+	 *            be printed in the benchmark
+	 * @param printZ3SpecificCommands
+	 *            true if specific z3 commands to activate the unsat core
+	 *            extraction should be printed in the benchmark
 	 */
 	public void print(final PrintWriter pw, final boolean printAnnotations,
 			final boolean printGetUnsatCoreCommands,
