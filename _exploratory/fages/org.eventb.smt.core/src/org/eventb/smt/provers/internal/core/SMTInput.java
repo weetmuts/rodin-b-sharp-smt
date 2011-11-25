@@ -74,6 +74,27 @@ public class SMTInput extends XProverInput {
 	 *            reasoner
 	 * @param timeOutDelay
 	 *            delay before timeout in milliseconds
+	 * @param solverConfig
+	 *            the solver configuration to set up
+	 */
+	public SMTInput(final boolean restricted, final long timeOutDelay,
+			final SMTSolverConfiguration solverConfig) {
+		super(restricted, timeOutDelay);
+		this.solverConfig = solverConfig;
+		poName = RODIN_SEQUENT;
+		translationPath = SMTPreferences.getTranslationPath();
+		veritPath = SMTPreferences.getVeriTPath();
+		error = validate();
+	}
+
+	/**
+	 * Constructs an SMT input for the given solver configuration
+	 * 
+	 * @param restricted
+	 *            true iff only selected hypotheses should be considered by the
+	 *            reasoner
+	 * @param timeOutDelay
+	 *            delay before timeout in milliseconds
 	 * @param configId
 	 *            id of the solver configuration to set up
 	 */

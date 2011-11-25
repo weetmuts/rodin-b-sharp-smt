@@ -11,12 +11,16 @@
 
 package org.eventb.smt.provers.core;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.tactics.BasicTactics;
+import org.eventb.smt.preferences.SMTPreferences;
+import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughPP;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.provers.internal.core.SMTInput;
@@ -44,6 +48,12 @@ public class SMTProversCore extends Plugin {
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;
+	/**
+	 * Configuration ID value used when all configurations should be applied
+	 * sequentially.
+	 */
+	public static String ALL_SOLVER_CONFIGURATIONS = "all";
+	public static String NO_SOLVER_CONFIGURATION_ERROR = "No SMT solver configuration set";
 	/**
 	 * The shared instance.
 	 */
@@ -156,6 +166,22 @@ public class SMTProversCore extends Plugin {
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
+		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<SMTSolverConfiguration> solverConfigs = SMTPreferences
+					.getSolverConfigurations();
+			if (solverConfigs != null && !solverConfigs.isEmpty()) {
+				final int nbSolverConfigs = solverConfigs.size();
+				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
+				for (int i = 0; i < nbSolverConfigs; i++) {
+					smtTactics[i] = BasicTactics.reasonerTac(
+							new ExternalSMTThroughPP(), new SMTInput(
+									restricted, timeout, solverConfigs.get(i)));
+				}
+				return BasicTactics.composeUntilSuccess(smtTactics);
+			} else {
+				return BasicTactics.failTac(NO_SOLVER_CONFIGURATION_ERROR);
+			}
+		}
 		return BasicTactics.reasonerTac( //
 				new ExternalSMTThroughPP(), //
 				new SMTInput(restricted, timeout, configId));
@@ -213,6 +239,22 @@ public class SMTProversCore extends Plugin {
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
+		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<SMTSolverConfiguration> solverConfigs = SMTPreferences
+					.getSolverConfigurations();
+			if (solverConfigs != null && !solverConfigs.isEmpty()) {
+				final int nbSolverConfigs = solverConfigs.size();
+				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
+				for (int i = 0; i < nbSolverConfigs; i++) {
+					smtTactics[i] = BasicTactics.reasonerTac(
+							new ExternalSMTThroughVeriT(), new SMTInput(
+									restricted, timeout, solverConfigs.get(i)));
+				}
+				return BasicTactics.composeUntilSuccess(smtTactics);
+			} else {
+				return BasicTactics.failTac(NO_SOLVER_CONFIGURATION_ERROR);
+			}
+		}
 		return BasicTactics.reasonerTac(//
 				new ExternalSMTThroughVeriT(), //
 				new SMTInput(restricted, timeout, configId));

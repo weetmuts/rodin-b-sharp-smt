@@ -98,6 +98,15 @@ public class SMTPreferences {
 		}
 	}
 
+	public static List<SMTSolverConfiguration> getSolverConfigurations() {
+		final IPreferencesService preferencesService = Platform
+				.getPreferencesService();
+		final String solverPreferences = preferencesService.getString(
+				PREFERENCES_PLUGIN_ID, SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES, null);
+		return parsePreferencesString(solverPreferences);
+	}
+
 	public static SMTSolverConfiguration getSolverConfiguration(
 			final String configId) {
 		final IPreferencesService preferencesService = Platform
