@@ -605,13 +605,12 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown")
 	public void testCh7LikeEvenSimplerUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("ch7_likeEvenSimplerUnsatCore", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID,
+		doTest("ch7_likeEvenSimplerUnsatCore", hyps, "A×B ⊆ ℕ×ℕ", te, NOT_VALID,
 				hyps, GOAL_NEEDED);
 	}
 
@@ -621,7 +620,6 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("unknown")
 	public void testCh7LikeMoreSimpleYetUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -629,7 +627,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 
 		doTest("ch7_likeMoreSimpleYetUnsatCore", hyps,
-				"{0 ↦ d} ∈ ({0,1} →  D)", te, !VALID, hyps, GOAL_NEEDED);
+				"{0 ↦ d} ∈ ({0,1} →  D)", te, NOT_VALID, hyps, GOAL_NEEDED);
 	}
 
 	/**

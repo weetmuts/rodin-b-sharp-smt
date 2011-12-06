@@ -57,11 +57,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	static File smtFolder;
 
 	/**
-	 * H |- ¬ G is UNSAT, so H |- G is VALID
+	 * H /\ ¬ G is UNSAT, so H |- G is VALID
 	 */
 	protected static boolean VALID = true;
 	/**
-	 * H |- ¬ G is SAT, so H |- G is NOT VALID
+	 * H /\ ¬ G is SAT, so H |- G is NOT VALID
 	 */
 	protected static boolean NOT_VALID = false;
 

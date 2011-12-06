@@ -28,7 +28,7 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
  */
 public abstract class SMTNode<T extends SMTNode<T>> {
 	private static final String ANNOTATION_OPERATOR = "!";
-	private final List<SMTAttribute> annotations = new ArrayList<SMTAttribute>();
+	private final List<SMTAttribute<?>> annotations = new ArrayList<SMTAttribute<?>>();
 
 	/**
 	 * Checks the rank for associative symbol (predicate or function symbol).
@@ -83,7 +83,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 		}
 	}
 
-	public void addAnnotation(final SMTAttribute attribute) {
+	public void addAnnotation(final SMTAttribute<?> attribute) {
 		annotations.add(attribute);
 	}
 
@@ -111,7 +111,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 		builder.append("\n");
 		indent(builder, SMTAssertCommand.ASSERT_COMMAND_OFFSET);
 		builder.append(SPACE);
-		for (final SMTAttribute attribute : annotations) {
+		for (final SMTAttribute<?> attribute : annotations) {
 			attribute.toString(builder);
 		}
 		builder.append(CPAR);
