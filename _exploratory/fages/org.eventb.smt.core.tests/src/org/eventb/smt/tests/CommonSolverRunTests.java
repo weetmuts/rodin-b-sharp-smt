@@ -42,7 +42,7 @@ import org.junit.After;
 public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String LAST_ALTERGO = "alt-ergo-nightly-r217";
 	public static final String LAST_CVC3 = "cvc3-2011-10-05";
-	public static final String LAST_VERIT = "veriT-dev-r2744";
+	public static final String LAST_VERIT = "veriT-dev-r2837";
 	public static final String LAST_Z3 = "z3-3.2";
 	public static final boolean GET_UNSAT_CORE = true;
 	public static final String DEFAULT_TEST_TRANSLATION_PATH = System
@@ -456,7 +456,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(
 				LAST_VERIT,
 				VERIT,
-				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune",
+				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune --enable-e",
 				solverConfig.getSmtlibVersion());
 	}
 

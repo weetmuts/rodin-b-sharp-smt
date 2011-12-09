@@ -10,6 +10,8 @@
 
 package org.eventb.smt.translation;
 
+import static org.eventb.smt.translation.SMTThroughPP.GATHER_SPECIAL_MS_PREDS;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -260,7 +262,8 @@ public class Gatherer extends DefaultVisitor {
 
 	@Override
 	public boolean enterIN(final RelationalPredicate membershipPredicate) {
-		gatherSetsForSpecialMSPreds(membershipPredicate);
+		if (GATHER_SPECIAL_MS_PREDS)
+			gatherSetsForSpecialMSPreds(membershipPredicate);
 		if (booleanTypeInTypeTree(membershipPredicate.getLeft().getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;

@@ -1,3 +1,6 @@
 org.eventb.smt.core/debug = true
 org.eventb.smt.core/debug/translator = false
 org.eventb.smt.core/debug/translator_details = false
+org.eventb.smt.core/debug/pp_ms_optimization_on = true
+org.eventb.smt.core/debug/pp_gather_special_ms_preds = true
+org.eventb.smt.core/debug/pp_set_theory_axioms_on = true

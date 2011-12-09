@@ -559,6 +559,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(in a A)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(in (pair a b) AB)");
+		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(X a BOOLS BOOLS)");
+		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(Y a BOOLS a)");
 	}
 
 	/**

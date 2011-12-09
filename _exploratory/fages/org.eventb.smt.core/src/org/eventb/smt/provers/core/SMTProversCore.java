@@ -24,6 +24,7 @@ import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughPP;
 import org.eventb.smt.provers.internal.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.provers.internal.core.SMTInput;
+import org.eventb.smt.translation.SMTThroughPP;
 import org.eventb.smt.translation.Translator;
 import org.osgi.framework.BundleContext;
 
@@ -43,6 +44,13 @@ public class SMTProversCore extends Plugin {
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
 	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR
 			+ "_details";
+	private static final String DEBUG_PP_GATHER_SPECIAL_MS_PREDS = DEBUG
+			+ "pp_gather_special_ms_preds";
+	private static final String DEBUG_PP_MS_OPTIMIZATION_ON = DEBUG
+			+ "pp_ms_optimization_on";
+	private static final String DEBUG_PP_SET_THEORY_AXIOMS_ON = DEBUG
+			+ "pp_set_theory_axioms_on";
+
 	/**
 	 * Default delay for time-out of the SMT provers (value 3 seconds).
 	 */
@@ -79,6 +87,10 @@ public class SMTProversCore extends Plugin {
 	private void configureDebugOptions() {
 		Translator.DEBUG = parseOption(DEBUG_TRANSLATOR);
 		Translator.DEBUG_DETAILS = parseOption(DEBUG_TRANSLATOR_DETAILS);
+		SMTThroughPP.GATHER_SPECIAL_MS_PREDS = parseOption(DEBUG_PP_GATHER_SPECIAL_MS_PREDS);
+		SMTThroughPP.MS_OPTIMIZATION_ON = SMTThroughPP.GATHER_SPECIAL_MS_PREDS
+				&& parseOption(DEBUG_PP_MS_OPTIMIZATION_ON);
+		SMTThroughPP.SET_THEORY_AXIOMS_ON = parseOption(DEBUG_PP_SET_THEORY_AXIOMS_ON);
 	}
 
 	/**
