@@ -19,6 +19,9 @@ package org.eventb.smt.provers.internal.core;
 public enum SMTSolver {
 	ALT_ERGO("alt-ergo"), //
 	CVC3("cvc3"), //
+	CVC4("cvc4"), //
+	MATHSAT5("mathsat5"), //
+	OPENSMT("opensmt"), //
 	VERIT("verit"), //
 	Z3("z3"), //
 	UNKNOWN;

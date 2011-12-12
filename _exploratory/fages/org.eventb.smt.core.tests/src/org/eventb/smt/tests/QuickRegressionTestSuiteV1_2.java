@@ -12,6 +12,9 @@ package org.eventb.smt.tests;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithAltErgoPPV1_2;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV1_2;
+import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc4PPV1_2;
+import org.eventb.smt.tests.acceptance.AxiomsTestWithMathSat5PPV1_2;
+import org.eventb.smt.tests.acceptance.AxiomsTestWithOpenSMTPPV1_2;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV1_2;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithZ3PPV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
@@ -28,7 +31,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		TranslationTestsWithVeriTV1_2.class, LogicTestsWithPPV1_2.class,
 		RunProverTestWithPPV1_2.class, RunProverTestWithVeriTV1_2.class,
 		AxiomsTestWithAltErgoPPV1_2.class, AxiomsTestWithCvc3PPV1_2.class,
-		AxiomsTestWithVeriTPPV1_2.class, AxiomsTestWithZ3PPV1_2.class })
+		AxiomsTestWithCvc4PPV1_2.class, AxiomsTestWithMathSat5PPV1_2.class,
+		AxiomsTestWithOpenSMTPPV1_2.class, AxiomsTestWithVeriTPPV1_2.class,
+		AxiomsTestWithZ3PPV1_2.class })
 public class QuickRegressionTestSuiteV1_2 {
 	// Just for tests
 }

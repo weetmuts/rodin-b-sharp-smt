@@ -14,6 +14,7 @@ package org.eventb.smt.provers.internal.core;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.provers.internal.core.SMTSolver.OPENSMT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3_PARAM_AUTO_CONFIG;
@@ -52,7 +53,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
 public abstract class SMTProverCall extends XProverCall {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
-	protected static final String SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO = ".smt2";
+	protected static final String NON_STANDARD_SMT_LIB2_FILE_EXTENSION = ".smt2";
 
 	/**
 	 * FOR DEBUG ONLY
@@ -191,10 +192,6 @@ public abstract class SMTProverCall extends XProverCall {
 		 * Selected solver binary path
 		 */
 		commandLine.add(solverConfig.getPath());
-		/**
-		 * Benchmark file produced by translating the Event-B sequent
-		 */
-		commandLine.add(smtBenchmarkFile.getAbsolutePath());
 
 		/**
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
@@ -214,6 +211,15 @@ public abstract class SMTProverCall extends XProverCall {
 			for (final String argString : argumentsString) {
 				commandLine.add(argString);
 			}
+		}
+
+		/**
+		 * Benchmark file produced by translating the Event-B sequent
+		 */
+		if (solverConfig.getSolver().equals(SMTSolver.MATHSAT5)) {
+			commandLine.add("< " + smtBenchmarkFile.getAbsolutePath());
+		} else {
+			commandLine.add(smtBenchmarkFile.getAbsolutePath());
 		}
 
 		return commandLine;
@@ -378,9 +384,9 @@ public abstract class SMTProverCall extends XProverCall {
 
 		final SMTSolver solver = solverConfig.getSolver();
 		if (solverConfig.getSmtlibVersion().equals(V2_0)
-				&& solver.equals(ALT_ERGO)) {
+				&& (solver.equals(ALT_ERGO) || solver.equals(OPENSMT))) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
-					SMT_LIB2_FILE_EXTENSION_FOR_ALTERGO, smtTranslationFolder);
+					NON_STANDARD_SMT_LIB2_FILE_EXTENSION, smtTranslationFolder);
 		} else {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					SMT_LIB_FILE_EXTENSION, smtTranslationFolder);

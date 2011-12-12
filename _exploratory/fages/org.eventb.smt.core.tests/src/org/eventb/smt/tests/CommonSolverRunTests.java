@@ -12,6 +12,9 @@ package org.eventb.smt.tests;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
+import static org.eventb.smt.provers.internal.core.SMTSolver.CVC4;
+import static org.eventb.smt.provers.internal.core.SMTSolver.MATHSAT5;
+import static org.eventb.smt.provers.internal.core.SMTSolver.OPENSMT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
@@ -42,6 +45,9 @@ import org.junit.After;
 public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String LAST_ALTERGO = "alt-ergo-nightly-r217";
 	public static final String LAST_CVC3 = "cvc3-2011-10-05";
+	public static final String LAST_CVC4 = "cvc4-2011-12-11";
+	public static final String LAST_MATHSAT5 = "mathsat5-smtcomp2011";
+	public static final String LAST_OPENSMT = "opensmt-20101017";
 	public static final String LAST_VERIT = "veriT-dev-r2837";
 	public static final String LAST_Z3 = "z3-3.2";
 	public static final boolean GET_UNSAT_CORE = true;
@@ -438,6 +444,46 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				solverConfig.getSmtlibVersion());
 	}
 
+	protected void setPreferencesForCvc3Test() {
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
+		final String args;
+		if (smtlibVersion.equals(V1_2)) {
+			args = "-lang smt";
+		} else {
+			args = "-lang smt2";
+		}
+		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
+	}
+
+	protected void setPreferencesForCvc4Test() {
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
+		final String args;
+		if (smtlibVersion.equals(V1_2)) {
+			args = "--lang smt";
+		} else {
+			args = "--lang smt2";
+		}
+		setSolverPreferences(LAST_CVC4, CVC4, args, smtlibVersion);
+	}
+
+	protected void setPreferencesForMathSat5Test() {
+		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
+		final String args;
+		if (smtlibVersion.equals(V1_2)) {
+			args = "-input=smt";
+		} else {
+			/**
+			 * default is smt2
+			 */
+			args = "";
+		}
+		setSolverPreferences(LAST_MATHSAT5, MATHSAT5, args, smtlibVersion);
+	}
+
+	protected void setPreferencesForOpenSMTTest() {
+		setSolverPreferences(LAST_OPENSMT, OPENSMT, "", solverConfig.getSmtlibVersion());
+	}
+
 	protected void setPreferencesForVeriTTest() {
 		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
@@ -458,17 +504,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				VERIT,
 				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune --enable-e",
 				solverConfig.getSmtlibVersion());
-	}
-
-	protected void setPreferencesForCvc3Test() {
-		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
-		final String args;
-		if (smtlibVersion.equals(V1_2)) {
-			args = "-lang smt";
-		} else {
-			args = "-lang smt2";
-		}
-		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
 	}
 
 	protected void setPreferencesForZ3Test() {
@@ -503,6 +538,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			break;
 		case CVC3:
 			setPreferencesForCvc3Test();
+			break;
+		case CVC4:
+			setPreferencesForCvc4Test();
+			break;
+		case MATHSAT5:
+			setPreferencesForMathSat5Test();
+			break;
+		case OPENSMT:
+			setPreferencesForOpenSMTTest();
 			break;
 		case VERIT:
 			setPreferencesForVeriTTest();

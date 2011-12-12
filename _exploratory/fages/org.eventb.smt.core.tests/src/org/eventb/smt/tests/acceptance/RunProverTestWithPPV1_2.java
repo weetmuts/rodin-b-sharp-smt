@@ -92,6 +92,74 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testUnsatCvc4Call() {
+		setPreferencesForCvc4Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("cvc4_unsat", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	public void testSatCvc4Call() {
+		setPreferencesForCvc4Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("cvc4_sat", hyps, "x > z", arith_te, NOT_VALID);
+	}
+
+	@Test
+	public void testUnsatMathSat5Call() {
+		setPreferencesForMathSat5Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("mathsat5_unsat", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	public void testSatMathSat5Call() {
+		setPreferencesForMathSat5Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("mathsat5_sat", hyps, "x > z", arith_te, NOT_VALID);
+	}
+
+	@Test
+	@Ignore("OpenSMT is not compatible with SMT-LIB 1.2")
+	public void testUnsatOpenSMTCall() {
+		setPreferencesForOpenSMTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("opensmt_unsat", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	@Ignore("OpenSMT is not compatible with SMT-LIB 1.2")
+	public void testSatOpenSMTCall() {
+		setPreferencesForOpenSMTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("opensmt_sat", hyps, "x > z", arith_te, NOT_VALID);
+	}
+
+	@Test
 	public void testUnsatVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -136,8 +204,8 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredZ3Call() {
-		setPreferencesForZ3Test();
+	public void testTRUEPredAltErgoCall() {
+		setPreferencesForAltErgoTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -158,8 +226,8 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredAltErgoCall() {
-		setPreferencesForAltErgoTest();
+	public void testTRUEPredVeriTCall() {
+		setPreferencesForVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -169,8 +237,8 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredVeriTCall() {
-		setPreferencesForVeriTTest();
+	public void testTRUEPredZ3Call() {
+		setPreferencesForZ3Test();
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
