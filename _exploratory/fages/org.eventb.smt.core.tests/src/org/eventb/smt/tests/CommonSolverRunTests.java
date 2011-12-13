@@ -66,10 +66,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * H /\ ¬ G is UNSAT, so H |- G is VALID
 	 */
 	protected static boolean VALID = true;
-	/**
-	 * H /\ ¬ G is SAT, so H |- G is NOT VALID
-	 */
-	protected static boolean NOT_VALID = false;
 
 	protected Set<Theory> theories;
 	protected SMTSolverConfiguration solverConfig;
@@ -481,16 +477,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected void setPreferencesForOpenSMTTest() {
-		setSolverPreferences(LAST_OPENSMT, OPENSMT, "", solverConfig.getSmtlibVersion());
+		setSolverPreferences(LAST_OPENSMT, OPENSMT, "",
+				solverConfig.getSmtlibVersion());
 	}
 
 	protected void setPreferencesForVeriTTest() {
 		final SMTLIBVersion smtlibVersion = solverConfig.getSmtlibVersion();
 		final String args;
 		if (smtlibVersion.equals(V1_2)) {
-			args = "";
+			args = "--enable-e --max-time=2.9";
 		} else {
-			args = "-i smtlib2 --disable-print-success";
+			args = "-i smtlib2 --disable-print-success --enable-e --max-time=2.9";
 		}
 		setSolverPreferences(LAST_VERIT, VERIT, args, smtlibVersion);
 	}
@@ -502,7 +499,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(
 				LAST_VERIT,
 				VERIT,
-				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune --enable-e",
+				"-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune --enable-e --max-time=2.9",
 				solverConfig.getSmtlibVersion());
 	}
 

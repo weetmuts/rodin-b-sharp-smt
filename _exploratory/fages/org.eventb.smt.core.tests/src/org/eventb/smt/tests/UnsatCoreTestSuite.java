@@ -10,8 +10,8 @@
 
 package org.eventb.smt.tests;
 
-import org.eventb.smt.tests.performance.UnsatCoreVeriTPerfWithPP;
-import org.eventb.smt.tests.performance.UnsatCoreZ3PerfWithPP;
+import org.eventb.smt.tests.performance.unsatcore.UnsatCoreVeriTPerfWithPP;
+import org.eventb.smt.tests.performance.unsatcore.UnsatCoreZ3PerfWithPP;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
