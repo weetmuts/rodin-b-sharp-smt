@@ -41,6 +41,7 @@ import org.eventb.smt.ast.theories.VeriTBooleans;
 import org.eventb.smt.ast.theories.VeritPredefinedTheory;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughVeriT;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -559,6 +560,11 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	public void testPredIn() {
 		testTranslationV1_2Default("a ∈ A", "(in a A)");
 		testTranslationV1_2Default("a↦b ∈ AB", "(in (pair a b) AB)");
+	}
+
+	@Test
+	@Ignore("Type ℤ×ℙ(BOOL)×ℙ(BOOL): sets of sets are not supported yet")
+	public void testPredIn2() {
 		testTranslationV1_2Default("a↦BOOL↦BOOL ∈ X", "(X a BOOLS BOOLS)");
 		testTranslationV1_2Default("a↦BOOL↦a ∈ Y", "(Y a BOOLS a)");
 	}

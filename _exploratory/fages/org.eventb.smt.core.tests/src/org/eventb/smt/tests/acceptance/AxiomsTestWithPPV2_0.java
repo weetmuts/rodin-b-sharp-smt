@@ -46,6 +46,6 @@ public class AxiomsTestWithPPV2_0 extends CommonSolverRunTests {
 	public void testSingletonAxiom() {
 		final List<String> hyps = Arrays.asList("S ∈ PS");
 
-		doTest("singleton_axiom", hyps, "¬ x ∈ S", simple_te, NOT_VALID);
+		doTest("singleton_axiom", hyps, "¬ x ∈ S", simple_te, !VALID);
 	}
 }

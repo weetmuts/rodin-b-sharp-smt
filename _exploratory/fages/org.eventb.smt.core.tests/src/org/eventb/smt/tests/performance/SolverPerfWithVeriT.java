@@ -126,7 +126,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList("g ∈ e");
 
 		// perform test
-		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
+		doTest("belong_1", hyps, "g ∈ f", pow_te, !VALID);
 	}
 
 	// This test is to see if it's handling the U sort ok

@@ -428,7 +428,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
 
-		doTest("belong_1", hyps, "g ∈ f", pow_te, NOT_VALID);
+		doTest("belong_1", hyps, "g ∈ f", pow_te, !VALID);
 	}
 
 	@Test(timeout = 3000)
