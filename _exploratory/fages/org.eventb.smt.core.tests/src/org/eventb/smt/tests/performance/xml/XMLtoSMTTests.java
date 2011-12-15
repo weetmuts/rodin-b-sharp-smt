@@ -72,6 +72,10 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			+ File.separatorChar + "c444" + File.separatorChar + "7"
 			+ File.separatorChar + "exploratory" + File.separatorChar
 			+ "xml_lemmas";
+	public final static String XMLFolder2 = System.getProperty("user.home")
+			+ File.separatorChar + "c444" + File.separatorChar + "7"
+			+ File.separatorChar + "exploratory" + File.separatorChar
+			+ "xml_lemmas2";
 	/**
 	 * The path of the output folder where to store the generated SMT files.
 	 */
@@ -111,7 +115,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			final List<TheoryLevel> levels) {
 		final List<LemmaData[]> totalDocData = new ArrayList<LemmaData[]>();
 		final File DTDFile = new File(DTDFolder, "DTDLemma.dtd");
-		final File dir = new File(XMLFolder);
+		final File dir = new File(XMLFolder2);
 		if (dir.isDirectory()) {
 			final File[] files = dir.listFiles(new FilenameFilter() {
 				@Override
@@ -138,10 +142,6 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 				} catch (final SAXException e) {
 					e.printStackTrace();
 				}
-				String output = file.getName();
-				output = output.substring(0, output.indexOf("."));
-				final File outputFolder = new File(new File(SMTFolder), output);
-				outputFolder.mkdir();
 				final List<LemmaData[]> docDatas = parse(document, levels);
 				totalDocData.addAll(docDatas);
 			}

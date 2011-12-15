@@ -146,6 +146,13 @@ public enum Theory {
 		throw new IllegalArgumentException(name);
 	}
 
+	/**
+	 * Gets the theories with the specified names.
+	 * 
+	 * @param names
+	 *            the theories names
+	 * @return the theories whose name are <tt>names</tt>
+	 */
 	public final static Set<Theory> fromNames(final Set<String> names) {
 		final Set<Theory> theories = new HashSet<Theory>();
 		for (final String name : names) {
@@ -154,6 +161,13 @@ public enum Theory {
 		return theories;
 	}
 
+	/**
+	 * Gets the set of known theories of the specified level.
+	 * 
+	 * @param level
+	 *            the theories level
+	 * @return the theories whose level is <tt>level</tt>
+	 */
 	public final static Set<Theory> fromLevel(final TheoryLevel level) {
 		final Set<Theory> theories = new HashSet<Theory>();
 		for (final Theory theory : Theory.values())
@@ -162,6 +176,16 @@ public enum Theory {
 		return theories;
 	}
 
+	/**
+	 * Gets the level of a theories combo, that is :</ br> level 1 if the combo
+	 * contains only theories of level 1</ br> level 2 if the combo contains
+	 * only theories of level 1 or 2 and at least one theory of level 2 </ br>
+	 * level 3 if the combo contains at least one theory of level 3.
+	 * 
+	 * @param theories
+	 *            the theories combo
+	 * @return the level of this combo
+	 */
 	public final static TheoryLevel getComboLevel(final Set<Theory> theories) {
 		TheoryLevel level = L1;
 		if (theories != null) {
