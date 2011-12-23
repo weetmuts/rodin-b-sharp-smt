@@ -385,6 +385,23 @@ public class SMTLogic {
 		}
 	}
 
+	public static class QF_AUFLIAv2_0 extends SMTLogicPP {
+		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
+		private static final SMTTheory[] THEORIES = {
+				SMTTheoryV2_0.Core.getInstance(),
+				SMTTheoryV2_0.Ints.getInstance() };
+
+		private static final QF_AUFLIAv2_0 INSTANCE = new QF_AUFLIAv2_0();
+
+		private QF_AUFLIAv2_0() {
+			super(QF_AUFLIA_LOGIC_NAME, THEORIES);
+		}
+
+		public static QF_AUFLIAv2_0 getInstance() {
+			return INSTANCE;
+		}
+	}
+
 	public static class AUFLIAv2_0 extends SMTLogicPP {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
 		private static final SMTTheory[] THEORIES = {

@@ -45,6 +45,7 @@ public class Gatherer extends DefaultVisitor {
 	private boolean boolTheory = false;
 	private boolean atomicBoolExpFound = false;
 	private boolean usesTruePredicate = false;
+	private boolean quantifierFound = false;
 	private final Set<FreeIdentifier> setsForSpecialMSPreds = new HashSet<FreeIdentifier>();
 	private final Set<Type> boundSetsTypes = new HashSet<Type>();
 	private final Set<FreeIdentifier> leftMSHandSideSets = new HashSet<FreeIdentifier>();
@@ -144,6 +145,10 @@ public class Gatherer extends DefaultVisitor {
 	 * Then these setsForSpecialMSPreds are used as operator with one argument,
 	 * instead of creating a fresh membership predicate where the set is one of
 	 * the arguments.
+	 * 
+	 * When a set is removed from this set, a general membership predicate
+	 * symbol will be used, and the axiom of singleton will be generated. This
+	 * axiom contains some quantifiers.
 	 */
 	private void removeIdentsFromSetsForSpecialMSPreds() {
 		/**
@@ -155,8 +160,10 @@ public class Gatherer extends DefaultVisitor {
 			final FreeIdentifier set = setsForSpecialMSPredsIterator.next();
 			if (boundSetsTypes.contains(set.getType())) {
 				setsForSpecialMSPredsIterator.remove();
+				quantifierFound = true;
 			} else if (leftMSHandSideSets.contains(set)) {
 				setsForSpecialMSPredsIterator.remove();
+				quantifierFound = true;
 			}
 		}
 	}
@@ -210,10 +217,18 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
-	 * returns true if the atomic expression BOOL was found in the sequent
+	 * @return true if the atomic expression BOOL was found in the sequent
 	 */
 	public boolean foundAtomicBoolExp() {
 		return atomicBoolExpFound;
+	}
+
+	/**
+	 * @return true if one or more quantifier, or membership were found in the
+	 *         sequent
+	 */
+	public boolean foundQuantifier() {
+		return quantifierFound;
 	}
 
 	/**
@@ -228,6 +243,7 @@ public class Gatherer extends DefaultVisitor {
 
 	@Override
 	public boolean visitBOUND_IDENT_DECL(final BoundIdentDecl ident) {
+		quantifierFound = true;
 		if (booleanTypeInTypeTree(ident.getType())) {
 			boolTheory = true;
 			usesTruePredicate = true;

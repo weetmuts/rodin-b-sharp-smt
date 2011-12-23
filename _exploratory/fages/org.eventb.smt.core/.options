@@ -1,4 +1,4 @@
-org.eventb.smt.core/debug = true
+org.eventb.smt.core/debug = false
 org.eventb.smt.core/debug/translator = false
 org.eventb.smt.core/debug/translator_details = false
 org.eventb.smt.core/debug/pp_ms_optimization_on = true

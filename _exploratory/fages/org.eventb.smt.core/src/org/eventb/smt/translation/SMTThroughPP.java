@@ -78,6 +78,7 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
+import org.eventb.smt.ast.theories.SMTLogic.QF_AUFLIAv2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
@@ -138,7 +139,7 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
 	 */
-	public SMTThroughPP(final SMTLIBVersion smtlibVersion) {
+	private SMTThroughPP(final SMTLIBVersion smtlibVersion) {
 		super(smtlibVersion);
 		sf = SMTFactoryPP.getInstance();
 	}
@@ -304,7 +305,11 @@ public class SMTThroughPP extends Translator {
 			// the underlying logic of SMT-LIB 2.0 should be used (which only
 			// contains the Core theory). A method usesIntsTheory will be needed
 			// in the gatherer to do this.
-			return AUFLIAv2_0.getInstance();
+			if (gatherer.foundQuantifier()) {
+				return AUFLIAv2_0.getInstance();
+			} else {
+				return QF_AUFLIAv2_0.getInstance();
+			}
 		}
 	}
 

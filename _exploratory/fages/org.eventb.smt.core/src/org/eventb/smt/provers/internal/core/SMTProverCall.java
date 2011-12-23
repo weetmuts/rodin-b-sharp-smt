@@ -571,7 +571,7 @@ public abstract class SMTProverCall extends XProverCall {
 	@Override
 	public String displayMessage() {
 		final StringBuilder message = new StringBuilder();
-		message.append("SMT-").append(solverConfig.getSolver().toString());
+		message.append("SMT-").append(solverConfig.getId());
 		return message.toString();
 	}
 

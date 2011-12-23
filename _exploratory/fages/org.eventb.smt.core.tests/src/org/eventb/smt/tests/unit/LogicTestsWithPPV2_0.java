@@ -27,12 +27,14 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 	// uncomment when the gatherer can detect Ints occurrences
 	// private static final SMTLogic smtLibUnderlyingLogic;
 	private static final SMTLogic aufliaLogic;
+	private static final SMTLogic qfAufliaLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
 		// uncomment when the gathere can detect Ints occurrences
 		// smtLibUnderlyingLogic =
 		// SMTLogic.SMTLIBUnderlyingLogicV2_0.getInstance();
 		aufliaLogic = SMTLogic.AUFLIAv2_0.getInstance();
+		qfAufliaLogic = SMTLogic.QF_AUFLIAv2_0.getInstance();
 	}
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
@@ -48,7 +50,7 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testInt() {
-		testLogic(defaultTe, "a = 1", aufliaLogic);
+		testLogic(defaultTe, "a = 1", qfAufliaLogic);
 	}
 
 	@Test
@@ -57,12 +59,12 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitTRUE(AtomicExpression)
 		 */
-		testLogic(defaultTe, "TRUE = p", aufliaLogic);
+		testLogic(defaultTe, "TRUE = p", qfAufliaLogic);
 		/**
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOOL(AtomicExpression)
 		 */
-		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", aufliaLogic);
+		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", qfAufliaLogic);
 		/**
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOUND_IDENT_DECL(BoundIdentDecl)
@@ -73,6 +75,6 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * enterIN(RelationalPredicate)
 		 */
-		testLogic(defaultTe, "p ∈ P", aufliaLogic);
+		testLogic(defaultTe, "p ∈ P", qfAufliaLogic);
 	}
 }
