@@ -12,6 +12,7 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -139,7 +140,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark("lemma",
-						new ArrayList<Predicate>(), goal);
+						new ArrayList<Predicate>(), goal, V1_2);
 
 		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark
 				.getSignature();
@@ -179,8 +180,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred).toString(actualSMTNode, -1,
-				false);
+		SMTThroughVeriT.translate(logic, ppred, V1_2).toString(actualSMTNode,
+				-1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -201,7 +202,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final SMTBenchmark benchmark = SMTThroughVeriT
 				.translateToSmtLibBenchmark("lemma",
-						new ArrayList<Predicate>(), goal);
+						new ArrayList<Predicate>(), goal, V1_2);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -232,7 +233,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred);
+		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
+				V1_2);
 	}
 
 	@Test

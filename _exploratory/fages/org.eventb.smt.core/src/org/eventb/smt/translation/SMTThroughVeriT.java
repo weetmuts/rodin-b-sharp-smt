@@ -61,6 +61,7 @@ import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_S
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION_OP;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -121,6 +122,7 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTLogic.SMTLogicVeriT;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
@@ -156,8 +158,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			final Predicate predicate) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT();
+			final Predicate predicate, SMTLIBVersion smtlibVersion) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());
@@ -171,8 +173,8 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	final private SMTFactoryVeriT sf;
 
-	public SMTThroughVeriT() {
-		super(V1_2); // FIXME this is a stub
+	public SMTThroughVeriT(SMTLIBVersion smtlibVersion) {
+		super(smtlibVersion);
 		sf = SMTFactoryVeriT.getInstance();
 	}
 
@@ -196,14 +198,16 @@ public class SMTThroughVeriT extends Translator {
 	 *            the hypotheses of the Event-B sequent
 	 * @param goal
 	 *            the goal of the Event-B sequent
+	 * @param smtlibVersion
+	 *            The target version of the SMT (1.2 or 2.0)
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
 			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal) {
-		final SMTBenchmark smtB = new SMTThroughVeriT().translate(lemmaName,
-				hypotheses, goal);
+			final Predicate goal, SMTLIBVersion smtlibVersion) {
+		final SMTBenchmark smtB = new SMTThroughVeriT(smtlibVersion).translate(
+				lemmaName, hypotheses, goal);
 		return smtB;
 	}
 
@@ -211,8 +215,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT();
+			final Predicate predicate, SMTLIBVersion smtlibVersion) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, FormulaFactory.getDefault());
@@ -370,7 +374,16 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final ISimpleSequent sequent) {
-		signature = new SMTSignatureV1_2Verit(logic, V1_2);
+		if (logic instanceof SMTLogicVeriT) {
+			if (smtlibVersion.equals(V1_2)) {
+				signature = new SMTSignatureV1_2Verit(logic, V1_2);
+			} else {
+				// FIXME: Find a way to put SMT 2.0 Signature
+				signature = new SMTSignatureV1_2Verit(logic, V2_0);
+			}
+		} else {
+			throw new IllegalArgumentException("Wrong logic.");
+		}
 
 		addBooleanAssumption(logic);
 
@@ -483,6 +496,20 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	/**
+	 * This method is used only to test the SMT translation
+	 */
+	public static SMTFormula translate(final Predicate predicate,
+			final SMTLIBVersion smtlibVersion) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
+		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
+		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
+				predicate, FormulaFactory.getDefault());
+		final SMTLogic logic = translator.determineLogic(sequent);
+		translator.translateSignature(logic, sequent);
+		return translator.translate(predicate, IN_GOAL);
+	}
+
+	/**
 	 * This method translates one predicate.
 	 * 
 	 * @param predicate
@@ -535,7 +562,8 @@ public class SMTThroughVeriT extends Translator {
 				if (type instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) type);
 				} else {
-					sortSymbol = signature.freshSort(type.toString());
+					String freshSortName = type.toString();
+					sortSymbol = signature.freshSort(freshSortName);
 					typeMap.put(type, sortSymbol);
 				}
 			}

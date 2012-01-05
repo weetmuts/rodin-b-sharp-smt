@@ -10,6 +10,7 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
@@ -17,16 +18,22 @@ import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
+import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughVeriT;
@@ -234,7 +241,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal);
+				hypotheses, goal, V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -286,12 +293,83 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	@Override
 	protected void makeSMTBenchmarkFileV2_0() throws IOException {
-		// TODO Auto-generated method stub
+		/**
+		 * Produces an SMT benchmark.
+		 */
+		proofMonitor.setTask("Translating Event-B proof obligation");
+		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
+				hypotheses, goal, V2_0);
+		
+		/**
+		 * Updates the name of the benchmark (the name originally given could
+		 * have been changed by the translator if it was a reserved symbol)
+		 */
+		lemmaName = benchmark.getName();
+
+		/**
+		 * Makes temporary files
+		 */
+		makeTempFileNames();
+		
+		/**
+		 * Prints the benchmark with macros in a file
+		 */
+		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
+		benchmark.print(veriTBenchmarkWriter, !PRINT_ANNOTATIONS,
+				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
+		veriTBenchmarkWriter.close();
+		if (!veriTBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+
+		/**
+		 * Calls veriT to process the macros of the benchmark
+		 */
+		if (DEBUG_DETAILS) {
+			debugBuilder.append("Launching ").append(SMTSolver.VERIT)
+					.append(" with input:\n\n");
+			showVeriTBenchmarkFile();
+		}
+		callVeriT();
+
+		/**
+		 * Prints the SMT-LIB benchmark in a file
+		 */
+		if (macrosTranslated) {
+			final FileWriter smtBenchmarkWriter = new FileWriter(
+					smtBenchmarkFile);
+			smtBenchmarkWriter.write(veriTResult);
+			smtBenchmarkWriter.close();
+		} else {
+			throw new IllegalArgumentException(veriTResult);
+		}
+		if (!smtBenchmarkFile.exists()) {
+			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+		}
+
+		
+		
+
 	}
 
 	@Override
 	protected void extractUnsatCore() {
-		// TODO Auto-generated method stub
+		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
+		goalNeeded = false;
+		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
+		for (final String label : labelMap.keySet()) {
+			if (compile(label).matcher(solverResult).find()) {
+				final ITrackedPredicate trPredicate = labelMap.get(label);
+				if (trPredicate.isHypothesis()) {
+					foundNeededHypotheses.add(trPredicate.getOriginal());
+				} else {
+					goalNeeded = true;
+				}
+			}
+		}
 
+		if (!foundNeededHypotheses.isEmpty()) {
+			neededHypotheses = foundNeededHypotheses;
+		}
 	}
 }
