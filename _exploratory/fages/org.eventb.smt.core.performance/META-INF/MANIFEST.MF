@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Performance
+Bundle-SymbolicName: org.eventb.smt.core.performance
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Systerel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eventb.core;bundle-version="2.4.0",
+ org.eventb.smt;bundle-version="0.1.0",
+ org.eventb.smt.core;bundle-version="0.1.0",
+ org.junit;bundle-version="4.8.2",
+ org.eventb.smt.ui;bundle-version="0.1.0",
+ org.eclipse.jface;bundle-version="3.7.0",
+ org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0"
