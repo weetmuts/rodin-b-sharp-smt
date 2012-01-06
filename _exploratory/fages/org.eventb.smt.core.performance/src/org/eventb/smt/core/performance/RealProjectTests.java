@@ -29,19 +29,23 @@ import org.rodinp.core.IRodinFile;
  * 
  */
 public class RealProjectTests extends BuilderTest {
-	private final static String VERIT2863_CONFIG_ID = "veriT-dev-r2863";
+	private final static String VERIT_CONFIG_ID = "veriT-dev-r2863";
+	private final static String EPROVER_CONFIG_ID = "veriT+e-prover";
+	private final static String CVC3_CONFIG_ID = "cvc3-2011-11-21";
+	private final static String ALTERGO_CONFIG_ID = "alt-ergo-r217";
+	private final static String Z3_CONFIG_ID = "z3-3.2";
 	private final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
 			.getAutoTacticRegistry().getParameterizerDescriptor(
 					SMTProversCore.PLUGIN_ID + ".SMTPPParam");
 
-	private ITacticDescriptor makeSMTTactic() {
+	private ITacticDescriptor makeSMTPPTactic() {
 		SmtProversUIPlugin.getDefault();
 		final IParameterSetting settings = smtPpParamTacticDescriptor
 				.makeParameterSetting();
 		settings.setBoolean("restricted", true);
 		settings.setLong("timeout", (long) 4500);
-		settings.setString("configId",
-				getSolverConfiguration(VERIT2863_CONFIG_ID).getId());
+		settings.setString("configId", getSolverConfiguration(VERIT_CONFIG_ID)
+				.getId());
 		final ITacticDescriptor smtPpTacticDescriptor = smtPpParamTacticDescriptor
 				.instantiate(settings, "");
 		return loopOnAllPending(
@@ -52,10 +56,9 @@ public class RealProjectTests extends BuilderTest {
 		importProject("Quick");
 		enableAutoProver();
 		EventBPlugin.getAutoPostTacticManager().getAutoTacticPreference()
-				.setSelectedDescriptor(makeSMTTactic());
+				.setSelectedDescriptor(makeSMTPPTactic());
 		runBuilder();
 
-		System.out.println(rodinProject.getRodinFiles().length);
 		for (final IRodinFile rodinFile : rodinProject.getRodinFiles()) {
 			final String name = rodinFile.getBareName();
 			System.out.println(name);

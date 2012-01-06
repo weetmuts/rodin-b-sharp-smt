@@ -51,8 +51,8 @@ public class ResourceUtils {
 
 	private static void setContents(IFile file, String contents)
 			throws Exception {
-		final InputStream input = new ByteArrayInputStream(contents
-				.getBytes("utf-8"));
+		final InputStream input = new ByteArrayInputStream(
+				contents.getBytes("utf-8"));
 		file.setContents(input, IResource.NONE, null);
 	}
 
@@ -85,23 +85,25 @@ public class ResourceUtils {
 		initFile(rFile, contents);
 		return (IMachineRoot) rFile.getRoot();
 	}
-	
-	public static IPRRoot createPRFile(IRodinProject project, String bareName, String contents) throws Exception {
+
+	public static IPRRoot createPRFile(IRodinProject project, String bareName,
+			String contents) throws Exception {
 		final String prFileName = EventBPlugin.getPRFileName(bareName);
 		final IRodinFile rFile = createRodinFile(project, prFileName);
 		initFile(rFile, contents);
 		return (IPRRoot) rFile.getRoot();
 
 	}
-	
-	public static IPSRoot createPSFile(IRodinProject project, String bareName, String contents) throws Exception {
+
+	public static IPSRoot createPSFile(IRodinProject project, String bareName,
+			String contents) throws Exception {
 		final String psFileName = EventBPlugin.getPSFileName(bareName);
 		final IRodinFile rFile = createRodinFile(project, psFileName);
 		initFile(rFile, contents);
 		return (IPSRoot) rFile.getRoot();
 
 	}
-	
+
 	public static final String MCH_BARE_NAME = "machine";
 	public static final List<IDeclaration> EMPTY_DECL = Collections.emptyList();
 	public static final String INTERNAL_ELEMENT1 = "internal_element1";
@@ -130,7 +132,6 @@ public class ResourceUtils {
 		}
 	}
 
-	
 	private static URL getProjectsURL() {
 		return Platform.getBundle(PLUGIN_ID).getEntry("projects");
 	}
@@ -144,7 +145,17 @@ public class ResourceUtils {
 				final String name = (isRoot) ? filename : root.getName() + "/"
 						+ filename;
 				final IFile target = project.getFile(name);
-				target.create(is, false, null);
+				try {
+					target.create(is, false, null);
+				} catch (CoreException ce) {
+					if (ce.getMessage().equals(
+							"Resource '/P/.project' already exists.")) {
+						System.out
+								.println(".project was already in the project directory.");
+					} else {
+						throw ce;
+					}
+				}
 			} else if (file.isDirectory() && !filename.equals(".svn")) {
 				final IFolder folder = project.getFolder(filename);
 				folder.create(true, false, null);
