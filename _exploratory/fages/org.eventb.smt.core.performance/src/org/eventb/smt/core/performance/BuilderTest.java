@@ -68,7 +68,7 @@ import org.rodinp.internal.core.debug.DebugHelpers;
  */
 public abstract class BuilderTest extends TestCase {
 
-	public static final String PLUGIN_ID = "org.eventb.smt.core.tests";
+	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
 
 	protected static FormulaFactory factory = FormulaFactory.getDefault();
 
