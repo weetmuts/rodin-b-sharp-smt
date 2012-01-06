@@ -145,6 +145,7 @@ public class ResourceUtils {
 				final String name = (isRoot) ? filename : root.getName() + "/"
 						+ filename;
 				final IFile target = project.getFile(name);
+				// FIXME the try..catch statement must be fixed and removed
 				try {
 					target.create(is, false, null);
 				} catch (CoreException ce) {
