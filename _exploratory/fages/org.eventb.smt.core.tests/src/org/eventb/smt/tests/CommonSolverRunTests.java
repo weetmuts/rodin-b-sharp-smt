@@ -48,7 +48,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String LAST_CVC4 = "cvc4-2011-12-11";
 	public static final String LAST_MATHSAT5 = "mathsat5-smtcomp2011";
 	public static final String LAST_OPENSMT = "opensmt-20101017";
-	public static final String LAST_VERIT = "veriT-dev-r2837";
+	public static final String LAST_VERIT = "veriT-dev-r2863";
 	public static final String LAST_Z3 = "z3-3.2";
 	public static final boolean GET_UNSAT_CORE = true;
 	public static final String DEFAULT_TEST_TRANSLATION_PATH = System

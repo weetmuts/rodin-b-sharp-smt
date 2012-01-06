@@ -280,7 +280,8 @@ public class SMTThroughPP extends Translator {
 	}
 
 	/**
-	 * determines the logic
+	 * Determines the logic to be set in the benchmark. A logic setting is
+	 * necessary for most of the solvers.
 	 * 
 	 * @param sequent
 	 *            the sequent of which the logic must be determined

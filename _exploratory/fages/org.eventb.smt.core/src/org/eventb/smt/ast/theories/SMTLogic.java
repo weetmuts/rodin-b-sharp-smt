@@ -385,6 +385,36 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * Unquantified formulas built over a signature of uninterpreted (i.e.,
+	 * free) sort and function symbols.
+	 * 
+	 * @author Systerel (yguyot)
+	 * 
+	 */
+	public static class QF_UFv2_0 extends SMTLogicPP {
+		private static final String QF_UF_LOGIC_NAME = "QF_UF";
+		private static final SMTTheory[] THEORIES = { SMTTheoryV2_0.Core
+				.getInstance() };
+
+		private static final QF_UFv2_0 INSTANCE = new QF_UFv2_0();
+
+		private QF_UFv2_0() {
+			super(QF_UF_LOGIC_NAME, THEORIES);
+		}
+
+		public static QF_UFv2_0 getInstance() {
+			return INSTANCE;
+		}
+	}
+
+	/**
+	 * Closed quantifier-free linear formulas over the theory of integer arrays
+	 * extended with free sort and function symbols.
+	 * 
+	 * @author Systerel (yguyot)
+	 * 
+	 */
 	public static class QF_AUFLIAv2_0 extends SMTLogicPP {
 		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
 		private static final SMTTheory[] THEORIES = {
@@ -402,6 +432,14 @@ public class SMTLogic {
 		}
 	}
 
+	/**
+	 * Closed formulas over the theory of linear integer arithmetic and arrays
+	 * extended with free sort and function symbols but restricted to arrays
+	 * with integer indices and values.
+	 * 
+	 * @author Systerel (yguyot)
+	 * 
+	 */
 	public static class AUFLIAv2_0 extends SMTLogicPP {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
 		private static final SMTTheory[] THEORIES = {

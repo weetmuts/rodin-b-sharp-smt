@@ -203,6 +203,7 @@ public class SMTPPCall extends SMTProverCall {
 	 * command’s output is that the reported assertions together with all the
 	 * unlabeled ones in the set of all assertions are jointly unsatisfiable".
 	 * </p>
+	 * TODO : same as in SMTVeriTCall, shall be moved up
 	 */
 	@Override
 	protected void extractUnsatCore() {
