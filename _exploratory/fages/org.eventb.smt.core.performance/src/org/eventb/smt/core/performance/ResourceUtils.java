@@ -34,9 +34,9 @@ import org.eventb.core.IMachineRoot;
 import org.eventb.core.IPRRoot;
 import org.eventb.core.IPSRoot;
 import org.eventb.core.seqprover.IAutoTacticRegistry;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.SequentProver;
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.eventbExtensions.TacticCombinators;
 import org.rodinp.core.IRodinFile;
 import org.rodinp.core.IRodinProject;
@@ -48,6 +48,29 @@ import org.rodinp.core.indexer.IDeclaration;
  * 
  */
 public class ResourceUtils {
+	private static final String BELONGS_TO_DOMAIN = "org.eventb.core.seqprover.InDomGoalTac";
+	private static final String BOUNDED_GOAL_WITH_FINITE_HYPOTHESIS = "org.eventb.core.seqprover.finiteHypBoundedGoalTac";
+	private static final String CLARIFY_GOAL = "org.eventb.core.seqprover.clarifyGoalTac";
+	private static final String DATATYPE_DESTRUCTOR_WD = "org.eventb.core.seqprover.dtDestrWDTac";
+	private static final String FALSE_HYPOTHESIS = "org.eventb.core.seqprover.falseHypTac";
+	private static final String FIND_CONTRADICTORY_HYPOTHESES = "org.eventb.core.seqprover.findContrHypsTac";
+	private static final String FUNCTIONAL_GOAL = "org.eventb.core.seqprover.funGoalTac";
+	private static final String FUNCTIONAL_IMAGE = "org.eventb.core.seqprover.FunImgInGoalTac";
+	private static final String FUNCTIONAL_IMAGE_MEMBERSHIP = "org.eventb.core.seqprover.FunImgInGoalTac";
+	private static final String FUNCTIONAL_OVERRIDING_IN_GOAL = "org.eventb.core.seqprover.funOvrGoalTac";
+	private static final String FUNCTIONAL_OVERRIDING_IN_HYPOTHESIS = "org.eventb.core.seqprover.funOvrHypTac";
+	private static final String GENERALIZED_MODUS_PONENS = "org.eventb.core.seqprover.genMPTac";
+	private static final String GOAL_IN_HYPOTHESIS = "org.eventb.core.seqprover.goalInHypTac";
+	private static final String LASSO = "org.eventb.core.seqprover.lasso";
+	private static final String ONE_POINT_RULE_IN_GOAL = "org.eventb.core.seqprover.onePointGoalTac";
+	private static final String ONE_POINT_RULE_IN_HYPOTHESES = "org.eventb.core.seqprover.onePointHypTac";
+	private static final String PARTITION_REWRITER = "org.eventb.core.seqprover.partitionRewriteTac";
+	private static final String PUT_IN_NEGATION_NORMAL_FORM = "org.eventb.core.seqprover.NNFTac";
+	private static final String SHRINK_IMPLICATIVE_HYPOTHESES = "org.eventb.core.seqprover.shrinkImpHypTac";
+	private static final String SIMPLIFICATION_REWRITER = "org.eventb.core.seqprover.autoRewriteTac";
+	private static final String TRUE_GOAL = "org.eventb.core.seqprover.trueGoalTac";
+	private static final String TYPE_REWRITER = "org.eventb.core.seqprover.typeRewriteTac";
+	private static final String USE_EQUALS_HYPOTHESES = "org.eventb.core.seqprover.eqHypTac";
 
 	private static void setContents(IFile file, String contents)
 			throws Exception {
@@ -68,6 +91,153 @@ public class ResourceUtils {
 			throws Exception {
 		final IFile resource = rodinFile.getResource();
 		setContents(resource, contents);
+	}
+
+	public static ITacticDescriptor belongsToDomain() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(BELONGS_TO_DOMAIN);
+	}
+
+	public static ITacticDescriptor boundedGoalWithFiniteHypotheses() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(BOUNDED_GOAL_WITH_FINITE_HYPOTHESIS);
+	}
+
+	public static ITacticDescriptor clarifyGoal() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(CLARIFY_GOAL);
+	}
+
+	public static ITacticDescriptor dataTypeDestructorWD() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(DATATYPE_DESTRUCTOR_WD);
+	}
+
+	public static ITacticDescriptor falseHypothesis() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FALSE_HYPOTHESIS);
+	}
+
+	public static ITacticDescriptor findContradictoryHypotheses() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FIND_CONTRADICTORY_HYPOTHESES);
+	}
+
+	public static ITacticDescriptor functionalGoal() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FUNCTIONAL_GOAL);
+	}
+
+	public static ITacticDescriptor functionalImage() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FUNCTIONAL_IMAGE);
+	}
+
+	public static ITacticDescriptor functionalImageMembership() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FUNCTIONAL_IMAGE_MEMBERSHIP);
+	}
+
+	public static ITacticDescriptor functionalOverridingInGoal() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FUNCTIONAL_OVERRIDING_IN_GOAL);
+	}
+
+	public static ITacticDescriptor functionalOverridingInHypothesis() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(FUNCTIONAL_OVERRIDING_IN_HYPOTHESIS);
+	}
+
+	public static ITacticDescriptor generalizedModusPonens() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(GENERALIZED_MODUS_PONENS);
+	}
+
+	public static ITacticDescriptor goalInHypothesis() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(GOAL_IN_HYPOTHESIS);
+	}
+
+	public static ITacticDescriptor lasso() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(LASSO);
+	}
+
+	public static ITacticDescriptor onePointRuleInGoal() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(ONE_POINT_RULE_IN_GOAL);
+	}
+
+	public static ITacticDescriptor onePointRuleInHypotheses() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(ONE_POINT_RULE_IN_HYPOTHESES);
+	}
+
+	public static ITacticDescriptor partitionRewriter() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(PARTITION_REWRITER);
+	}
+
+	public static ITacticDescriptor putInNegationNormalForm() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(PUT_IN_NEGATION_NORMAL_FORM);
+	}
+
+	public static ITacticDescriptor shrinkImplicativeHypotheses() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(SHRINK_IMPLICATIVE_HYPOTHESES);
+	}
+
+	public static ITacticDescriptor simplificationRewriter() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(SIMPLIFICATION_REWRITER);
+	}
+
+	public static ITacticDescriptor trueGoal() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(TRUE_GOAL);
+	}
+
+	public static ITacticDescriptor typeRewriter() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(TYPE_REWRITER);
+	}
+
+	public static ITacticDescriptor useEqualsHypotheses() {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		return reg.getTacticDescriptor(USE_EQUALS_HYPOTHESES);
+	}
+
+	public static ITacticDescriptor loopOnAllPending(
+			List<ITacticDescriptor> descs, String id) {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		final ICombinatorDescriptor comb = reg
+				.getCombinatorDescriptor(TacticCombinators.LoopOnAllPending.COMBINATOR_ID);
+		return comb.combine(descs, id);
+	}
+
+	public static ITacticDescriptor attempt(List<ITacticDescriptor> descs,
+			String id) {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		final ICombinatorDescriptor comb = reg
+				.getCombinatorDescriptor(TacticCombinators.Attempt.COMBINATOR_ID);
+		return comb.combine(descs, id);
+	}
+
+	public static ITacticDescriptor sequence(List<ITacticDescriptor> descs,
+			String id) {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		final ICombinatorDescriptor comb = reg
+				.getCombinatorDescriptor(TacticCombinators.Sequence.COMBINATOR_ID);
+		return comb.combine(descs, id);
+	}
+
+	public static ITacticDescriptor onAllPending(List<ITacticDescriptor> descs,
+			String id) {
+		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
+		final ICombinatorDescriptor comb = reg
+				.getCombinatorDescriptor(TacticCombinators.OnAllPending.COMBINATOR_ID);
+		return comb.combine(descs, id);
 	}
 
 	public static IContextRoot createContext(IRodinProject project,
@@ -163,13 +333,5 @@ public class ResourceUtils {
 				importFiles(project, file, false);
 			}
 		}
-	}
-
-	public static ITacticDescriptor loopOnAllPending(
-			List<ITacticDescriptor> descs, String id) {
-		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
-		final ICombinatorDescriptor comb = reg
-				.getCombinatorDescriptor(TacticCombinators.LoopOnAllPending.COMBINATOR_ID);
-		return comb.combine(descs, id);
 	}
 }

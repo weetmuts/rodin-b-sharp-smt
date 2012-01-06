@@ -14,7 +14,34 @@ package org.eventb.smt.core.performance;
 
 import static org.eventb.core.EventBPlugin.getProofManager;
 import static org.eventb.core.EventBPlugin.getUserSupportManager;
+import static org.eventb.smt.core.performance.ResourceUtils.attempt;
+import static org.eventb.smt.core.performance.ResourceUtils.belongsToDomain;
+import static org.eventb.smt.core.performance.ResourceUtils.boundedGoalWithFiniteHypotheses;
+import static org.eventb.smt.core.performance.ResourceUtils.clarifyGoal;
+import static org.eventb.smt.core.performance.ResourceUtils.dataTypeDestructorWD;
+import static org.eventb.smt.core.performance.ResourceUtils.falseHypothesis;
+import static org.eventb.smt.core.performance.ResourceUtils.findContradictoryHypotheses;
+import static org.eventb.smt.core.performance.ResourceUtils.functionalGoal;
+import static org.eventb.smt.core.performance.ResourceUtils.functionalImage;
+import static org.eventb.smt.core.performance.ResourceUtils.functionalImageMembership;
+import static org.eventb.smt.core.performance.ResourceUtils.functionalOverridingInGoal;
+import static org.eventb.smt.core.performance.ResourceUtils.functionalOverridingInHypothesis;
+import static org.eventb.smt.core.performance.ResourceUtils.generalizedModusPonens;
+import static org.eventb.smt.core.performance.ResourceUtils.goalInHypothesis;
 import static org.eventb.smt.core.performance.ResourceUtils.importProjectFiles;
+import static org.eventb.smt.core.performance.ResourceUtils.lasso;
+import static org.eventb.smt.core.performance.ResourceUtils.loopOnAllPending;
+import static org.eventb.smt.core.performance.ResourceUtils.onAllPending;
+import static org.eventb.smt.core.performance.ResourceUtils.onePointRuleInGoal;
+import static org.eventb.smt.core.performance.ResourceUtils.onePointRuleInHypotheses;
+import static org.eventb.smt.core.performance.ResourceUtils.partitionRewriter;
+import static org.eventb.smt.core.performance.ResourceUtils.putInNegationNormalForm;
+import static org.eventb.smt.core.performance.ResourceUtils.sequence;
+import static org.eventb.smt.core.performance.ResourceUtils.shrinkImplicativeHypotheses;
+import static org.eventb.smt.core.performance.ResourceUtils.simplificationRewriter;
+import static org.eventb.smt.core.performance.ResourceUtils.trueGoal;
+import static org.eventb.smt.core.performance.ResourceUtils.typeRewriter;
+import static org.eventb.smt.core.performance.ResourceUtils.useEqualsHypotheses;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
@@ -24,6 +51,8 @@ import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -49,9 +78,12 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.pm.IUserSupport;
 import org.eventb.core.seqprover.IAutoTacticRegistry;
+import org.eventb.core.seqprover.IParameterSetting;
+import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
+import org.eventb.smt.provers.core.SMTProversCore;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
@@ -67,8 +99,9 @@ import org.rodinp.internal.core.debug.DebugHelpers;
  * @author Laurent Voisin
  */
 public abstract class BuilderTest extends TestCase {
-
-	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
+	private final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
+			.getAutoTacticRegistry().getParameterizerDescriptor(
+					SMTProversCore.PLUGIN_ID + ".SMTPPParam");
 
 	protected static FormulaFactory factory = FormulaFactory.getDefault();
 
@@ -77,12 +110,50 @@ public abstract class BuilderTest extends TestCase {
 
 	protected IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
+	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
+
 	public BuilderTest() {
 		super();
 	}
 
 	public BuilderTest(String name) {
 		super(name);
+	}
+
+	protected ITacticDescriptor makeSMTPPTactic(final String configId) {
+		SmtProversUIPlugin.getDefault();
+		final IParameterSetting settings = smtPpParamTacticDescriptor
+				.makeParameterSetting();
+		settings.setBoolean("restricted", true);
+		settings.setLong("timeout", (long) 4500);
+		settings.setString("configId", configId);
+		final ITacticDescriptor smtPpTacticDescriptor = smtPpParamTacticDescriptor
+				.instantiate(settings, "autoSMTPP");
+		return loopOnAllPending(
+				(List<IAutoTacticRegistry.ITacticDescriptor>) Arrays.asList(
+						trueGoal(),
+						falseHypothesis(),
+						goalInHypothesis(),
+						functionalGoal(),
+						boundedGoalWithFiniteHypotheses(),
+						attempt(Collections.singletonList(sequence(
+								Arrays.asList(
+										lasso(),
+										onAllPending(
+												Collections
+														.singletonList(smtPpTacticDescriptor),
+												"onAllPendingId")),
+								"sequenceId")), "attemptId"),
+						partitionRewriter(), generalizedModusPonens(),
+						simplificationRewriter(), putInNegationNormalForm(),
+						typeRewriter(), findContradictoryHypotheses(),
+						shrinkImplicativeHypotheses(),
+						functionalOverridingInGoal(), clarifyGoal(),
+						onePointRuleInGoal(),
+						functionalOverridingInHypothesis(), functionalImage(),
+						onePointRuleInHypotheses(), useEqualsHypotheses(),
+						belongsToDomain(), functionalImageMembership(),
+						dataTypeDestructorWD()), "loopOnAllPendingId");
 	}
 
 	protected IContextRoot createContext(String bareName)
