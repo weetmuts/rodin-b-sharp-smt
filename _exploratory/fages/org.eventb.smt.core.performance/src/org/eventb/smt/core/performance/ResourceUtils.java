@@ -302,7 +302,7 @@ public class ResourceUtils {
 		}
 	}
 
-	private static URL getProjectsURL() {
+	static URL getProjectsURL() {
 		return Platform.getBundle(PLUGIN_ID).getEntry("projects");
 	}
 

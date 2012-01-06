@@ -74,6 +74,12 @@
                label="timeout"
                type="Long">
          </tacticParameter>
+         <tacticParameter
+         	   default=""
+               description="%configIdDesc"
+               label="configId"
+               type="String">
+         </tacticParameter>
       </parameterizer>
    </extension>
 

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance;
 
-import static java.io.File.separator;
 import static org.eventb.core.EventBPlugin.getProofManager;
 import static org.eventb.core.EventBPlugin.getUserSupportManager;
 import static org.eventb.smt.core.performance.ResourceUtils.attempt;
@@ -51,10 +50,14 @@ import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
@@ -90,7 +93,6 @@ import org.eventb.smt.provers.core.SMTProversCore;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
-import org.rodinp.core.IRodinFile;
 import org.rodinp.core.IRodinProject;
 import org.rodinp.core.RodinCore;
 import org.rodinp.core.RodinDBException;
@@ -107,6 +109,7 @@ public abstract class BuilderTest extends TestCase {
 
 	protected IRodinProject rodinProject;
 	protected IEventBProject eventBProject;
+	protected Map<String, Integer> results = new HashMap<String, Integer>();
 
 	protected IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
@@ -334,6 +337,38 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("-smt2,,");
 		preferencesBuilder.append("V2.0;");
 
+		preferencesBuilder.append("veriT-dev-r2863-SMT1,,");
+		preferencesBuilder.append("verit,,");
+		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
+		preferencesBuilder
+				.append("-i smtlib --disable-print-success --disable-banner --disable-e,,");
+		preferencesBuilder.append("V1.2;");
+
+		preferencesBuilder.append("veriT+e-prover-SMT1,,");
+		preferencesBuilder.append("verit,,");
+		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
+		preferencesBuilder
+				.append("-i smtlib --disable-print-success --disable-banner --enable-e --max-time=3,,");
+		preferencesBuilder.append("V1.2;");
+
+		preferencesBuilder.append("cvc3-2011-11-21-SMT1,,");
+		preferencesBuilder.append("cvc3,,");
+		preferencesBuilder.append("/home/guyot/bin/cvc3-2011-11-21,,");
+		preferencesBuilder.append("-lang smt -timeout 3,,");
+		preferencesBuilder.append("V1.2;");
+
+		preferencesBuilder.append("alt-ergo-r217-SMT1,,");
+		preferencesBuilder.append("alt-ergo,,");
+		preferencesBuilder.append("/home/guyot/bin/alt-ergo-nightly-r217,,");
+		preferencesBuilder.append(",,");
+		preferencesBuilder.append("V1.2;");
+
+		preferencesBuilder.append("z3-3.2-SMT1,,");
+		preferencesBuilder.append("z3,,");
+		preferencesBuilder.append("/home/guyot/bin/z3-3.2,,");
+		preferencesBuilder.append("-smt,,");
+		preferencesBuilder.append("V1.2;");
+
 		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
 		store.setValue(SOLVER_PREFERENCES_ID, preferencesBuilder.toString());
@@ -342,23 +377,24 @@ public abstract class BuilderTest extends TestCase {
 		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}
 
-	protected void archiveFiles() throws CoreException {
-		final IPath actualLocation = rodinProject.getProject().getLocation();
-		for (final IRodinFile file : rodinProject.getRodinFiles()) {
-			final IResource iFile = file.getCorrespondingResource();
-			if (iFile.getFileExtension().equals("bps")
-					|| iFile.getFileExtension().equals("bpr")) {
-				final IPath relativePath = iFile.getProjectRelativePath();
-				System.out.println(actualLocation.toOSString() + separator
-						+ relativePath.toOSString());
-				final IPath destinationPath = new Path("/tmp/"
-						+ rodinProject.getProject().getName() + "/"
-						+ relativePath.toOSString());
-				iFile.move(destinationPath, false, null);
-				System.out
-						.println("moved into " + destinationPath.toOSString());
-			}
+	protected void archiveFiles(String... params) throws Exception {
+		final StringBuilder dirSuffixe = new StringBuilder();
+		for (final String param : params) {
+			dirSuffixe.append("_" + param);
 		}
+		final File dir = rodinProject.getProject().getLocation().toFile();
+		final IPath destPath = new Path("/tmp/" + rodinProject.getElementName()
+				+ dirSuffixe.toString());
+		destPath.toFile().mkdir();
+		final String dest = destPath.toOSString() + "/";
+
+		final String destination[] = new String[] { "/bin/sh", "-c",
+				"/bin/mv *.bpr *.bps " + dest };
+
+		final Process process = Runtime.getRuntime().exec(destination, null,
+				dir);
+
+		process.waitFor();
 	}
 
 	@Override
@@ -402,6 +438,10 @@ public abstract class BuilderTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		for (final Entry<String, Integer> entry : results.entrySet()) {
+			System.out.println(entry.getKey() + ": " + entry.getValue());
+		}
+
 		// Delete all Rodin projects
 		final IRodinDB rodinDB = RodinCore.getRodinDB();
 		for (IRodinProject rp : rodinDB.getRodinProjects()) {
@@ -412,5 +452,4 @@ public abstract class BuilderTest extends TestCase {
 
 		super.tearDown();
 	}
-
 }
