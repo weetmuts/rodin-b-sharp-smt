@@ -310,27 +310,18 @@ public class ResourceUtils {
 			throws IOException, CoreException {
 		for (final File file : root.listFiles()) {
 			final String filename = file.getName();
-			if (file.isFile()) {
-				final InputStream is = new FileInputStream(file);
-				final String name = (isRoot) ? filename : root.getName() + "/"
-						+ filename;
-				final IFile target = project.getFile(name);
-				// FIXME the try..catch statement must be fixed and removed
-				try {
+			if (!filename.equals(".project")) {
+				if (file.isFile()) {
+					final InputStream is = new FileInputStream(file);
+					final String name = (isRoot) ? filename : root.getName()
+							+ "/" + filename;
+					final IFile target = project.getFile(name);
 					target.create(is, false, null);
-				} catch (CoreException ce) {
-					if (ce.getMessage().equals(
-							"Resource '/P/.project' already exists.")) {
-						System.out
-								.println(".project was already in the project directory.");
-					} else {
-						throw ce;
-					}
+				} else if (file.isDirectory() && !filename.equals(".svn")) {
+					final IFolder folder = project.getFolder(filename);
+					folder.create(true, false, null);
+					importFiles(project, file, false);
 				}
-			} else if (file.isDirectory() && !filename.equals(".svn")) {
-				final IFolder folder = project.getFolder(filename);
-				folder.create(true, false, null);
-				importFiles(project, file, false);
 			}
 		}
 	}

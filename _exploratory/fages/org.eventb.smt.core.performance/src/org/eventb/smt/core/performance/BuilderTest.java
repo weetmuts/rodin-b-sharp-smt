@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance;
 
+import static java.io.File.separator;
 import static org.eventb.core.EventBPlugin.getProofManager;
 import static org.eventb.core.EventBPlugin.getUserSupportManager;
 import static org.eventb.smt.core.performance.ResourceUtils.attempt;
@@ -66,6 +67,8 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.EventBPlugin;
 import org.eventb.core.IContextRoot;
@@ -78,15 +81,16 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.pm.IUserSupport;
 import org.eventb.core.seqprover.IAutoTacticRegistry;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
 import org.eventb.smt.provers.core.SMTProversCore;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
+import org.rodinp.core.IRodinFile;
 import org.rodinp.core.IRodinProject;
 import org.rodinp.core.RodinCore;
 import org.rodinp.core.RodinDBException;
@@ -99,16 +103,19 @@ import org.rodinp.internal.core.debug.DebugHelpers;
  * @author Laurent Voisin
  */
 public abstract class BuilderTest extends TestCase {
-	private final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
-			.getAutoTacticRegistry().getParameterizerDescriptor(
-					SMTProversCore.PLUGIN_ID + ".SMTPPParam");
-
 	protected static FormulaFactory factory = FormulaFactory.getDefault();
 
 	protected IRodinProject rodinProject;
 	protected IEventBProject eventBProject;
 
 	protected IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+	protected static final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
+			.getAutoTacticRegistry().getParameterizerDescriptor(
+					SMTProversCore.PLUGIN_ID + ".SMTPPParam");
+	protected static final IParameterizerDescriptor smtVeritParamTacticDescriptor = SequentProver
+			.getAutoTacticRegistry().getParameterizerDescriptor(
+					SMTProversCore.PLUGIN_ID + ".SMTVeriTParam");
 
 	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
 
@@ -120,15 +127,17 @@ public abstract class BuilderTest extends TestCase {
 		super(name);
 	}
 
-	protected ITacticDescriptor makeSMTPPTactic(final String configId) {
+	protected ITacticDescriptor makeSMTTactic(
+			final IParameterizerDescriptor smtParamTacticDescriptor,
+			final String configId) {
 		SmtProversUIPlugin.getDefault();
-		final IParameterSetting settings = smtPpParamTacticDescriptor
+		final IParameterSetting settings = smtParamTacticDescriptor
 				.makeParameterSetting();
 		settings.setBoolean("restricted", true);
 		settings.setLong("timeout", (long) 4500);
 		settings.setString("configId", configId);
-		final ITacticDescriptor smtPpTacticDescriptor = smtPpParamTacticDescriptor
-				.instantiate(settings, "autoSMTPP");
+		final ITacticDescriptor smtTacticDescriptor = smtParamTacticDescriptor
+				.instantiate(settings, "autoSMT");
 		return loopOnAllPending(
 				(List<IAutoTacticRegistry.ITacticDescriptor>) Arrays.asList(
 						trueGoal(),
@@ -141,7 +150,7 @@ public abstract class BuilderTest extends TestCase {
 										lasso(),
 										onAllPending(
 												Collections
-														.singletonList(smtPpTacticDescriptor),
+														.singletonList(smtTacticDescriptor),
 												"onAllPendingId")),
 								"sequenceId")), "attemptId"),
 						partitionRewriter(), generalizedModusPonens(),
@@ -287,14 +296,69 @@ public abstract class BuilderTest extends TestCase {
 	}
 
 	private void initializePreferences() {
+		final StringBuilder preferencesBuilder = new StringBuilder();
+
+		preferencesBuilder.append("veriT-dev-r2863,,");
+		preferencesBuilder.append("verit,,");
+		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
+		preferencesBuilder
+				.append("-i smtlib2 --disable-print-success --disable-banner ");
+		preferencesBuilder
+				.append("--proof=- --proof-version=1 --proof-prune --disable-e,,");
+		preferencesBuilder.append("V2.0;");
+
+		preferencesBuilder.append("veriT+e-prover,,");
+		preferencesBuilder.append("verit,,");
+		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
+		preferencesBuilder
+				.append("-i smtlib2 --disable-print-success --disable-banner ");
+		preferencesBuilder
+				.append("--proof=- --proof-version=1 --proof-prune --enable-e --max-time=3,,");
+		preferencesBuilder.append("V2.0;");
+
+		preferencesBuilder.append("cvc3-2011-11-21,,");
+		preferencesBuilder.append("cvc3,,");
+		preferencesBuilder.append("/home/guyot/bin/cvc3-2011-11-21,,");
+		preferencesBuilder.append("-lang smt2 -timeout 3,,");
+		preferencesBuilder.append("V2.0;");
+
+		preferencesBuilder.append("alt-ergo-r217,,");
+		preferencesBuilder.append("alt-ergo,,");
+		preferencesBuilder.append("/home/guyot/bin/alt-ergo-nightly-r217,,");
+		preferencesBuilder.append(",,");
+		preferencesBuilder.append("V2.0;");
+
+		preferencesBuilder.append("z3-3.2,,");
+		preferencesBuilder.append("z3,,");
+		preferencesBuilder.append("/home/guyot/bin/z3-3.2,,");
+		preferencesBuilder.append("-smt2,,");
+		preferencesBuilder.append("V2.0;");
+
 		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
-		store.setValue(
-				SOLVER_PREFERENCES_ID,
-				"veriT-dev-r2863,,verit,,/home/guyot/bin/veriT-dev-r2863,,-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e,,V2.0;veriT+e-prover,,verit,,/home/guyot/bin/veriT-dev-r2863,,-i smtlib2 --disable-print-success --proof=- --proof-version=1 --proof-prune --disable-banner --enable-e --max-time=3,,V2.0;cvc3-2011-11-21,,cvc3,,/home/guyot/bin/cvc3-2011-11-21,,-lang smt2 -timeout 3,,V2.0;alt-ergo-r217,,alt-ergo,,/home/guyot/bin/alt-ergo-nightly-r217,,,,V2.0;z3-3.2,,z3,,/home/guyot/bin/z3-3.2,,-smt2,,V2.0;");
+		store.setValue(SOLVER_PREFERENCES_ID, preferencesBuilder.toString());
 		store.setValue(SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX);
 		store.setValue(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
 		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
+	}
+
+	protected void archiveFiles() throws CoreException {
+		final IPath actualLocation = rodinProject.getProject().getLocation();
+		for (final IRodinFile file : rodinProject.getRodinFiles()) {
+			final IResource iFile = file.getCorrespondingResource();
+			if (iFile.getFileExtension().equals("bps")
+					|| iFile.getFileExtension().equals("bpr")) {
+				final IPath relativePath = iFile.getProjectRelativePath();
+				System.out.println(actualLocation.toOSString() + separator
+						+ relativePath.toOSString());
+				final IPath destinationPath = new Path("/tmp/"
+						+ rodinProject.getProject().getName() + "/"
+						+ relativePath.toOSString());
+				iFile.move(destinationPath, false, null);
+				System.out
+						.println("moved into " + destinationPath.toOSString());
+			}
+		}
 	}
 
 	@Override

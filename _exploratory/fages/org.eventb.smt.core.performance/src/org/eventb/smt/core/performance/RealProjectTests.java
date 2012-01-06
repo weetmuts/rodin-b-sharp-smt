@@ -9,9 +9,14 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance;
 
+import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eventb.core.EventBPlugin;
 import org.eventb.core.IPSRoot;
 import org.eventb.core.IPSStatus;
+import org.eventb.core.seqprover.IParameterizerDescriptor;
+import org.eventb.smt.translation.SMTTranslationApproach;
 
 /**
  * @author Systerel (yguyot)
@@ -24,13 +29,28 @@ public class RealProjectTests extends BuilderTest {
 	private final static String ALTERGO_CONFIG_ID = "alt-ergo-r217";
 	private final static String Z3_CONFIG_ID = "z3-3.2";
 
-	private final void doTestProject(final String project,
-			final String solverConfigId) throws Exception {
+	private final void initBuilder(final String project) throws Exception {
+		rodinProject = createRodinProject(project);
 		importProject(project);
 		enableAutoProver();
-		EventBPlugin.getAutoPostTacticManager().getAutoTacticPreference()
-				.setSelectedDescriptor(makeSMTPPTactic(solverConfigId));
+	}
 
+	private final void setTactic(final SMTTranslationApproach approach,
+			final String solverConfigId) {
+		final IParameterizerDescriptor tacticDescriptor;
+		if (approach.equals(SMTTranslationApproach.USING_PP)) {
+			tacticDescriptor = smtPpParamTacticDescriptor;
+		} else {
+			tacticDescriptor = smtVeritParamTacticDescriptor;
+		}
+		EventBPlugin
+				.getAutoPostTacticManager()
+				.getAutoTacticPreference()
+				.setSelectedDescriptor(
+						makeSMTTactic(tacticDescriptor, solverConfigId));
+	}
+
+	private final void doTest() throws CoreException {
 		System.out.println("Project: " + rodinProject.getProject().getName());
 		runBuilder();
 
@@ -46,25 +66,24 @@ public class RealProjectTests extends BuilderTest {
 				}
 			}
 		}
+
+		archiveFiles();
 	}
 
-	public final void testQuickWithVerit() throws Exception {
-		doTestProject("Quick", VERIT_CONFIG_ID);
+	private final void doTestProject(final String project) throws Exception {
+		initBuilder(project);
+		setTactic(USING_PP, VERIT_CONFIG_ID);
+		doTest();
+		setTactic(USING_PP, EPROVER_CONFIG_ID);
+		doTest();
+		setTactic(USING_PP, CVC3_CONFIG_ID);
+		doTest();
+		setTactic(USING_PP, ALTERGO_CONFIG_ID);
+		doTest();
+		setTactic(USING_PP, Z3_CONFIG_ID);
 	}
 
-	public final void testQuickWithEProver() throws Exception {
-		doTestProject("Quick", EPROVER_CONFIG_ID);
-	}
-
-	public final void testQuickWithCvc3() throws Exception {
-		doTestProject("Quick", CVC3_CONFIG_ID);
-	}
-
-	public final void testQuickWithAltErgo() throws Exception {
-		doTestProject("Quick", ALTERGO_CONFIG_ID);
-	}
-
-	public final void testQuickWithZ3() throws Exception {
-		doTestProject("Quick", Z3_CONFIG_ID);
+	public final void testQuick() throws Exception {
+		doTestProject("Quick");
 	}
 }
