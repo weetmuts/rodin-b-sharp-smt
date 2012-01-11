@@ -35,6 +35,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
+import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughVeriT;
 
@@ -138,7 +139,67 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * 
 	 * @throws IOException
 	 */
-	private void callVeriT() throws IOException {
+	private void callVeriT(SMTBenchmark benchmark) throws IOException {
+		if (benchmark.getSignature().getSMTLIBVersion().equals(V1_2)) {
+			callVeriT1_2();
+		} else {
+			callVeriT2_0();
+		}
+	}
+
+	private void callVeriT2_0() throws IOException {
+		// TODO Auto-generated method stub
+		final List<String> cmd = new ArrayList<String>();
+
+		if (veritPath == null || veritPath.isEmpty()) {
+			throw new IllegalArgumentException(
+					Messages.SmtProversCall_veriT_path_not_defined);
+		}
+
+		cmd.add(veritPath);
+		cmd.add(SIMPLIFY_ARGUMENT_STRING);
+		cmd.add(PRINT_FLAT);
+		cmd.add(DISABLE_BANNER);
+		cmd.add(DISABLE_ACKERMANN);
+		cmd.add(veriTBenchmarkFile.getPath());
+
+		if (DEBUG_DETAILS) {
+			debugBuilder.append("About to launch veriT command:\n   ");
+			for (String arg : cmd) {
+				debugBuilder.append(' ').append(arg);
+			}
+			debugBuilder.append("\n");
+		}
+
+		try {
+			final ProcessBuilder builder = new ProcessBuilder(cmd);
+			builder.redirectErrorStream(true);
+			final Process process = builder.start();
+			activeProcesses.add(process);
+			final ProcessMonitor monitor = new ProcessMonitor(null, process,
+					this);
+
+			if (DEBUG_DETAILS)
+				showProcessOutcome(debugBuilder, monitor);
+
+			veriTResult = new String(monitor.output());
+			macrosTranslated = checkVeriTResult();
+
+			if (DEBUG_DETAILS) {
+				debugBuilder.append("veriT ");
+				debugBuilder.append(macrosTranslated ? "succeeded\n"
+						: "failed:\n");
+				debugBuilder.append(veriTResult).append("\n");
+			}
+
+		} finally {
+			if (DEBUG_DETAILS)
+				debugBuilder.append("veriT command finished.\n");
+		}
+
+	}
+
+	private void callVeriT1_2() throws IOException {
 		final List<String> cmd = new ArrayList<String>();
 
 		if (veritPath == null || veritPath.isEmpty()) {
@@ -273,7 +334,8 @@ public class SMTVeriTCall extends SMTProverCall {
 					.append(" with input:\n\n");
 			showVeriTBenchmarkFile();
 		}
-		callVeriT();
+
+		callVeriT(benchmark);
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
@@ -299,7 +361,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
 				hypotheses, goal, V2_0);
-		
+
 		/**
 		 * Updates the name of the benchmark (the name originally given could
 		 * have been changed by the translator if it was a reserved symbol)
@@ -310,12 +372,12 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Makes temporary files
 		 */
 		makeTempFileNames();
-		
+
 		/**
 		 * Prints the benchmark with macros in a file
 		 */
 		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-		benchmark.print(veriTBenchmarkWriter, !PRINT_ANNOTATIONS,
+		benchmark.print(veriTBenchmarkWriter, PRINT_ANNOTATIONS,
 				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		veriTBenchmarkWriter.close();
 		if (!veriTBenchmarkFile.exists()) {
@@ -330,7 +392,8 @@ public class SMTVeriTCall extends SMTProverCall {
 					.append(" with input:\n\n");
 			showVeriTBenchmarkFile();
 		}
-		callVeriT();
+
+		callVeriT(benchmark);
 
 		/**
 		 * Prints the SMT-LIB benchmark in a file
@@ -346,9 +409,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
 		}
-
-		
-		
 
 	}
 

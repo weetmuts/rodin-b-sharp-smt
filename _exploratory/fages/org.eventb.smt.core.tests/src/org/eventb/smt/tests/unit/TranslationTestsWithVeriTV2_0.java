@@ -235,7 +235,8 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	}
 
 	/**
-	 * Arithmetic expressions unary operations: cf. "a-expr-una"
+	 * Arithmetic expressions unary operations: cf. "a-expr-una" TODO: To
+	 * implement the translation of unminus
 	 */
 	@Test
 	public void testArithExprUnop() {
