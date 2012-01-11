@@ -131,4 +131,106 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 				"(or (= a b) (=" + " u v) (= r s))");
 	}
 
+	/**
+	 * "pred-una"
+	 */
+	@Test
+	public void testPredUna() {
+		testTranslationV2_0Default("¬ ((a ≤ b ∧ b ≤ c) ⇒ a < c)",
+				"(not (=> (and (<= a b) (<= b c)) (< a c)))");
+	}
+
+	/**
+	 * "pred-lit"
+	 */
+	@Test
+	public void testPredLit() {
+		/**
+		 * btrue
+		 */
+		testTranslationV2_0Default("⊤", "true");
+		/**
+		 * bfalse
+		 */
+		testTranslationV2_0Default("⊥", "false");
+	}
+
+	/**
+	 * "pred-rel"
+	 */
+	@Test
+	public void testPredRelop() {
+		/**
+		 * equal (identifiers of type ℤ)
+		 */
+		testTranslationV2_0Default("a = b", "(= a b)");
+		/**
+		 * equal (integer numbers)
+		 */
+		testTranslationV2_0Default("42 − 1 + 1 = 42", "(= (+ (- 42 1) 1) 42)");
+		/**
+		 * lt
+		 */
+		testTranslationV2_0Default("a < b", "(< a b)");
+		/**
+		 * le
+		 */
+		testTranslationV2_0Default("a ≤ b", "(<= a b)");
+		/**
+		 * gt
+		 */
+		testTranslationV2_0Default("a > b", "(> a b)");
+		/**
+		 * ge
+		 */
+		testTranslationV2_0Default("a ≥ b", "(>= a b)");
+	}
+
+	/**
+	 * Arithmetic expressions binary operations: cf. "a-expr-bin"
+	 */
+	@Test
+	public void testArithExprBinop() {
+		/**
+		 * minus
+		 */
+		testTranslationV2_0Default("a − b = c", "(= (- a b) c)");
+		/**
+		 * equal (a-expr-bin)
+		 */
+		testTranslationV2_0Default("a − b = a − c", "(= (- a b) (- a c))");
+	}
+
+	@Test
+	public void testArithExprBinopUnsupported() {
+		/**
+		 * expn
+		 */
+		testTranslationV2_0Default("a ^ b = c", "(= (expn a b) c)");
+		/**
+		 * div
+		 */
+		testTranslationV2_0Default("a ÷ b = c", "(= (divi a b) c)");
+		/**
+		 * mod
+		 */
+		testTranslationV2_0Default("a mod b = c", "(= (mod a b) c)");
+	}
+
+	/**
+	 * Arithmetic expressions associative operations: cf. "a-expr-ass"
+	 */
+	@Test
+	public void testArithExprAssnop() {
+		/**
+		 * plus
+		 */
+		testTranslationV2_0Default("a + c + b = a + b + c",
+				"(= (+ a c b) (+ a b c))");
+		/**
+		 * mul
+		 */
+		testTranslationV2_0Default("a ∗ b ∗ c = a ∗ c ∗ b",
+				"(= (* a b c) (* a c b))");
+	}
 }
