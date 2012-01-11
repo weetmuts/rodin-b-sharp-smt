@@ -230,7 +230,7 @@ public class SMTMacroFactory {
 
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_FUNCTION,
-			"(lambda (?TOT_FUN ('s Bool)) (?TOT_FUN_1 ('t Bool)) . (lambda (?TOT_FUN_2 ((Pair 's 't) Bool)) . (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2))))",
+			"(lambda (?TOT_FUN_0 ('s Bool)) (?TOT_FUN_1 ('t Bool)) . (lambda (?TOT_FUN_2 ((Pair 's 't) Bool)) . (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2))))",
 			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
 
 	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
@@ -684,7 +684,8 @@ public class SMTMacroFactory {
 	 *            The signature that will receive the macro
 	 */
 	public static void addPredefinedMacroInSignature(
-			final SMTPredefinedMacro operator, final SMTSignatureV1_2Verit signature) {
+			final SMTPredefinedMacro operator,
+			final SMTSignatureV1_2Verit signature) {
 		final SMTPredefinedMacro pmacro = operator;
 		if (pmacro.usesPairFunctionAndSort()) {
 			signature.addPairSortAndFunction();
@@ -709,7 +710,8 @@ public class SMTMacroFactory {
 	 * @return the macro symbol associated with the operator
 	 */
 	public static final SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperator operator, final SMTSignatureV1_2Verit signature) {
+			final SMTVeriTOperator operator,
+			final SMTSignatureV1_2Verit signature) {
 		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
 		case BOOLS_OP:

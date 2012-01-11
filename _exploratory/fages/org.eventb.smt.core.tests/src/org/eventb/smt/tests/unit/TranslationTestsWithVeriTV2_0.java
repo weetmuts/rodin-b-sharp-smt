@@ -103,4 +103,32 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 				"(= (and (<= a b) (<= b a)) (= a b))");
 	}
 
+	/**
+	 * "pred-ass"
+	 */
+	@Test
+	public void testPredAssop() {
+
+		testTranslationV2_0Default("(u = v)", "(= u v)");
+
+		/**
+		 * land
+		 */
+		testTranslationV2_0Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
+		/**
+		 * land (multiple predicates)
+		 */
+		testTranslationV2_0Default("(a = b) ∧ (u = v) ∧ (r = s)",
+				"(and (= a b) (= u v) (= r s))");
+		/**
+		 * lor
+		 */
+		testTranslationV2_0Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
+		/**
+		 * lor (multiple predicates)
+		 */
+		testTranslationV2_0Default("(a = b) ∨ (u = v) ∨ (r = s)",
+				"(or (= a b) (=" + " u v) (= r s))");
+	}
+
 }
