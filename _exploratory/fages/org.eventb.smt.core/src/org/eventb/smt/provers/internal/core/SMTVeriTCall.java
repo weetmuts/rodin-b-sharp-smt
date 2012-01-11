@@ -37,6 +37,7 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
+import org.eventb.smt.translation.SMTLIBVersion;
 import org.eventb.smt.translation.SMTThroughVeriT;
 
 /**
@@ -53,10 +54,16 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String PRINT_FLAT = "--print-flat";
 	private static final String DISABLE_BANNER = "--disable-banner";
 	private static final String DISABLE_ACKERMANN = "--disable-ackermann";
+	private static final String DISABLE_PRINT_SUCCESS = "--disable-print-success";
+	private static final String INPUTSMT2 = "--input=smtlib2";
+	private static final String OUTPUTSMT2 = "--output=smtlib2";
 
 	private String veritPath;
 
 	private File veriTTranslationFolder = null;
+
+	// FIXME: This is a mock.
+	private SMTLIBVersion sv;
 
 	/**
 	 * FOR DEBUG ONLY: this is the temporary SMT benchmark produced by the
@@ -139,8 +146,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * 
 	 * @throws IOException
 	 */
-	private void callVeriT(SMTBenchmark benchmark) throws IOException {
-		if (benchmark.getSignature().getSMTLIBVersion().equals(V1_2)) {
+	private void callVeriT(SMTBenchmark smtBenchmark) throws IOException {
+		if (sv.equals(V1_2)) {
 			callVeriT1_2();
 		} else {
 			callVeriT2_0();
@@ -157,12 +164,14 @@ public class SMTVeriTCall extends SMTProverCall {
 		}
 
 		cmd.add(veritPath);
+		cmd.add(DISABLE_BANNER);
+		cmd.add(DISABLE_PRINT_SUCCESS);
+		cmd.add(INPUTSMT2);
+		cmd.add(OUTPUTSMT2);
 		cmd.add(SIMPLIFY_ARGUMENT_STRING);
 		cmd.add(PRINT_FLAT);
-		cmd.add(DISABLE_BANNER);
 		cmd.add(DISABLE_ACKERMANN);
 		cmd.add(veriTBenchmarkFile.getPath());
-
 		if (DEBUG_DETAILS) {
 			debugBuilder.append("About to launch veriT command:\n   ");
 			for (String arg : cmd) {
@@ -254,6 +263,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * macros contained in the benchmark produced by the plug-in, contains
 	 * "(benchmark", which we assume to mean that no error happened.
 	 * 
+	 * TODO: Create same method for SMT 2.0
+	 * 
 	 * @throws IOException
 	 *             if any IO problem occurs when accessing the SMT files and
 	 *             folders
@@ -273,9 +284,13 @@ public class SMTVeriTCall extends SMTProverCall {
 	@Override
 	public synchronized void makeTempFileNames() throws IOException {
 		super.makeTempFileNames();
+		String fileExtension = SMT_LIB_FILE_EXTENSION;
+		if (sv.equals(V2_0)) {
+			fileExtension = NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
+		}
 
 		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
-				SMT_LIB_FILE_EXTENSION, smtTranslationFolder);
+				fileExtension, smtTranslationFolder);
 		if (DEBUG) {
 			if (DEBUG_DETAILS) {
 				debugBuilder.append("Created temporary veriT benchmark file '");
@@ -297,6 +312,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	@Override
 	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException,
 			IllegalArgumentException {
+		sv = V1_2;
+
 		/**
 		 * Produces an SMT benchmark containing some veriT macros.
 		 */
@@ -355,6 +372,8 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	@Override
 	protected void makeSMTBenchmarkFileV2_0() throws IOException {
+		sv = V2_0;
+
 		/**
 		 * Produces an SMT benchmark.
 		 */
