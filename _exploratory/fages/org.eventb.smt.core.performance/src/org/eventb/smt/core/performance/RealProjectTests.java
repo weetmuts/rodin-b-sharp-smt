@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eventb.core.EventBPlugin;
 import org.eventb.core.IPSRoot;
 import org.eventb.core.IPSStatus;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.smt.translation.SMTTranslationApproach;
 import org.rodinp.core.RodinDBException;
@@ -30,6 +31,11 @@ import org.rodinp.core.RodinDBException;
  */
 public class RealProjectTests extends BuilderTest {
 	private final static boolean DEBUG = false;
+	private final static boolean LAUNCH_ATELIERB_PROVERS = false;
+	private final static boolean LAUNCH_SMT_SOLVERS = true;
+	private final static boolean LAUNCH_PP = false;
+	private final static boolean LAUNCH_VT = true;
+
 	private final static String VERIT_CONFIG_ID = "veriT-dev-r2863";
 	private final static String EPROVER_CONFIG_ID = "veriT+e-prover";
 	private final static String CVC3_CONFIG_ID = "cvc3-2011-11-21";
@@ -63,8 +69,11 @@ public class RealProjectTests extends BuilderTest {
 	}
 
 	private final void setAtelierBTactic() {
-		EventBPlugin.getAutoPostTacticManager().getAutoTacticPreference()
+		final ITacticDescriptor tacticDescriptor = EventBPlugin
+				.getAutoPostTacticManager().getAutoTacticPreference()
 				.getDefaultDescriptor();
+		EventBPlugin.getAutoPostTacticManager().getAutoTacticPreference()
+				.setSelectedDescriptor(tacticDescriptor);
 	}
 
 	private void count(final String runKey, final String dischargedKey)
@@ -133,17 +142,25 @@ public class RealProjectTests extends BuilderTest {
 
 	private final void doTestProject(final String project) throws Exception {
 		initBuilder(project);
-		doAtelierBTest();
-		doSMTTest(USING_PP, VERIT_CONFIG_ID);
-		doSMTTest(USING_PP, EPROVER_CONFIG_ID);
-		doSMTTest(USING_PP, CVC3_CONFIG_ID);
-		doSMTTest(USING_PP, ALTERGO_CONFIG_ID);
-		doSMTTest(USING_PP, Z3_CONFIG_ID);
-		doSMTTest(USING_VERIT, VERIT_SMT1_CONFIG_ID);
-		doSMTTest(USING_VERIT, EPROVER_SMT1_CONFIG_ID);
-		doSMTTest(USING_VERIT, CVC3_SMT1_CONFIG_ID);
-		doSMTTest(USING_VERIT, ALTERGO_SMT1_CONFIG_ID);
-		doSMTTest(USING_VERIT, Z3_SMT1_CONFIG_ID);
+		if (LAUNCH_ATELIERB_PROVERS)
+			doAtelierBTest();
+
+		if (LAUNCH_SMT_SOLVERS) {
+			if (LAUNCH_PP) {
+				doSMTTest(USING_PP, VERIT_CONFIG_ID);
+				doSMTTest(USING_PP, EPROVER_CONFIG_ID);
+				doSMTTest(USING_PP, CVC3_CONFIG_ID);
+				doSMTTest(USING_PP, ALTERGO_CONFIG_ID);
+				doSMTTest(USING_PP, Z3_CONFIG_ID);
+			}
+			if (LAUNCH_VT) {
+				doSMTTest(USING_VERIT, VERIT_SMT1_CONFIG_ID);
+				doSMTTest(USING_VERIT, EPROVER_SMT1_CONFIG_ID);
+				doSMTTest(USING_VERIT, CVC3_SMT1_CONFIG_ID);
+				doSMTTest(USING_VERIT, ALTERGO_SMT1_CONFIG_ID);
+				doSMTTest(USING_VERIT, Z3_SMT1_CONFIG_ID);
+			}
+		}
 	}
 
 	public final void testProjects() throws Exception {

@@ -380,12 +380,13 @@ public abstract class BuilderTest extends TestCase {
 	protected void archiveFiles(String... params) throws Exception {
 		final StringBuilder dirSuffixe = new StringBuilder();
 		for (final String param : params) {
-			dirSuffixe.append("_" + param);
+			dirSuffixe.append("/" + param);
 		}
 		final File dir = rodinProject.getProject().getLocation().toFile();
-		final IPath destPath = new Path("/tmp/" + rodinProject.getElementName()
-				+ dirSuffixe.toString());
-		destPath.toFile().mkdir();
+		final IPath destPath = new Path(
+				"/home/guyot/c444/7/exploratory/real_projects/"
+						+ rodinProject.getElementName() + dirSuffixe.toString());
+		destPath.toFile().mkdirs();
 		final String dest = destPath.toOSString() + "/";
 
 		final String destination[] = new String[] { "/bin/sh", "-c",
@@ -438,6 +439,7 @@ public abstract class BuilderTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		System.out.println();
 		for (final Entry<String, Integer> entry : results.entrySet()) {
 			System.out.println(entry.getKey() + ": " + entry.getValue());
 		}
