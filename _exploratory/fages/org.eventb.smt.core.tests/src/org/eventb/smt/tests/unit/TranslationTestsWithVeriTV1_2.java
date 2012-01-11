@@ -385,7 +385,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic(
+		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
 				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
 						VeriTBooleans.getInstance() });
@@ -842,7 +842,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	@Test
 	public void testRule21() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic(
+		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
 				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
 						VeriTBooleans.getInstance() });
