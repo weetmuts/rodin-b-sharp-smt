@@ -18,7 +18,6 @@ import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import java.math.BigInteger;
 
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
-import org.eventb.smt.ast.symbols.SMTPolymorphicSortSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
@@ -36,8 +35,6 @@ public abstract class SMTFactory {
 	public final static String SPACE = " ";
 	public final static String QVAR = "?";
 	public final static String POINT = ".";
-
-	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static SMTTerm[] EMPTY_TERMS = {};
 
@@ -68,11 +65,6 @@ public abstract class SMTFactory {
 	 */
 	public final static SMTQuantifierSymbol EXISTS = SMTQuantifierSymbol.EXISTS;
 	public final static SMTQuantifierSymbol FORALL = SMTQuantifierSymbol.FORALL;
-
-	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
-			final String symbolName) {
-		return new SMTPolymorphicSortSymbol(symbolName);
-	}
 
 	/**
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,

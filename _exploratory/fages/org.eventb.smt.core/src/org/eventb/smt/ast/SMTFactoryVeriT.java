@@ -39,19 +39,21 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private static final String FST_PAIR_SORT_NAME = "'s";
 	private static final String SND_PAIR_SORT_NAME = "'t";
 
+	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
+			final String symbolName) {
+		return new SMTPolymorphicSortSymbol(symbolName);
+	}
+
 	/**
 	 * An instance of the Factory
 	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
-	public static SMTSortSymbol PAIR_SORT = SMTFactory
-			.makePolymorphicSortSymbol("(Pair 's 't)");
+	public static SMTSortSymbol PAIR_SORT = makePolymorphicSortSymbol("(Pair 's 't)");
 
-	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactory
-			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
+	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
 
-	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactory
-			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
+	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };

@@ -10,7 +10,6 @@
 
 package org.eventb.smt.ast.theories;
 
-import static org.eventb.smt.ast.SMTFactory.EMPTY_SORT;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
@@ -20,6 +19,8 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 
 public class VeriTBooleans extends SMTTheory implements ISMTBooleanSort {
+
+	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static final String BOOLS_THEORY_NAME = "Bools";
 

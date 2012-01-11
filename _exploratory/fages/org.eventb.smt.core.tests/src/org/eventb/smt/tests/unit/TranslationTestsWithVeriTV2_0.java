@@ -233,4 +233,19 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		testTranslationV2_0Default("a ∗ b ∗ c = a ∗ c ∗ b",
 				"(= (* a b c) (* a c b))");
 	}
+
+	/**
+	 * Arithmetic expressions unary operations: cf. "a-expr-una"
+	 */
+	@Test
+	public void testArithExprUnop() {
+		/**
+		 * uminus (right child)
+		 */
+		testTranslationV2_0Default("a = −b", "(= a (- b))");
+		/**
+		 * uminus (left child)
+		 */
+		testTranslationV2_0Default("−a = b", "(= (- a) b)");
+	}
 }
