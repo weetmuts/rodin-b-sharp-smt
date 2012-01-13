@@ -387,12 +387,12 @@ public class SMTMacroFactory {
 	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC,
 			SMTTheoryV1_2.Ints.getInt(), SMTTheoryV1_2.Ints.getInt() };
 
-	private static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE, POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);
 
-	private static final SMTMacroSymbol BOOL_SET_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol BOOL_SET_SYMBOL = new SMTMacroSymbol(
 			BOOLS, EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
 			INT, EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
 	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
 			CARD_SORTS, POLYMORPHIC, !PREDEFINED, V1_2);
@@ -424,63 +424,63 @@ public class SMTMacroFactory {
 			V1_2);
 	public static SMTMacroSymbol TOTAL_INJECTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_INJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_INJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	private static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
+	protected static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
 			POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
+	protected static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
 			POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
+	protected static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
+	protected static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(ID,
+	protected static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(ID,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_FUNCTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol PARTIAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol PARTIAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_FUNCTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol TOTAL_SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol TOTAL_SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC,
 			!PREDEFINED, V1_2);
-	private static SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
 			SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	private static SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
 			RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
 			RANGE_RESTRICTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	private static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
 			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	private static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE_INTEGER, VeritPredefinedTheory.getIntIntTab(), POLYMORPHIC,
 			!PREDEFINED, V1_2);
-	private static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
+	protected static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
 			SUBSETEQ, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
+	protected static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(IN,
+	protected static SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(IN,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(BUNION,
+	protected static SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(BUNION,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(BINTER,
+	protected static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(BINTER,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(FCOMP,
+	protected static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(FCOMP,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(BCOMP,
+	protected static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(BCOMP,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(OVR,
+	protected static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(OVR,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
+	protected static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
+	protected static SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	private static SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
+	protected static SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
 
 	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
@@ -700,111 +700,7 @@ public class SMTMacroFactory {
 		signature.addMacro(pmacro);
 	}
 
-	/**
-	 * Given a operator, this method returns the MacroSymbol associated with it.
-	 * 
-	 * @see SMTVeriTOperator
-	 * 
-	 * @param operator
-	 *            the operator used to create the Macro Symbol
-	 * @return the macro symbol associated with the operator
-	 */
-	public static final SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperator operator,
-			final SMTSignatureV1_2Verit signature) {
-		addPredefinedMacroInSignature(operator.getSymbol(), signature);
-		switch (operator) {
-		case BOOLS_OP:
-			return BOOL_SET_SYMBOL;
-		case BUNION_OP:
-			return BUNION_SYMBOL;
-		case BINTER_OP:
-			return BINTER_SYMBOL;
-		case FCOMP_OP:
-			return FCOMP_SYMBOL;
-		case OVR_OP:
-			return REL_OVR_SYMBOL;
-		case EMPTY_OP:
-			return EMPTYSET_SYMBOL;
-		case IN_OP:
-			return IN_SYMBOL;
-		case SUBSET_OP:
-			return SUBSET_SYMBOL;
-		case SUBSETEQ_OP:
-			return SUBSETEQ_SYMBOL;
-		case RANGE_INTEGER_OP:
-			return INTEGER_RANGE_SYMBOL;
-		case RANGE_SUBSTRACTION_OP:
-			return RANGE_SUBSTRACTION_SYMBOL;
-		case RANGE_RESTRICTION_OP:
-			return RANGE_RESTRICTION_SYMBOL;
-		case RELATION_OP:
-			return RELATION_SYMBOL;
-		case TOTAL_RELATION_OP:
-			return TOTAL_RELATION_SYMBOL;
-		case SURJECTIVE_RELATION_OP:
-			return SURJECTIVE_RELATION_SYMBOL;
-		case TOTAL_SURJECTIVE_RELATION_OP:
-			return TOTAL_SURJECTIVE_RELATION_SYMBOL;
-		case PARTIAL_FUNCTION_OP:
-			return PARTIAL_FUNCTION_SYMBOL;
-		case TOTAL_FUNCTION_OP:
-			return TOTAL_FUNCTION_SYMBOL;
-		case ID_OP:
-			return ID_SYMBOL;
-		case NAT_OP:
-			return NAT_SYMBOL;
-		case NAT1_OP:
-			return NAT1_SYMBOL;
-		case INV_OP:
-			return INVERSE_SYMBOL;
-		case DOM_OP:
-			return DOM_SYMBOL;
-		case PARTIAL_INJECTION_OP:
-			return PARTIAL_INJECTION_SYMBOL;
-		case TOTAL_INJECTION_OP:
-			return TOTAL_INJECTION_SYMBOL;
-		case PARTIAL_SURJECTION_OP:
-			return PARTIAL_SURJECTION_SYMBOL;
-		case TOTAL_SURJECTION_OP:
-			return TOTAL_SURJECTION_SYMBOL;
-		case TOTAL_BIJECTION_OP:
-			return TOTAL_BIJECTION_SYMBOL;
-		case CARTESIAN_PRODUCT_OP:
-			return CARTESIAN_PRODUCT_SYMBOL;
-		case DOMAIN_RESTRICTION_OP:
-			return DOMAIN_RESTRICTION_SYMBOL;
-		case DOMAIN_SUBSTRACTION_OP:
-			return DOMAIN_SUBSTRACTION_SYMBOL;
-		case RELATIONAL_IMAGE_OP:
-			return RELATIONAL_IMAGE_SYMBOL;
-		case SETMINUS_OP:
-			return SETMINUS_SYMBOL;
-		case ISMIN_OP:
-			return ISMIN_SYMBOL;
-		case ISMAX_OP:
-			return ISMAX_SYMBOL;
-		case FINITE_OP:
-			return FINITE_SYMBOL;
-		case CARD_OP:
-			return CARD_SYMBOL;
-		case RANGE_OP:
-			return RANGE_SYMBOL;
-		case BCOMP_OP:
-			return BCOMP_SYMBOL;
-		case INTEGER_OP:
-			return INTEGER_SYMBOL;
-		case SUCC_OP:
-			return SUCC_SYMBOL;
-		case PRED_OP:
-			return PRED_SYMBOL;
-		default:
-			throw new IllegalArgumentException(
-					"There is no defined macro symbol with symbol: "
-							+ operator.toString());
-		}
-
-	}
+	
 
 	/**
 	 * Creates and returns a macroSymbol.

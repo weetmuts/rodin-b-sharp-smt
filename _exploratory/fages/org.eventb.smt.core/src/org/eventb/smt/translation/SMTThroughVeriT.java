@@ -15,7 +15,6 @@ import static org.eventb.smt.ast.SMTFactoryVeriT.makeITE;
 import static org.eventb.smt.ast.SMTFactoryVeriT.makeMacroTerm;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.FST_SYMBOL;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SND_SYMBOL;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.getMacroSymbol;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeMacroSymbol;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
@@ -114,6 +113,8 @@ import org.eventb.smt.ast.SMTVeritFiniteFormula;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
@@ -691,36 +692,36 @@ public class SMTThroughVeriT extends Translator {
 			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 			switch (expression.getTag()) {
 			case Formula.KPRED:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(PRED_OP,
-						sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(PRED_OP, sig));
 				break;
 			case Formula.KSUCC:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(SUCC_OP,
-						sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(SUCC_OP, sig));
 				break;
 			case Formula.INTEGER:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
-						INTEGER_OP, sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(INTEGER_OP, sig));
 				break;
 			case Formula.NATURAL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT_OP,
-						sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(NAT_OP, sig));
 				break;
 			case Formula.NATURAL1:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT1_OP,
-						sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(NAT1_OP, sig));
 				break;
 			case Formula.EMPTYSET:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactory
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
 						.getMacroSymbol(EMPTY_OP, sig));
 				break;
 			case Formula.KID_GEN:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID_OP,
-						sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(ID_OP, sig));
 				break;
 			case Formula.BOOL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
-						BOOLS_OP, sig));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(BOOLS_OP, sig));
 				break;
 			case Formula.TRUE:
 				smtNode = sf.makeTrueConstant(signature.getLogic()
@@ -740,7 +741,57 @@ public class SMTThroughVeriT extends Translator {
 				throw new IllegalTagException(expression.getTag());
 			}
 		} else {
-			// TODO SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+			switch (expression.getTag()) {
+			case Formula.KPRED:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(PRED_OP, sig));
+				break;
+			case Formula.KSUCC:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SUCC_OP, sig));
+				break;
+			case Formula.INTEGER:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(INTEGER_OP, sig));
+				break;
+			case Formula.NATURAL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(NAT_OP, sig));
+				break;
+			case Formula.NATURAL1:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(NAT1_OP, sig));
+				break;
+			case Formula.EMPTYSET:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(EMPTY_OP, sig));
+				break;
+			case Formula.KID_GEN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(ID_OP, sig));
+				break;
+			case Formula.BOOL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(BOOLS_OP, sig));
+				break;
+			case Formula.TRUE:
+				smtNode = sf.makeTrueConstant(signature.getLogic()
+						.getTrueConstant());
+				break;
+			case Formula.FALSE:
+				smtNode = sf.makeFalseConstant(signature.getLogic()
+						.getFalseConstant());
+				break;
+			case Formula.KPRJ1_GEN:
+				throw new IllegalArgumentException(
+						"prj1 (KPRJ1_GEN) is not implemented yet");
+			case Formula.KPRJ2_GEN:
+				throw new IllegalArgumentException(
+						"prj2 (KPRJ2_GEN) is not implemented yet");
+			default:
+				throw new IllegalTagException(expression.getTag());
+			}
 		}
 	}
 
@@ -831,82 +882,84 @@ public class SMTThroughVeriT extends Translator {
 						.getOperator(SMTOperator.EXPN), children, signature);
 				break;
 			case Formula.UPTO:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RANGE_INTEGER_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(RANGE_INTEGER_OP, sig), children);
 				break;
 			case Formula.RANSUB:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RANGE_SUBSTRACTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(RANGE_SUBSTRACTION_OP, sig), children);
 				break;
 
 			case Formula.RANRES:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RANGE_RESTRICTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(RANGE_RESTRICTION_OP, sig), children);
 				break;
 
 			case Formula.REL:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RELATION_OP, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(RELATION_OP, sig),
+						children);
 				break;
 
 			case Formula.TREL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_RELATION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_RELATION_OP, sig), children);
 				break;
 
 			case Formula.SREL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(SURJECTIVE_RELATION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(SURJECTIVE_RELATION_OP, sig), children);
 				break;
 
 			case Formula.STREL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, sig),
 						children);
 				break;
 
 			case Formula.PFUN:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(PARTIAL_FUNCTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(PARTIAL_FUNCTION_OP, sig), children);
 				break;
 
 			case Formula.TFUN:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_FUNCTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_FUNCTION_OP, sig), children);
 				break;
 			case Formula.PINJ:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(PARTIAL_INJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(PARTIAL_INJECTION_OP, sig), children);
 				break;
 
 			case Formula.TINJ:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_INJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_INJECTION_OP, sig), children);
 				break;
 
 			case Formula.PSUR:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(PARTIAL_SURJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(PARTIAL_SURJECTION_OP, sig), children);
 				break;
 
 			case Formula.TSUR:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_SURJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_SURJECTION_OP, sig), children);
 				break;
 
 			case Formula.TBIJ:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(TOTAL_BIJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(TOTAL_BIJECTION_OP, sig), children);
 				break;
 
 			case Formula.SETMINUS:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(SETMINUS_OP, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(SETMINUS_OP, sig),
+						children);
 				break;
 
 			case Formula.CPROD:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(CARTESIAN_PRODUCT_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(CARTESIAN_PRODUCT_OP, sig), children);
 				break;
 
 			case Formula.DPROD:
@@ -918,13 +971,13 @@ public class SMTThroughVeriT extends Translator {
 						"Operator parallel product (PPROD) is not implemented yet");
 
 			case Formula.DOMRES:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(DOMAIN_RESTRICTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(DOMAIN_RESTRICTION_OP, sig), children);
 				break;
 
 			case Formula.DOMSUB:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(DOMAIN_SUBSTRACTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(DOMAIN_SUBSTRACTION_OP, sig), children);
 				break;
 
 			case Formula.FUNIMAGE:
@@ -932,8 +985,8 @@ public class SMTThroughVeriT extends Translator {
 						"function application (FUNIMAGE) is not implemented yet");
 
 			case Formula.RELIMAGE:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RELATIONAL_IMAGE_OP, sig), children);
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(RELATIONAL_IMAGE_OP, sig), children);
 				break;
 
 			case Formula.MAPSTO:
@@ -946,7 +999,143 @@ public class SMTThroughVeriT extends Translator {
 			}
 
 		} else {
-			// TODO SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			final SMTTerm[] children = smtTerms(expression.getLeft(),
+					expression.getRight());
+			switch (expression.getTag()) {
+			case Formula.MINUS:
+				smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MINUS), children, signature);
+				break;
+			case Formula.DIV:
+				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.DIV), children, signature);
+				break;
+			case Formula.MOD:
+				smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MOD), children, signature);
+				break;
+			case Formula.EXPN:
+				smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.EXPN), children, signature);
+				break;
+			case Formula.UPTO:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(RANGE_INTEGER_OP, sig), children);
+				break;
+			case Formula.RANSUB:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(RANGE_SUBSTRACTION_OP, sig), children);
+				break;
+
+			case Formula.RANRES:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(RANGE_RESTRICTION_OP, sig), children);
+				break;
+
+			case Formula.REL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(RELATION_OP, sig),
+						children);
+				break;
+
+			case Formula.TREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_RELATION_OP, sig), children);
+				break;
+
+			case Formula.SREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SURJECTIVE_RELATION_OP, sig), children);
+				break;
+
+			case Formula.STREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, sig),
+						children);
+				break;
+
+			case Formula.PFUN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(PARTIAL_FUNCTION_OP, sig), children);
+				break;
+
+			case Formula.TFUN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_FUNCTION_OP, sig), children);
+				break;
+			case Formula.PINJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(PARTIAL_INJECTION_OP, sig), children);
+				break;
+
+			case Formula.TINJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_INJECTION_OP, sig), children);
+				break;
+
+			case Formula.PSUR:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(PARTIAL_SURJECTION_OP, sig), children);
+				break;
+
+			case Formula.TSUR:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_SURJECTION_OP, sig), children);
+				break;
+
+			case Formula.TBIJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(TOTAL_BIJECTION_OP, sig), children);
+				break;
+
+			case Formula.SETMINUS:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(SETMINUS_OP, sig),
+						children);
+				break;
+
+			case Formula.CPROD:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(CARTESIAN_PRODUCT_OP, sig), children);
+				break;
+
+			case Formula.DPROD:
+				throw new IllegalArgumentException(
+						"Operator direct product (DPROD) is not implemented yet");
+
+			case Formula.PPROD:
+				throw new IllegalArgumentException(
+						"Operator parallel product (PPROD) is not implemented yet");
+
+			case Formula.DOMRES:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(DOMAIN_RESTRICTION_OP, sig), children);
+				break;
+
+			case Formula.DOMSUB:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(DOMAIN_SUBSTRACTION_OP, sig), children);
+				break;
+
+			case Formula.FUNIMAGE:
+				throw new IllegalArgumentException(
+						"function application (FUNIMAGE) is not implemented yet");
+
+			case Formula.RELIMAGE:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(RELATIONAL_IMAGE_OP, sig), children);
+				break;
+
+			case Formula.MAPSTO:
+				sig.addPairSortAndFunction();
+				smtNode = SMTFactory.makeFunApplication(
+						SMTFactoryVeriT.PAIR_SYMBOL, children, signature);
+				break;
+			default:
+				throw new IllegalTagException(expression.getTag());
+			}
 		}
 
 	}
@@ -1109,11 +1298,10 @@ public class SMTThroughVeriT extends Translator {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
 		if (signature instanceof SMTSignatureV1_2Verit) {
-			return SMTFactoryVeriT
-					.makeMacroAtom(
-							getMacroSymbol(operator,
-									(SMTSignatureV1_2Verit) signature),
-							children, (SMTSignatureV1_2Verit) signature);
+			return SMTFactoryVeriT.makeMacroAtom(
+					SMTMacroFactoryV1_2.getMacroSymbol(operator,
+							(SMTSignatureV1_2Verit) signature), children,
+					(SMTSignatureV1_2Verit) signature);
 		} else {
 			// TODO SMT 2.0 case
 			System.out.println("returned null");
@@ -1218,15 +1406,17 @@ public class SMTThroughVeriT extends Translator {
 			if (expressions.length == 2) {
 				children = smtTerms(expression.getChildren());
 				macroTerm = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(operator, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+						children);
 			} else {
 				children = smtTerms(expressions[0], expressions[1]);
 				macroTerm = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(operator, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+						children);
 				for (int i = 2; i < expressions.length; i++) {
 					macroTerm = SMTFactoryVeriT.makeMacroTerm(
-							getMacroSymbol(operator, sig), macroTerm,
-							smtTerm(expressions[i]));
+							SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+							macroTerm, smtTerm(expressions[i]));
 				}
 
 			}
@@ -1327,8 +1517,9 @@ public class SMTThroughVeriT extends Translator {
 	public void visitSetExtension(final SetExtension expression) {
 		if (expression.getChildCount() == 0) {
 			if (signature instanceof SMTSignatureV1_2Verit) {
-				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
-						EMPTY_OP, (SMTSignatureV1_2Verit) signature));
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV1_2
+						.getMacroSymbol(EMPTY_OP,
+								(SMTSignatureV1_2Verit) signature));
 			} else {
 				// TODO SMT 2.0 case
 			}
@@ -1449,11 +1640,13 @@ public class SMTThroughVeriT extends Translator {
 			}
 			case Formula.KDOM:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(DOM_OP, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(DOM_OP, sig),
+						children);
 				break;
 			case Formula.KRAN: {
 				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(RANGE_OP, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(RANGE_OP, sig),
+						children);
 				break;
 			}
 			case Formula.KMIN: {
@@ -1468,7 +1661,8 @@ public class SMTThroughVeriT extends Translator {
 			}
 			case Formula.CONVERSE:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(INV_OP, sig), children);
+						SMTMacroFactoryV1_2.getMacroSymbol(INV_OP, sig),
+						children);
 				break;
 			case Formula.UNMINUS:
 				smtNode = sf.makeUMinus((SMTFunctionSymbol) signature
@@ -1566,7 +1760,8 @@ public class SMTThroughVeriT extends Translator {
 			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
 			// Creating the macro operator 'finite'
-			final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD_OP, sig);
+			final SMTMacroSymbol cardSymbol = SMTMacroFactoryV1_2
+					.getMacroSymbol(CARD_OP, sig);
 
 			// Creating the new assumption (card p t k f) and saving it.
 			final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
@@ -1607,7 +1802,8 @@ public class SMTThroughVeriT extends Translator {
 					constantName, SMTTheoryV1_2.Ints.getInt());
 
 			// Creating the macro operator 'ismin'
-			final SMTMacroSymbol opSymbol = getMacroSymbol(operator, sig);
+			final SMTMacroSymbol opSymbol = SMTMacroFactoryV1_2.getMacroSymbol(
+					operator, sig);
 
 			// Creating the term 'm'
 			final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol,
@@ -1733,12 +1929,12 @@ public class SMTThroughVeriT extends Translator {
 				SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
 				unionTerm = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(BUNION_OP, sig), newVars.get(0),
-						newVars.get(1));
+						SMTMacroFactoryV1_2.getMacroSymbol(BUNION_OP, sig),
+						newVars.get(0), newVars.get(1));
 				for (int i = 2; i < newVars.size(); i++) {
 					unionTerm = SMTFactoryVeriT.makeMacroTerm(
-							getMacroSymbol(BUNION_OP, sig), unionTerm,
-							newVars.get(i));
+							SMTMacroFactoryV1_2.getMacroSymbol(BUNION_OP, sig),
+							unionTerm, newVars.get(i));
 				}
 			} else {
 				// TODO SMT 2.0 case
@@ -1820,7 +2016,8 @@ public class SMTThroughVeriT extends Translator {
 			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
 			// Creating the macro operator 'finite'
-			final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE_OP, sig);
+			final SMTMacroSymbol finiteSymbol = SMTMacroFactoryV1_2
+					.getMacroSymbol(FINITE_OP, sig);
 
 			// Creating the new assumption (finite p t k f) and saving it.
 			final SMTFormula finiteFormula = new SMTVeritFiniteFormula(
