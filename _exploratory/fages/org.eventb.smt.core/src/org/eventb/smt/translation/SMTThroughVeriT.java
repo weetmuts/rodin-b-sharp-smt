@@ -152,7 +152,7 @@ public class SMTThroughVeriT extends Translator {
 	 * An instance of <code>SMTThroughVeriT</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
-	private SMTSignatureV1_2Verit signature;
+	private SMTSignature signature;
 
 	/**
 	 * This method is used only to test the SMT translation
@@ -312,7 +312,7 @@ public class SMTThroughVeriT extends Translator {
 		final Gatherer gatherer = Gatherer.gatherFrom(sequent);
 
 		if (gatherer.usesBoolTheory()) {
-			return new SMTLogic(SMTLogic.UNKNOWN,
+			return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
 					VeritPredefinedTheory.getInstance(),
 					VeriTBooleans.getInstance());
 		}
@@ -387,7 +387,10 @@ public class SMTThroughVeriT extends Translator {
 
 		addBooleanAssumption(logic);
 
+		linkLogicSymbols();
+
 		final ITypeEnvironment typeEnvironment = sequent.getTypeEnvironment();
+
 		translateTypeEnvironment(typeEnvironment);
 
 		final List<Type> biTypes = BidTypeInspector
@@ -395,6 +398,10 @@ public class SMTThroughVeriT extends Translator {
 		final Iterator<Type> bIterator = biTypes.iterator();
 
 		extractTypeFromBoundIdentDecl(bIterator);
+	}
+
+	private void linkLogicSymbols() {
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -423,7 +430,11 @@ public class SMTThroughVeriT extends Translator {
 		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
 				varName, sort);
 		varMap.put(varName, predSymbol);
-		signature.addPairSortAndFunction();
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
+		} else {
+			// TODO threat this case with SMT 2
+		}
 	}
 
 	/**
@@ -549,7 +560,12 @@ public class SMTThroughVeriT extends Translator {
 			if (sortSymbol == null) {
 				if (baseType instanceof ProductType) {
 					sortSymbol = translateProductType((ProductType) baseType);
-					signature.addPairSortAndFunction();
+					if (signature instanceof SMTSignatureV1_2Verit) {
+						((SMTSignatureV1_2Verit) signature)
+								.addPairSortAndFunction();
+					} else {
+						// TODO Case for SMT 2.0
+					}
 					typeMap.put(baseType, sortSymbol);
 				} else {
 					sortSymbol = signature.freshSort(baseType.toString());
@@ -642,20 +658,28 @@ public class SMTThroughVeriT extends Translator {
 			final SMTSortSymbol expressionSort, final SMTTerm... termChildren) {
 
 		// obtaining fresh name for the variables
-		final String lambdaName = signature.freshQVarName(SMTMacroSymbol.ELEM);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-		final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
-				expressionSort, false, V1_2);
+			final String lambdaName = sig.freshQVarName(SMTMacroSymbol.ELEM);
+			final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
+					expressionSort, false, V1_2);
 
-		// Creating the macro
-		final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
-				macroName, termChildren, lambdaVar, formulaChild,
-				expressionTerm, signature);
+			// Creating the macro
+			final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
+					macroName, termChildren, lambdaVar, formulaChild,
+					expressionTerm, sig);
 
-		signature.addMacro(macro);
-		final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
-				VeritPredefinedTheory.POLYMORPHIC);
-		return makeMacroTerm(macroSymbol);
+			sig.addMacro(macro);
+			final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
+					VeritPredefinedTheory.POLYMORPHIC);
+			return makeMacroTerm(macroSymbol);
+
+		} else {
+			// TODO case for SMT 2.0
+			System.out.println("returned null");
+			return null;
+		}
 	}
 
 	/**
@@ -664,55 +688,60 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	@Override
 	public void visitAtomicExpression(final AtomicExpression expression) {
-		switch (expression.getTag()) {
-		case Formula.KPRED:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(PRED_OP,
-					signature));
-			break;
-		case Formula.KSUCC:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(SUCC_OP,
-					signature));
-			break;
-		case Formula.INTEGER:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(INTEGER_OP,
-					signature));
-			break;
-		case Formula.NATURAL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT_OP,
-					signature));
-			break;
-		case Formula.NATURAL1:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT1_OP,
-					signature));
-			break;
-		case Formula.EMPTYSET:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactory
-					.getMacroSymbol(EMPTY_OP, signature));
-			break;
-		case Formula.KID_GEN:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID_OP,
-					signature));
-			break;
-		case Formula.BOOL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(BOOLS_OP,
-					signature));
-			break;
-		case Formula.TRUE:
-			smtNode = sf.makeTrueConstant(signature.getLogic()
-					.getTrueConstant());
-			break;
-		case Formula.FALSE:
-			smtNode = sf.makeFalseConstant(signature.getLogic()
-					.getFalseConstant());
-			break;
-		case Formula.KPRJ1_GEN:
-			throw new IllegalArgumentException(
-					"prj1 (KPRJ1_GEN) is not implemented yet");
-		case Formula.KPRJ2_GEN:
-			throw new IllegalArgumentException(
-					"prj2 (KPRJ2_GEN) is not implemented yet");
-		default:
-			throw new IllegalTagException(expression.getTag());
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+			switch (expression.getTag()) {
+			case Formula.KPRED:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(PRED_OP,
+						sig));
+				break;
+			case Formula.KSUCC:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(SUCC_OP,
+						sig));
+				break;
+			case Formula.INTEGER:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
+						INTEGER_OP, sig));
+				break;
+			case Formula.NATURAL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT_OP,
+						sig));
+				break;
+			case Formula.NATURAL1:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(NAT1_OP,
+						sig));
+				break;
+			case Formula.EMPTYSET:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactory
+						.getMacroSymbol(EMPTY_OP, sig));
+				break;
+			case Formula.KID_GEN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(ID_OP,
+						sig));
+				break;
+			case Formula.BOOL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
+						BOOLS_OP, sig));
+				break;
+			case Formula.TRUE:
+				smtNode = sf.makeTrueConstant(signature.getLogic()
+						.getTrueConstant());
+				break;
+			case Formula.FALSE:
+				smtNode = sf.makeFalseConstant(signature.getLogic()
+						.getFalseConstant());
+				break;
+			case Formula.KPRJ1_GEN:
+				throw new IllegalArgumentException(
+						"prj1 (KPRJ1_GEN) is not implemented yet");
+			case Formula.KPRJ2_GEN:
+				throw new IllegalArgumentException(
+						"prj2 (KPRJ2_GEN) is not implemented yet");
+			default:
+				throw new IllegalTagException(expression.getTag());
+			}
+		} else {
+			// TODO SMT 2.0 case
 		}
 	}
 
@@ -745,21 +774,29 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	private SMTTerm translateFunctionApplicationSpecialCases(
 			final BinaryExpression expression) {
-		if (expression.getLeft().getTag() == Formula.KID_GEN) {
-			return smtTerm(expression.getRight());
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+			if (expression.getLeft().getTag() == Formula.KID_GEN) {
+				return smtTerm(expression.getRight());
+			}
+			if (expression.getLeft().getTag() == Formula.KPRJ1_GEN) {
+
+				sig.addFstAndSndAuxiliarFunctions();
+				return SMTFactory.makeFunApplication(FST_SYMBOL,
+						smtTerms(expression.getRight()), signature);
+			}
+			if (expression.getLeft().getTag() == Formula.KPRJ2_GEN) {
+				sig.addFstAndSndAuxiliarFunctions();
+				return SMTFactory.makeFunApplication(SND_SYMBOL,
+						smtTerms(expression.getRight()), signature);
+			}
+			throw new IllegalArgumentException(
+					"function application (FUNIMAGE) is not implemented yet");
+		} else {
+			// TODO: SMT 2.0 case
+			System.out.println("returned null");
+			return null;
 		}
-		if (expression.getLeft().getTag() == Formula.KPRJ1_GEN) {
-			signature.addFstAndSndAuxiliarFunctions();
-			return SMTFactory.makeFunApplication(FST_SYMBOL,
-					smtTerms(expression.getRight()), signature);
-		}
-		if (expression.getLeft().getTag() == Formula.KPRJ2_GEN) {
-			signature.addFstAndSndAuxiliarFunctions();
-			return SMTFactory.makeFunApplication(SND_SYMBOL,
-					smtTerms(expression.getRight()), signature);
-		}
-		throw new IllegalArgumentException(
-				"function application (FUNIMAGE) is not implemented yet");
 	}
 
 	/**
@@ -772,143 +809,147 @@ public class SMTThroughVeriT extends Translator {
 			smtNode = translateFunctionApplicationSpecialCases(expression);
 			return;
 		}
-		final SMTTerm[] children = smtTerms(expression.getLeft(),
-				expression.getRight());
-		switch (expression.getTag()) {
-		case Formula.MINUS:
-			smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MINUS), children, signature);
-			break;
-		case Formula.DIV:
-			smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.DIV), children, signature);
-			break;
-		case Formula.MOD:
-			smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MOD), children, signature);
-			break;
-		case Formula.EXPN:
-			smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.EXPN), children, signature);
-			break;
-		case Formula.UPTO:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RANGE_INTEGER_OP, signature), children);
-			break;
-		case Formula.RANSUB:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RANGE_SUBSTRACTION_OP, signature), children);
-			break;
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-		case Formula.RANRES:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RANGE_RESTRICTION_OP, signature), children);
-			break;
+			final SMTTerm[] children = smtTerms(expression.getLeft(),
+					expression.getRight());
+			switch (expression.getTag()) {
+			case Formula.MINUS:
+				smtNode = sf.makeMinus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MINUS), children, signature);
+				break;
+			case Formula.DIV:
+				smtNode = sf.makeDiv((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.DIV), children, signature);
+				break;
+			case Formula.MOD:
+				smtNode = sf.makeMod((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MOD), children, signature);
+				break;
+			case Formula.EXPN:
+				smtNode = sf.makeExpn((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.EXPN), children, signature);
+				break;
+			case Formula.UPTO:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RANGE_INTEGER_OP, sig), children);
+				break;
+			case Formula.RANSUB:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RANGE_SUBSTRACTION_OP, sig), children);
+				break;
 
-		case Formula.REL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RELATION_OP, signature), children);
-			break;
+			case Formula.RANRES:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RANGE_RESTRICTION_OP, sig), children);
+				break;
 
-		case Formula.TREL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_RELATION_OP, signature), children);
-			break;
+			case Formula.REL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RELATION_OP, sig), children);
+				break;
 
-		case Formula.SREL:
-			smtNode = SMTFactoryVeriT
-					.makeMacroTerm(
-							getMacroSymbol(SURJECTIVE_RELATION_OP, signature),
-							children);
-			break;
+			case Formula.TREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_RELATION_OP, sig), children);
+				break;
 
-		case Formula.STREL:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, signature),
-					children);
-			break;
+			case Formula.SREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(SURJECTIVE_RELATION_OP, sig), children);
+				break;
 
-		case Formula.PFUN:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(PARTIAL_FUNCTION_OP, signature), children);
-			break;
+			case Formula.STREL:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, sig),
+						children);
+				break;
 
-		case Formula.TFUN:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_FUNCTION_OP, signature), children);
-			break;
-		case Formula.PINJ:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(PARTIAL_INJECTION_OP, signature), children);
-			break;
+			case Formula.PFUN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(PARTIAL_FUNCTION_OP, sig), children);
+				break;
 
-		case Formula.TINJ:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_INJECTION_OP, signature), children);
-			break;
+			case Formula.TFUN:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_FUNCTION_OP, sig), children);
+				break;
+			case Formula.PINJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(PARTIAL_INJECTION_OP, sig), children);
+				break;
 
-		case Formula.PSUR:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(PARTIAL_SURJECTION_OP, signature), children);
-			break;
+			case Formula.TINJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_INJECTION_OP, sig), children);
+				break;
 
-		case Formula.TSUR:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_SURJECTION_OP, signature), children);
-			break;
+			case Formula.PSUR:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(PARTIAL_SURJECTION_OP, sig), children);
+				break;
 
-		case Formula.TBIJ:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(TOTAL_BIJECTION_OP, signature), children);
-			break;
+			case Formula.TSUR:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_SURJECTION_OP, sig), children);
+				break;
 
-		case Formula.SETMINUS:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(SETMINUS_OP, signature), children);
-			break;
+			case Formula.TBIJ:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(TOTAL_BIJECTION_OP, sig), children);
+				break;
 
-		case Formula.CPROD:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(CARTESIAN_PRODUCT_OP, signature), children);
-			break;
+			case Formula.SETMINUS:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(SETMINUS_OP, sig), children);
+				break;
 
-		case Formula.DPROD:
-			throw new IllegalArgumentException(
-					"Operator direct product (DPROD) is not implemented yet");
+			case Formula.CPROD:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(CARTESIAN_PRODUCT_OP, sig), children);
+				break;
 
-		case Formula.PPROD:
-			throw new IllegalArgumentException(
-					"Operator parallel product (PPROD) is not implemented yet");
+			case Formula.DPROD:
+				throw new IllegalArgumentException(
+						"Operator direct product (DPROD) is not implemented yet");
 
-		case Formula.DOMRES:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(DOMAIN_RESTRICTION_OP, signature), children);
-			break;
+			case Formula.PPROD:
+				throw new IllegalArgumentException(
+						"Operator parallel product (PPROD) is not implemented yet");
 
-		case Formula.DOMSUB:
-			smtNode = SMTFactoryVeriT
-					.makeMacroTerm(
-							getMacroSymbol(DOMAIN_SUBSTRACTION_OP, signature),
-							children);
-			break;
+			case Formula.DOMRES:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(DOMAIN_RESTRICTION_OP, sig), children);
+				break;
 
-		case Formula.FUNIMAGE:
-			throw new IllegalArgumentException(
-					"function application (FUNIMAGE) is not implemented yet");
+			case Formula.DOMSUB:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(DOMAIN_SUBSTRACTION_OP, sig), children);
+				break;
 
-		case Formula.RELIMAGE:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RELATIONAL_IMAGE_OP, signature), children);
-			break;
+			case Formula.FUNIMAGE:
+				throw new IllegalArgumentException(
+						"function application (FUNIMAGE) is not implemented yet");
 
-		case Formula.MAPSTO:
-			signature.addPairSortAndFunction();
-			smtNode = SMTFactory.makeFunApplication(
-					SMTFactoryVeriT.PAIR_SYMBOL, children, signature);
-			break;
-		default:
-			throw new IllegalTagException(expression.getTag());
+			case Formula.RELIMAGE:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RELATIONAL_IMAGE_OP, sig), children);
+				break;
+
+			case Formula.MAPSTO:
+				sig.addPairSortAndFunction();
+				smtNode = SMTFactory.makeFunApplication(
+						SMTFactoryVeriT.PAIR_SYMBOL, children, signature);
+				break;
+			default:
+				throw new IllegalTagException(expression.getTag());
+			}
+
+		} else {
+			// TODO SMT 2.0 case
 		}
+
 	}
 
 	/**
@@ -919,18 +960,23 @@ public class SMTThroughVeriT extends Translator {
 	public void visitBoundIdentDecl(final BoundIdentDecl boundIdentDecl) {
 		final String varName = boundIdentDecl.getName();
 		final SMTVar smtVar;
-
-		final String smtVarName = signature.freshQVarName(varName);
-		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, V1_2);
-		if (!qVarMap.containsKey(varName)) {
-			qVarMap.put(varName, smtVar);
-			boundIdentifiers.add(varName);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			final String smtVarName = ((SMTSignatureV1_2Verit) signature)
+					.freshQVarName(varName);
+			final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+			smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, V1_2);
+			if (!qVarMap.containsKey(varName)) {
+				qVarMap.put(varName, smtVar);
+				boundIdentifiers.add(varName);
+			} else {
+				qVarMap.put(smtVarName, smtVar);
+				boundIdentifiers.add(smtVarName);
+			}
+			smtNode = smtVar;
 		} else {
-			qVarMap.put(smtVarName, smtVar);
-			boundIdentifiers.add(smtVarName);
+			// TODO SMT 2.0 case
 		}
-		smtNode = smtVar;
+
 	}
 
 	/**
@@ -966,7 +1012,12 @@ public class SMTThroughVeriT extends Translator {
 					.convertVeritTermsIntoFormulas(children);
 			return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
 		} else if (isPairType(leftType)) {
-			sf.addPairEqualityAxiom(additionalAssumptions, signature);
+			if (signature instanceof SMTSignatureV1_2Verit) {
+				sf.addPairEqualityAxiom(additionalAssumptions,
+						(SMTSignatureV1_2Verit) signature);
+			} else {
+				// TODO SMT 2.0 case
+			}
 		}
 		return makeEqual(children, V1_2);
 	}
@@ -1058,8 +1109,17 @@ public class SMTThroughVeriT extends Translator {
 			final SMTVeriTOperator operator, final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
-		return SMTFactoryVeriT.makeMacroAtom(
-				getMacroSymbol(operator, signature), children, signature);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			return SMTFactoryVeriT
+					.makeMacroAtom(
+							getMacroSymbol(operator,
+									(SMTSignatureV1_2Verit) signature),
+							children, (SMTSignatureV1_2Verit) signature);
+		} else {
+			// TODO SMT 2.0 case
+			System.out.println("returned null");
+			return null;
+		}
 	}
 
 	/**
@@ -1153,22 +1213,30 @@ public class SMTThroughVeriT extends Translator {
 			final Expression[] expressions) {
 		SMTTerm[] children;
 		SMTTerm macroTerm;
-		if (expressions.length == 2) {
-			children = smtTerms(expression.getChildren());
-			macroTerm = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(operator, signature), children);
-		} else {
-			children = smtTerms(expressions[0], expressions[1]);
-			macroTerm = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(operator, signature), children);
-			for (int i = 2; i < expressions.length; i++) {
-				macroTerm = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(operator, signature), macroTerm,
-						smtTerm(expressions[i]));
-			}
+		if ((signature instanceof SMTSignatureV1_2Verit)) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
+			if (expressions.length == 2) {
+				children = smtTerms(expression.getChildren());
+				macroTerm = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(operator, sig), children);
+			} else {
+				children = smtTerms(expressions[0], expressions[1]);
+				macroTerm = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(operator, sig), children);
+				for (int i = 2; i < expressions.length; i++) {
+					macroTerm = SMTFactoryVeriT.makeMacroTerm(
+							getMacroSymbol(operator, sig), macroTerm,
+							smtTerm(expressions[i]));
+				}
+
+			}
+			return macroTerm;
+		} else {
+			// TODO SMT 2.0 case
+			System.out.println("returned null");
+			return null;
 		}
-		return macroTerm;
 	}
 
 	/**
@@ -1259,8 +1327,12 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	public void visitSetExtension(final SetExtension expression) {
 		if (expression.getChildCount() == 0) {
-			smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(EMPTY_OP,
-					signature));
+			if (signature instanceof SMTSignatureV1_2Verit) {
+				smtNode = SMTFactoryVeriT.makeMacroTerm(getMacroSymbol(
+						EMPTY_OP, (SMTSignatureV1_2Verit) signature));
+			} else {
+				// TODO SMT 2.0 case
+			}
 		} else {
 			translateSetExtension(expression);
 		}
@@ -1278,18 +1350,25 @@ public class SMTThroughVeriT extends Translator {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
 		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
-		final String varName = signature.freshQVarName(SMTMacroSymbol.ELEM);
 
-		final Type setExtensionType = expression.getMembers()[0].getType();
-		if (setExtensionType instanceof ProductType) {
-			translatePairSet(expression, children, macroName, varName);
-			sf.addPairEqualityAxiom(additionalAssumptions, signature);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+
+			final String varName = sig.freshQVarName(SMTMacroSymbol.ELEM);
+
+			final Type setExtensionType = expression.getMembers()[0].getType();
+			if (setExtensionType instanceof ProductType) {
+				translatePairSet(expression, children, macroName, varName);
+				sf.addPairEqualityAxiom(additionalAssumptions, sig);
+			} else {
+				translateSimpleSet(expression, children, macroName, varName);
+			}
+			final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
+					VeriTBooleans.getInstance().getBooleanSort());
+			smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 		} else {
-			translateSimpleSet(expression, children, macroName, varName);
+			// TODO: SMT 2.0 case
 		}
-		final SMTMacroSymbol symbol = makeMacroSymbol(macroName, VeriTBooleans
-				.getInstance().getBooleanSort());
-		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 	}
 
 	/**
@@ -1316,7 +1395,11 @@ public class SMTThroughVeriT extends Translator {
 				V1_2);
 
 		final SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
-		signature.addMacro(macro);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			((SMTSignatureV1_2Verit) signature).addMacro(macro);
+		} else {
+			// TODO See SMT 2.0 case
+		}
 	}
 
 	/**
@@ -1339,9 +1422,15 @@ public class SMTThroughVeriT extends Translator {
 		final SMTVarSymbol var = new SMTVarSymbol(varName, pairSort, false,
 				V1_2);
 
-		final SMTPairEnumMacro macro = SMTMacroFactory
-				.makePairEnumerationMacro(macroName, var, children, signature);
-		signature.addMacro(macro);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+
+			final SMTPairEnumMacro macro = SMTMacroFactory
+					.makePairEnumerationMacro(macroName, var, children, sig);
+			sig.addMacro(macro);
+		} else {
+			// TODO SMT 2.0 case
+		}
 	}
 
 	/**
@@ -1351,63 +1440,70 @@ public class SMTThroughVeriT extends Translator {
 	public void visitUnaryExpression(final UnaryExpression expression) {
 		final SMTTerm[] children = new SMTTerm[] { smtTerm(expression
 				.getChild()) };
-		switch (expression.getTag()) {
-		case Formula.KCARD: {
-			translateCardinality(expression, children);
-			break;
-		}
-		case Formula.KDOM:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(DOM_OP, signature), children);
-			break;
-		case Formula.KRAN: {
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(RANGE_OP, signature), children);
-			break;
-		}
-		case Formula.KMIN: {
-			smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN_OP,
-					"ismin_var", children);
-			break;
-		}
-		case Formula.KMAX: {
-			smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX_OP,
-					"ismax_var", children);
-			break;
-		}
-		case Formula.CONVERSE:
-			smtNode = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(INV_OP, signature), children);
-			break;
-		case Formula.UNMINUS:
-			smtNode = sf.makeUMinus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.UMINUS), children, signature);
-			break;
-		case Formula.POW: {
-			throw new IllegalArgumentException(
-					"It's not possible to translate PowerSet unary expression (POW) to SMT-LIB yet");
-		}
-		case Formula.POW1: {
-			throw new IllegalArgumentException(
-					"It's not possible to translate PowerSet1 unary expression (POW1) to SMT-LIB yet");
-		}
-		/**
-		 * Not reached because sets of sets are not supported yet
-		 */
-		case Formula.KUNION: {
-			throw new IllegalArgumentException(
-					"It's not possible to translate generalized union (KUNION) to SMT-LIB yet");
-		}
-		/**
-		 * Not reached because sets of sets are not supported yet
-		 */
-		case Formula.KINTER: {
-			throw new IllegalArgumentException(
-					"It's not possible to translate generalized inter (KINTER) to SMT-LIB yet");
-		}
-		default: {
-			throw new IllegalTagException(expression.getTag());
-		}
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+
+			switch (expression.getTag()) {
+			case Formula.KCARD: {
+				translateCardinality(expression, children);
+				break;
+			}
+			case Formula.KDOM:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(DOM_OP, sig), children);
+				break;
+			case Formula.KRAN: {
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(RANGE_OP, sig), children);
+				break;
+			}
+			case Formula.KMIN: {
+				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN_OP,
+						"ismin_var", children);
+				break;
+			}
+			case Formula.KMAX: {
+				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX_OP,
+						"ismax_var", children);
+				break;
+			}
+			case Formula.CONVERSE:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						getMacroSymbol(INV_OP, sig), children);
+				break;
+			case Formula.UNMINUS:
+				smtNode = sf.makeUMinus((SMTFunctionSymbol) signature
+						.getLogic().getOperator(SMTOperator.UMINUS), children,
+						signature);
+				break;
+			case Formula.POW: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate PowerSet unary expression (POW) to SMT-LIB yet");
+			}
+			case Formula.POW1: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate PowerSet1 unary expression (POW1) to SMT-LIB yet");
+			}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
+			case Formula.KUNION: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate generalized union (KUNION) to SMT-LIB yet");
+			}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
+			case Formula.KINTER: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate generalized inter (KINTER) to SMT-LIB yet");
+			}
+			default: {
+				throw new IllegalTagException(expression.getTag());
+			}
+			}
+		} else {
+			// TODO SMT 2.0 case
 		}
 	}
 
@@ -1467,18 +1563,25 @@ public class SMTThroughVeriT extends Translator {
 			final SMTFunctionSymbol kVarSymbol,
 			final SMTFunctionSymbol fVarSymbol) {
 
-		// Creating the macro operator 'finite'
-		final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD_OP, signature);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-		// Creating the new assumption (card p t k f) and saving it.
-		final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
-				fVarSymbol, kVarSymbol, children, signature);
+			// Creating the macro operator 'finite'
+			final SMTMacroSymbol cardSymbol = getMacroSymbol(CARD_OP, sig);
 
-		additionalAssumptions.add(cardFormula);
+			// Creating the new assumption (card p t k f) and saving it.
+			final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
+					fVarSymbol, kVarSymbol, children, sig);
 
-		final SMTTerm kTerm = sf.makeVeriTConstantTerm(kVarSymbol, signature);
+			additionalAssumptions.add(cardFormula);
 
-		smtNode = kTerm;
+			final SMTTerm kTerm = sf.makeVeriTConstantTerm(kVarSymbol,
+					signature);
+
+			smtNode = kTerm;
+		} else {
+			// TODO SMT 2.0 case
+		}
 	}
 
 	/**
@@ -1497,29 +1600,38 @@ public class SMTThroughVeriT extends Translator {
 	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
 			final String constantName, final SMTTerm[] children) {
 
-		// Creating the constant 'm'
-		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
-				constantName, SMTTheoryV1_2.Ints.getInt());
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-		// Creating the macro operator 'ismin'
-		final SMTMacroSymbol opSymbol = getMacroSymbol(operator, signature);
+			// Creating the constant 'm'
+			final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
+					constantName, SMTTheoryV1_2.Ints.getInt());
 
-		// Creating the term 'm'
-		final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol, signature);
+			// Creating the macro operator 'ismin'
+			final SMTMacroSymbol opSymbol = getMacroSymbol(operator, sig);
 
-		// Adding the term 'm' to the other children
-		final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
-		for (int i = 0; i < children.length; i++) {
-			minChildrenTerms[i + 1] = children[i];
+			// Creating the term 'm'
+			final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol,
+					signature);
+
+			// Adding the term 'm' to the other children
+			final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+			for (int i = 0; i < children.length; i++) {
+				minChildrenTerms[i + 1] = children[i];
+			}
+			minChildrenTerms[0] = mVarTerm;
+
+			// Creating the new assumption (ismin m t) and saving it.
+			final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(
+					opSymbol, minChildrenTerms, sig);
+			additionalAssumptions.add(isMinFormula);
+
+			return mVarTerm;
+		} else {
+			// TODO see SMT 2.0 case
+			System.out.println("returned null");
+			return null;
 		}
-		minChildrenTerms[0] = mVarTerm;
-
-		// Creating the new assumption (ismin m t) and saving it.
-		final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(opSymbol,
-				minChildrenTerms, signature);
-		additionalAssumptions.add(isMinFormula);
-
-		return mVarTerm;
 	}
 
 	/**
@@ -1614,17 +1726,23 @@ public class SMTThroughVeriT extends Translator {
 	private SMTFormula createUnionAssumptionForParition(
 			final List<SMTTerm> newVars, final SMTTerm e0) {
 		assert !newVars.isEmpty();
-		SMTTerm unionTerm;
+		SMTTerm unionTerm = null;
 		if (newVars.size() == 1) {
 			unionTerm = newVars.get(0);
 		} else {
-			unionTerm = SMTFactoryVeriT.makeMacroTerm(
-					getMacroSymbol(BUNION_OP, signature), newVars.get(0),
-					newVars.get(1));
-			for (int i = 2; i < newVars.size(); i++) {
+			if (signature instanceof SMTSignatureV1_2Verit) {
+				SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+
 				unionTerm = SMTFactoryVeriT.makeMacroTerm(
-						getMacroSymbol(BUNION_OP, signature), unionTerm,
-						newVars.get(i));
+						getMacroSymbol(BUNION_OP, sig), newVars.get(0),
+						newVars.get(1));
+				for (int i = 2; i < newVars.size(); i++) {
+					unionTerm = SMTFactoryVeriT.makeMacroTerm(
+							getMacroSymbol(BUNION_OP, sig), unionTerm,
+							newVars.get(i));
+				}
+			} else {
+				// TODO SMT 2.0 case
 			}
 		}
 		return makeEqual(new SMTTerm[] { e0, unionTerm }, V1_2);
@@ -1699,20 +1817,26 @@ public class SMTThroughVeriT extends Translator {
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
 				"finite_f", es, SMTTheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
 
-		// Creating the macro operator 'finite'
-		final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE_OP, signature);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-		// Creating the new assumption (finite p t k f) and saving it.
-		final SMTFormula finiteFormula = new SMTVeritFiniteFormula(
-				finiteSymbol, pVarSymbol, fVarSymbol, kVarSymbol, children,
-				signature);
+			// Creating the macro operator 'finite'
+			final SMTMacroSymbol finiteSymbol = getMacroSymbol(FINITE_OP, sig);
 
-		additionalAssumptions.add(finiteFormula);
+			// Creating the new assumption (finite p t k f) and saving it.
+			final SMTFormula finiteFormula = new SMTVeritFiniteFormula(
+					finiteSymbol, pVarSymbol, fVarSymbol, kVarSymbol, children,
+					sig);
 
-		final SMTFormula pFormula = SMTFactory.makeAtom(pVarSymbol,
-				new SMTTerm[] {}, signature);
+			additionalAssumptions.add(finiteFormula);
 
-		smtNode = pFormula;
+			final SMTFormula pFormula = SMTFactory.makeAtom(pVarSymbol,
+					new SMTTerm[] {}, signature);
+
+			smtNode = pFormula;
+		} else {
+			// TODO See SMT 2.0 case
+		}
 	}
 
 	@Override
