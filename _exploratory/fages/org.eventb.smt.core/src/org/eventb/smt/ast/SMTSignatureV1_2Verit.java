@@ -138,8 +138,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 * @param logic
 	 *            the logic of the signature
 	 */
-	public SMTSignatureV1_2Verit(final SMTLogic logic,
-			final SMTLIBVersion smtlibVersion) {
+	public SMTSignatureV1_2Verit(final SMTLogic logic) {
 		super(logic);
 		loadMacroSymbols();
 	}

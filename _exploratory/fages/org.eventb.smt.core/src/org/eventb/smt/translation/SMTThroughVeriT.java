@@ -61,7 +61,6 @@ import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_S
 import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION_OP;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -107,6 +106,7 @@ import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.SMTSignatureV1_2Verit;
+import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.SMTVar;
 import org.eventb.smt.ast.SMTVeritCardFormula;
@@ -376,10 +376,9 @@ public class SMTThroughVeriT extends Translator {
 			final ISimpleSequent sequent) {
 		if (logic instanceof SMTLogicVeriT) {
 			if (smtlibVersion.equals(V1_2)) {
-				signature = new SMTSignatureV1_2Verit(logic, V1_2);
+				signature = new SMTSignatureV1_2Verit(logic);
 			} else {
-				// FIXME: Find a way to put SMT 2.0 Signature
-				signature = new SMTSignatureV1_2Verit(logic, V2_0);
+				signature = new SMTSignatureV2_0Verit(logic);
 			}
 		} else {
 			throw new IllegalArgumentException("Wrong logic.");

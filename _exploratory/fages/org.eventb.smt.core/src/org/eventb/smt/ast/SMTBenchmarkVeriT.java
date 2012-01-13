@@ -120,8 +120,15 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			getUsedSymbols(assumption, symbols);
 		}
 		getUsedSymbols(formula, symbols);
-		final Set<SMTMacro> macros = ((SMTSignatureV1_2Verit) signature)
-				.getMacros();
+		final Set<SMTMacro> macros;
+
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			macros = ((SMTSignatureV1_2Verit) signature).getMacros();
+		} else {
+			// FIXME It is not in accordance with SMT 2.0
+			macros = ((SMTSignatureV2_0Verit) signature).getMacros();
+		}
+
 		for (final SMTMacro macro : macros) {
 			getUsedSymbols(macro, symbols);
 		}
