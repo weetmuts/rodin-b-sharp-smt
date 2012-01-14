@@ -26,6 +26,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 				SMTTheoryV2_0.Core.getInstance());
 	}
 
+	private void testTranslationV2_0(final ITypeEnvironment te,
+			final String ppPredStr, final String expectedSMTNode) {
+		testTranslationV2_0(te, ppPredStr, expectedSMTNode,
+				SMTLIB_Translation_Failed);
+	}
+
 	/**
 	 * Tests the SMT-LIB translation with the given Predicate Calculus formula
 	 * 
@@ -249,4 +255,15 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		 */
 		testTranslationV2_0Default("−a = b", "(= (- a) b)");
 	}
+
+	/**
+	 * "pred-identequ"
+	 */
+	@Test
+	public void testPredIdentEqu() {
+		final ITypeEnvironment te = mTypeEnvironment("p", "S", "q", "S");
+
+		testTranslationV2_0(te, "p = q", "(= p q)");
+	}
+
 }
