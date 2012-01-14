@@ -36,10 +36,10 @@ import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogic;
+import org.eventb.smt.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.VeriTBooleans;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughVeriT;
 import org.junit.Ignore;
@@ -71,9 +71,9 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		powpowTe = mTypeEnvironment(//
 				"S", "ℙ(S)", "R", "ℙ(R)", "e", "ℙ(ℙ(S) ↔ ℤ) ↔ ℙ(R)");
 
-		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
+		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
-				VeritPredefinedTheory.getInstance(),
+				VeritPredefinedTheoryV1_2.getInstance(),
 				VeriTBooleans.getInstance());
 	}
 
@@ -386,8 +386,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	@Test
 	public void testPredBoolEqu() {
 		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
-				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
-				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
+				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
+				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
 						VeriTBooleans.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "u = TRUE", "(= u TRUE)",
@@ -843,8 +843,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	@Test
 	public void testRule21() {
 		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
-				VeriTSMTLIBUnderlyingLogic.getInstance().getName(),
-				new SMTTheory[] { VeritPredefinedTheory.getInstance(),
+				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
+				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
 						VeriTBooleans.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "bool(⊤) ∈ BOOL",

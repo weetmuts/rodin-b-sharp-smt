@@ -128,7 +128,8 @@ import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleans;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV2_0;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -311,13 +312,21 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	protected SMTLogic determineLogic(final ISimpleSequent sequent) {
 		final Gatherer gatherer = Gatherer.gatherFrom(sequent);
-
-		if (gatherer.usesBoolTheory()) {
-			return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
-					VeritPredefinedTheory.getInstance(),
-					VeriTBooleans.getInstance());
+		if (smtlibVersion.equals(V1_2)) {
+			if (gatherer.usesBoolTheory()) {
+				return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
+						VeritPredefinedTheoryV1_2.getInstance(),
+						VeriTBooleans.getInstance());
+			}
+			return SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
+		} else {
+			if (gatherer.usesBoolTheory()) {
+				return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
+						VeritPredefinedTheoryV2_0.getInstance(),
+						VeriTBooleans.getInstance());
+			}
+			return SMTLogic.VeriTSMTLIBUnderlyingLogicV2_0.getInstance();
 		}
-		return SMTLogic.VeriTSMTLIBUnderlyingLogic.getInstance();
 	}
 
 	/**
@@ -672,7 +681,7 @@ public class SMTThroughVeriT extends Translator {
 
 			sig.addMacro(macro);
 			final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
-					VeritPredefinedTheory.POLYMORPHIC);
+					VeritPredefinedTheoryV1_2.POLYMORPHIC);
 			return makeMacroTerm(macroSymbol);
 
 		} else {
@@ -1195,7 +1204,7 @@ public class SMTThroughVeriT extends Translator {
 				predicate.getRight());
 		final Type leftType = predicate.getLeft().getType();
 		if (children[0].getSort().equals(
-				VeritPredefinedTheory.getInstance().getBooleanSort())) {
+				VeritPredefinedTheoryV1_2.getInstance().getBooleanSort())) {
 			final SMTFormula[] childrenFormulas = sf
 					.convertVeritTermsIntoFormulas(children);
 			return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
@@ -1696,7 +1705,70 @@ public class SMTThroughVeriT extends Translator {
 			}
 			}
 		} else {
-			// TODO SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			switch (expression.getTag()) {
+			case Formula.KCARD: {
+				translateCardinality(expression, children);
+				break;
+			}
+			case Formula.KDOM:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(DOM_OP, sig),
+						children);
+				break;
+			case Formula.KRAN: {
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(RANGE_OP, sig),
+						children);
+				break;
+			}
+			case Formula.KMIN: {
+				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN_OP,
+						"ismin_var", children);
+				break;
+			}
+			case Formula.KMAX: {
+				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX_OP,
+						"ismax_var", children);
+				break;
+			}
+			case Formula.CONVERSE:
+				smtNode = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(INV_OP, sig),
+						children);
+				break;
+			case Formula.UNMINUS:
+				smtNode = sf.makeUMinus((SMTFunctionSymbol) signature
+						.getLogic().getOperator(SMTOperator.UMINUS), children,
+						signature);
+				break;
+			case Formula.POW: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate PowerSet unary expression (POW) to SMT-LIB yet");
+			}
+			case Formula.POW1: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate PowerSet1 unary expression (POW1) to SMT-LIB yet");
+			}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
+			case Formula.KUNION: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate generalized union (KUNION) to SMT-LIB yet");
+			}
+			/**
+			 * Not reached because sets of sets are not supported yet
+			 */
+			case Formula.KINTER: {
+				throw new IllegalArgumentException(
+						"It's not possible to translate generalized inter (KINTER) to SMT-LIB yet");
+			}
+			default: {
+				throw new IllegalTagException(expression.getTag());
+			}
+			}
 		}
 	}
 

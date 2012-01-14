@@ -56,7 +56,7 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION
 import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
 import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
 import static org.eventb.smt.ast.symbols.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.ast.theories.VeritPredefinedTheory.POLYMORPHIC;
+import static org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2.POLYMORPHIC;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
 import java.util.HashSet;
@@ -74,7 +74,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleans;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -458,7 +458,7 @@ public class SMTMacroFactory {
 			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
 	protected static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
-			RANGE_INTEGER, VeritPredefinedTheory.getIntIntTab(), POLYMORPHIC,
+			RANGE_INTEGER, VeritPredefinedTheoryV1_2.getIntIntTab(), POLYMORPHIC,
 			!PREDEFINED, V1_2);
 	protected static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
 			SUBSETEQ, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);

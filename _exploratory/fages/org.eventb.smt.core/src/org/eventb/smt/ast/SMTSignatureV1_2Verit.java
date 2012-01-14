@@ -20,11 +20,11 @@ import java.util.TreeSet;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
@@ -33,8 +33,7 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.VeriTBooleans;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
-import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
  * This is the SMTSignatureV1_2 to be used by the SMT translation process
@@ -105,7 +104,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 * This method returns the Bool sort. It first check if the
 	 * {@link VeriTBooleans} theory is being used. If so, it returns that the
 	 * Bool sort defined in that theory. If not, returns the bool sort defined
-	 * in {@link VeritPredefinedTheory}
+	 * in {@link VeritPredefinedTheoryV1_2}
 	 * 
 	 * @return a Bool sort
 	 */
@@ -119,7 +118,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 		if (veriTBools) {
 			return VeriTBooleans.getInstance().getBooleanSort();
 		} else {
-			return VeritPredefinedTheory.getInstance().getBooleanSort();
+			return VeritPredefinedTheoryV1_2.getInstance().getBooleanSort();
 		}
 	}
 

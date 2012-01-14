@@ -26,7 +26,7 @@ import org.eventb.smt.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
@@ -293,7 +293,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			if (!term
 					.getSort()
 					.toString()
-					.equals(VeritPredefinedTheory.getInstance()
+					.equals(VeritPredefinedTheoryV1_2.getInstance()
 							.getBooleanSort().toString())) {
 				throw new IllegalArgumentException(
 						"VeriT translation does not accept equal operator under terms with different types");

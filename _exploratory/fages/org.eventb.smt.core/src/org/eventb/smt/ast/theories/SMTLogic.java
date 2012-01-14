@@ -467,23 +467,23 @@ public class SMTLogic {
 	 * This class represents the SMT underlying logic used by veriT. It differs
 	 * from the standard underlying logic.
 	 */
-	public static class VeriTSMTLIBUnderlyingLogic extends SMTLogicVeriT {
+	public static class VeriTSMTLIBUnderlyingLogicV1_2 extends SMTLogicVeriT {
 
 		/**
 		 * The theories used by the veriT logic.
 		 */
-		private static final SMTTheory[] THEORIES = { VeritPredefinedTheory
+		private static final SMTTheory[] THEORIES = { VeritPredefinedTheoryV1_2
 				.getInstance() };
 
 		/**
 		 * The instance of the underlying logic.
 		 */
-		private static final VeriTSMTLIBUnderlyingLogic INSTANCE = new VeriTSMTLIBUnderlyingLogic();
+		private static final VeriTSMTLIBUnderlyingLogicV1_2 INSTANCE = new VeriTSMTLIBUnderlyingLogicV1_2();
 
 		/**
 		 * The constructor of the logic.
 		 */
-		private VeriTSMTLIBUnderlyingLogic() {
+		private VeriTSMTLIBUnderlyingLogicV1_2() {
 			super(UNKNOWN, THEORIES);
 		}
 
@@ -492,7 +492,41 @@ public class SMTLogic {
 		 * 
 		 * @return an instance of the VeriT logic.
 		 */
-		public static VeriTSMTLIBUnderlyingLogic getInstance() {
+		public static VeriTSMTLIBUnderlyingLogicV1_2 getInstance() {
+			return INSTANCE;
+		}
+	}
+
+	/**
+	 * This class represents the SMT underlying logic used by veriT. It differs
+	 * from the standard underlying logic.
+	 */
+	public static class VeriTSMTLIBUnderlyingLogicV2_0 extends SMTLogicVeriT {
+
+		/**
+		 * The theories used by the veriT logic.
+		 */
+		private static final SMTTheory[] THEORIES = { VeritPredefinedTheoryV2_0
+				.getInstance() };
+
+		/**
+		 * The instance of the underlying logic.
+		 */
+		private static final VeriTSMTLIBUnderlyingLogicV2_0 INSTANCE = new VeriTSMTLIBUnderlyingLogicV2_0();
+
+		/**
+		 * The constructor of the logic.
+		 */
+		private VeriTSMTLIBUnderlyingLogicV2_0() {
+			super(UNKNOWN, THEORIES);
+		}
+
+		/**
+		 * returns an instance of the VeriT logic.
+		 * 
+		 * @return an instance of the VeriT logic.
+		 */
+		public static VeriTSMTLIBUnderlyingLogicV2_0 getInstance() {
 			return INSTANCE;
 		}
 	}

@@ -24,11 +24,11 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 /**
  * This class implements the Theories used by VeriT.
  **/
-public class VeritPredefinedTheory extends SMTTheory implements
+public class VeritPredefinedTheoryV1_2 extends SMTTheory implements
 		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
 		ISMTBooleanSort {
 
-	private static final String NAME = "verit_theory";
+	private static final String NAME = "verit_theoryV1_2";
 
 	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED, V1_2);
@@ -63,7 +63,7 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	 */
 	private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
 			SMTSymbol.UMINUS, INT_TAB, INT, !ASSOCIATIVE, PREDEFINED, V1_2);
-	private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
+	static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 			SMTSymbol.MINUS, INT_INT_TAB, INT, !ASSOCIATIVE, PREDEFINED, V1_2);
 	private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
 			SMTSymbol.DIV, INT_INT_TAB, INT, !ASSOCIATIVE, !PREDEFINED, V1_2);
@@ -87,21 +87,21 @@ public class VeritPredefinedTheory extends SMTTheory implements
 	/**
 	 * Constructs the veriT predefined theory
 	 */
-	protected VeritPredefinedTheory() {
+	protected VeritPredefinedTheoryV1_2() {
 		super(NAME, SORTS, PREDICATES, FUNCTIONS);
 	}
 
 	/**
 	 * Instance of the VeriT Predefined Theory
 	 */
-	private static final VeritPredefinedTheory INSTANCE = new VeritPredefinedTheory();
+	private static final VeritPredefinedTheoryV1_2 INSTANCE = new VeritPredefinedTheoryV1_2();
 
 	/**
 	 * returns the instance of veriT predefined theory
 	 * 
 	 * @return the instance of veriT predefined theory
 	 */
-	public static VeritPredefinedTheory getInstance() {
+	public static VeritPredefinedTheoryV1_2 getInstance() {
 		return INSTANCE;
 	}
 

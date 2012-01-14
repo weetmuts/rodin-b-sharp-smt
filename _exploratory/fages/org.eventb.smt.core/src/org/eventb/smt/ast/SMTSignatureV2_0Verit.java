@@ -33,7 +33,7 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.VeriTBooleans;
-import org.eventb.smt.ast.theories.VeritPredefinedTheory;
+import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 //TODO Review the methods for SMT 2.0
 
@@ -101,7 +101,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * This method returns the Bool sort. It first check if the
 	 * {@link VeriTBooleans} theory is being used. If so, it returns that the
 	 * Bool sort defined in that theory. If not, returns the bool sort defined
-	 * in {@link VeritPredefinedTheory}
+	 * in {@link VeritPredefinedTheoryV1_2}
 	 * 
 	 * @return a Bool sort
 	 */
@@ -115,7 +115,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 		if (veriTBools) {
 			return VeriTBooleans.getInstance().getBooleanSort();
 		} else {
-			return VeritPredefinedTheory.getInstance().getBooleanSort();
+			return VeritPredefinedTheoryV1_2.getInstance().getBooleanSort();
 		}
 	}
 
