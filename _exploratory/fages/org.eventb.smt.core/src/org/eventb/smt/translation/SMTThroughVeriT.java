@@ -850,7 +850,7 @@ public class SMTThroughVeriT extends Translator {
 						smtTerms(expression.getRight()), signature);
 			}
 			throw new IllegalArgumentException(
-					"function application (FUNIMAGE) is not implemented yet");
+					"This kind of function application (FUNIMAGE) is not implemented yet");
 		} else {
 			// TODO: SMT 2.0 case
 			System.out.println("returned null");
