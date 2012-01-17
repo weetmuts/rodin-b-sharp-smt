@@ -126,19 +126,9 @@ public class SMTMacroFactory {
 	 * This set stores the name of all identifiers of the macro that have a
 	 * question mark prefixed.
 	 */
-	private final Set<String> qSymbols = new HashSet<String>();
+	protected final Set<String> qSymbols = new HashSet<String>();
 
-	private static SMTPredefinedMacro[] EMPTY_MACROS = {};
-
-	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
-			BUNION,
-			"(lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2))))",
-			0, false, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
-			BINTER,
-			"(lambda (?BINTER_0 ('t Bool))(?BINTER_1 ('t Bool)) . (lambda (?BINTER_2 't) . (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2))))",
-			0, false, false, EMPTY_MACROS);
+	protected static SMTPredefinedMacro[] EMPTY_MACROS = {};
 
 	public static SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
 			FCOMP,
@@ -458,8 +448,8 @@ public class SMTMacroFactory {
 			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
 	protected static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
-			RANGE_INTEGER, VeritPredefinedTheoryV1_2.getIntIntTab(), POLYMORPHIC,
-			!PREDEFINED, V1_2);
+			RANGE_INTEGER, VeritPredefinedTheoryV1_2.getIntIntTab(),
+			POLYMORPHIC, !PREDEFINED, V1_2);
 	protected static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
 			SUBSETEQ, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
 	protected static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
@@ -483,22 +473,6 @@ public class SMTMacroFactory {
 	protected static SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
 
-	private static SMTPredefinedMacro[] PREDEFINED_MACROS = { BUNION_MACRO,
-			BINTER_MACRO, FCOMP_MACRO, REL_OVR_MACRO, EMPTYSET_MACRO, IN_MACRO,
-			SUBSET_MACRO, SUBSETEQ_MACRO, RANGE_INTEGER_MACRO,
-			RANGE_SUBSTRACTION_MACRO, RANGE_RESTRICTION_MACRO, RELATION_MACRO,
-			SURJECTIVE_RELATION_MACRO, TOTAL_SURJECTIVE_RELATION_MACRO,
-			PARTIAL_FUNCTION_MACRO, TOTAL_FUNCTION_MACRO, NAT_MACRO,
-			NAT1_MACRO, INVERSE_MACRO, ID_MACRO, DOM_MACRO,
-			PARTIAL_INJECTION_MACRO, TOTAL_INJECTION_MACRO,
-			PARTIAL_SURJECTION_MACRO, TOTAL_SURJECTION_MACRO,
-			TOTAL_BIJECTION_MACRO, CARTESIAN_PRODUCT_MACRO,
-			DOMAIN_RESTRICTION_MACRO, DOMAIN_SUBSTRACTION_MACRO,
-			RELATIONAL_IMAGE_MACRO, SETMINUS_MACRO, ISMIN_MACRO, ISMAX_MACRO,
-			FINITE_MACRO, CARD_MACRO, FUNP_MACRO, INJP_MACRO,
-			TOTAL_RELATION_MACRO, RANGE_MACRO, BCOMP_MACRO, INTEGER_MACRO,
-			SUCCESSOR_MACRO, PREDECESSOR_MACRO, BOOL_SET_MACRO };
-
 	/**
 	 * Retrieves the name of the identifiers that have a question mark as a
 	 * prefix.
@@ -507,21 +481,6 @@ public class SMTMacroFactory {
 	 */
 	public Set<String> getqSymbols() {
 		return qSymbols;
-	}
-
-	/**
-	 * Thi constructor adds all qSymbols which will are necessary to be checked
-	 * when creating fresh name.
-	 */
-	public SMTMacroFactory() {
-		for (final SMTPredefinedMacro pMacro : PREDEFINED_MACROS) {
-			for (final String qSymbol : pMacro.getQSymbols()) {
-				assert !qSymbols.contains(qSymbol);
-			}
-			qSymbols.addAll(pMacro.getQSymbols());
-			qSymbols.add(SMTFactoryVeriT.FST_PAIR_ARG_NAME);
-			qSymbols.add(SMTFactoryVeriT.SND_PAIR_ARG_NAME);
-		}
 	}
 
 	/**
@@ -619,61 +578,6 @@ public class SMTMacroFactory {
 				formula, expression, 1);
 	}
 
-	public static enum SMTVeriTOperator {
-		BUNION_OP(BUNION_MACRO), BINTER_OP(BINTER_MACRO), EMPTY_OP(
-				EMPTYSET_MACRO), INTER_OP(BINTER_MACRO), SETMINUS_OP(
-				SETMINUS_MACRO), IN_OP(IN_MACRO), SUBSETEQ_OP(SUBSETEQ_MACRO), SUBSET_OP(
-				SUBSET_MACRO), RANGE_INTEGER_OP(RANGE_INTEGER_MACRO), DOM_OP(
-				DOM_MACRO), IMG_OP(RELATIONAL_IMAGE_MACRO), DOMR_OP(
-				DOMAIN_RESTRICTION_MACRO), DOMS_OP(DOMAIN_SUBSTRACTION_MACRO), INV_OP(
-				INVERSE_MACRO), OVR_OP(REL_OVR_MACRO), ID_OP(ID_MACRO), FCOMP_OP(
-				FCOMP_MACRO), RANGE_SUBSTRACTION_OP(RANGE_SUBSTRACTION_MACRO), RANGE_RESTRICTION_OP(
-				RANGE_RESTRICTION_MACRO), RELATION_OP(RELATION_MACRO), TOTAL_RELATION_OP(
-				TOTAL_RELATION_MACRO), SURJECTIVE_RELATION_OP(
-				SURJECTIVE_RELATION_MACRO), TOTAL_SURJECTIVE_RELATION_OP(
-				TOTAL_SURJECTIVE_RELATION_MACRO), PARTIAL_FUNCTION_OP(
-				PARTIAL_FUNCTION_MACRO), TOTAL_FUNCTION_OP(TOTAL_FUNCTION_MACRO), NAT_OP(
-				NAT_MACRO), NAT1_OP(NAT1_MACRO), PARTIAL_INJECTION_OP(
-				PARTIAL_INJECTION_MACRO), TOTAL_INJECTION_OP(
-				TOTAL_INJECTION_MACRO), PARTIAL_SURJECTION_OP(
-				PARTIAL_SURJECTION_MACRO), TOTAL_SURJECTION_OP(
-				TOTAL_SURJECTION_MACRO), TOTAL_BIJECTION_OP(
-				TOTAL_BIJECTION_MACRO), CARTESIAN_PRODUCT_OP(
-				CARTESIAN_PRODUCT_MACRO), DOMAIN_RESTRICTION_OP(
-				DOMAIN_RESTRICTION_MACRO), DOMAIN_SUBSTRACTION_OP(
-				DOMAIN_SUBSTRACTION_MACRO), RELATIONAL_IMAGE_OP(
-				RELATIONAL_IMAGE_MACRO), ISMIN_OP(ISMIN_MACRO), ISMAX_OP(
-				ISMAX_MACRO), FINITE_OP(FINITE_MACRO), CARD_OP(CARD_MACRO), FUNP_OP(
-				FUNP_MACRO), INJP_OP(INJP_MACRO), RANGE_OP(RANGE_MACRO), BCOMP_OP(
-				BCOMP_MACRO), INTEGER_OP(INTEGER_MACRO), SUCC_OP(
-				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO), BOOLS_OP(
-				BOOL_SET_MACRO);
-
-		/**
-		 * The symbol string.
-		 */
-		private SMTPredefinedMacro symbol;
-
-		/**
-		 * THe Constructor of the enumeration
-		 * 
-		 * @param symbol
-		 *            the String value of the operator.
-		 */
-		SMTVeriTOperator(final SMTPredefinedMacro symbol) {
-			this.symbol = symbol;
-		}
-
-		@Override
-		public String toString() {
-			return symbol.toString();
-		}
-
-		public SMTPredefinedMacro getSymbol() {
-			return symbol;
-		}
-	}
-
 	/**
 	 * Adds a predefined macro and other macros on which it depends on the
 	 * signature
@@ -699,8 +603,6 @@ public class SMTMacroFactory {
 		}
 		signature.addMacro(pmacro);
 	}
-
-	
 
 	/**
 	 * Creates and returns a macroSymbol.

@@ -266,4 +266,18 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		testTranslationV2_0(te, "p = q", "(= p q)");
 	}
 
+	/**
+	 * "pred-setequ"
+	 */
+	@Test
+	public void testAssociativeExpressionsUnionAndInter() {
+		final ITypeEnvironment tpe = mTypeEnvironment("A", "ℙ(ℤ)", "B", "ℙ(ℤ)",
+				"C", "ℙ(ℤ)", "D", "ℙ(ℤ)", "E", "ℙ(ℤ)");
+		testTranslationV2_0(tpe, "A ∪ B ∪ C ∪ D = E",
+				"(= (union (union (union A B) C) D) E)");
+
+		testTranslationV2_0(tpe, "A ∩ B ∩ C ∩ D = E",
+				"(= (inter (inter (inter A B) C) D) E)");
+	}
+
 }

@@ -1,8 +1,21 @@
 package org.eventb.smt.ast.macros;
 
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
+
 import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
+
+	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
+			BUNION,
+			"(par (t) ((?UNION_0 (t Bool)) (?UNION_1 (t Bool))) (lambda (?UNION_2 t)  (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2))))",
+			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
+			BINTER,
+			"(par (t) ((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (lambda (?BINTER_2 t) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2))))",
+			0, false, false, EMPTY_MACROS);
 
 	/**
 	 * Adds a predefined macro and other macros on which it depends on the
@@ -31,7 +44,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	}
 
 	public static final SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperator operator,
+			final SMTVeriTOperatorV2_0 operator,
 			final SMTSignatureV2_0Verit signature) {
 		addPredefinedMacroInSignature(operator.getSymbol(), signature);
 		switch (operator) {
@@ -125,6 +138,61 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 							+ operator.toString());
 		}
 
+	}
+
+	public static enum SMTVeriTOperatorV2_0 {
+		BUNION_OP(BUNION_MACRO), BINTER_OP(BINTER_MACRO), EMPTY_OP(
+				EMPTYSET_MACRO), INTER_OP(BINTER_MACRO), SETMINUS_OP(
+				SETMINUS_MACRO), IN_OP(IN_MACRO), SUBSETEQ_OP(SUBSETEQ_MACRO), SUBSET_OP(
+				SUBSET_MACRO), RANGE_INTEGER_OP(RANGE_INTEGER_MACRO), DOM_OP(
+				DOM_MACRO), IMG_OP(RELATIONAL_IMAGE_MACRO), DOMR_OP(
+				DOMAIN_RESTRICTION_MACRO), DOMS_OP(DOMAIN_SUBSTRACTION_MACRO), INV_OP(
+				INVERSE_MACRO), OVR_OP(REL_OVR_MACRO), ID_OP(ID_MACRO), FCOMP_OP(
+				FCOMP_MACRO), RANGE_SUBSTRACTION_OP(RANGE_SUBSTRACTION_MACRO), RANGE_RESTRICTION_OP(
+				RANGE_RESTRICTION_MACRO), RELATION_OP(RELATION_MACRO), TOTAL_RELATION_OP(
+				TOTAL_RELATION_MACRO), SURJECTIVE_RELATION_OP(
+				SURJECTIVE_RELATION_MACRO), TOTAL_SURJECTIVE_RELATION_OP(
+				TOTAL_SURJECTIVE_RELATION_MACRO), PARTIAL_FUNCTION_OP(
+				PARTIAL_FUNCTION_MACRO), TOTAL_FUNCTION_OP(TOTAL_FUNCTION_MACRO), NAT_OP(
+				NAT_MACRO), NAT1_OP(NAT1_MACRO), PARTIAL_INJECTION_OP(
+				PARTIAL_INJECTION_MACRO), TOTAL_INJECTION_OP(
+				TOTAL_INJECTION_MACRO), PARTIAL_SURJECTION_OP(
+				PARTIAL_SURJECTION_MACRO), TOTAL_SURJECTION_OP(
+				TOTAL_SURJECTION_MACRO), TOTAL_BIJECTION_OP(
+				TOTAL_BIJECTION_MACRO), CARTESIAN_PRODUCT_OP(
+				CARTESIAN_PRODUCT_MACRO), DOMAIN_RESTRICTION_OP(
+				DOMAIN_RESTRICTION_MACRO), DOMAIN_SUBSTRACTION_OP(
+				DOMAIN_SUBSTRACTION_MACRO), RELATIONAL_IMAGE_OP(
+				RELATIONAL_IMAGE_MACRO), ISMIN_OP(ISMIN_MACRO), ISMAX_OP(
+				ISMAX_MACRO), FINITE_OP(FINITE_MACRO), CARD_OP(CARD_MACRO), FUNP_OP(
+				FUNP_MACRO), INJP_OP(INJP_MACRO), RANGE_OP(RANGE_MACRO), BCOMP_OP(
+				BCOMP_MACRO), INTEGER_OP(INTEGER_MACRO), SUCC_OP(
+				SUCCESSOR_MACRO), PRED_OP(PREDECESSOR_MACRO), BOOLS_OP(
+				BOOL_SET_MACRO);
+
+		/**
+		 * The symbol string.
+		 */
+		private SMTPredefinedMacro symbol;
+
+		/**
+		 * THe Constructor of the enumeration
+		 * 
+		 * @param symbol
+		 *            the String value of the operator.
+		 */
+		SMTVeriTOperatorV2_0(final SMTPredefinedMacro symbol) {
+			this.symbol = symbol;
+		}
+
+		@Override
+		public String toString() {
+			return symbol.toString();
+		}
+
+		public SMTPredefinedMacro getSymbol() {
+			return symbol;
+		}
 	}
 
 }

@@ -18,46 +18,46 @@ import static org.eventb.smt.ast.macros.SMTMacroFactory.SND_SYMBOL;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeEnumMacro;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeMacroSymbol;
 import static org.eventb.smt.ast.macros.SMTMacroFactory.makeSetComprehensionMacro;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.BCOMP_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.BINTER_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.BOOLS_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.BUNION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARD_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.CARTESIAN_PRODUCT_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.DOMAIN_RESTRICTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.DOMAIN_SUBSTRACTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.DOM_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.EMPTY_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.FCOMP_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.FINITE_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.ID_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.INTEGER_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.INV_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.IN_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.NAT1_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.NAT_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.OVR_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.PARTIAL_FUNCTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.PARTIAL_INJECTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.PARTIAL_SURJECTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.PRED_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RANGE_INTEGER_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RANGE_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RANGE_RESTRICTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RANGE_SUBSTRACTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RELATIONAL_IMAGE_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.RELATION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.SETMINUS_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.SUBSETEQ_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.SUBSET_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.SUCC_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.SURJECTIVE_RELATION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_BIJECTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_FUNCTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_INJECTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_RELATION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTION_OP;
-import static org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator.TOTAL_SURJECTIVE_RELATION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.BCOMP_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.BINTER_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.BOOLS_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.BUNION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.CARD_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.CARTESIAN_PRODUCT_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.DOMAIN_RESTRICTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.DOMAIN_SUBSTRACTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.DOM_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.EMPTY_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.FCOMP_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.FINITE_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.ID_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.INTEGER_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.INV_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.IN_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.NAT1_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.NAT_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.OVR_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.PARTIAL_FUNCTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.PARTIAL_INJECTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.PARTIAL_SURJECTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.PRED_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RANGE_INTEGER_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RANGE_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RANGE_RESTRICTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RANGE_SUBSTRACTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RELATIONAL_IMAGE_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.RELATION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.SETMINUS_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.SUBSETEQ_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.SUBSET_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.SUCC_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.SURJECTIVE_RELATION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_BIJECTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_FUNCTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_INJECTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_RELATION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_SURJECTION_OP;
+import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_SURJECTIVE_RELATION_OP;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 
@@ -112,9 +112,10 @@ import org.eventb.smt.ast.SMTVeritCardFormula;
 import org.eventb.smt.ast.SMTVeritFiniteFormula;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
-import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
@@ -754,35 +755,35 @@ public class SMTThroughVeriT extends Translator {
 			switch (expression.getTag()) {
 			case Formula.KPRED:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(PRED_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.PRED_OP, sig));
 				break;
 			case Formula.KSUCC:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(SUCC_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.SUCC_OP, sig));
 				break;
 			case Formula.INTEGER:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(INTEGER_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.INTEGER_OP, sig));
 				break;
 			case Formula.NATURAL:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(NAT_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.NAT_OP, sig));
 				break;
 			case Formula.NATURAL1:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(NAT1_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.NAT1_OP, sig));
 				break;
 			case Formula.EMPTYSET:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(EMPTY_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.EMPTY_OP, sig));
 				break;
 			case Formula.KID_GEN:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(ID_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.ID_OP, sig));
 				break;
 			case Formula.BOOL:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(BOOLS_OP, sig));
+						.getMacroSymbol(SMTVeriTOperatorV2_0.BOOLS_OP, sig));
 				break;
 			case Formula.TRUE:
 				smtNode = sf.makeTrueConstant(signature.getLogic()
@@ -1031,83 +1032,119 @@ public class SMTThroughVeriT extends Translator {
 				break;
 			case Formula.UPTO:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(RANGE_INTEGER_OP, sig), children);
+						.getMacroSymbol(SMTVeriTOperatorV2_0.RANGE_INTEGER_OP,
+								sig), children);
 				break;
 			case Formula.RANSUB:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(RANGE_SUBSTRACTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.RANGE_SUBSTRACTION_OP,
+												sig), children);
 				break;
 
 			case Formula.RANRES:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(RANGE_RESTRICTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.RANGE_RESTRICTION_OP,
+												sig), children);
 				break;
 
 			case Formula.REL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV2_0.getMacroSymbol(RELATION_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.RELATION_OP, sig),
 						children);
 				break;
 
 			case Formula.TREL:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_RELATION_OP, sig), children);
+						.getMacroSymbol(SMTVeriTOperatorV2_0.TOTAL_RELATION_OP,
+								sig), children);
 				break;
 
 			case Formula.SREL:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(SURJECTIVE_RELATION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.SURJECTIVE_RELATION_OP,
+								sig), children);
 				break;
 
 			case Formula.STREL:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_SURJECTIVE_RELATION_OP, sig),
-						children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.TOTAL_SURJECTIVE_RELATION_OP,
+												sig), children);
 				break;
 
 			case Formula.PFUN:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(PARTIAL_FUNCTION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.PARTIAL_FUNCTION_OP, sig),
+						children);
 				break;
 
 			case Formula.TFUN:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_FUNCTION_OP, sig), children);
+						.getMacroSymbol(SMTVeriTOperatorV2_0.TOTAL_FUNCTION_OP,
+								sig), children);
 				break;
 			case Formula.PINJ:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(PARTIAL_INJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.PARTIAL_INJECTION_OP,
+												sig), children);
 				break;
 
 			case Formula.TINJ:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_INJECTION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.TOTAL_INJECTION_OP, sig),
+						children);
 				break;
 
 			case Formula.PSUR:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(PARTIAL_SURJECTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.PARTIAL_SURJECTION_OP,
+												sig), children);
 				break;
 
 			case Formula.TSUR:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_SURJECTION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.TOTAL_SURJECTION_OP, sig),
+						children);
 				break;
 
 			case Formula.TBIJ:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(TOTAL_BIJECTION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.TOTAL_BIJECTION_OP, sig),
+						children);
 				break;
 
 			case Formula.SETMINUS:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV2_0.getMacroSymbol(SETMINUS_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.SETMINUS_OP, sig),
 						children);
 				break;
 
 			case Formula.CPROD:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(CARTESIAN_PRODUCT_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.CARTESIAN_PRODUCT_OP,
+												sig), children);
 				break;
 
 			case Formula.DPROD:
@@ -1119,13 +1156,19 @@ public class SMTThroughVeriT extends Translator {
 						"Operator parallel product (PPROD) is not implemented yet");
 
 			case Formula.DOMRES:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(DOMAIN_RESTRICTION_OP, sig), children);
+				smtNode = SMTFactoryVeriT
+						.makeMacroTerm(
+								SMTMacroFactoryV2_0
+										.getMacroSymbol(
+												SMTVeriTOperatorV2_0.DOMAIN_RESTRICTION_OP,
+												sig), children);
 				break;
 
 			case Formula.DOMSUB:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(DOMAIN_SUBSTRACTION_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.DOMAIN_SUBSTRACTION_OP,
+								sig), children);
 				break;
 
 			case Formula.FUNIMAGE:
@@ -1134,7 +1177,9 @@ public class SMTThroughVeriT extends Translator {
 
 			case Formula.RELIMAGE:
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
-						.getMacroSymbol(RELATIONAL_IMAGE_OP, sig), children);
+						.getMacroSymbol(
+								SMTVeriTOperatorV2_0.RELATIONAL_IMAGE_OP, sig),
+						children);
 				break;
 
 			case Formula.MAPSTO:
@@ -1303,7 +1348,8 @@ public class SMTThroughVeriT extends Translator {
 	 * @param predicate
 	 */
 	private SMTFormula translateRelationalPredicateMacro(
-			final SMTVeriTOperator operator, final RelationalPredicate predicate) {
+			final SMTVeriTOperatorV1_2 operator,
+			final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
 		if (signature instanceof SMTSignatureV1_2Verit) {
@@ -1355,35 +1401,74 @@ public class SMTThroughVeriT extends Translator {
 		SMTTerm[] children;
 		final Expression[] expressions = expression.getChildren();
 		final int tag = expression.getTag();
-		switch (tag) {
-		case Formula.PLUS:
-			children = smtTerms(expressions);
-			smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.PLUS), children, signature);
-			break;
-		case Formula.MUL:
-			children = smtTerms(expressions);
-			smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
-					.getOperator(SMTOperator.MUL), children, signature);
-			break;
-		case Formula.BUNION:
-			smtNode = translatePACO(BUNION_OP, expression, expressions);
-			break;
-		case Formula.BINTER:
-			smtNode = translatePACO(BINTER_OP, expression, expressions);
-			break;
-		case Formula.FCOMP:
-			smtNode = translatePACO(FCOMP_OP, expression, expressions);
-			break;
-		case Formula.BCOMP:
-			smtNode = translatePACO(BCOMP_OP, expression, expressions);
-			break;
-		case Formula.OVR:
-			smtNode = translatePACO(OVR_OP, expression, expressions);
-			break;
-		default:
-			throw new IllegalTagException(tag);
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			switch (tag) {
+			case Formula.PLUS:
+				children = smtTerms(expressions);
+				smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.PLUS), children, signature);
+				break;
+			case Formula.MUL:
+				children = smtTerms(expressions);
+				smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MUL), children, signature);
+				break;
+			case Formula.BUNION:
+				smtNode = translatePACOV1_2(BUNION_OP, expression, expressions);
+				break;
+			case Formula.BINTER:
+				smtNode = translatePACOV1_2(BINTER_OP, expression, expressions);
+				break;
+			case Formula.FCOMP:
+				smtNode = translatePACOV1_2(FCOMP_OP, expression, expressions);
+				break;
+			case Formula.BCOMP:
+				smtNode = translatePACOV1_2(BCOMP_OP, expression, expressions);
+				break;
+			case Formula.OVR:
+				smtNode = translatePACOV1_2(OVR_OP, expression, expressions);
+				break;
+			default:
+				throw new IllegalTagException(tag);
+			}
+		} else {
+			switch (tag) {
+			case Formula.PLUS:
+				children = smtTerms(expressions);
+				smtNode = sf.makePlus((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.PLUS), children, signature);
+				break;
+			case Formula.MUL:
+				children = smtTerms(expressions);
+				smtNode = sf.makeMul((SMTFunctionSymbol) signature.getLogic()
+						.getOperator(SMTOperator.MUL), children, signature);
+				break;
+			case Formula.BUNION:
+				smtNode = translatePACOV2_0(SMTVeriTOperatorV2_0.BUNION_OP,
+						expression, expressions);
+				break;
+			case Formula.BINTER:
+				smtNode = translatePACOV2_0(SMTVeriTOperatorV2_0.BINTER_OP,
+						expression, expressions);
+				break;
+			case Formula.FCOMP:
+				smtNode = translatePACOV2_0(SMTVeriTOperatorV2_0.FCOMP_OP,
+						expression, expressions);
+				break;
+			case Formula.BCOMP:
+				smtNode = translatePACOV2_0(SMTVeriTOperatorV2_0.BCOMP_OP,
+						expression, expressions);
+				break;
+			case Formula.OVR:
+				smtNode = translatePACOV2_0(SMTVeriTOperatorV2_0.OVR_OP,
+						expression, expressions);
+				break;
+			default:
+				throw new IllegalTagException(tag);
+			}
+
 		}
+
 	}
 
 	/**
@@ -1404,37 +1489,80 @@ public class SMTThroughVeriT extends Translator {
 	 *            the children expressions
 	 * @return the translated SMTTerm
 	 */
-	private SMTTerm translatePACO(final SMTVeriTOperator operator,
+	private SMTTerm translatePACOV2_0(final SMTVeriTOperatorV2_0 operator,
 			final AssociativeExpression expression,
 			final Expression[] expressions) {
 		SMTTerm[] children;
 		SMTTerm macroTerm;
-		if ((signature instanceof SMTSignatureV1_2Verit)) {
-			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+		SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
 
-			if (expressions.length == 2) {
-				children = smtTerms(expression.getChildren());
-				macroTerm = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
-						children);
-			} else {
-				children = smtTerms(expressions[0], expressions[1]);
-				macroTerm = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
-						children);
-				for (int i = 2; i < expressions.length; i++) {
-					macroTerm = SMTFactoryVeriT.makeMacroTerm(
-							SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
-							macroTerm, smtTerm(expressions[i]));
-				}
-
-			}
-			return macroTerm;
+		if (expressions.length == 2) {
+			children = smtTerms(expression.getChildren());
+			macroTerm = SMTFactoryVeriT
+					.makeMacroTerm(
+							SMTMacroFactoryV2_0.getMacroSymbol(operator, sig),
+							children);
 		} else {
-			// TODO SMT 2.0 case
-			System.out.println("returned null");
-			return null;
+			children = smtTerms(expressions[0], expressions[1]);
+			macroTerm = SMTFactoryVeriT
+					.makeMacroTerm(
+							SMTMacroFactoryV2_0.getMacroSymbol(operator, sig),
+							children);
+			for (int i = 2; i < expressions.length; i++) {
+				macroTerm = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV2_0.getMacroSymbol(operator, sig),
+						macroTerm, smtTerm(expressions[i]));
+			}
+
 		}
+		return macroTerm;
+	}
+
+	/**
+	 * This method is used to translate PACOs:
+	 * 
+	 * <ul>
+	 * <li>Polyadic
+	 * <li>Associative
+	 * <li>Commutative
+	 * <li>Operators
+	 * </ul>
+	 * 
+	 * @param operator
+	 *            the operator
+	 * @param expression
+	 *            the expression
+	 * @param expressions
+	 *            the children expressions
+	 * @return the translated SMTTerm
+	 */
+	private SMTTerm translatePACOV1_2(final SMTVeriTOperatorV1_2 operator,
+			final AssociativeExpression expression,
+			final Expression[] expressions) {
+		SMTTerm[] children;
+		SMTTerm macroTerm;
+		SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+
+		if (expressions.length == 2) {
+			children = smtTerms(expression.getChildren());
+			macroTerm = SMTFactoryVeriT
+					.makeMacroTerm(
+							SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+							children);
+		} else {
+			children = smtTerms(expressions[0], expressions[1]);
+			macroTerm = SMTFactoryVeriT
+					.makeMacroTerm(
+							SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+							children);
+			for (int i = 2; i < expressions.length; i++) {
+				macroTerm = SMTFactoryVeriT.makeMacroTerm(
+						SMTMacroFactoryV1_2.getMacroSymbol(operator, sig),
+						macroTerm, smtTerm(expressions[i]));
+			}
+
+		}
+		return macroTerm;
 	}
 
 	/**
@@ -1659,12 +1787,12 @@ public class SMTThroughVeriT extends Translator {
 				break;
 			}
 			case Formula.KMIN: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN_OP,
+				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMIN_OP,
 						"ismin_var", children);
 				break;
 			}
 			case Formula.KMAX: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX_OP,
+				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMAX_OP,
 						"ismax_var", children);
 				break;
 			}
@@ -1713,29 +1841,29 @@ public class SMTThroughVeriT extends Translator {
 				break;
 			}
 			case Formula.KDOM:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV2_0.getMacroSymbol(DOM_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.DOM_OP, sig),
 						children);
 				break;
 			case Formula.KRAN: {
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV2_0.getMacroSymbol(RANGE_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.RANGE_OP, sig),
 						children);
 				break;
 			}
 			case Formula.KMIN: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMIN_OP,
+				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMIN_OP,
 						"ismin_var", children);
 				break;
 			}
 			case Formula.KMAX: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperator.ISMAX_OP,
+				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMAX_OP,
 						"ismax_var", children);
 				break;
 			}
 			case Formula.CONVERSE:
-				smtNode = SMTFactoryVeriT.makeMacroTerm(
-						SMTMacroFactoryV2_0.getMacroSymbol(INV_OP, sig),
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.INV_OP, sig),
 						children);
 				break;
 			case Formula.UNMINUS:
@@ -1863,7 +1991,7 @@ public class SMTThroughVeriT extends Translator {
 	 *            the children terms of the min or max term
 	 * @return the constant term that represents the min or the max
 	 */
-	private SMTTerm translateKMINorKMAX(final SMTVeriTOperator operator,
+	private SMTTerm translateKMINorKMAX(final SMTVeriTOperatorV1_2 operator,
 			final String constantName, final SMTTerm[] children) {
 
 		if (signature instanceof SMTSignatureV1_2Verit) {

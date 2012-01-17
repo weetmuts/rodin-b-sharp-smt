@@ -20,11 +20,11 @@ import java.util.TreeSet;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactory.SMTVeriTOperator;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
@@ -140,7 +140,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	}
 
 	private void loadMacroSymbols() {
-		for (final SMTVeriTOperator op : SMTVeriTOperator.values()) {
+		for (final SMTVeriTOperatorV2_0 op : SMTVeriTOperatorV2_0.values()) {
 			names.add(op.getSymbol().getMacroName());
 		}
 		names.add("pair");
@@ -166,13 +166,11 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * @param sb
 	 */
 	private void extramacrosSection(final StringBuilder sb) {
-		if (!macros.isEmpty()) {
-			sb.append(":extramacros(");
-			for (final SMTMacro macro : macros) {
-				sb.append("\n");
-				macro.toString(sb, 0);
-			}
-			sb.append("\n)");
+		for (final SMTMacro macro : macros) {
+			sb.append("\n");
+			sb.append("(define-fun ");
+			macro.toString(sb, 0);
+			sb.append(")");
 		}
 	}
 
