@@ -44,7 +44,6 @@ import static org.eventb.smt.core.performance.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.ResourceUtils.useEqualsHypotheses;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
@@ -341,14 +340,14 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib --disable-print-success --disable-banner --disable-e,,");
+				.append("-i smtlib1 --disable-print-success --disable-banner --disable-e,,");
 		preferencesBuilder.append("V1.2;");
 
 		preferencesBuilder.append("veriT+e-prover-SMT1,,");
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib --disable-print-success --disable-banner --enable-e --max-time=3,,");
+				.append("-i smtlib1 --disable-print-success --disable-banner --enable-e --max-time=3,,");
 		preferencesBuilder.append("V1.2;");
 
 		preferencesBuilder.append("cvc3-2011-11-21-SMT1,,");
@@ -373,7 +372,7 @@ public abstract class BuilderTest extends TestCase {
 				.getPreferenceStore();
 		store.setValue(SOLVER_PREFERENCES_ID, preferencesBuilder.toString());
 		store.setValue(SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX);
-		store.setValue(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
+		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");
 		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}
 
