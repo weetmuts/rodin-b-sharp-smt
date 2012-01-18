@@ -22,7 +22,7 @@ public enum SMTSolver {
 	CVC4("cvc4"), //
 	MATHSAT5("mathsat5"), //
 	OPENSMT("opensmt"), //
-	VERIT("veriT"), //
+	VERIT("verit"), //
 	Z3("z3"), //
 	UNKNOWN;
 

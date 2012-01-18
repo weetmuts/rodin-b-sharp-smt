@@ -67,8 +67,8 @@ public abstract class Translator implements ISimpleVisitor {
 	 */
 	protected HashMap<String, SMTSymbol> varMap = new HashMap<String, SMTSymbol>();
 
-	public static boolean DEBUG = true;
-	public static boolean DEBUG_DETAILS = true;
+	public static boolean DEBUG = false;
+	public static boolean DEBUG_DETAILS = false;
 
 	protected SMTNode<?> smtNode;
 

@@ -454,10 +454,10 @@ public abstract class SMTProverCall extends XProverCall {
 					makeSMTBenchmarkFileV1_2();
 					translationPerformed = true;
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
 					if (DEBUG) {
 						debugBuilder.append("Due to translation failure, ");
 						debugBuilder.append("the solver won't be launched.\n");
+						e.printStackTrace();
 					}
 				}
 
