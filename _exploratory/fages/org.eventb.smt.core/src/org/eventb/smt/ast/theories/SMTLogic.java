@@ -501,32 +501,38 @@ public class SMTLogic {
 	 * This class represents the SMT underlying logic used by veriT. It differs
 	 * from the standard underlying logic.
 	 */
-	public static class VeriTSMTLIBUnderlyingLogicV2_0 extends SMTLogicVeriT {
+	public static class AUFLIAV2_0VeriT extends SMTLogicVeriT {
+		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
+		private static final SMTTheory[] THEORIES = {
+				SMTTheoryV2_0.Core.getInstance(),
+				SMTTheoryV2_0.Ints.getInstance(),
+				VeriTBooleansV2_0.getInstance() };
 
-		/**
-		 * The theories used by the veriT logic.
-		 */
-		private static final SMTTheory[] THEORIES = { VeritPredefinedTheoryV2_0
-				.getInstance() };
+		private static final AUFLIAV2_0VeriT INSTANCE = new AUFLIAV2_0VeriT();
 
-		/**
-		 * The instance of the underlying logic.
-		 */
-		private static final VeriTSMTLIBUnderlyingLogicV2_0 INSTANCE = new VeriTSMTLIBUnderlyingLogicV2_0();
-
-		/**
-		 * The constructor of the logic.
-		 */
-		private VeriTSMTLIBUnderlyingLogicV2_0() {
-			super(UNKNOWN, THEORIES);
+		private AUFLIAV2_0VeriT() {
+			super(AUFLIA_LOGIC_NAME, THEORIES);
 		}
 
-		/**
-		 * returns an instance of the VeriT logic.
-		 * 
-		 * @return an instance of the VeriT logic.
-		 */
-		public static VeriTSMTLIBUnderlyingLogicV2_0 getInstance() {
+		public static AUFLIAV2_0VeriT getInstance() {
+			return INSTANCE;
+		}
+	}
+
+	public static class QF_AUFLIAv2_0VeriT extends SMTLogicPP {
+		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
+		private static final SMTTheory[] THEORIES = {
+				SMTTheoryV2_0.Core.getInstance(),
+				SMTTheoryV2_0.Ints.getInstance(),
+				VeriTBooleansV2_0.getInstance() };
+
+		private static final QF_AUFLIAv2_0VeriT INSTANCE = new QF_AUFLIAv2_0VeriT();
+
+		private QF_AUFLIAv2_0VeriT() {
+			super(QF_AUFLIA_LOGIC_NAME, THEORIES);
+		}
+
+		public static QF_AUFLIAv2_0VeriT getInstance() {
 			return INSTANCE;
 		}
 	}
@@ -582,8 +588,11 @@ public class SMTLogic {
 
 	public SMTFunctionSymbol getTrueConstant() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof VeriTBooleans) {
-				return VeriTBooleans.getInstance().getTrueConstant();
+			if (theory instanceof VeriTBooleansV1_2) {
+				return VeriTBooleansV1_2.getInstance().getTrueConstant();
+			}
+			if (theory instanceof VeriTBooleansV2_0) {
+				return VeriTBooleansV2_0.getInstance().getTrueConstant();
 			}
 		}
 		return null;
@@ -591,8 +600,11 @@ public class SMTLogic {
 
 	public SMTFunctionSymbol getFalseConstant() {
 		for (final SMTTheory theory : theories) {
-			if (theory instanceof VeriTBooleans) {
-				return VeriTBooleans.getInstance().getFalseConstant();
+			if (theory instanceof VeriTBooleansV1_2) {
+				return VeriTBooleansV1_2.getInstance().getFalseConstant();
+			}
+			if (theory instanceof VeriTBooleansV2_0) {
+				return VeriTBooleansV2_0.getInstance().getFalseConstant();
 			}
 		}
 		return null;

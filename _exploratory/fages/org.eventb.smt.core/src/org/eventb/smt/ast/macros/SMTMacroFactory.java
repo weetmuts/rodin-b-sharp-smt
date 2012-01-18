@@ -73,7 +73,7 @@ import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
@@ -371,7 +371,7 @@ public abstract class SMTMacroFactory {
 	private static SMTSortSymbol[] ISMIN_MAX_SORTS = {
 			SMTTheoryV1_2.Ints.getInt(), POLYMORPHIC };
 	private static SMTSortSymbol[] FINITE_SORTS = {
-			VeriTBooleans.getInstance().getBooleanSort(), POLYMORPHIC,
+			VeriTBooleansV1_2.getInstance().getBooleanSort(), POLYMORPHIC,
 			SMTTheoryV1_2.Ints.getInt(), SMTTheoryV1_2.Ints.getInt() };
 
 	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC,

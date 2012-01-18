@@ -13,7 +13,7 @@ package org.eventb.smt.ast;
 import java.util.Set;
 
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
-import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 
 /**
  * The difference between verit term and normal terms is that the symbol of the
@@ -65,7 +65,7 @@ public class SMTVeriTTerm extends SMTTerm {
 		checkIfPredIsDefinedInSignature(symbol, signature);
 		this.symbol = symbol;
 		// VeriT uses Bool sort.
-		sort = VeriTBooleans.getInstance().getBooleanSort();
+		sort = VeriTBooleansV1_2.getInstance().getBooleanSort();
 	}
 
 	@Override

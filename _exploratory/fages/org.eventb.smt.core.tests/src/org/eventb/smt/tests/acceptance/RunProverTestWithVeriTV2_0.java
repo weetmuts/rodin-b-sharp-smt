@@ -164,7 +164,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	// FIXME: Problem related to sort veriT_TPTP produced after pre-processing.
+	@Ignore("Problem related to sort veriT_TPTP produced after pre-processing.")
 	public void testUnsatVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -209,7 +209,6 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Fail")
 	public void testTRUEPredZ3Call() {
 		setPreferencesForZ3Test();
 

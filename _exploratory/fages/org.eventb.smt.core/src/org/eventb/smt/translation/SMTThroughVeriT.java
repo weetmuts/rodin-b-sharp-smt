@@ -60,6 +60,7 @@ import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2
 import static org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_SURJECTIVE_RELATION_OP;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -124,13 +125,13 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
-import org.eventb.smt.ast.theories.SMTLogic.QF_AUFLIAv2_0;
+import org.eventb.smt.ast.theories.SMTLogic.AUFLIAV2_0VeriT;
+import org.eventb.smt.ast.theories.SMTLogic.QF_AUFLIAv2_0VeriT;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicVeriT;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
@@ -329,20 +330,15 @@ public class SMTThroughVeriT extends Translator {
 			if (gatherer.usesBoolTheory()) {
 				return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
 						VeritPredefinedTheoryV1_2.getInstance(),
-						VeriTBooleans.getInstance());
+						VeriTBooleansV1_2.getInstance());
 			}
 			return SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
-			// if (gatherer.usesBoolTheory()) {
-			// return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
-			// VeritPredefinedTheoryV2_0.getInstance(),
-			// VeriTBooleans.getInstance());
-			// }
-			// return SMTLogic.VeriTSMTLIBUnderlyingLogicV2_0.getInstance();
 			if (gatherer.foundQuantifier()) {
-				return AUFLIAv2_0.getInstance();
+				return AUFLIAV2_0VeriT.getInstance();
+
 			} else {
-				return QF_AUFLIAv2_0.getInstance();
+				return QF_AUFLIAv2_0VeriT.getInstance();
 			}
 		}
 	}
@@ -386,14 +382,15 @@ public class SMTThroughVeriT extends Translator {
 
 	private void addBooleanAssumption(final SMTLogic logic) {
 		for (final SMTTheory theory : logic.getTheories()) {
-			if (theory instanceof VeriTBooleans) {
+			if (theory instanceof VeriTBooleansV1_2) {
 				final String boolVarName = signature.freshSymbolName("elem");
-				additionalAssumptions
-						.add(sf.makeDefinitionOfElementsOfBooleanFormula(
-								boolVarName, VeriTBooleans.getInstance()
-										.getBooleanSort(), VeriTBooleans
+				additionalAssumptions.add(sf
+						.makeDefinitionOfElementsOfBooleanFormula(boolVarName,
+								VeriTBooleansV1_2.getInstance()
+										.getBooleanSort(), VeriTBooleansV1_2
 										.getInstance().getTrueConstant(),
-								VeriTBooleans.getInstance().getFalseConstant()));
+								VeriTBooleansV1_2.getInstance()
+										.getFalseConstant()));
 				return;
 			}
 		}
@@ -1264,21 +1261,21 @@ public class SMTThroughVeriT extends Translator {
 	private SMTFormula translateEqual(final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
-		final Type leftType = predicate.getLeft().getType();
-		if (children[0].getSort().equals(
-				VeritPredefinedTheoryV1_2.getInstance().getBooleanSort())) {
-			final SMTFormula[] childrenFormulas = sf
-					.convertVeritTermsIntoFormulas(children);
-			return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
-		} else if (isPairType(leftType)) {
-			if (signature instanceof SMTSignatureV1_2Verit) {
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			final Type leftType = predicate.getLeft().getType();
+			if (children[0].getSort().equals(
+					VeritPredefinedTheoryV1_2.getInstance().getBooleanSort())) {
+				final SMTFormula[] childrenFormulas = sf
+						.convertVeritTermsIntoFormulas(children);
+				return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
+			} else if (isPairType(leftType)) {
 				sf.addPairEqualityAxiom(additionalAssumptions,
 						(SMTSignatureV1_2Verit) signature);
-			} else {
-				// TODO SMT 2.0 case
 			}
+			return makeEqual(children, V1_2);
+		} else {
+			return makeEqual(children, V2_0);
 		}
-		return makeEqual(children, V1_2);
 	}
 
 	/**
@@ -1708,7 +1705,7 @@ public class SMTThroughVeriT extends Translator {
 				translateSimpleSet(expression, children, macroName, varName);
 			}
 			final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
-					VeriTBooleans.getInstance().getBooleanSort());
+					VeriTBooleansV1_2.getInstance().getBooleanSort());
 			smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 		} else {
 			// TODO: SMT 2.0 case

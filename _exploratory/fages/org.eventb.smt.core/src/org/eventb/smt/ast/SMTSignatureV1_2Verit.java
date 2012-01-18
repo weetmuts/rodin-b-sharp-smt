@@ -33,7 +33,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
-import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
@@ -103,7 +103,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 
 	/**
 	 * This method returns the Bool sort. It first check if the
-	 * {@link VeriTBooleans} theory is being used. If so, it returns that the
+	 * {@link VeriTBooleansV1_2} theory is being used. If so, it returns that the
 	 * Bool sort defined in that theory. If not, returns the bool sort defined
 	 * in {@link VeritPredefinedTheoryV1_2}
 	 * 
@@ -112,12 +112,12 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	private SMTSortSymbol getBoolSort() {
 		boolean veriTBools = false;
 		for (final SMTTheory theory : getLogic().getTheories()) {
-			if (theory instanceof VeriTBooleans) {
+			if (theory instanceof VeriTBooleansV1_2) {
 				veriTBools = true;
 			}
 		}
 		if (veriTBools) {
-			return VeriTBooleans.getInstance().getBooleanSort();
+			return VeriTBooleansV1_2.getInstance().getBooleanSort();
 		} else {
 			return VeritPredefinedTheoryV1_2.getInstance().getBooleanSort();
 		}

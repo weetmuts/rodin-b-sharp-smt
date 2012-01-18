@@ -38,7 +38,7 @@ import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTTheory;
-import org.eventb.smt.ast.theories.VeriTBooleans;
+import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughVeriT;
@@ -74,7 +74,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
 				VeritPredefinedTheoryV1_2.getInstance(),
-				VeriTBooleans.getInstance());
+				VeriTBooleansV1_2.getInstance());
 	}
 
 	private static void testTranslationV1_2Default(final String predStr,
@@ -388,7 +388,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
 				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
-						VeriTBooleans.getInstance() });
+						VeriTBooleansV1_2.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "u = TRUE", "(= u TRUE)",
 				defaultPlusBooleanLogic);
@@ -845,7 +845,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
 				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
-						VeriTBooleans.getInstance() });
+						VeriTBooleansV1_2.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "bool(⊤) ∈ BOOL",
 				"(in (ite true TRUE FALSE) BOOLS)", defaultPlusBooleanLogic);
