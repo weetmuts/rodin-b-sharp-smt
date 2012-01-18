@@ -270,12 +270,19 @@ public class SMTVeriTCall extends SMTProverCall {
 	 *             folders
 	 */
 	private boolean checkVeriTResult() throws IOException {
-		if (veriTResult.contains("(benchmark")) {
-			veriTResult = veriTResult.substring(veriTResult
-					.indexOf("(benchmark"));
-			return true;
+		if (sv.equals(V1_2)) {
+			if (veriTResult.contains("(benchmark")) {
+				veriTResult = veriTResult.substring(veriTResult
+						.indexOf("(benchmark"));
+				return true;
+			}
+			return false;
+		} else {
+			if (veriTResult.contains("(set-logic")) {
+				return true;
+			}
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -432,6 +439,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	}
 
 	@Override
+	// FIXME: How to extract unsat core in veriT approach
 	protected void extractUnsatCore() {
 		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;

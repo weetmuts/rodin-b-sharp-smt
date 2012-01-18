@@ -82,6 +82,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	// FIXME: The Int sort must be declared in some theory in veriT approach.
 	public void testSatCvc3Call() {
 		setPreferencesForCvc3Test();
 
@@ -163,6 +164,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	// FIXME: Problem related to sort veriT_TPTP produced after pre-processing.
 	public void testUnsatVeriTCall() {
 		setPreferencesForVeriTTest();
 

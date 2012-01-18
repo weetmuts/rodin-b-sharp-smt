@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
@@ -62,7 +63,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	/**
 	 * The factory of macros
 	 */
-	private final SMTMacroFactory ms = new SMTMacroFactory();
+	private final SMTMacroFactoryV1_2 ms = new SMTMacroFactoryV1_2();
 
 	/**
 	 * Adds the sort Pair and the function pair into the signature (it adds only

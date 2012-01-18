@@ -84,7 +84,7 @@ import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
  * @author vitor almeida
  * 
  */
-public class SMTMacroFactory {
+public abstract class SMTMacroFactory {
 
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 

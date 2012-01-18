@@ -10,10 +10,12 @@
 
 package org.eventb.smt.ast;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
 import org.eventb.smt.ast.macros.SMTMacroTerm;
@@ -42,7 +44,8 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	public SMTBenchmarkVeriT(final String lemmaName,
 			final SMTSignature signature, final List<SMTFormula> assumptions,
 			final SMTFormula formula) {
-		super(lemmaName + "_vt", signature, assumptions, formula, null);
+		super(lemmaName + "_vt", signature, assumptions, formula,
+				new HashMap<String, ITrackedPredicate>());
 		comments.add("translated from Event-B with the VeriT approach of Rodin SMT Plugin");
 	}
 

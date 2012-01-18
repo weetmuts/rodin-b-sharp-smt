@@ -112,8 +112,8 @@ import org.eventb.smt.ast.SMTVeritCardFormula;
 import org.eventb.smt.ast.SMTVeritFiniteFormula;
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacroFactory;
-import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
@@ -124,13 +124,14 @@ import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
+import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
+import org.eventb.smt.ast.theories.SMTLogic.QF_AUFLIAv2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicVeriT;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleans;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.ast.theories.VeritPredefinedTheoryV2_0;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
 /**
@@ -234,6 +235,7 @@ public class SMTThroughVeriT extends Translator {
 
 	private static class Gatherer extends DefaultVisitor {
 		private boolean boolTheory = false;
+		private boolean quantifierFound = false;
 
 		/**
 		 * This method executes the traversal in the hypotheses and goal to
@@ -275,6 +277,12 @@ public class SMTThroughVeriT extends Translator {
 			return true;
 		}
 
+		@Override
+		public boolean visitBOUND_IDENT_DECL(BoundIdentDecl ident) {
+			quantifierFound = true;
+			return true;
+		}
+
 		/**
 		 * If one of the predicates has a TRUE constant, set
 		 * <code>boolTheory</code> <i>true</i>
@@ -304,6 +312,10 @@ public class SMTThroughVeriT extends Translator {
 			boolTheory = true;
 			return true;
 		}
+
+		public boolean foundQuantifier() {
+			return quantifierFound;
+		}
 	}
 
 	/**
@@ -321,12 +333,17 @@ public class SMTThroughVeriT extends Translator {
 			}
 			return SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
-			if (gatherer.usesBoolTheory()) {
-				return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
-						VeritPredefinedTheoryV2_0.getInstance(),
-						VeriTBooleans.getInstance());
+			// if (gatherer.usesBoolTheory()) {
+			// return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
+			// VeritPredefinedTheoryV2_0.getInstance(),
+			// VeriTBooleans.getInstance());
+			// }
+			// return SMTLogic.VeriTSMTLIBUnderlyingLogicV2_0.getInstance();
+			if (gatherer.foundQuantifier()) {
+				return AUFLIAv2_0.getInstance();
+			} else {
+				return QF_AUFLIAv2_0.getInstance();
 			}
-			return SMTLogic.VeriTSMTLIBUnderlyingLogicV2_0.getInstance();
 		}
 	}
 
@@ -385,14 +402,14 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	public void translateSignature(final SMTLogic logic,
 			final ISimpleSequent sequent) {
-		if (logic instanceof SMTLogicVeriT) {
-			if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion.equals(V1_2)) {
+			if (logic instanceof SMTLogicVeriT) {
 				signature = new SMTSignatureV1_2Verit(logic);
 			} else {
-				signature = new SMTSignatureV2_0Verit(logic);
+				throw new IllegalArgumentException("Wrong logic.");
 			}
 		} else {
-			throw new IllegalArgumentException("Wrong logic.");
+			signature = new SMTSignatureV2_0Verit(logic);
 		}
 
 		addBooleanAssumption(logic);
