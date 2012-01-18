@@ -101,7 +101,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 		doTest("cvc4_unsat", hyps, "x < z", arith_te, VALID);
 	}
 
-	@Test
+	@Test(timeout=3000)
 	public void testSatCvc4Call() {
 		setPreferencesForCvc4Test();
 

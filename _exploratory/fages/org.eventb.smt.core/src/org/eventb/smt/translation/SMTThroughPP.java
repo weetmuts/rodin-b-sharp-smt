@@ -17,10 +17,22 @@ import static org.eventb.smt.ast.SMTFactory.makeBool;
 import static org.eventb.smt.ast.SMTFactory.makeInteger;
 import static org.eventb.smt.ast.attributes.SMTLabel.GOAL_LABEL;
 import static org.eventb.smt.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.DIV;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.EXPN;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.GE;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.GT;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.LE;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.LT;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.MINUS;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.MOD;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.MUL;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.PLUS;
+import static org.eventb.smt.ast.theories.SMTLogic.SMTOperator.UMINUS;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -76,9 +88,14 @@ import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.ast.symbols.SMTSymbol;
+import org.eventb.smt.ast.theories.ISMTArithmeticBoolFuns;
+import org.eventb.smt.ast.theories.ISMTArithmeticFuns;
+import org.eventb.smt.ast.theories.ISMTArithmeticFunsExtended;
+import org.eventb.smt.ast.theories.ISMTArithmeticPreds;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTLogic.AUFLIAv2_0;
 import org.eventb.smt.ast.theories.SMTLogic.QF_AUFLIAv2_0;
+import org.eventb.smt.ast.theories.SMTLogic.QF_UFv2_0;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
@@ -302,20 +319,19 @@ public class SMTThroughPP extends Translator {
 			/**
 			 * smtlibVersion.equals(V2_0)
 			 */
-			// TODO : if there is no element of Ints theory in the sequent, then
-			// the underlying logic of SMT-LIB 2.0 should be used (which only
-			// contains the Core theory). A method usesIntsTheory will be needed
-			// in the gatherer to do this.
 			if (gatherer.foundQuantifier()) {
 				return AUFLIAv2_0.getInstance();
 			} else {
-				return QF_AUFLIAv2_0.getInstance();
+				if (gatherer.usesIntTheory()) {
+					return QF_AUFLIAv2_0.getInstance();
+				} else {
+					return QF_UFv2_0.getInstance();
+				}
 			}
 		}
 	}
 
 	private void translateTypeEnvironment(final ITypeEnvironment typeEnvironment) {
-
 		/**
 		 * For each membership of the type environment,
 		 */
@@ -747,22 +763,31 @@ public class SMTThroughPP extends Translator {
 	 *         predicate shown above
 	 */
 	private SMTFormula generateIntegerAxiom() {
+		final FormulaFactory ff = FormulaFactory.getDefault();
 		// gets the event-B integer type
-		final Type integerType = FormulaFactory.getDefault().makeIntegerType();
+		final Type integerType = ff.makeIntegerType();
 
 		// creates the quantified variable with a fresh name
 		final String varName = signature.freshSymbolName("x");
-		final SMTSortSymbol intSort = signature.getLogic().getIntegerSort();
+		final SMTSortSymbol intSort = typeMap.get(integerType);
 		final SMTTerm smtVar = SMTFactory.makeVar(varName, intSort,
 				smtlibVersion);
 
 		// creates the integer constant
-		final SMTTerm intConstant = SMTFactory.makeConstant(signature
-				.getLogic().getIntsSet(), signature);
+		SMTFunctionSymbol integerSet = signature.getLogic().getIntsSet();
+		if (integerSet == null) {
+			final String integerStr = ff.makeAtomicExpression(Formula.INTEGER,
+					null).toString();
+			integerSet = (SMTFunctionSymbol) varMap.get(integerStr);
+			if (integerSet == null) {
+				// TODO throw exception
+			}
+		}
+		final SMTTerm intConstant = SMTFactory.makeConstant(integerSet,
+				signature);
 
 		// creates the sort POW(INT)
-		final Type powerSetIntegerType = FormulaFactory.getDefault()
-				.makePowerSetType(integerType);
+		final Type powerSetIntegerType = ff.makePowerSetType(integerType);
 		final SMTSortSymbol powerSetIntSort = typeMap.get(powerSetIntegerType);
 
 		// gets the membership symbol
@@ -1001,17 +1026,59 @@ public class SMTThroughPP extends Translator {
 		final Type integerType = ff.makeIntegerType();
 		final Type booleanType = ff.makeBooleanType();
 
-		typeMap.put(integerType, logic.getIntegerSort());
-		typeMap.put(ff.makePowerSetType(integerType),
-				logic.getPowerSetIntegerSort());
+		if (logic.getIntegerSort() != null) {
+			typeMap.put(integerType, logic.getIntegerSort());
+			typeMap.put(ff.makePowerSetType(integerType),
+					logic.getPowerSetIntegerSort());
+		} else if (gatherer.foundAtomicIntegerExp()
+				|| gatherer.foundUncoveredArith()) {
+			final Type powerSetIntegerType = ff.makePowerSetType(integerType);
+			final String integerStr = ff.makeAtomicExpression(Formula.INTEGER,
+					null).toString();
+			typeMap.put(integerType, signature.freshSort("Z"));
+			typeMap.put(powerSetIntegerType, signature.freshSort("PZ"));
+			varMap.put(integerStr, signature.freshConstant("INTS", // TODO could
+																	// it be
+																	// called
+																	// "Z" too ?
+					typeMap.get(powerSetIntegerType)));
+		}
+
 		typeMap.put(booleanType, logic.getBooleanSort());
 		typeMap.put(ff.makePowerSetType(booleanType),
 				logic.getPowerSetBooleanSort());
 
-		// TODO: a test could be added so that only the operators appearing in
-		// the sequent are mapped)
-		for (final SMTOperator operator : SMTOperator.values()) {
-			putOperatorSymbol(operator);
+		boolean arithFuns = false;
+		boolean arithFunsExt = false;
+		boolean arithPreds = false;
+		for (final SMTTheory theory : logic.getTheories()) {
+			if (theory instanceof ISMTArithmeticFuns) {
+				arithFuns = true;
+			}
+			if (theory instanceof ISMTArithmeticFunsExtended) {
+				arithFunsExt = true;
+			}
+			if (theory instanceof ISMTArithmeticBoolFuns
+					|| theory instanceof ISMTArithmeticPreds) {
+				arithPreds = true;
+			}
+		}
+
+		if (arithFuns) {
+			for (final SMTOperator operator : Arrays.asList(MINUS, MUL, PLUS,
+					UMINUS)) {
+				putOperatorSymbol(operator);
+			}
+		}
+		if (arithFunsExt || gatherer.foundUncoveredArith()) {
+			for (final SMTOperator operator : Arrays.asList(DIV, EXPN, MOD)) {
+				putOperatorSymbol(operator);
+			}
+		}
+		if (arithPreds) {
+			for (final SMTOperator operator : Arrays.asList(GE, GT, LE, LT)) {
+				putOperatorSymbol(operator);
+			}
 		}
 	}
 
@@ -1019,8 +1086,8 @@ public class SMTThroughPP extends Translator {
 		SMTSymbol operatorSymbol = signature.getLogic().getOperator(operator);
 		if (operatorSymbol == null) {
 			final String symbolName = operator.toString();
-			final SMTSortSymbol integerSort = signature.getLogic()
-					.getIntegerSort();
+			final SMTSortSymbol integerSort = typeMap.get(FormulaFactory
+					.getDefault().makeIntegerType());
 			final SMTSortSymbol[] intTab = { integerSort };
 			final SMTSortSymbol[] intIntTab = { integerSort, integerSort };
 
@@ -1029,16 +1096,19 @@ public class SMTThroughPP extends Translator {
 			case EXPN:
 			case MINUS:
 			case MOD:
-			case UMINUS:
 				operatorSymbol = signature.freshFunctionSymbol(symbolName,
 						intIntTab, integerSort, !ASSOCIATIVE);
+				break;
+			case UMINUS:
+				operatorSymbol = signature.freshFunctionSymbol(symbolName,
+						intTab, integerSort, !ASSOCIATIVE);
 				break;
 			case GE:
 			case GT:
 			case LE:
 			case LT:
-				operatorSymbol = signature.freshFunctionSymbol(symbolName,
-						intIntTab, integerSort, !ASSOCIATIVE);
+				operatorSymbol = signature.freshPredicateSymbol(symbolName,
+						intIntTab);
 				break;
 			case MUL:
 			case PLUS:
@@ -1196,12 +1266,14 @@ public class SMTThroughPP extends Translator {
 	@Override
 	protected SMTSortSymbol translateTypeName(final Type type) {
 		final boolean isAProductType = type instanceof ProductType;
+		final boolean isIntegerType = type instanceof IntegerType;
 		if (type.getBaseType() == null && type.getSource() == null
-				&& type.getTarget() == null && !isAProductType) {
+				&& type.getTarget() == null && !isAProductType
+				&& !isIntegerType) {
 			return signature.freshSort(type.toString());
 		} else {
 			final StringBuilder basenameBuilder;
-			if (isAProductType) {
+			if (isIntegerType || isAProductType) {
 				basenameBuilder = new StringBuilder();
 			} else { // instance of PowerSetType
 				basenameBuilder = new StringBuilder("P");
@@ -1370,7 +1442,16 @@ public class SMTThroughPP extends Translator {
 	public void visitAtomicExpression(final AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.INTEGER:
-			smtNode = makeInteger(signature.getLogic().getIntsSet(), signature);
+			SMTFunctionSymbol integerSet = signature.getLogic().getIntsSet();
+			if (integerSet == null) {
+				final String integerStr = FormulaFactory.getDefault()
+						.makeAtomicExpression(Formula.INTEGER, null).toString();
+				integerSet = (SMTFunctionSymbol) varMap.get(integerStr);
+				if (integerSet == null) {
+					// TODO throw exception
+				}
+			}
+			smtNode = makeInteger(integerSet, signature);
 			break;
 		case Formula.BOOL:
 			smtNode = makeBool(signature.getLogic().getBoolsSet(), signature);

@@ -47,9 +47,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		defaultLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-				SMTTheoryV2_0.Ints.getInstance(),
-				SMTTheoryV2_0.Core.getInstance());
+		defaultLogic = SMTLogic.AUFLIAv2_0.getInstance();
 	}
 
 	private void testTranslationV2_0(final ITypeEnvironment te,
@@ -548,11 +546,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		final Set<String> expectedFuns = new HashSet<String>(Arrays.asList( //
 				"BOOLS () PB", //
-				"mod (Int Int) Int", //
 				"nf1 () NS", //
 				"INTS () PZ", //
-				"expn (Int Int) Int", //
-				"divi (Int Int) Int", //
 				"nf0 () PA", //
 				"nf () NS"));
 

@@ -90,7 +90,8 @@ public class SMTTheoryV2_0 extends SMTTheory {
 	 * This class implements a logic using the SMT-LIB integer theory
 	 */
 	public static class Ints extends SMTTheoryV2_0 implements
-			ISMTArithmeticFuns, ISMTArithmeticPreds, ISMTIntegerSort {
+			ISMTArithmeticFuns, ISMTArithmeticFunsExtended,
+			ISMTArithmeticPreds, ISMTIntegerSort {
 		private static final String INTS_THEORY_NAME = "Ints";
 		private static final String POW_INT = "PZ";
 
@@ -129,6 +130,15 @@ public class SMTTheoryV2_0 extends SMTTheory {
 				V2_0);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
 				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
+				SMTSymbol.DIV, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
+				!PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
+				SMTSymbol.EXPN, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
+				!PREDEFINED, V2_0);
+		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
+				SMTSymbol.MOD, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
+				!PREDEFINED, V2_0);
 		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
 				SMTSymbol.LE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
 		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
@@ -209,6 +219,21 @@ public class SMTTheoryV2_0 extends SMTTheory {
 		@Override
 		public SMTPredicateSymbol getGreaterEqual() {
 			return GE;
+		}
+
+		@Override
+		public SMTSymbol getDiv() {
+			return DIV;
+		}
+
+		@Override
+		public SMTSymbol getExpn() {
+			return EXPN;
+		}
+
+		@Override
+		public SMTSymbol getMod() {
+			return MOD;
 		}
 	}
 }

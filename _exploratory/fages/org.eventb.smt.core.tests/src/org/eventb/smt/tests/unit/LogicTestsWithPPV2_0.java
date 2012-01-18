@@ -24,15 +24,12 @@ import org.junit.Test;
 
 public class LogicTestsWithPPV2_0 extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
-	// uncomment when the gatherer can detect Ints occurrences
-	// private static final SMTLogic smtLibUnderlyingLogic;
+	private static final SMTLogic qfufLogic;
 	private static final SMTLogic aufliaLogic;
 	private static final SMTLogic qfAufliaLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
-		// uncomment when the gathere can detect Ints occurrences
-		// smtLibUnderlyingLogic =
-		// SMTLogic.SMTLIBUnderlyingLogicV2_0.getInstance();
+		qfufLogic = SMTLogic.QF_UFv2_0.getInstance();
 		aufliaLogic = SMTLogic.AUFLIAv2_0.getInstance();
 		qfAufliaLogic = SMTLogic.QF_AUFLIAv2_0.getInstance();
 	}
@@ -50,7 +47,9 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testInt() {
-		testLogic(defaultTe, "a = 1", qfAufliaLogic);
+		testLogic(defaultTe, "a = 1", qfufLogic);
+		testLogic(defaultTe, "a = 4 mod 2", qfufLogic);
+		testLogic(defaultTe, "a = 2 + 3", qfAufliaLogic);
 	}
 
 	@Test
@@ -59,12 +58,12 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitTRUE(AtomicExpression)
 		 */
-		testLogic(defaultTe, "TRUE = p", qfAufliaLogic);
+		testLogic(defaultTe, "TRUE = p", qfufLogic);
 		/**
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOOL(AtomicExpression)
 		 */
-		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", qfAufliaLogic);
+		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", qfufLogic);
 		/**
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOUND_IDENT_DECL(BoundIdentDecl)
@@ -75,6 +74,6 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 		 * Reaches org.eventb.smt.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * enterIN(RelationalPredicate)
 		 */
-		testLogic(defaultTe, "p ∈ P", qfAufliaLogic);
+		testLogic(defaultTe, "p ∈ P", qfufLogic);
 	}
 }

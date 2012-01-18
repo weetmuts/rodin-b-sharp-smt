@@ -16,7 +16,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eventb.core.ast.AssociativeExpression;
 import org.eventb.core.ast.AtomicExpression;
+import org.eventb.core.ast.BinaryExpression;
 import org.eventb.core.ast.BooleanType;
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
@@ -26,6 +28,7 @@ import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.Type;
+import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 
@@ -43,9 +46,11 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 public class Gatherer extends DefaultVisitor {
 	private boolean atomicIntegerExpFound = false;
 	private boolean boolTheory = false;
+	private boolean intTheory = false;
 	private boolean atomicBoolExpFound = false;
 	private boolean usesTruePredicate = false;
 	private boolean quantifierFound = false;
+	private boolean uncoveredArithFound = false;
 	private final Set<FreeIdentifier> setsForSpecialMSPreds = new HashSet<FreeIdentifier>();
 	private final Set<Type> boundSetsTypes = new HashSet<Type>();
 	private final Set<FreeIdentifier> leftMSHandSideSets = new HashSet<FreeIdentifier>();
@@ -208,6 +213,18 @@ public class Gatherer extends DefaultVisitor {
 	}
 
 	/**
+	 * returns true if the theory of integers is used in the PO. That is, one of
+	 * the arithmetic symbols (negation, subtraction, +, *, <=, <, >=, >) of the
+	 * SMT-LIB Ints theory appears (div, mod and abs are currently translated in
+	 * uninterpreted symbols).
+	 * 
+	 * @return true if the theory of integers is used in the PO.
+	 */
+	public boolean usesIntTheory() {
+		return intTheory;
+	}
+
+	/**
 	 * returns true if the True predicate needs to be used in the PO.
 	 * 
 	 * @return true if the True predicate needs to be used, false otherwise.
@@ -231,6 +248,10 @@ public class Gatherer extends DefaultVisitor {
 		return quantifierFound;
 	}
 
+	public boolean foundUncoveredArith() {
+		return uncoveredArithFound;
+	}
+
 	/**
 	 * returns the gathered sets for which specialised membership predicates
 	 * should be used
@@ -248,6 +269,72 @@ public class Gatherer extends DefaultVisitor {
 			boolTheory = true;
 			usesTruePredicate = true;
 		}
+		return true;
+	}
+
+	@Override
+	public boolean enterGE(RelationalPredicate pred) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterGT(RelationalPredicate pred) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterLE(RelationalPredicate pred) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterLT(RelationalPredicate pred) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterMINUS(BinaryExpression expr) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterMUL(AssociativeExpression expr) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterPLUS(AssociativeExpression expr) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterUNMINUS(UnaryExpression expr) {
+		intTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterDIV(BinaryExpression expr) {
+		uncoveredArithFound = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterMOD(BinaryExpression expr) {
+		uncoveredArithFound = true;
+		return true;
+	}
+
+	@Override
+	public boolean enterEXPN(BinaryExpression expr) {
+		uncoveredArithFound = true;
 		return true;
 	}
 

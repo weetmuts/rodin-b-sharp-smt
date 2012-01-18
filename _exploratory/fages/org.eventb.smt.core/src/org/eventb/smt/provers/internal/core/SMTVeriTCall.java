@@ -361,12 +361,22 @@ public class SMTVeriTCall extends SMTProverCall {
 
 		callVeriT(benchmark);
 
+		// FIXME this bug will be fixed in veriT
+		if (veriTResult.contains("proof_context_get")) {
+			System.out.println("PROOF_CONTEXT_GET");
+		}
+
 		/**
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		if (macrosTranslated) {
 			final FileWriter smtBenchmarkWriter = new FileWriter(
 					smtBenchmarkFile);
+			// FIXME this bug will be fixed in veriT
+			if (solverConfig.getSolver().equals(SMTSolver.VERIT)) {
+				veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
+				veriTResult = veriTResult.replace(":extrasorts ()", "");
+			}
 			smtBenchmarkWriter.write(veriTResult);
 			smtBenchmarkWriter.close();
 		} else {

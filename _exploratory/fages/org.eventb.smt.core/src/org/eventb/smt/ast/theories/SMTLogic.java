@@ -550,8 +550,7 @@ public class SMTLogic {
 				return SMTTheoryV2_0.Ints.getIntsSet();
 			}
 		}
-		throw new IllegalArgumentException(
-				"The Int sort is not declared in the signature of this benchmark");
+		return null;
 	}
 
 	/**
