@@ -16,10 +16,10 @@ import static org.eventb.smt.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.translation.Translator.DEBUG;
-import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.translation.Translator.DEBUG;
+import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.ast.SMTBenchmark;
@@ -87,21 +88,19 @@ public class SMTVeriTCall extends SMTProverCall {
 	 */
 	private boolean macrosTranslated = false;
 
-	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final SMTSolverConfiguration solverConfig, final String poName,
-			final String translationPath, final String veritPath) {
-		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+	protected SMTVeriTCall(final ISimpleSequent sequent,
+			final IProofMonitor pm, final SMTSolverConfiguration solverConfig,
+			final String poName, final String translationPath,
+			final String veritPath) {
+		this(sequent, pm, new StringBuilder(), solverConfig, poName,
 				translationPath, veritPath);
 	}
 
-	protected SMTVeriTCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final StringBuilder debugBuilder,
+	protected SMTVeriTCall(final ISimpleSequent sequent,
+			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
-		super(hypotheses, goal, pm, debugBuilder, solverConfig, poName,
-				translationPath);
+		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath);
 
 		if (translationPath != null && !translationPath.isEmpty()) {
 			this.translationPath = translationPath + File.separatorChar
@@ -326,7 +325,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, V1_2);
+				sequent, V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -396,7 +395,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 */
 		proofMonitor.setTask("Translating Event-B proof obligation");
 		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, V2_0);
+				sequent, V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could

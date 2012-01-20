@@ -29,6 +29,8 @@ import java.util.Set;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
@@ -237,24 +239,26 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
+		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
+				parsedGoal, ff);
+
 		final SMTProverCall smtProverCall;
 
 		try {
 			switch (translationApproach) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
-				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath, veritPath) {
+				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
+						debugBuilder, solverConfig, lemmaName, translationPath,
+						veritPath) {
 					// nothing to do
 				};
 				break;
 
 			default: // USING_PP
 				// Create an instance of SmtPPCall
-				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath) {
+				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
+						solverConfig, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -277,9 +281,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
 			final SMTTranslationApproach translationApproach,
-			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult,
-			final StringBuilder debugBuilder) {
+			final String lemmaName, final ISimpleSequent sequent,
+			final boolean expectedSolverResult, final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
@@ -287,18 +290,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			switch (translationApproach) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
-				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath, veritPath) {
+				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
+						debugBuilder, solverConfig, lemmaName, translationPath,
+						veritPath) {
 					// nothing to do
 				};
 				break;
 
 			default: // USING_PP
 				// Create an instance of SmtPPCall
-				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath) {
+				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
+						solverConfig, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -322,9 +324,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
 			final SMTTranslationApproach translationApproach,
-			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult,
+			final String lemmaName, final ISimpleSequent sequent,
+			final ITypeEnvironment te, final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
@@ -334,18 +335,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			switch (translationApproach) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
-				smtProverCall = new SMTVeriTCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath, veritPath) {
+				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
+						debugBuilder, solverConfig, lemmaName, translationPath,
+						veritPath) {
 					// nothing to do
 				};
 				break;
 
 			default: // USING_PP
 				// Create an instance of SmtPPCall
-				smtProverCall = new SMTPPCall(parsedHypotheses, parsedGoal,
-						MONITOR, debugBuilder, solverConfig, lemmaName,
-						translationPath) {
+				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
+						solverConfig, lemmaName, translationPath) {
 					// nothing to do
 				};
 				break;
@@ -424,9 +424,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
+		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
+				parsedGoal, ff);
+
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, parsedHypotheses, parsedGoal,
-				solverConfig.getSmtlibVersion());
+				lemmaName, sequent, solverConfig.getSmtlibVersion());
 
 		final SMTSignature signature = benchmark.getSignature();
 
@@ -658,9 +660,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		debugBuilder.append("Iter 1\n");
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse("⊥",
 				te));
+
+		ISimpleSequent sequent = SimpleSequents.make(expectedHypotheses,
+				goalXML, ff);
 		final SMTProverCallTestResult iter1Result = smtProverCallTest("Iter 1",
-				translationApproach, lemmaName, expectedHypotheses, goalXML,
-				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				translationApproach, lemmaName, sequent, te,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
 				debugBuilder);
 		final String iter1ErrorBuffer = iter1Result.getErrorBuffer().toString();
 		if (!iter1ErrorBuffer.isEmpty()) {
@@ -677,9 +682,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 * one
 		 */
 		debugBuilder.append("Iter 2\n");
+		sequent = SimpleSequents.make(parsedHypotheses, parsedGoal, ff);
 		final SMTProverCallTestResult iter2Result = smtProverCallTest("Iter 2",
-				translationApproach, lemmaName, parsedHypotheses, parsedGoal,
-				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				translationApproach, lemmaName, sequent, te,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
 				debugBuilder);
 		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
 		if (!iter2ErrorBuffer.isEmpty()) {
@@ -706,9 +712,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		final Predicate goalSolver = (iter2Result.getSmtProverCall()
 				.isGoalNeeded() ? parsedGoal : parse("⊥", te));
+		sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 		final SMTProverCallTestResult iter3Result = smtProverCallTest("Iter 3",
-				translationApproach, lemmaName, neededHypotheses, goalSolver,
-				te, expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				translationApproach, lemmaName, sequent, te,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
 				debugBuilder);
 		final String iter3ErrorBuffer = iter3Result.getErrorBuffer().toString();
 		if (!iter3ErrorBuffer.isEmpty()) {
@@ -734,10 +741,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SMTSolver solver = solverConfig.getSolver();
 		if (!solver.equals(Z3)) {
 			setPreferencesForZ3Test();
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
 					"z3 unsat-core checking", translationApproach, lemmaName,
-					neededHypotheses, goalSolver, expectedSolverResult,
-					debugBuilder);
+					sequent, expectedSolverResult, debugBuilder);
 			final String z3UCCheckErrorBuffer = z3UCCheckResult
 					.getErrorBuffer().toString();
 			if (!z3UCCheckErrorBuffer.isEmpty()) {
@@ -754,10 +761,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		if (!solver.equals(CVC3)) {
 			setPreferencesForCvc3Test();
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
 					"cvc3 unsat-core checking", translationApproach, lemmaName,
-					neededHypotheses, goalSolver, expectedSolverResult,
-					debugBuilder);
+					sequent, expectedSolverResult, debugBuilder);
 			final String cvc3UCCheckErrorBuffer = cvc3UCCheckResult
 					.getErrorBuffer().toString();
 			if (!cvc3UCCheckErrorBuffer.isEmpty()) {
@@ -774,10 +781,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		if (!solver.equals(ALT_ERGO)) {
 			setPreferencesForAltErgoTest();
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
 					"alt-ergo unsat-core checking", translationApproach,
-					lemmaName, neededHypotheses, goalSolver,
-					expectedSolverResult, debugBuilder);
+					lemmaName, sequent, expectedSolverResult, debugBuilder);
 			final String altergoUCCheckErrorBuffer = altergoUCCheckResult
 					.getErrorBuffer().toString();
 			if (!altergoUCCheckErrorBuffer.isEmpty()) {
@@ -794,10 +801,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 		if (!solver.equals(VERIT)) {
 			setPreferencesForVeriTTest();
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
 					"veriT unsat-core checking", translationApproach,
-					lemmaName, neededHypotheses, goalSolver,
-					expectedSolverResult, debugBuilder);
+					lemmaName, sequent, expectedSolverResult, debugBuilder);
 			final String veritUCCheckErrorBuffer = veritUCCheckResult
 					.getErrorBuffer().toString();
 			if (!veritUCCheckErrorBuffer.isEmpty()) {

@@ -19,13 +19,12 @@ import java.util.TreeSet;
 
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;

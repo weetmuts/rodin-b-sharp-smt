@@ -39,8 +39,9 @@ import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.core.seqprover.xprover.XProverCall;
+import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTLIBVersion;
@@ -50,7 +51,7 @@ import org.eventb.smt.translation.SMTLIBVersion;
  * Each instance of this class represents a call to an external SMT solver.
  * 
  */
-public abstract class SMTProverCall extends XProverCall {
+public abstract class SMTProverCall extends XProverCall2 {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String NON_STANDARD_SMT_LIB2_FILE_EXTENSION = ".smt2";
@@ -107,29 +108,25 @@ public abstract class SMTProverCall extends XProverCall {
 	/**
 	 * Creates an instance of this class.
 	 * 
-	 * @param hypotheses
-	 *            hypotheses of the sequent to discharge
-	 * @param goal
-	 *            goal of the sequent to discharge
+	 * @param sequent
+	 *            the sequent to discharge
 	 * @param pm
 	 *            proof monitor used for cancellation
 	 * @param poName
 	 *            name of the lemma to prove
 	 */
-	protected SMTProverCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final SMTSolverConfiguration solverConfig, final String poName,
-			final String translationPath) {
-		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+	protected SMTProverCall(final ISimpleSequent sequent,
+			final IProofMonitor pm, final SMTSolverConfiguration solverConfig,
+			final String poName, final String translationPath) {
+		this(sequent, pm, new StringBuilder(), solverConfig, poName,
 				translationPath);
 	}
 
-	protected SMTProverCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
-			final StringBuilder debugBuilder,
+	protected SMTProverCall(final ISimpleSequent sequent,
+			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		super(hypotheses, goal, pm);
+		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		this.lemmaName = poName;

@@ -10,11 +10,11 @@
 
 package org.eventb.smt.provers.internal.core;
 
-import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
-import org.eventb.core.seqprover.xprover.XProverCall;
-import org.eventb.core.seqprover.xprover.XProverReasoner;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.xprover.XProverCall2;
+import org.eventb.core.seqprover.xprover.XProverReasoner2;
 import org.eventb.smt.provers.core.SMTProversCore;
 
 /**
@@ -22,7 +22,7 @@ import org.eventb.smt.provers.core.SMTProversCore;
  * 
  * @author Y. Fages-Tafanelli
  */
-public class ExternalSMTThroughPP extends XProverReasoner {
+public class ExternalSMTThroughPP extends XProverReasoner2 {
 	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
 			+ ".externalSMT";
 
@@ -35,11 +35,10 @@ public class ExternalSMTThroughPP extends XProverReasoner {
 	}
 
 	@Override
-	public XProverCall newProverCall(final IReasonerInput input,
-			final Iterable<Predicate> hypotheses, final Predicate goal,
-			final IProofMonitor pm) {
+	public XProverCall2 newProverCall(final IReasonerInput input,
+			final ISimpleSequent sequent, final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
-		return new SMTPPCall(hypotheses, goal, pm, smtInput.getSolverConfig(),
+		return new SMTPPCall(sequent, pm, smtInput.getSolverConfig(),
 				smtInput.getPOName(), smtInput.getTranslationPath());
 	}
 }

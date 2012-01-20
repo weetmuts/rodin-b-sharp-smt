@@ -10,9 +10,10 @@
 
 package org.eventb.smt.translation;
 
-import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
+import static org.eventb.core.seqprover.transformer.SimpleSequents.simplify;
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
 import static org.eventb.pptrans.Translator.reduceToPredicateCalulus;
+import static org.eventb.pptrans.Translator.Option.expandSetEquality;
 import static org.eventb.smt.ast.SMTFactory.makeBool;
 import static org.eventb.smt.ast.SMTFactory.makeInteger;
 import static org.eventb.smt.ast.attributes.SMTLabel.GOAL_LABEL;
@@ -124,6 +125,8 @@ public class SMTThroughPP extends Translator {
 	 * specialized membership predicates
 	 */
 	private Gatherer gatherer;
+
+	private ITrackedPredicate trivialPredicate;
 
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
@@ -282,13 +285,11 @@ public class SMTThroughPP extends Translator {
 	}
 
 	private static ISimpleSequent externalTransformations(
-			final List<Predicate> hypotheses, final Predicate goal) {
-		ISimpleSequent simpleSequent = make(hypotheses, goal,
-				FormulaFactory.getDefault());
-		simpleSequent = decomposeIdentifiers(simpleSequent);
+			final ISimpleSequent sequent) {
+		ISimpleSequent simpleSequent = decomposeIdentifiers(sequent);
 		simpleSequent = reduceToPredicateCalulus(simpleSequent,
-				org.eventb.pptrans.Translator.Option.expandSetEquality);
-		return SimpleSequents.simplify(simpleSequent,
+				expandSetEquality);
+		return simplify(simpleSequent,
 				SimpleSequents.SimplificationOption.aggressiveSimplification);
 	}
 
@@ -1321,14 +1322,12 @@ public class SMTThroughPP extends Translator {
 	 */
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal) {
+			final ISimpleSequent sequent) {
 		/**
 		 * PP translation and SeqProver simplifications
 		 */
-		final ISimpleSequent simplifiedSequent = externalTransformations(
-				hypotheses, goal);
-		final ITrackedPredicate trivialPredicate = simplifiedSequent
-				.getTrivialPredicate();
+		final ISimpleSequent simplifiedSequent = externalTransformations(sequent);
+		trivialPredicate = simplifiedSequent.getTrivialPredicate();
 		if (trivialPredicate != null) {
 			// TODO do not create the benchmark, do not call the prover, return
 			// the trivial predicate as an unsat-core
@@ -1351,18 +1350,16 @@ public class SMTThroughPP extends Translator {
 	 * 
 	 * @param lemmaName
 	 *            the name to be used in the SMT-LIB benchmark
-	 * @param hypotheses
-	 *            the hypotheses of the Event-B sequent
-	 * @param goal
-	 *            the goal of the Event-B sequent
+	 * @param sequent
+	 *            the Event-B sequent
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
-			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, final SMTLIBVersion smtlibVersion) {
+			final String lemmaName, final ISimpleSequent sequent,
+			final SMTLIBVersion smtlibVersion) {
 		final SMTBenchmark smtB = new SMTThroughPP(smtlibVersion).translate(
-				lemmaName, hypotheses, goal);
+				lemmaName, sequent);
 		return smtB;
 	}
 
@@ -1384,11 +1381,8 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			final Predicate predicate, final SMTLIBVersion smtlibVersion) {
+			final ISimpleSequent sequent, final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
-		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, FormulaFactory.getDefault());
 		translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.getSignature();
@@ -1397,13 +1391,14 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method is used only to test the logic determination
 	 */
-	public static SMTLogic determineLogic(final Predicate goalPredicate,
+	public static SMTLogic determineLogic(final ISimpleSequent sequent,
 			final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
-		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
-		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				goalPredicate, FormulaFactory.getDefault());
 		return translator.determineLogic(sequent);
+	}
+
+	public ITrackedPredicate getTrivialPredicate() {
+		return trivialPredicate;
 	}
 
 	/**

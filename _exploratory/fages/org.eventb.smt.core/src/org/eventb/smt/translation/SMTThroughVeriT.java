@@ -199,20 +199,18 @@ public class SMTThroughVeriT extends Translator {
 	 * 
 	 * @param lemmaName
 	 *            the name to be used in the SMT-LIB benchmark
-	 * @param hypotheses
-	 *            the hypotheses of the Event-B sequent
-	 * @param goal
-	 *            the goal of the Event-B sequent
+	 * @param sequent
+	 *            the Event-B sequent
 	 * @param smtlibVersion
 	 *            The target version of the SMT (1.2 or 2.0)
 	 * @return the SMT-LIB benchmark built over the translation of the given
 	 *         Event-B sequent
 	 */
 	public static SMTBenchmark translateToSmtLibBenchmark(
-			final String lemmaName, final List<Predicate> hypotheses,
-			final Predicate goal, SMTLIBVersion smtlibVersion) {
+			final String lemmaName, final ISimpleSequent sequent,
+			SMTLIBVersion smtlibVersion) {
 		final SMTBenchmark smtB = new SMTThroughVeriT(smtlibVersion).translate(
-				lemmaName, hypotheses, goal);
+				lemmaName, sequent);
 		return smtB;
 	}
 
@@ -497,32 +495,43 @@ public class SMTThroughVeriT extends Translator {
 
 	@Override
 	protected SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal) {
-		final ISimpleSequent sequent = SimpleSequents.make(hypotheses, goal,
-				FormulaFactory.getDefault());
-
+			final ISimpleSequent sequent) {
 		final SMTLogic logic = determineLogic(sequent);
-		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
-		/**
-		 * SMT translation
-		 */
-		// translates the signature
 		translateSignature(logic, sequent);
+
+		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
+		SMTFormula smtFormula = null;
+		boolean falseGoalNeeded = true;
 		translatedAssumptions.addAll(getAdditionalAssumptions());
 
-		// translates each hypothesis
-		for (final Predicate hypothesis : hypotheses) {
+		for (final ITrackedPredicate trackedPredicate : sequent.getPredicates()) {
 			clearFormula();
-			final SMTFormula translatedFormula = translate(hypothesis, !IN_GOAL);
-			translatedAssumptions.addAll(getAdditionalAssumptions());
-			translatedAssumptions.add(translatedFormula);
+			final Predicate predicate = trackedPredicate.getPredicate();
+			/**
+			 * If it is an hypothesis
+			 */
+			if (trackedPredicate.isHypothesis()) {
+				final SMTFormula translatedFormula = translate(predicate,
+						!IN_GOAL);
+				translatedAssumptions.addAll(getAdditionalAssumptions());
+				translatedAssumptions.add(translatedFormula);
+			}
+			/**
+			 * If it is the goal
+			 */
+			else {
+				falseGoalNeeded = false;
+				smtFormula = SMTFactory.makeNot(
+						new SMTFormula[] { translate(predicate, IN_GOAL) },
+						smtlibVersion);
+				translatedAssumptions.addAll(getAdditionalAssumptions());
+			}
 		}
-
-		// translates the goal
-		clearFormula();
-		final SMTFormula smtFormula = SMTFactory.makeNot(
-				new SMTFormula[] { translate(goal, IN_GOAL) }, smtlibVersion);
-		translatedAssumptions.addAll(getAdditionalAssumptions());
+		if (falseGoalNeeded) {
+			smtFormula = SMTFactory
+					.makeNot(new SMTFormula[] { SMTFactory.makePFalse() },
+							smtlibVersion);
+		}
 
 		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,
 				signature, translatedAssumptions, smtFormula);

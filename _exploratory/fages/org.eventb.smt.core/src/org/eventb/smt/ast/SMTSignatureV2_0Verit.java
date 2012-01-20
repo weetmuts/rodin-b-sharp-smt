@@ -19,7 +19,6 @@ import java.util.TreeSet;
 
 import org.eventb.smt.ast.macros.SMTEnumMacro;
 import org.eventb.smt.ast.macros.SMTMacro;
-import org.eventb.smt.ast.macros.SMTMacroFactory;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
@@ -100,9 +99,9 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 
 	/**
 	 * This method returns the Bool sort. It first check if the
-	 * {@link VeriTBooleansV1_2} theory is being used. If so, it returns that the
-	 * Bool sort defined in that theory. If not, returns the bool sort defined
-	 * in {@link VeritPredefinedTheoryV1_2}
+	 * {@link VeriTBooleansV1_2} theory is being used. If so, it returns that
+	 * the Bool sort defined in that theory. If not, returns the bool sort
+	 * defined in {@link VeritPredefinedTheoryV1_2}
 	 * 
 	 * @return a Bool sort
 	 */

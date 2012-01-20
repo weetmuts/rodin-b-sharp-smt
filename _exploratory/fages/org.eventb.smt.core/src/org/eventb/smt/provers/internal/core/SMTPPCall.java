@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTThroughPP;
@@ -47,21 +48,18 @@ public class SMTPPCall extends SMTProverCall {
 			+ File.separatorChar + "pp";
 	private File ppTranslationFolder = null;
 
-	protected SMTPPCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
+	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		this(hypotheses, goal, pm, new StringBuilder(), solverConfig, poName,
+		this(sequent, pm, new StringBuilder(), solverConfig, poName,
 				translationPath);
 	}
 
-	protected SMTPPCall(final Iterable<Predicate> hypotheses,
-			final Predicate goal, final IProofMonitor pm,
+	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		super(hypotheses, goal, pm, debugBuilder, solverConfig, poName,
-				translationPath);
+		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath);
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
 			this.translationPath = this.translationPath + File.separatorChar
 					+ "pp";
@@ -103,8 +101,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, V1_2);
+		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName, sequent,
+				V1_2);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
@@ -144,8 +142,8 @@ public class SMTPPCall extends SMTProverCall {
 		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
 		 * SMT-LIB translation
 		 */
-		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName,
-				hypotheses, goal, V2_0);
+		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName, sequent,
+				V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could

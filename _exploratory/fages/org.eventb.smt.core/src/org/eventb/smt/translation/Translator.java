@@ -173,7 +173,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * method as hypotheses and goal. Must be called by a public static method.
 	 */
 	protected abstract SMTBenchmark translate(final String lemmaName,
-			final List<Predicate> hypotheses, final Predicate goal);
+			final ISimpleSequent sequent);
 
 	/**
 	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
