@@ -52,6 +52,14 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 	}
 
 	@Test(timeout = 3000)
+	public void testExample() {
+		final ITypeEnvironment te = mTypeEnvironment("n", "ℤ");
+
+		final List<String> hyps = Arrays.asList("n ∈ ℕ");
+		doTest("Example", hyps, "0 < n + 1", te, VALID);
+	}
+
+	@Test(timeout = 3000)
 	public void testBug2105507Thm1() {
 		final ITypeEnvironment te = mTypeEnvironment();
 

@@ -11,13 +11,13 @@
 
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.pptrans.Translator.isInGoal;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.pptrans.Translator;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
@@ -67,8 +69,10 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 		assertTypeChecked(goalPredicate);
 
+		final ISimpleSequent sequent = SimpleSequents.make(
+				(List<Predicate>) null, goalPredicate, ff);
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goalPredicate, V1_2);
+				"lemma", sequent, V1_2);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -81,8 +85,10 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 		assertTypeChecked(goal);
 
+		final ISimpleSequent sequent = SimpleSequents.make(
+				(List<Predicate>) null, goal, ff);
 		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goal, V1_2);
+				"lemma", sequent, V1_2);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -128,12 +134,16 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
+		final ISimpleSequent sequent = SimpleSequents.make(
+				(List<Predicate>) null, ppPred, ff);
+
 		assertTrue(
 				TranslationTestsWithPPV1_2
 						.producePPTargetSubLanguageError(ppPred),
-				Translator.isInGoal(ppPred));
+				Translator.isInGoal(sequent));
 
-		return (SMTSignatureV1_2) SMTThroughPP.translateTE(logic, ppPred, V1_2);
+		return (SMTSignatureV1_2) SMTThroughPP
+				.translateTE(logic, sequent, V1_2);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -159,10 +169,11 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 			final String ppPredStr, final String expectedSMTNode,
 			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		assertTrue(
-				TranslationTestsWithPPV1_2
-						.producePPTargetSubLanguageError(ppPred),
-				Translator.isInGoal(ppPred));
+
+		final ISimpleSequent sequent = SimpleSequents.make(
+				(List<Predicate>) null, ppPred, ff);
+
+		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
 		testTranslationV1_2(ppPred, expectedSMTNode, failMessage,
 				VERIT.toString());

@@ -10,16 +10,20 @@
 
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.translation.SMTThroughPP.determineLogic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.pptrans.Translator;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.tests.AbstractTests;
-import org.eventb.smt.translation.SMTThroughPP;
 import org.junit.Test;
 
 public class LogicTestsWithPPV2_0 extends AbstractTests {
@@ -37,10 +41,12 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
 			final String ppPredStr, final SMTLogic expectedSMTLogic) {
 		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv);
+		final ISimpleSequent sequent = make((List<Predicate>) null,
+				goalPredicate, ff);
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
-				Translator.isInGoal(goalPredicate));
+				Translator.isInGoal(sequent));
 
-		final SMTLogic logic = SMTThroughPP.determineLogic(goalPredicate, V2_0);
+		final SMTLogic logic = determineLogic(sequent, V2_0);
 
 		assertEquals("", expectedSMTLogic.toString(), logic.toString());
 	}

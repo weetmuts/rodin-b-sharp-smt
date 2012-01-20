@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +26,6 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
-import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.pptrans.Translator;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.Gatherer;
@@ -168,18 +168,17 @@ public class GathererTests extends AbstractTests {
 		final List<Predicate> preds = new ArrayList<Predicate>();
 		for (final String hypothesis : hypotheses) {
 			final Predicate h = parse(hypothesis, typenv);
-			assertTrue("Predicate: " + h.toString()
-					+ " is not in the PP sub-language.", Translator.isInGoal(h));
 			preds.add(h);
 		}
 		final Predicate goalP = parse(goal, typenv);
-		assertTrue("Predicate: " + goalP.toString()
-				+ " is not in the PP sub-language.", Translator.isInGoal(goalP));
+
+		final ISimpleSequent sequent = make(preds, goalP, ff);
+
+		assertTrue("Sequent is not in the PP sub-language.",
+				Translator.isInGoal(sequent));
+
 		final Set<FreeIdentifier> expectedSpecialMSPreds = getExpectedIdents(
 				typenv, expectedSpecialMSPredImages);
-
-		final ISimpleSequent sequent = SimpleSequents.make(preds, goalP,
-				FormulaFactory.getDefault());
 
 		final Gatherer actual = Gatherer.gatherFrom(sequent);
 		checkResult(atomicBoolExp, atomicIntegerExp, boolTheory, truePredicate,

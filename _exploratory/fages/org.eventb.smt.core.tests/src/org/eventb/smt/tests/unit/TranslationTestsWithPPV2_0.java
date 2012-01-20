@@ -10,13 +10,16 @@
 
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
+import static org.eventb.pptrans.Translator.isInGoal;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.translation.SMTThroughPP.translateTE;
+import static org.eventb.smt.translation.SMTThroughPP.translateToSmtLibBenchmark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -24,12 +27,11 @@ import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.pptrans.Translator;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.tests.AbstractTests;
 import org.eventb.smt.translation.SMTThroughPP;
 import org.junit.Test;
@@ -63,8 +65,11 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		assertTypeChecked(goalPredicate);
 
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goalPredicate, V2_0);
+		final ISimpleSequent sequent = make((List<Predicate>) null,
+				goalPredicate, ff);
+
+		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
+				sequent, V2_0);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -75,10 +80,12 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		final Predicate goal = parse(inputGoal, te);
 
+		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
+
 		assertTypeChecked(goal);
 
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", new ArrayList<Predicate>(), goal, V2_0);
+		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
+				sequent, V2_0);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),
@@ -124,12 +131,11 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
-		assertTrue(
-				TranslationTestsWithPPV2_0
-						.producePPTargetSubLanguageError(ppPred),
-				Translator.isInGoal(ppPred));
+		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred, ff);
 
-		return SMTThroughPP.translateTE(logic, ppPred, V2_0);
+		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
+
+		return translateTE(logic, sequent, V2_0);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -155,10 +161,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 			final String ppPredStr, final String expectedSMTNode,
 			final String failMessage) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
-		assertTrue(
-				TranslationTestsWithPPV2_0
-						.producePPTargetSubLanguageError(ppPred),
-				Translator.isInGoal(ppPred));
+
+		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred, ff);
+
+		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
 		testTranslationV2_0(ppPred, expectedSMTNode, failMessage,
 				VERIT.toString());
@@ -573,9 +579,9 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ITypeEnvironment te = defaultTe;
 		final List<String> expectedAssumptions = Arrays
 				.asList("(forall ((x Int)) (MS x INTS))", //
-						"(forall ((x0 Int)) (exists ((X PZ)) (and (MS x0 X) (forall ((y Int)) (=> (MS y X) (= y x0))))))");
+						"(forall ((x1 Int)) (exists ((X PZ)) (and (MS x1 X) (forall ((y Int)) (=> (MS y X) (= y x1))))))");
 
-		testContainsAssumptionsPP(te, "a↦ℤ ∈ AZ", expectedAssumptions);
+		testContainsAssumptionsPP(te, "a + b ↦ ℤ ∈ AZ", expectedAssumptions);
 	}
 
 	@Test
