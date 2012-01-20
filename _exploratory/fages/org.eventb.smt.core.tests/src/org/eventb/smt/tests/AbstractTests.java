@@ -28,11 +28,15 @@ import org.eventb.core.ast.ITypeCheckResult;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
+import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTSignature;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.translation.TranslationResult;
+import org.eventb.smt.translation.Translator;
 
 public abstract class AbstractTests {
 
@@ -265,4 +269,13 @@ public abstract class AbstractTests {
 			}
 		}
 	}
+
+	public static SMTBenchmark translate(Translator translator,
+			final String lemmaName, final ISimpleSequent sequent) {
+		final TranslationResult result = translator.translate(lemmaName,
+				sequent);
+		assertFalse(result.isTrivial());
+		return result.getSMTBenchmark();
+	}
+
 }

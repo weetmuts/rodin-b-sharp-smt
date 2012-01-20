@@ -98,7 +98,6 @@ import org.eventb.core.ast.expanders.Expanders;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTBenchmarkVeriT;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFactoryPP;
@@ -192,26 +191,6 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	public Set<SMTFormula> getAdditionalAssumptions() {
 		return additionalAssumptions;
-	}
-
-	/**
-	 * This is the public translation method
-	 * 
-	 * @param lemmaName
-	 *            the name to be used in the SMT-LIB benchmark
-	 * @param sequent
-	 *            the Event-B sequent
-	 * @param smtlibVersion
-	 *            The target version of the SMT (1.2 or 2.0)
-	 * @return the SMT-LIB benchmark built over the translation of the given
-	 *         Event-B sequent
-	 */
-	public static SMTBenchmark translateToSmtLibBenchmark(
-			final String lemmaName, final ISimpleSequent sequent,
-			SMTLIBVersion smtlibVersion) {
-		final SMTBenchmark smtB = new SMTThroughVeriT(smtlibVersion).translate(
-				lemmaName, sequent);
-		return smtB;
 	}
 
 	/**
@@ -494,7 +473,7 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	@Override
-	protected SMTBenchmark translate(final String lemmaName,
+	public BenchmarkResult translate(final String lemmaName,
 			final ISimpleSequent sequent) {
 		final SMTLogic logic = determineLogic(sequent);
 		translateSignature(logic, sequent);
@@ -536,7 +515,7 @@ public class SMTThroughVeriT extends Translator {
 		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,
 				signature, translatedAssumptions, smtFormula);
 		benchmark.removeUnusedSymbols();
-		return benchmark;
+		return new BenchmarkResult(benchmark);
 	}
 
 	/**

@@ -126,8 +126,6 @@ public class SMTThroughPP extends Translator {
 	 */
 	private Gatherer gatherer;
 
-	private ITrackedPredicate trivialPredicate;
-
 	/**
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
@@ -159,7 +157,7 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
 	 */
-	private SMTThroughPP(final SMTLIBVersion smtlibVersion) {
+	public SMTThroughPP(final SMTLIBVersion smtlibVersion) {
 		super(smtlibVersion);
 		sf = SMTFactoryPP.getInstance();
 	}
@@ -1316,22 +1314,19 @@ public class SMTThroughPP extends Translator {
 	}
 
 	/**
-	 * This is the translation method for the ppTrans approach of SMT
-	 * translation.
-	 * 
+	 * Translates an Event-B sequent to SMT-LIB using ppTrans.
 	 */
 	@Override
-	protected SMTBenchmark translate(final String lemmaName,
+	public TranslationResult translate(final String lemmaName,
 			final ISimpleSequent sequent) {
 		/**
 		 * PP translation and SeqProver simplifications
 		 */
 		final ISimpleSequent simplifiedSequent = externalTransformations(sequent);
-		trivialPredicate = simplifiedSequent.getTrivialPredicate();
+		final ITrackedPredicate trivialPredicate = simplifiedSequent
+				.getTrivialPredicate();
 		if (trivialPredicate != null) {
-			// TODO do not create the benchmark, do not call the prover, return
-			// the trivial predicate as an unsat-core
-			// return null;
+			return new TrivialResult(trivialPredicate);
 		}
 
 		/**
@@ -1342,25 +1337,8 @@ public class SMTThroughPP extends Translator {
 		/**
 		 * SMT translation
 		 */
-		return translate(lemmaName, simplifiedSequent, logic);
-	}
-
-	/**
-	 * This is the public translation method
-	 * 
-	 * @param lemmaName
-	 *            the name to be used in the SMT-LIB benchmark
-	 * @param sequent
-	 *            the Event-B sequent
-	 * @return the SMT-LIB benchmark built over the translation of the given
-	 *         Event-B sequent
-	 */
-	public static SMTBenchmark translateToSmtLibBenchmark(
-			final String lemmaName, final ISimpleSequent sequent,
-			final SMTLIBVersion smtlibVersion) {
-		final SMTBenchmark smtB = new SMTThroughPP(smtlibVersion).translate(
-				lemmaName, sequent);
-		return smtB;
+		return new BenchmarkResult(translate(lemmaName, simplifiedSequent,
+				logic));
 	}
 
 	/**
@@ -1395,10 +1373,6 @@ public class SMTThroughPP extends Translator {
 			final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		return translator.determineLogic(sequent);
-	}
-
-	public ITrackedPredicate getTrivialPredicate() {
-		return trivialPredicate;
 	}
 
 	/**

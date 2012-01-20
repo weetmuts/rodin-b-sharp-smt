@@ -11,6 +11,8 @@
 
 package org.eventb.smt.provers.internal.core;
 
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
@@ -40,11 +42,14 @@ import java.util.Set;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.preferences.SMTSolverConfiguration;
 import org.eventb.smt.translation.SMTLIBVersion;
+import org.eventb.smt.translation.TranslationResult;
+import org.eventb.smt.translation.Translator;
 
 /**
  * 
@@ -61,6 +66,12 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	protected final StringBuilder debugBuilder;
 
+	/**
+	 * The benchmark produced by the translator if the sequent was not
+	 * simplified to a trivial predicate
+	 */
+	protected SMTBenchmark benchmark;
+	// FIXME cannot this field be removed ? (used to check veriT pre-processing)
 	protected boolean translationPerformed = false;
 
 	/**
@@ -83,7 +94,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	volatile boolean goalNeeded = true;
 
-	volatile SMTBenchmark benchmark;
+	protected final Translator translator;
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
@@ -117,20 +128,22 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final SMTSolverConfiguration solverConfig,
-			final String poName, final String translationPath) {
+			final String poName, final String translationPath,
+			final Translator translator) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
-				translationPath);
+				translationPath, translator);
 	}
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
-			final String translationPath) {
+			final String translationPath, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
+		this.translator = translator;
 	}
 
 	/**
@@ -409,8 +422,6 @@ public abstract class SMTProverCall extends XProverCall2 {
 				debugBuilder.append(smtResultFile).append("'\n");
 			}
 
-			// Fill the result file with some random characters that can not be
-			// considered as a success.
 			final PrintStream stream = new PrintStream(smtResultFile);
 			stream.println("FAILED");
 			stream.close();
@@ -445,75 +456,101 @@ public abstract class SMTProverCall extends XProverCall2 {
 			 * Translates the sequent in SMT-LIB V1.2 language and tries to
 			 * discharge it with an SMT solver
 			 */
-			translationPerformed = false;
-			if (solverConfig.getSmtlibVersion().equals(V1_2)) {
-				try {
-					makeSMTBenchmarkFileV1_2();
-					translationPerformed = true;
-				} catch (IllegalArgumentException e) {
-					if (DEBUG) {
-						debugBuilder.append("Due to translation failure, ");
-						debugBuilder.append("the solver won't be launched.\n");
-						e.printStackTrace();
-					}
-				}
+			/**
+			 * Produces an SMT benchmark.
+			 */
+			proofMonitor.setTask("Translating Event-B proof obligation");
+			/**
+			 * Translation of the event-b sequent
+			 */
+			final TranslationResult result = translator.translate(lemmaName,
+					sequent);
 
+			/**
+			 * If it was simplified to a trivial predicate, the sequent is set
+			 * valid and the predicate used as an unsat-core.
+			 */
+			if (result.isTrivial()) {
+				final ITrackedPredicate pred = result.getTrivialPredicate();
+				if (pred.isHypothesis()) {
+					valid = true;
+					neededHypotheses = singleton(pred.getPredicate());
+					goalNeeded = false;
+				} else {
+					valid = true;
+					neededHypotheses = emptySet();
+					goalNeeded = true;
+				}
 			} else {
 				/**
-				 * smtlibVersion.equals(V2_0)
+				 * !result.isTrivial(), an SMT-LIB benchmark was produced
 				 */
-				try {
-					makeSMTBenchmarkFileV2_0();
-					translationPerformed = true;
-				} catch (IllegalArgumentException e) {
-					if (DEBUG) {
-						debugBuilder.append("Due to translation failure, ");
-						debugBuilder.append("the solver won't be launched.\n");
+				benchmark = result.getSMTBenchmark();
+
+				translationPerformed = false;
+				if (solverConfig.getSmtlibVersion().equals(V1_2)) {
+					try {
+						makeSMTBenchmarkFileV1_2();
+						translationPerformed = true;
+					} catch (IllegalArgumentException e) {
+						if (DEBUG) {
+							debugBuilder.append("Due to translation failure, ");
+							debugBuilder
+									.append("the solver won't be launched.\n");
+							e.printStackTrace();
+						}
+					}
+
+				} else {
+					/**
+					 * smtlibVersion.equals(V2_0)
+					 */
+					try {
+						makeSMTBenchmarkFileV2_0();
+						translationPerformed = true;
+					} catch (IllegalArgumentException e) {
+						if (DEBUG) {
+							debugBuilder.append("Due to translation failure, ");
+							debugBuilder
+									.append("the solver won't be launched.\n");
+						}
 					}
 				}
-			}
 
-			if (translationPerformed) {
-				final String solverName = solverConfig.getSolver().toString();
-				if (DEBUG_DETAILS) {
-					debugBuilder.append("Launching ").append(solverName);
-					debugBuilder.append(" with input:\n\n");
-					showSMTBenchmarkFile();
-				}
+				if (translationPerformed) {
+					final String solverName = solverConfig.getSolver()
+							.toString();
+					if (DEBUG_DETAILS) {
+						debugBuilder.append("Launching ").append(solverName);
+						debugBuilder.append(" with input:\n\n");
+						showSMTBenchmarkFile();
+					}
 
-				setMonitorMessage("Running SMT solver : " + solverName + ".");
+					setMonitorMessage("Running SMT solver : " + solverName
+							+ ".");
 
-				try {
-					callProver(solverCommandLine());
-				} catch (IllegalArgumentException e) {
-					if (DEBUG) {
-						exceptionRaised = true;
-						debugBuilder
-								.append("Exception raised during prover call : ");
-						debugBuilder.append(e.getMessage()).append("\n");
+					try {
+						callProver(solverCommandLine());
+					} catch (IllegalArgumentException e) {
+						if (DEBUG) {
+							exceptionRaised = true;
+							debugBuilder
+									.append("Exception raised during prover call : ");
+							debugBuilder.append(e.getMessage()).append("\n");
+						}
 					}
 				}
-			}
 
-			if (isValid()) {
-				if ((solverConfig.getSolver().equals(VERIT) //
-						&& solverConfig.getArgs().contains("--proof=")) //
-						|| (solverConfig.getSmtlibVersion().equals(V2_0) //
-						&& solverConfig.getSolver().equals(Z3))) { // FIXME it
-																	// is not
-																	// possible
-																	// to check
-																	// z3
-																	// version,
-																	// so make
-																	// errors be
-																	// catched
-																	// if not a
-																	// version
-																	// capable
-																	// of manage
-																	// unsat-cores.
-					extractUnsatCore();
+				if (isValid()) {
+					if ((solverConfig.getSolver().equals(VERIT) //
+							&& solverConfig.getArgs().contains("--proof=")) //
+							|| (solverConfig.getSmtlibVersion().equals(V2_0) //
+							&& solverConfig.getSolver().equals(Z3))) {
+						// FIXME it is not possible to check z3 version, so make
+						// errors be catched if not a version capable of manage
+						// unsat-cores.
+						extractUnsatCore();
+					}
 				}
 			}
 

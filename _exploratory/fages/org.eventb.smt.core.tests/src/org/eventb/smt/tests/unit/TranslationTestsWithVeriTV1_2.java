@@ -14,7 +14,6 @@ import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTThroughVeriT.translateToSmtLibBenchmark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -143,8 +142,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
 
-		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
-				sequent, V1_2);
+		final SMTThroughVeriT translator = new SMTThroughVeriT(V1_2);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final SMTSignatureV1_2 signature = (SMTSignatureV1_2) benchmark
 				.getSignature();
@@ -206,8 +205,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
 
-		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
-				sequent, V1_2);
+		final SMTThroughVeriT translator = new SMTThroughVeriT(V1_2);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),

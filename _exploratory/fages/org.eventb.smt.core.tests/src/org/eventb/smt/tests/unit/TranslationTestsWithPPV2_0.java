@@ -16,7 +16,6 @@ import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.SMTThroughPP.translateTE;
-import static org.eventb.smt.translation.SMTThroughPP.translateToSmtLibBenchmark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -68,8 +67,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ISimpleSequent sequent = make((List<Predicate>) null,
 				goalPredicate, ff);
 
-		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
-				sequent, V2_0);
+		final SMTThroughPP translator = new SMTThroughPP(V2_0);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -84,8 +83,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		assertTypeChecked(goal);
 
-		final SMTBenchmark benchmark = translateToSmtLibBenchmark("lemma",
-				sequent, V2_0);
+		final SMTThroughPP translator = new SMTThroughPP(V2_0);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),

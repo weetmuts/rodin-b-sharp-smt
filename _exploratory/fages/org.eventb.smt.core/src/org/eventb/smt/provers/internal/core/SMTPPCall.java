@@ -18,8 +18,6 @@ import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
 import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.translation.Translator.DEBUG;
 import static org.eventb.smt.translation.Translator.DEBUG_DETAILS;
 
@@ -59,7 +57,8 @@ public class SMTPPCall extends SMTProverCall {
 			final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
-		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath);
+		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
+				new SMTThroughPP(solverConfig.getSmtlibVersion()));
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
 			this.translationPath = this.translationPath + File.separatorChar
 					+ "pp";
@@ -94,17 +93,6 @@ public class SMTPPCall extends SMTProverCall {
 	@Override
 	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException {
 		/**
-		 * Produces an SMT benchmark.
-		 */
-		proofMonitor.setTask("Translating Event-B proof obligation");
-		/**
-		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
-		 * SMT-LIB translation
-		 */
-		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName, sequent,
-				V1_2);
-
-		/**
 		 * Updates the name of the benchmark (the name originally given could
 		 * have been changed by the translator if it was a reserved symbol)
 		 */
@@ -134,17 +122,6 @@ public class SMTPPCall extends SMTProverCall {
 	 */
 	@Override
 	public synchronized void makeSMTBenchmarkFileV2_0() throws IOException {
-		/**
-		 * Produces an SMT benchmark.
-		 */
-		proofMonitor.setTask("Translating Event-B proof obligation");
-		/**
-		 * Creation of an SMT-LIB benchmark using the PP approach of Event-B to
-		 * SMT-LIB translation
-		 */
-		benchmark = SMTThroughPP.translateToSmtLibBenchmark(lemmaName, sequent,
-				V2_0);
-
 		/**
 		 * Updates the name of the benchmark (the name originally given could
 		 * have been changed by the translator if it was a reserved symbol)

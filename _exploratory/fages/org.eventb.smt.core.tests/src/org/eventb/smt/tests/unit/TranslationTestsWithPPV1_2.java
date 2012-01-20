@@ -71,8 +71,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 		final ISimpleSequent sequent = SimpleSequents.make(
 				(List<Predicate>) null, goalPredicate, ff);
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", sequent, V1_2);
+		final SMTThroughPP translator = new SMTThroughPP(V1_2);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final SMTFormula formula = benchmark.getFormula();
 		assertEquals(expectedFormula, formula.toString());
@@ -87,8 +87,8 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 		final ISimpleSequent sequent = SimpleSequents.make(
 				(List<Predicate>) null, goal, ff);
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				"lemma", sequent, V1_2);
+		final SMTThroughPP translator = new SMTThroughPP(V1_2);
+		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
 		assertEquals(assumptionsString(assumptions),

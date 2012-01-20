@@ -37,7 +37,6 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.ast.SMTBenchmark;
 import org.eventb.smt.ast.SMTFactory;
 import org.eventb.smt.ast.SMTFormula;
 import org.eventb.smt.ast.SMTNode;
@@ -169,10 +168,9 @@ public abstract class Translator implements ISimpleVisitor {
 	}
 
 	/**
-	 * This is the translation method. An Event-B sequent is given to this
-	 * method as hypotheses and goal. Must be called by a public static method.
+	 * Translates the given event-B sequent to SMT-LIB.
 	 */
-	protected abstract SMTBenchmark translate(final String lemmaName,
+	public abstract TranslationResult translate(final String lemmaName,
 			final ISimpleSequent sequent);
 
 	/**

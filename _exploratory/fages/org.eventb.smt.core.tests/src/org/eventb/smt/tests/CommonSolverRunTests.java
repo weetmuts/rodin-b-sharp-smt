@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.tests;
 
 import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
@@ -427,8 +426,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, ff);
 
-		final SMTBenchmark benchmark = SMTThroughPP.translateToSmtLibBenchmark(
-				lemmaName, sequent, solverConfig.getSmtlibVersion());
+		// FIXME should not be PP because could this is used by veriT tests
+		final SMTThroughPP translator = new SMTThroughPP(
+				solverConfig.getSmtlibVersion());
+		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
 
 		final SMTSignature signature = benchmark.getSignature();
 

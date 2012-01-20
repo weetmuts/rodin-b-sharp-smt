@@ -100,7 +100,8 @@ public class SMTVeriTCall extends SMTProverCall {
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTSolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
-		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath);
+		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
+				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
 
 		if (translationPath != null && !translationPath.isEmpty()) {
 			this.translationPath = translationPath + File.separatorChar
@@ -321,13 +322,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		sv = V1_2;
 
 		/**
-		 * Produces an SMT benchmark containing some veriT macros.
-		 */
-		proofMonitor.setTask("Translating Event-B proof obligation");
-		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				sequent, V1_2);
-
-		/**
 		 * Updates the name of the benchmark (the name originally given could
 		 * have been changed by the translator if it was a reserved symbol)
 		 */
@@ -389,13 +383,6 @@ public class SMTVeriTCall extends SMTProverCall {
 	@Override
 	protected void makeSMTBenchmarkFileV2_0() throws IOException {
 		sv = V2_0;
-
-		/**
-		 * Produces an SMT benchmark.
-		 */
-		proofMonitor.setTask("Translating Event-B proof obligation");
-		benchmark = SMTThroughVeriT.translateToSmtLibBenchmark(lemmaName,
-				sequent, V2_0);
 
 		/**
 		 * Updates the name of the benchmark (the name originally given could
