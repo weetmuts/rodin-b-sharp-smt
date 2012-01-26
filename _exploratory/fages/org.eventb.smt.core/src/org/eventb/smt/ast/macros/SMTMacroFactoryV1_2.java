@@ -2,6 +2,20 @@ package org.eventb.smt.ast.macros;
 
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.CARD;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.FINITE;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.IN;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMAX;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMIN;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
+
+import java.util.Set;
 
 import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTSignatureV1_2Verit;
@@ -10,13 +24,125 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
-			"(lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2))))",
+			"("
+					+ BUNION
+					+ "(lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2)))))",
 			0, false, false, EMPTY_MACROS);
-	
+
 	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
 			BINTER,
-			"(lambda (?BINTER_0 ('t Bool))(?BINTER_1 ('t Bool)) . (lambda (?BINTER_2 't) . (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2))))",
+			"("
+					+ BINTER
+					+ "(lambda (?BINTER_0 ('t Bool))(?BINTER_1 ('t Bool)) . (lambda (?BINTER_2 't) . (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
+			IN, "(" + IN
+					+ "(lambda (?IN_0 't) (?IN_1 ('t Bool)) . (?IN_1 ?IN_0)))",
+			0, false, false, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
+			FUNP_MACRO, IN_MACRO };
+
+	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_FUNCTION,
+			"("
+					+ PARTIAL_FUNCTION
+					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) . (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) . (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
+			3, false, false, REL_AND_FUNP_AND_IN);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
+			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO, IN_MACRO };
+
+	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_FUNCTION,
+			"("
+					+ TOTAL_FUNCTION
+					+ "(lambda (?TOT_FUN_0 ('s Bool)) (?TOT_FUN_1 ('t Bool)) . (lambda (?TOT_FUN_2 ((Pair 's 't) Bool)) . (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_INJP = {
+			PARTIAL_FUNCTION_MACRO, INJP_MACRO };
+
+	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_INJECTION,
+			"("
+					+ PARTIAL_INJECTION
+					+ "(lambda (?PAR_INJ ('s Bool)) (?PAR_INJ_1 ('s Bool)) . (lambda (?PAR_INJ_2 ((Pair 's 't) Bool)) . (and ((pfun ?PAR_INJ_0 ?PAR_INJ_1) ?PAR_INJ_2) (injp ?PAR_INJ_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_INJP);
+
+	private static SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
+			PARTIAL_INJECTION_MACRO, TOTAL_RELATION_MACRO };
+
+	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_INJECTION,
+			"("
+					+ TOTAL_INJECTION
+					+ "(lambda (?TOT_INJ_0 ('s Bool))(?TOT_INJ_1 ('s Bool)) . (lambda (?TOT_INJ_2 ((Pair 's 't) Bool)) . (and ((pinj ?TOT_INJ_0 ?TOT_INJ_1) ?TOT_INJ_2) (totp ?TOT_INJ_0 ?TOT_INJ_2)))))",
+			4, false, false, PARTIAL_INJECTION_AND_TOTAL_RELATION);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
+			PARTIAL_FUNCTION_MACRO, SURJECTIVE_RELATION_MACRO };
+
+	public static final SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_SURJECTION,
+			"("
+					+ PARTIAL_SURJECTION
+					+ "(lambda (?PAR_SUR_0 ('s Bool))(?PAR_SUR_1 ('s Bool)) . (lambda (?PAR_SUR_2 ((Pair 's 't) Bool)) .  (and ((pfun ?PAR_SUR_0 ?PAR_SUR_1) ?PAR_SUR_2) (surp ?PAR_SUR_1 ?PAR_SUR_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION);
+
+	private static SMTPredefinedMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
+			TOTAL_RELATION_MACRO, PARTIAL_SURJECTION_MACRO };
+
+	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_SURJECTION,
+			"("
+					+ TOTAL_SURJECTION
+					+ "(lambda (?TOT_SUR_0 ('s Bool)) (?TOT_SUR_1 ('s Bool)) . (lambda (?TOT_SUR_2 ((Pair 's 't) Bool)) . (and ((psur ?TOT_SUR_0 ?TOT_SUR_1) ?TOT_SUR_2) (totp ?TOT_SUR_0 ?TOT_SUR_2)))))",
+			4, false, false, TOTAL_RELATION_AND_PARTIAL_SURJECTION);
+
+	private static final SMTPredefinedMacro[] TOTAL_SURJECTION_AND_TOTAL_INJECTION = {
+			TOTAL_SURJECTION_MACRO, TOTAL_INJECTION_MACRO };
+
+	public static final SMTPredefinedMacro TOTAL_BIJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_BIJECTION,
+			"("
+					+ TOTAL_BIJECTION
+					+ "(lambda (?TOTAL_BIJECTION_0 ('s Bool)) (?TOTAL_BIJECTION_1 ('s Bool)) . (lambda (?TOTAL_BIJECTION_2 ((Pair 's 't) Bool)) . (and ((tsur ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1) ?TOTAL_BIJECTION_2) ((tinj ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1)?TOTAL_BIJECTION_2)))))",
+			5, false, false, TOTAL_SURJECTION_AND_TOTAL_INJECTION);
+
+	private static SMTPredefinedMacro[] INS = { IN_MACRO };
+
+	public static final SMTPredefinedMacro ISMIN_MACRO = new SMTPredefinedMacro(
+			ISMIN,
+			"("
+					+ ISMIN
+					+ "(lambda (?ISMIN_0 Int) (?ISMIN_1 (Int Bool)) . (and(in ?ISMIN_0 ?ISMIN_1)(forall (?ISMIN_2 Int) . (implies (in ?ISMIN_2 ?ISMIN_1)(<= ?ISMIN_0 ?ISMIN_2))))))",
+			1, false, false, INS);
+
+	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
+			ISMAX,
+			"("
+					+ ISMAX
+					+ "(lambda (?ISMAX_0 Int) (?ISMAX_1 (Int Bool)) . (and(in ?ISMAX_0 ?ISMAX_1)(forall (?ISMAX_2 Int) . (implies (in ?ISMAX_2 ?ISMAX_1)(<= ?ISMAX_2 ?ISMAX_0))))))",
+			1, false, false, INS);
+
+	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
+			RANGE_INTEGER_MACRO };
+
+	public static final SMTPredefinedMacro FINITE_MACRO = new SMTPredefinedMacro(
+			FINITE,
+			"("
+					+ FINITE
+					+ "(lambda (?FINITE_0 Bool) (?FINITE_1 ('s Bool)) (?FINITE_2 ('s Int)) (?FINITE_3 Int) . (iff ?FINITE_0 (and (forall (?FINITE_4 's) . (implies (in ?FINITE_4 ?FINITE_1)(in (?FINITE_2 ?FINITE_4)(range 1 ?FINITE_3))))(forall (?FINITE_4 's)(?FINITE_5 's) . (implies (and (in ?FINITE_4 ?FINITE_1)(in ?FINITE_5 ?FINITE_1)(not (= ?FINITE_4 ?FINITE_5)))(not (= (?FINITE_2 ?FINITE_4)(?FINITE_2 ?FINITE_5)))))))))",
+			1, false, false, IN_AND_RANGE_INTEGER);
+
+	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
+			CARD,
+			"("
+					+ CARD
+					+ "(lambda (?CARD_0 ('s Bool)) (?CARD_1 ('s Int)) (?CARD_2 Int) . (and (forall (?CARD_3 Int) . (implies (in ?CARD_3 (range 1 ?CARD_2))(exists (?CARD_4 's) . (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall (?CARD_4 's) . (implies (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall (?CARD_5 's) (?CARD_6 's) . (implies (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
+			1, false, false, IN_AND_RANGE_INTEGER);
 
 	/**
 	 * Given a operator, this method returns the MacroSymbol associated with it.
@@ -121,7 +247,27 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 					"There is no defined macro symbol with symbol: "
 							+ operator.toString());
 		}
+	}
 
+	/**
+	 * This method checks if the macro is already defined in the signature
+	 * 
+	 * @param macro
+	 *            the macro to be checked
+	 * @param signature
+	 *            the signature used for the check
+	 */
+	public static void checkIfMacroIsDefinedInTheSignature(
+			final SMTMacroSymbol macro, final SMTSignatureV1_2Verit signature) {
+		final Set<SMTMacro> macros = signature.getMacros();
+		for (final SMTMacro smtMacro : macros) {
+			if (smtMacro.getMacroName().equals(macro.getName())) {
+				return;
+			}
+		}
+		throw new IllegalArgumentException(
+				"A macro cannot be created without being defined in the signature. The macro which was unduly created was: "
+						+ macro.getName());
 	}
 
 	public static enum SMTVeriTOperatorV1_2 {

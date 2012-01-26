@@ -20,8 +20,16 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	public static final SMTLogic defaultLogic;
 
 	static {
-		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
-				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
+		defaultTe = mTypeEnvironment(//
+				"S", "ℙ(S)",//
+				"r", "ℙ(R)",//
+				"s", "ℙ(R)", "a", "ℤ",//
+				"A", "ℙ(ℤ)",//
+				"b", "ℤ",//
+				"c", "ℤ",//
+				"u", "BOOL",//
+				"v", "BOOL" //
+		);
 		defaultLogic = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
 				SMTTheoryV2_0.Ints.getInstance(),
 				SMTTheoryV2_0.Core.getInstance());
@@ -281,6 +289,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 		testTranslationV2_0(tpe, "A ∩ B ∩ C ∩ D = E",
 				"(= (inter (inter (inter A B) C) D) E)");
+	}
+
+	@Test
+	public void testPredIn() {
+		testTranslationV2_0Default("a ∈ A", "(in a A)");
+		testTranslationV2_0Default("a↦b ∈ AB", "(in (pair a b) AB)");
 	}
 
 }

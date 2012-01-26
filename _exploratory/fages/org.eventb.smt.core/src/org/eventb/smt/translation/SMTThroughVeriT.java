@@ -1272,98 +1272,186 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	@Override
 	public void visitRelationalPredicate(final RelationalPredicate predicate) {
-		switch (predicate.getTag()) {
-		case Formula.EQUAL:
-			smtNode = translateEqual(predicate);
-			break;
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			switch (predicate.getTag()) {
+			case Formula.EQUAL:
+				smtNode = translateEqual(predicate);
+				break;
 
-		case Formula.NOTEQUAL:
-			smtNode = SMTFactory.makeNot(
-					new SMTFormula[] { translateEqual(predicate) },
-					smtlibVersion);
-			break;
+			case Formula.NOTEQUAL:
+				smtNode = SMTFactory.makeNot(
+						new SMTFormula[] { translateEqual(predicate) },
+						smtlibVersion);
+				break;
 
-		case Formula.LT: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = sf.makeLessThan((SMTPredicateSymbol) signature.getLogic()
-					.getOperator(SMTOperator.LT), children, signature);
-			break;
+			case Formula.LT: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeLessThan((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.LT), children,
+						signature);
+				break;
+			}
+			case Formula.LE: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.LE), children,
+						signature);
+				break;
+			}
+			case Formula.GT: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GT), children,
+						signature);
+				break;
+			}
+			case Formula.GE: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GE), children,
+						signature);
+				break;
+			}
+			case Formula.IN: {
+				smtNode = translateRelationalPredicateMacroV1_2(IN_OP,
+						predicate);
+				break;
+			}
+			case Formula.SUBSET: {
+				smtNode = translateRelationalPredicateMacroV1_2(SUBSET_OP,
+						predicate);
+				break;
+			}
+			case Formula.SUBSETEQ: {
+				smtNode = translateRelationalPredicateMacroV1_2(SUBSETEQ_OP,
+						predicate);
+				break;
+			}
+			case Formula.NOTSUBSET: {
+				final SMTFormula subset = translateRelationalPredicateMacroV1_2(
+						SUBSET_OP, predicate);
+				smtNode = SMTFactory.makeNot(new SMTFormula[] { subset },
+						smtlibVersion);
+				break;
+			}
+			case Formula.NOTSUBSETEQ: {
+				final SMTFormula subseteq = translateRelationalPredicateMacroV1_2(
+						SUBSETEQ_OP, predicate);
+				smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq },
+						smtlibVersion);
+				break;
+			}
+			default: {
+				throw new IllegalTagException(predicate.getTag());
+			}
+			}
+		} else {
+			switch (predicate.getTag()) {
+			case Formula.EQUAL:
+				smtNode = translateEqual(predicate);
+				break;
+
+			case Formula.NOTEQUAL:
+				smtNode = SMTFactory.makeNot(
+						new SMTFormula[] { translateEqual(predicate) },
+						smtlibVersion);
+				break;
+
+			case Formula.LT: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeLessThan((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.LT), children,
+						signature);
+				break;
+			}
+			case Formula.LE: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.LE), children,
+						signature);
+				break;
+			}
+			case Formula.GT: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GT), children,
+						signature);
+				break;
+			}
+			case Formula.GE: {
+				final SMTTerm[] children = smtTerms(predicate.getLeft(),
+						predicate.getRight());
+				smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
+						.getLogic().getOperator(SMTOperator.GE), children,
+						signature);
+				break;
+			}
+			case Formula.IN: {
+				smtNode = translateRelationalPredicateMacroV2_0(
+						SMTVeriTOperatorV2_0.IN_OP, predicate);
+				break;
+			}
+			case Formula.SUBSET: {
+				smtNode = translateRelationalPredicateMacroV2_0(
+						SMTVeriTOperatorV2_0.SUBSET_OP, predicate);
+				break;
+			}
+			case Formula.SUBSETEQ: {
+				smtNode = translateRelationalPredicateMacroV2_0(
+						SMTVeriTOperatorV2_0.SUBSETEQ_OP, predicate);
+				break;
+			}
+			case Formula.NOTSUBSET: {
+				final SMTFormula subset = translateRelationalPredicateMacroV2_0(
+						SMTVeriTOperatorV2_0.SUBSET_OP, predicate);
+				smtNode = SMTFactory.makeNot(new SMTFormula[] { subset },
+						smtlibVersion);
+				break;
+			}
+			case Formula.NOTSUBSETEQ: {
+				final SMTFormula subseteq = translateRelationalPredicateMacroV2_0(
+						SMTVeriTOperatorV2_0.SUBSETEQ_OP, predicate);
+				smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq },
+						smtlibVersion);
+				break;
+			}
+			default:
+				break;
+			}
+
 		}
-		case Formula.LE: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = sf.makeLessEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.LE), children,
-					signature);
-			break;
-		}
-		case Formula.GT: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = sf.makeGreaterThan((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GT), children,
-					signature);
-			break;
-		}
-		case Formula.GE: {
-			final SMTTerm[] children = smtTerms(predicate.getLeft(),
-					predicate.getRight());
-			smtNode = sf.makeGreaterEqual((SMTPredicateSymbol) signature
-					.getLogic().getOperator(SMTOperator.GE), children,
-					signature);
-			break;
-		}
-		case Formula.IN: {
-			smtNode = translateRelationalPredicateMacro(IN_OP, predicate);
-			break;
-		}
-		case Formula.SUBSET: {
-			smtNode = translateRelationalPredicateMacro(SUBSET_OP, predicate);
-			break;
-		}
-		case Formula.SUBSETEQ: {
-			smtNode = translateRelationalPredicateMacro(SUBSETEQ_OP, predicate);
-			break;
-		}
-		case Formula.NOTSUBSET: {
-			final SMTFormula subset = translateRelationalPredicateMacro(
-					SUBSET_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset },
-					smtlibVersion);
-			break;
-		}
-		case Formula.NOTSUBSETEQ: {
-			final SMTFormula subseteq = translateRelationalPredicateMacro(
-					SUBSETEQ_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq },
-					smtlibVersion);
-			break;
-		}
-		default: {
-			throw new IllegalTagException(predicate.getTag());
-		}
-		}
+
 	}
 
 	/**
 	 * @param predicate
 	 */
-	private SMTFormula translateRelationalPredicateMacro(
+	private SMTFormula translateRelationalPredicateMacroV1_2(
 			final SMTVeriTOperatorV1_2 operator,
 			final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			return SMTFactoryVeriT.makeMacroAtom(
-					SMTMacroFactoryV1_2.getMacroSymbol(operator,
-							(SMTSignatureV1_2Verit) signature), children,
-					(SMTSignatureV1_2Verit) signature);
-		} else {
-			// TODO SMT 2.0 case
-			System.out.println("returned null");
-			return null;
-		}
+		return SMTFactoryVeriT.makeMacroAtom(SMTMacroFactoryV1_2
+				.getMacroSymbol(operator, (SMTSignatureV1_2Verit) signature),
+				children, (SMTSignatureV1_2Verit) signature);
+
+	}
+
+	private SMTFormula translateRelationalPredicateMacroV2_0(
+			final SMTVeriTOperatorV2_0 operator,
+			final RelationalPredicate predicate) {
+		final SMTTerm[] children = smtTerms(predicate.getLeft(),
+				predicate.getRight());
+		return SMTFactoryVeriT.makeMacroAtom(SMTMacroFactoryV2_0
+				.getMacroSymbol(operator, (SMTSignatureV2_0Verit) signature),
+				children, (SMTSignatureV2_0Verit) signature);
 	}
 
 	/**

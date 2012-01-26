@@ -323,4 +323,9 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return formulas;
 
 	}
+
+	public static SMTFormula makeMacroAtom(SMTMacroSymbol macroSymbol,
+			SMTTerm[] args, SMTSignatureV2_0Verit signature) {
+		return new SMTVeriTAtom(macroSymbol, args, signature);
+	}
 }

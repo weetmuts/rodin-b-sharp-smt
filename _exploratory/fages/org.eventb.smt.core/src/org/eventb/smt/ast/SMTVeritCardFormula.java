@@ -14,7 +14,7 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.ast.symbols.SMTFunctionSymbol;
 
@@ -107,7 +107,7 @@ public class SMTVeritCardFormula extends SMTFormula {
 			final SMTFunctionSymbol fVarSymbol,
 			final SMTFunctionSymbol kVarSymbol, final SMTTerm[] terms,
 			final SMTSignatureV1_2Verit signature) {
-		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(cardSymbol,
+		SMTMacroFactoryV1_2.checkIfMacroIsDefinedInTheSignature(cardSymbol,
 				signature);
 		this.cardSymbol = cardSymbol;
 		this.terms = terms;

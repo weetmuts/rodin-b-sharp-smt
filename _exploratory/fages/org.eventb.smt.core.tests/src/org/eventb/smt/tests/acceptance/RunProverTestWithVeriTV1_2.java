@@ -251,6 +251,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore()
+	// FIXME
 	public void testBOOLSetZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -261,6 +263,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore()
+	// FIXME
 	public void testBOOLSetAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -271,6 +275,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore()
+	// FIXME
 	public void testBOOLSetVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -281,6 +287,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore()
+	// FIXME
 	public void testBOOLSetCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -604,5 +612,17 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+	}
+
+	@Test
+	public void testUnionForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
 	}
 }

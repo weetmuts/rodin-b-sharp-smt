@@ -14,7 +14,8 @@ import static org.eventb.smt.ast.SMTFactory.CPAR;
 import static org.eventb.smt.ast.SMTFactory.OPAR;
 import static org.eventb.smt.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.ast.macros.SMTMacroFactory;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.ast.macros.SMTMacroSymbol;
 
 /**
@@ -57,7 +58,7 @@ class SMTVeriTAtom extends SMTFormula {
 	}
 
 	/**
-	 * Constructs a new veriT atom
+	 * Constructs a new veriT atom, using using SMTSignature
 	 * 
 	 * @param symbol
 	 *            the macro symbol
@@ -65,8 +66,17 @@ class SMTVeriTAtom extends SMTFormula {
 	 *            the terms
 	 */
 	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[],
-			final SMTSignatureV1_2Verit signature) {
-		SMTMacroFactory.checkIfMacroIsDefinedInTheSignature(symbol, signature);
+			final SMTSignature signature) {
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTMacroFactoryV1_2.checkIfMacroIsDefinedInTheSignature(symbol,
+					(SMTSignatureV1_2Verit) signature);
+		} else if (signature instanceof SMTSignatureV2_0Verit) {
+			SMTMacroFactoryV2_0.checkIfMacroIsDefinedInTheSignature(symbol,
+					(SMTSignatureV2_0Verit) signature);
+		} else {
+			throw new IllegalArgumentException(
+					"Wrong signature type. It must be veriT type.");
+		}
 		macroSymbol = symbol;
 		this.terms = terms.clone();
 	}
