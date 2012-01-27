@@ -642,7 +642,6 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Macro enum not yet implemented")
 	// TODO
 	public void testSetMembershipForAltErgoCall() {
 		setPreferencesForAltErgoTest();

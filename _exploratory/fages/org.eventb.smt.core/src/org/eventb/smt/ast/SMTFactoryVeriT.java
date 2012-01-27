@@ -82,7 +82,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	/**
 	 * Adds the pair equality axiom. It is added only once.
 	 */
-	public void addPairEqualityAxiom(
+	public void addPairEqualityAxiomV1_2(
 			final Set<SMTFormula> additionalAssumptions,
 			final SMTSignatureV1_2Verit signature) {
 		signature.addFstAndSndAuxiliarFunctions();
@@ -90,7 +90,19 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			additionalAssumptions.add(createPairEqualityAxiom());
 			pairAxiomAdded = true;
 		}
+	}
 
+	/**
+	 * Adds the pair equality axiom. It is added only once.
+	 */
+	public void addPairEqualityAxiomV2_0(
+			final Set<SMTFormula> additionalAssumptions,
+			final SMTSignatureV2_0Verit signature) {
+		signature.addFstAndSndAuxiliarFunctions();
+		if (!pairAxiomAdded) {
+			additionalAssumptions.add(createPairEqualityAxiom());
+			pairAxiomAdded = true;
+		}
 	}
 
 	/**

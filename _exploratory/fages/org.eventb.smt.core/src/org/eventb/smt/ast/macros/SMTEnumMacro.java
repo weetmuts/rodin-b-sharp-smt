@@ -12,6 +12,7 @@ package org.eventb.smt.ast.macros;
 
 import org.eventb.smt.ast.SMTTerm;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class is used to create macros that are enumerations. These macros are
@@ -24,6 +25,8 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
  * 
  */
 public class SMTEnumMacro extends SMTMacro {
+
+	final SMTLIBVersion version;
 
 	/**
 	 * The assigned variable of the enumeration macro.
@@ -49,9 +52,11 @@ public class SMTEnumMacro extends SMTMacro {
 	 *            the precedence of the macro. See {@link SMTMacro} for more
 	 *            details.
 	 */
-	SMTEnumMacro(final String macroName, final SMTVarSymbol assignedVar,
-			final SMTTerm[] terms, final int precedence) {
+	SMTEnumMacro(final SMTLIBVersion version, final String macroName,
+			final SMTVarSymbol assignedVar, final SMTTerm[] terms,
+			final int precedence) {
 		super(macroName, precedence);
+		this.version = version;
 		this.assignedVar = assignedVar;
 		this.terms = terms;
 	}
@@ -78,27 +83,49 @@ public class SMTEnumMacro extends SMTMacro {
 
 	@Override
 	public void toString(final StringBuilder sb, final int offset) {
-		sb.append("(");
-		sb.append(super.getMacroName());
-		sb.append(" (lambda ");
-		assignedVar.toString(sb);
-		sb.append(" . ");
-		if (terms.length == 1) {
-			sb.append("(= ");
-			assignedVar.getNameWithQMark(sb);
-			sb.append(" ");
-			terms[0].toString(sb, offset);
-			sb.append(")))");
-		} else {
-			sb.append("(or");
-			for (final SMTTerm term : terms) {
-				sb.append("\n\t\t(= ");
+		if (version.equals(SMTLIBVersion.V1_2)) {
+			sb.append("(");
+			sb.append(super.getMacroName());
+			sb.append(" (lambda ");
+			assignedVar.toString(sb);
+			sb.append(" . ");
+			if (terms.length == 1) {
+				sb.append("(= ");
 				assignedVar.getNameWithQMark(sb);
 				sb.append(" ");
-				term.toString(sb, offset);
-				sb.append(")");
+				terms[0].toString(sb, offset);
+				sb.append(")))");
+			} else {
+				sb.append("(or");
+				for (final SMTTerm term : terms) {
+					sb.append("\n\t\t(= ");
+					assignedVar.getNameWithQMark(sb);
+					sb.append(" ");
+					term.toString(sb, offset);
+					sb.append(")");
+				}
+				sb.append("\n )))");
 			}
-			sb.append("\n )))");
+		} else {
+			sb.append(super.getMacroName());
+			assignedVar.toString(sb);
+			if (terms.length == 1) {
+				sb.append(" (= ");
+				assignedVar.getNameWithQMark(sb);
+				sb.append(" ");
+				terms[0].toString(sb, offset);
+				sb.append(")))");
+			} else {
+				sb.append(" (or");
+				for (final SMTTerm term : terms) {
+					sb.append("\n\t\t(= ");
+					assignedVar.getNameWithQMark(sb);
+					sb.append(" ");
+					term.toString(sb, offset);
+					sb.append(")");
+				}
+				sb.append("\n )))");
+			}
 		}
 	}
 }

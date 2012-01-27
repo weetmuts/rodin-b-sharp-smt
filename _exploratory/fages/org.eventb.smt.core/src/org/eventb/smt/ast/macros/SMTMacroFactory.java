@@ -75,6 +75,7 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
+import org.eventb.smt.translation.SMTLIBVersion;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
@@ -416,10 +417,10 @@ public abstract class SMTMacroFactory {
 		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
 
-	public static SMTEnumMacro makeEnumMacro(final String macroName,
-			final SMTVarSymbol varName, final SMTTerm... terms) {
-
-		return new SMTEnumMacro(macroName, varName, terms, 0);
+	public static SMTEnumMacro makeEnumMacro(final SMTLIBVersion version,
+			final String macroName, final SMTVarSymbol varName,
+			final SMTTerm... terms) {
+		return new SMTEnumMacro(version, macroName, varName, terms, 0);
 	}
 
 	/**

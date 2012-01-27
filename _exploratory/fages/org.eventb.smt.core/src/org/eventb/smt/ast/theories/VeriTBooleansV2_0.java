@@ -13,17 +13,17 @@ public class VeriTBooleansV2_0 extends SMTTheory implements ISMTBooleanSort {
 
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
-	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
+	private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED, V2_0);
 
 	private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol("true",
-			EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED, V2_0);
+			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
 
 	private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-			"false", EMPTY_SORT, BOOL, !ASSOCIATIVE, PREDEFINED, V2_0);
+			"false", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
 
 	private static final SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
-	private static final SMTSortSymbol[] SORTS = { BOOL };
+	private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
 	private static final SMTPredicateSymbol[] PREDICATES = {};
 
 	protected VeriTBooleansV2_0() {
@@ -32,7 +32,7 @@ public class VeriTBooleansV2_0 extends SMTTheory implements ISMTBooleanSort {
 
 	@Override
 	public SMTSortSymbol getBooleanSort() {
-		return BOOL;
+		return BOOL_SORT;
 	}
 
 	public SMTFunctionSymbol getTrueConstant() {

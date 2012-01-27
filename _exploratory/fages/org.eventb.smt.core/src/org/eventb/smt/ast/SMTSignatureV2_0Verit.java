@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ast;
 
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +32,7 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
-import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
+import org.eventb.smt.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 //TODO Review the methods for SMT 2.0
@@ -86,37 +86,32 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 
 		if (name.equals("ℤ")) { // INTEGER
 			freshName = SMTSymbol.INT;
-		} else if (name.equals("BOOL")) {
+		} else if (name.equals("Bool")) {
 			return getBoolSort();
 		} else {
 			freshName = freshSymbolName(name);
 		}
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
-				!SMTSymbol.PREDEFINED, V1_2);
+				!SMTSymbol.PREDEFINED, V2_0);
 		sorts.add(freshSort);
 		return freshSort;
 	}
 
 	/**
 	 * This method returns the Bool sort. It first check if the
-	 * {@link VeriTBooleansV1_2} theory is being used. If so, it returns that
-	 * the Bool sort defined in that theory. If not, returns the bool sort
-	 * defined in {@link VeritPredefinedTheoryV1_2}
+	 * {@link VeriTBooleansV2_0} theory is being used. If so, it returns that
+	 * the Bool sort defined in that theory. If not, returns the Bool sort
+	 * defined in {@link VeritPredefinedTheoryV2_0}
 	 * 
 	 * @return a Bool sort
 	 */
 	private SMTSortSymbol getBoolSort() {
-		boolean veriTBools = false;
 		for (final SMTTheory theory : getLogic().getTheories()) {
-			if (theory instanceof VeriTBooleansV1_2) {
-				veriTBools = true;
+			if (theory instanceof VeriTBooleansV2_0) {
+				return VeriTBooleansV2_0.getInstance().getBooleanSort();
 			}
 		}
-		if (veriTBools) {
-			return VeriTBooleansV1_2.getInstance().getBooleanSort();
-		} else {
-			return VeritPredefinedTheoryV1_2.getInstance().getBooleanSort();
-		}
+		return null;
 	}
 
 	/**

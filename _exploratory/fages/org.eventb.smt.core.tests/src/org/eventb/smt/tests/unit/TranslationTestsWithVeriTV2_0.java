@@ -297,4 +297,11 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		testTranslationV2_0Default("a↦b ∈ AB", "(in (pair a b) AB)");
 	}
 
+	@Test
+	public void testRule19SimpleSet() {
+		// testTranslationV2_0Default("{0 ↦ 1,1 ↦ 2} = {0 ↦ 1,2 ↦ 3}",
+		//		"(= enum enum0)");
+		testTranslationV2_0Default("{0,1,2,3,4} = A", "(= enum A)");
+	}
+
 }

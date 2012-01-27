@@ -131,6 +131,7 @@ import org.eventb.smt.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.ast.theories.VeriTBooleansV1_2;
+import org.eventb.smt.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 import org.eventb.smt.provers.internal.core.IllegalTagException;
 
@@ -1257,7 +1258,7 @@ public class SMTThroughVeriT extends Translator {
 						.convertVeritTermsIntoFormulas(children);
 				return SMTFactory.makeIff(childrenFormulas, smtlibVersion);
 			} else if (isPairType(leftType)) {
-				sf.addPairEqualityAxiom(additionalAssumptions,
+				sf.addPairEqualityAxiomV1_2(additionalAssumptions,
 						(SMTSignatureV1_2Verit) signature);
 			}
 			return makeEqual(children, V1_2);
@@ -1726,18 +1727,22 @@ public class SMTThroughVeriT extends Translator {
 	 * 
 	 * It is translated in the following way:
 	 * 
-	 * for a set defined as: {a1,a2,...,an}, it is translated to:
+	 * <ul>
+	 * <li>
+	 * for a set defined as: {} (it contains no element), the set extension is
+	 * translated to the macro <strong>empty</strong>.</li>
 	 * 
-	 * <p>
+	 * <li>for a set defined as: {a1,a2,...,an}, it is translated to:
+	 * 
 	 * (enum (lambda (?elem Z) . (or (= ?elem a1) (= ?elem a2) ... (= ?elem an)
-	 * )))
+	 * )))</li>
 	 * 
-	 * <p>
+	 * <li>
 	 * for a set defined as: {a1↦b1,a2↦b2,...,an↦bn}, it is translated to:
 	 * 
-	 * <p>
 	 * (enum (lambda (?elem (Pair X Y)) . (or (= ?elem (pair a1 b1)) (= ?elem
-	 * (pair a2 b2)) ... (= ?elem (pair an bn)) )))
+	 * (pair a2 b2)) ... (= ?elem (pair an bn)) )))</li>
+	 * </ul>
 	 * 
 	 */
 	@Override
@@ -1748,7 +1753,9 @@ public class SMTThroughVeriT extends Translator {
 						.getMacroSymbol(EMPTY_OP,
 								(SMTSignatureV1_2Verit) signature));
 			} else {
-				// TODO SMT 2.0 case
+				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.EMPTY_OP,
+								(SMTSignatureV1_2Verit) signature));
 			}
 		} else {
 			translateSetExtension(expression);
@@ -1767,25 +1774,47 @@ public class SMTThroughVeriT extends Translator {
 		SMTTerm[] children;
 		children = smtTerms(expression.getMembers());
 		final String macroName = signature.freshSymbolName(SMTMacroSymbol.ENUM);
+		final Type setExtensionType = expression.getMembers()[0].getType();
 
 		if (signature instanceof SMTSignatureV1_2Verit) {
-			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
-
-			final String varName = sig.freshQVarName(SMTMacroSymbol.ELEM);
-
-			final Type setExtensionType = expression.getMembers()[0].getType();
-			if (setExtensionType instanceof ProductType) {
-				translatePairSet(expression, children, macroName, varName);
-				sf.addPairEqualityAxiom(additionalAssumptions, sig);
-			} else {
-				translateSimpleSet(expression, children, macroName, varName);
-			}
-			final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
-					VeriTBooleansV1_2.getInstance().getBooleanSort());
-			smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
+			translateSetExtensionV1_2(expression, children, macroName,
+					setExtensionType);
 		} else {
-			// TODO: SMT 2.0 case
+			translateSetExtensionV2_0(expression, children, macroName,
+					setExtensionType);
 		}
+	}
+
+	private void translateSetExtensionV2_0(final SetExtension expression,
+			SMTTerm[] children, final String macroName,
+			final Type setExtensionType) {
+		SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+		final String varName = sig.freshQVarName(SMTMacroSymbol.ELEM);
+		if (!(setExtensionType instanceof ProductType)) {
+			translateSimpleSetV2_0(expression, children, macroName, varName);
+		} else {
+			sf.addPairEqualityAxiomV2_0(additionalAssumptions, sig);
+			translatePairSet(expression, children, macroName, varName);
+		}
+		final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
+				VeriTBooleansV2_0.getInstance().getBooleanSort());
+		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
+	}
+
+	private void translateSetExtensionV1_2(final SetExtension expression,
+			SMTTerm[] children, final String macroName,
+			final Type setExtensionType) {
+		SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+		final String varName = sig.freshQVarName(SMTMacroSymbol.ELEM);
+		if (!(setExtensionType instanceof ProductType)) {
+			translateSimpleSetV1_2(expression, children, macroName, varName);
+		} else {
+			sf.addPairEqualityAxiomV1_2(additionalAssumptions, sig);
+			translatePairSet(expression, children, macroName, varName);
+		}
+		final SMTMacroSymbol symbol = makeMacroSymbol(macroName,
+				VeriTBooleansV1_2.getInstance().getBooleanSort());
+		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 	}
 
 	/**
@@ -1801,7 +1830,7 @@ public class SMTThroughVeriT extends Translator {
 	 * @param varName
 	 *            the name of the lambda var
 	 */
-	private void translateSimpleSet(final SetExtension expression,
+	private void translateSimpleSetV1_2(final SetExtension expression,
 			final SMTTerm[] children, final String macroName,
 			final String varName) {
 		SMTSortSymbol sortSymbol = typeMap.get(expression.getType());
@@ -1810,13 +1839,23 @@ public class SMTThroughVeriT extends Translator {
 		}
 		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false,
 				V1_2);
+		final SMTEnumMacro macro = makeEnumMacro(V1_2, macroName, var, children);
+		((SMTSignatureV1_2Verit) signature).addMacro(macro);
+	}
 
-		final SMTEnumMacro macro = makeEnumMacro(macroName, var, children);
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			((SMTSignatureV1_2Verit) signature).addMacro(macro);
-		} else {
-			// TODO See SMT 2.0 case
+	private void translateSimpleSetV2_0(final SetExtension expression,
+			final SMTTerm[] children, final String macroName,
+			final String varName) {
+
+		SMTSortSymbol sortSymbol = typeMap.get(expression.getType());
+		if (sortSymbol == null) {
+			sortSymbol = translateTypeName(expression.getType());
 		}
+		final SMTVarSymbol var = new SMTVarSymbol(varName, sortSymbol, false,
+				V2_0);
+
+		final SMTEnumMacro macro = makeEnumMacro(V2_0, macroName, var, children);
+		((SMTSignatureV2_0Verit) signature).addMacro(macro);
 	}
 
 	/**
