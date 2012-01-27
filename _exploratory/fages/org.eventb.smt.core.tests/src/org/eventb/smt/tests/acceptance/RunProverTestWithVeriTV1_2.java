@@ -251,8 +251,8 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore()
 	// FIXME
+	@Ignore()
 	public void testBOOLSetZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -624,5 +624,18 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 
 		doTest("integer_set", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
+	}
+
+	@Test
+	@Ignore("Test must be changed")
+	public void testSetMembershipForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "a ∈ X", te, VALID);
 	}
 }

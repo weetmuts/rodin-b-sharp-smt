@@ -242,6 +242,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("VeriT is producing a sort veriT_PTPT which is causing the problem")
 	public void testTRUEPredVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -253,6 +254,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Cartesian product not implemented yet")
 	public void testBOOLSetZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -263,6 +265,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Cartesian product not implemented yet")
 	public void testBOOLSetAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -273,6 +276,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Cartesian product not implemented yet")
 	public void testBOOLSetVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -283,6 +287,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Cartesian product not implemented yet")
 	public void testBOOLSetCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -357,6 +362,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation cancelled")
 	public void testDivisionZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -376,6 +382,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation cancelled")
 	public void testDivisionCVC3Call() {
 		setPreferencesForCvc3Test();
 
@@ -395,6 +402,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation cancelled")
 	public void testDivisionAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -414,6 +422,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Implementation cancelled")
 	public void testDivisionVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -606,5 +615,30 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 				"x = −5");
 
 		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+	}
+
+	@Test
+	public void testUnionForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
+	}
+
+	@Test
+	@Ignore("Test must be changed")
+	public void testSetMembershipForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "a ∈ X", te, VALID);
 	}
 }

@@ -1,6 +1,6 @@
 package org.eventb.smt.ast.macros;
 
-import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.*;
 
 import java.util.Set;
 
@@ -11,14 +11,18 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
-			"(par (t) "
+			"(par (t) ("
 					+ BUNION
-					+ "((?UNION_0 (t Bool)) (?UNION_1 (t Bool))) (lambda (?UNION_2 t)  (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2))))",
+					+ " ((?UNION_0 (t Bool)) (?UNION_1 (t Bool))) (t Bool) (lambda ((?UNION_2 t)) (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2)))))",
 			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
+			IN, "(par (t) (" + IN
+					+ " ((?IN_0 t) (?IN_1 (t Bool))) (t Bool) (?IN_1 ?IN_0)))", 0,
+			false, false, EMPTY_MACROS);
 
 	// TODO Implement 2.0 version of the macros below:
 	public static SMTPredefinedMacro BINTER_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro IN_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
@@ -37,9 +41,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	// "(par (t) ((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (lambda (?BINTER_2 t) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2))))",
 	// 0, false, false, EMPTY_MACROS);
 	//
-	// public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
-	// IN, "(par (t) ((?IN_0 t) (?IN_1 (t Bool)))  (?IN_1 ?IN_0))", 0,
-	// false, false, EMPTY_MACROS);
+	//
 	//
 	// public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new
 	// SMTPredefinedMacro(
