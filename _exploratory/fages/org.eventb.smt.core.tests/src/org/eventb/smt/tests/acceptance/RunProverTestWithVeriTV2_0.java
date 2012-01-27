@@ -630,14 +630,27 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Test must be changed")
+	public void testInterForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "(X ∩ Sb) = (X ∩ Sb)", te, VALID);
+	}
+
+	@Test
+	@Ignore("Macro enum not yet implemented")
+	// TODO
 	public void testSetMembershipForAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"X", "ℙ(ℤ)", "a", "ℤ");
 
-		final List<String> hyps = Arrays.asList();
+		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
 
 		doTest("integer_set", hyps, "a ∈ X", te, VALID);
 	}

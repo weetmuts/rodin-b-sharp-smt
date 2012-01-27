@@ -18,11 +18,18 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
 	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
 			IN, "(par (t) (" + IN
-					+ " ((?IN_0 t) (?IN_1 (t Bool))) (t Bool) (?IN_1 ?IN_0)))", 0,
-			false, false, EMPTY_MACROS);
+					+ " ((?IN_0 t) (?IN_1 (t Bool))) (t Bool) (?IN_1 ?IN_0)))",
+			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
+			BINTER,
+			"(par (t) ("
+					+ BINTER
+					+ "((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (t Bool) (lambda ((?BINTER_2 t)) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
+			0, false, false, EMPTY_MACROS);
 
 	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro BINTER_MACRO = BUNION_MACRO;
+	// public static SMTPredefinedMacro BINTER_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
@@ -35,11 +42,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro FINITE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro CARD_MACRO = BUNION_MACRO;
 
-	// public static final SMTPredefinedMacro BINTER_MACRO = new
-	// SMTPredefinedMacro(
-	// BINTER,
-	// "(par (t) ((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (lambda (?BINTER_2 t) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2))))",
-	// 0, false, false, EMPTY_MACROS);
+	//
 	//
 	//
 	//
