@@ -141,10 +141,6 @@ public abstract class SMTMacroFactory {
 			"(lambda (?OVR_0 ((Pair 's 't) Bool)) (?OVR_1 ((Pair 's 't) Bool)) . (lambda (?OVR_2 (Pair 's 'u)) . (or (?OVR_1 ?OVR_2) (and (?OVR_0 ?OVR_2)(not(exists (?OVR_3 (Pair 's 't)) . (and (?OVR_1 ?OVR_3)(= (fst ?OVR_3)(fst ?OVR_2)))))))))",
 			1, true, true, EMPTY_MACROS);
 
-	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
-			EMPTY, "(lambda (?EMPTY_0 't). false)", 0, false, false,
-			EMPTY_MACROS);
-
 	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
 			SUBSETEQ,
 			"(lambda (?SUBSETEQ_0 ('t Bool)) (?SUBSETEQ_1 ('t Bool)) . (forall (?SUBSETEQ_2 't). (implies (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2))))",

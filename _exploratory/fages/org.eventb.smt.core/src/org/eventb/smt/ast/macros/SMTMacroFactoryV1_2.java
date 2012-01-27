@@ -3,6 +3,7 @@ package org.eventb.smt.ast.macros;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.CARD;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.EMPTY;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.FINITE;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.IN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMAX;
@@ -23,6 +24,10 @@ import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 
 public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
+
+	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
+			EMPTY, "(lambda (?EMPTY_0 't). false)", 0, false, false,
+			EMPTY_MACROS);
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,

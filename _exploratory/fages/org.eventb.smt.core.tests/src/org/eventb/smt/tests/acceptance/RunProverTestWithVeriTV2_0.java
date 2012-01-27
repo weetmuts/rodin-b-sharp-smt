@@ -642,15 +642,27 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	// TODO
 	public void testSetMembershipForAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
-				"X", "ℙ(ℤ)", "a", "ℤ");
+				"X", "ℙ(ℤ)", "a", "ℤ", "S");
 
 		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
 
 		doTest("integer_set", hyps, "a ∈ X", te, VALID);
 	}
+
+	@Test
+	public void testEmptySetForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList("X = {}", "a = 1");
+
+		doTest("integer_set", hyps, "¬(a ∈ X)", te, VALID);
+	}
+
 }

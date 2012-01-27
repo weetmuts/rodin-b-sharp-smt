@@ -10,6 +10,10 @@ import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
+	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
+			EMPTY, "(par (t) (" + EMPTY + " ((t Int)) (t Bool) false))", 0,
+			false, false, EMPTY_MACROS);
+
 	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
 			INT, "(par (t) (" + INT + " ((?INT_0 Int)) (t Bool) true)))", 0,
 			false, false, EMPTY_MACROS);

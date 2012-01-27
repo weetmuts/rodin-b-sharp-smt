@@ -1755,7 +1755,7 @@ public class SMTThroughVeriT extends Translator {
 			} else {
 				smtNode = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
 						.getMacroSymbol(SMTVeriTOperatorV2_0.EMPTY_OP,
-								(SMTSignatureV1_2Verit) signature));
+								(SMTSignatureV2_0Verit) signature));
 			}
 		} else {
 			translateSetExtension(expression);
