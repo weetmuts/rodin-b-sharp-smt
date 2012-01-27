@@ -176,10 +176,6 @@ public abstract class SMTMacroFactory {
 			RANGE_RESTRICTION,
 			"(lambda (?RANGE_RES_0 ((Pair 's 't) Bool))(?RANGE_RES_1 ('t Bool)) . (lambda (?RANGE_RES_2 (Pair 's 't)) . (and (?RANGE_RES_0 ?RANGE_RES_2)(?RANGE_RES_1 (snd ?RANGE_RES_2)))))",
 			1, true, true, EMPTY_MACROS);
-	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
-			RELATION,
-			"(lambda (?REL_0 ('s Bool)) (?REL_1 ('t Bool)) . (lambda (?REL_2  ((Pair 's 't) Bool)) . (forall (?REL_3 (Pair 's 't)) . (implies (?REL_2 ?REL_3) (and (?REL_0 (fst ?REL_3)) (?REL_1 (snd ?REL_3)))))))",
-			1, true, true, EMPTY_MACROS);
 
 	// Using the totp (total property) to define this macro
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
@@ -262,9 +258,6 @@ public abstract class SMTMacroFactory {
 			RANGE,
 			"(lambda (?RANGE_0 ((Pair 's 't) Bool)) . (lambda (?RANGE_1 't) . (exists (?RANGE_2 's) . (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
 			1, true, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
-			INT, "(lambda (?INT_0 Int). true)", 0, false, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
 			BOOLS, "(lambda (?BOOL_0 BOOL). true)", 0, false, false,

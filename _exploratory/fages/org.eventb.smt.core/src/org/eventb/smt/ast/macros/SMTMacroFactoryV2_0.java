@@ -1,6 +1,7 @@
 package org.eventb.smt.ast.macros;
 
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.*;
+import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
 
 import java.util.Set;
 
@@ -8,6 +9,10 @@ import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
+
+	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
+			INT, "(par (t) (" + INT + " ((?INT_0 Int)) (t Bool) true)))", 0,
+			false, false, EMPTY_MACROS);
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
@@ -28,9 +33,25 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (t Bool) (lambda ((?BINTER_2 t)) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
 
+	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
+			RELATION,
+			"(par (s t) ("
+					+ RELATION
+					+ " ((?REL_0 (s Bool)) (?REL_1 (t Bool))) (s Bool) (lambda (?REL_2  ((Pair s t) Bool))  (forall (?REL_3 (Pair s t))  (implies (?REL_2 ?REL_3) (and (?REL_0 (fst ?REL_3)) (?REL_1 (snd ?REL_3))))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
+			FUNP_MACRO, IN_MACRO };
+
+	// FIXME to SMT 2.0
+	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_FUNCTION,
+			"("
+					+ PARTIAL_FUNCTION
+					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) . (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) . (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
+			3, false, false, REL_AND_FUNP_AND_IN);
+
 	// TODO Implement 2.0 version of the macros below:
-	// public static SMTPredefinedMacro BINTER_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_INJECTION_MACRO = BUNION_MACRO;

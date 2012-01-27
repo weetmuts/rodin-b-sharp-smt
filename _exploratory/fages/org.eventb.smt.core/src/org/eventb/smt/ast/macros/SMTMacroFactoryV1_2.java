@@ -10,10 +10,12 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMIN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
+import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
 
 import java.util.Set;
 
@@ -29,6 +31,10 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 					+ "(lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2)))))",
 			0, false, false, EMPTY_MACROS);
 
+	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
+			INT, "(" + INT + "(lambda (?INT_0 Int). true))", 0, false, false,
+			EMPTY_MACROS);
+
 	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
 			BINTER,
 			"("
@@ -40,6 +46,13 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 			IN, "(" + IN
 					+ "(lambda (?IN_0 't) (?IN_1 ('t Bool)) . (?IN_1 ?IN_0)))",
 			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
+			RELATION,
+			"("
+					+ RELATION
+					+ "(lambda (?REL_0 ('s Bool)) (?REL_1 ('t Bool)) . (lambda (?REL_2  ((Pair 's 't) Bool)) . (forall (?REL_3 (Pair 's 't)) . (implies (?REL_2 ?REL_3) (and (?REL_0 (fst ?REL_3)) (?REL_1 (snd ?REL_3))))))))",
+			1, true, true, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
 			FUNP_MACRO, IN_MACRO };
