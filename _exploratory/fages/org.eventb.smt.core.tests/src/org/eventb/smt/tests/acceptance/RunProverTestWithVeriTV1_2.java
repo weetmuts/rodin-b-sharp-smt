@@ -643,11 +643,10 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
-				"X", "ℙ(ℤ)", "a", "ℤ");
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
 
-		final List<String> hyps = Arrays.asList("X = {1}");
+		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "{1↦1} ∈ ℤ↔ℤ", te, VALID);
-
+		doTest("relation", hyps, "a ∈ ℤ↔ℤ", te, VALID);
 	}
 }

@@ -141,23 +141,6 @@ public abstract class SMTMacroFactory {
 			"(lambda (?OVR_0 ((Pair 's 't) Bool)) (?OVR_1 ((Pair 's 't) Bool)) . (lambda (?OVR_2 (Pair 's 'u)) . (or (?OVR_1 ?OVR_2) (and (?OVR_0 ?OVR_2)(not(exists (?OVR_3 (Pair 's 't)) . (and (?OVR_1 ?OVR_3)(= (fst ?OVR_3)(fst ?OVR_2)))))))))",
 			1, true, true, EMPTY_MACROS);
 
-	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
-			SUBSETEQ,
-			"(lambda (?SUBSETEQ_0 ('t Bool)) (?SUBSETEQ_1 ('t Bool)) . (forall (?SUBSETEQ_2 't). (implies (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2))))",
-			0, false, false, EMPTY_MACROS);
-
-	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
-
-	public static final SMTPredefinedMacro SUBSET_MACRO = new SMTPredefinedMacro(
-			SUBSET,
-			"(lambda (?SUBSET_0 ('t Bool)) (?SUBSET_1 ('t Bool)) . (and (subseteq ?SUBSET_0 ?SUBSET_1) (not (= ?SUBSET_0 ?SUBSET_1))))",
-			1, false, false, SUBSETEQS);
-
-	public static final SMTPredefinedMacro RANGE_INTEGER_MACRO = new SMTPredefinedMacro(
-			RANGE_INTEGER,
-			"(lambda (?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int) . (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1))))",
-			0, false, false, EMPTY_MACROS);
-
 	private static SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
 
 	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
@@ -199,10 +182,6 @@ public abstract class SMTMacroFactory {
 	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
 			ID, "(lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))",
 			1, true, true, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro NAT_MACRO = new SMTPredefinedMacro(
-			NAT, "(lambda (?NAT_0 Int) . (<= 0 ?NAT_0))", 0, false, false,
-			EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro NAT1_MACRO = new SMTPredefinedMacro(
 			NAT1, "(lambda (?NAT1_0 Int) . (<= 1 ?NAT1_0))", 0, false, false,

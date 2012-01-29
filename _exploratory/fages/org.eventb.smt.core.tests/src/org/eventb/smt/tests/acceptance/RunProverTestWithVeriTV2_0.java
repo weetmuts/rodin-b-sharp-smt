@@ -646,11 +646,24 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
-				"X", "ℙ(ℤ)", "a", "ℤ", "S");
+				"X", "ℙ(ℤ)", "a", "ℤ");
 
 		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
 
 		doTest("integer_set", hyps, "a ∈ X", te, VALID);
+	}
+
+	@Test
+	@Ignore("Sets of pairs not implemented yet")
+	public void testPairSetForAltErgoCall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℤ↔ℤ", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList("X = {1↦2}");
+
+		doTest("integer_set", hyps, "∅ ≠ X", te, VALID);
 	}
 
 	@Test
@@ -663,6 +676,19 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList("X = {}", "a = 1");
 
 		doTest("integer_set", hyps, "¬(a ∈ X)", te, VALID);
+	}
+
+	@Test
+	// FIXME: Pair sort and fst and snd functions not implemented yet.
+	public void testRelationAltErgocall() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "a ∈ ℤ↔ℤ", te, VALID);
 	}
 
 }

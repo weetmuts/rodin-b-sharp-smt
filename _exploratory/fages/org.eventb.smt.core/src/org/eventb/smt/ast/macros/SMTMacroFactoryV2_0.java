@@ -10,6 +10,10 @@ import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
+	public static final SMTPredefinedMacro NAT_MACRO = new SMTPredefinedMacro(
+			NAT, "(par (t) (" + NAT + " ((?NAT_0 Int) (<= 0 ?NAT_0)))))", 0,
+			false, false, EMPTY_MACROS);
+
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(par (t) (" + EMPTY + " ((t Int)) (t Bool) false))", 0,
 			false, false, EMPTY_MACROS);
@@ -44,8 +48,27 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?REL_0 (s Bool)) (?REL_1 (t Bool))) (s Bool) (lambda (?REL_2  ((Pair s t) Bool))  (forall (?REL_3 (Pair s t))  (implies (?REL_2 ?REL_3) (and (?REL_0 (fst ?REL_3)) (?REL_1 (snd ?REL_3))))))))",
 			1, true, true, EMPTY_MACROS);
 
+	// TODO Test
+	public static final SMTPredefinedMacro RANGE_INTEGER_MACRO = new SMTPredefinedMacro(
+			RANGE_INTEGER,
+			"(par (t) ("
+					+ RANGE_INTEGER
+					+ " ((?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int)) (t Int) (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1)))))",
+			0, false, false, EMPTY_MACROS);
+
 	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
 			FUNP_MACRO, IN_MACRO };
+
+	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
+			RANGE_INTEGER_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
+			CARD,
+			"(par (s) ("
+					+ CARD
+					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall (?CARD_3 Int) . (implies (in ?CARD_3 (range 1 ?CARD_2))(exists (?CARD_4 s) . (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall (?CARD_4 s) (implies (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall (?CARD_5 s) (?CARD_6 s) (implies (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
+			1, false, false, IN_AND_RANGE_INTEGER);
 
 	// FIXME to SMT 2.0
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
@@ -56,6 +79,8 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			3, false, false, REL_AND_FUNP_AND_IN);
 
 	// TODO Implement 2.0 version of the macros below:
+	public static SMTPredefinedMacro SUBSETEQ_MACRO;
+	public static SMTPredefinedMacro SUBSET_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_INJECTION_MACRO = BUNION_MACRO;
@@ -65,17 +90,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro ISMIN_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro ISMAX_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro FINITE_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro CARD_MACRO = BUNION_MACRO;
-
-	//
-	//
-	//
-	//
-	// public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new
-	// SMTPredefinedMacro(
-	// TOTAL_FUNCTION,
-	// "(lambda (?TOT_FUN_0 ('s Bool)) (?TOT_FUN_1 ('t Bool)) . (lambda (?TOT_FUN_2 ((Pair 's 't) Bool)) . (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2))))",
-	// 3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
 
 	/**
 	 * Adds a predefined macro and other macros on which it depends on the

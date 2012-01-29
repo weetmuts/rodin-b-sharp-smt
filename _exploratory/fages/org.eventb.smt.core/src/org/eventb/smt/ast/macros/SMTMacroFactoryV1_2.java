@@ -8,10 +8,14 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.FINITE;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.IN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMAX;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMIN;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.NAT;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RANGE_INTEGER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.RELATION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.SUBSET;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.SUBSETEQ;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
@@ -25,31 +29,52 @@ import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 
 public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 
+	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
+			SUBSETEQ,
+			"("
+					+ SUBSETEQ
+					+ " (lambda (?SUBSETEQ_0 ('t Bool)) (?SUBSETEQ_1 ('t Bool)) . (forall (?SUBSETEQ_2 't). (implies (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2)))))",
+			0, false, false, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
+
+	public static final SMTPredefinedMacro SUBSET_MACRO = new SMTPredefinedMacro(
+			SUBSET,
+			"("
+					+ SUBSET
+					+ " (lambda (?SUBSET_0 ('t Bool)) (?SUBSET_1 ('t Bool)) . (and (subseteq ?SUBSET_0 ?SUBSET_1) (not (= ?SUBSET_0 ?SUBSET_1)))))",
+			1, false, false, SUBSETEQS);
+
+	public static final SMTPredefinedMacro NAT_MACRO = new SMTPredefinedMacro(
+			NAT, "(" + NAT + " (lambda (?NAT_0 Int) . (<= 0 ?NAT_0)))", 0,
+			false, false, EMPTY_MACROS);
+
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
-			EMPTY, "(lambda (?EMPTY_0 't). false)", 0, false, false,
-			EMPTY_MACROS);
+			EMPTY, "(" + EMPTY + " (lambda (?EMPTY_0 't). false))", 0, false,
+			false, EMPTY_MACROS);
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
 			"("
 					+ BUNION
-					+ "(lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2)))))",
+					+ " (lambda (?UNION_0 ('t Bool)) (?UNION_1 ('t Bool)) . (lambda (?UNION_2 't) . (or (?UNION_0 ?UNION_2) (?UNION_1 ?UNION_2)))))",
 			0, false, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
-			INT, "(" + INT + "(lambda (?INT_0 Int). true))", 0, false, false,
+			INT, "(" + INT + " (lambda (?INT_0 Int). true))", 0, false, false,
 			EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro BINTER_MACRO = new SMTPredefinedMacro(
 			BINTER,
 			"("
 					+ BINTER
-					+ "(lambda (?BINTER_0 ('t Bool))(?BINTER_1 ('t Bool)) . (lambda (?BINTER_2 't) . (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
+					+ " (lambda (?BINTER_0 ('t Bool))(?BINTER_1 ('t Bool)) . (lambda (?BINTER_2 't) . (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro IN_MACRO = new SMTPredefinedMacro(
-			IN, "(" + IN
-					+ "(lambda (?IN_0 't) (?IN_1 ('t Bool)) . (?IN_1 ?IN_0)))",
+			IN,
+			"(" + IN
+					+ " (lambda (?IN_0 't) (?IN_1 ('t Bool)) . (?IN_1 ?IN_0)))",
 			0, false, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
@@ -144,6 +169,13 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 					+ ISMAX
 					+ "(lambda (?ISMAX_0 Int) (?ISMAX_1 (Int Bool)) . (and(in ?ISMAX_0 ?ISMAX_1)(forall (?ISMAX_2 Int) . (implies (in ?ISMAX_2 ?ISMAX_1)(<= ?ISMAX_2 ?ISMAX_0))))))",
 			1, false, false, INS);
+
+	public static final SMTPredefinedMacro RANGE_INTEGER_MACRO = new SMTPredefinedMacro(
+			RANGE_INTEGER,
+			"("
+					+ RANGE_INTEGER
+					+ " (lambda (?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int) . (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1)))))",
+			0, false, false, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
 			RANGE_INTEGER_MACRO };
