@@ -87,8 +87,23 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
 	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
 
+	public static final SMTPredefinedMacro SUBSET_MACRO = new SMTPredefinedMacro(
+			SUBSET,
+			"(par (t) ("
+					+ SUBSET
+					+ " ((?SUBSET_0 (t Bool)) (?SUBSET_1 (t Bool))) (t Bool) (and (subseteq ?SUBSET_0 ?SUBSET_1) (not (= ?SUBSET_0 ?SUBSET_1)))))",
+			1, false, false, SUBSETEQS);
+
+	private static SMTPredefinedMacro[] INS = { IN_MACRO };
+
+	// TODO: Create test
+	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
+			ISMAX,
+			ISMAX
+					+ " ((?ISMAX_0 Int) (?ISMAX_1 (Int Bool))) (Int Bool) (and (in ?ISMAX_0 ?ISMAX_1) (forall ((?ISMAX_2 Int)) (=> (in ?ISMAX_2 ?ISMAX_1) (<= ?ISMAX_2 ?ISMAX_0))))",
+			1, false, false, INS);
+
 	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro SUBSET_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_INJECTION_MACRO = BUNION_MACRO;
@@ -96,7 +111,9 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro TOTAL_SURJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_BIJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro ISMIN_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro ISMAX_MACRO = BUNION_MACRO;
+
+	// This one falls in problem of equality between elements of parametric
+	// sorts
 	public static SMTPredefinedMacro FINITE_MACRO = BUNION_MACRO;
 
 	/**

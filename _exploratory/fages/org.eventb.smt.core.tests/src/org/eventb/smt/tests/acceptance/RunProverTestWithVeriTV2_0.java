@@ -726,4 +726,17 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		doTest("relation", hyps, "{1} ⊆ ℕ", te, VALID);
 	}
+
+	@Test
+	@Ignore("Subset has the same problem as cardinality")
+	public void testSubset() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "{1} ⊂ {1,2}", te, VALID);
+	}
 }
