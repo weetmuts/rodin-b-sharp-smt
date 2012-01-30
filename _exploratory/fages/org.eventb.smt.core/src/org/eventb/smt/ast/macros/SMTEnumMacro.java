@@ -108,25 +108,25 @@ public class SMTEnumMacro extends SMTMacro {
 			}
 		} else {
 			sb.append(super.getMacroName());
-			sb.append(" ");
+			sb.append(" (");
 			assignedVar.toString(sb);
-			sb.append(" (Int Bool) ");
+			sb.append(") (Int Bool) ");
 			if (terms.length == 1) {
 				sb.append(" (= ");
-				assignedVar.getNameWithQMark(sb);
+				sb.append(assignedVar.getName());
 				sb.append(" ");
 				terms[0].toString(sb, offset);
-				sb.append(")))");
+				sb.append(")");
 			} else {
 				sb.append(" (or");
 				for (final SMTTerm term : terms) {
 					sb.append("\n\t\t(= ");
-					assignedVar.getNameWithQMark(sb);
+					sb.append(assignedVar.getName());
 					sb.append(" ");
 					term.toString(sb, offset);
 					sb.append(")");
 				}
-				sb.append("\n )))");
+				sb.append("\n )");
 			}
 		}
 	}

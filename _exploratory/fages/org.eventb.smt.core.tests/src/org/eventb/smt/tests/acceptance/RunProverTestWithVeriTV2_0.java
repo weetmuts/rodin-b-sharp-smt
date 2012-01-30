@@ -702,7 +702,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		doTest("relation", hyps, "card({1}) = 1", te, VALID);
 	}
-	
+
 	@Test
 	public void testRange() {
 		setPreferencesForAltErgoTest();
@@ -713,5 +713,17 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 
 		doTest("relation", hyps, "1 ∈ 1‥2 ", te, VALID);
+	}
+
+	@Test
+	public void testSubseteq() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "{1} ⊆ ℕ", te, VALID);
 	}
 }

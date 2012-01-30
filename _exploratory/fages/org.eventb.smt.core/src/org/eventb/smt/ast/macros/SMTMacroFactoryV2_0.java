@@ -11,8 +11,8 @@ import org.eventb.smt.ast.SMTSignatureV2_0Verit;
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
 	public static final SMTPredefinedMacro NAT_MACRO = new SMTPredefinedMacro(
-			NAT, "(par (t) (" + NAT + " ((?NAT_0 Int) (<= 0 ?NAT_0)))))", 0,
-			false, false, EMPTY_MACROS);
+			NAT, NAT + " ((?NAT_0 Int)) (Int Bool) (<= 0 ?NAT_0)", 0, false,
+			false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(par (t) (" + EMPTY + " ((t Int)) (t Bool) false))", 0,
@@ -41,7 +41,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (t Bool) (lambda ((?BINTER_2 t)) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
 
-	//TODO Test
+	// TODO Test
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
 			"(par (s t) ("
@@ -78,8 +78,16 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
 			3, false, false, REL_AND_FUNP_AND_IN);
 
+	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
+			SUBSETEQ,
+			"(par (t) ("
+					+ SUBSETEQ
+					+ " ((?SUBSETEQ_0 (t Bool)) (?SUBSETEQ_1 (t Bool))) (t Bool) (forall ((?SUBSETEQ_2 t)) (=> (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2)))))",
+			0, false, false, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
+
 	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro SUBSETEQ_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro SUBSET_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
