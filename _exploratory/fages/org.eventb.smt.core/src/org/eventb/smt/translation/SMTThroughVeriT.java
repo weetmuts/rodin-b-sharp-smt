@@ -2103,7 +2103,22 @@ public class SMTThroughVeriT extends Translator {
 
 			smtNode = kTerm;
 		} else {
-			// TODO SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			// Creating the macro operator 'finite'
+			final SMTMacroSymbol cardSymbol = SMTMacroFactoryV2_0
+					.getMacroSymbol(SMTVeriTOperatorV2_0.CARD_OP, sig);
+
+			// Creating the new assumption (card p t k f) and saving it.
+			final SMTFormula cardFormula = new SMTVeritCardFormula(cardSymbol,
+					fVarSymbol, kVarSymbol, children, sig);
+
+			additionalAssumptions.add(cardFormula);
+
+			final SMTTerm kTerm = sf.makeVeriTConstantTerm(kVarSymbol,
+					signature);
+
+			smtNode = kTerm;
 		}
 	}
 

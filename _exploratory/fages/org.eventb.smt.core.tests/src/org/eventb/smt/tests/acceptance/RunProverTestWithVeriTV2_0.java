@@ -691,4 +691,27 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		doTest("relation", hyps, "a ∈ ℤ↔ℤ", te, VALID);
 	}
 
+	@Test
+	public void testCardinality() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "card({1}) = 1", te, VALID);
+	}
+	
+	@Test
+	public void testRange() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "1 ∈ 1‥2 ", te, VALID);
+	}
 }

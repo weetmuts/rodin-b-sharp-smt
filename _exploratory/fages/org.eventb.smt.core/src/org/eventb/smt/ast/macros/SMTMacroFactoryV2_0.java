@@ -41,6 +41,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (t Bool) (lambda ((?BINTER_2 t)) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
 
+	//TODO Test
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
 			"(par (s t) ("
@@ -51,9 +52,8 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	// TODO Test
 	public static final SMTPredefinedMacro RANGE_INTEGER_MACRO = new SMTPredefinedMacro(
 			RANGE_INTEGER,
-			"(par (t) ("
-					+ RANGE_INTEGER
-					+ " ((?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int)) (t Int) (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1)))))",
+			RANGE_INTEGER
+					+ " ((?RI_0 Int) (?RI_1 Int)) (Int Bool) (lambda ((?RI_2 Int)) (and (<= ?RI_0 ?RI_2) (<= ?RI_2 ?RI_1)))",
 			0, false, false, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
@@ -67,7 +67,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			CARD,
 			"(par (s) ("
 					+ CARD
-					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall (?CARD_3 Int) . (implies (in ?CARD_3 (range 1 ?CARD_2))(exists (?CARD_4 s) . (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall (?CARD_4 s) (implies (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall (?CARD_5 s) (?CARD_6 s) (implies (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
+					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall (?CARD_3 Int) (implies (in ?CARD_3 (range 1 ?CARD_2))(exists (?CARD_4 s) (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall (?CARD_4 s) (implies (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall (?CARD_5 s) (?CARD_6 s) (implies (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
 			1, false, false, IN_AND_RANGE_INTEGER);
 
 	// FIXME to SMT 2.0
@@ -75,12 +75,12 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			PARTIAL_FUNCTION,
 			"("
 					+ PARTIAL_FUNCTION
-					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) . (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) . (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
+					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
 			3, false, false, REL_AND_FUNP_AND_IN);
 
 	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro SUBSETEQ_MACRO;
-	public static SMTPredefinedMacro SUBSET_MACRO;
+	public static SMTPredefinedMacro SUBSETEQ_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro SUBSET_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_INJECTION_MACRO = BUNION_MACRO;

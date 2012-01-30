@@ -108,7 +108,9 @@ public class SMTEnumMacro extends SMTMacro {
 			}
 		} else {
 			sb.append(super.getMacroName());
+			sb.append(" ");
 			assignedVar.toString(sb);
+			sb.append(" (Int Bool) ");
 			if (terms.length == 1) {
 				sb.append(" (= ");
 				assignedVar.getNameWithQMark(sb);

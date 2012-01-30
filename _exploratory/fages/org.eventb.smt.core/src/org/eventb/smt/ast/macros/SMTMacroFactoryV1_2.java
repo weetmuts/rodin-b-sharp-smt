@@ -174,7 +174,7 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 			RANGE_INTEGER,
 			"("
 					+ RANGE_INTEGER
-					+ " (lambda (?RANGE_INTEGER_0 Int) (?RANGE_INTEGER_1 Int) . (lambda (?RANGE_INTEGER_2 Int) . (and (<= ?RANGE_INTEGER_0 ?RANGE_INTEGER_2) (<= ?RANGE_INTEGER_2 ?RANGE_INTEGER_1)))))",
+					+ " (lambda (?RI_0 Int) (?RI_1 Int) . (lambda (?RI_2 Int) . (and (<= ?RI_0 ?RI_2) (<= ?RI_2 ?RI_1)))))",
 			0, false, false, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
