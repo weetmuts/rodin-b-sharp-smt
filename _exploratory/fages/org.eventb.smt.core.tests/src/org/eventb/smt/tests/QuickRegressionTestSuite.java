@@ -7,6 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
+
 package org.eventb.smt.tests;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithAltErgoPPV1_2;

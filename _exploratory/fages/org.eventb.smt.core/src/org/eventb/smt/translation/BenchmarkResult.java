@@ -7,6 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
+
 package org.eventb.smt.translation;
 
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;

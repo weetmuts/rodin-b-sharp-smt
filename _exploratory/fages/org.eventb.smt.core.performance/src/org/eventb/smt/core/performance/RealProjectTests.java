@@ -7,6 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
+
 package org.eventb.smt.core.performance;
 
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;

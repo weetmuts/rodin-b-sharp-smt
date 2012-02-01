@@ -6,6 +6,7 @@
  * 
  * Contributors:
  * 	Systerel - initial API and implementation
+ * 	UFRN - implementation
  *******************************************************************************/
 
 package org.eventb.smt.ast;
