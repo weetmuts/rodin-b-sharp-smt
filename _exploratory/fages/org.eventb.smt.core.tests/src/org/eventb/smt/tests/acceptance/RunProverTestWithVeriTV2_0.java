@@ -679,7 +679,6 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	// FIXME: Pair sort and fst and snd functions not implemented yet.
 	public void testRelationAltErgocall() {
 		setPreferencesForAltErgoTest();
 
@@ -697,6 +696,18 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "card({1}) = 1", te, VALID);
+	}
+
+	@Test
+	public void testCardinality2() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ", "b", "ℤ↔ℤ");
 
 		final List<String> hyps = Arrays.asList();
 
@@ -728,6 +739,18 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testNat1() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "{2} ⊆ ℕ1", te, VALID);
+	}
+
+	@Test
 	@Ignore("Subset has the same problem as cardinality")
 	public void testSubset() {
 		setPreferencesForAltErgoTest();
@@ -739,4 +762,5 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		doTest("relation", hyps, "{1} ⊂ {1,2}", te, VALID);
 	}
+
 }

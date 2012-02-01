@@ -1,25 +1,37 @@
 package org.eventb.smt.ast.macros;
 
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.BCOMP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.CARD;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.EMPTY;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.FCOMP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.FINITE;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.FUNP;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.ID;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.IN;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.INJP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMAX;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMIN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.NAT;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.NAT1;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.OVR;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.RANGE_INTEGER;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RANGE_RESTRICTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RANGE_SUBSTRACTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.SUBSET;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.SUBSETEQ;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.SURJECTIVE_RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
 import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
 
 import java.util.Set;
@@ -28,6 +40,86 @@ import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 
 public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
+
+	public static final SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
+			RANGE_SUBSTRACTION,
+			"("
+					+ RANGE_SUBSTRACTION
+					+ " (lambda (?RANGE_SUBS_0 ((Pair 's 't) Bool))(?RANGE_SUBS_1 ('t Bool)) . (lambda (?RANGE_SUBS_2 (Pair 's 't)) . (and (?RANGE_SUBS_0 ?RANGE_SUBS_2)(not (?RANGE_SUBS_1 (snd ?RANGE_SUBS_2))))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro RANGE_RESTRICTION_MACRO = new SMTPredefinedMacro(
+			RANGE_RESTRICTION,
+			"("
+					+ RANGE_RESTRICTION
+					+ "(lambda (?RANGE_RES_0 ((Pair 's 't) Bool))(?RANGE_RES_1 ('t Bool)) . (lambda (?RANGE_RES_2 (Pair 's 't)) . (and (?RANGE_RES_0 ?RANGE_RES_2)(?RANGE_RES_1 (snd ?RANGE_RES_2)))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
+			ID,
+			"("
+					+ ID
+					+ " (lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))",
+			1, true, true, EMPTY_MACROS);
+
+	// Using the totp (total property) to define this macro
+	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
+			TOTAL_RELATION,
+			"("
+					+ TOTAL_RELATION
+					+ " (lambda (?TOTAL_RELATION_0 ('s Bool)) (?TOTAL_RELATION_1 ((Pair 's 't) Bool)) . (forall (?TOTAL_RELATION_2 (Pair 's 't)) . (iff (?TOTAL_RELATION_1 ?TOTAL_RELATION_2) (?TOTAL_RELATION_0 (fst ?TOTAL_RELATION_2)))))",
+			1, true, true, EMPTY_MACROS);
+
+	// Using the surp (surjective property) to define this macro
+	public static final SMTPredefinedMacro SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
+			SURJECTIVE_RELATION,
+			"("
+					+ SURJECTIVE_RELATION
+					+ " (lambda (?SUR_REL_0 ('t Bool)) (?SUR_REL_1 ((Pair 's 't) Bool)) . (forall (?SUR_REL_2 (Pair 's 't)) . (= (?SUR_REL_1 ?SUR_REL_2) (?SUR_REL_0 (snd ?SUR_REL_2)))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro NAT1_MACRO = new SMTPredefinedMacro(
+			NAT1, "(" + NAT1 + " (lambda (?NAT1_0 Int) . (<= 1 ?NAT1_0))", 0,
+			false, false, EMPTY_MACROS);
+
+	// Using the conjunction of surjective relation and total relation macros
+	public static final SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
+			TOTAL_SURJECTIVE_RELATION,
+			"("
+					+ TOTAL_SURJECTIVE_RELATION
+					+ "(lambda (?T_SUR_REL_0 ('t Bool)) (?T_SUR_REL_1 ((Pair 's 't) Bool)) . (and (forall (?T_SUR_REL_2 (Pair 's 't)) . (= (?T_SUR_REL_1 ?T_SUR_REL_2) (?T_SUR_REL_0 (snd ?T_SUR_REL_2))))  (forall (?T_SUR_REL_3 (Pair 's 't)) . (= (?T_SUR_REL_1 ?T_SUR_REL_3) (?T_SUR_REL_0 (fst ?T_SUR_REL_3))))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
+			FUNP,
+			"(lambda (?FUNP_0 ((Pair 's 't )Bool)) . (forall (?FUNP_1 (Pair 's 't))(?FUNP_2 (Pair 's 't)) . (implies (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (implies (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2))))))",
+			2, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
+			INVERSE_MACRO };
+
+	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
+			INJP,
+			"("
+					+ INJP
+					+ " (lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))",
+			2, false, false, FUNP_AND_INV);
+
+	public static SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
+			FCOMP,
+			"("
+					+ FCOMP
+					+ " (lambda (?FCOMP_0 ((Pair 's 't) Bool)) (?FCOMP_1 ((Pair 't 'u) Bool)) . (lambda (?FCOMP_2 (Pair 's 'u)) . (exists (?FCOMP_3 't) . (and (?FCOMP_0 (pair (fst ?FCOMP_2) ?FCOMP_3)) (?FCOMP_1 (pair ?FCOMP_3 (snd ?FCOMP_2)))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
+
+	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
+			BCOMP,
+			"("
+					+ BCOMP
+					+ " (lambda (?BCOMP_0 ((Pair 's 't) Bool)) (?BCOMP_1 ((Pair 't 'u) Bool)) . (fcomp ?BCOMP_1 ?BCOMP_0))",
+			2, false, false, FCOMPS);
 
 	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
 			SUBSETEQ,
@@ -52,6 +144,13 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 	public static final SMTPredefinedMacro EMPTYSET_MACRO = new SMTPredefinedMacro(
 			EMPTY, "(" + EMPTY + " (lambda (?EMPTY_0 't). false))", 0, false,
 			false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
+			OVR,
+			"("
+					+ OVR
+					+ "(lambda (?OVR_0 ((Pair 's 't) Bool)) (?OVR_1 ((Pair 's 't) Bool)) . (lambda (?OVR_2 (Pair 's 'u)) . (or (?OVR_1 ?OVR_2) (and (?OVR_0 ?OVR_2)(not(exists (?OVR_3 (Pair 's 't)) . (and (?OVR_1 ?OVR_3)(= (fst ?OVR_3)(fst ?OVR_2)))))))))",
+			1, true, true, EMPTY_MACROS);
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
