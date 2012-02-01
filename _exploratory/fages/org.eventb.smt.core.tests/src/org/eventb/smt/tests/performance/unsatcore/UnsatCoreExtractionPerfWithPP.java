@@ -37,8 +37,9 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
+			final boolean expectedTrivial, final boolean expectedSolverResult)
+			throws IllegalArgumentException {
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, expectedTrivial,
 				expectedSolverResult);
 	}
 
@@ -146,7 +147,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDFPSBoolUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -160,7 +162,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimpleUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -189,7 +192,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple00UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -202,7 +206,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple01UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -215,7 +220,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple11UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -228,7 +234,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple12UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -241,7 +248,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple32UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -254,7 +262,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple30UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -267,7 +276,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple1yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -278,7 +288,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple3yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -289,7 +300,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplex1UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -300,7 +312,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplex2UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -311,7 +324,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplexyUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -344,7 +358,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testSets3UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -366,7 +381,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	/**
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testSets5UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ ↔ ℙ(ℤ)");
 		te.addAll(arith_te);
@@ -380,7 +396,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testSets6UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -410,7 +427,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				GOAL_NEEDED);
 	}
 
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testRule20MacroInsideMacroUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
@@ -420,7 +438,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				GOAL_NEEDED);
 	}
 
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	@Ignore("fail")
 	public void testRule20ManyForallsUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -617,7 +636,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	@Ignore("fail")
 	public void testDifferentForallUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -634,7 +654,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
 	 */
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	@Ignore("timeout")
 	public void testCh7Conc29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -675,7 +696,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				hyps, GOAL_NEEDED);
 	}
 
-	@Test(timeout = 3000) //z3 succeeds (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 succeeds (mbqi is disabled)
 	@Ignore("timeout")
 	public void testBepiColombo3Medium2UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -743,7 +765,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 				VALID, hyps, GOAL_NEEDED);
 	}
 
-	@Test(timeout = 3000) //z3 fails (mbqi is disabled)
+	@Test(timeout = 3000)
+	// z3 fails (mbqi is disabled)
 	public void testLinearSort29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment( //
 				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //

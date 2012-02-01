@@ -41,7 +41,7 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_VERIT, lemmaName, inputHyps, inputGoal, te,
+		doTest(USING_VERIT, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 

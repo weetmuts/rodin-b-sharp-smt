@@ -40,8 +40,16 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedTrivial, final boolean expectedSolverResult)
+			throws IllegalArgumentException {
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, expectedTrivial,
+				expectedSolverResult);
+	}
+
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 
@@ -249,16 +257,6 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetZ3Call() {
-		setPreferencesForZ3Test();
-
-		final List<String> hyps = Arrays.asList( //
-				"b↦c = TRUE↦FALSE");
-
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
-	}
-
-	@Test
 	public void testBOOLSetZ3Call2() {
 		setPreferencesForZ3Test();
 
@@ -270,23 +268,25 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetAltErgoCall() {
+	public void testBOOLSetAltErgoCall2() {
 		setPreferencesForAltErgoTest();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test
-	public void testBOOLSetVeriTCall() {
+	public void testBOOLSetVeriTCall2() {
 		setPreferencesForVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test
@@ -294,9 +294,10 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 		setPreferencesForCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test

@@ -67,6 +67,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * H /\ ¬ G is UNSAT, so H |- G is VALID
 	 */
 	protected static boolean VALID = true;
+	protected static boolean TRIVIAL = true;
 
 	protected Set<Theory> theories;
 	protected SMTSolverConfiguration solverConfig;
@@ -230,8 +231,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	private void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedSolverResult,
-			final StringBuilder debugBuilder) throws IllegalArgumentException {
+			final Predicate parsedGoal, final boolean expectedTrivial,
+			final boolean expectedSolverResult, final StringBuilder debugBuilder)
+			throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (final Predicate parsedHypothesis : parsedHypotheses) {
@@ -270,6 +272,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					solverConfig.getSmtlibVersion(), translationApproach,
 					smtProverCall);
 
+			assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
 			assertEquals(
 					"The result of the SMT prover wasn't the expected one.",
 					expectedSolverResult, smtProverCall.isValid());
@@ -563,9 +566,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult) {
+			final boolean expectedTrivial, final boolean expectedSolverResult) {
 		doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
-				expectedSolverResult, new StringBuilder());
+				expectedTrivial, expectedSolverResult, new StringBuilder());
 	}
 
 	/**
@@ -584,7 +587,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected void doTest(final SMTTranslationApproach translationApproach,
 			final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult, final StringBuilder debugBuilder) {
+			final boolean expectedTrivial, final boolean expectedSolverResult,
+			final StringBuilder debugBuilder) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
 
 		for (final String hyp : inputHyps) {
@@ -594,7 +598,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final Predicate goal = parse(inputGoal, te);
 
 		doTest(translationApproach, lemmaName, hypotheses, goal,
-				expectedSolverResult, debugBuilder);
+				expectedTrivial, expectedSolverResult, debugBuilder);
 	}
 
 	protected void doTest(final SMTTranslationApproach translationApproach,

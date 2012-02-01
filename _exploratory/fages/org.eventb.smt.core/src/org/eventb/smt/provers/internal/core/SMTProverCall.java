@@ -562,6 +562,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 	}
 
 	/**
+	 * FOR ACCEPTANCE TESTS ONLY
+	 */
+	public boolean benchmarkIsNull() {
+		return benchmark == null;
+	}
+
+	/**
 	 * FOR PERFORMANCE TESTS ONLY
 	 */
 	public boolean isTranslationPerformed() {

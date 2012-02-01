@@ -22,10 +22,8 @@ import org.eventb.smt.ast.symbols.SMTSymbol;
 public class SMTDeclareFunCommand extends SMTCommand {
 	private final SMTSymbol symbol;
 
-	public SMTDeclareFunCommand(final SMTSymbol symbol) { // FIXME must be an
-															// SMTFunctionSymbol
-															// or an
-															// SMTPredicateSymbol
+	public SMTDeclareFunCommand(final SMTSymbol symbol) {
+		// FIXME symbol must be an SMTFunctionSymbol or an SMTPredicateSymbol
 		super(DECLARE_FUN);
 		this.symbol = symbol;
 	}

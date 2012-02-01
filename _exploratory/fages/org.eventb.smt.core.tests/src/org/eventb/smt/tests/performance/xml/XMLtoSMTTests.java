@@ -417,7 +417,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 
 			name = name + "vt";
 			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), VALID, debugBuilder);
+					data.getTe(), !TRIVIAL, VALID, debugBuilder);
 		}
 	}
 
@@ -435,7 +435,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 		debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 
 		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-				data.getTe(), VALID, debugBuilder);
+				data.getTe(), !TRIVIAL, VALID, debugBuilder);
 	}
 
 	/**

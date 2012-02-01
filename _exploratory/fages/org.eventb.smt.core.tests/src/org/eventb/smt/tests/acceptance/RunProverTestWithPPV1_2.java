@@ -11,6 +11,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
+import static java.util.Collections.emptyList;
 import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
@@ -42,9 +43,27 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
+			final boolean expectedTrivial, final boolean expectedSolverResult)
+			throws IllegalArgumentException {
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, expectedTrivial,
 				expectedSolverResult);
+	}
+
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult) throws IllegalArgumentException {
+		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
+				expectedSolverResult);
+	}
+
+	@Test
+	public void testTrivialUnsat() {
+		setPreferencesForAltErgoTest();
+
+		List<String> noHyp = emptyList();
+
+		doTest("trivial_unsat", noHyp, "1 = 1", mTypeEnvironment(), TRIVIAL,
+				VALID);
 	}
 
 	@Test
@@ -250,16 +269,6 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetZ3Call() {
-		setPreferencesForZ3Test();
-
-		final List<String> hyps = Arrays.asList( //
-				"b↦c = TRUE↦FALSE");
-
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
-	}
-
-	@Test
 	public void testBOOLSetZ3Call2() {
 		setPreferencesForZ3Test();
 
@@ -271,33 +280,36 @@ public class RunProverTestWithPPV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetAltErgoCall() {
+	public void testBOOLSetAltErgoCall2() {
 		setPreferencesForAltErgoTest();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test
-	public void testBOOLSetVeriTCall() {
+	public void testBOOLSetVeriTCall2() {
 		setPreferencesForVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test
-	public void testBOOLSetCVC3Call() {
+	public void testBOOLSetCVC3Call2() {
 		setPreferencesForCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
 				"b↦c = TRUE↦FALSE");
 
-		doTest("test_bool_set", hyps, "b↦c ∈ BOOL×BOOL", arith_te, VALID);
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
 	}
 
 	@Test
