@@ -131,60 +131,6 @@ public abstract class SMTMacroFactory {
 
 	protected static SMTPredefinedMacro[] EMPTY_MACROS = {};
 
-	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
-			INV,
-			"(lambda (?INV_0 ((Pair 's 't) Bool)) . (lambda (?INV_1 (Pair 's 't)) . (?INV_0 (pair (snd ?INV_1)(fst ?INV_1)))))",
-			1, true, true, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
-			DOM,
-			"(lambda (?DOM_0 ((Pair 't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 (pair ?DOM_1 ?DOM_2)))))",
-			0, false, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = new SMTPredefinedMacro(
-			CARTESIAN_PRODUCT,
-			"(lambda (?CARTESIAN_PRODUCT_0 ('s Bool))(?CARTESIAN_PRODUCT_1 ('t Bool)) . (lambda (?CARTESIAN_PRODUCT_2 (Pair 's 't)) . (and (?CARTESIAN_PRODUCT_0 (fst ?CARTESIAN_PRODUCT_2)) (?CARTESIAN_PRODUCT_1 (snd ?CARTESIAN_PRODUCT_2)))))",
-			1, true, true, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
-			DOMAIN_RESTRICTION,
-			"(lambda (?DOMAIN_RESTRICTION_0 ('s Bool))(?DOMAIN_RESTRICTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_RESTRICTION_2 (Pair 's 't)) . (and (?DOMAIN_RESTRICTION_1 ?DOMAIN_RESTRICTION_2)(?DOMAIN_RESTRICTION_0 (fst ?DOMAIN_RESTRICTION_2)))))",
-			1, true, true, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
-			DOMAIN_SUBSTRACTION,
-			"(lambda (?DOMAIN_SUBSTRACTION_0 ('s Bool))(?DOMAIN_SUBSTRACTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_SUBSTRACTION_2 (Pair 's 't)) . (and (?DOMAIN_SUBSTRACTION_1 ?DOMAIN_SUBSTRACTION_2)(not (?DOMAIN_SUBSTRACTION_0 (fst ?DOMAIN_SUBSTRACTION_2))))))",
-			1, true, true, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
-			RELATIONAL_IMAGE,
-			"(lambda (?RELATIONAL_IMAGE_0 ((Pair 's 't) Bool)(?RELATIONAL_IMAGE_1 ('s Bool)(lambda (?RELATIONAL_IMAGE_2 't) (exists (?RELATIONAL_IMAGE_3 's)(and (?RELATIONAL_IMAGE_1 ?RELATIONAL_IMAGE_3)(?RELATIONAL_IMAGE_0 (pair ?RELATIONAL_IMAGE_3 ?RELATIONAL_IMAGE_2))))))))",
-			1, true, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro SETMINUS_MACRO = new SMTPredefinedMacro(
-			SETMINUS,
-			"(lambda (?SETMINUS_0 ('t Bool)) (?SETMINUS_1 ('t Bool)) . (lambda (?SETMINUS_2 't) . (and (?SETMINUS_0 ?SETMINUS_2) (not (?SETMINUS_1 ?SETMINUS_2)))))",
-			0, false, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
-			RANGE,
-			"(lambda (?RANGE_0 ((Pair 's 't) Bool)) . (lambda (?RANGE_1 't) . (exists (?RANGE_2 's) . (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
-			1, true, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
-			BOOLS, "(lambda (?BOOL_0 BOOL). true)", 0, false, false,
-			EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
-			SUCC,
-			"(lambda(?SUCC_1 (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?SUCC_1 (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
-			1, true, false, EMPTY_MACROS);
-
-	public static final SMTPredefinedMacro PREDECESSOR_MACRO = new SMTPredefinedMacro(
-			PRED,
-			"(lambda(?PRED_0 (Pair Int Int)) . (exists (?PRED_1 Int) . (= ?PRED_0 (pair (+ ?PRED_1 1) ?PRED_1))))",
-			1, true, false, EMPTY_MACROS);
-
 	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
 			POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };

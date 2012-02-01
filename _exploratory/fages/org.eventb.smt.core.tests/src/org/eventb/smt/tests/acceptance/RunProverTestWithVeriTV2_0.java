@@ -763,4 +763,16 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		doTest("relation", hyps, "{1} ⊂ {1,2}", te, VALID);
 	}
 
+	@Test
+	public void testSetMinus() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A = B");
+
+		doTest("relation", hyps, "A ∖ B = ∅", te, VALID);
+	}
+
 }

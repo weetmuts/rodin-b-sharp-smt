@@ -1,9 +1,11 @@
 package org.eventb.smt.ast.macros;
 
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BCOMP;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.CARTESIAN_PRODUCT;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.BUNION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.CARD;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.DOM;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.EMPTY;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.FCOMP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.FINITE;
@@ -11,6 +13,7 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.FUNP;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ID;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.IN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.INJP;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.INV;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMAX;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.ISMIN;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.NAT;
@@ -32,6 +35,14 @@ import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
 import static org.eventb.smt.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.DOMAIN_RESTRICTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.DOMAIN_SUBSTRACTION;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RELATIONAL_IMAGE;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.SETMINUS;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.RANGE;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.SUCC;
+import static org.eventb.smt.ast.macros.SMTMacroSymbol.PRED;
+import static org.eventb.smt.ast.symbols.SMTSymbol.BOOLS;
 import static org.eventb.smt.ast.symbols.SMTSymbol.INT;
 
 import java.util.Set;
@@ -40,6 +51,76 @@ import org.eventb.smt.ast.SMTFactoryVeriT;
 import org.eventb.smt.ast.SMTSignatureV1_2Verit;
 
 public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
+
+	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
+			SUCC,
+			"("
+					+ SUCC
+					+ " (lambda(?SUCC_1 (Pair Int Int)) . (exists (?SUCC_0 Int) . (= ?SUCC_1 (pair ?SUCC_0 (+ ?SUCC_0 1)))))",
+			1, true, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro PREDECESSOR_MACRO = new SMTPredefinedMacro(
+			PRED,
+			"("
+					+ PRED
+					+ " (lambda(?PRED_0 (Pair Int Int)) . (exists (?PRED_1 Int) . (= ?PRED_0 (pair (+ ?PRED_1 1) ?PRED_1))))",
+			1, true, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
+			DOMAIN_RESTRICTION,
+			"("
+					+ DOMAIN_RESTRICTION
+					+ " (lambda (?DOMAIN_RESTRICTION_0 ('s Bool))(?DOMAIN_RESTRICTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_RESTRICTION_2 (Pair 's 't)) . (and (?DOMAIN_RESTRICTION_1 ?DOMAIN_RESTRICTION_2)(?DOMAIN_RESTRICTION_0 (fst ?DOMAIN_RESTRICTION_2)))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
+			DOMAIN_SUBSTRACTION,
+			"("
+					+ DOMAIN_SUBSTRACTION
+					+ " (lambda (?DOMAIN_SUBSTRACTION_0 ('s Bool))(?DOMAIN_SUBSTRACTION_1 ((Pair 's 't) Bool)) . (lambda (?DOMAIN_SUBSTRACTION_2 (Pair 's 't)) . (and (?DOMAIN_SUBSTRACTION_1 ?DOMAIN_SUBSTRACTION_2)(not (?DOMAIN_SUBSTRACTION_0 (fst ?DOMAIN_SUBSTRACTION_2))))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
+			RELATIONAL_IMAGE,
+			"("
+					+ RELATIONAL_IMAGE
+					+ " (lambda (?RELATIONAL_IMAGE_0 ((Pair 's 't) Bool)(?RELATIONAL_IMAGE_1 ('s Bool)(lambda (?RELATIONAL_IMAGE_2 't) (exists (?RELATIONAL_IMAGE_3 's)(and (?RELATIONAL_IMAGE_1 ?RELATIONAL_IMAGE_3)(?RELATIONAL_IMAGE_0 (pair ?RELATIONAL_IMAGE_3 ?RELATIONAL_IMAGE_2)))))))))",
+			1, true, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro SETMINUS_MACRO = new SMTPredefinedMacro(
+			SETMINUS,
+			"("
+					+ SETMINUS
+					+ " (lambda (?SETMINUS_0 ('t Bool)) (?SETMINUS_1 ('t Bool)) . (lambda (?SETMINUS_2 't) . (and (?SETMINUS_0 ?SETMINUS_2) (not (?SETMINUS_1 ?SETMINUS_2))))))",
+			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
+			RANGE,
+			"("
+					+ RANGE
+					+ " (lambda (?RANGE_0 ((Pair 's 't) Bool)) . (lambda (?RANGE_1 't) . (exists (?RANGE_2 's) . (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
+			1, true, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
+			DOM,
+			"("
+					+ DOM
+					+ " (lambda (?DOM_0 ((Pair 't1 't2) Bool)) . (lambda (?DOM_1 't1) . (exists (?DOM_2 't2) . (?DOM_0 (pair ?DOM_1 ?DOM_2)))))",
+			0, false, false, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = new SMTPredefinedMacro(
+			CARTESIAN_PRODUCT,
+			"("
+					+ CARTESIAN_PRODUCT
+					+ " (lambda (?CP_0 ('s Bool))(?CP_1 ('t Bool)) . (lambda (?CP_2 (Pair 's 't)) . (and (?CP_0 (fst ?CP_2)) (?CP_1 (snd ?CP_2)))))",
+			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
+			INV,
+			"("
+					+ INV
+					+ " (lambda (?INV_0 ((Pair 's 't) Bool)) . (lambda (?INV_1 (Pair 's 't)) . (?INV_0 (pair (snd ?INV_1)(fst ?INV_1)))))",
+			1, true, true, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
 			RANGE_SUBSTRACTION,
@@ -61,6 +142,10 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 					+ ID
 					+ " (lambda (?ID_0 (Pair 't 't)) . (= (fst ?ID_0)(snd ?ID_0)))",
 			1, true, true, EMPTY_MACROS);
+
+	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
+			BOOLS, " (lambda (?BOOL_0 BOOL). true)", 0, false, false,
+			EMPTY_MACROS);
 
 	// Using the totp (total property) to define this macro
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(

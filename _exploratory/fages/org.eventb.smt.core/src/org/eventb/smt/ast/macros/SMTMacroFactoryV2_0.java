@@ -101,6 +101,13 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?SUBSET_0 (t Bool)) (?SUBSET_1 (t Bool))) (t Bool) (and (subseteq ?SUBSET_0 ?SUBSET_1) (not (= ?SUBSET_0 ?SUBSET_1)))))",
 			1, false, false, SUBSETEQS);
 
+	public static final SMTPredefinedMacro SETMINUS_MACRO = new SMTPredefinedMacro(
+			SETMINUS,
+			"(par (t) ("
+					+ SETMINUS
+					+ " ((?SM_0 (t Bool)) (?SM_1 (t Bool))) (t Bool) (lambda ((?SM_2 t)) (and (?SM_0 ?SM_2) (not (?SM_1 ?SM_2))))))",
+			0, false, false, EMPTY_MACROS);
+
 	private static SMTPredefinedMacro[] INS = { IN_MACRO };
 
 	// TODO: Create test
@@ -128,6 +135,18 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro INJP_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro BCOMP_MACRO = BUNION_MACRO;
+
+	// TODO See if is possible to test now
+	public static SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro DOM_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro INVERSE_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;
+	public static SMTPredefinedMacro BOOL_SET_MACRO = BUNION_MACRO;
 
 	// This one falls in problem of equality between elements of parametric
 	// sorts
