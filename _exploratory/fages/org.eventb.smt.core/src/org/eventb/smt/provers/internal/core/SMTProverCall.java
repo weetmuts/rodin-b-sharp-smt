@@ -452,14 +452,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 	@Override
 	public void run() {
 		try {
-			/**
-			 * Translates the sequent in SMT-LIB V1.2 language and tries to
-			 * discharge it with an SMT solver
-			 */
-			/**
-			 * Produces an SMT benchmark.
-			 */
 			proofMonitor.setTask("Translating Event-B proof obligation");
+
 			/**
 			 * Translation of the event-b sequent
 			 */
@@ -611,8 +605,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	}
 
 	/**
-	 * Cleans up this prover call: destroys processes and deletes temporary
-	 * files.
+	 * Cleans up this prover call: destroys processes.
 	 */
 	@Override
 	public synchronized void cleanup() {
