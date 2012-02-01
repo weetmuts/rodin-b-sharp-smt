@@ -110,6 +110,10 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 
 	private static SMTPredefinedMacro[] INS = { IN_MACRO };
 
+	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
+			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (Bool Bool) true", 0, false,
+			false, EMPTY_MACROS);
+
 	// TODO: Create test
 	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
 			ISMAX,
@@ -135,8 +139,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro INJP_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro BCOMP_MACRO = BUNION_MACRO;
-
-	// TODO See if is possible to test now
 	public static SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOM_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = BUNION_MACRO;
@@ -146,10 +148,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro BOOL_SET_MACRO = BUNION_MACRO;
-
-	// This one falls in problem of equality between elements of parametric
-	// sorts
 	public static SMTPredefinedMacro FINITE_MACRO = BUNION_MACRO;
 
 	public static enum SMTVeriTOperatorV2_0 {

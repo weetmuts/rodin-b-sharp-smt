@@ -775,4 +775,17 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		doTest("relation", hyps, "A ∖ B = ∅", te, VALID);
 	}
 
+	@Test
+	@Ignore("Waitign answer from David")
+	public void testBools() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "true ∈ BOOL", te, VALID);
+	}
+
 }

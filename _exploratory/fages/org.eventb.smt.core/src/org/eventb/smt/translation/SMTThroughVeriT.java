@@ -143,7 +143,7 @@ import org.eventb.smt.provers.internal.core.IllegalTagException;
  * not belong to the standard SMT-LIB and is accepted only by the VeriT solver
  * which pre-process these formulas to the standard SMT-LIB.
  * <p>
- * The SMT-LIB version of the translation is 1.2
+ * 
  */
 public class SMTThroughVeriT extends Translator {
 
