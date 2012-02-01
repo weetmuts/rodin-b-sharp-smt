@@ -33,7 +33,6 @@ import org.eventb.smt.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.ast.theories.SMTLogic;
 import org.eventb.smt.ast.theories.SMTTheory;
 import org.eventb.smt.ast.theories.VeriTBooleansV2_0;
-import org.eventb.smt.ast.theories.VeritPredefinedTheoryV1_2;
 
 //TODO Review the methods for SMT 2.0
 
@@ -105,6 +104,8 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * 
 	 * @return a Bool sort
 	 */
+	@SuppressWarnings("javadoc")
+	// TODO remove suppress warning when added the linked class
 	private SMTSortSymbol getBoolSort() {
 		for (final SMTTheory theory : getLogic().getTheories()) {
 			if (theory instanceof VeriTBooleansV2_0) {
