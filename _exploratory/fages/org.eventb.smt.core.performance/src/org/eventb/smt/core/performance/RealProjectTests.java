@@ -11,8 +11,8 @@
 package org.eventb.smt.core.performance;
 
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
-import static org.eventb.smt.translation.SMTTranslationApproach.USING_PP;
-import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
+import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_PP;
+import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_VERIT;
 
 import java.io.File;
 import java.net.URL;
@@ -23,7 +23,7 @@ import org.eventb.core.IPSRoot;
 import org.eventb.core.IPSStatus;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
-import org.eventb.smt.translation.SMTTranslationApproach;
+import org.eventb.smt.internal.translation.SMTTranslationApproach;
 import org.rodinp.core.RodinDBException;
 
 /**

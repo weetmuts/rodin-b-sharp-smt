@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eventb.smt.core;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: org.eventb.smt.provers.core.SMTProversCore
+Bundle-Activator: org.eventb.smt.internal.provers.core.SMTProversCore
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -13,11 +13,12 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- org.eventb.smt.ast,
- org.eventb.smt.ast.macros,
- org.eventb.smt.ast.symbols,
- org.eventb.smt.ast.theories,
- org.eventb.smt.preferences,
- org.eventb.smt.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
- org.eventb.smt.provers.internal.core;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.ui,org.eventb.smt.ui.tests",
- org.eventb.smt.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,org.eventb.smt.ast"
+ org.eventb.smt.core,
+ org.eventb.smt.internal.ast,
+ org.eventb.smt.internal.ast.macros,
+ org.eventb.smt.internal.ast.symbols,
+ org.eventb.smt.internal.ast.theories,
+ org.eventb.smt.internal.preferences,
+ org.eventb.smt.internal.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
+ org.eventb.smt.internal.provers.internal.core;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.ui,org.eventb.smt.ui.tests",
+ org.eventb.smt.internal.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,org.eventb.smt.ast"

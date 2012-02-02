@@ -11,17 +11,17 @@
 
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
 import static org.junit.Assert.assertEquals;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.smt.ast.theories.SMTLogic;
-import org.eventb.smt.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.internal.ast.theories.SMTLogic;
+import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.tests.AbstractTests;
-import org.eventb.smt.translation.SMTThroughVeriT;
 import org.junit.Ignore;
 import org.junit.Test;
 

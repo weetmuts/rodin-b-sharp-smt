@@ -10,26 +10,26 @@
 
 package org.eventb.smt.ui.tests;
 
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
-import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.CVC3;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SMTSolverConfiguration;
-import org.eventb.smt.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.preferences.SMTPreferences;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
-import org.eventb.smt.translation.SMTLIBVersion;
 import org.junit.Assert;
 import org.junit.Test;
 

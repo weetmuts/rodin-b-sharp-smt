@@ -10,14 +10,14 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.provers.internal.core.SMTSolver.CVC3;
-import static org.eventb.smt.provers.internal.core.SMTSolver.CVC4;
-import static org.eventb.smt.provers.internal.core.SMTSolver.MATHSAT5;
-import static org.eventb.smt.provers.internal.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.provers.internal.core.SMTSolver.Z3;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.CVC3;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.CVC4;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.MATHSAT5;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.OPENSMT;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -31,16 +31,16 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.ast.SMTBenchmark;
-import org.eventb.smt.ast.SMTSignature;
-import org.eventb.smt.preferences.SMTSolverConfiguration;
-import org.eventb.smt.provers.internal.core.SMTPPCall;
-import org.eventb.smt.provers.internal.core.SMTProverCall;
-import org.eventb.smt.provers.internal.core.SMTSolver;
-import org.eventb.smt.provers.internal.core.SMTVeriTCall;
-import org.eventb.smt.translation.SMTLIBVersion;
-import org.eventb.smt.translation.SMTThroughPP;
-import org.eventb.smt.translation.SMTTranslationApproach;
+import org.eventb.smt.internal.ast.SMTBenchmark;
+import org.eventb.smt.internal.ast.SMTSignature;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.internal.provers.internal.core.SMTPPCall;
+import org.eventb.smt.internal.provers.internal.core.SMTProverCall;
+import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.internal.core.SMTVeriTCall;
+import org.eventb.smt.internal.translation.SMTLIBVersion;
+import org.eventb.smt.internal.translation.SMTThroughPP;
+import org.eventb.smt.internal.translation.SMTTranslationApproach;
 import org.eventb.smt.utils.Theory;
 import org.junit.After;
 

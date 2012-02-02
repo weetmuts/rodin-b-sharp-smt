@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eventb.smt.preferences.SMTSolverConfiguration;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 
 
 /**

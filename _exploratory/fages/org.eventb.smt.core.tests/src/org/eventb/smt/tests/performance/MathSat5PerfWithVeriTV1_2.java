@@ -10,8 +10,8 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.MATHSAT5;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.MATHSAT5;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 
 public class MathSat5PerfWithVeriTV1_2 extends SolverPerfWithVeriT {

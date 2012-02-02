@@ -4,7 +4,7 @@
    <extension
          point="org.eventb.core.seqprover.reasoners">
       <reasoner
-            class="org.eventb.smt.provers.internal.core.ExternalSMTThroughPP"
+            class="org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughPP"
             id="externalSMT"
             name="%externalSMT.name">
       </reasoner>
@@ -21,13 +21,13 @@
    <extension
          point="org.eventb.core.seqprover.autoTactics">
       <autoTactic
-            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTPP"
+            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTPP"
             description="%SmtPP.description"
             id="SMTPP"
             name="%SmtPP.name">
       </autoTactic>
       <autoTactic
-            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTVeriT"
+            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTVeriT"
             description="%SMTVeriT.description"
             id="SMTVeriT"
             name="%SMTVeriT.name">
@@ -36,7 +36,7 @@
    <extension
          point="org.eventb.core.seqprover.tacticParameterizers">
       <parameterizer
-            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTPPParameterizer"
+            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTPPParameterizer"
             id="SMTPPParam"
             name="%SMTPPParam.name">
          <tacticParameter
@@ -59,7 +59,7 @@
          </tacticParameter>
       </parameterizer>
       <parameterizer
-            class="org.eventb.smt.provers.internal.core.AutoTactics$SMTVeriTParameterizer"
+            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTVeriTParameterizer"
             id="SMTVeriTParam"
             name="%SMTVeriTParam.name">
          <tacticParameter

@@ -11,7 +11,7 @@
 package org.eventb.smt.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.preferences.SMTSolverConfiguration.getUsedIds;
+import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.preferences.SMTSolverConfiguration;
+import org.eventb.smt.internal.preferences.SMTPreferences;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 
 /**
  * This class is used to build the solver configurations table printed in the

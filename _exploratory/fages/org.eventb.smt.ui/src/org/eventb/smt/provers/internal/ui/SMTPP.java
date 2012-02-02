@@ -19,8 +19,9 @@ import java.util.regex.PatternSyntaxException;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.preferences.SMTPreferences;
-import org.eventb.smt.provers.core.SMTProversCore;
+import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.internal.preferences.SMTPreferences;
+import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
 import org.eventb.ui.prover.ITacticProvider;
@@ -32,7 +33,7 @@ public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				return SMTProversCore.externalSMTThroughPP(true);
+				return SMTCore.externalSMTThroughPP(true);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMTProversCore.smtSolverError();

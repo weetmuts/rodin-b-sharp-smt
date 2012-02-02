@@ -11,9 +11,9 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.UNKNOWN;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.translation.SMTTranslationApproach.USING_VERIT;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.UNKNOWN;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_VERIT;
 
 import java.util.Arrays;
 import java.util.List;

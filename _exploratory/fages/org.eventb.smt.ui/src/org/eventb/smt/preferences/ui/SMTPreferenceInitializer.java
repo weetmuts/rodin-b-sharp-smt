@@ -10,14 +10,14 @@
 
 package org.eventb.smt.preferences.ui;
 
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;

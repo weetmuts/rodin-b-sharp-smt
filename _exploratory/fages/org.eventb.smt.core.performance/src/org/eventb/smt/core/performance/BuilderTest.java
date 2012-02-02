@@ -42,12 +42,12 @@ import static org.eventb.smt.core.performance.ResourceUtils.simplificationRewrit
 import static org.eventb.smt.core.performance.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
-import static org.eventb.smt.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_INDEX_ID;
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
-import org.eventb.smt.provers.core.SMTProversCore;
+import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;

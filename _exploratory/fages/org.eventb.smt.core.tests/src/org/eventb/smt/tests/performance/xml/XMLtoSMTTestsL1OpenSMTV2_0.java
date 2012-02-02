@@ -10,8 +10,8 @@
 
 package org.eventb.smt.tests.performance.xml;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.OPENSMT;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 
 import java.util.Arrays;

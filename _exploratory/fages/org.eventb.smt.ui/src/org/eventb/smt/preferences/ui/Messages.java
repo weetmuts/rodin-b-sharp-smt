@@ -13,7 +13,7 @@ package org.eventb.smt.preferences.ui;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eventb.smt.preferences.ui.messages";
+	private static final String BUNDLE_NAME = "org.eventb.smt.internal.preferences.ui.messages";
 
 	public static String SMTPreferencePage2_MandatoryFieldsInSolverDetails;
 	public static String SmtProversCall_no_selected_solver;

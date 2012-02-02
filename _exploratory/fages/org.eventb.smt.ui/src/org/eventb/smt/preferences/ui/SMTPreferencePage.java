@@ -10,9 +10,9 @@
 
 package org.eventb.smt.preferences.ui;
 
-import static org.eventb.smt.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;

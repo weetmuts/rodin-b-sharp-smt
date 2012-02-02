@@ -10,8 +10,8 @@
 
 package org.eventb.smt.tests.performance;
 
-import static org.eventb.smt.provers.internal.core.SMTSolver.CVC4;
-import static org.eventb.smt.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.internal.provers.internal.core.SMTSolver.CVC4;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 
 public class Cvc4PerfWithVeriTV1_2 extends SolverPerfWithVeriT {
