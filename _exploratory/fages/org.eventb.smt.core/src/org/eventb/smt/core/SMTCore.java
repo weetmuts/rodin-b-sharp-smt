@@ -10,13 +10,18 @@
 
 package org.eventb.smt.core;
 
+import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
+import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
+import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
+import static org.eventb.smt.internal.preferences.SMTPreferences.getSolverConfigurations;
+import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
+import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
+import static org.eventb.smt.internal.provers.core.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
+
 import java.util.List;
 
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.core.seqprover.tactics.BasicTactics;
-import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughPP;
 import org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.internal.provers.internal.core.SMTInput;
@@ -40,28 +45,26 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
-		if (configId.equals(SMTProversCore.ALL_SOLVER_CONFIGURATIONS)) {
-			final List<SMTSolverConfiguration> solverConfigs = SMTPreferences
-					.getSolverConfigurations();
+		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<SMTSolverConfiguration> solverConfigs = getSolverConfigurations();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
 				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = BasicTactics.reasonerTac(
-							new ExternalSMTThroughPP(), new SMTInput(
-									restricted, timeout, solverConfigs.get(i)));
+					smtTactics[i] = reasonerTac(
+							new ExternalSMTThroughPP(),
+							new SMTInput(restricted, timeout, solverConfigs
+									.get(i)));
 				}
-				return BasicTactics.composeUntilSuccess(smtTactics);
+				return composeUntilSuccess(smtTactics);
 			} else {
-				return BasicTactics
-						.failTac(SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR);
+				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
 		} else if (configId.equals("")) {
-			return BasicTactics.reasonerTac(new ExternalSMTThroughPP(),
-					new SMTInput(restricted, timeout));
+			return reasonerTac(new ExternalSMTThroughPP(), new SMTInput(
+					restricted, timeout));
 		} else {
-			return BasicTactics.reasonerTac( //
-					new ExternalSMTThroughPP(), //
+			return reasonerTac(new ExternalSMTThroughPP(), //
 					new SMTInput(restricted, timeout, configId));
 		}
 	}
@@ -78,8 +81,7 @@ public class SMTCore {
 	 * @return the SMT tactic
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted, long timeout) {
-		return BasicTactics.reasonerTac( //
-				new ExternalSMTThroughPP(), //
+		return reasonerTac(new ExternalSMTThroughPP(), //
 				new SMTInput(restricted, timeout));
 	}
 
@@ -101,7 +103,7 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughPP(final boolean restricted) {
-		return externalSMTThroughPP(restricted, SMTProversCore.DEFAULT_DELAY);
+		return externalSMTThroughPP(restricted, DEFAULT_DELAY);
 	}
 
 	/**
@@ -118,28 +120,26 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
-		if (configId.equals(SMTProversCore.ALL_SOLVER_CONFIGURATIONS)) {
-			final List<SMTSolverConfiguration> solverConfigs = SMTPreferences
-					.getSolverConfigurations();
+		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<SMTSolverConfiguration> solverConfigs = getSolverConfigurations();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
 				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = BasicTactics.reasonerTac(
-							new ExternalSMTThroughVeriT(), new SMTInput(
-									restricted, timeout, solverConfigs.get(i)));
+					smtTactics[i] = reasonerTac(
+							new ExternalSMTThroughVeriT(),
+							new SMTInput(restricted, timeout, solverConfigs
+									.get(i)));
 				}
-				return BasicTactics.composeUntilSuccess(smtTactics);
+				return composeUntilSuccess(smtTactics);
 			} else {
-				return BasicTactics
-						.failTac(SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR);
+				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
 		} else if (configId.equals("")) {
-			return BasicTactics.reasonerTac(new ExternalSMTThroughVeriT(),
-					new SMTInput(restricted, timeout));
+			return reasonerTac(new ExternalSMTThroughVeriT(), new SMTInput(
+					restricted, timeout));
 		} else {
-			return BasicTactics.reasonerTac(//
-					new ExternalSMTThroughVeriT(), //
+			return reasonerTac(new ExternalSMTThroughVeriT(), //
 					new SMTInput(restricted, timeout, configId));
 		}
 	}
@@ -157,8 +157,7 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout) {
-		return BasicTactics.reasonerTac(//
-				new ExternalSMTThroughVeriT(), //
+		return reasonerTac(new ExternalSMTThroughVeriT(), //
 				new SMTInput(restricted, timeout));
 	}
 
@@ -180,6 +179,6 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
-		return externalSMTThroughVeriT(restricted, SMTProversCore.DEFAULT_DELAY);
+		return externalSMTThroughVeriT(restricted, DEFAULT_DELAY);
 	}
 }
