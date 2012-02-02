@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import org.eclipse.osgi.util.NLS;
 

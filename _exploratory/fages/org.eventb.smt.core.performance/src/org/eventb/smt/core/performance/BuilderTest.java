@@ -89,7 +89,7 @@ import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
 import org.eventb.smt.internal.provers.core.SMTProversCore;
-import org.eventb.smt.provers.ui.SmtProversUIPlugin;
+import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
 import org.rodinp.core.IRodinProject;

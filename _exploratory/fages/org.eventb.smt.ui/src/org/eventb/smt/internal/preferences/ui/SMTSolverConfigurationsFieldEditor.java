@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;

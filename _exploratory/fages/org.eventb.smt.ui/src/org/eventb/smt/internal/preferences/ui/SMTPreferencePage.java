@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
@@ -22,7 +22,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eventb.smt.provers.ui.SmtProversUIPlugin;
+import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 
 /**
  * This class represents a preference page that is contributed to the

@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.jface.window.Window.CANCEL;
 import static org.eclipse.jface.window.Window.OK;

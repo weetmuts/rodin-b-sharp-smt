@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.provers.internal.ui;
+package org.eventb.smt.internal.provers.internal.ui;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

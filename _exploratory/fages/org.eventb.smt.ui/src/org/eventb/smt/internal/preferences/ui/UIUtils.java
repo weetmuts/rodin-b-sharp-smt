@@ -8,13 +8,13 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eventb.smt.provers.ui.SmtProversUIPlugin;
+import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 
 
 /**

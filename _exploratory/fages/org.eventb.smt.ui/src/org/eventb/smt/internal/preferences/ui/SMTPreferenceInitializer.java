@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.preferences.ui;
+package org.eventb.smt.internal.preferences.ui;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
@@ -21,7 +21,7 @@ import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eventb.smt.provers.ui.SmtProversUIPlugin;
+import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 
 
 /**

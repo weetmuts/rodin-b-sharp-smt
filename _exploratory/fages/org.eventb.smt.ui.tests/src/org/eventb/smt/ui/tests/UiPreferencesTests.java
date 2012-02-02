@@ -28,8 +28,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
-import org.eventb.smt.provers.ui.SmtProversUIPlugin;
 import org.junit.Assert;
 import org.junit.Test;
 

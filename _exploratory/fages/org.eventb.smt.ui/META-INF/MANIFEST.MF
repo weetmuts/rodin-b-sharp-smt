@@ -8,7 +8,7 @@ Require-Bundle: org.eventb.ui,
  org.eventb.smt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
-Export-Package: org.eventb.smt.preferences.ui,
- org.eventb.smt.provers.ui
-Bundle-Activator: org.eventb.smt.provers.ui.SmtProversUIPlugin
+Export-Package: org.eventb.smt.internal.preferences.ui,
+ org.eventb.smt.internal.provers.ui
+Bundle-Activator: org.eventb.smt.internal.provers.ui.SmtProversUIPlugin
 Bundle-ActivationPolicy: lazy
