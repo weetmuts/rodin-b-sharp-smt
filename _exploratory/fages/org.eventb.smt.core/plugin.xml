@@ -5,33 +5,14 @@
          point="org.eventb.core.seqprover.reasoners">
       <reasoner
             class="org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughPP"
-            id="externalSMT"
-            name="%externalSMT.name">
+            id="externalSMTPP"
+            name="%externalSMTPP.name">
       </reasoner>
-   </extension>
-   <extension
-         point="org.eventb.core.pomTactics">
-      <tactic
-            id="org.eventb.smt.provers.core.SMTPP">
-      </tactic>
-      <tactic
-            id="org.eventb.smt.provers.core.SMTVeriT">
-      </tactic>
-   </extension>
-   <extension
-         point="org.eventb.core.seqprover.autoTactics">
-      <autoTactic
-            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTPP"
-            description="%SmtPP.description"
-            id="SMTPP"
-            name="%SmtPP.name">
-      </autoTactic>
-      <autoTactic
-            class="org.eventb.smt.internal.provers.internal.core.AutoTactics$SMTVeriT"
-            description="%SMTVeriT.description"
-            id="SMTVeriT"
-            name="%SMTVeriT.name">
-      </autoTactic>
+      <reasoner
+            class="org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughVeriT"
+            id="externalSMTVeriT"
+            name="%externalSMTVeriT.name">
+      </reasoner>
    </extension>
    <extension
          point="org.eventb.core.seqprover.tacticParameterizers">

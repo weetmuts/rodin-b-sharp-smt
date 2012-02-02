@@ -24,7 +24,7 @@ import org.eventb.smt.internal.provers.core.SMTProversCore;
  */
 public class ExternalSMTThroughPP extends XProverReasoner2 {
 	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
-			+ ".externalSMT";
+			+ ".externalSMTPP";
 
 	public ExternalSMTThroughPP() {
 	}
