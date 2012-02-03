@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VeriT solver plug-in
+Bundle-SymbolicName: org.eventb.smt.verit
+Bundle-Version: 0.8.0.qualifier
+Bundle-Vendor: Systerel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
