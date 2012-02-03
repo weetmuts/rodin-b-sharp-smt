@@ -13,12 +13,24 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- org.eventb.smt.core,
- org.eventb.smt.internal.ast,
- org.eventb.smt.internal.ast.macros,
- org.eventb.smt.internal.ast.symbols,
- org.eventb.smt.internal.ast.theories,
- org.eventb.smt.internal.preferences,
- org.eventb.smt.internal.provers.core;uses:="org.eclipse.core.runtime,org.osgi.framework",
+ org.eventb.smt.core;uses:="org.eventb.core.seqprover",
+ org.eventb.smt.internal.ast;
+  uses:="org.eventb.smt.internal.ast.attributes,
+   org.eventb.smt.internal.ast.symbols,
+   org.eclipse.osgi.util,
+   org.eventb.smt.internal.translation,
+   org.eventb.smt.internal.ast.macros,
+   org.eventb.smt.internal.ast.theories",
+ org.eventb.smt.internal.ast.macros;uses:="org.eventb.smt.internal.ast.symbols,org.eventb.smt.internal.ast,org.eventb.smt.internal.translation",
+ org.eventb.smt.internal.ast.symbols;uses:="org.eventb.smt.internal.translation",
+ org.eventb.smt.internal.ast.theories;uses:="org.eventb.smt.internal.ast.symbols",
+ org.eventb.smt.internal.preferences;uses:="org.eclipse.osgi.util,org.eventb.smt.internal.provers.internal.core,org.eventb.smt.internal.translation",
+ org.eventb.smt.internal.provers.core;uses:="org.eclipse.osgi.util,org.eclipse.core.runtime,org.osgi.framework",
  org.eventb.smt.internal.provers.internal.core;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.ui,org.eventb.smt.ui.tests",
- org.eventb.smt.internal.translation;uses:="org.eclipse.osgi.util,org.eventb.core.ast,org.eventb.smt.ast"
+ org.eventb.smt.internal.translation;
+  uses:="org.eventb.smt.internal.ast.symbols,
+   org.eclipse.osgi.util,
+   org.eventb.smt.internal.ast,
+   org.eventb.core.seqprover.transformer,
+   org.eventb.core.ast,
+   org.eventb.smt.internal.ast.theories"
