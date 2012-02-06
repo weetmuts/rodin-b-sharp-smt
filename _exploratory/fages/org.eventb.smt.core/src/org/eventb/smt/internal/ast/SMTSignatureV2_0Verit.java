@@ -43,13 +43,13 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * This boolean is used to check if it is necessary to add the function pair
 	 * and the sort Pair or not.
 	 */
-	private boolean isPrintPairSortAndPairFunctionAdded = false;
+	private boolean printPairSortAndPairFunction = false;
 
 	/**
 	 * This boolean is used to check if it is necessary to add the functions and
 	 * the assumptions of the functions first and snd or not
 	 */
-	private boolean isFstAndSndFunctionsAdded = false;
+	private boolean printFstAndSndFunctions = false;
 
 	/**
 	 * this set stores the macros that will be print into the benchmark.
@@ -66,10 +66,10 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * once)
 	 */
 	public void addPairSortAndFunction() {
-		if (!isPrintPairSortAndPairFunctionAdded) {
-			sorts.add(SMTFactoryVeriT.PAIR_SORT);
-			funs.add(SMTFactoryVeriT.PAIR_SYMBOL);
-			isPrintPairSortAndPairFunctionAdded = true;
+		if (!printPairSortAndPairFunction) {
+			sorts.add(SMTFactoryVeriT.PAIR_SORT_V2_0);
+			funs.add(SMTFactoryVeriT.PAIR_SYMBOL_V2_0);
+			printPairSortAndPairFunction = true;
 		}
 	}
 
@@ -268,6 +268,16 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	@Override
 	public void toString(final StringBuilder sb) {
 		super.toString(sb);
+		if (printPairSortAndPairFunction) {
+			sb.append("(declare-fun (par (s t) (pair s t (Pair s t))))");
+			sb.append("\n");
+		}
+		if (printFstAndSndFunctions) {
+			sb.append("(declare-fun (par (X Y) (fst (Pair X Y) X)))");
+			sb.append("\n");
+			sb.append("(declare-fun (par (X Y) (snd (Pair X Y) Y)))");
+			sb.append("\n");
+		}
 		extramacrosSection(sb);
 	}
 
@@ -276,10 +286,10 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * They are added only once.
 	 */
 	public void addFstAndSndAuxiliarFunctions() {
-		if (!isFstAndSndFunctionsAdded) {
-			funs.add(SMTFactoryVeriT.FST_SYMBOL);
-			funs.add(SMTFactoryVeriT.SND_SYMBOL);
-			isFstAndSndFunctionsAdded = true;
+		if (!printFstAndSndFunctions) {
+			funs.add(SMTFactoryVeriT.FST_SYMBOLV_2_0);
+			funs.add(SMTFactoryVeriT.SND_SYMBOL_V2_0);
+			printFstAndSndFunctions = true;
 		}
 	}
 

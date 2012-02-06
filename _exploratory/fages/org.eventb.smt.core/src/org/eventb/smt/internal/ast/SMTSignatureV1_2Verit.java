@@ -71,8 +71,8 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 */
 	public void addPairSortAndFunction() {
 		if (!isPrintPairSortAndPairFunctionAdded) {
-			sorts.add(SMTFactoryVeriT.PAIR_SORT);
-			funs.add(SMTFactoryVeriT.PAIR_SYMBOL);
+			sorts.add(SMTFactoryVeriT.PAIR_SORT_V1_2);
+			funs.add(SMTFactoryVeriT.PAIR_SYMBOL_V1_2);
 			isPrintPairSortAndPairFunctionAdded = true;
 		}
 	}
@@ -286,8 +286,8 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 */
 	public void addFstAndSndAuxiliarFunctions() {
 		if (!isFstAndSndFunctionsAdded) {
-			funs.add(SMTFactoryVeriT.FST_SYMBOL);
-			funs.add(SMTFactoryVeriT.SND_SYMBOL);
+			funs.add(SMTFactoryVeriT.FST_SYMBOLV_1_2);
+			funs.add(SMTFactoryVeriT.SND_SYMBOL_V1_2);
 			isFstAndSndFunctionsAdded = true;
 		}
 	}

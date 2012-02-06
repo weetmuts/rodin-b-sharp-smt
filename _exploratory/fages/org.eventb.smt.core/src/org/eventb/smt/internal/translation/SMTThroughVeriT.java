@@ -1006,7 +1006,7 @@ public class SMTThroughVeriT extends Translator {
 			case Formula.MAPSTO:
 				sig.addPairSortAndFunction();
 				smtNode = SMTFactory.makeFunApplication(
-						SMTFactoryVeriT.PAIR_SYMBOL, children, signature);
+						SMTFactoryVeriT.PAIR_SYMBOL_V1_2, children, signature);
 				break;
 			default:
 				throw new IllegalTagException(expression.getTag());
@@ -1189,7 +1189,7 @@ public class SMTThroughVeriT extends Translator {
 			case Formula.MAPSTO:
 				sig.addPairSortAndFunction();
 				smtNode = SMTFactory.makeFunApplication(
-						SMTFactoryVeriT.PAIR_SYMBOL, children, signature);
+						SMTFactoryVeriT.PAIR_SYMBOL_V1_2, children, signature);
 				break;
 			default:
 				throw new IllegalTagException(expression.getTag());

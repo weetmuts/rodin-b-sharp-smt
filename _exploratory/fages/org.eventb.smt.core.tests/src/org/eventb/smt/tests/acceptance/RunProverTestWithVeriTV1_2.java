@@ -734,5 +734,17 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		doTest("relation", hyps, "true ∈ BOOL", te, VALID);
 	}
+	
+	@Test
+	public void testPair() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("pair", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
+	}
 
 }

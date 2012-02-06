@@ -188,12 +188,12 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 	private void getUsedSymbols(final SMTPredefinedMacro macro,
 			final Set<SMTSymbol> symbols) {
 		if (macro.usesPairFunctionAndSort()) {
-			symbols.add(SMTFactoryVeriT.PAIR_SORT);
-			symbols.add(SMTFactoryVeriT.PAIR_SYMBOL);
+			symbols.add(SMTFactoryVeriT.PAIR_SORT_V1_2);
+			symbols.add(SMTFactoryVeriT.PAIR_SYMBOL_V1_2);
 		}
 		if (macro.usesFstAndSndFunctions()) {
-			symbols.add(SMTFactoryVeriT.FST_SYMBOL);
-			symbols.add(SMTFactoryVeriT.SND_SYMBOL);
+			symbols.add(SMTFactoryVeriT.FST_SYMBOLV_1_2);
+			symbols.add(SMTFactoryVeriT.SND_SYMBOL_V1_2);
 		}
 	}
 
