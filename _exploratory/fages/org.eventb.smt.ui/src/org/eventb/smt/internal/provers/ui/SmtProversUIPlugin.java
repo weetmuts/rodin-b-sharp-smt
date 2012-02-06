@@ -11,8 +11,10 @@
 package org.eventb.smt.internal.provers.ui;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.parsePreferencesString;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
+import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
 
 import java.util.List;
 
@@ -57,6 +59,11 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 				SMTSolverConfiguration.toString(solverConfigs));
 	}
 
+	private static void setVeriTPath() {
+		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
+		preferenceStore.setValue(VERIT_PATH_ID, getVeriTPath());
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -68,6 +75,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		setVeriTPath();
 		addSolverConfig(getVeriTConfig());
 	}
 

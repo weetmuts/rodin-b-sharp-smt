@@ -10,9 +10,13 @@
 
 package org.eventb.smt.internal.provers.core;
 
+import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
+import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
+
 import org.eventb.core.seqprover.IParameterValuation;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
+import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 import org.eventb.smt.core.SMTCore;
 
 /**
@@ -47,6 +51,15 @@ public class AutoTactics {
 		//
 	}
 
+	public static class SMTPP extends AbsractLazilyConstrTactic {
+
+		@Override
+		protected ITactic getSingInstance() {
+			return SMTCore.externalSMTThroughPP(true, DEFAULT_DELAY,
+					ALL_SOLVER_CONFIGURATIONS);
+		}
+	}
+
 	public static class SMTPPParameterizer implements ITacticParameterizer {
 
 		@Override
@@ -58,6 +71,15 @@ public class AutoTactics {
 			return SMTCore.externalSMTThroughPP(restricted, timeout, configId);
 		}
 
+	}
+
+	public static class SMTVeriT extends AbsractLazilyConstrTactic {
+
+		@Override
+		protected ITactic getSingInstance() {
+			return SMTCore.externalSMTThroughVeriT(true, DEFAULT_DELAY,
+					ALL_SOLVER_CONFIGURATIONS);
+		}
 	}
 
 	public static class SMTVeriTParameterizer implements ITacticParameterizer {

@@ -63,5 +63,20 @@
          </tacticParameter>
       </parameterizer>
    </extension>
+   <extension
+         point="org.eventb.core.seqprover.autoTactics">
+      <autoTactic
+            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTPP"
+            description="%SMTPP.description"
+            id="SMTPP"
+            name="%SMTPP.name">
+      </autoTactic>
+      <autoTactic
+            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTVeriT"
+            description="%SMTVeriT.description"
+            id="SMTVeriT"
+            name="%SMTVeriT.name">
+      </autoTactic>
+   </extension>
 
 </plugin>
