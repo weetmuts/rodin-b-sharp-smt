@@ -12,7 +12,7 @@
 package org.eventb.smt.tests.acceptance;
 
 import static java.util.Collections.emptyList;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.UNKNOWN;
+import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_PP;
 

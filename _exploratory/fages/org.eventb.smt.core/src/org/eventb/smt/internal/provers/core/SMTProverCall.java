@@ -9,19 +9,19 @@
  * 	UFRN - code refactoring
  *******************************************************************************/
 
-package org.eventb.smt.internal.provers.internal.core;
+package org.eventb.smt.internal.provers.core;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3_PARAM_AUTO_CONFIG;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3_PARAM_MBQI;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.setZ3ParameterToFalse;
+import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
+import static org.eventb.smt.internal.provers.core.SMTSolver.Z3_PARAM_AUTO_CONFIG;
+import static org.eventb.smt.internal.provers.core.SMTSolver.Z3_PARAM_MBQI;
+import static org.eventb.smt.internal.provers.core.SMTSolver.setZ3ParameterToFalse;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;

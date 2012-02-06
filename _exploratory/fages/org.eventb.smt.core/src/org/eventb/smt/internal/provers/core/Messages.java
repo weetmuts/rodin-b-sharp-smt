@@ -19,6 +19,11 @@ public class Messages extends NLS {
 	public static String SMTProversCore_ProofTreeOriginError;
 	public static String SMTProversCore_SMTSolverConfigError;
 	public static String SMTProversCore_VeriTPathNotSet;
+	public static String SmtProversCall_veriT_path_not_defined;
+	public static String SmtProversCall_SMT_file_does_not_exist;
+	public static String force_error_invalid_forces;
+	public static String SmtProversCall_Check_Smt_Preferences;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

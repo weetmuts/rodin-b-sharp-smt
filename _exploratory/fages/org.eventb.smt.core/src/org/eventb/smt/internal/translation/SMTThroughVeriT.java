@@ -134,7 +134,7 @@ import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAV2_0VeriT;
 import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0VeriT;
 import org.eventb.smt.internal.ast.theories.SMTLogic.SMTLogicVeriT;
 import org.eventb.smt.internal.ast.theories.SMTLogic.SMTOperator;
-import org.eventb.smt.internal.provers.internal.core.IllegalTagException;
+import org.eventb.smt.internal.provers.core.IllegalTagException;
 
 /**
  * This class implements the translation from Event-B predicates to Extended

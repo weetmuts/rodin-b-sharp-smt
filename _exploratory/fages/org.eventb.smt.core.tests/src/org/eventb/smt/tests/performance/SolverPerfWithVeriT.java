@@ -22,7 +22,7 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;

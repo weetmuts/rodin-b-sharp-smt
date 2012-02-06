@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.internal.provers.internal.core;
+package org.eventb.smt.internal.provers.core;
 
 /**
  * This enum enumerates the solvers.

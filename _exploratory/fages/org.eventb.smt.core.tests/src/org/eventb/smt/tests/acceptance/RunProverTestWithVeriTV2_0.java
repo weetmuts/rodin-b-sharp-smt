@@ -11,7 +11,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.UNKNOWN;
+import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_VERIT;
 

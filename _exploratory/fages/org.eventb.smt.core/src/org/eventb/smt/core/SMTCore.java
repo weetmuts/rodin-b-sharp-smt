@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughPP;
-import org.eventb.smt.internal.provers.internal.core.ExternalSMTThroughVeriT;
-import org.eventb.smt.internal.provers.internal.core.SMTInput;
+import org.eventb.smt.internal.provers.core.ExternalSMTThroughPP;
+import org.eventb.smt.internal.provers.core.ExternalSMTThroughVeriT;
+import org.eventb.smt.internal.provers.core.SMTInput;
 
 /**
  * @author Systerel (yguyot)

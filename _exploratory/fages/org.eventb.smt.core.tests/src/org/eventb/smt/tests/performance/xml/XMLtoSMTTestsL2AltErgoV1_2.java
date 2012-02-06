@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.performance.xml;
 
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
 

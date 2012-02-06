@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;
 

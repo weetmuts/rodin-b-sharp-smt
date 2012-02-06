@@ -9,14 +9,14 @@
  * 	UFRN - SMT-LIB 2.0 implementation
  *******************************************************************************/
 
-package org.eventb.smt.internal.provers.internal.core;
+package org.eventb.smt.internal.provers.core;
 
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;

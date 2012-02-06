@@ -10,12 +10,10 @@
 
 package org.eventb.smt.verit.core;
 
-import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
-import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.parsePreferencesString;
-import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.verit.internal.core.ProverShell.getVeriTPath;
 
@@ -23,9 +21,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Systerel (yguyot)
@@ -46,28 +44,20 @@ public class VeriTProverCore extends Plugin {
 		final String preferences = preferenceStore
 				.getString(SOLVER_PREFERENCES_ID);
 		List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(preferences);
+		final String veriTPath = getVeriTPath();
 		final SMTSolverConfiguration veriTConfig = new SMTSolverConfiguration(
-				VERIT_CONFIG, VERIT, getVeriTPath(), VERIT_ARGS, V2_0);
+				VERIT_CONFIG, VERIT, veriTPath, VERIT_ARGS, V2_0);
 		if (!solverConfigs.contains(veriTConfig)) {
 			solverConfigs.add(veriTConfig);
 		}
+		preferenceStore.setValue(SOLVER_PREFERENCES_ID,
+				SMTSolverConfiguration.toString(solverConfigs));
+		preferenceStore.setValue(VERIT_PATH_ID, veriTPath);
 	}
 
-	public static ITactic externalVeriTThroughPP(boolean restricted,
-			long timeout) {
-		return externalSMTThroughPP(restricted, timeout, VERIT_CONFIG);
-	}
-
-	public static ITactic externalVeriTThroughPP(final boolean restricted) {
-		return externalVeriTThroughPP(restricted, DEFAULT_DELAY);
-	}
-
-	public static ITactic externalVeriTThroughVeriT(boolean restricted,
-			long timeout) {
-		return externalSMTThroughVeriT(restricted, timeout, VERIT_CONFIG);
-	}
-
-	public static ITactic externalVeriTThroughVeriT(final boolean restricted) {
-		return externalVeriTThroughVeriT(restricted, DEFAULT_DELAY);
+	@Override
+	public void start(BundleContext context) throws Exception {
+		setVeriTConfig();
+		super.start(context);
 	}
 }

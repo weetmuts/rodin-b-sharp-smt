@@ -8,16 +8,16 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.internal.provers.internal.core;
+package org.eventb.smt.internal.provers.core;
 
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.internal.translation.Translator.DEBUG_DETAILS;
 

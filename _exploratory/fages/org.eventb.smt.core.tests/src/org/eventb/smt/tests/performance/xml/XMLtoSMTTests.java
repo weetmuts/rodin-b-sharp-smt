@@ -10,8 +10,8 @@
 
 package org.eventb.smt.tests.performance.xml;
 
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.Z3;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_PP;
@@ -40,7 +40,7 @@ import junit.framework.Assert;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.utils.LemmaData;

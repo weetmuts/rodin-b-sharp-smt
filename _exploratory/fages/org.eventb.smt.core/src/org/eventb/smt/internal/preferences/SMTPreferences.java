@@ -22,7 +22,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**

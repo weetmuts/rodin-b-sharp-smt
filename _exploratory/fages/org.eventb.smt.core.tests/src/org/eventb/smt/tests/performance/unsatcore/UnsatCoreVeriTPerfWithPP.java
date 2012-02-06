@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.performance.unsatcore;
 
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.VERIT;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 
 public class UnsatCoreVeriTPerfWithPP extends UnsatCoreExtractionPerfWithPP {

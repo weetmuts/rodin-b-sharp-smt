@@ -17,7 +17,7 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.getSolver;
+import static org.eventb.smt.internal.provers.core.SMTSolver.getSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.getVersion;
 
 import java.io.File;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**

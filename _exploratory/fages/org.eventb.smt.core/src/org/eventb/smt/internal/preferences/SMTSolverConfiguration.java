@@ -12,14 +12,14 @@ package org.eventb.smt.internal.preferences;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.SEPARATOR1;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SEPARATOR2;
-import static org.eventb.smt.internal.provers.internal.core.SMTSolver.UNKNOWN;
+import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eventb.smt.internal.provers.internal.core.SMTSolver;
+import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
