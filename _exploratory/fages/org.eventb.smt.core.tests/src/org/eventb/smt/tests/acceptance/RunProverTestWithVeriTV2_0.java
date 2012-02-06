@@ -777,7 +777,6 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Waitign answer from David")
 	public void testBools() {
 		setPreferencesForAltErgoTest();
 
@@ -786,7 +785,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "true ∈ BOOL", te, VALID);
+		doTest("relation", hyps, "TRUE ∈ BOOL", te, VALID);
 	}
 
 	@Test

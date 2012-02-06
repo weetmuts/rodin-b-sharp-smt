@@ -125,8 +125,11 @@ import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
+import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAv2_0;
+import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
 import org.eventb.smt.internal.ast.theories.SMTTheory;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
@@ -313,12 +316,27 @@ public class SMTThroughVeriT extends Translator {
 			}
 			return SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
-			if (gatherer.foundQuantifier()) {
-				return AUFLIAV2_0VeriT.getInstance();
+			if (gatherer.usesBoolTheory()) {
+				if (gatherer.foundQuantifier()) {
+					return new SMTLogic.SMTLogicVeriT(AUFLIAv2_0.getInstance()
+							.getName(), SMTTheoryV2_0.Ints.getInstance(),
+							VeriTBooleansV2_0.getInstance());
+				} else {
+					return new SMTLogic.SMTLogicVeriT(QF_AUFLIAv2_0
+							.getInstance().getName(),
+							SMTTheoryV2_0.Ints.getInstance(),
+							VeriTBooleansV2_0.getInstance());
+				}
 
 			} else {
-				return QF_AUFLIAv2_0VeriT.getInstance();
+				if (gatherer.foundQuantifier()) {
+					return AUFLIAV2_0VeriT.getInstance();
+
+				} else {
+					return QF_AUFLIAv2_0VeriT.getInstance();
+				}
 			}
+
 		}
 	}
 
@@ -364,11 +382,22 @@ public class SMTThroughVeriT extends Translator {
 			if (theory instanceof VeriTBooleansV1_2) {
 				final String boolVarName = signature.freshSymbolName("elem");
 				additionalAssumptions.add(sf
-						.makeDefinitionOfElementsOfBooleanFormula(boolVarName,
-								VeriTBooleansV1_2.getInstance()
+						.makeDefinitionOfElementsOfBooleanFormula_V1_2(
+								boolVarName, VeriTBooleansV1_2.getInstance()
 										.getBooleanSort(), VeriTBooleansV1_2
 										.getInstance().getTrueConstant(),
 								VeriTBooleansV1_2.getInstance()
+										.getFalseConstant()));
+				return;
+			}
+			if (theory instanceof VeriTBooleansV2_0) {
+				final String boolVarName = signature.freshSymbolName("elem");
+				additionalAssumptions.add(sf
+						.makeDefinitionOfElementsOfBooleanFormula_V2_0(
+								boolVarName, VeriTBooleansV2_0.getInstance()
+										.getBooleanSort(), VeriTBooleansV2_0
+										.getInstance().getTrueConstant(),
+								VeriTBooleansV2_0.getInstance()
 										.getFalseConstant()));
 				return;
 			}
@@ -404,7 +433,7 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	private void linkLogicSymbols() {
-		// TODO Auto-generated method stub
+		// TODO
 	}
 
 	/**
@@ -436,7 +465,7 @@ public class SMTThroughVeriT extends Translator {
 		if (signature instanceof SMTSignatureV1_2Verit) {
 			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
 		} else {
-			// TODO threat this case with SMT 2
+			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
 		}
 	}
 
@@ -578,7 +607,8 @@ public class SMTThroughVeriT extends Translator {
 						((SMTSignatureV1_2Verit) signature)
 								.addPairSortAndFunction();
 					} else {
-						// TODO Case for SMT 2.0
+						((SMTSignatureV1_2Verit) signature)
+								.addPairSortAndFunction();
 					}
 					typeMap.put(baseType, sortSymbol);
 				} else {
@@ -690,9 +720,22 @@ public class SMTThroughVeriT extends Translator {
 			return makeMacroTerm(macroSymbol);
 
 		} else {
-			// TODO case for SMT 2.0
-			System.out.println("returned null");
-			return null;
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			final String lambdaName = sig.freshQVarName(SMTMacroSymbol.ELEM);
+			final SMTVarSymbol lambdaVar = new SMTVarSymbol(lambdaName,
+					expressionSort, false, V2_0);
+
+			// Creating the macro
+			final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
+					macroName, termChildren, lambdaVar, formulaChild,
+					expressionTerm, sig);
+
+			sig.addMacro(macro);
+			final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
+					VeriTBooleansV2_0.POLYMORPHIC);
+			return makeMacroTerm(macroSymbol);
+
 		}
 	}
 
@@ -854,13 +897,25 @@ public class SMTThroughVeriT extends Translator {
 				return SMTFactory.makeFunApplication(SND_SYMBOL,
 						smtTerms(expression.getRight()), signature);
 			}
-			throw new IllegalArgumentException(
-					"This kind of function application (FUNIMAGE) is not implemented yet");
 		} else {
-			// TODO: SMT 2.0 case
-			System.out.println("returned null");
-			return null;
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+			if (expression.getLeft().getTag() == Formula.KID_GEN) {
+				return smtTerm(expression.getRight());
+			}
+			if (expression.getLeft().getTag() == Formula.KPRJ1_GEN) {
+
+				sig.addFstAndSndAuxiliarFunctions();
+				return SMTFactory.makeFunApplication(FST_SYMBOL,
+						smtTerms(expression.getRight()), signature);
+			}
+			if (expression.getLeft().getTag() == Formula.KPRJ2_GEN) {
+				sig.addFstAndSndAuxiliarFunctions();
+				return SMTFactory.makeFunApplication(SND_SYMBOL,
+						smtTerms(expression.getRight()), signature);
+			}
 		}
+		throw new IllegalArgumentException(
+				"This kind of function application (FUNIMAGE) is not implemented yet");
 	}
 
 	/**
@@ -1220,7 +1275,18 @@ public class SMTThroughVeriT extends Translator {
 			}
 			smtNode = smtVar;
 		} else {
-			// TODO SMT 2.0 case
+			final String smtVarName = ((SMTSignatureV2_0Verit) signature)
+					.freshQVarName(varName);
+			final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
+			smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, V2_0);
+			if (!qVarMap.containsKey(varName)) {
+				qVarMap.put(varName, smtVar);
+				boundIdentifiers.add(varName);
+			} else {
+				qVarMap.put(smtVarName, smtVar);
+				boundIdentifiers.add(smtVarName);
+			}
+			smtNode = smtVar;
 		}
 
 	}
@@ -1886,7 +1952,11 @@ public class SMTThroughVeriT extends Translator {
 					.makePairEnumerationMacro(macroName, var, children, sig);
 			sig.addMacro(macro);
 		} else {
-			// TODO SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			final SMTPairEnumMacro macro = SMTMacroFactory
+					.makePairEnumerationMacro(macroName, var, children, sig);
+			sig.addMacro(macro);
 		}
 	}
 
@@ -1917,13 +1987,13 @@ public class SMTThroughVeriT extends Translator {
 				break;
 			}
 			case Formula.KMIN: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMIN_OP,
-						"ismin_var", children);
+				smtNode = translateKMINorKMAX_V1_2(
+						SMTVeriTOperatorV1_2.ISMIN_OP, "ismin_var", children);
 				break;
 			}
 			case Formula.KMAX: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMAX_OP,
-						"ismax_var", children);
+				smtNode = translateKMINorKMAX_V1_2(
+						SMTVeriTOperatorV1_2.ISMAX_OP, "ismax_var", children);
 				break;
 			}
 			case Formula.CONVERSE:
@@ -1982,13 +2052,13 @@ public class SMTThroughVeriT extends Translator {
 				break;
 			}
 			case Formula.KMIN: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMIN_OP,
-						"ismin_var", children);
+				smtNode = translateKMINorKMAX_V2_0(
+						SMTVeriTOperatorV2_0.ISMIN_OP, "ismin_var", children);
 				break;
 			}
 			case Formula.KMAX: {
-				smtNode = translateKMINorKMAX(SMTVeriTOperatorV1_2.ISMAX_OP,
-						"ismax_var", children);
+				smtNode = translateKMINorKMAX_V2_0(
+						SMTVeriTOperatorV2_0.ISMAX_OP, "ismax_var", children);
 				break;
 			}
 			case Formula.CONVERSE:
@@ -2136,42 +2206,81 @@ public class SMTThroughVeriT extends Translator {
 	 *            the children terms of the min or max term
 	 * @return the constant term that represents the min or the max
 	 */
-	private SMTTerm translateKMINorKMAX(final SMTVeriTOperatorV1_2 operator,
-			final String constantName, final SMTTerm[] children) {
+	private SMTTerm translateKMINorKMAX_V1_2(
+			final SMTVeriTOperatorV1_2 operator, final String constantName,
+			final SMTTerm[] children) {
 
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
+		SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
 
-			// Creating the constant 'm'
-			final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
-					constantName, SMTTheoryV1_2.Ints.getInt());
+		// Creating the constant 'm'
+		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
+				constantName, SMTTheoryV1_2.Ints.getInt());
 
-			// Creating the macro operator 'ismin'
-			final SMTMacroSymbol opSymbol = SMTMacroFactoryV1_2.getMacroSymbol(
-					operator, sig);
+		// Creating the macro operator 'ismin'
+		final SMTMacroSymbol opSymbol = SMTMacroFactoryV1_2.getMacroSymbol(
+				operator, sig);
 
-			// Creating the term 'm'
-			final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol,
-					signature);
+		// Creating the term 'm'
+		final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol, signature);
 
-			// Adding the term 'm' to the other children
-			final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
-			for (int i = 0; i < children.length; i++) {
-				minChildrenTerms[i + 1] = children[i];
-			}
-			minChildrenTerms[0] = mVarTerm;
-
-			// Creating the new assumption (ismin m t) and saving it.
-			final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(
-					opSymbol, minChildrenTerms, sig);
-			additionalAssumptions.add(isMinFormula);
-
-			return mVarTerm;
-		} else {
-			// TODO see SMT 2.0 case
-			System.out.println("returned null");
-			return null;
+		// Adding the term 'm' to the other children
+		final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+		for (int i = 0; i < children.length; i++) {
+			minChildrenTerms[i + 1] = children[i];
 		}
+		minChildrenTerms[0] = mVarTerm;
+
+		// Creating the new assumption (ismin m t) and saving it.
+		final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(opSymbol,
+				minChildrenTerms, sig);
+		additionalAssumptions.add(isMinFormula);
+
+		return mVarTerm;
+	}
+
+	/**
+	 * Translate min or max operators. This translation is based in the article
+	 * "Integration of SMT-Solvers in B and Event-B Development Environments",
+	 * from DEHARBE, David, dated of December 17, 2010.
+	 * 
+	 * @param operator
+	 *            the operator (min or max)
+	 * @param constantName
+	 *            the name of the constant 'm' (see the article)
+	 * @param children
+	 *            the children terms of the min or max term
+	 * @return the constant term that represents the min or the max
+	 */
+	private SMTTerm translateKMINorKMAX_V2_0(
+			final SMTVeriTOperatorV2_0 operator, final String constantName,
+			final SMTTerm[] children) {
+
+		SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+		// Creating the constant 'm'
+		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
+				constantName, SMTTheoryV1_2.Ints.getInt());
+
+		// Creating the macro operator 'ismin'
+		final SMTMacroSymbol opSymbol = SMTMacroFactoryV2_0.getMacroSymbol(
+				operator, sig);
+
+		// Creating the term 'm'
+		final SMTTerm mVarTerm = SMTFactory.makeConstant(mVarSymbol, signature);
+
+		// Adding the term 'm' to the other children
+		final SMTTerm[] minChildrenTerms = new SMTTerm[children.length + 1];
+		for (int i = 0; i < children.length; i++) {
+			minChildrenTerms[i + 1] = children[i];
+		}
+		minChildrenTerms[0] = mVarTerm;
+
+		// Creating the new assumption (ismin m t) and saving it.
+		final SMTFormula isMinFormula = SMTFactoryVeriT.makeMacroAtom(opSymbol,
+				minChildrenTerms, sig);
+		additionalAssumptions.add(isMinFormula);
+
+		return mVarTerm;
 	}
 
 	/**
@@ -2376,7 +2485,23 @@ public class SMTThroughVeriT extends Translator {
 
 			smtNode = pFormula;
 		} else {
-			// TODO See SMT 2.0 case
+			SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+			// Creating the macro operator 'finite'
+			final SMTMacroSymbol finiteSymbol = SMTMacroFactoryV2_0
+					.getMacroSymbol(SMTVeriTOperatorV2_0.FINITE_OP, sig);
+
+			// Creating the new assumption (finite p t k f) and saving it.
+			final SMTFormula finiteFormula = new SMTVeritFiniteFormula(
+					finiteSymbol, pVarSymbol, fVarSymbol, kVarSymbol, children,
+					sig);
+
+			additionalAssumptions.add(finiteFormula);
+
+			final SMTFormula pFormula = SMTFactory.makeAtom(pVarSymbol,
+					new SMTTerm[] {}, signature);
+
+			smtNode = pFormula;
 		}
 	}
 

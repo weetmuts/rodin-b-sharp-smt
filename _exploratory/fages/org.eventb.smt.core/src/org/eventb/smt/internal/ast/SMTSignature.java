@@ -34,7 +34,7 @@ public abstract class SMTSignature {
 	protected final SMTLogic logic;
 
 	private final static String NEW_SORT_NAME = "NS";
-	private final static String NEW_FUNCTION_NAME = "nf";
+	protected final static String NEW_FUNCTION_NAME = "nf";
 	private final static String NEW_PREDICATE_NAME = "np";
 	private final static String NEW_SYMBOL_NAME = "ns";
 

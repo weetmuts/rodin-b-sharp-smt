@@ -506,8 +506,8 @@ public class SMTLogic {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
 		private static final SMTTheory[] THEORIES = {
 				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance(),
-				VeriTBooleansV2_0.getInstance() };
+				SMTTheoryV2_0.Ints.getInstance(), };
+		// VeriTBooleansV2_0.getInstance() };
 
 		private static final AUFLIAV2_0VeriT INSTANCE = new AUFLIAV2_0VeriT();
 
@@ -524,8 +524,8 @@ public class SMTLogic {
 		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
 		private static final SMTTheory[] THEORIES = {
 				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance(),
-				VeriTBooleansV2_0.getInstance() };
+				SMTTheoryV2_0.Ints.getInstance() };
+		// VeriTBooleansV2_0.getInstance() };
 
 		private static final QF_AUFLIAv2_0VeriT INSTANCE = new QF_AUFLIAv2_0VeriT();
 

@@ -62,7 +62,9 @@ import java.util.Set;
 
 import org.eventb.smt.internal.ast.SMTFactoryVeriT;
 import org.eventb.smt.internal.ast.SMTFormula;
+import org.eventb.smt.internal.ast.SMTSignature;
 import org.eventb.smt.internal.ast.SMTSignatureV1_2Verit;
+import org.eventb.smt.internal.ast.SMTSignatureV2_0Verit;
 import org.eventb.smt.internal.ast.SMTTerm;
 import org.eventb.smt.internal.ast.SMTVar;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
@@ -267,8 +269,12 @@ public abstract class SMTMacroFactory {
 	 */
 	public static SMTPairEnumMacro makePairEnumerationMacro(
 			final String macroName, final SMTVarSymbol varName1,
-			final SMTTerm[] terms, final SMTSignatureV1_2Verit signature) {
-		signature.addPairSortAndFunction();
+			final SMTTerm[] terms, final SMTSignature signature) {
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
+		} else {
+			((SMTSignatureV2_0Verit) signature).addPairSortAndFunction();
+		}
 		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
 
@@ -303,9 +309,12 @@ public abstract class SMTMacroFactory {
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
 			final String macroName, final SMTTerm[] terms,
 			final SMTVarSymbol lambdaVar, final SMTFormula formula,
-			final SMTTerm expression, final SMTSignatureV1_2Verit signature) {
-		signature.addPairSortAndFunction();
-
+			final SMTTerm expression, final SMTSignature signature) {
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
+		} else {
+			((SMTSignatureV2_0Verit) signature).addPairSortAndFunction();
+		}
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];

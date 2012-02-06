@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * This class contains acceptance tests of the plugin using veriT preprocessing.
  * 
- * @author Vitor Alcantara
+ * 
  * 
  */
 public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
@@ -732,9 +732,9 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "true ∈ BOOL", te, VALID);
+		doTest("relation", hyps, "TRUE ∈ BOOL", te, VALID);
 	}
-	
+
 	@Test
 	public void testPair() {
 		setPreferencesForAltErgoTest();

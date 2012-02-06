@@ -15,6 +15,7 @@ import static org.eventb.smt.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
@@ -127,9 +128,14 @@ public class SMTVeritFiniteFormula extends SMTFormula {
 			final SMTPredicateSymbol pArgument,
 			final SMTFunctionSymbol fArgument,
 			final SMTFunctionSymbol kArgument, final SMTTerm[] terms,
-			final SMTSignatureV1_2Verit signature) {
-		SMTMacroFactoryV1_2.checkIfMacroIsDefinedInTheSignature(
-				finitePredSymbol, signature);
+			final SMTSignature signature) {
+		if (signature instanceof SMTSignatureV1_2Verit) {
+			SMTMacroFactoryV1_2.checkIfMacroIsDefinedInTheSignature(
+					finitePredSymbol, (SMTSignatureV1_2Verit) signature);
+		} else {
+			SMTMacroFactoryV2_0.checkIfMacroIsDefinedInTheSignature(
+					finitePredSymbol, (SMTSignatureV2_0Verit) signature);
+		}
 		finitePred = finitePredSymbol;
 		this.terms = terms;
 		this.pArgument = pArgument;

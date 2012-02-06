@@ -121,7 +121,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	private static SMTPredefinedMacro[] INS = { IN_MACRO };
 
 	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
-			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (Bool Bool) true", 0, false,
+			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (BOOL BOOL) true", 0, false,
 			false, EMPTY_MACROS);
 
 	// TODO: Create test

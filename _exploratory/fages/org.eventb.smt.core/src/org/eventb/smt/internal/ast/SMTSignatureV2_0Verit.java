@@ -21,11 +21,11 @@ import java.util.TreeSet;
 import org.eventb.smt.internal.ast.macros.SMTEnumMacro;
 import org.eventb.smt.internal.ast.macros.SMTMacro;
 import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.internal.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.internal.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
@@ -33,9 +33,8 @@ import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
 import org.eventb.smt.internal.ast.theories.SMTTheory;
+import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV2_0;
-
-//TODO Review the methods for SMT 2.0
 
 public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 
@@ -86,7 +85,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 
 		if (name.equals("ℤ")) { // INTEGER
 			freshName = SMTSymbol.INT;
-		} else if (name.equals("Bool")) {
+		} else if (name.equals("BOOL")) {
 			return getBoolSort();
 		} else {
 			freshName = freshSymbolName(name);
@@ -101,19 +100,23 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * This method returns the Bool sort. It first check if the
 	 * {@link VeriTBooleansV2_0} theory is being used. If so, it returns that
 	 * the Bool sort defined in that theory. If not, returns the Bool sort
-	 * defined in {@link VeritPredefinedTheoryV2_0}
+	 * defined in
+	 * {@link org.eventb.smt.internal.ast.theories.SMTTheoryV2_0.Core}
 	 * 
 	 * @return a Bool sort
 	 */
-	@SuppressWarnings("javadoc")
-	// TODO remove suppress warning when added the linked class
 	private SMTSortSymbol getBoolSort() {
+		boolean veriTBools = false;
 		for (final SMTTheory theory : getLogic().getTheories()) {
 			if (theory instanceof VeriTBooleansV2_0) {
-				return VeriTBooleansV2_0.getInstance().getBooleanSort();
+				veriTBools = true;
 			}
 		}
-		return null;
+		if (veriTBools) {
+			return VeriTBooleansV2_0.getInstance().getBooleanSort();
+		} else {
+			return SMTTheoryV2_0.Core.getInstance().getBooleanSort();
+		}
 	}
 
 	/**
@@ -232,7 +235,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 
 	@Override
 	public String freshSymbolName(final String name) {
-		return freshSymbolName(name, new HashSet<String>());
+		return freshSymbolName(new HashSet<String>(), name, NEW_FUNCTION_NAME);
 	}
 
 	/**
@@ -253,16 +256,19 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * 
 	 * @param name
 	 *            the name to be compared for a fresh symbol name
-	 * @param usedNames
-	 *            other names used for the comparison
 	 * @return a fresh symbol name
 	 */
-	public String freshSymbolName(final String name, final Set<String> usedNames) {
-		usedNames.addAll(getSymbolNames(funs));
-		usedNames.addAll(getSymbolNames(sorts));
-		usedNames.addAll(getSymbolNames(preds));
-		usedNames.addAll(getMacroNames());
-		return freshSymbolName(usedNames, name);
+	@Override
+	public String freshSymbolName(final Set<String> symbolNames,
+			final String name, final String newSymbolName) {
+		symbolNames.addAll(getSymbolNames(funs));
+		symbolNames.addAll(getSymbolNames(sorts));
+		symbolNames.addAll(getSymbolNames(preds));
+		symbolNames.add("true");
+		symbolNames.add("false");
+		symbolNames.add("Bool");
+		symbolNames.addAll(getMacroNames());
+		return super.freshSymbolName(symbolNames, name, newSymbolName);
 	}
 
 	@Override

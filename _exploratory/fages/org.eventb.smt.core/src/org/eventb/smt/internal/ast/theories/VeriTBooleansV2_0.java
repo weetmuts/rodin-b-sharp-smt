@@ -14,35 +14,41 @@ import static org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 
-import org.eventb.smt.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.internal.ast.symbols.SMTPolymorphicSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 
 public class VeriTBooleansV2_0 extends SMTTheory implements ISMTBooleanSort {
 
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
+	private static final String BOOLS_THEORY_NAME = "Bools";
+	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
+
 	private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED, V2_0);
-
-	private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol("true",
-			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
-
-	private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-			"false", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
-
-	private static final SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
+			SMTSymbol.BOOL, !PREDEFINED, V2_0);
 	private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
-	private static final SMTPredicateSymbol[] PREDICATES = {};
 
-	protected VeriTBooleansV2_0() {
-		super("verit_booleans_v2_0", SORTS, PREDICATES, FUNCTIONS);
+	private final static SMTFunctionSymbol TRUE = new SMTFunctionSymbol("TRUE",
+			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
+
+	private final static SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
+			"FALSE", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
+
+	private final static SMTPredicateSymbol[] PREDICATES = {};
+
+	private static SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
+
+	private static final VeriTBooleansV2_0 INSTANCE = new VeriTBooleansV2_0();
+
+	private VeriTBooleansV2_0() {
+		super(BOOLS_THEORY_NAME, SORTS, PREDICATES, FUNCTIONS);
 	}
 
-	@Override
-	public SMTSortSymbol getBooleanSort() {
-		return BOOL_SORT;
+	public static VeriTBooleansV2_0 getInstance() {
+		return INSTANCE;
 	}
 
 	public SMTFunctionSymbol getTrueConstant() {
@@ -53,10 +59,9 @@ public class VeriTBooleansV2_0 extends SMTTheory implements ISMTBooleanSort {
 		return FALSE;
 	}
 
-	private static final VeriTBooleansV2_0 INSTANCE = new VeriTBooleansV2_0();
-
-	public static VeriTBooleansV2_0 getInstance() {
-		return INSTANCE;
+	@Override
+	public SMTSortSymbol getBooleanSort() {
+		return BOOL_SORT;
 	}
 
 }
