@@ -275,6 +275,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	public void toString(final StringBuilder sb) {
 		super.toString(sb);
 		if (printPairSortAndPairFunction) {
+			sb.append("(declare-sort Pair 2)");
 			sb.append("(declare-fun (par (s t) (pair s t (Pair s t))))");
 			sb.append("\n");
 		}

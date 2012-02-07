@@ -752,7 +752,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Subset has the same problem as cardinality")
+	//@Ignore("Subset has the same problem as cardinality")
 	public void testSubset() {
 		setPreferencesForAltErgoTest();
 
@@ -761,7 +761,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "{1} ⊂ {1,2}", te, VALID);
+		doTest("subsetV2_0", hyps, "{1} ⊂ {1,2}", te, VALID);
 	}
 
 	@Test

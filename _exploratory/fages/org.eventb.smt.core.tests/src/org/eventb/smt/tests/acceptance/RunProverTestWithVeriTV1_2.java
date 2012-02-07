@@ -696,7 +696,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "{1} ⊆ ℕ", te, VALID);
+		doTest("subseteq", hyps, "{1} ⊆ ℕ", te, VALID);
 	}
 
 	@Test
@@ -708,7 +708,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "{1} ⊂ {1,2}", te, VALID);
+		doTest("subsetV1_2", hyps, "{1} ⊂ {1,2}", te, VALID);
 	}
 
 	@Test

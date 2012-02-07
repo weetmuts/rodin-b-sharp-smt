@@ -158,7 +158,14 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro FINITE_MACRO = BUNION_MACRO;
+
+	// TODO: Fix
+	public static final SMTPredefinedMacro FINITE_MACRO = new SMTPredefinedMacro(
+			FINITE,
+			"(par (s) ("
+					+ FINITE
+					+ "((?FINITE_0 Bool) (?FINITE_1 (s Bool)) (?FINITE_2 (s Int)) (?FINITE_3 Int)) (s Bool) (= ?FINITE_0 (and (forall ((?FINITE_4 s)) (=> (in ?FINITE_4 ?FINITE_1) (in (?FINITE_2 ?FINITE_4) (range 1 ?FINITE_3))))(forall ((?FINITE_4 s)(?FINITE_5 s)) (=> (and (in ?FINITE_4 ?FINITE_1) (in ?FINITE_5 ?FINITE_1) (not (= ?FINITE_4 ?FINITE_5))) (not (= (?FINITE_2 ?FINITE_4)(?FINITE_2 ?FINITE_5)))))))))",
+			1, false, false, IN_AND_RANGE_INTEGER);
 
 	public static enum SMTVeriTOperatorV2_0 {
 		BUNION_OP(BUNION_MACRO), BINTER_OP(BINTER_MACRO), EMPTY_OP(

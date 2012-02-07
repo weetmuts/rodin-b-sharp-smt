@@ -28,6 +28,7 @@ import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
+import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
@@ -51,7 +52,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
 	public static SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol("(Pair 's 't)");
-	public static SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol("(Pair s t)");
+	public static SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol("Pair");
 
 	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
 
@@ -279,16 +280,22 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 *            The second sort symbol
 	 * @return A pair sort symbol
 	 */
-	public static SMTSortSymbol makePairSortSymbol(
+	public static SMTSortSymbol makePairSortSymbol(SMTLIBVersion smtlibVersion,
 			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
+		if (smtlibVersion.equals(SMTLIBVersion.V1_2)) {
+			final StringBuffer sb = new StringBuffer();
+			sb.append("(Pair ");
+			sb.append(sourceSymbol.toString());
+			sb.append(" ");
+			sb.append(targetSymbol.toString());
+			sb.append(")");
+			return new SMTSortSymbol(sb.toString(), false, V1_2);
+		} else {
+			final StringBuffer sb = new StringBuffer();
+			sb.append("Pair");
+			return new SMTSortSymbol(sb.toString(), false, V2_0);
+		}
 
-		final StringBuffer sb = new StringBuffer();
-		sb.append("(Pair ");
-		sb.append(sourceSymbol.toString());
-		sb.append(" ");
-		sb.append(targetSymbol.toString());
-		sb.append(")");
-		return new SMTSortSymbol(sb.toString(), false, V1_2);
 	}
 
 	/**

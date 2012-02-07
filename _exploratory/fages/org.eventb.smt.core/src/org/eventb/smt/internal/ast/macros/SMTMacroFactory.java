@@ -307,9 +307,10 @@ public abstract class SMTMacroFactory {
 	 * @return a new set comprehension macro
 	 */
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
-			final String macroName, final SMTTerm[] terms,
-			final SMTVarSymbol lambdaVar, final SMTFormula formula,
-			final SMTTerm expression, final SMTSignature signature) {
+			final SMTLIBVersion smtLibVersion, final String macroName,
+			final SMTTerm[] terms, final SMTVarSymbol lambdaVar,
+			final SMTFormula formula, final SMTTerm expression,
+			final SMTSignature signature) {
 		if (signature instanceof SMTSignatureV1_2Verit) {
 			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
 		} else {
@@ -326,8 +327,8 @@ public abstract class SMTMacroFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return new SMTSetComprehensionMacro(macroName, qVars, lambdaVar,
-				formula, expression, 1);
+		return new SMTSetComprehensionMacro(smtLibVersion, macroName, qVars,
+				lambdaVar, formula, expression, 1);
 	}
 
 	/**

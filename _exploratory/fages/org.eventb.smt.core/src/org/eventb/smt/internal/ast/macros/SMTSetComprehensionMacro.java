@@ -14,6 +14,7 @@ import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTQuantifiedFormula;
 import org.eventb.smt.internal.ast.SMTTerm;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
+import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * <p>
@@ -87,6 +88,8 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	 */
 	final SMTTerm expression;
 
+	final private SMTLIBVersion smtLibVersion;
+
 	/**
 	 * Initializes the class with the necessary parameters to create the set
 	 * comprehension macro.
@@ -107,11 +110,12 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 	 *            The precedence of the macro. See {@link SMTMacro} for more
 	 *            details.
 	 */
-	SMTSetComprehensionMacro(final String macroName,
-			final SMTVarSymbol[] quantifiedVariables,
+	SMTSetComprehensionMacro(final SMTLIBVersion smtLibVersion,
+			final String macroName, final SMTVarSymbol[] quantifiedVariables,
 			final SMTVarSymbol lambdaVar, final SMTFormula formula,
 			final SMTTerm expression, final int precedence) {
 		super(macroName, precedence);
+		this.smtLibVersion = smtLibVersion;
 		qVars = quantifiedVariables;
 		this.lambdaVar = lambdaVar;
 		this.formula = formula;
@@ -146,26 +150,48 @@ public class SMTSetComprehensionMacro extends SMTMacro {
 
 	@Override
 	public void toString(final StringBuilder sb, final int offset) {
-		sb.append("(");
-		sb.append(super.getMacroName());
-		sb.append("(lambda");
-		lambdaVar.toString(sb);
-		sb.append(" . ");
-		sb.append("(exists ");
-		for (final SMTVarSymbol qVar : qVars) {
-			qVar.toString(sb);
-		}
-		sb.append(". (and (= ");
-		sb.append("?" + lambdaVar.getName());
-		sb.append(" ");
-		expression.toString(sb, offset);
-		sb.append(") ");
-		if (formula instanceof SMTQuantifiedFormula) {
-			((SMTQuantifiedFormula) formula).toString(sb, offset, true);
+		if (smtLibVersion.equals(SMTLIBVersion.V1_2)) {
+			sb.append("(");
+			sb.append(super.getMacroName());
+			sb.append("(lambda");
+			lambdaVar.toString(sb);
+			sb.append(" . ");
+			sb.append("(exists ");
+			for (final SMTVarSymbol qVar : qVars) {
+				qVar.toString(sb);
+			}
+			sb.append(". (and (= ");
+			sb.append("?" + lambdaVar.getName());
+			sb.append(" ");
+			expression.toString(sb, offset);
+			sb.append(") ");
+			if (formula instanceof SMTQuantifiedFormula) {
+				((SMTQuantifiedFormula) formula).toString(sb, offset, true);
+			} else {
+				formula.toString(sb, offset, true);
+			}
+			sb.append("))))");
 		} else {
-			formula.toString(sb, offset, true);
+			sb.append(super.getMacroName());
+			sb.append(" (");
+			lambdaVar.toString(sb);
+			sb.append(") ");
+			sb.append("(exists (");
+			for (final SMTVarSymbol qVar : qVars) {
+				qVar.toString(sb);
+			}
+			sb.append(") (and (= ");
+			sb.append(lambdaVar.getName());
+			sb.append(" ");
+			expression.toString(sb, offset);
+			sb.append(") ");
+			if (formula instanceof SMTQuantifiedFormula) {
+				((SMTQuantifiedFormula) formula).toString(sb, offset, true);
+			} else {
+				formula.toString(sb, offset, true);
+			}
 		}
-		sb.append("))))");
+
 	}
 
 	@Override

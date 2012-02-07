@@ -374,7 +374,8 @@ public class SMTThroughVeriT extends Translator {
 				type.getSource(), type);
 		final SMTSortSymbol targetSymbol = parseOneOfPairTypes(
 				type.getTarget(), type);
-		return SMTFactoryVeriT.makePairSortSymbol(sourceSymbol, targetSymbol);
+		return SMTFactoryVeriT.makePairSortSymbol(smtlibVersion, sourceSymbol,
+				targetSymbol);
 	}
 
 	private void addBooleanAssumption(final SMTLogic logic) {
@@ -465,7 +466,7 @@ public class SMTThroughVeriT extends Translator {
 		if (signature instanceof SMTSignatureV1_2Verit) {
 			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
 		} else {
-			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
+			((SMTSignatureV2_0Verit) signature).addPairSortAndFunction();
 		}
 	}
 
@@ -607,7 +608,7 @@ public class SMTThroughVeriT extends Translator {
 						((SMTSignatureV1_2Verit) signature)
 								.addPairSortAndFunction();
 					} else {
-						((SMTSignatureV1_2Verit) signature)
+						((SMTSignatureV2_0Verit) signature)
 								.addPairSortAndFunction();
 					}
 					typeMap.put(baseType, sortSymbol);
@@ -657,7 +658,7 @@ public class SMTThroughVeriT extends Translator {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
 		final SMTSortSymbol right = translateTypeName(type.getRight());
-		return SMTFactoryVeriT.makePairSortSymbol(left, right);
+		return SMTFactoryVeriT.makePairSortSymbol(smtlibVersion, left, right);
 	}
 
 	/**
@@ -711,8 +712,8 @@ public class SMTThroughVeriT extends Translator {
 
 			// Creating the macro
 			final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
-					macroName, termChildren, lambdaVar, formulaChild,
-					expressionTerm, sig);
+					smtlibVersion, macroName, termChildren, lambdaVar,
+					formulaChild, expressionTerm, sig);
 
 			sig.addMacro(macro);
 			final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
@@ -728,8 +729,8 @@ public class SMTThroughVeriT extends Translator {
 
 			// Creating the macro
 			final SMTSetComprehensionMacro macro = makeSetComprehensionMacro(
-					macroName, termChildren, lambdaVar, formulaChild,
-					expressionTerm, sig);
+					smtlibVersion, macroName, termChildren, lambdaVar,
+					formulaChild, expressionTerm, sig);
 
 			sig.addMacro(macro);
 			final SMTMacroSymbol macroSymbol = makeMacroSymbol(macroName,
@@ -1775,9 +1776,9 @@ public class SMTThroughVeriT extends Translator {
 		final SMTTerm[] expressionTerm = smtTerms(qExp);
 
 		// obtaining the expression type
-		SMTSortSymbol expressionSymbol = typeMap.get(expression.getType());
-		if (expressionSymbol == null) {
-			expressionSymbol = translateTypeName(expression.getType());
+		SMTSortSymbol expressionSort = typeMap.get(expression.getType());
+		if (expressionSort == null) {
+			expressionSort = translateTypeName(expression.getType());
 		}
 		final String macroName = signature.freshSymbolName(SMTMacroSymbol.CSET);
 
@@ -1785,7 +1786,7 @@ public class SMTThroughVeriT extends Translator {
 		boundIdentifiers.subList(top, boundIdentifiers.size()).clear();
 
 		return translateComprehensionSet(macroName, formulaChild,
-				expressionTerm[0], expressionSymbol, termChildren);
+				expressionTerm[0], expressionSort, termChildren);
 	}
 
 	/**
@@ -2391,10 +2392,21 @@ public class SMTThroughVeriT extends Translator {
 							unionTerm, newVars.get(i));
 				}
 			} else {
-				// TODO SMT 2.0 case
+				SMTSignatureV2_0Verit sig = (SMTSignatureV2_0Verit) signature;
+
+				unionTerm = SMTFactoryVeriT.makeMacroTerm(SMTMacroFactoryV2_0
+						.getMacroSymbol(SMTVeriTOperatorV2_0.BUNION_OP, sig),
+						newVars.get(0), newVars.get(1));
+				for (int i = 2; i < newVars.size(); i++) {
+					unionTerm = SMTFactoryVeriT.makeMacroTerm(
+							SMTMacroFactoryV2_0.getMacroSymbol(
+									SMTVeriTOperatorV2_0.BUNION_OP, sig),
+							unionTerm, newVars.get(i));
+				}
+
 			}
 		}
-		return makeEqual(new SMTTerm[] { e0, unionTerm }, V1_2);
+		return makeEqual(new SMTTerm[] { e0, unionTerm }, smtlibVersion);
 	}
 
 	/**
