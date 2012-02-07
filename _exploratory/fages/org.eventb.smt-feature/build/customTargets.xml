@@ -102,6 +102,10 @@
 			<fileset dir="${builder}/../../org.eventb.smt.verit" />
 		</copy>
 
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.cvc3">
+			<fileset dir="${builder}/../../org.eventb.smt.cvc3" />
+		</copy>
 	</target>
 
 	<!-- Fix product version -->

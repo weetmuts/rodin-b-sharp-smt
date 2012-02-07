@@ -10,6 +10,7 @@
 
 package org.eventb.smt.tests;
 
+import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
 import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC4;
@@ -458,6 +459,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			args = "-lang smt2";
 		}
 		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
+	}
+
+	protected void setPreferencesForIntegratedCvc3Test() {
+		/**
+		 * SMT-LIB 2.0
+		 */
+		solverConfig = getCvc3Config();
 	}
 
 	protected void setPreferencesForCvc4Test() {
