@@ -6,7 +6,8 @@ Bundle-Version: 0.1.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eventb.ui,
  org.eventb.smt.core,
- org.eventb.smt.verit
+ org.eventb.smt.verit,
+ org.eventb.smt.cvc3;bundle-version="0.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
 Export-Package: org.eventb.smt.internal.preferences.ui,
