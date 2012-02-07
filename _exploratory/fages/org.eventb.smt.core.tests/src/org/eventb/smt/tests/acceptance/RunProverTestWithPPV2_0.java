@@ -98,6 +98,28 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testUnsatIntegratedCvc3Call() {
+		setPreferencesForIntegratedCvc3Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("integrated_cvc3_unsat", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	public void testSatIntegratedCvc3Call() {
+		setPreferencesForIntegratedCvc3Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("integrated_cvc3_sat", hyps, "x > z", arith_te, !VALID);
+	}
+
+	@Test
 	@Ignore("CVC4 needs a known logic to be set")
 	public void testUnsatCvc4Call() {
 		setPreferencesForCvc4Test();
@@ -257,6 +279,17 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testTRUEPredIntegratedCVC3Call() {
+		setPreferencesForIntegratedCvc3Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
+
+		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
+	}
+
+	@Test
 	public void testTRUEPredAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -345,6 +378,17 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testBOOLSetIntegratedCVC3Call() {
+		setPreferencesForIntegratedCvc3Test();
+
+		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
+				"b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
+	}
+
+	@Test
 	public void testSetsEqualityZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -362,6 +406,21 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	@Test
 	public void testSetsEqualityCVC3Call() {
 		setPreferencesForCvc3Test();
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
+	@Test
+	public void testSetsEqualityIntegratedCVC3Call() {
+		setPreferencesForIntegratedCvc3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
