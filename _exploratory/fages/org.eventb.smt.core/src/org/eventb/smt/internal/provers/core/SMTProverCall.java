@@ -492,32 +492,21 @@ public abstract class SMTProverCall extends XProverCall2 {
 				benchmark = result.getSMTBenchmark();
 
 				translationPerformed = false;
-				if (solverConfig.getSmtlibVersion().equals(V1_2)) {
-					try {
+				try {
+					if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 						makeSMTBenchmarkFileV1_2();
-						translationPerformed = true;
-					} catch (IllegalArgumentException e) {
-						if (DEBUG) {
-							debugBuilder.append("Due to translation failure, ");
-							debugBuilder
-									.append("the solver won't be launched.\n");
-							e.printStackTrace();
-						}
-					}
-
-				} else {
-					/**
-					 * smtlibVersion.equals(V2_0)
-					 */
-					try {
+					} else {
+						/**
+						 * smtlibVersion.equals(V2_0)
+						 */
 						makeSMTBenchmarkFileV2_0();
-						translationPerformed = true;
-					} catch (IllegalArgumentException e) {
-						if (DEBUG) {
-							debugBuilder.append("Due to translation failure, ");
-							debugBuilder
-									.append("the solver won't be launched.\n");
-						}
+					}
+					translationPerformed = true;
+				} catch (IllegalArgumentException e) {
+					if (DEBUG) {
+						debugBuilder.append("Due to translation failure, ");
+						debugBuilder.append("the solver won't be launched.\n");
+						e.printStackTrace();
 					}
 				}
 

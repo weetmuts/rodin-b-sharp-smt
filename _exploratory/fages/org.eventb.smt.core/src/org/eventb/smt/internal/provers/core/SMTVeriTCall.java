@@ -16,6 +16,8 @@ import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.internal.provers.core.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
+import static org.eventb.smt.internal.provers.core.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
@@ -383,56 +385,64 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	@Override
 	protected void makeSMTBenchmarkFileV2_0() throws IOException {
-		sv = V2_0;
+		if (DEBUG) {
+			sv = V2_0;
 
-		/**
-		 * Updates the name of the benchmark (the name originally given could
-		 * have been changed by the translator if it was a reserved symbol)
-		 */
-		lemmaName = benchmark.getName();
+			/**
+			 * Updates the name of the benchmark (the name originally given
+			 * could have been changed by the translator if it was a reserved
+			 * symbol)
+			 */
+			lemmaName = benchmark.getName();
 
-		/**
-		 * Makes temporary files
-		 */
-		makeTempFileNames();
+			/**
+			 * Makes temporary files
+			 */
+			makeTempFileNames();
 
-		/**
-		 * Prints the benchmark with macros in a file
-		 */
-		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-		benchmark.print(veriTBenchmarkWriter, PRINT_ANNOTATIONS,
-				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
-		veriTBenchmarkWriter.close();
-		if (!veriTBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
+			/**
+			 * Prints the benchmark with macros in a file
+			 */
+			final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
+			benchmark
+					.print(veriTBenchmarkWriter, PRINT_ANNOTATIONS,
+							!PRINT_GET_UNSAT_CORE_COMMANDS,
+							!PRINT_Z3_SPECIFIC_COMMANDS);
+			veriTBenchmarkWriter.close();
+			if (!veriTBenchmarkFile.exists()) {
+				System.out
+						.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			}
 
-		/**
-		 * Calls veriT to process the macros of the benchmark
-		 */
-		if (DEBUG_DETAILS) {
-			debugBuilder.append("Launching ").append(SMTSolver.VERIT)
-					.append(" with input:\n\n");
-			showVeriTBenchmarkFile();
-		}
+			/**
+			 * Calls veriT to process the macros of the benchmark
+			 */
+			if (DEBUG_DETAILS) {
+				debugBuilder.append("Launching ").append(SMTSolver.VERIT)
+						.append(" with input:\n\n");
+				showVeriTBenchmarkFile();
+			}
 
-		callVeriT(benchmark);
+			callVeriT(benchmark);
 
-		/**
-		 * Prints the SMT-LIB benchmark in a file
-		 */
-		if (macrosTranslated) {
-			final FileWriter smtBenchmarkWriter = new FileWriter(
-					smtBenchmarkFile);
-			smtBenchmarkWriter.write(veriTResult);
-			smtBenchmarkWriter.close();
+			/**
+			 * Prints the SMT-LIB benchmark in a file
+			 */
+			if (macrosTranslated) {
+				final FileWriter smtBenchmarkWriter = new FileWriter(
+						smtBenchmarkFile);
+				smtBenchmarkWriter.write(veriTResult);
+				smtBenchmarkWriter.close();
+			} else {
+				throw new IllegalArgumentException(veriTResult);
+			}
+			if (!smtBenchmarkFile.exists()) {
+				System.out.println(SmtProversCall_SMT_file_does_not_exist);
+			}
 		} else {
-			throw new IllegalArgumentException(veriTResult);
+			throw new IllegalArgumentException(
+					SMTVeriTCall_SMTLIBV2_0_deactivated);
 		}
-		if (!smtBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
-		}
-
 	}
 
 	@Override

@@ -21,7 +21,8 @@ import org.eventb.smt.internal.ast.SMTBenchmark;
  */
 public abstract class TranslationResult {
 	/**
-	 * Returns true if the translation produced a trivial predicate
+	 * Returns <code>true</code> if the translation produced a trivial
+	 * predicate, <code>false</code> otherwise.
 	 */
 	public abstract boolean isTrivial();
 
