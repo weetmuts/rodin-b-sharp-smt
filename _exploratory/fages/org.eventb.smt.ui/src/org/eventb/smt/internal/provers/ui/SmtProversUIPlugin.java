@@ -10,20 +10,10 @@
 
 package org.eventb.smt.internal.provers.ui;
 
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.parsePreferencesString;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
-
-import java.util.List;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -47,24 +37,6 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		// Do nothing
 	}
 
-	private static void addSolverConfig(
-			final SMTSolverConfiguration solverConfig) {
-		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
-		final String preferences = preferenceStore
-				.getString(SOLVER_PREFERENCES_ID);
-		List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(preferences);
-		if (!solverConfigs.contains(solverConfig)) {
-			solverConfigs.add(solverConfig);
-		}
-		preferenceStore.setValue(SOLVER_PREFERENCES_ID,
-				SMTSolverConfiguration.toString(solverConfigs));
-	}
-
-	private static void setVeriTPath() {
-		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
-		preferenceStore.setValue(VERIT_PATH_ID, getVeriTPath());
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,9 +48,6 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		setVeriTPath();
-		addSolverConfig(getVeriTConfig());
-		addSolverConfig(getCvc3Config());
 	}
 
 	/**

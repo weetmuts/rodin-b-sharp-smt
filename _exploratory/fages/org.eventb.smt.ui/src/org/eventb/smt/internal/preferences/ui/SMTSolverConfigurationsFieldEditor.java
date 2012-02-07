@@ -11,7 +11,10 @@
 package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
+import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
+import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
+import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +150,8 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		tableViewer.setColumnProperties(COLUMNS_LABELS);
 		tableViewer
 				.setContentProvider(new SMTSolverConfigurationsContentProvider());
-		tableViewer.setLabelProvider(new SMTSolverConfigurationsLabelProvider());
+		tableViewer
+				.setLabelProvider(new SMTSolverConfigurationsLabelProvider());
 
 		return tableViewer;
 	}
@@ -171,6 +175,13 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+	}
+
+	private void addSolverConfig(final SMTSolverConfiguration solverConfig) {
+		// FIXME this test is not robust
+		if (!solverConfigs.contains(solverConfig)) {
+			solverConfigs.add(solverConfig);
+		}
 	}
 
 	/**
@@ -483,10 +494,11 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		final String preferences = getPreferenceStore().getString(
 				getPreferenceName());
 		solverConfigs = SMTPreferences.parsePreferencesString(preferences);
+		addSolverConfig(getVeriTConfig());
+		addSolverConfig(getCvc3Config());
 		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
-		selectedSolverIndex = getPreferenceStore().getInt(
-				SMTPreferences.SOLVER_INDEX_ID);
+		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
 		setSelectedSolverIndex(!SELECTION_REQUESTED);
 	}
 
@@ -498,8 +510,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				.parsePreferencesString(defaultPreferences);
 		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
-		selectedSolverIndex = getPreferenceStore().getInt(
-				SMTPreferences.SOLVER_INDEX_ID);
+		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
 		setSelectedSolverIndex(!SELECTION_REQUESTED);
 		selectionChanged();
 	}
@@ -511,8 +522,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		if (preferences != null) {
 			getPreferenceStore().setValue(getPreferenceName(), preferences);
 		}
-		getPreferenceStore().setValue(SMTPreferences.SOLVER_INDEX_ID,
-				selectedSolverIndex);
+		getPreferenceStore().setValue(SOLVER_INDEX_ID, selectedSolverIndex);
 	}
 
 	@Override

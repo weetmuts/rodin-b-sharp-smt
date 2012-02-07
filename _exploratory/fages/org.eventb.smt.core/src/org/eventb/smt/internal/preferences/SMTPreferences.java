@@ -10,6 +10,7 @@
 
 package org.eventb.smt.internal.preferences;
 
+import static java.lang.System.getProperty;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSet;
@@ -47,10 +48,9 @@ public class SMTPreferences {
 	public static final String SOLVER_INDEX_ID = "solverindex";
 	public static final String SOLVER_PREFERENCES_ID = "solverpreferences";
 	public static final String DEFAULT_SOLVER_PREFERENCES = "";
-	public static final String DEFAULT_TRANSLATION_PATH = System
-			.getProperty("java.io.tmpdir");
+	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir");
 	public static final int DEFAULT_SOLVER_INDEX = -1;
-	public static final String DEFAULT_VERIT_PATH = "";
+	public static final String DEFAULT_VERIT_PATH = getVeriTPath();
 
 	/**
 	 * Creates a list with all solverConfig detail elements from the preferences
