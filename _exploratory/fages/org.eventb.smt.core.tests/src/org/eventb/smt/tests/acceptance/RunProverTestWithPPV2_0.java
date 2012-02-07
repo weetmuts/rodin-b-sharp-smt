@@ -191,6 +191,28 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testUnsatIntegratedVeriTCall() {
+		setPreferencesForIntegratedVeriTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("integrated_verit_unsat", hyps, "x < z", arith_te, VALID);
+	}
+
+	@Test
+	public void testSatIntegratedVeritCall() {
+		setPreferencesForIntegratedVeriTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"x < y", //
+				"y < z");
+
+		doTest("integrated_verit_sat", hyps, "x > z", arith_te, !VALID);
+	}
+
+	@Test
 	public void testUnsatZ3Call() {
 		setPreferencesForZ3Test();
 
@@ -257,6 +279,17 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	public void testTRUEPredIntegratedVeriTCall() {
+		setPreferencesForIntegratedVeriTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"b = TRUE", //
+				"c ≠ FALSE");
+
+		doTest("true_pred_unsat", hyps, "b = c", arith_te, VALID);
+	}
+
+	@Test
 	public void testBOOLSetZ3Call2() {
 		setPreferencesForZ3Test();
 
@@ -281,6 +314,17 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	@Test
 	public void testBOOLSetVeriTCall2() {
 		setPreferencesForVeriTTest();
+
+		final List<String> hyps = Arrays.asList( //
+				"b↦c ∈ BOOL×BOOL", //
+				"b↦c = TRUE↦FALSE");
+
+		doTest("test_bool_set2", hyps, "b = TRUE", arith_te, VALID);
+	}
+
+	@Test
+	public void testBOOLSetIntegratedVeriTCall2() {
+		setPreferencesForIntegratedVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c ∈ BOOL×BOOL", //
@@ -348,6 +392,21 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	@Test
 	public void testSetsEqualityVeriTCall() {
 		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList( //
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
+
+		doTest("SetsEquality", hyps, "p = q", te, VALID);
+	}
+
+	@Test
+	public void testSetsEqualityIntegratedVeriTCall() {
+		setPreferencesForIntegratedVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
