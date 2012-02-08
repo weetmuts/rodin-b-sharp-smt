@@ -508,6 +508,8 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				.getDefaultString(getPreferenceName());
 		solverConfigs = SMTPreferences
 				.parsePreferencesString(defaultPreferences);
+		addSolverConfig(getVeriTConfig());
+		addSolverConfig(getCvc3Config());
 		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
