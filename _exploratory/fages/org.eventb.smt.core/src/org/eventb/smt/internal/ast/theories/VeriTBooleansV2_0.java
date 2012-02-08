@@ -25,7 +25,8 @@ public class VeriTBooleansV2_0 extends SMTTheory implements ISMTBooleanSort {
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static final String BOOLS_THEORY_NAME = "Bools";
-	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
+	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
+			V2_0);
 
 	private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
 			SMTSymbol.BOOL, !PREDEFINED, V2_0);

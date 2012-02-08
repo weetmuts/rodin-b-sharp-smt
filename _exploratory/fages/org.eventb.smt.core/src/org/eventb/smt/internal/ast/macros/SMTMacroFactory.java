@@ -98,13 +98,13 @@ public abstract class SMTMacroFactory {
 	private static final String SND_PAIR_SORT_NAME = "'t";
 
 	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
+			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME, V1_2);
 
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
+			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME, V1_2);
 
 	public static SMTSortSymbol PAIR_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol("(Pair 's 't)");
+			.makePolymorphicSortSymbol("(Pair 's 't)", V1_2);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };

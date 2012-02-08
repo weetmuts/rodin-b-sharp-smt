@@ -42,8 +42,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private static final String SND_PAIR_SORT_NAME = "'t";
 
 	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
-			final String symbolName) {
-		return new SMTPolymorphicSortSymbol(symbolName);
+			final String symbolName, SMTLIBVersion smtlibVersion) {
+		return new SMTPolymorphicSortSymbol(symbolName, smtlibVersion);
 	}
 
 	/**
@@ -51,12 +51,16 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
-	public static SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol("(Pair 's 't)");
-	public static SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol("Pair");
+	public static SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol(
+			"(Pair 's 't)", V1_2);
+	public static SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol(
+			"Pair", V2_0);
 
-	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(FST_PAIR_SORT_NAME);
+	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(
+			FST_PAIR_SORT_NAME, V1_2);
 
-	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(SND_PAIR_SORT_NAME);
+	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
+			SND_PAIR_SORT_NAME, V1_2);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };

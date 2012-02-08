@@ -292,7 +292,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTePreds() {
 		final Set<String> expectedPredicates = new HashSet<String>(
-				Arrays.asList("(S0 S)"));
+				Arrays.asList("S0 (S) Bool"));
 
 		testTypeEnvironmentPreds(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
@@ -301,7 +301,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTeSorts() {
 		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList(
-				"Bool", "(Pair 's 't)", "Int", "S"));
+				"Bool", "PB", "S", "Pair", "PZ","Int"));
 
 		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
@@ -310,11 +310,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	public void testTypeEnvironmentPredicateSimpleTeFuns() {
 		final Set<String> expectedPredicates = new HashSet<String>(
 				Arrays.asList(//
-						"(pair 's 't (Pair 's 't))", //
-						"(mod Int Int Int)", //
-						"(g S)", //
-						"(expn Int Int Int)", //
-						"(divi Int Int Int)"));
+						"g () S", //
+						"INTS () PZ",//
+						"BOOLS () PB"));
 
 		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedPredicates,
 				"g = g");
@@ -323,19 +321,20 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateDefaultTe() {
 		final Set<String> expectedPredicates = new HashSet<String>(
-				Arrays.asList("(AB (Pair Int Int))"));
+				Arrays.asList("AB ((Pair Int Int)) Bool"));
 
 		testTypeEnvironmentPreds(defaultLogic, defaultTe, expectedPredicates,
 				"AB = AB");
 	}
 
 	@Test
+	// TODO: Check if it is not necessary to create fresh names for macros.
 	public void testReservedQNames() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
 		testTranslationV2_0VerDefaultSolver(te,
 				"∀UNION_0⦂UNION_1·UNION_0 ∈ {UNION_0}",
-				"(forall (?UNION_00 UNION_1) (in ?UNION_00 enum))");
+				"(forall ((UNION_0 UNION_1)) (in UNION_0 enum))");
 	}
 
 	/**
@@ -344,28 +343,26 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testPredAssop() {
 
-		testTranslationV2_0Default("(u = v)", "(iff u v)");
+		testTranslationV2_0Default("(u = v)", "(= u v)");
 
 		/**
 		 * land
 		 */
-		testTranslationV2_0Default("(a = b) ∧ (u = v)",
-				"(and (= a b) (iff u v))");
+		testTranslationV2_0Default("(a = b) ∧ (u = v)", "(and (= a b) (= u v))");
 		/**
 		 * land (multiple predicates)
 		 */
 		testTranslationV2_0Default("(a = b) ∧ (u = v) ∧ (r = s)",
-				"(and (= a b) (iff u v) (= r s))");
+				"(and (= a b) (= u v) (= r s))");
 		/**
 		 * lor
 		 */
-		testTranslationV2_0Default("(a = b) ∨ (u = v)",
-				"(or (= a b) (iff u v))");
+		testTranslationV2_0Default("(a = b) ∨ (u = v)", "(or (= a b) (= u v))");
 		/**
 		 * lor (multiple predicates)
 		 */
 		testTranslationV2_0Default("(a = b) ∨ (u = v) ∨ (r = s)",
-				"(or (= a b) (iff u v) (= r s))");
+				"(or (= a b) (= u v) (= r s))");
 	}
 
 	@Test
@@ -381,7 +378,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEquCnst() {
-		testTranslationV2_0Default("u = v", "(iff u v)");
+		testTranslationV2_0Default("u = v", "(= u v)");
 	}
 
 	/**
@@ -409,12 +406,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		 * limp
 		 */
 		testTranslationV2_0Default("(a < b ∧ b < c) ⇒ a < c",
-				"(implies (and (< a b) (< b c)) (< a c))");
+				"(=> (and (< a b) (< b c)) (< a c))");
 		/**
 		 * leqv
 		 */
 		testTranslationV2_0Default("(a ≤ b ∧ b ≤ a) ⇔ a = b",
-				"(iff (and (<= a b) (<= b a)) (= a b))");
+				"(= (and (<= a b) (<= b a)) (= a b))");
 	}
 
 	/**
@@ -423,7 +420,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testPredUna() {
 		testTranslationV2_0Default("¬ ((a ≤ b ∧ b ≤ c) ⇒ a < c)",
-				"(not (implies (and (<= a b) (<= b c)) (< a c)))");
+				"(not (=> (and (<= a b) (<= b c)) (< a c)))");
 	}
 
 	/**
