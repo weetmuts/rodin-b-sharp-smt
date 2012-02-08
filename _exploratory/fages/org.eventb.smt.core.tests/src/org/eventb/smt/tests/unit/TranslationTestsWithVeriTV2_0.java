@@ -245,11 +245,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	public void testTypeEnvironmentFunctionSimpleTe() {
 		final Set<String> expectedFunctions = new HashSet<String>(
 				Arrays.asList( //
-						"(g S)", //
-						"(pair 's 't (Pair 's 't))", //
-						"(expn Int Int Int)", //
-						"(mod Int Int Int)", //
-						"(divi Int Int Int)"));
+						"INTS () PZ", //
+						"g () S", //
+						"BOOLS () PB"));
 
 		testTypeEnvironmentFuns(defaultLogic, simpleTe, expectedFunctions,
 				"g = g");
@@ -278,10 +276,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testTypeEnvironmenSortSimpleTe() {
 		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList( //
+				"Bool", //
+				"PB", //
 				"S", //
-				"(Pair 's 't)", //
-				"Int", //
-				"Bool"));
+				"Pair",//
+				"PZ",//
+				"Int"));
 
 		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
@@ -301,7 +301,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	@Test
 	public void testTypeEnvironmentPredicateSimpleTeSorts() {
 		final Set<String> expectedSorts = new HashSet<String>(Arrays.asList(
-				"Bool", "PB", "S", "Pair", "PZ","Int"));
+				"Bool", "PB", "S", "Pair", "PZ", "Int"));
 
 		testTypeEnvironmentSorts(defaultLogic, simpleTe, expectedSorts, "g = g");
 	}
