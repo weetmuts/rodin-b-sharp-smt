@@ -163,8 +163,7 @@ public class SMTPPCall extends SMTProverCall {
 	 * Parses the solver result to find mentioned assertion labels. If the goal
 	 * label is mentioned, <code>goalNeeded</code> becomes <code>true</code>,
 	 * else <code>false</code>. If some hypothesis label is mentioned, the
-	 * corresponding hypotheses are saved in <code>neededHypotheses</code>, else
-	 * <code>neededHypotheses</code> stays <code>null</code>.
+	 * corresponding hypotheses are saved in <code>neededHypotheses</code>.
 	 * </p>
 	 * <p>
 	 * When this method is called, the solverResult is assumed to contain an
@@ -196,8 +195,6 @@ public class SMTPPCall extends SMTProverCall {
 			}
 		}
 
-		if (!foundNeededHypotheses.isEmpty()) {
-			neededHypotheses = foundNeededHypotheses;
-		}
+		neededHypotheses = foundNeededHypotheses;
 	}
 }
