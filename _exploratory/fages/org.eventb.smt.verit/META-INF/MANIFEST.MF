@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
+Bundle-Name: %PluginName
 Bundle-SymbolicName: org.eventb.smt.verit;singleton:=true
 Bundle-Version: 0.8.0.qualifier
-Bundle-Vendor: %providerName
+Bundle-Vendor: %ProviderName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eventb.smt.core;bundle-version="0.1.0",
  org.eventb.core;bundle-version="2.4.0",

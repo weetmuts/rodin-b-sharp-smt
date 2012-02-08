@@ -11,7 +11,6 @@
 package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
@@ -495,7 +494,8 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				getPreferenceName());
 		solverConfigs = SMTPreferences.parsePreferencesString(preferences);
 		addSolverConfig(getVeriTConfig());
-		addSolverConfig(getCvc3Config());
+		// TODO uncomment when fragments are added
+		// addSolverConfig(getCvc3Config());
 		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
@@ -509,7 +509,8 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		solverConfigs = SMTPreferences
 				.parsePreferencesString(defaultPreferences);
 		addSolverConfig(getVeriTConfig());
-		addSolverConfig(getCvc3Config());
+		// TODO uncomment when fragments are added
+		// addSolverConfig(getCvc3Config());
 		solversTableViewer.setInput(solverConfigs);
 		solversTableViewer.refresh();
 		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);

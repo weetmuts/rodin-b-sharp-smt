@@ -571,9 +571,6 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
 				"(not (forall ((x Int)) (exists ((x0 Int)) (and (= x0 (+ x 1)) (S x0)))))");
-
-		testTranslationV2_0Default("(a ÷ b) = 1",
-				"(= (and (<= a b) (>= b c)) (< (divi a b) (mod c b)))");
 	}
 
 	@Test

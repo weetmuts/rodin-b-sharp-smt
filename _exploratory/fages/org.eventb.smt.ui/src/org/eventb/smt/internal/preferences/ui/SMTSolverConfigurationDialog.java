@@ -17,7 +17,6 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
 import static org.eventb.smt.internal.provers.core.SMTSolver.getSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.getVersion;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
@@ -205,9 +204,10 @@ public class SMTSolverConfigurationDialog extends Dialog {
 					errBuilder.append("The following solver IDs are reserved:");
 					errBuilder.append(" '");
 					errBuilder.append(getVeriTConfig().getId());
-					errBuilder.append("', ");
-					errBuilder.append("'");
-					errBuilder.append(getCvc3Config().getId());
+					// TODO uncomment when fragments are created
+					// errBuilder.append("', ");
+					// errBuilder.append("'");
+					// errBuilder.append(getCvc3Config().getId());
 					errBuilder.append("'.");
 					UIUtils.showError(errBuilder.toString());
 				}
@@ -234,8 +234,9 @@ public class SMTSolverConfigurationDialog extends Dialog {
 
 	boolean validId(final String id) {
 		return !id.isEmpty() && !usedIds.contains(id)
-				&& !id.equals(getVeriTConfig().getId())
-				&& !id.equals(getCvc3Config().getId());
+				&& !id.equals(getVeriTConfig().getId());
+		// TODO uncomment when fragments are created
+		// && !id.equals(getCvc3Config().getId());
 	}
 
 	static boolean validPath(final String path) {

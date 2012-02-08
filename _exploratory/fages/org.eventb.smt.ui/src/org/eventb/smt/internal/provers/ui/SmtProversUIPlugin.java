@@ -10,7 +10,6 @@
 
 package org.eventb.smt.internal.provers.ui;
 
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
@@ -86,7 +85,8 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		addSolverConfig(getVeriTConfig());
-		addSolverConfig(getCvc3Config());
+		// TODO uncomment when fragments are created for each target platform
+		// addSolverConfig(getCvc3Config());
 		setSelectedSolverIndex();
 		setVeriTPath();
 	}
