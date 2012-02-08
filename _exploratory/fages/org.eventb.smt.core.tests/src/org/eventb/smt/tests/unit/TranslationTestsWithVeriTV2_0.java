@@ -492,7 +492,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	}
 
 	@Test
-	// @Ignore("Not yet implemented")
+	@Ignore("Unsupported operators")
 	public void testArithExprBinopExponentialUnsupported() {
 		/**
 		 * expn
@@ -503,18 +503,6 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		 */
 		testTranslationV2_0Default("a ÷ b = c", "(= (divi a b) c)");
 
-		/**
-		 * mod
-		 */
-		testTranslationV2_0Default("a mod b = c", "(= (mod a b) c)");
-	}
-
-	@Test
-	public void testArithExprBinopUnsupported() {
-		/**
-		 * div
-		 */
-		testTranslationV2_0Default("a ÷ b = c", "(= (divi a b) c)");
 		/**
 		 * mod
 		 */
@@ -551,11 +539,11 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		/**
 		 * uminus (right child)
 		 */
-		testTranslationV2_0Default("a = −b", "(= a (~ b))");
+		testTranslationV2_0Default("a = −b", "(= a (- b))");
 		/**
 		 * uminus (left child)
 		 */
-		testTranslationV2_0Default("−a = b", "(= (~ a) b)");
+		testTranslationV2_0Default("−a = b", "(= (- a) b)");
 	}
 
 	/**
@@ -617,7 +605,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		/**
 		 * uminus
 		 */
-		testTranslationV2_0Default("a = (−b)", "(= a (~ b))");
+		testTranslationV2_0Default("a = (−b)", "(= a (- b))");
 
 		/**
 		 * id
@@ -641,12 +629,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		/**
 		 * exists
 		 */
-		testTranslationV2_0Default("∃x·x∈s", "(exists (?x R) (in ?x s))");
+		testTranslationV2_0Default("∃x·x∈s", "(exists ((x R)) (in x s))");
 		/**
 		 * exists (multiple identifiers)
 		 */
 		testTranslationV2_0Default("∃x,y·x∈s∧y∈s",
-				"(exists (?x R) (?y R) (and (in ?x s) (in ?y s)))");
+				"(exists ((x R) (y R)) (and (in x s) (in y s)))");
 	}
 
 	@Test
@@ -654,12 +642,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		/**
 		 * forall
 		 */
-		testTranslationV2_0Default("∀x·x∈s", "(forall (?x R) (in ?x s))");
+		testTranslationV2_0Default("∀x·x∈s", "(forall ((x R)) (in x s))");
 		/**
 		 * forall (multiple identifiers)
 		 */
 		testTranslationV2_0Default("∀x,y·x∈s∧y∈s",
-				"(forall (?x R) (?y R) (and (in ?x s) (in ?y s)))");
+				"(forall ((x R) (y R)) (and (in x s) (in y s)))");
 
 	}
 
@@ -675,7 +663,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
 				base.getPredicate(), null);
 		testTranslationV2_0Verit(p,
-				"(forall (?x R) (?x0 R) (and (in ?x s) (in ?x0 s)))",
+				"(forall ((x R) (x0 R)) (and (in x s) (in x0 s)))",
 				"twice same decl", VERIT.toString());
 	}
 
@@ -740,26 +728,21 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	}
 
 	@Test
-	public void testRule15() {
-
+	public void testRule15A() {
 		/**
 		 * ∈ , ⊆ , ⊂
 		 */
 		testTranslationV2_0Default("(a ∈ A) ∧ (A ⊆ A)",
 				"(and (in a A) (subseteq A A))");
+	}
 
+	@Test
+	public void testRule15B() {
 		/**
 		 * < , > , ⇒ , =
 		 */
 		testTranslationV2_0Default("(a < b ∧ b > c) ⇒ a = c",
-				"(implies (and (< a b) (> b c)) (= a c))");
-
-		/**
-		 * ≤, ∧ , ≥ , ⇔
-		 */
-		testTranslationV2_0Default("(a ≤ b ∧ b ≥ c) ⇔ (a ÷ b) < (c mod b)",
-				"(iff (and (<= a b) (>= b c)) (< (divi a b) (mod c b)))");
-
+				"(=> (and (< a b) (> b c)) (= a c))");
 	}
 
 	@Test
@@ -1164,7 +1147,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final Map<String, String> expectedNotPredefinedMacros = new HashMap<String, String>();
 		expectedNotPredefinedMacros
 				.put("cset",
-						"cset ((elem Pair)) (exists ((x Int)) (and (= elem (pair x (+ x x))) (forall ((y Int)) (and (in y Nat) (forall ((z Int)) (and (in z Nat) (= (+ z y) x)))))");
+						"cset ((elem (Pair Int Int))) (exists ((x Int)) (and (= elem (pair x (+ x x))) (forall ((y Int)) (and (in y Nat) (forall ((z Int)) (and (in z Nat) (= (+ z y) x)))))");
 		testContainsNotPredefinedMacros(
 				te,
 				"((λx· ∀y· (y ∈ ℕ ∧ ∀z·(z ∈ ℕ ∧ (z + y = x	))) ∣ x+x) = ∅) ∧ (∀t·(t≥0∨t<0))",
@@ -1200,7 +1183,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final Map<String, String> expectedEnumerations = new HashMap<String, String>();
 		expectedEnumerations
 				.put("enum",
-						"(enum (lambda (?elem Pair) . (or\n\t\t(= ?elem (pair 2 1))\n\t\t(= ?elem (pair 3 2))\n)))");
+						"(enum (lambda (?elem (Pair Int Int)) . (or\n\t\t(= ?elem (pair 2 1))\n\t\t(= ?elem (pair 3 2))\n)))");
 		testContainsNotPredefinedMacros(te, "{2 ↦ 1,3 ↦ 2} ⊂ pred",
 				expectedEnumerations);
 	}

@@ -124,13 +124,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (BOOL BOOL) true", 0, false,
 			false, EMPTY_MACROS);
 
-	// TODO: Create test
-	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
-			ISMAX,
-			ISMAX
-					+ " ((?ISMAX_0 Int) (?ISMAX_1 (Int Bool))) (Int Bool) (and (in ?ISMAX_0 ?ISMAX_1) (forall ((?ISMAX_2 Int)) (=> (in ?ISMAX_2 ?ISMAX_1) (<= ?ISMAX_2 ?ISMAX_0))))",
-			1, false, false, INS);
-
 	// TODO Implement 2.0 version of the macros below:
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
@@ -138,7 +131,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_SURJECTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_BIJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro ISMIN_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro REL_OVR_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro ID_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = BUNION_MACRO;
@@ -166,6 +158,20 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ FINITE
 					+ "((?FINITE_0 Bool) (?FINITE_1 (s Bool)) (?FINITE_2 (s Int)) (?FINITE_3 Int)) (s Bool) (= ?FINITE_0 (and (forall ((?FINITE_4 s)) (=> (in ?FINITE_4 ?FINITE_1) (in (?FINITE_2 ?FINITE_4) (range 1 ?FINITE_3))))(forall ((?FINITE_4 s)(?FINITE_5 s)) (=> (and (in ?FINITE_4 ?FINITE_1) (in ?FINITE_5 ?FINITE_1) (not (= ?FINITE_4 ?FINITE_5))) (not (= (?FINITE_2 ?FINITE_4)(?FINITE_2 ?FINITE_5)))))))))",
 			1, false, false, IN_AND_RANGE_INTEGER);
+
+	// TODO: Create test
+	public static final SMTPredefinedMacro ISMIN_MACRO = new SMTPredefinedMacro(
+			ISMIN,
+			ISMIN
+					+ "((?ISMIN_0 Int) (?ISMIN_1 (Int Bool))) (Int Bool) (and (in ?ISMIN_0 ?ISMIN_1) (forall ((?ISMIN_2 Int)) (=> (in ?ISMIN_2 ?ISMIN_1)(<= ?ISMIN_0 ?ISMIN_2))))",
+			1, false, false, INS);
+
+	// TODO: Create test
+	public static final SMTPredefinedMacro ISMAX_MACRO = new SMTPredefinedMacro(
+			ISMAX,
+			ISMAX
+					+ " ((?ISMAX_0 Int) (?ISMAX_1 (Int Bool))) (Int Bool) (and (in ?ISMAX_0 ?ISMAX_1) (forall ((?ISMAX_2 Int)) (=> (in ?ISMAX_2 ?ISMAX_1) (<= ?ISMAX_2 ?ISMAX_0))))",
+			1, false, false, INS);
 
 	public static enum SMTVeriTOperatorV2_0 {
 		BUNION_OP(BUNION_MACRO), BINTER_OP(BINTER_MACRO), EMPTY_OP(

@@ -282,19 +282,19 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	public static SMTSortSymbol makePairSortSymbol(SMTLIBVersion smtlibVersion,
 			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
-		if (smtlibVersion.equals(SMTLIBVersion.V1_2)) {
-			final StringBuffer sb = new StringBuffer();
-			sb.append("(Pair ");
-			sb.append(sourceSymbol.toString());
-			sb.append(" ");
-			sb.append(targetSymbol.toString());
-			sb.append(")");
-			return new SMTSortSymbol(sb.toString(), false, V1_2);
-		} else {
-			final StringBuffer sb = new StringBuffer();
-			sb.append("Pair");
-			return new SMTSortSymbol(sb.toString(), false, V2_0);
-		}
+		// if (smtlibVersion.equals(SMTLIBVersion.V1_2)) {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("(Pair ");
+		sb.append(sourceSymbol.toString());
+		sb.append(" ");
+		sb.append(targetSymbol.toString());
+		sb.append(")");
+		return new SMTSortSymbol(sb.toString(), false, V1_2);
+		// } else {
+		// final StringBuffer sb = new StringBuffer();
+		// sb.append("Pair");
+		// return new SMTSortSymbol(sb.toString(), false, V2_0);
+		// }
 
 	}
 
