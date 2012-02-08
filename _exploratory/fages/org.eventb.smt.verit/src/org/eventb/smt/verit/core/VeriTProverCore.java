@@ -24,7 +24,7 @@ import org.eventb.smt.verit.internal.core.ProverShell;
 public class VeriTProverCore extends Plugin {
 	public static final String PLUGIN_ID = "org.eventb.smt.verit";
 
-	private static final String VERIT_CONFIG_ID = "veriT";
+	private static final String VERIT_CONFIG_ID = "integrated_verit";
 	private static final String VERIT_PATH = ProverShell.getVeriTPath();
 	private static final String VERIT_ARGS = "-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3";
 

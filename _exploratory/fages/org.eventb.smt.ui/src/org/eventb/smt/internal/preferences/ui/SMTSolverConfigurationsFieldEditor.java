@@ -13,6 +13,7 @@ package org.eventb.smt.internal.preferences.ui;
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
+import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
 
@@ -178,8 +179,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	}
 
 	private void addSolverConfig(final SMTSolverConfiguration solverConfig) {
-		// FIXME this test is not robust
-		if (!solverConfigs.contains(solverConfig)) {
+		if (!contains(solverConfigs, solverConfig)) {
 			solverConfigs.add(solverConfig);
 		}
 	}

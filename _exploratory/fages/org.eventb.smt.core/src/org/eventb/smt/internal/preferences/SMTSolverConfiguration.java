@@ -155,6 +155,17 @@ public class SMTSolverConfiguration {
 		return usedIds;
 	}
 
+	public static boolean contains(
+			final List<SMTSolverConfiguration> solverConfigs,
+			final SMTSolverConfiguration solverConfig) {
+		for (final SMTSolverConfiguration curConfig : solverConfigs) {
+			if (curConfig.equals(solverConfig)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

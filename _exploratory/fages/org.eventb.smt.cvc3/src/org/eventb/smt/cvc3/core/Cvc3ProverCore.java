@@ -24,7 +24,7 @@ import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 public class Cvc3ProverCore extends Plugin {
 	public static final String PLUGIN_ID = "org.eventb.smt.cvc3";
 
-	private static final String CVC3_CONFIG_ID = "cvc3";
+	private static final String CVC3_CONFIG_ID = "integrated_cvc3";
 	private static final String CVC3_PATH = ProverShell.getCvc3Path();
 	private static final String CVC3_ARGS = "-lang smt2 -timeout 3";
 
