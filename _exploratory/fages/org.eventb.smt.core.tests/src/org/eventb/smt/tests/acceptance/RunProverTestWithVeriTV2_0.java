@@ -752,7 +752,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	//@Ignore("Subset has the same problem as cardinality")
+	// @Ignore("Subset has the same problem as cardinality")
 	public void testSubset() {
 		setPreferencesForAltErgoTest();
 
@@ -798,6 +798,30 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 
 		doTest("pair", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
+	}
+
+	@Test
+	public void testIsMin() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismin_2_0", hyps, "1 = min({1,2})", te, VALID);
+	}
+
+	@Test
+	public void testIsMax() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismax_2_0", hyps, "2 = max({1,2})", te, VALID);
 	}
 
 }

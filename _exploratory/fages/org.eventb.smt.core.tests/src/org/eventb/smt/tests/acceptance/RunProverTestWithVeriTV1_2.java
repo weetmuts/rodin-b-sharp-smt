@@ -747,4 +747,28 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		doTest("pair", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
 	}
 
+	@Test
+	public void testIsMin() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismin_1_2", hyps, "1 = min({1,2})", te, VALID);
+	}
+
+	@Test
+	public void testIsMax() {
+		setPreferencesForAltErgoTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismax_1_2", hyps, "2 = max({1,2})", te, VALID);
+	}
+
 }
