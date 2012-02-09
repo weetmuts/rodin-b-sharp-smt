@@ -242,6 +242,30 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	}
 
 	@Test
+	public void testTypeEnvironmentFunctionWithKBool() {
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList( //
+						"(expn Int Int Int)", //
+						"(mod Int Int Int)", //
+						"(divi Int Int Int)"));
+
+		testTypeEnvironmentFuns(defaultLogic, mTypeEnvironment(),
+				expectedFunctions, "bool(⊤) = bool(⊤)");
+	}
+
+	@Test
+	public void testTypeEnvironmentFunctionWithBool() {
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList( //
+						"(expn Int Int Int)", //
+						"(mod Int Int Int)", //
+						"(divi Int Int Int)"));
+
+		testTypeEnvironmentFuns(defaultLogic, mTypeEnvironment(),
+				expectedFunctions, "BOOL = {TRUE,FALSE}");
+	}
+
+	@Test
 	public void testTypeEnvironmentFunctionSimpleTe() {
 		final Set<String> expectedFunctions = new HashSet<String>(
 				Arrays.asList( //
