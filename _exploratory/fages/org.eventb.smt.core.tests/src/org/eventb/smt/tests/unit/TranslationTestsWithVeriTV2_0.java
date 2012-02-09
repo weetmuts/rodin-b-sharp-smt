@@ -253,6 +253,31 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 				"g = g");
 	}
 
+	// "∀x·x∈s"
+	@Test
+	public void testTypeEnvironmentFunctionWithKBool() {
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList( //
+						"INTS () PZ", //
+						"BOOLS () PB" //
+				));
+
+		testTypeEnvironmentFuns(defaultLogic, mTypeEnvironment("s", "ℙ(ℤ)"),
+				expectedFunctions, "∀x·x∈s ∧ TRUE ∈ BOOL");
+	}
+
+	@Test
+	public void testTypeEnvironmentFunctionWithBool() {
+		final Set<String> expectedFunctions = new HashSet<String>(
+				Arrays.asList( //
+						"INTS () PZ", //
+						"BOOLS () PB" //
+				));
+
+		testTypeEnvironmentFuns(defaultLogic, mTypeEnvironment(),
+				expectedFunctions, "BOOL = {TRUE,FALSE}");
+	}
+
 	@Test
 	// TODO remove the exception expectation when veriT translation can handle
 	// this kind of expression
