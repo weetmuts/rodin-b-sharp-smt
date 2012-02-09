@@ -10,31 +10,44 @@
 
 package org.eventb.smt.internal.provers.ui;
 
+import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.parsePreferencesString;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
+import static org.eventb.smt.internal.provers.core.AutoTactics.makeSMTPPTactic;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eventb.core.preferences.IPrefMapEntry;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
+import org.eventb.core.seqprover.ICombinatorDescriptor;
+import org.eventb.core.seqprover.ICombinedTacticDescriptor;
+import org.eventb.internal.ui.preferences.tactics.TacticsProfilesCache;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.ui.EventBUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("restriction")
 public class SmtProversUIPlugin extends AbstractUIPlugin {
 	/**
 	 * plug-in id
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.ui";
+
+	private static final String AUTO_TACTIC_SMTPP_PROFILE_ID = "Default Auto Tactic with SMT Profile";
 
 	/**
 	 * the shared instance
@@ -48,6 +61,14 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		// Do nothing
 	}
 
+	/**
+	 * Adds the given SMT-solver configuration to the SMT preferences.
+	 * 
+	 * FIXME the preferences should be located in the core plug-in
+	 * 
+	 * @param solverConfig
+	 *            the configuration to add
+	 */
 	private static void addSolverConfig(
 			final SMTSolverConfiguration solverConfig) {
 		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
@@ -61,25 +82,82 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 				SMTSolverConfiguration.toString(solverConfigs));
 	}
 
+	/**
+	 * Forces the selected solver index to <code>0</code> when a configuration
+	 * for an integrated solver is added and no configuration exists yet.
+	 */
 	private static void setSelectedSolverIndex() {
 		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
+		/**
+		 * We assume that an invalid solver index (> number of configurations)
+		 * can't be, because the only other way to modify the number of
+		 * configurations is handled correctly.
+		 */
 		if (preferenceStore.getInt(SOLVER_INDEX_ID) < 0) {
 			preferenceStore.setValue(SOLVER_INDEX_ID, 0);
 		}
 	}
 
+	/**
+	 * Sets veriT path to the path of the integrated veriT solver.
+	 */
 	private static void setVeriTPath() {
 		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
 		preferenceStore.setValue(VERIT_PATH_ID, getVeriTPath());
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Adds a new tactics profile in the Rodin platform preferences which is the
+	 * default auto tactics profile plus the SMT tactic inserted right after the
+	 * BoundedGoalWithFiniteHyps tactic.
 	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-	 * )
 	 */
+	private static void addSMTProfile() {
+		/**
+		 * Accesses the Event-B UI preferences
+		 */
+		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
+				.getPreferenceStore();
+		/**
+		 * Loads the list of tactics profiles
+		 */
+		final TacticsProfilesCache profiles = new TacticsProfilesCache(
+				eventbUIPrefStore);
+		profiles.load();
+		/**
+		 * Gets the default auto tactics profile
+		 */
+		final String defaultAutoTactics = getDefaultAutoTactics();
+		final IPrefMapEntry<ITacticDescriptor> defaultAuto = profiles
+				.getEntry(defaultAutoTactics);
+		final ITacticDescriptor defaultAutoTac = defaultAuto.getValue();
+		final ICombinedTacticDescriptor defaultAutoDesc = (ICombinedTacticDescriptor) defaultAutoTac;
+		final String combinatorId = defaultAutoDesc.getCombinatorId();
+		/**
+		 * Makes a copy of the unmodifiable list.
+		 */
+		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>(
+				defaultAutoDesc.getCombinedTactics());
+		/**
+		 * Adds the SMT PP tactic right after the
+		 * BoundedGoalWithFiniteHypotheses tactic. We used this position for
+		 * performance tests.
+		 */
+		final int afterBoundedGoalWithFiniteHyps = 5;
+		combinedTactics.add(afterBoundedGoalWithFiniteHyps, makeSMTPPTactic());
+		final ICombinatorDescriptor combinator = getAutoTacticRegistry()
+				.getCombinatorDescriptor(combinatorId);
+		final ICombinedTacticDescriptor defaultAutoWithSMTPP = combinator
+				.combine(combinedTactics, "SMTTactic");
+		/**
+		 * If the SMT profile does not exist yet, stores it in the preferences.
+		 */
+		if (profiles.getEntry(AUTO_TACTIC_SMTPP_PROFILE_ID) == null) {
+			profiles.add(AUTO_TACTIC_SMTPP_PROFILE_ID, defaultAutoWithSMTPP);
+			profiles.store();
+		}
+	}
+
 	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
@@ -89,6 +167,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		// addSolverConfig(getCvc3Config());
 		setSelectedSolverIndex();
 		setVeriTPath();
+		addSMTProfile();
 	}
 
 	/**
@@ -116,13 +195,6 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
-	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
 		plugin = null;

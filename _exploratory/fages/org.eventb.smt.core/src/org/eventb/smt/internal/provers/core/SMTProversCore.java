@@ -11,7 +11,6 @@
 
 package org.eventb.smt.internal.provers.core;
 
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IProofMonitor;
