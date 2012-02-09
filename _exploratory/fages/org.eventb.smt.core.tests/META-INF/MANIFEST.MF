@@ -17,3 +17,5 @@ Bundle-Vendor: %providerName
 Import-Package: org.eclipse.osgi.util,
  org.eventb.pp
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eventb.smt.tests,
+ org.eventb.smt.utils

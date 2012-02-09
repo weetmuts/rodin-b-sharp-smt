@@ -73,7 +73,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected static boolean VALID = true;
 	protected static boolean TRIVIAL = true;
 
-	protected Set<Theory> theories;
+	protected Set<org.eventb.smt.utils.Theory> theories;
 	protected SMTSolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
@@ -134,7 +134,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				"", smtlibVersion);
 		if (solver != null) {
 			if (getUnsatCore && solver.equals(SMTSolver.VERIT)) {
-				setPreferencesForVeriTProofTest();
+				setPreferencesForIntegratedVeriTTest();
 			} else {
 				setPreferencesForSolverTest(solver);
 			}
