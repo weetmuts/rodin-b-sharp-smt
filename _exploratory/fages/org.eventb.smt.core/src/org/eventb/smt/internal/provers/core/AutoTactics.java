@@ -10,7 +10,6 @@
 
 package org.eventb.smt.internal.provers.core;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
@@ -27,7 +26,6 @@ import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
-import org.eventb.core.seqprover.eventbExtensions.TacticCombinators;
 import org.eventb.smt.core.SMTCore;
 
 /**
@@ -54,8 +52,6 @@ public class AutoTactics {
 	 * label for the 'configId' tactic parameter
 	 */
 	private static final String CONFIG_ID = "configId";
-
-	private static final String LASSO = "org.eventb.core.seqprover.lasso";
 
 	private static final ITacticDescriptor smtPpTacticDescriptor = getAutoTacticRegistry()
 			.getTacticDescriptor(PLUGIN_ID + ".SMTPP");
@@ -111,42 +107,17 @@ public class AutoTactics {
 		}
 	}
 
-	private static ITacticDescriptor lasso() {
-		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
-		return reg.getTacticDescriptor(LASSO);
-	}
-
-	private static ITacticDescriptor attempt(List<ITacticDescriptor> descs,
-			String id) {
-		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
-		final ICombinatorDescriptor comb = reg
-				.getCombinatorDescriptor(TacticCombinators.Attempt.COMBINATOR_ID);
-		return comb.combine(descs, id);
-	}
-
-	private static ITacticDescriptor sequence(List<ITacticDescriptor> descs,
-			String id) {
-		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
-		final ICombinatorDescriptor comb = reg
-				.getCombinatorDescriptor(TacticCombinators.Sequence.COMBINATOR_ID);
-		return comb.combine(descs, id);
-	}
-
-	private static ITacticDescriptor onAllPending(
+	private static ITacticDescriptor attemptAfterLasso(
 			List<ITacticDescriptor> descs, String id) {
 		final IAutoTacticRegistry reg = SequentProver.getAutoTacticRegistry();
 		final ICombinatorDescriptor comb = reg
-				.getCombinatorDescriptor(TacticCombinators.OnAllPending.COMBINATOR_ID);
+				.getCombinatorDescriptor(SequentProver.PLUGIN_ID
+						+ ".attemptAfterLasso");
 		return comb.combine(descs, id);
 	}
 
 	public static ITacticDescriptor makeSMTPPTactic() {
-		return attempt(
-				singletonList(sequence(
-						asList(lasso(),
-								onAllPending(
-										singletonList(smtPpTacticDescriptor),
-										"onAllPendingId")), "sequenceId")),
-				"attemptId");
+		return attemptAfterLasso(singletonList(smtPpTacticDescriptor),
+				"attemptAfterLassoId");
 	}
 }
