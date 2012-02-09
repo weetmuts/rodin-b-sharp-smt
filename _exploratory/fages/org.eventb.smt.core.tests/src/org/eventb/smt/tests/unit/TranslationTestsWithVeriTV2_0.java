@@ -776,6 +776,8 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 		testTranslationV2_0Default("AB ∈ (A↣A)", "(in AB (tinj A A))");
 
+		testTranslationV2_0Default("AB ∈ (A \u2916 A)", "(in AB (bij A A))");
+
 		testTranslationV2_0Default("AB ∈ (A⤔A)", "(in AB (pinj A A))");
 
 		testTranslationV2_0Default("AB ∈ (A↠A)", "(in AB (tsur A A))");
