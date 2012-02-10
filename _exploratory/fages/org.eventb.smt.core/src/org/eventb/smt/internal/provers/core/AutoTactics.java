@@ -12,6 +12,8 @@ package org.eventb.smt.internal.provers.core;
 
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
+import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.PLUGIN_ID;
@@ -22,10 +24,11 @@ import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.IParameterValuation;
+import org.eventb.core.seqprover.IProofMonitor;
+import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.SequentProver;
-import org.eventb.core.seqprover.eventbExtensions.AutoTactics.AbsractLazilyConstrTactic;
 import org.eventb.smt.core.SMTCore;
 
 /**
@@ -63,12 +66,11 @@ public class AutoTactics {
 		//
 	}
 
-	public static class SMTPP extends AbsractLazilyConstrTactic {
-
+	public static class SMTPP implements ITactic {
 		@Override
-		protected ITactic getSingInstance() {
-			return SMTCore.externalSMTThroughPP(true, DEFAULT_DELAY,
-					ALL_SOLVER_CONFIGURATIONS);
+		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
+			return externalSMTThroughPP(true, DEFAULT_DELAY,
+					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
 		}
 	}
 
@@ -85,12 +87,11 @@ public class AutoTactics {
 
 	}
 
-	public static class SMTVeriT extends AbsractLazilyConstrTactic {
-
+	public static class SMTVeriT implements ITactic {
 		@Override
-		protected ITactic getSingInstance() {
-			return SMTCore.externalSMTThroughVeriT(true, DEFAULT_DELAY,
-					ALL_SOLVER_CONFIGURATIONS);
+		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
+			return externalSMTThroughVeriT(true, DEFAULT_DELAY,
+					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
 		}
 	}
 
