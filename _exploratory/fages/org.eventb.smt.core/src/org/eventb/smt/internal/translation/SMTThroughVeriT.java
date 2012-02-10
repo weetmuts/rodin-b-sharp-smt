@@ -302,8 +302,12 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	/**
-	 * Determine the logic. In the veriT approach for the translation, it is
-	 * returned the solver's own logic.
+	 * Determines the logic to be set in the benchmark. A logic setting is
+	 * necessary for most of the solvers.
+	 * 
+	 * @param sequent
+	 *            the sequent of which the logic must be determined
+	 * @return the logic that will be used in the benchmark
 	 */
 	@Override
 	protected SMTLogic determineLogic(final ISimpleSequent sequent) {
@@ -378,6 +382,17 @@ public class SMTThroughVeriT extends Translator {
 				targetSymbol);
 	}
 
+	/**
+	 * Once one of the theories {@link VeriTBooleansV1_2} or
+	 * {@link VeriTBooleansV2_0} are added to the logic, it is created and added
+	 * as an assumption the SMT format of the following formula:
+	 * 
+	 * <p>
+	 * (∀x:BOOL · (x = TRUE) ∨ (x = FALSE)) ∧ (TRUE ≠ FALSE)
+	 * 
+	 * @param logic
+	 *            the logic in use.
+	 */
 	private void addBooleanAssumption(final SMTLogic logic) {
 		for (final SMTTheory theory : logic.getTheories()) {
 			if (theory instanceof VeriTBooleansV1_2) {
@@ -433,6 +448,10 @@ public class SMTThroughVeriT extends Translator {
 		extractTypeFromBoundIdentDecl(bIterator);
 	}
 
+	/**
+	 * This method links some symbols of the logic to the main Event-B symbols.
+	 * It is not being used.
+	 */
 	private void linkLogicSymbols() {
 		// TODO
 	}
@@ -1329,10 +1348,8 @@ public class SMTThroughVeriT extends Translator {
 				sf.addPairEqualityAxiomV1_2(additionalAssumptions,
 						(SMTSignatureV1_2Verit) signature);
 			}
-			return makeEqual(children, V1_2);
-		} else {
-			return makeEqual(children, V2_0);
 		}
+		return makeEqual(children, smtlibVersion);
 	}
 
 	/**
@@ -1500,7 +1517,13 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	/**
+	 * This method translates relational predicates to version 1.2.
+	 * 
+	 * @param operator
+	 *            a relational operator
 	 * @param predicate
+	 *            the predicate to be translated
+	 * @return the predicate translated to SMT-LIB 1.2
 	 */
 	private SMTFormula translateRelationalPredicateMacroV1_2(
 			final SMTVeriTOperatorV1_2 operator,
@@ -1510,9 +1533,17 @@ public class SMTThroughVeriT extends Translator {
 		return SMTFactoryVeriT.makeMacroAtom(SMTMacroFactoryV1_2
 				.getMacroSymbol(operator, (SMTSignatureV1_2Verit) signature),
 				children, (SMTSignatureV1_2Verit) signature);
-
 	}
 
+	/**
+	 * This method translates relational predicates to version 1.2.
+	 * 
+	 * @param operator
+	 *            a relational operator
+	 * @param predicate
+	 *            the predicate to be translated
+	 * @return the predicate translated to SMT-LIB 2.0
+	 */
 	private SMTFormula translateRelationalPredicateMacroV2_0(
 			final SMTVeriTOperatorV2_0 operator,
 			final RelationalPredicate predicate) {
@@ -1646,7 +1677,7 @@ public class SMTThroughVeriT extends Translator {
 	 *            the expression
 	 * @param expressions
 	 *            the children expressions
-	 * @return the translated SMTTerm
+	 * @return the translated SMTTerm in SMT-LIB 2.0
 	 */
 	private SMTTerm translatePACOV2_0(final SMTVeriTOperatorV2_0 operator,
 			final AssociativeExpression expression,
@@ -1693,7 +1724,7 @@ public class SMTThroughVeriT extends Translator {
 	 *            the expression
 	 * @param expressions
 	 *            the children expressions
-	 * @return the translated SMTTerm
+	 * @return the translated SMTTerm in SMT-LIB 1.2
 	 */
 	private SMTTerm translatePACOV1_2(final SMTVeriTOperatorV1_2 operator,
 			final AssociativeExpression expression,
@@ -1853,6 +1884,18 @@ public class SMTThroughVeriT extends Translator {
 		}
 	}
 
+	/**
+	 * Translate set extension to SMT-LIB 2.0
+	 * 
+	 * @param expression
+	 *            the set extension
+	 * @param children
+	 *            the children of the set extension
+	 * @param macroName
+	 *            the name of the macro
+	 * @param setExtensionType
+	 *            the type of the set extension
+	 */
 	private void translateSetExtensionV2_0(final SetExtension expression,
 			SMTTerm[] children, final String macroName,
 			final Type setExtensionType) {
@@ -1869,6 +1912,18 @@ public class SMTThroughVeriT extends Translator {
 		smtNode = SMTFactoryVeriT.makeMacroTerm(symbol);
 	}
 
+	/**
+	 * Translate set extension to SMT-LIB 1.2
+	 * 
+	 * @param expression
+	 *            the set extension
+	 * @param children
+	 *            the children of the set extension
+	 * @param macroName
+	 *            the name of the macro
+	 * @param setExtensionType
+	 *            the type of the set extension
+	 */
 	private void translateSetExtensionV1_2(final SetExtension expression,
 			SMTTerm[] children, final String macroName,
 			final Type setExtensionType) {
@@ -1887,7 +1942,7 @@ public class SMTThroughVeriT extends Translator {
 
 	/**
 	 * Translate set extension in the case where the elements are simple
-	 * elements (not maplets)
+	 * elements (not maplets) to SMT-LIB 1.2
 	 * 
 	 * @param expression
 	 *            the expression of the set extension
@@ -1911,6 +1966,19 @@ public class SMTThroughVeriT extends Translator {
 		((SMTSignatureV1_2Verit) signature).addMacro(macro);
 	}
 
+	/**
+	 * Translate set extension in the case where the elements are simple
+	 * elements (not maplets) to SMT-LIB 2.0
+	 * 
+	 * @param expression
+	 *            the expression of the set extension
+	 * @param children
+	 *            the children of the expression
+	 * @param macroName
+	 *            the name of the macro
+	 * @param varName
+	 *            the name of the lambda var
+	 */
 	private void translateSimpleSetV2_0(final SetExtension expression,
 			final SMTTerm[] children, final String macroName,
 			final String varName) {
