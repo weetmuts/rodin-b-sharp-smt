@@ -10,6 +10,7 @@
 
 package org.eventb.smt.internal.provers.ui;
 
+import static java.io.File.separatorChar;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
@@ -81,8 +82,11 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 			final SMTSolverConfiguration config = configsIter.next();
 			final String path = config.getPath();
 			if (path != null) {
-				if (config.getPath().contains(
-						"configuration/org.eclipse.osgi/bundles")) {
+				final StringBuilder builder = new StringBuilder();
+				builder.append("configuration").append(separatorChar);
+				builder.append("org.eclipse.osgi").append(separatorChar);
+				builder.append("bundles");
+				if (config.getPath().contains(builder.toString())) {
 					if (!validPath(path, !SHOW_ERRORS)) {
 						configsIter.remove();
 					}
