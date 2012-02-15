@@ -208,19 +208,18 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		removeIncorrectInternalConfigs();
-		boolean addSMTProfile = true;
 		try {
 			addSolverConfig(getVeriTConfig());
+			// TODO uncomment when fragments are created for each target
+			// platform
+			// addSolverConfig(getCvc3Config());
 		} catch (IllegalArgumentException iae) {
-			addSMTProfile = false;
 			throw iae;
-		}
-		// TODO uncomment when fragments are created for each target platform
-		// addSolverConfig(getCvc3Config());
-		setSelectedSolverIndex();
-		setVeriTPath();
-		if (addSMTProfile)
+		} finally {
+			setSelectedSolverIndex();
+			setVeriTPath();
 			addSMTProfile();
+		}
 	}
 
 	/**
