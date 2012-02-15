@@ -17,11 +17,14 @@ import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFEREN
 import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.parsePreferencesString;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
+import static org.eventb.smt.internal.preferences.ui.SMTSolverConfigurationDialog.SHOW_ERRORS;
+import static org.eventb.smt.internal.preferences.ui.SMTSolverConfigurationDialog.validPath;
 import static org.eventb.smt.internal.provers.core.AutoTactics.makeSMTPPTactic;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -62,6 +65,37 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Checks SMT-solver configurations which were added automatically by the
+	 * plug-in. Particularly checks if paths are correct. If such a path is not
+	 * correct, removes it.
+	 * 
+	 * FIXME the preferences should be located in the core plug-in
+	 */
+	private static void removeIncorrectInternalConfigs() {
+		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
+		final String preferences = preferenceStore
+				.getString(SOLVER_PREFERENCES_ID);
+		List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(preferences);
+		for (Iterator<SMTSolverConfiguration> configsIter = solverConfigs
+				.iterator(); configsIter.hasNext();) {
+			final SMTSolverConfiguration config = configsIter.next();
+			final String path = config.getPath();
+			if (path != null) {
+				if (config.getPath().contains(
+						"configuration/org.eclipse.osgi/bundles")) {
+					if (!validPath(path, !SHOW_ERRORS)) {
+						configsIter.remove();
+					}
+				}
+			} else {
+				configsIter.remove();
+			}
+		}
+		preferenceStore.setValue(SOLVER_PREFERENCES_ID,
+				SMTSolverConfiguration.toString(solverConfigs));
+	}
+
+	/**
 	 * Adds the given SMT-solver configuration to the SMT preferences.
 	 * 
 	 * FIXME the preferences should be located in the core plug-in
@@ -71,15 +105,20 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 */
 	private static void addSolverConfig(
 			final SMTSolverConfiguration solverConfig) {
-		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
-		final String preferences = preferenceStore
-				.getString(SOLVER_PREFERENCES_ID);
-		List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(preferences);
-		if (!contains(solverConfigs, solverConfig)) {
-			solverConfigs.add(solverConfig);
+		if (validPath(solverConfig.getPath(), !SHOW_ERRORS)) {
+			IPreferenceStore preferenceStore = plugin.getPreferenceStore();
+			final String preferences = preferenceStore
+					.getString(SOLVER_PREFERENCES_ID);
+			List<SMTSolverConfiguration> solverConfigs = parsePreferencesString(preferences);
+			if (!contains(solverConfigs, solverConfig)) {
+				solverConfigs.add(solverConfig);
+			}
+			preferenceStore.setValue(SOLVER_PREFERENCES_ID,
+					SMTSolverConfiguration.toString(solverConfigs));
+		} else {
+			throw new IllegalArgumentException(
+					"Could not add the SMT-solver configuration: invalid path.");
 		}
-		preferenceStore.setValue(SOLVER_PREFERENCES_ID,
-				SMTSolverConfiguration.toString(solverConfigs));
 	}
 
 	/**
@@ -103,7 +142,13 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 */
 	private static void setVeriTPath() {
 		IPreferenceStore preferenceStore = plugin.getPreferenceStore();
-		preferenceStore.setValue(VERIT_PATH_ID, getVeriTPath());
+		final String veriTPath = getVeriTPath();
+		if (validPath(veriTPath, !SHOW_ERRORS)) {
+			preferenceStore.setValue(VERIT_PATH_ID, veriTPath);
+		} else if (!validPath(preferenceStore.getString(VERIT_PATH_ID),
+				!SHOW_ERRORS)) {
+			preferenceStore.setToDefault(VERIT_PATH_ID);
+		}
 	}
 
 	/**
@@ -162,12 +207,20 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		addSolverConfig(getVeriTConfig());
+		removeIncorrectInternalConfigs();
+		boolean addSMTProfile = true;
+		try {
+			addSolverConfig(getVeriTConfig());
+		} catch (IllegalArgumentException iae) {
+			addSMTProfile = false;
+			throw iae;
+		}
 		// TODO uncomment when fragments are created for each target platform
 		// addSolverConfig(getCvc3Config());
 		setSelectedSolverIndex();
 		setVeriTPath();
-		addSMTProfile();
+		if (addSMTProfile)
+			addSMTProfile();
 	}
 
 	/**

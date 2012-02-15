@@ -17,6 +17,7 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
+import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
 import static org.eventb.smt.internal.provers.core.SMTSolver.getSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.getVersion;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
@@ -51,6 +52,8 @@ public class SMTSolverConfigurationDialog extends Dialog {
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
 	private static final String SMT_LIB_LABEL = "SMT-LIB";
+
+	public static final boolean SHOW_ERRORS = true;
 
 	int returnCode = 0;
 
@@ -130,7 +133,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				final FileDialog dialog = new FileDialog(shell, getStyle());
 				String path = dialog.open();
-				if (validPath(path)) {
+				if (validPath(path, SHOW_ERRORS)) {
 					solverPathText.setText(path);
 				}
 			}
@@ -186,7 +189,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 				final String id = idText.getText();
 				final String path = solverPathText.getText();
 				if (validId(id)) {
-					if (validPath(path)) {
+					if (validPath(path, SHOW_ERRORS)) {
 						solverConfig.setId(id);
 						solverConfig.setSolver(getSolver(solverCombo.getText()));
 						solverConfig.setPath(path);
@@ -239,7 +242,8 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		// && !id.equals(getCvc3Config().getId());
 	}
 
-	static boolean validPath(final String path) {
+	public static boolean validPath(final String path,
+			final boolean showErrors) {
 		if (path != null) {
 			if (!path.isEmpty()) {
 				final File file = new File(path);
@@ -249,23 +253,28 @@ public class SMTSolverConfigurationDialog extends Dialog {
 							if (file.canExecute()) {
 								return true;
 							} else {
-								UIUtils.showError("Rodin cannot execute the indicated file.");
+								if (showErrors)
+									showError("Rodin cannot execute the indicated file.");
 								return false;
 							}
 						} else {
-							UIUtils.showError("The indicated file is not a valid file.");
+							if (showErrors)
+								showError("The indicated file is not a valid file.");
 							return false;
 						}
 					} else {
-						UIUtils.showError("The indicated file does not exist.");
+						if (showErrors)
+							showError("The indicated file does not exist.");
 						return false;
 					}
 				} catch (SecurityException se) {
-					UIUtils.showError("Rodin cannot read or execute the indicated file.");
+					if (showErrors)
+						showError("Rodin cannot read or execute the indicated file.");
 					return false;
 				}
 			} else {
-				UIUtils.showError("The solver path is required.");
+				if (showErrors)
+					showError("The solver path is required.");
 				return false;
 			}
 		} else {

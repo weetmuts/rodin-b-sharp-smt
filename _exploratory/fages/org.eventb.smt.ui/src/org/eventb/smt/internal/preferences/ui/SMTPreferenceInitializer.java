@@ -13,10 +13,13 @@ package org.eventb.smt.internal.preferences.ui;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_INDEX;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_SOLVER_PREFERENCES;
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_VERIT_PATH;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.internal.preferences.ui.SMTSolverConfigurationDialog.SHOW_ERRORS;
+import static org.eventb.smt.internal.preferences.ui.SMTSolverConfigurationDialog.validPath;
 import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -34,7 +37,12 @@ public class SMTPreferenceInitializer extends AbstractPreferenceInitializer {
 				.getPreferenceStore();
 		store.setDefault(SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES);
 		store.setDefault(SOLVER_INDEX_ID, DEFAULT_SOLVER_INDEX);
-		store.setDefault(VERIT_PATH_ID, getVeriTPath());
+		final String veriTPath = getVeriTPath();
+		if (validPath(veriTPath, !SHOW_ERRORS)) {
+			store.setDefault(VERIT_PATH_ID, veriTPath);
+		} else {
+			store.setDefault(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
+		}
 		store.setDefault(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}
 }
