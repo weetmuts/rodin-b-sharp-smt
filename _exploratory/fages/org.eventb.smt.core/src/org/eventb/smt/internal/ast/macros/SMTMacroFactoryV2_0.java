@@ -124,6 +124,13 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (BOOL BOOL) true", 0, false,
 			false, EMPTY_MACROS);
 
+	public static final SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = new SMTPredefinedMacro(
+			CARTESIAN_PRODUCT,
+			"(par (s t) ("
+					+ CARTESIAN_PRODUCT
+					+ "((?CP_0 (s Bool))(?CP_1 (t Bool))) (s t Bool) (lambda ((?CP_2 (Pair s t))) (and (?CP_0 (fst ?CP_2)) (?CP_1 (snd ?CP_2))))))",
+			1, true, true, EMPTY_MACROS);
+
 	// TODO Implement 2.0 version of the macros below:
 	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
@@ -146,7 +153,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro INVERSE_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro CARTESIAN_PRODUCT_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;
