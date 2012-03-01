@@ -482,11 +482,6 @@ public class SMTThroughVeriT extends Translator {
 		final SMTPredicateSymbol predSymbol = signature.freshPredicateSymbol(
 				varName, sort);
 		varMap.put(varName, predSymbol);
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			((SMTSignatureV1_2Verit) signature).addPairSortAndFunction();
-		} else {
-			((SMTSignatureV2_0Verit) signature).addPairSortAndFunction();
-		}
 	}
 
 	/**
@@ -517,6 +512,15 @@ public class SMTThroughVeriT extends Translator {
 			final SMTSortSymbol sort = translateTypeName(varType);
 			if (varType.getSource() != null || varType.getBaseType() != null) {
 				translatePredSymbol(varName, sort);
+				if (varType.getSource() != null) {
+					if (signature instanceof SMTSignatureV1_2Verit) {
+						((SMTSignatureV1_2Verit) signature)
+								.addPairSortAndFunction();
+					} else {
+						((SMTSignatureV2_0Verit) signature)
+								.addPairSortAndFunction();
+					}
+				}
 			} else {
 				translateFunSymbol(varName, sort);
 			}
@@ -1249,7 +1253,6 @@ public class SMTThroughVeriT extends Translator {
 								SMTVeriTOperatorV2_0.DOMAIN_SUBSTRACTION_OP,
 								sig), children);
 				break;
-
 			case Formula.FUNIMAGE:
 				throw new IllegalArgumentException(
 						"function application (FUNIMAGE) is not implemented yet");
@@ -1260,7 +1263,6 @@ public class SMTThroughVeriT extends Translator {
 								SMTVeriTOperatorV2_0.RELATIONAL_IMAGE_OP, sig),
 						children);
 				break;
-
 			case Formula.MAPSTO:
 				sig.addPairSortAndFunction();
 				smtNode = SMTFactory.makeFunApplication(

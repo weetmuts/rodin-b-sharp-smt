@@ -771,4 +771,16 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		doTest("ismax_1_2", hyps, "2 = max({1,2})", te, VALID);
 	}
 
+	@Test
+	public void testSetMembershipForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
+
+		doTest("setmembership_verit", hyps, "a ∈ X", te, VALID);
+	}
+
 }

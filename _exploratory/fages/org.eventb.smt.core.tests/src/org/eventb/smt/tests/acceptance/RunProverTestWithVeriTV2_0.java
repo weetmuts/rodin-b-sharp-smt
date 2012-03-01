@@ -591,7 +591,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Fail")
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
 	public void testIntegerSetVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -602,7 +602,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 				"n = 2", //
 				"x = −5");
 
-		doTest("integer_set", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
+		doTest("integer_set_verit", hyps, "{n↦x} ⊂ ℤ×ℤ", te, VALID);
 	}
 
 	@Test
@@ -636,6 +636,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Alt-Ergo fails")
 	public void testUnionForAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -644,10 +645,24 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("integer_set", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
+		doTest("integer_set_alt_ergo", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
 	}
 
 	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testUnionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set_verit", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
+	}
+
+	@Test
+	@Ignore("Alt-Ergo fails")
 	public void testInterForAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -656,10 +671,24 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("integer_set", hyps, "(X ∩ Sb) = (X ∩ Sb)", te, VALID);
+		doTest("intersection_altergo", hyps, "(X ∩ Sb) = (X ∩ Sb)", te, VALID);
 	}
 
 	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testInterForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("intersection_verit", hyps, "(X ∩ Sb) = (X ∩ Sb)", te, VALID);
+	}
+
+	@Test
+	@Ignore("Alt-Ergo fails")
 	public void testSetMembershipForAltErgoCall() {
 		setPreferencesForAltErgoTest();
 
@@ -668,7 +697,19 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
 
-		doTest("integer_set", hyps, "a ∈ X", te, VALID);
+		doTest("setmembership_alt_ergo", hyps, "a ∈ X", te, VALID);
+	}
+	
+	@Test
+	public void testSetMembershipForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
+
+		doTest("setmembership_verit", hyps, "a ∈ X", te, VALID);
 	}
 
 	@Test
