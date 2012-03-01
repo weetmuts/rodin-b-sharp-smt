@@ -18,6 +18,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eventb.smt.internal.ast.commands.SMTDeclareFunCommand;
+import org.eventb.smt.internal.ast.commands.SMTDeclareSortCommand;
+import org.eventb.smt.internal.ast.commands.SMTSetLogicCommand;
 import org.eventb.smt.internal.ast.macros.SMTEnumMacro;
 import org.eventb.smt.internal.ast.macros.SMTMacro;
 import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0;
@@ -271,9 +274,68 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 		return super.freshSymbolName(symbolNames, name, newSymbolName);
 	}
 
+	/**
+	 * Appends to the StringBuilder the string representation of the logic
+	 * section
+	 * 
+	 * @param builder
+	 *            the StringBuilder
+	 */
+	private void logicSection(final StringBuilder builder) {
+		final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
+				logic.getName());
+		setLogicCommand.toString(builder);
+		builder.append("\n");
+	}
+
+	/**
+	 * Appends the string representation of this signature sorts (when they are
+	 * not predefined) in SMT-LIB v2.0 version syntax. It doesn't modify the
+	 * buffer if the set contains only predefined symbols.
+	 * 
+	 * @param builder
+	 */
+	private void sortDeclarations(final StringBuilder builder) {
+		if (!sorts.isEmpty()) {
+			final TreeSet<SMTSortSymbol> sortedSorts = new TreeSet<SMTSortSymbol>(
+					sorts);
+			SMTDeclareSortCommand command;
+			for (final SMTSortSymbol sort : sortedSorts) {
+				if (!sort.isPredefined()) {
+					command = new SMTDeclareSortCommand(sort);
+					command.toString(builder);
+					builder.append("\n");
+				}
+			}
+		}
+	}
+
+	/**
+	 * Appends the string representation of this signature funs (when they are
+	 * not predefined) in SMT-LIB v2.0 version syntax. It doesn't modify the
+	 * buffer if the set contains only predefined symbols.
+	 * 
+	 * @param builder
+	 */
+	private static <SMTFunOrPredSymbol extends SMTSymbol> void funDeclarations(
+			final StringBuilder builder, final Set<SMTFunOrPredSymbol> elements) {
+		if (!elements.isEmpty()) {
+			final TreeSet<SMTFunOrPredSymbol> sortedSymbols = new TreeSet<SMTFunOrPredSymbol>(
+					elements);
+			SMTDeclareFunCommand command;
+			for (final SMTFunOrPredSymbol symbol : sortedSymbols) {
+				if (!symbol.isPredefined()) {
+					command = new SMTDeclareFunCommand(symbol);
+					command.toString(builder);
+					builder.append("\n");
+				}
+			}
+		}
+	}
+
 	@Override
 	public void toString(final StringBuilder sb) {
-		super.toString(sb);
+		logicSection(sb);
 		if (printPairSortAndPairFunction) {
 			sb.append("(declare-sort Pair 2)\n");
 			sb.append("(declare-fun (par (s t) (pair s t (Pair s t))))");
@@ -285,6 +347,9 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 			sb.append("(declare-fun (par (X Y) (snd (Pair X Y) Y)))");
 			sb.append("\n");
 		}
+		sortDeclarations(sb);
+		funDeclarations(sb, preds);
+		funDeclarations(sb, funs);
 		extramacrosSection(sb);
 	}
 

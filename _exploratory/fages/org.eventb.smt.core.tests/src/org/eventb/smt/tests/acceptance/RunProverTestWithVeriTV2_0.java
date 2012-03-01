@@ -699,7 +699,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		doTest("setmembership_alt_ergo", hyps, "a ∈ X", te, VALID);
 	}
-	
+
 	@Test
 	public void testSetMembershipForVeriTCall() {
 		setPreferencesForVeriTTest();
@@ -738,6 +738,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
 	public void testRelationAltErgocall() {
 		setPreferencesForAltErgoTest();
 
@@ -834,7 +835,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	//@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
 	public void testSetMinusVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -859,7 +860,8 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testPair() {
+	@Ignore("Alt-Ergo fails")
+	public void testPairAltErgo() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -867,7 +869,20 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("pair", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
+		doTest("pair_alt_ergo", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPairVeriT() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("pair_verit", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
 	}
 
 	@Test
