@@ -24,13 +24,12 @@ import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
-import org.eventb.ui.prover.ITacticProvider;
 
 /**
  * @author guyot
  * 
  */
-public class SMTVeriT extends DefaultTacticProvider implements ITacticProvider {
+public class SMTVeriT extends DefaultTacticProvider {
 
 	public class SMTVeriTApplication extends DefaultPredicateApplication {
 

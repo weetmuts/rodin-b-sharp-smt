@@ -86,7 +86,11 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 				builder.append("configuration").append(separatorChar);
 				builder.append("org.eclipse.osgi").append(separatorChar);
 				builder.append("bundles");
-				if (config.getPath().contains(builder.toString())) {
+				if (config.getPath().contains(builder.toString())
+				/**
+				 * for developpers only
+				 */
+				|| config.getPath().contains("org.eventb.smt.verit")) {
 					if (!validPath(path, !SHOW_ERRORS)) {
 						configsIter.remove();
 					}

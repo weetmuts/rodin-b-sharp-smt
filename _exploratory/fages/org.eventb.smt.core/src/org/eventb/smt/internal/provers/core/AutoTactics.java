@@ -82,7 +82,7 @@ public class AutoTactics {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 			final String configId = parameters.getString(CONFIG_ID);
 
-			return SMTCore.externalSMTThroughPP(restricted, timeout, configId);
+			return externalSMTThroughPP(restricted, timeout, configId);
 		}
 
 	}

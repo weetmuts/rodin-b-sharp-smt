@@ -24,9 +24,8 @@ import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
-import org.eventb.ui.prover.ITacticProvider;
 
-public class SMTPP extends DefaultTacticProvider implements ITacticProvider {
+public class SMTPP extends DefaultTacticProvider {
 
 	public class SMTPPApplication extends DefaultPredicateApplication {
 
