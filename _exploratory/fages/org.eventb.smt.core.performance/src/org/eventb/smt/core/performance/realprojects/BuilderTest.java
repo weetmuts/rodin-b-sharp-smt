@@ -79,7 +79,6 @@ import org.eventb.core.IMachineRoot;
 import org.eventb.core.IPORoot;
 import org.eventb.core.ISCContextRoot;
 import org.eventb.core.ISCMachineRoot;
-import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.pm.IUserSupport;
 import org.eventb.core.seqprover.IAutoTacticRegistry;
@@ -104,8 +103,6 @@ import org.rodinp.internal.core.debug.DebugHelpers;
  * @author Laurent Voisin
  */
 public abstract class BuilderTest extends TestCase {
-	protected static FormulaFactory factory = FormulaFactory.getDefault();
-
 	protected IRodinProject rodinProject;
 	protected IEventBProject eventBProject;
 	protected Map<String, Integer> results = new HashMap<String, Integer>();

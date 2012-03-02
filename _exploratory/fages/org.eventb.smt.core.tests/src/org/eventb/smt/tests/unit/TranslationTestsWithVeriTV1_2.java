@@ -38,10 +38,10 @@ import org.eventb.smt.internal.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.internal.ast.macros.SMTMacro;
 import org.eventb.smt.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
+import org.eventb.smt.internal.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.internal.ast.theories.SMTTheory;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.internal.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Ignore;
@@ -183,8 +183,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, V1_2).toString(actualSMTNode,
-				-1, false);
+		SMTThroughVeriT.translate(logic, ppred, V1_2, ff).toString(
+				actualSMTNode, -1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -238,7 +238,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
-				V1_2);
+				V1_2, ff);
 	}
 
 	@Test

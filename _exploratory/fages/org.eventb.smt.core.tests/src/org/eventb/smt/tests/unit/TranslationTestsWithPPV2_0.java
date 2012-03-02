@@ -183,7 +183,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 			final String expectedSMTNode, final String failMessage,
 			final String solver) {
 		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(ppPred, V2_0).toString(actualSMTNode, -1, false);
+		SMTThroughPP.translate(ppPred, V2_0, ff).toString(actualSMTNode, -1,
+				false);
 
 		System.out
 				.println(translationMessage(ppPred, actualSMTNode.toString()));

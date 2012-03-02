@@ -183,8 +183,8 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, V2_0).toString(actualSMTNode,
-				-1, false);
+		SMTThroughVeriT.translate(logic, ppred, V2_0, ff).toString(
+				actualSMTNode, -1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -238,7 +238,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
-				V2_0);
+				V2_0, ff);
 	}
 
 	@Test

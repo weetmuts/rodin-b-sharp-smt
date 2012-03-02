@@ -23,13 +23,9 @@ import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.DefaultInspector;
 import org.eventb.core.ast.Formula;
-import org.eventb.core.ast.FormulaFactory;
-import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.GivenType;
 import org.eventb.core.ast.IAccumulator;
 import org.eventb.core.ast.IFormulaInspector;
 import org.eventb.core.ast.ISimpleVisitor;
-import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.LiteralPredicate;
 import org.eventb.core.ast.Predicate;
@@ -52,69 +48,6 @@ import org.eventb.smt.internal.provers.core.IllegalTagException;
  * This class is a translator from Event-B syntax to SMT-LIB syntax.
  */
 public abstract class Translator implements ISimpleVisitor {
-	protected static final boolean IN_GOAL = true;
-
-	/**
-	 * typeMap is a map between Event-B types encountered during the translation
-	 * process and SMT-LIB sorts assigned to them. This map is built using an
-	 * SMT-LIB Signature that provides fresh type names.
-	 */
-	protected HashMap<Type, SMTSortSymbol> typeMap = new HashMap<Type, SMTSortSymbol>();
-	/**
-	 * varMap is a map between Event-B variable names encountered during the
-	 * translation process and SMT-LIB symbol names assigned to them. This map
-	 * is built using an SMT-LIB Signature that provides fresh type names.
-	 */
-	protected HashMap<String, SMTSymbol> varMap = new HashMap<String, SMTSymbol>();
-
-	public static boolean DEBUG = false;
-	public static boolean DEBUG_DETAILS = false;
-
-	protected SMTNode<?> smtNode;
-
-	protected SMTLIBVersion smtlibVersion;
-
-	/**
-	 * When the translator finishes translating a quantified predicate, it
-	 * deletes all the bound identifiers of that predicate. In nested quantified
-	 * predicates, the translator must delete the bound identifier declarations
-	 * inside.
-	 */
-	protected Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
-
-	/**
-	 * This variable stores the name of bound identifiers of the actual
-	 * predicate being translated.
-	 */
-	protected List<String> boundIdentifiers = new ArrayList<String>();
-
-	/**
-	 * This variable maps names to SMT bound variables.
-	 */
-	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
-
-	public Translator(final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
-	}
-
-	/**
-	 * Extracts the type environment of a Predicate needed to build an SMT-LIB
-	 * benchmark's signature, that is, free identifiers and given types.
-	 * 
-	 * @param typeEnvironment
-	 *            The type environment that will store the predicates.
-	 * @param predicate
-	 *            the predicate on which its type environment will be extracted.
-	 */
-	private static void extractPredicateTypenv(
-			final ITypeEnvironment typeEnvironment, final Predicate predicate) {
-		for (final FreeIdentifier id : predicate.getFreeIdentifiers()) {
-			typeEnvironment.add(id);
-		}
-		for (final GivenType type : predicate.getGivenTypes()) {
-			typeEnvironment.addGivenSet(type.getName());
-		}
-	}
 
 	/**
 	 * This class is used to store the type of all the BoundIdentDecls from the
@@ -143,7 +76,7 @@ public abstract class Translator implements ISimpleVisitor {
 		}
 
 		/**
-		 * This method stores in the accumlator the type of the actual
+		 * This method stores in the accumlator the type of the given
 		 * BoundIdentDecl
 		 */
 		@Override
@@ -153,19 +86,48 @@ public abstract class Translator implements ISimpleVisitor {
 		}
 	}
 
+	public static boolean DEBUG = false;
+	public static boolean DEBUG_DETAILS = false;
+	protected static final boolean IN_GOAL = true;
+
+	protected SMTLIBVersion smtlibVersion;
+
+	protected SMTNode<?> smtNode;
+
 	/**
-	 * Extracts the type environment of a Event-B sequent
+	 * typeMap is a map between Event-B types encountered during the translation
+	 * process and SMT-LIB sorts assigned to them. This map is built using an
+	 * SMT-LIB Signature that provides fresh type names.
 	 */
-	protected static ITypeEnvironment extractTypeEnvironment(
-			final List<Predicate> hypotheses, final Predicate goal) {
-		final FormulaFactory ff = FormulaFactory.getDefault(); // FIXME use real
-																// one
-		final ITypeEnvironment typeEnvironment = ff.makeTypeEnvironment();
-		for (final Predicate hypothesis : hypotheses) {
-			extractPredicateTypenv(typeEnvironment, hypothesis);
-		}
-		extractPredicateTypenv(typeEnvironment, goal);
-		return typeEnvironment;
+	protected HashMap<Type, SMTSortSymbol> typeMap = new HashMap<Type, SMTSortSymbol>();
+	/**
+	 * varMap is a map between Event-B variable names encountered during the
+	 * translation process and SMT-LIB symbol names assigned to them. This map
+	 * is built using an SMT-LIB Signature that provides fresh type names.
+	 */
+	protected HashMap<String, SMTSymbol> varMap = new HashMap<String, SMTSymbol>();
+
+	/**
+	 * When the translator finishes translating a quantified predicate, it
+	 * deletes all the bound identifiers of that predicate. In nested quantified
+	 * predicates, the translator must delete the bound identifier declarations
+	 * inside.
+	 */
+	protected Stack<Integer> boundIdentifiersMarker = new Stack<Integer>();
+
+	/**
+	 * This variable stores the name of bound identifiers of the actual
+	 * predicate being translated.
+	 */
+	protected List<String> boundIdentifiers = new ArrayList<String>();
+
+	/**
+	 * This variable maps names to SMT bound variables.
+	 */
+	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
+
+	public Translator(final SMTLIBVersion smtlibVersion) {
+		this.smtlibVersion = smtlibVersion;
 	}
 
 	/**
@@ -175,15 +137,15 @@ public abstract class Translator implements ISimpleVisitor {
 			final ISimpleSequent sequent);
 
 	/**
-	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
-	 */
-	protected abstract SMTSymbol translateTypeName(final Type type);
-
-	/**
 	 * Determines and returns the SMT-LIB logic to use in order to discharge the
 	 * current sequent.
 	 */
 	protected abstract SMTLogic determineLogic(final ISimpleSequent sequent);
+
+	/**
+	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
+	 */
+	protected abstract SMTSymbol translateTypeName(final Type type);
 
 	/**
 	 * This method extracts the type environment from the Event-B sequent and
@@ -191,17 +153,6 @@ public abstract class Translator implements ISimpleVisitor {
 	 */
 	protected abstract void translateSignature(final SMTLogic logic,
 			final ISimpleSequent sequent);
-
-	/**
-	 * This method translates an Event-B bound identifier into an Extended SMT
-	 * node.
-	 */
-	@Override
-	public void visitBoundIdentifier(final BoundIdentifier expression) {
-		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
-				- expression.getBoundIndex() - 1);
-		smtNode = qVarMap.get(bidName);
-	}
 
 	/**
 	 * This method returns the current SMT node.
@@ -308,6 +259,17 @@ public abstract class Translator implements ISimpleVisitor {
 		default:
 			throw new IllegalTagException(predicate.getTag());
 		}
+	}
+
+	/**
+	 * This method translates an Event-B bound identifier into an Extended SMT
+	 * node.
+	 */
+	@Override
+	public void visitBoundIdentifier(final BoundIdentifier expression) {
+		final String bidName = boundIdentifiers.get(boundIdentifiers.size()
+				- expression.getBoundIndex() - 1);
+		smtNode = qVarMap.get(bidName);
 	}
 
 	/**

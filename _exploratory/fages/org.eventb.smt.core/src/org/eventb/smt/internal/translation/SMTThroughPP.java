@@ -94,14 +94,14 @@ import org.eventb.smt.internal.ast.theories.ISMTArithmeticFuns;
 import org.eventb.smt.internal.ast.theories.ISMTArithmeticFunsExtended;
 import org.eventb.smt.internal.ast.theories.ISMTArithmeticPreds;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
-import org.eventb.smt.internal.ast.theories.SMTTheory;
-import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAv2_0;
 import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
 import org.eventb.smt.internal.ast.theories.SMTLogic.QF_UFv2_0;
 import org.eventb.smt.internal.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.internal.ast.theories.SMTLogic.SMTLogicPP;
 import org.eventb.smt.internal.ast.theories.SMTLogic.SMTOperator;
+import org.eventb.smt.internal.ast.theories.SMTTheory;
+import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2.Booleans;
 import org.eventb.smt.internal.provers.core.IllegalTagException;
 
@@ -763,6 +763,7 @@ public class SMTThroughPP extends Translator {
 	 */
 	private SMTFormula generateIntegerAxiom() {
 		final FormulaFactory ff = FormulaFactory.getDefault();
+
 		// gets the event-B integer type
 		final Type integerType = ff.makeIntegerType();
 
@@ -815,8 +816,10 @@ public class SMTThroughPP extends Translator {
 	 *         predicate shown above
 	 */
 	private SMTFormula generateBoolAxiom() {
+		final FormulaFactory ff = FormulaFactory.getDefault();
+
 		// gets the event-B boolean type
-		final Type booleanType = FormulaFactory.getDefault().makeBooleanType();
+		final Type booleanType = ff.makeBooleanType();
 
 		// creates the quantified variable with a fresh name
 		final String varName = signature.freshSymbolName("x");
@@ -829,8 +832,7 @@ public class SMTThroughPP extends Translator {
 				.getLogic().getBoolsSet(), signature);
 
 		// creates the sort POW(BOOL)
-		final Type powerSetBooleanType = FormulaFactory.getDefault()
-				.makePowerSetType(booleanType);
+		final Type powerSetBooleanType = ff.makePowerSetType(booleanType);
 		final SMTSortSymbol powerSetBoolSort = typeMap.get(powerSetBooleanType);
 
 		// gets the membership symbol
@@ -1013,14 +1015,13 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
-	private void linkLogicSymbols() {
+	private void linkLogicSymbols(final FormulaFactory ff) {
 		final SMTLogicPP logic;
 		if (smtlibVersion.equals(V1_2)) {
 			logic = ((SMTSignatureV1_2PP) signature).getLogic();
 		} else {
 			logic = ((SMTSignatureV2_0PP) signature).getLogic();
 		}
-		final FormulaFactory ff = FormulaFactory.getDefault();
 
 		final Type integerType = ff.makeIntegerType();
 		final Type booleanType = ff.makeBooleanType();
@@ -1082,11 +1083,11 @@ public class SMTThroughPP extends Translator {
 	}
 
 	private void putOperatorSymbol(final SMTOperator operator) {
+		final FormulaFactory ff = FormulaFactory.getDefault();
 		SMTSymbol operatorSymbol = signature.getLogic().getOperator(operator);
 		if (operatorSymbol == null) {
 			final String symbolName = operator.toString();
-			final SMTSortSymbol integerSort = typeMap.get(FormulaFactory
-					.getDefault().makeIntegerType());
+			final SMTSortSymbol integerSort = typeMap.get(ff.makeIntegerType());
 			final SMTSortSymbol[] intTab = { integerSort };
 			final SMTSortSymbol[] intIntTab = { integerSort, integerSort };
 
@@ -1305,7 +1306,7 @@ public class SMTThroughPP extends Translator {
 			throw new IllegalArgumentException("Wrong logic.");
 		}
 
-		linkLogicSymbols();
+		linkLogicSymbols(sequent.getFormulaFactory());
 
 		final ITypeEnvironment typeEnvironment = sequent.getTypeEnvironment();
 
@@ -1345,11 +1346,11 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Predicate predicate,
-			final SMTLIBVersion smtlibVersion) {
+			final SMTLIBVersion smtlibVersion, final FormulaFactory ff) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, FormulaFactory.getDefault());
+				predicate, ff);
 		final SMTLogic logic = translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.translate(predicate, IN_GOAL);

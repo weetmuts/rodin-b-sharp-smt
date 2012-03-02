@@ -114,29 +114,29 @@ import org.eventb.smt.internal.ast.SMTVeritFiniteFormula;
 import org.eventb.smt.internal.ast.macros.SMTEnumMacro;
 import org.eventb.smt.internal.ast.macros.SMTMacroFactory;
 import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV1_2;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.internal.ast.macros.SMTPairEnumMacro;
 import org.eventb.smt.internal.ast.macros.SMTSetComprehensionMacro;
-import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
-import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
+import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAV2_0VeriT;
 import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAv2_0;
 import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
+import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0VeriT;
+import org.eventb.smt.internal.ast.theories.SMTLogic.SMTLogicVeriT;
+import org.eventb.smt.internal.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.internal.ast.theories.SMTTheory;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.internal.ast.theories.SMTLogic.AUFLIAV2_0VeriT;
-import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0VeriT;
-import org.eventb.smt.internal.ast.theories.SMTLogic.SMTLogicVeriT;
-import org.eventb.smt.internal.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.internal.provers.core.IllegalTagException;
 
 /**
@@ -167,11 +167,12 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final SMTLogic logic,
-			final Predicate predicate, SMTLIBVersion smtlibVersion) {
+			final Predicate predicate, final SMTLIBVersion smtlibVersion,
+			final FormulaFactory ff) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, FormulaFactory.getDefault());
+				predicate, ff);
 		translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.getSignature();
@@ -202,11 +203,12 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final SMTLogic logic,
-			final Predicate predicate, SMTLIBVersion smtlibVersion) {
+			final Predicate predicate, SMTLIBVersion smtlibVersion,
+			final FormulaFactory ff) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, FormulaFactory.getDefault());
+				predicate, ff);
 		translator.translateSignature(logic, sequent);
 		try {
 			predicate.accept(translator);
@@ -577,11 +579,11 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Predicate predicate,
-			final SMTLIBVersion smtlibVersion) {
+			final SMTLIBVersion smtlibVersion, final FormulaFactory ff) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, FormulaFactory.getDefault());
+				predicate, ff);
 		final SMTLogic logic = translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.translate(predicate, IN_GOAL);
