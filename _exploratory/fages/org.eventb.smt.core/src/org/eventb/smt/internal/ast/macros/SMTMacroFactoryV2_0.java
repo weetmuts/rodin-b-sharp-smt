@@ -254,18 +254,94 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?RANGE_SUBS_0 ((Pair s t) Bool)) (?RANGE_SUBS_1 (t Bool))) (lambda ((?RANGE_SUBS_2 (Pair s t))) (and (?RANGE_SUBS_0 ?RANGE_SUBS_2)(not (?RANGE_SUBS_1 (snd ?RANGE_SUBS_2)))))))",
 			1, true, true, EMPTY_MACROS);
 
-	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro FCOMP_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro RANGE_RESTRICTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro BCOMP_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro DOM_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;
+	// TODO: test
+	public static SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
+			FCOMP,
+			"(par (s t) ("
+					+ FCOMP
+					+ " ((?FCOMP_0 ((Pair s t) Bool)) (?FCOMP_1 ((Pair t u) Bool))) (lambda ((?FCOMP_2 (Pair s u))) (exists ((?FCOMP_3 t)) (and (?FCOMP_0 (pair (fst ?FCOMP_2) ?FCOMP_3)) (?FCOMP_1 (pair ?FCOMP_3 (snd ?FCOMP_2))))))))",
+			1, true, true, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro RANGE_RESTRICTION_MACRO = new SMTPredefinedMacro(
+			RANGE_RESTRICTION,
+			"(par (s t) ("
+					+ RANGE_RESTRICTION
+					+ " ((?RANGE_RES_0 ((Pair s t) Bool)) (?RANGE_RES_1 (t Bool))) (lambda ((?RANGE_RES_2 (Pair s t))) (and (?RANGE_RES_0 ?RANGE_RES_2) (?RANGE_RES_1 (snd ?RANGE_RES_2))))))",
+			1, true, true, EMPTY_MACROS);
+
+	// TODO: test
+	// Using the conjunction of surjective relation and total relation macros
+	public static final SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
+			TOTAL_SURJECTIVE_RELATION,
+			"(par (s t) ("
+					+ TOTAL_SURJECTIVE_RELATION
+					+ " ((?T_SUR_REL_0 (t Bool)) (?T_SUR_REL_1 ((Pair s t) Bool))) (and (forall ((?T_SUR_REL_2 (Pair s t))) (= (?T_SUR_REL_1 ?T_SUR_REL_2) (?T_SUR_REL_0 (snd ?T_SUR_REL_2))))  (forall ((?T_SUR_REL_3 (Pair s t))) (= (?T_SUR_REL_1 ?T_SUR_REL_3) (?T_SUR_REL_0 (fst ?T_SUR_REL_3)))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(
+			BCOMP,
+			"(par (s t u) ("
+					+ BCOMP
+					+ " ((?BCOMP_0 ((Pair s t) Bool)) (?BCOMP_1 ((Pair t u) Bool))) (fcomp ?BCOMP_1 ?BCOMP_0)))",
+			2, false, false, FCOMPS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = new SMTPredefinedMacro(
+			RELATIONAL_IMAGE,
+			"(par (s t) ("
+					+ RELATIONAL_IMAGE
+					+ " ((?RELI_0 ((Pair s t) Bool)(?RELI_1 (s Bool)) (lambda (?RELI_2 t) (exists (?RELI_3 s)(and (?RELI_1 ?RELI_3)(?RELI_0 (pair ?RELI_3 ?RELI_2)))))))))",
+			1, true, false, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
+			DOM,
+			"(par (t1 t2) ("
+					+ DOM
+					+ " ((?DOM_0 ((Pair t1 t2) Bool))) (lambda (?DOM_1 t1) (exists ((?DOM_2 t2)) (?DOM_0 (pair ?DOM_1 ?DOM_2))))))",
+			0, false, false, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = new SMTPredefinedMacro(
+			DOMAIN_RESTRICTION,
+			"(par (s t) ("
+					+ DOMAIN_RESTRICTION
+					+ " ((?DR_0 (s Bool)) (?DR_1 ((Pair s t) Bool))) (lambda ((?DR_2 (Pair s t))) (and (?DR_1 ?DR_2)(?DR_0 (fst ?DR_2))))))",
+			1, true, true, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
+			DOMAIN_SUBSTRACTION,
+			"(par (s t) ("
+					+ DOMAIN_SUBSTRACTION
+					+ " ((?DS_0 (s Bool)) (?DS_1 ((Pair s t) Bool))) (lambda ((?DS_2 (Pair s t))) (and (?DS_1 ?DS_2)(not (?DS_0 (fst ?DS_2)))))))",
+			1, true, true, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
+			RANGE,
+			"(par (s t) ("
+					+ RANGE
+					+ " (((Pair s t) Bool))) (lambda ((?RANGE_1 t)) (exists ((?RANGE_2 s)) (?RANGE_0 (pair ?RANGE_2 ?RANGE_1))))))",
+			1, true, false, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(
+			SUCC,
+			SUCC
+					+ " ((?SUCC_1 (Pair Int Int))) (exists ((?SUCC_0 Int)) (= ?SUCC_1 (pair ?SUCC_0 (+ ?SUCC_0 1))))",
+			1, true, false, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro PREDECESSOR_MACRO = new SMTPredefinedMacro(
+			PRED,
+			PRED
+					+ " ((?PRED_0 (Pair Int Int))) (exists ((?PRED_1 Int)) (= ?PRED_0 (pair (+ ?PRED_1 1) ?PRED_1)))",
+			1, true, false, EMPTY_MACROS);
 
 	// TODO: Fix
 	public static final SMTPredefinedMacro FINITE_MACRO = new SMTPredefinedMacro(
