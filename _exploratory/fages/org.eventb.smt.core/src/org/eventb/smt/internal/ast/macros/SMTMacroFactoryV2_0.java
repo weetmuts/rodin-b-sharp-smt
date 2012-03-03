@@ -131,28 +131,138 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "((?CP_0 (s Bool))(?CP_1 (t Bool))) (s t Bool) (lambda ((?CP_2 (Pair s t))) (and (?CP_0 (fst ?CP_2)) (?CP_1 (snd ?CP_2))))))",
 			1, true, true, EMPTY_MACROS);
 
+	// TODO: test
+	// Using the totp (total property) to define this macro
+	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
+			TOTAL_RELATION,
+			"(par (s t) ("
+					+ TOTAL_RELATION
+					+ " ((?TR_0 (s Bool)) (?TR_1 ((Pair s t) Bool))) (forall (?TR_2 (Pair s t)) (= (?TR_1 ?TR_2) (?TR_0 (fst ?TR_2)))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
+			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO, IN_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_FUNCTION,
+			"(par (s t) ("
+					+ TOTAL_FUNCTION
+					+ " ((?TOT_FUN_0 (s Bool)) (?TOT_FUN_1 (t Bool))) (lambda ((?TOT_FUN_2 ((Pair s t) Bool))) (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
+
+	// TODO: test
+	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
+			INV,
+			"(par (s t) ("
+					+ INV
+					+ " ((?INV_0 ((Pair s t) Bool))) (lambda ((?INV_1 (Pair s t))) (?INV_0 (pair (snd ?INV_1)(fst ?INV_1))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
+			INVERSE_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
+			INJP, "(par (s t) (" + INJP
+					+ " ((?INJP_0 ((Pair s t ) Bool))) (funp (inv ?INJP_0))))",
+			2, false, false, FUNP_AND_INV);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_INJP = {
+			PARTIAL_FUNCTION_MACRO, INJP_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_INJECTION,
+			"(par (s t) ("
+					+ PARTIAL_INJECTION
+					+ " ((?PAR_INJ (s Bool)) (?PAR_INJ_1 (s Bool))) (lambda (?PAR_INJ_2 ((Pair s t) Bool)) (and ((pfun ?PAR_INJ_0 ?PAR_INJ_1) ?PAR_INJ_2) (injp ?PAR_INJ_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_INJP);
+
+	private static SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
+			PARTIAL_INJECTION_MACRO, TOTAL_RELATION_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_INJECTION,
+			"(par (s t) ("
+					+ TOTAL_INJECTION
+					+ " ((?TOT_INJ_0 (s Bool))(?TOT_INJ_1 (s Bool))) (lambda ((?TOT_INJ_2 ((Pair s t) Bool))) (and ((pinj ?TOT_INJ_0 ?TOT_INJ_1) ?TOT_INJ_2) (totp ?TOT_INJ_0 ?TOT_INJ_2)))))",
+			4, false, false, PARTIAL_INJECTION_AND_TOTAL_RELATION);
+
+	// TODO: test
+	// Using the surp (surjective property) to define this macro
+	public static final SMTPredefinedMacro SURJECTIVE_RELATION_MACRO = new SMTPredefinedMacro(
+			SURJECTIVE_RELATION,
+			"(par (s t) ("
+					+ SURJECTIVE_RELATION
+					+ " ((?SUR_REL_0 (t Bool)) (?SUR_REL_1 ((Pair s t) Bool))) (forall ((?SUR_REL_2 (Pair s t))) (= (?SUR_REL_1 ?SUR_REL_2) (?SUR_REL_0 (snd ?SUR_REL_2))))))",
+			1, true, true, EMPTY_MACROS);
+
+	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
+			PARTIAL_FUNCTION_MACRO, SURJECTIVE_RELATION_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = new SMTPredefinedMacro(
+			PARTIAL_SURJECTION,
+			"(par (s t) ("
+					+ PARTIAL_SURJECTION
+					+ " ((?PAR_SUR_0 (s Bool))(?PAR_SUR_1 (s Bool))) (lambda ((?PAR_SUR_2 ((Pair s t) Bool))) (and ((pfun ?PAR_SUR_0 ?PAR_SUR_1) ?PAR_SUR_2) (surp ?PAR_SUR_1 ?PAR_SUR_2)))))",
+			3, false, false, PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION);
+
+	private static SMTPredefinedMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
+			TOTAL_RELATION_MACRO, PARTIAL_SURJECTION_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_SURJECTION,
+			"(par (s t) ("
+					+ TOTAL_SURJECTION
+					+ " ((?TOT_SUR_0 (s Bool)) (?TOT_SUR_1 (s Bool))) (lambda ((?TOT_SUR_2 ((Pair s t) Bool))) (and ((psur ?TOT_SUR_0 ?TOT_SUR_1) ?TOT_SUR_2) (totp ?TOT_SUR_0 ?TOT_SUR_2)))))",
+			4, false, false, TOTAL_RELATION_AND_PARTIAL_SURJECTION);
+
+	private static final SMTPredefinedMacro[] TOTAL_SURJECTION_AND_TOTAL_INJECTION = {
+			TOTAL_SURJECTION_MACRO, TOTAL_INJECTION_MACRO };
+
+	// TODO: test
+	public static final SMTPredefinedMacro TOTAL_BIJECTION_MACRO = new SMTPredefinedMacro(
+			TOTAL_BIJECTION,
+			"(par (s t) ("
+					+ TOTAL_BIJECTION
+					+ " ((?TOT_BIJ_0 (s Bool)) (?TOT_BIJ_1 (s Bool))) (lambda (?TOT_BIJ_2 ((Pair s t) Bool)) (and ((tsur ?TOT_BIJ_0 ?TOT_BIJ_1) ?TOT_BIJ_2) ((tinj ?TOT_BIJ_0 ?TOT_BIJ_1) ?TOT_BIJ_2)))))",
+			5, false, false, TOTAL_SURJECTION_AND_TOTAL_INJECTION);
+
+	// TODO: test
+	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
+			OVR,
+			"(par (s t) ("
+					+ OVR
+					+ " ((?OVR_0 ((Pair s t) Bool)) (?OVR_1 ((Pair s t) Bool))) (lambda ((?OVR_2 (Pair s u))) (or (?OVR_1 ?OVR_2) (and (?OVR_0 ?OVR_2) (not (exists ((?OVR_3 (Pair s t))) (and (?OVR_1 ?OVR_3)(= (fst ?OVR_3)(fst ?OVR_2))))))))))",
+			1, true, true, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro ID_MACRO = new SMTPredefinedMacro(
+			ID, "(par (t) (" + ID
+					+ " ((?ID_0 (Pair t t))) (= (fst ?ID_0)(snd ?ID_0))))", 1,
+			true, true, EMPTY_MACROS);
+
+	// TODO: test
+	public static final SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = new SMTPredefinedMacro(
+			RANGE_SUBSTRACTION,
+			"(par (s t) ("
+					+ RANGE_SUBSTRACTION
+					+ " ((?RANGE_SUBS_0 ((Pair s t) Bool)) (?RANGE_SUBS_1 (t Bool))) (lambda ((?RANGE_SUBS_2 (Pair s t))) (and (?RANGE_SUBS_0 ?RANGE_SUBS_2)(not (?RANGE_SUBS_1 (snd ?RANGE_SUBS_2)))))))",
+			1, true, true, EMPTY_MACROS);
+
 	// TODO Implement 2.0 version of the macros below:
-	public static SMTPredefinedMacro TOTAL_FUNCTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro PARTIAL_INJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro TOTAL_INJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro TOTAL_SURJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro TOTAL_BIJECTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro REL_OVR_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro ID_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro RANGE_SUBSTRACTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro FCOMP_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro RANGE_RESTRICTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro TOTAL_RELATION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro SURJECTIVE_RELATION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro TOTAL_SURJECTIVE_RELATION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro INJP_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro BCOMP_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro RELATIONAL_IMAGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOM_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOMAIN_RESTRICTION_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro DOMAIN_SUBSTRACTION_MACRO = BUNION_MACRO;
-	public static SMTPredefinedMacro INVERSE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro RANGE_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro SUCCESSOR_MACRO = BUNION_MACRO;
 	public static SMTPredefinedMacro PREDECESSOR_MACRO = BUNION_MACRO;

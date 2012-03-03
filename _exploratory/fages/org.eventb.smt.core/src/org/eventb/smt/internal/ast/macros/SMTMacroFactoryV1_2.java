@@ -347,7 +347,7 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 			TOTAL_BIJECTION,
 			"("
 					+ TOTAL_BIJECTION
-					+ " (lambda (?TOTAL_BIJECTION_0 ('s Bool)) (?TOTAL_BIJECTION_1 ('s Bool)) . (lambda (?TOTAL_BIJECTION_2 ((Pair 's 't) Bool)) . (and ((tsur ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1) ?TOTAL_BIJECTION_2) ((tinj ?TOTAL_BIJECTION_0 ?TOTAL_BIJECTION_1)?TOTAL_BIJECTION_2)))))",
+					+ " (lambda (?TOT_BIJ_0 ('s Bool)) (?TOT_BIJ_1 ('s Bool)) . (lambda (?TOT_BIJ_2 ((Pair 's 't) Bool)) . (and ((tsur ?TOT_BIJ_0 ?TOT_BIJ_1) ?TOT_BIJ_2) ((tinj ?TOT_BIJ_0 ?TOT_BIJ_1)? TOT_BIJ_2)))))",
 			5, false, false, TOTAL_SURJECTION_AND_TOTAL_INJECTION);
 
 	private static SMTPredefinedMacro[] INS = { IN_MACRO };
