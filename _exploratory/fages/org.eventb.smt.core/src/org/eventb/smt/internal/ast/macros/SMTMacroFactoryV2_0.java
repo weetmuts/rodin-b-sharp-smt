@@ -51,7 +51,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?BINTER_0 (t Bool)) (?BINTER_1 (t Bool))) (t Bool) (lambda ((?BINTER_2 t)) (and (?BINTER_0 ?BINTER_2) (?BINTER_1 ?BINTER_2)))))",
 			0, false, false, EMPTY_MACROS);
 
-	// TODO Test
 	public static final SMTPredefinedMacro RELATION_MACRO = new SMTPredefinedMacro(
 			RELATION,
 			"(par (s t) ("
@@ -59,14 +58,13 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?REL_0 (s Bool)) (?REL_1 (t Bool))) (s Bool) (lambda (?REL_2  ((Pair s t) Bool))  (forall (?REL_3 (Pair s t))  (implies (?REL_2 ?REL_3) (and (?REL_0 (fst ?REL_3)) (?REL_1 (snd ?REL_3))))))))",
 			1, true, true, EMPTY_MACROS);
 
-	// TODO Test
 	public static final SMTPredefinedMacro RANGE_INTEGER_MACRO = new SMTPredefinedMacro(
 			RANGE_INTEGER,
 			RANGE_INTEGER
 					+ " ((?RI_0 Int) (?RI_1 Int)) (Int Bool) (lambda ((?RI_2 Int)) (and (<= ?RI_0 ?RI_2) (<= ?RI_2 ?RI_1)))",
 			0, false, false, EMPTY_MACROS);
 
-	// TODO
+	// TODO translate do SMT-LIB 2.0
 	public static SMTPredefinedMacro FUNP_MACRO = BUNION_MACRO;
 
 	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
@@ -75,12 +73,11 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
 			RANGE_INTEGER_MACRO };
 
-	// TODO: test
 	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
 			CARD,
 			"(par (s) ("
 					+ CARD
-					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall (?CARD_3 Int) (implies (in ?CARD_3 (range 1 ?CARD_2))(exists (?CARD_4 s) (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall (?CARD_4 s) (implies (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall (?CARD_5 s) (?CARD_6 s) (implies (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
+					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall ((?CARD_3 Int)) (=> (in ?CARD_3 (range 1 ?CARD_2))(exists ((?CARD_4 s)) (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall ((?CARD_4 s)) (=> (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall ((?CARD_5 s) (?CARD_6 s)) (=> (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
 			1, false, false, IN_AND_RANGE_INTEGER);
 
 	// FIXME to SMT 2.0
@@ -131,7 +128,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ "((?CP_0 (s Bool))(?CP_1 (t Bool))) (s t Bool) (lambda ((?CP_2 (Pair s t))) (and (?CP_0 (fst ?CP_2)) (?CP_1 (snd ?CP_2))))))",
 			1, true, true, EMPTY_MACROS);
 
-	// TODO: test
 	// Using the totp (total property) to define this macro
 	public static final SMTPredefinedMacro TOTAL_RELATION_MACRO = new SMTPredefinedMacro(
 			TOTAL_RELATION,

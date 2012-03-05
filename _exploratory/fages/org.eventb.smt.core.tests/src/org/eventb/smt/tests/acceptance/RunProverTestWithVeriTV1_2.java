@@ -783,4 +783,18 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		doTest("setmembership_verit", hyps, "a ∈ X", te, VALID);
 	}
 
+	@Test
+	@Ignore("error : Sort PairInt'_19 and Int mismatch")
+	public void testTotalRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_relation_verit_1_2", hyps, "A \ue100 B = A \ue100 B", te,
+				VALID);
+	}
+
 }

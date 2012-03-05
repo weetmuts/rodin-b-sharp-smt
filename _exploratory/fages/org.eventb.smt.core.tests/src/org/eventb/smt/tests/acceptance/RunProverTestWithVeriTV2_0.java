@@ -751,7 +751,9 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testCardinality() {
+	@Ignore("pre-proc error: undefined sort and on line 11")
+	// SMT file sent to benchmark repository.
+	public void testCardinalityForAltErgo() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -759,23 +761,25 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "card({1}) = 1", te, VALID);
+		doTest("card_alt_ergo_2_0", hyps, "card({1}) = 1", te, VALID);
 	}
 
 	@Test
-	public void testCardinality2() {
-		setPreferencesForAltErgoTest();
+	@Ignore("pre-proc error: undefined sort and on line 11")
+	// SMT file sent to benchmark repository.
+	public void testCardinalityForVeriT() {
+		setPreferencesForVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
-				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ", "b", "ℤ↔ℤ");
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("relation", hyps, "card({1}) = 1", te, VALID);
+		doTest("card_verit_2_0", hyps, "card({1}) = 1", te, VALID);
 	}
 
 	@Test
-	public void testRange() {
+	public void testRangeInteger() {
 		setPreferencesForAltErgoTest();
 
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -835,7 +839,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	//@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	// @Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
 	public void testSetMinusVeriT() {
 		setPreferencesForVeriTTest();
 
@@ -933,6 +937,20 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 
 		doTest("ismax_2_0", hyps, "2 = max({1,2})", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_relation_verit_2_0", hyps, "A \ue100 B = A \ue100 B", te,
+				VALID);
 	}
 
 }
