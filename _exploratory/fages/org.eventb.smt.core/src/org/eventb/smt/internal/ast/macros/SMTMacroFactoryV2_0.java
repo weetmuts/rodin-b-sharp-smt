@@ -10,12 +10,52 @@
 
 package org.eventb.smt.internal.ast.macros;
 
-import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.*;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.BCOMP;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.BINTER;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.BUNION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.CARD;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.CARTESIAN_PRODUCT;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.DOM;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.DOMAIN_RESTRICTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.DOMAIN_SUBSTRACTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.EMPTY;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.FCOMP;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.FINITE;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.ID;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.IN;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.INJP;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.INV;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.ISMAX;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.ISMIN;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.NAT;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.NAT1;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.OVR;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.PARTIAL_FUNCTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.PARTIAL_INJECTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.PARTIAL_SURJECTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.PRED;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RANGE;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RANGE_INTEGER;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RANGE_RESTRICTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RANGE_SUBSTRACTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RELATION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.RELATIONAL_IMAGE;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.SETMINUS;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.SUBSET;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.SUBSETEQ;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.SUCC;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.SURJECTIVE_RELATION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_BIJECTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_FUNCTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_INJECTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_RELATION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_SURJECTION;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.TOTAL_SURJECTIVE_RELATION;
+import static org.eventb.smt.internal.ast.symbols.SMTSymbol.BOOLS;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.INT;
 
 import java.util.Set;
 
-import org.eventb.smt.internal.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.internal.ast.SMTSignatureV2_0Verit;
 
 public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
@@ -29,7 +69,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			false, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro INTEGER_MACRO = new SMTPredefinedMacro(
-			INT, "(par (t) (" + INT + " ((?INT_0 Int)) (t Bool) true)))", 0,
+			INT, "(par (t) (" + INT + " ((?INT_0 Int)) (t Bool) true))", 0,
 			false, false, EMPTY_MACROS);
 
 	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
@@ -133,7 +173,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			TOTAL_RELATION,
 			"(par (s t) ("
 					+ TOTAL_RELATION
-					+ " ((?TR_0 (s Bool)) (?TR_1 ((Pair s t) Bool))) (forall (?TR_2 (Pair s t)) (= (?TR_1 ?TR_2) (?TR_0 (fst ?TR_2)))))))",
+					+ " ((?TR_0 (s Bool)) (?TR_1 ((Pair s t) Bool))) (forall (?TR_2 (Pair s t)) (= (?TR_1 ?TR_2) (?TR_0 (fst ?TR_2))))))",
 			1, true, true, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
@@ -322,7 +362,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			RANGE,
 			"(par (s t) ("
 					+ RANGE
-					+ " (((Pair s t) Bool))) (lambda ((?RANGE_1 t)) (exists ((?RANGE_2 s)) (?RANGE_0 (pair ?RANGE_2 ?RANGE_1))))))",
+					+ " (((Pair s t) Bool))) (lambda ((?RANGE_1 t)) (exists ((?RANGE_2 s)) (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
 			1, true, false, EMPTY_MACROS);
 
 	// TODO: test
@@ -466,7 +506,9 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	public static final SMTMacroSymbol getMacroSymbol(
 			final SMTVeriTOperatorV2_0 operator,
 			final SMTSignatureV2_0Verit signature) {
-		addPredefinedMacroInSignature(operator.getSymbol(), signature);
+		if (signature != null) {
+			addPredefinedMacroInSignature(operator.getSymbol(), signature);
+		}
 		switch (operator) {
 		case BOOLS_OP:
 			return BOOL_SET_SYMBOL;
@@ -559,102 +601,4 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 		}
 
 	}
-
-	public static SMTMacroSymbol getMacroSymbol(
-			final SMTVeriTOperatorV2_0 operator,
-			final SMTSignatureV1_2Verit signature) {
-		addPredefinedMacroInSignature(operator.getSymbol(), signature);
-		switch (operator) {
-		case BOOLS_OP:
-			return BOOL_SET_SYMBOL;
-		case BUNION_OP:
-			return BUNION_SYMBOL;
-		case BINTER_OP:
-			return BINTER_SYMBOL;
-		case FCOMP_OP:
-			return FCOMP_SYMBOL;
-		case OVR_OP:
-			return REL_OVR_SYMBOL;
-		case EMPTY_OP:
-			return EMPTYSET_SYMBOL;
-		case IN_OP:
-			return IN_SYMBOL;
-		case SUBSET_OP:
-			return SUBSET_SYMBOL;
-		case SUBSETEQ_OP:
-			return SUBSETEQ_SYMBOL;
-		case RANGE_INTEGER_OP:
-			return INTEGER_RANGE_SYMBOL;
-		case RANGE_SUBSTRACTION_OP:
-			return RANGE_SUBSTRACTION_SYMBOL;
-		case RANGE_RESTRICTION_OP:
-			return RANGE_RESTRICTION_SYMBOL;
-		case RELATION_OP:
-			return RELATION_SYMBOL;
-		case TOTAL_RELATION_OP:
-			return TOTAL_RELATION_SYMBOL;
-		case SURJECTIVE_RELATION_OP:
-			return SURJECTIVE_RELATION_SYMBOL;
-		case TOTAL_SURJECTIVE_RELATION_OP:
-			return TOTAL_SURJECTIVE_RELATION_SYMBOL;
-		case PARTIAL_FUNCTION_OP:
-			return PARTIAL_FUNCTION_SYMBOL;
-		case TOTAL_FUNCTION_OP:
-			return TOTAL_FUNCTION_SYMBOL;
-		case ID_OP:
-			return ID_SYMBOL;
-		case NAT_OP:
-			return NAT_SYMBOL;
-		case NAT1_OP:
-			return NAT1_SYMBOL;
-		case INV_OP:
-			return INVERSE_SYMBOL;
-		case DOM_OP:
-			return DOM_SYMBOL;
-		case PARTIAL_INJECTION_OP:
-			return PARTIAL_INJECTION_SYMBOL;
-		case TOTAL_INJECTION_OP:
-			return TOTAL_INJECTION_SYMBOL;
-		case PARTIAL_SURJECTION_OP:
-			return PARTIAL_SURJECTION_SYMBOL;
-		case TOTAL_SURJECTION_OP:
-			return TOTAL_SURJECTION_SYMBOL;
-		case TOTAL_BIJECTION_OP:
-			return TOTAL_BIJECTION_SYMBOL;
-		case CARTESIAN_PRODUCT_OP:
-			return CARTESIAN_PRODUCT_SYMBOL;
-		case DOMAIN_RESTRICTION_OP:
-			return DOMAIN_RESTRICTION_SYMBOL;
-		case DOMAIN_SUBSTRACTION_OP:
-			return DOMAIN_SUBSTRACTION_SYMBOL;
-		case RELATIONAL_IMAGE_OP:
-			return RELATIONAL_IMAGE_SYMBOL;
-		case SETMINUS_OP:
-			return SETMINUS_SYMBOL;
-		case ISMIN_OP:
-			return ISMIN_SYMBOL;
-		case ISMAX_OP:
-			return ISMAX_SYMBOL;
-		case FINITE_OP:
-			return FINITE_SYMBOL;
-		case CARD_OP:
-			return CARD_SYMBOL;
-		case RANGE_OP:
-			return RANGE_SYMBOL;
-		case BCOMP_OP:
-			return BCOMP_SYMBOL;
-		case INTEGER_OP:
-			return INTEGER_SYMBOL;
-		case SUCC_OP:
-			return SUCC_SYMBOL;
-		case PRED_OP:
-			return PRED_SYMBOL;
-		default:
-			throw new IllegalArgumentException(
-					"There is no defined macro symbol with symbol: "
-							+ operator.toString());
-		}
-
-	}
-
 }

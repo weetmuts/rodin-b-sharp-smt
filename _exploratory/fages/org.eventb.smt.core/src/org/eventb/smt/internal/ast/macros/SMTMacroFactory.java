@@ -60,7 +60,6 @@ import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eventb.smt.internal.ast.SMTFactoryVeriT;
 import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTSignature;
 import org.eventb.smt.internal.ast.SMTSignatureV1_2Verit;
@@ -97,14 +96,19 @@ public abstract class SMTMacroFactory {
 	private static final String FST_PAIR_SORT_NAME = "'s";
 	private static final String SND_PAIR_SORT_NAME = "'t";
 
-	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol(FST_PAIR_SORT_NAME, V1_2);
+	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
+			final String symbolName, SMTLIBVersion smtlibVersion) {
+		return new SMTPolymorphicSortSymbol(symbolName, smtlibVersion);
+	}
 
-	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol(SND_PAIR_SORT_NAME, V1_2);
+	private static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(
+			FST_PAIR_SORT_NAME, V1_2);
 
-	public static SMTSortSymbol PAIR_SORT = SMTFactoryVeriT
-			.makePolymorphicSortSymbol("(Pair 's 't)", V1_2);
+	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
+			SND_PAIR_SORT_NAME, V1_2);
+
+	public static SMTSortSymbol PAIR_SORT = makePolymorphicSortSymbol(
+			"(Pair 's 't)", V1_2);
 
 	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
