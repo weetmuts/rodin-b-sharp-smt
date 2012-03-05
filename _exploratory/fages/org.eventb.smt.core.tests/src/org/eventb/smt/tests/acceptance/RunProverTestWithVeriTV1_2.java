@@ -797,4 +797,18 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 				VALID);
 	}
 
+	@Test
+	@Ignore("VeriT: Time exceeded.")
+	public void testTotalFunctionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("total_function_verit_1_2", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)", te,
+				VALID);
+	}
+
 }

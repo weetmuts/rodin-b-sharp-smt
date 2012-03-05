@@ -953,4 +953,18 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 				VALID);
 	}
 
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalFunctionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("total_function_verit_2_0", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)", te,
+				VALID);
+	}
+
 }
