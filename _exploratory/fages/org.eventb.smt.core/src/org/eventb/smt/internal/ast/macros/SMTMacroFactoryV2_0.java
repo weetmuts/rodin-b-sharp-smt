@@ -179,7 +179,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
 			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO, IN_MACRO };
 
-	// TODO: test
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			TOTAL_FUNCTION,
 			"(par (s t) ("
@@ -187,7 +186,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?TOT_FUN_0 (s Bool)) (?TOT_FUN_1 (t Bool))) (lambda ((?TOT_FUN_2 ((Pair s t) Bool))) (and (in ?TOT_FUN_2 (pfun ?TOT_FUN_0 ?TOT_FUN_1)) (totp ?TOT_FUN_0 ?TOT_FUN_2)))))",
 			3, false, false, PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN);
 
-	// TODO: test
 	public static final SMTPredefinedMacro INVERSE_MACRO = new SMTPredefinedMacro(
 			INV,
 			"(par (s t) ("
@@ -198,7 +196,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
 			INVERSE_MACRO };
 
-	// TODO: test
 	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
 			INJP, "(par (s t) (" + INJP
 					+ " ((?INJP_0 ((Pair s t ) Bool))) (funp (inv ?INJP_0))))",

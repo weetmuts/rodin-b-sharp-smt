@@ -967,4 +967,17 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 				VALID);
 	}
 
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testInverseForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ ↔ ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("inverse_verit_2_0", hyps, "A = (A)∼", te, VALID);
+	}
+
 }

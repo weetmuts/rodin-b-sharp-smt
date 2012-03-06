@@ -811,4 +811,16 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 				VALID);
 	}
 
+	@Test
+	public void testInverseForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ ↔ ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("inverse_verit_1_2", hyps, "A = (A)∼", te, VALID);
+	}
+
 }
