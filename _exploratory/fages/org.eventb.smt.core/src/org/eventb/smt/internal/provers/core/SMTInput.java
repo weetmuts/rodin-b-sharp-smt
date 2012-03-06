@@ -10,6 +10,8 @@
 
 package org.eventb.smt.internal.provers.core;
 
+import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+
 import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
@@ -41,10 +43,11 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super(reader);
 		final String configId = reader.getString(CONFIG_ID);
-		solverConfig = SMTPreferences.getSolverConfiguration(configId);
+		final SMTPreferences smtPrefs = getSMTPrefs();
+		solverConfig = smtPrefs.getSolverConfiguration(configId);
 		poName = RODIN_SEQUENT;
-		translationPath = SMTPreferences.getTranslationPath();
-		veritPath = SMTPreferences.getVeriTPath();
+		translationPath = smtPrefs.getTranslationPath();
+		veritPath = smtPrefs.getVeriTPath();
 		error = validate();
 	}
 
@@ -59,10 +62,11 @@ public class SMTInput extends XProverInput {
 	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay) {
 		super(restricted, timeOutDelay);
-		solverConfig = SMTPreferences.getSolverConfiguration();
+		final SMTPreferences smtPrefs = getSMTPrefs();
+		solverConfig = smtPrefs.getSelectedSolverConfiguration();
 		poName = RODIN_SEQUENT;
-		translationPath = SMTPreferences.getTranslationPath();
-		veritPath = SMTPreferences.getVeriTPath();
+		translationPath = smtPrefs.getTranslationPath();
+		veritPath = smtPrefs.getVeriTPath();
 		error = validate();
 	}
 
@@ -80,10 +84,11 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final SMTSolverConfiguration solverConfig) {
 		super(restricted, timeOutDelay);
+		final SMTPreferences smtPrefs = getSMTPrefs();
 		this.solverConfig = solverConfig;
 		poName = RODIN_SEQUENT;
-		translationPath = SMTPreferences.getTranslationPath();
-		veritPath = SMTPreferences.getVeriTPath();
+		translationPath = smtPrefs.getTranslationPath();
+		veritPath = smtPrefs.getVeriTPath();
 		error = validate();
 	}
 
@@ -101,10 +106,11 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final String configId) {
 		super(restricted, timeOutDelay);
-		solverConfig = SMTPreferences.getSolverConfiguration(configId);
+		final SMTPreferences smtPrefs = getSMTPrefs();
+		solverConfig = smtPrefs.getSolverConfiguration(configId);
 		poName = RODIN_SEQUENT;
-		translationPath = SMTPreferences.getTranslationPath();
-		veritPath = SMTPreferences.getVeriTPath();
+		translationPath = smtPrefs.getTranslationPath();
+		veritPath = smtPrefs.getVeriTPath();
 		error = validate();
 	}
 

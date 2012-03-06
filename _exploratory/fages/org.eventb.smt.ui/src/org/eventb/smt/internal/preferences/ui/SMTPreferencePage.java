@@ -14,15 +14,18 @@ import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFEREN
 import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.eventb.smt.internal.provers.core.SMTProversCore;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -41,13 +44,13 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
 
 	public SMTPreferencePage() {
-		super(FieldEditorPreferencePage.FLAT);
-		setPreferenceStore(SmtProversUIPlugin.getDefault().getPreferenceStore());
+		super(FLAT);
 	}
 
-	private class ValidatedOnKeyStrokeDirectoryFieldEditor extends DirectoryFieldEditor {
-		public ValidatedOnKeyStrokeDirectoryFieldEditor(String name, String label,
-				Composite parent) {
+	private class ValidatedOnKeyStrokeDirectoryFieldEditor extends
+			DirectoryFieldEditor {
+		public ValidatedOnKeyStrokeDirectoryFieldEditor(String name,
+				String label, Composite parent) {
 			super();
 			init(name, label);
 			setErrorMessage(JFaceResources
@@ -69,14 +72,28 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 				VERIT_PATH_ID, VERIT_PATH_LABEL, true, getFieldEditorParent());
 		addField(veriTBinaryBrowser);
 
-		final ValidatedOnKeyStrokeDirectoryFieldEditor translationDirectoryBrowser = new ValidatedOnKeyStrokeDirectoryFieldEditor(
+		final ValidatedOnKeyStrokeDirectoryFieldEditor translationDirBrowser = new ValidatedOnKeyStrokeDirectoryFieldEditor(
 				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
 				getFieldEditorParent());
-		addField(translationDirectoryBrowser);
+		addField(translationDirBrowser);
+	}
+
+	/**
+	 * Sets the preference store of this preference page. It is called when the
+	 * preference store is currently <code>null</code>. The returned preference
+	 * store is built over the core plug-in node (its ID) of the configuration
+	 * scope, as in the <code>SMTPreference</code> class.
+	 * 
+	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
+	 */
+	@Override
+	protected IPreferenceStore doGetPreferenceStore() {
+		return new ScopedPreferenceStore(ConfigurationScope.INSTANCE,
+				SMTProversCore.PLUGIN_ID);
 	}
 
 	@Override
 	public void init(final IWorkbench workbench) {
-		// Do nothing
+		setPreferenceStore(doGetPreferenceStore());
 	}
 }

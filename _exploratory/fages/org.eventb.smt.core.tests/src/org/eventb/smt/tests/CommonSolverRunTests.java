@@ -19,8 +19,7 @@ import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath;
+import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -524,8 +523,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		/**
 		 * SMT-LIB 2.0
 		 */
-		solverConfig = getVeriTConfig();
-		this.veritPath = getVeriTPath();
+		solverConfig = VERIT_CONFIG;
+		this.veritPath = VERIT_CONFIG.getPath();
 	}
 
 	protected void setPreferencesForZ3Test() {

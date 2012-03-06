@@ -23,7 +23,7 @@ import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
- * This is a class to describe a solver detail
+ * This class describes an SMT solver configuration.
  * 
  */
 public class SMTSolverConfiguration {

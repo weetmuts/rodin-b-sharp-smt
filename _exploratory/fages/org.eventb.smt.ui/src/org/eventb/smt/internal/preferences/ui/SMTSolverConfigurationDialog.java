@@ -20,9 +20,8 @@ import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
 import static org.eventb.smt.internal.provers.core.SMTSolver.getSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.getVersion;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
+import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
 
-import java.io.File;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -38,6 +37,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
@@ -206,7 +206,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 					errBuilder.append("The solver ID must be unique.\n");
 					errBuilder.append("The following solver IDs are reserved:");
 					errBuilder.append(" '");
-					errBuilder.append(getVeriTConfig().getId());
+					errBuilder.append(VERIT_CONFIG.getId());
 					// TODO uncomment when fragments are created
 					// errBuilder.append("', ");
 					// errBuilder.append("'");
@@ -237,47 +237,18 @@ public class SMTSolverConfigurationDialog extends Dialog {
 
 	boolean validId(final String id) {
 		return !id.isEmpty() && !usedIds.contains(id)
-				&& !id.equals(getVeriTConfig().getId());
+				&& !id.equals(VERIT_CONFIG.getId());
 		// TODO uncomment when fragments are created
 		// && !id.equals(getCvc3Config().getId());
 	}
 
-	public static boolean validPath(final String path,
-			final boolean showErrors) {
-		if (path != null) {
-			if (!path.isEmpty()) {
-				final File file = new File(path);
-				try {
-					if (file.exists()) {
-						if (file.isFile()) {
-							if (file.canExecute()) {
-								return true;
-							} else {
-								if (showErrors)
-									showError("Rodin cannot execute the indicated file.");
-								return false;
-							}
-						} else {
-							if (showErrors)
-								showError("The indicated file is not a valid file.");
-							return false;
-						}
-					} else {
-						if (showErrors)
-							showError("The indicated file does not exist.");
-						return false;
-					}
-				} catch (SecurityException se) {
-					if (showErrors)
-						showError("Rodin cannot read or execute the indicated file.");
-					return false;
-				}
-			} else {
-				if (showErrors)
-					showError("The solver path is required.");
-				return false;
-			}
+	public static boolean validPath(final String path, final boolean showErrors) {
+		final StringBuilder error = new StringBuilder();
+		if (SMTPreferences.validPath(path, error)) {
+			return true;
 		} else {
+			if (showErrors)
+				showError(error.toString());
 			return false;
 		}
 	}

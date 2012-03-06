@@ -11,11 +11,14 @@
 
 package org.eventb.smt.internal.provers.core;
 
+import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.translation.SMTThroughPP;
 import org.eventb.smt.internal.translation.Translator;
 import org.osgi.framework.BundleContext;
@@ -28,7 +31,6 @@ public class SMTProversCore extends Plugin {
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.core";
-	public static final String PREFERENCES_PLUGIN_ID = "org.eventb.smt.ui";
 	/**
 	 * Debug variables
 	 */
@@ -163,6 +165,9 @@ public class SMTProversCore extends Plugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		final SMTPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.removeIncorrectInternalConfigs();
+		smtPrefs.savePrefs();
 		enableAssertions();
 		if (isDebugging()) {
 			configureDebugOptions();

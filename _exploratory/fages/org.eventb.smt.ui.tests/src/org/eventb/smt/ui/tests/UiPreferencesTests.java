@@ -11,24 +11,15 @@
 package org.eventb.smt.ui.tests;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTSolver;
-import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,9 +39,8 @@ public class UiPreferencesTests {
 	protected static void setSolverPreferences(final String solverBinaryName,
 			final SMTSolver solver, final String solverArgs,
 			final SMTLIBVersion smtlibVersion) {
+		final SMTPreferences smtPrefs = SMTPreferences.getSMTPrefs();
 		final String OS = System.getProperty("os.name");
-		final IPreferenceStore store = SmtProversUIPlugin
-				.getDefaultPreferenceStore();
 		final String solverPath;
 
 		if (OS.startsWith("Windows")) {
@@ -61,14 +51,11 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		final List<SMTSolverConfiguration> solvers = new ArrayList<SMTSolverConfiguration>();
-		solvers.add(new SMTSolverConfiguration(solverBinaryName, solver,
-				solverPath, solverArgs, smtlibVersion));
-		final String preferences = SMTSolverConfiguration.toString(solvers);
-		store.setValue(TRANSLATION_PATH_ID, "");
-		store.setValue(SOLVER_PREFERENCES_ID, preferences);
-		store.setValue(SOLVER_INDEX_ID, 0);
-		store.setValue(VERIT_PATH_ID, BIN_PATH + VERIT);
+		smtPrefs.addSolverConfig(new SMTSolverConfiguration(solverBinaryName,
+				solver, solverPath, solverArgs, smtlibVersion));
+		smtPrefs.setSelectedConfigIndex(false, 0);
+		smtPrefs.setTranslationPath(DEFAULT_TRANSLATION_PATH);
+		smtPrefs.setVeriTPath(BIN_PATH + VERIT);
 	}
 
 	protected static void setPreferencesForVeriTTest() {
@@ -117,10 +104,11 @@ public class UiPreferencesTests {
 				smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
-		final SMTSolverConfiguration solverConfig = SMTPreferences
-				.getSolverConfiguration();
-		final String translationPath = SMTPreferences.getTranslationPath();
-		final String veritPath = SMTPreferences.getVeriTPath();
+		final SMTPreferences smtPrefs = SMTPreferences.getSMTPrefs();
+		final SMTSolverConfiguration solverConfig = smtPrefs
+				.getSelectedSolverConfiguration();
+		final String translationPath = smtPrefs.getTranslationPath();
+		final String veritPath = smtPrefs.getVeriTPath();
 
 		Assert.assertEquals(expectedSolverConfig, solverConfig);
 		Assert.assertEquals(expectedTranslationPath, translationPath);

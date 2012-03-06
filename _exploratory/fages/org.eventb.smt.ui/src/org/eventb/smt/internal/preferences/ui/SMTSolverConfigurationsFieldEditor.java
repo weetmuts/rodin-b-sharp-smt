@@ -11,13 +11,9 @@
 package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_INDEX_ID;
-import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
+import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
+import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
-import static org.eventb.smt.verit.core.VeriTProverCore.getVeriTConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
@@ -41,8 +37,8 @@ import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 /**
  * This class is used to build the solver configurations table printed in the
  * preferences page. This table contains all the information set by the user
- * when he added a new SMT solver. This class also defines four buttons which
- * interact with the table:
+ * when he added a new SMT solver configuration. This class also defines four
+ * buttons which interact with the table:
  * <ul>
  * <li>The 'Add' button to add a new SMT solver configuration into the table.</li>
  * <li>The 'Edit' button to modify a previously added SMT solver configuration.</li>
@@ -51,13 +47,11 @@ import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
  * a sequent using the SMT tactic.</li>
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
- * <code>TableViewer</code>. The data are contained in a
+ * <code>TableViewer</code>. The data are contained in an
  * <code>SMTSolverConfiguration</code> list, which is given as input to the
  * <code>TableViewer</code>. As a consequence, it is necessary to update the
- * <code>solversTableViewer</code> each time the list <code>solverConfigs</code>
- * is modified, by calling the <code>refresh</code> method. The index of the
- * selected solver for SMT proofs is stored locally in the field
- * <code>selectedSolverIndex</code>.
+ * <code>configsTableViewer</code> each time the list <code>solverConfigs</code>
+ * is modified, by calling the <code>refresh</code> method.
  * 
  * @author guyot
  */
@@ -112,15 +106,9 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	/**
 	 * The table showing the list of solver configurations
 	 */
-	TableViewer solversTableViewer;
-	/**
-	 * The list of solver configurations
-	 */
-	List<SMTSolverConfiguration> solverConfigs = new ArrayList<SMTSolverConfiguration>();
-	/**
-	 * The index of the solver selected for SMT proofs
-	 */
-	int selectedSolverIndex = -1;
+	TableViewer configsTableViewer;
+
+	SMTPreferences smtPrefs;
 
 	/**
 	 * Creates a new solver configurations field editor.
@@ -135,6 +123,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	public SMTSolverConfigurationsFieldEditor(final String name,
 			final String labelText, final Composite parent) {
 		super(name, labelText, parent);
+		smtPrefs = getSMTPrefs();
 	}
 
 	/**
@@ -177,39 +166,24 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		table.setLinesVisible(true);
 	}
 
-	private void addSolverConfig(final SMTSolverConfiguration solverConfig) {
-		if (!contains(solverConfigs, solverConfig)) {
-			solverConfigs.add(solverConfig);
-		}
-	}
-
 	/**
-	 * Remove the currently selected solver from the list of solver
+	 * Remove the currently selected configuration from the list of solvers
 	 * configurations, refresh the table viewer, updates the index of the
-	 * selected solver and refresh the button states.
+	 * selected configuration and refresh the button states.
 	 * 
 	 * @param solversTable
 	 *            the solvers table
 	 */
 	void removeCurrentSelection(final Table solversTable) {
 		final int indexToRemove = solversTable.getSelectionIndex();
-		solverConfigs.remove(indexToRemove);
-		solversTableViewer.refresh();
-		if (selectedSolverIndex > indexToRemove) {
-			selectedSolverIndex--;
-		} else if (selectedSolverIndex == indexToRemove) {
-			if (solverConfigs.size() > 0) {
-				selectedSolverIndex = 0;
-			} else {
-				selectedSolverIndex = -1;
-			}
-		}
+		smtPrefs.removeSolverConfig(indexToRemove);
+		configsTableViewer.refresh();
 
 		/**
-		 * setSelectedSolverIndex is called so that another solver is
+		 * setSelectedConfigIndex is called so that another configuration is
 		 * automatically selected
 		 */
-		setSelectedSolverIndex(!SELECTION_REQUESTED);
+		setSelectedConfigIndex(!SELECTION_REQUESTED);
 		selectionChanged();
 	}
 
@@ -230,7 +204,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	 * Sets the buttons statuses depending on the selection in the table.
 	 */
 	void selectionChanged() {
-		final Table solversTable = solversTableViewer.getTable();
+		final Table solversTable = configsTableViewer.getTable();
 		final boolean validSelectionIndex = isValidIndex(
 				solversTable.getSelectionIndex(), solversTable.getItemCount());
 		removeButton.setEnabled(validSelectionIndex);
@@ -239,68 +213,41 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	}
 
 	/**
-	 * This method sets the selected solver index to the current selection in
-	 * the solvers table if it was requested, or to a valid index. If there is
-	 * only one solver in the table, it is selected. If there is no solver in
-	 * the table, it is set to the default value (-1).
+	 * This method sets the selected configuration index to the current
+	 * selection in the configurations table if it was requested, or to a valid
+	 * index. If there is only one configuration in the table, it is selected.
+	 * If there is no configuration in the table, it is set to the default value
+	 * (-1).
 	 * 
-	 * Then, the selected solver background color is set to BLUE.
+	 * Then, the selected configuration background color is set to BLUE.
 	 */
-	void setSelectedSolverIndex(final boolean selectionRequested) {
-		final Table solversTable = solversTableViewer.getTable();
-		final int itemCount = solversTable.getItemCount();
+	void setSelectedConfigIndex(final boolean selectionRequested) {
+		final Table configsTable = configsTableViewer.getTable();
+		final int selectionIndex = configsTable.getSelectionIndex();
 
 		/**
-		 * If there is only one solver set in the table, it is selected for SMT
-		 * proofs
+		 * If the 'SELECT' button was pushed, the current selection is selected
+		 * for SMT proofs. Notice that if the 'SELECT' button has been pushed,
+		 * it means that the current selection is valid.
 		 */
-		if (itemCount == 1) {
-			selectedSolverIndex = 0;
-		} else {
-			final int selectionIndex = solversTable.getSelectionIndex();
+		smtPrefs.setSelectedConfigIndex(selectionRequested, selectionIndex);
 
-			/**
-			 * Else, if the 'SELECT' button was pushed, the current selection is
-			 * selected for SMT proofs. Notice that if the 'SELECT' button has
-			 * been pushed, it means that the current selection is valid.
-			 */
-			if (selectionRequested) {
-				selectedSolverIndex = selectionIndex;
-			} else {
-				/**
-				 * Else if the current selected solver is not valid...
-				 */
-				if (!isValidIndex(selectedSolverIndex, itemCount)) {
-					/**
-					 * if there is some solvers set in the table, the first one
-					 * is selected for SMT proofs, else the selected solver
-					 * index is set to -1.
-					 */
-					if (itemCount > 1) {
-						selectedSolverIndex = 0;
-					} else {
-						selectedSolverIndex = -1;
-					}
-				}
-			}
-		}
-
-		updateSolversTableColors();
+		updateConfigsTableColors();
 	}
 
 	/**
-	 * Updates the colors of the solvers table, the selected solver background
+	 * Updates the colors of the configs table, the selected config background
 	 * color is set to BLUE.
 	 */
-	void updateSolversTableColors() {
+	void updateConfigsTableColors() {
 		final Color blue = top.getDisplay().getSystemColor(SWT.COLOR_BLUE);
 		final Color white = top.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 		final Color black = top.getDisplay().getSystemColor(SWT.COLOR_BLACK);
 
-		final Table solversTable = solversTableViewer.getTable();
-		final TableItem[] items = solversTable.getItems();
+		final Table configsTable = configsTableViewer.getTable();
+		final TableItem[] items = configsTable.getItems();
 		for (int i = 0; i < items.length; i++) {
-			if (i == selectedSolverIndex) {
+			if (i == smtPrefs.getSelectedConfigIndex()) {
 				items[i].setBackground(blue);
 				items[i].setForeground(white);
 			} else {
@@ -335,17 +282,17 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		/**
 		 * Creates the table viewer
 		 */
-		solversTableViewer = createTableViewer(top);
+		configsTableViewer = createTableViewer(top);
 
 		/**
 		 * Configures the table
 		 */
-		final Table solversTable = solversTableViewer.getTable();
-		solversTable.setHeaderVisible(true);
-		solversTable.setLinesVisible(true);
-		solversTable
+		final Table configsTable = configsTableViewer.getTable();
+		configsTable.setHeaderVisible(true);
+		configsTable.setLinesVisible(true);
+		configsTable
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		solversTable.addSelectionListener(new SelectionAdapter() {
+		configsTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectionChanged();
@@ -376,25 +323,27 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 * When pushed, opens the solver configuration shell
 				 */
 				final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
-						buttonsGroup.getShell(), null,
-						getUsedIds(solverConfigs));
+						buttonsGroup.getShell(), null, getUsedIds(smtPrefs
+								.getSolverConfigs()));
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolverConfiguration</code> object,
 					 * and adds it to the list.
 					 */
-					solverConfigs.add(solverConfigDialog.getSolverConfig());
+					smtPrefs.addSolverConfig(solverConfigDialog
+							.getSolverConfig());
 
 					/**
 					 * Refreshes the table viewer.
 					 */
-					solversTableViewer.refresh();
+					configsTableViewer.refresh();
 					/**
-					 * setSelectedSolverIndex is called so that if the added
-					 * solver was the first one to be added, it is automatically
-					 * selected as the solver to be used for SMT proofs.
+					 * setSelectedConfigIndex is called so that if the added
+					 * configuration was the first one to be added, it is
+					 * automatically selected as the configuration to be used
+					 * for SMT proofs.
 					 */
-					setSelectedSolverIndex(!SELECTION_REQUESTED);
+					setSelectedConfigIndex(!SELECTION_REQUESTED);
 					selectionChanged();
 				}
 			}
@@ -416,7 +365,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				/**
 				 * When pushed, remove the current selection
 				 */
-				removeCurrentSelection(solversTable);
+				removeCurrentSelection(configsTable);
 			}
 		});
 		final GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -437,19 +386,19 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 * When pushed, opens the configuration shell of the solver
 				 * currently selected in the table.
 				 */
-				final int selectionIndex = solversTable.getSelectionIndex();
-				if (isValidIndex(selectionIndex, solverConfigs.size())) {
-					final SMTSolverConfiguration solverToEdit = solverConfigs
-							.get(selectionIndex);
+				final int selectionIndex = configsTable.getSelectionIndex();
+				if (smtPrefs.selectedConfigIndexValid()) {
+					final SMTSolverConfiguration solverToEdit = smtPrefs
+							.getSolverConfigs().get(selectionIndex);
 					if (solverToEdit != null) {
 						final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
 								buttonsGroup.getShell(), solverToEdit,
-								getUsedIds(solverConfigs));
+								getUsedIds(smtPrefs.getSolverConfigs()));
 						if (solverConfigDialog.open() == Window.OK) {
 							/**
 							 * Refreshes the table viewer.
 							 */
-							solversTableViewer.refresh();
+							configsTableViewer.refresh();
 						}
 					}
 				}
@@ -470,10 +419,10 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
 				/**
-				 * When pushed, sets the currently selected solver in the table
-				 * as the selected solver for SMT proofs.
+				 * When pushed, sets the currently selected configuration in the
+				 * table as the selected configuration for SMT proofs.
 				 */
-				setSelectedSolverIndex(SELECTION_REQUESTED);
+				setSelectedConfigIndex(SELECTION_REQUESTED);
 			}
 		});
 		final GridData selectButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -484,48 +433,51 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 		/**
 		 * Packs everything.
 		 */
-		solversTable.pack();
+		configsTable.pack();
 		parent.pack();
 	}
 
 	@Override
 	protected void doLoad() {
-		final String preferences = getPreferenceStore().getString(
-				getPreferenceName());
-		solverConfigs = SMTPreferences.parsePreferencesString(preferences);
-		addSolverConfig(getVeriTConfig());
+		smtPrefs = getSMTPrefs();
+		// FIXME move into the veriT plug-in start method
+		// addSolverConfig(getVeriTConfig());
 		// TODO uncomment when fragments are added
 		// addSolverConfig(getCvc3Config());
-		solversTableViewer.setInput(solverConfigs);
-		solversTableViewer.refresh();
-		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
-		setSelectedSolverIndex(!SELECTION_REQUESTED);
+		configsTableViewer.setInput(smtPrefs.getSolverConfigs());
+		configsTableViewer.refresh();
+		setSelectedConfigIndex(!SELECTION_REQUESTED);
 	}
 
 	@Override
 	protected void doLoadDefault() {
-		final String defaultPreferences = getPreferenceStore()
-				.getDefaultString(getPreferenceName());
-		solverConfigs = SMTPreferences
-				.parsePreferencesString(defaultPreferences);
-		addSolverConfig(getVeriTConfig());
+		smtPrefs = getDefaultSMTPrefs();
+		// FIXME move into the veriT plug-in start method
+		// addSolverConfig(getVeriTConfig());
 		// TODO uncomment when fragments are added
 		// addSolverConfig(getCvc3Config());
-		solversTableViewer.setInput(solverConfigs);
-		solversTableViewer.refresh();
-		selectedSolverIndex = getPreferenceStore().getInt(SOLVER_INDEX_ID);
-		setSelectedSolverIndex(!SELECTION_REQUESTED);
+		configsTableViewer.setInput(smtPrefs.getSolverConfigs());
+		configsTableViewer.refresh();
+		setSelectedConfigIndex(!SELECTION_REQUESTED);
 		selectionChanged();
+	}
+
+	/**
+	 * FIXME this should not need to be overriden Overriden because when called
+	 * after performDefault, the following statement was executed :</ br>
+	 * <code>preferenceStore.setToDefault(preferenceName);</code> which was
+	 * causing the values of this field editor not to be saved.
+	 * 
+	 * @see org.eclipse.jface.preference.FieldEditor#store()
+	 */
+	@Override
+	public void store() {
+		doStore();
 	}
 
 	@Override
 	protected void doStore() {
-		final String preferences = SMTSolverConfiguration
-				.toString(solverConfigs);
-		if (preferences != null) {
-			getPreferenceStore().setValue(getPreferenceName(), preferences);
-		}
-		getPreferenceStore().setValue(SOLVER_INDEX_ID, selectedSolverIndex);
+		smtPrefs.savePrefs();
 	}
 
 	@Override

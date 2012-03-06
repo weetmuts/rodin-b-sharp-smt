@@ -38,7 +38,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.eventb.smt.internal.preferences.ui.SMTPreferenceInitializer">
+            class="org.eventb.smt.internal.preferences.SMTPreferenceInitializer">
       </initializer>
    </extension>
    <extension
