@@ -199,7 +199,7 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 			INJP,
 			"("
 					+ INJP
-					+ " (lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0)))",
+					+ " (lambda (?INJP_0 ((Pair 's 't )Bool)) . (funp (inv ?INJP_0))))",
 			2, false, false, FUNP_AND_INV);
 
 	public static SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
@@ -307,7 +307,7 @@ public class SMTMacroFactoryV1_2 extends SMTMacroFactory {
 			PARTIAL_INJECTION,
 			"("
 					+ PARTIAL_INJECTION
-					+ "(lambda (?PAR_INJ ('s Bool)) (?PAR_INJ_1 ('s Bool)) . (lambda (?PAR_INJ_2 ((Pair 's 't) Bool)) . (and ((pfun ?PAR_INJ_0 ?PAR_INJ_1) ?PAR_INJ_2) (injp ?PAR_INJ_2)))))",
+					+ "(lambda (?PAR_INJ_0 ('s Bool)) (?PAR_INJ_1 ('s Bool)) . (lambda (?PAR_INJ_2 ((Pair 's 't) Bool)) . (and ((pfun ?PAR_INJ_0 ?PAR_INJ_1) ?PAR_INJ_2) (injp ?PAR_INJ_2)))))",
 			3, false, false, PARTIAL_FUNCTION_AND_INJP);
 
 	private static SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {

@@ -823,4 +823,17 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 		doTest("inverse_verit_1_2", hyps, "A = (A)∼", te, VALID);
 	}
 
+	@Test
+	public void testPartialInjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_injection_verit_1_2", hyps, "A \u2914 B = A \u2914 B",
+				te, VALID);
+	}
+
 }

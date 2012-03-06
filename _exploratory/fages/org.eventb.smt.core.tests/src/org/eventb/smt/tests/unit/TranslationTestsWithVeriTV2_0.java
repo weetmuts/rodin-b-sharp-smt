@@ -36,6 +36,7 @@ import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTSignatureV2_0;
 import org.eventb.smt.internal.ast.SMTSignatureV2_0Verit;
 import org.eventb.smt.internal.ast.macros.SMTMacro;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
 import org.eventb.smt.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
 import org.eventb.smt.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
@@ -239,6 +240,25 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
 				V2_0, ff);
+	}
+
+	@Test
+	public void testWellFormedParenthesis() {
+		SMTVeriTOperatorV2_0[] values = SMTVeriTOperatorV2_0.values();
+		for (SMTVeriTOperatorV2_0 op : values) {
+			SMTPredefinedMacro macro = op.getSymbol();
+			String macroString = macro.toString();
+			int count = 0;
+			for (int i = 0; i < macroString.length(); i++) {
+				char c = macroString.charAt(i);
+				if (c == '(')
+					count++;
+				else if (c == ')')
+					count--;
+				assertTrue(count >= 0);
+			}
+			assertTrue(count == 0);
+		}
 	}
 
 	@Test

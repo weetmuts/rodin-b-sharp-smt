@@ -36,6 +36,7 @@ import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTSignatureV1_2;
 import org.eventb.smt.internal.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.internal.ast.macros.SMTMacro;
+import org.eventb.smt.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
 import org.eventb.smt.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
 import org.eventb.smt.internal.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
@@ -50,7 +51,8 @@ import org.junit.Test;
 /**
  * Ensure that translation to veriT extended version of SMT-LIB is correct
  * 
- * @author Vitor Alcantara de Almeida
+ * @author Vitor Alcantara de Almeida TODO: Create a test to check the
+ *         declarations of the macro.
  * 
  */
 public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
@@ -239,6 +241,28 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
 				V1_2, ff);
+	}
+
+	@Test
+	public void testWellFormedParenthesis() {
+		SMTVeriTOperatorV1_2[] values = SMTVeriTOperatorV1_2.values();
+		for (SMTVeriTOperatorV1_2 op : values) {
+			SMTPredefinedMacro macro = op.getSymbol();
+			String macroString = macro.toString();
+			int count = 0;
+			for (int i = 0; i < macroString.length(); i++) {
+				char c = macroString.charAt(i);
+				if (c == '(')
+					count++;
+				else if (c == ')')
+					count--;
+				assertTrue(
+						"There is at least one closing parenthesis that was not opened before in the macro: "
+								+ macroString, count >= 0);
+			}
+			assertTrue("Parenthesis of macro: " + macroString
+					+ " are not well formed.", count == 0);
+		}
 	}
 
 	@Test
