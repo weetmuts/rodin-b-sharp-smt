@@ -13,7 +13,6 @@ package org.eventb.smt.internal.preferences.ui;
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
 import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
-import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.getUsedIds;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
@@ -205,11 +204,14 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	 */
 	void selectionChanged() {
 		final Table solversTable = configsTableViewer.getTable();
-		final boolean validSelectionIndex = isValidIndex(
-				solversTable.getSelectionIndex(), solversTable.getItemCount());
-		removeButton.setEnabled(validSelectionIndex);
-		editButton.setEnabled(validSelectionIndex);
-		selectButton.setEnabled(validSelectionIndex);
+		final int selectionIndex = solversTable.getSelectionIndex();
+		final boolean validSelection = isValidIndex(selectionIndex,
+				solversTable.getItemCount());
+		final boolean validEditableSelection = validSelection ? smtPrefs
+				.getSolverConfigs().get(selectionIndex).isEditable() : false;
+		removeButton.setEnabled(validEditableSelection);
+		editButton.setEnabled(validEditableSelection);
+		selectButton.setEnabled(validSelection);
 	}
 
 	/**
@@ -323,8 +325,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 * When pushed, opens the solver configuration shell
 				 */
 				final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
-						buttonsGroup.getShell(), null, getUsedIds(smtPrefs
-								.getSolverConfigs()));
+						buttonsGroup.getShell(), smtPrefs, null);
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolverConfiguration</code> object,
@@ -388,12 +389,11 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 */
 				final int selectionIndex = configsTable.getSelectionIndex();
 				if (smtPrefs.selectedConfigIndexValid()) {
-					final SMTSolverConfiguration solverToEdit = smtPrefs
+					final SMTSolverConfiguration configToEdit = smtPrefs
 							.getSolverConfigs().get(selectionIndex);
-					if (solverToEdit != null) {
+					if (configToEdit != null) {
 						final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
-								buttonsGroup.getShell(), solverToEdit,
-								getUsedIds(smtPrefs.getSolverConfigs()));
+								buttonsGroup.getShell(), smtPrefs, configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
 							/**
 							 * Refreshes the table viewer.
@@ -440,10 +440,6 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		smtPrefs = getSMTPrefs();
-		// FIXME move into the veriT plug-in start method
-		// addSolverConfig(getVeriTConfig());
-		// TODO uncomment when fragments are added
-		// addSolverConfig(getCvc3Config());
 		configsTableViewer.setInput(smtPrefs.getSolverConfigs());
 		configsTableViewer.refresh();
 		setSelectedConfigIndex(!SELECTION_REQUESTED);
@@ -452,10 +448,6 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoadDefault() {
 		smtPrefs = getDefaultSMTPrefs();
-		// FIXME move into the veriT plug-in start method
-		// addSolverConfig(getVeriTConfig());
-		// TODO uncomment when fragments are added
-		// addSolverConfig(getCvc3Config());
 		configsTableViewer.setInput(smtPrefs.getSolverConfigs());
 		configsTableViewer.refresh();
 		setSelectedConfigIndex(!SELECTION_REQUESTED);

@@ -18,11 +18,9 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
-import static org.eventb.smt.internal.provers.core.SMTSolver.getSolver;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.getVersion;
+import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
-
-import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,8 +41,10 @@ import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
- * @author guyot
+ * This class is the dialog opened when the user wants to add or edit an
+ * SMT-solver configuration.
  * 
+ * @author guyot
  */
 public class SMTSolverConfigurationDialog extends Dialog {
 	private static final String CONFIG_ID_LABEL = "Config ID";
@@ -57,19 +57,19 @@ public class SMTSolverConfigurationDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final Set<String> usedIds;
+	final SMTPreferences smtPrefs;
 	final SMTSolverConfiguration solverConfig;
 
 	public SMTSolverConfigurationDialog(final Shell parentShell,
-			final SMTSolverConfiguration solverConfig, final Set<String> usedIds) {
+			final SMTPreferences smtPrefs,
+			final SMTSolverConfiguration solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
+		this.smtPrefs = smtPrefs;
 		if (solverConfig != null) {
 			this.solverConfig = solverConfig;
-			usedIds.remove(solverConfig.getId());
 		} else {
 			this.solverConfig = new SMTSolverConfiguration();
 		}
-		this.usedIds = usedIds;
 		setText("Solver configuration");
 	}
 
@@ -188,13 +188,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			public void widgetSelected(SelectionEvent event) {
 				final String id = idText.getText();
 				final String path = solverPathText.getText();
-				if (validId(id)) {
+				if (id.equals(solverConfig.getId()) || smtPrefs.validId(id)) {
 					if (validPath(path, SHOW_ERRORS)) {
 						solverConfig.setId(id);
-						solverConfig.setSolver(getSolver(solverCombo.getText()));
+						solverConfig.setSolver(parseSolver(solverCombo.getText()));
 						solverConfig.setPath(path);
 						solverConfig.setArgs(argsText.getText());
-						solverConfig.setSmtlibVersion(getVersion(smtlibCombo
+						solverConfig.setSmtlibVersion(parseVersion(smtlibCombo
 								.getText()));
 						returnCode = OK;
 						shell.close();
@@ -233,13 +233,6 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		});
 
 		shell.setDefaultButton(okButton);
-	}
-
-	boolean validId(final String id) {
-		return !id.isEmpty() && !usedIds.contains(id)
-				&& !id.equals(VERIT_CONFIG.getId());
-		// TODO uncomment when fragments are created
-		// && !id.equals(getCvc3Config().getId());
 	}
 
 	public static boolean validPath(final String path, final boolean showErrors) {

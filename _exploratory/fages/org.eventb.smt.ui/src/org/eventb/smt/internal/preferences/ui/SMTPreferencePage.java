@@ -28,14 +28,14 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eventb.smt.internal.provers.core.SMTProversCore;
 
 /**
- * This class represents a preference page that is contributed to the
- * Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows us to create a page
- * that is small and knows how to save, restore and apply itself.
+ * This class contributes a preference page to the Preference dialog. By
+ * subclassing <samp>FieldEditorPreferencePage</samp>, we can use the field
+ * support built into JFace that allows us to create a page that is small and
+ * knows how to save, restore and apply itself.
  * <p>
- * This page is used to modify preferences only. They are stored in the
- * preference store that belongs to the main plug-in class. That way,
- * preferences can be accessed directly via the preference store.
+ * This page contains three field editors, stored using the preference manager
+ * of the core plug-in.
+ * </p>
  */
 public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -47,10 +47,14 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		super(FLAT);
 	}
 
-	private class ValidatedOnKeyStrokeDirectoryFieldEditor extends
-			DirectoryFieldEditor {
-		public ValidatedOnKeyStrokeDirectoryFieldEditor(String name,
-				String label, Composite parent) {
+	/**
+	 * This class is a directory field editor set to validate on key stroke.
+	 * 
+	 * @author Systerel (yguyot)
+	 */
+	private class ValidatedOnKeyStrokeDirFieldEd extends DirectoryFieldEditor {
+		public ValidatedOnKeyStrokeDirFieldEd(String name, String label,
+				Composite parent) {
 			super();
 			init(name, label);
 			setErrorMessage(JFaceResources
@@ -72,7 +76,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 				VERIT_PATH_ID, VERIT_PATH_LABEL, true, getFieldEditorParent());
 		addField(veriTBinaryBrowser);
 
-		final ValidatedOnKeyStrokeDirectoryFieldEditor translationDirBrowser = new ValidatedOnKeyStrokeDirectoryFieldEditor(
+		final ValidatedOnKeyStrokeDirFieldEd translationDirBrowser = new ValidatedOnKeyStrokeDirFieldEd(
 				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
 				getFieldEditorParent());
 		addField(translationDirBrowser);

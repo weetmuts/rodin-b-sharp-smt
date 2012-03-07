@@ -15,9 +15,7 @@ import static org.eventb.smt.internal.preferences.SMTPreferences.SEPARATOR2;
 import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
@@ -27,6 +25,8 @@ import org.eventb.smt.internal.translation.SMTLIBVersion;
  * 
  */
 public class SMTSolverConfiguration {
+	public static final boolean EDITABLE = true;
+
 	public static final String DEFAULT_CONFIG_ID = "";
 	public static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
 	public static final String DEFAULT_SOLVER_PATH = "";
@@ -42,6 +42,8 @@ public class SMTSolverConfiguration {
 	private String args;
 
 	private SMTLIBVersion smtlibVersion;
+
+	private boolean editable;
 
 	/**
 	 * Constructs a new SMTSolverConfiguration
@@ -59,12 +61,19 @@ public class SMTSolverConfiguration {
 	 */
 	public SMTSolverConfiguration(final String id, final SMTSolver solver,
 			final String path, final String args,
-			final SMTLIBVersion smtlibVersion) {
+			final SMTLIBVersion smtlibVersion, final boolean editable) {
 		this.id = id;
 		this.solver = solver;
 		this.path = path;
 		this.args = args;
 		this.smtlibVersion = smtlibVersion;
+		this.editable = editable;
+	}
+
+	public SMTSolverConfiguration(final String id, final SMTSolver solver,
+			final String path, final String args,
+			final SMTLIBVersion smtlibVersion) {
+		this(id, solver, path, args, smtlibVersion, EDITABLE);
 	}
 
 	public SMTSolverConfiguration() {
@@ -92,6 +101,10 @@ public class SMTSolverConfiguration {
 		return smtlibVersion;
 	}
 
+	public boolean isEditable() {
+		return editable;
+	}
+
 	public void setId(final String id) {
 		this.id = id;
 	}
@@ -113,19 +126,21 @@ public class SMTSolverConfiguration {
 	}
 
 	public static final String toString(
-			final List<SMTSolverConfiguration> solversDetails) {
+			final List<SMTSolverConfiguration> solverConfigs) {
 		final StringBuilder sb = new StringBuilder();
 
-		for (final SMTSolverConfiguration solverDetail : solversDetails) {
-			sb.append(solverDetail.getId());
+		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
+			sb.append(solverConfig.getId());
 			sb.append(SEPARATOR1);
-			sb.append(solverDetail.getSolver());
+			sb.append(solverConfig.getSolver());
 			sb.append(SEPARATOR1);
-			sb.append(solverDetail.getPath());
+			sb.append(solverConfig.getPath());
 			sb.append(SEPARATOR1);
-			sb.append(solverDetail.getArgs());
+			sb.append(solverConfig.getArgs());
 			sb.append(SEPARATOR1);
-			sb.append(solverDetail.getSmtlibVersion());
+			sb.append(solverConfig.getSmtlibVersion());
+			sb.append(SEPARATOR1);
+			sb.append(solverConfig.isEditable());
 			sb.append(SEPARATOR2);
 		}
 
@@ -143,16 +158,9 @@ public class SMTSolverConfiguration {
 		builder.append(args);
 		builder.append(", smtlibVersion=");
 		builder.append(smtlibVersion);
+		builder.append(", editable=");
+		builder.append(editable);
 		builder.append("]");
-	}
-
-	public static Set<String> getUsedIds(
-			List<SMTSolverConfiguration> solverConfigs) {
-		final Set<String> usedIds = new HashSet<String>();
-		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
-			usedIds.add(solverConfig.getId());
-		}
-		return usedIds;
 	}
 
 	public static boolean contains(
@@ -176,6 +184,7 @@ public class SMTSolverConfiguration {
 		result = prime * result + (args == null ? 0 : args.hashCode());
 		result = prime * result
 				+ (smtlibVersion == null ? 0 : smtlibVersion.hashCode());
+		result = prime * result + (editable ? 1 : 0);
 		return result;
 	}
 
@@ -231,6 +240,9 @@ public class SMTSolverConfiguration {
 				return false;
 			}
 		} else if (!smtlibVersion.equals(other.smtlibVersion)) {
+			return false;
+		}
+		if (editable != other.editable) {
 			return false;
 		}
 		return true;

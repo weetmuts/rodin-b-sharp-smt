@@ -11,6 +11,7 @@
 package org.eventb.smt.internal.preferences;
 
 import static java.io.File.separatorChar;
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.System.getProperty;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
@@ -19,18 +20,20 @@ import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_Transl
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_VeriTPathNotSet;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.contains;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.PLUGIN_ID;
+import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eventb.smt.internal.provers.core.SMTSolver;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * The SMT preferences class
@@ -107,24 +110,24 @@ public class SMTPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	private static List<SMTSolverConfiguration> parsePrefsString(
+	private static List<SMTSolverConfiguration> parsePrefs(
 			final String preferences) throws PatternSyntaxException {
-		final List<SMTSolverConfiguration> solverDetail = new ArrayList<SMTSolverConfiguration>();
+		final List<SMTSolverConfiguration> solverConfig = new ArrayList<SMTSolverConfiguration>();
 
 		final String[] rows = preferences.split(SEPARATOR2);
 		for (final String row : rows) {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
-				solverDetail.add(new SMTSolverConfiguration(columns[0],
-						SMTSolver.getSolver(columns[1]), columns[2],
-						columns[3], SMTLIBVersion.getVersion(columns[4])));
+				solverConfig.add(new SMTSolverConfiguration(columns[0],
+						parseSolver(columns[1]), columns[2], columns[3],
+						parseVersion(columns[4]), parseBoolean(columns[5])));
 			}
 		}
-		return solverDetail;
+		return solverConfig;
 	}
 
 	public void loadPrefs() {
-		solverConfigs = parsePrefsString(SMT_PREFS.get(SOLVER_PREFERENCES_ID,
+		solverConfigs = parsePrefs(SMT_PREFS.get(SOLVER_PREFERENCES_ID,
 				DEFAULT_SOLVER_PREFERENCES));
 		selectedConfigIndex = SMT_PREFS.getInt(CONFIG_INDEX_ID,
 				DEFAULT_CONFIG_INDEX);
@@ -134,8 +137,8 @@ public class SMTPreferences {
 	}
 
 	public void loadDefaultPrefs() {
-		solverConfigs = parsePrefsString(DEFAULT_SMT_PREFS.get(
-				SOLVER_PREFERENCES_ID, DEFAULT_SOLVER_PREFERENCES));
+		solverConfigs = parsePrefs(DEFAULT_SMT_PREFS.get(SOLVER_PREFERENCES_ID,
+				DEFAULT_SOLVER_PREFERENCES));
 		selectedConfigIndex = DEFAULT_SMT_PREFS.getInt(CONFIG_INDEX_ID,
 				DEFAULT_CONFIG_INDEX);
 		translationPath = DEFAULT_SMT_PREFS.get(TRANSLATION_PATH_ID,
@@ -251,6 +254,14 @@ public class SMTPreferences {
 		} else {
 			return false;
 		}
+	}
+
+	public boolean validId(final String id) {
+		final Set<String> usedIds = new HashSet<String>();
+		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
+			usedIds.add(solverConfig.getId());
+		}
+		return !id.isEmpty() && !usedIds.contains(id);
 	}
 
 	private static void addSolverConfig(

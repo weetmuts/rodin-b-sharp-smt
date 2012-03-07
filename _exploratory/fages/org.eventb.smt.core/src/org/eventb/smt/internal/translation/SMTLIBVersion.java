@@ -40,7 +40,7 @@ public enum SMTLIBVersion {
 		this.value = value;
 	}
 
-	public static SMTLIBVersion getVersion(final String value) {
+	public static SMTLIBVersion parseVersion(final String value) {
 		if (value.equals(V2_0.value)) {
 			return V2_0;
 		} else {

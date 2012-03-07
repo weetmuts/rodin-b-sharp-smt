@@ -45,7 +45,7 @@ public enum SMTSolver {
 	 *            the name of the solver we want to get, must not be null
 	 * @return the solver which name is the given name, or UNKNOWN
 	 */
-	public static SMTSolver getSolver(final String name) {
+	public static SMTSolver parseSolver(final String name) {
 		for (final SMTSolver solver : SMTSolver.values()) {
 			if (solver.solverName.equals(name)) {
 				return solver;

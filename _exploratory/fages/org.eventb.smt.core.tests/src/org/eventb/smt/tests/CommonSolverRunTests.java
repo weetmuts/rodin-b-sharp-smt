@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.getCvc3Config;
+import static org.eventb.smt.cvc3.core.Cvc3ProverCore.CVC3_CONFIG;
 import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC4;
@@ -464,7 +464,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		/**
 		 * SMT-LIB 2.0
 		 */
-		solverConfig = getCvc3Config();
+		solverConfig = CVC3_CONFIG;
 	}
 
 	protected void setPreferencesForCvc4Test() {

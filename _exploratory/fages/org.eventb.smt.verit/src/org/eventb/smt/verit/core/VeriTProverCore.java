@@ -12,6 +12,7 @@ package org.eventb.smt.verit.core;
 
 import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
 import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.EDITABLE;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 
@@ -33,7 +34,7 @@ public class VeriTProverCore extends Plugin implements IStartup {
 	private static final String VERIT_ARGS = "-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3";
 
 	public static final SMTSolverConfiguration VERIT_CONFIG = new SMTSolverConfiguration(
-			VERIT_CONFIG_ID, VERIT, VERIT_PATH, VERIT_ARGS, V2_0);
+			VERIT_CONFIG_ID, VERIT, VERIT_PATH, VERIT_ARGS, V2_0, !EDITABLE);
 
 	public VeriTProverCore() {
 	}
@@ -45,9 +46,6 @@ public class VeriTProverCore extends Plugin implements IStartup {
 		try {
 			smtDefaultPrefs.addSolverConfigToDefault(VERIT_CONFIG);
 			smtPrefs.addSolverConfig(VERIT_CONFIG);
-			// TODO uncomment when fragments are created for each target
-			// platform
-			// addSolverConfig(getCvc3Config());
 		} catch (IllegalArgumentException iae) {
 			throw iae;
 		} finally {
