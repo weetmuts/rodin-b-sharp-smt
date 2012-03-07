@@ -18,7 +18,9 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
+import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
 
@@ -68,7 +70,8 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		if (solverConfig != null) {
 			this.solverConfig = solverConfig;
 		} else {
-			this.solverConfig = new SMTSolverConfiguration();
+			this.solverConfig = new SMTSolverConfiguration("", UNKNOWN, "", "",
+					LATEST);
 		}
 		setText("Solver configuration");
 	}
@@ -191,7 +194,8 @@ public class SMTSolverConfigurationDialog extends Dialog {
 				if (id.equals(solverConfig.getId()) || smtPrefs.validId(id)) {
 					if (validPath(path, SHOW_ERRORS)) {
 						solverConfig.setId(id);
-						solverConfig.setSolver(parseSolver(solverCombo.getText()));
+						solverConfig.setSolver(parseSolver(solverCombo
+								.getText()));
 						solverConfig.setPath(path);
 						solverConfig.setArgs(argsText.getText());
 						solverConfig.setSmtlibVersion(parseVersion(smtlibCombo
