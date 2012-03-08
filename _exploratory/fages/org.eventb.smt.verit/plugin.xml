@@ -2,10 +2,15 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="org.eventb.smt.verit.core.VeriTProverCore">
-      </startup>
+         point="org.eventb.smt.core.bundledsolvers">
+      <solver
+            args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3"
+            binary="verit"
+            id="bundled_verit"
+            kind="verit"
+            name="bundled_verit"
+            smt-lib="V2.0">
+      </solver>
    </extension>
 
 </plugin>

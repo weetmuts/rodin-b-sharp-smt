@@ -52,7 +52,7 @@ public class UiPreferencesTests {
 		System.out.println(solverPath);
 
 		smtPrefs.addSolverConfig(new SMTSolverConfiguration(solverBinaryName,
-				solver, solverPath, solverArgs, smtlibVersion));
+				solverBinaryName, solver, solverPath, solverArgs, smtlibVersion));
 		smtPrefs.setSelectedConfigIndex(false, 0);
 		smtPrefs.setTranslationPath(DEFAULT_TRANSLATION_PATH);
 		smtPrefs.setVeriTPath(BIN_PATH + VERIT);
@@ -90,6 +90,7 @@ public class UiPreferencesTests {
 		 * Get back preferences from UI
 		 */
 		final String expectedId = ALT_ERGO.toString();
+		final String expectedName = ALT_ERGO.toString();
 		final SMTSolver expectedSolver = ALT_ERGO;
 		String expectedSolverPath = BIN_PATH + expectedId;
 		if (System.getProperty("os.name").startsWith("Windows")) {
@@ -100,8 +101,8 @@ public class UiPreferencesTests {
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
 		final SMTSolverConfiguration expectedSolverConfig = new SMTSolverConfiguration(
-				expectedId, expectedSolver, expectedSolverPath, args,
-				smtlibVersion);
+				expectedName, expectedId, expectedSolver, expectedSolverPath,
+				args, smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
 		final SMTPreferences smtPrefs = SMTPreferences.getSMTPrefs();

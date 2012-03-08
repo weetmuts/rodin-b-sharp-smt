@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eventb.smt.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eventb.smt.core" id="bundledsolvers" name="%point.bundledsolvers"/>
+      </appinfo>
+      <documentation>
+         This extension point accepts definition of bundled solvers.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="solver" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="solver">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The identifier for this bundled solver (simple id token). The token cannot contain a dot (.) or whitespace.
+
+The id returned by the method getSolverID in the bundled solver class must correspond to this identifier prefixed by the declaring plugin id followed by a dot(.).
+For example :
+org.myplace.myplugin.solverid where solverid is the identifier of this bundled solver.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  The human-readable name of this bundled solver.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="kind" type="string">
+            <annotation>
+               <documentation>
+                  The kind of this bundled solver. Any value of the enum class &lt;code&gt;org.eventb.smt.internal.provers.core.SMTSolver&lt;/code&gt;. Default value: &lt;code&gt;SMTSolver.UNKNOWN&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="binary" type="string">
+            <annotation>
+               <documentation>
+                  The name of the binary file for this bundled solver. Its local parent directory must be : $os$.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="args" type="string">
+            <annotation>
+               <documentation>
+                  The arguments to use with this bundled solver.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="smt-lib" type="string">
+            <annotation>
+               <documentation>
+                  The version of the SMT-LIB language which must be used as the target of the translation.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         1.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2012 Systerel. All rights reserved.
+This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+      </documentation>
+   </annotation>
+
+</schema>

@@ -17,12 +17,12 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
-import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
 import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
-import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
+
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTSolver;
@@ -50,6 +52,7 @@ import org.eventb.smt.internal.translation.SMTLIBVersion;
  */
 public class SMTSolverConfigurationDialog extends Dialog {
 	private static final String CONFIG_ID_LABEL = "Config ID";
+	private static final String CONFIG_NAME_LABEL = "Config name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
@@ -70,8 +73,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		if (solverConfig != null) {
 			this.solverConfig = solverConfig;
 		} else {
-			this.solverConfig = new SMTSolverConfiguration("", UNKNOWN, "", "",
-					LATEST);
+			this.solverConfig = new SMTSolverConfiguration();
 		}
 		setText("Solver configuration");
 	}
@@ -81,7 +83,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		GridData data;
 
 		/**
-		 * Solver ID
+		 * Configuration ID
 		 */
 		final Label idLabel = new Label(shell, SWT.NONE);
 		idLabel.setText(CONFIG_ID_LABEL);
@@ -94,6 +96,21 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		idText.setLayoutData(data);
+
+		/**
+		 * Configuration name
+		 */
+		final Label nameLabel = new Label(shell, SWT.NONE);
+		nameLabel.setText(CONFIG_NAME_LABEL);
+		data = new GridData();
+		data.horizontalSpan = 1;
+		nameLabel.setLayoutData(data);
+
+		final Text nameText = new Text(shell, SWT.BORDER);
+		nameText.setText(solverConfig.getName());
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 3;
+		nameText.setLayoutData(data);
 
 		/**
 		 * Solver
@@ -203,21 +220,31 @@ public class SMTSolverConfigurationDialog extends Dialog {
 						returnCode = OK;
 						shell.close();
 					}
-				} else {
-					final StringBuilder errBuilder = new StringBuilder();
-					errBuilder
-							.append("A solver ID and the solver path are required.\n");
-					errBuilder.append("The solver ID must be unique.\n");
-					errBuilder.append("The following solver IDs are reserved:");
-					errBuilder.append(" '");
-					errBuilder.append(VERIT_CONFIG.getId());
-					// TODO uncomment when fragments are created
-					// errBuilder.append("', ");
-					// errBuilder.append("'");
-					// errBuilder.append(getCvc3Config().getId());
-					errBuilder.append("'.");
-					UIUtils.showError(errBuilder.toString());
-				}
+				} else
+					try {
+						{
+							final StringBuilder errBuilder = new StringBuilder();
+							final BundledSolverRegistry registry = getBundledSolverRegistry();
+							List<SMTSolverConfiguration> bundledConfigs;
+							bundledConfigs = registry.getSolverConfigs();
+							errBuilder
+									.append("A solver ID and the solver path are required.\n");
+							errBuilder
+									.append("The solver ID must be unique.\n");
+							errBuilder
+									.append("The following solver IDs are reserved:\n");
+							for (final SMTSolverConfiguration bundledConfig : bundledConfigs) {
+								errBuilder.append("'")
+										.append(bundledConfig.getId())
+										.append("'\n");
+							}
+							errBuilder.append("'.");
+							UIUtils.showError(errBuilder.toString());
+						}
+					} catch (BundledSolverLoadingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 		});
 

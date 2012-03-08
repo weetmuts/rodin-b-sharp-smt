@@ -25,7 +25,6 @@ import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -119,8 +118,9 @@ public class SMTPreferences {
 			if (row.length() > 0) {
 				final String[] columns = row.split(SEPARATOR1);
 				solverConfig.add(new SMTSolverConfiguration(columns[0],
-						parseSolver(columns[1]), columns[2], columns[3],
-						parseVersion(columns[4]), parseBoolean(columns[5])));
+						columns[1], parseSolver(columns[2]), columns[3],
+						columns[4], parseVersion(columns[5]),
+						parseBoolean(columns[6])));
 			}
 		}
 		return solverConfig;
@@ -159,14 +159,6 @@ public class SMTPreferences {
 				SMTSolverConfiguration.toString(defaultSolverConfigs));
 		DEFAULT_SMT_PREFS.putInt(CONFIG_INDEX_ID, DEFAULT_CONFIG_INDEX);
 		DEFAULT_SMT_PREFS.put(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
-
-		// FIXME when it is installed, the bundled veriT path should be used
-		/*
-		 * final String internalVeriTPath =
-		 * org.eventb.smt.verit.core.VeriTProverCore.getVeriTPath(); if
-		 * (validPath(internalVeriTPath, new StringBuilder())) {
-		 * node.put(VERIT_PATH_ID, internalVeriTPath); } else {
-		 */
 		DEFAULT_SMT_PREFS.put(VERIT_PATH_ID, defaultVeriTPath);
 	}
 
@@ -257,10 +249,8 @@ public class SMTPreferences {
 	}
 
 	public boolean validId(final String id) {
-		final Set<String> usedIds = new HashSet<String>();
-		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
-			usedIds.add(solverConfig.getId());
-		}
+		final Set<String> usedIds = SMTSolverConfiguration
+				.getIDs(solverConfigs);
 		return !id.isEmpty() && !usedIds.contains(id);
 	}
 

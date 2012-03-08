@@ -11,14 +11,19 @@
 
 package org.eventb.smt.internal.provers.core;
 
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
+import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
 import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.internal.preferences.SMTPreferences;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.translation.SMTThroughPP;
 import org.eventb.smt.internal.translation.Translator;
 import org.osgi.framework.BundleContext;
@@ -165,12 +170,35 @@ public class SMTProversCore extends Plugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		final SMTPreferences smtPrefs = getSMTPrefs();
-		smtPrefs.removeIncorrectInternalConfigs();
-		smtPrefs.savePrefs();
 		enableAssertions();
 		if (isDebugging()) {
 			configureDebugOptions();
+		}
+
+		final SMTPreferences smtPrefs = getSMTPrefs();
+		final SMTPreferences smtDefaultPrefs = getDefaultSMTPrefs();
+		final BundledSolverRegistry registry = getBundledSolverRegistry();
+
+		smtPrefs.removeIncorrectInternalConfigs();
+		for (final SMTSolverConfiguration solverConfig : registry
+				.getSolverConfigs()) {
+			try {
+				smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
+				smtPrefs.addSolverConfig(solverConfig);
+			} catch (IllegalArgumentException iae) {
+				throw iae;
+			} finally {
+				smtDefaultPrefs.setSelectedConfigIndex(false, 0);
+				smtPrefs.setSelectedConfigIndex(false, 0);
+				// FIXME what if several veriT extensions are added
+				if (solverConfig.getSolver().equals(VERIT)) {
+					final String veriTPath = solverConfig.getPath();
+					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
+					smtPrefs.setVeriTPath(veriTPath);
+				}
+				smtDefaultPrefs.saveDefaultPrefs();
+				smtPrefs.savePrefs();
+			}
 		}
 	}
 

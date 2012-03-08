@@ -32,13 +32,17 @@ class SMTSolverConfigurationsLabelProvider implements ITableLabelProvider {
 		case 0:
 			return solver.getId();
 		case 1:
-			return solver.getSolver().toString();
+			return solver.getName();
 		case 2:
-			return solver.getPath();
+			return solver.getSolver().toString();
 		case 3:
-			return solver.getArgs();
+			return solver.getPath();
 		case 4:
+			return solver.getArgs();
+		case 5:
 			return solver.getSmtlibVersion().toString();
+		case 6:
+			return Boolean.toString(solver.isEditable());
 		}
 		return null;
 	}

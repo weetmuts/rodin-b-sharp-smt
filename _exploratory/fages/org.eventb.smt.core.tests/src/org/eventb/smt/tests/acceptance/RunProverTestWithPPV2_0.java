@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -98,25 +99,27 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testUnsatIntegratedCvc3Call() {
-		setPreferencesForIntegratedCvc3Test();
+	public void testUnsatBundledCvc3Call()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
 				"y < z");
 
-		doTest("integrated_cvc3_unsat", hyps, "x < z", arith_te, VALID);
+		doTest("bundled_cvc3_unsat", hyps, "x < z", arith_te, VALID);
 	}
 
 	@Test
-	public void testSatIntegratedCvc3Call() {
-		setPreferencesForIntegratedCvc3Test();
+	public void testSatBundledCvc3Call()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
 				"y < z");
 
-		doTest("integrated_cvc3_sat", hyps, "x > z", arith_te, !VALID);
+		doTest("bundled_cvc3_sat", hyps, "x > z", arith_te, !VALID);
 	}
 
 	@Test
@@ -213,25 +216,27 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testUnsatIntegratedVeriTCall() {
-		setPreferencesForIntegratedVeriTTest();
+	public void testUnsatBundledVeriTCall()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
 				"y < z");
 
-		doTest("integrated_verit_unsat", hyps, "x < z", arith_te, VALID);
+		doTest("bundled_verit_unsat", hyps, "x < z", arith_te, VALID);
 	}
 
 	@Test
-	public void testSatIntegratedVeritCall() {
-		setPreferencesForIntegratedVeriTTest();
+	public void testSatBundledVeritCall()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
 				"y < z");
 
-		doTest("integrated_verit_sat", hyps, "x > z", arith_te, !VALID);
+		doTest("bundled_verit_sat", hyps, "x > z", arith_te, !VALID);
 	}
 
 	@Test
@@ -279,8 +284,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredIntegratedCVC3Call() {
-		setPreferencesForIntegratedCvc3Test();
+	public void testTRUEPredBundledCVC3Call()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -312,8 +318,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredIntegratedVeriTCall() {
-		setPreferencesForIntegratedVeriTTest();
+	public void testTRUEPredBundledVeriTCall()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -356,8 +363,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetIntegratedVeriTCall2() {
-		setPreferencesForIntegratedVeriTTest();
+	public void testBOOLSetBundledVeriTCall2()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c ∈ BOOL×BOOL", //
@@ -378,8 +386,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetIntegratedCVC3Call() {
-		setPreferencesForIntegratedCvc3Test();
+	public void testBOOLSetBundledCVC3Call()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c ∈ BOOL×BOOL", //
@@ -419,8 +428,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSetsEqualityIntegratedCVC3Call() {
-		setPreferencesForIntegratedCvc3Test();
+	public void testSetsEqualityBundledCVC3Call()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledCvc3Test();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -464,8 +474,9 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSetsEqualityIntegratedVeriTCall() {
-		setPreferencesForIntegratedVeriTTest();
+	public void testSetsEqualityBundledVeriTCall()
+			throws BundledSolverLoadingException {
+		setPreferencesForBundledVeriTTest();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 

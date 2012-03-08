@@ -46,8 +46,9 @@ import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
  * a sequent using the SMT tactic.</li>
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
- * <code>TableViewer</code>. The data are contained in an
- * <code>SMTSolverConfiguration</code> list, which is given as input to the
+ * <code>TableViewer</code>. The data are contained in a
+ * <code>SMTPreferences</code> instance, of which the
+ * <code>SMTSolverConfiguration</code> list is given as input to the
  * <code>TableViewer</code>. As a consequence, it is necessary to update the
  * <code>configsTableViewer</code> each time the list <code>solverConfigs</code>
  * is modified, by calling the <code>refresh</code> method.
@@ -68,17 +69,20 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	private static final String EDIT_LABEL = "Edit...";
 	private static final String SELECT_LABEL = "Select";
 	private static final String CONFIG_ID_LABEL = "Config ID";
+	private static final String CONFIG_NAME_LABEL = "Config Name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_PATH_LABEL = "Solver path";
 	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
 	private static final String SMTLIB_LABEL = "SMT-LIB";
+	private static final String IS_EDITABLE_LABEL = "Editable";
 
 	/**
 	 * Column labels and bounds
 	 */
 	private static final String[] COLUMNS_LABELS = { CONFIG_ID_LABEL,
-			SOLVER_LABEL, SOLVER_PATH_LABEL, SOLVER_ARGS_LABEL, SMTLIB_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 70, 70, 190, 150, 50 };
+			CONFIG_NAME_LABEL, SOLVER_LABEL, SOLVER_PATH_LABEL,
+			SOLVER_ARGS_LABEL, SMTLIB_LABEL, IS_EDITABLE_LABEL };
+	private static final int[] COLUMN_BOUNDS = { 0, 70, 70, 190, 150, 50, 0 };
 
 	/**
 	 * The button for adding a new solver to the table.
@@ -455,8 +459,10 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	}
 
 	/**
-	 * FIXME this should not need to be overriden Overriden because when called
-	 * after performDefault, the following statement was executed :</ br>
+	 * FIXME this should not need to be overriden
+	 * 
+	 * Overriden because when called after performDefault, the following
+	 * statement was executed :</ br>
 	 * <code>preferenceStore.setToDefault(preferenceName);</code> which was
 	 * causing the values of this field editor not to be saved.
 	 * 

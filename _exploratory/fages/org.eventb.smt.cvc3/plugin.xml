@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eventb.smt.core.bundledsolvers">
+      <solver
+            args="-lang smt2 -timeout 3"
+            binary="cvc3"
+            id="bundled_cvc3"
+            kind="cvc3"
+            name="bundled_cvc3"
+            smt-lib="V2.0">
+      </solver>
+   </extension>
+</plugin>

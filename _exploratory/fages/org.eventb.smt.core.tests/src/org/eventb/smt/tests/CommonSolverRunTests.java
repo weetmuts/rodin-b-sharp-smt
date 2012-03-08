@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.cvc3.core.Cvc3ProverCore.CVC3_CONFIG;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
 import static org.eventb.smt.internal.provers.core.SMTSolver.CVC4;
@@ -19,7 +19,6 @@ import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.verit.core.VeriTProverCore.VERIT_CONFIG;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -35,6 +34,8 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.internal.ast.SMTBenchmark;
 import org.eventb.smt.internal.ast.SMTSignature;
+import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTPPCall;
 import org.eventb.smt.internal.provers.core.SMTProverCall;
@@ -129,11 +130,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final Set<Theory> theories, final SMTLIBVersion smtlibVersion,
 			final boolean getUnsatCore) {
 		this.theories = theories;
-		solverConfig = new SMTSolverConfiguration(solver.name(), solver, "",
-				"", smtlibVersion);
+		solverConfig = new SMTSolverConfiguration(solver.name(), solver.name(),
+				solver, "", "", smtlibVersion);
 		if (solver != null) {
 			if (getUnsatCore && solver.equals(SMTSolver.VERIT)) {
-				setPreferencesForIntegratedVeriTTest();
+				try {
+					setPreferencesForBundledVeriTTest();
+				} catch (BundledSolverLoadingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				setPreferencesForSolverTest(solver);
 			}
@@ -460,11 +466,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
 	}
 
-	protected void setPreferencesForIntegratedCvc3Test() {
-		/**
-		 * SMT-LIB 2.0
-		 */
-		solverConfig = CVC3_CONFIG;
+	protected void setPreferencesForBundledCvc3Test()
+			throws BundledSolverLoadingException {
+		final String bundledCvc3ID = "org.eventb.smt.cvc3.bundled_cvc3";
+		final BundledSolverRegistry registry = getBundledSolverRegistry();
+		if (registry.isRegistered(bundledCvc3ID)) {
+			solverConfig = registry.getBundledSolverInstance(bundledCvc3ID);
+		}
 	}
 
 	protected void setPreferencesForCvc4Test() {
@@ -519,12 +527,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				solverConfig.getSmtlibVersion());
 	}
 
-	protected void setPreferencesForIntegratedVeriTTest() {
-		/**
-		 * SMT-LIB 2.0
-		 */
-		solverConfig = VERIT_CONFIG;
-		this.veritPath = VERIT_CONFIG.getPath();
+	protected void setPreferencesForBundledVeriTTest()
+			throws BundledSolverLoadingException {
+		final String bundledVeriTID = "org.eventb.smt.verit.bundled_verit";
+		final BundledSolverRegistry registry = getBundledSolverRegistry();
+		if (registry.isRegistered(bundledVeriTID)) {
+			solverConfig = registry.getBundledSolverInstance(bundledVeriTID);
+			this.veritPath = solverConfig.getPath();
+		}
 	}
 
 	protected void setPreferencesForZ3Test() {

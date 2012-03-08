@@ -13,9 +13,11 @@ package org.eventb.smt.internal.preferences;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SEPARATOR1;
 import static org.eventb.smt.internal.preferences.SMTPreferences.SEPARATOR2;
 import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.internal.translation.SMTLIBVersion.LATEST;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.translation.SMTLIBVersion;
@@ -28,12 +30,15 @@ public class SMTSolverConfiguration {
 	public static final boolean EDITABLE = true;
 
 	public static final String DEFAULT_CONFIG_ID = "";
+	public static final String DEFAULT_CONFIG_NAME = "";
 	public static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
 	public static final String DEFAULT_SOLVER_PATH = "";
 	public static final String DEFAULT_SOLVER_ARGS = "";
-	public static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = V1_2;
+	public static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
 
 	private String id;
+
+	private String name;
 
 	private SMTSolver solver;
 
@@ -59,10 +64,11 @@ public class SMTSolverConfiguration {
 	 * @param smtlibVersion
 	 *            version of SMT-LIB to use with this solver configuration
 	 */
-	public SMTSolverConfiguration(final String id, final SMTSolver solver,
-			final String path, final String args,
+	public SMTSolverConfiguration(final String id, final String name,
+			final SMTSolver solver, final String path, final String args,
 			final SMTLIBVersion smtlibVersion, final boolean editable) {
 		this.id = id;
+		this.name = name;
 		this.solver = solver;
 		this.path = path;
 		this.args = args;
@@ -70,19 +76,33 @@ public class SMTSolverConfiguration {
 		this.editable = editable;
 	}
 
-	public SMTSolverConfiguration(final String id, final SMTSolver solver,
-			final String path, final String args,
+	public SMTSolverConfiguration(final String id, final String name,
+			final SMTSolver solver, final String path, final String args,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, solver, path, args, smtlibVersion, EDITABLE);
+		this(id, name, solver, path, args, smtlibVersion, EDITABLE);
 	}
 
 	public SMTSolverConfiguration() {
-		this(DEFAULT_CONFIG_ID, DEFAULT_SOLVER, DEFAULT_SOLVER_PATH,
-				DEFAULT_SOLVER_ARGS, DEFAULT_SMTLIB_VERSION);
+		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER,
+				DEFAULT_SOLVER_PATH, DEFAULT_SOLVER_ARGS,
+				DEFAULT_SMTLIB_VERSION);
+	}
+
+	public static final Set<String> getIDs(
+			final List<SMTSolverConfiguration> solverConfigs) {
+		final Set<String> usedIds = new HashSet<String>();
+		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
+			usedIds.add(solverConfig.getId());
+		}
+		return usedIds;
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public SMTSolver getSolver() {
@@ -109,6 +129,10 @@ public class SMTSolverConfiguration {
 		this.id = id;
 	}
 
+	public void setName(final String name) {
+		this.name = name;
+	}
+
 	public void setSolver(final SMTSolver solver) {
 		this.solver = solver;
 	}
@@ -132,6 +156,8 @@ public class SMTSolverConfiguration {
 		for (final SMTSolverConfiguration solverConfig : solverConfigs) {
 			sb.append(solverConfig.getId());
 			sb.append(SEPARATOR1);
+			sb.append(solverConfig.getName());
+			sb.append(SEPARATOR1);
 			sb.append(solverConfig.getSolver());
 			sb.append(SEPARATOR1);
 			sb.append(solverConfig.getPath());
@@ -150,6 +176,8 @@ public class SMTSolverConfiguration {
 	public void toString(final StringBuilder builder) {
 		builder.append("SMTSolverConfiguration [id=");
 		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
 		builder.append(", solver=");
 		builder.append(solver);
 		builder.append(", path=");
@@ -179,6 +207,7 @@ public class SMTSolverConfiguration {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
 		result = prime * result + (solver == null ? 0 : solver.hashCode());
 		result = prime * result + (path == null ? 0 : path.hashCode());
 		result = prime * result + (args == null ? 0 : args.hashCode());
@@ -212,6 +241,13 @@ public class SMTSolverConfiguration {
 				return false;
 			}
 		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
 		}
 		if (solver == null) {
