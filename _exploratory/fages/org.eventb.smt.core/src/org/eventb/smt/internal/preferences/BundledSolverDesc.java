@@ -11,14 +11,22 @@ package org.eventb.smt.internal.preferences;
 
 import static java.io.File.separatorChar;
 import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeDotInIDException;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNoSuchBundleException;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullBinaryNameException;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullIDException;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullPathException;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeWhitespaceOrColonInIDException;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.EDITABLE;
 import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eventb.core.seqprover.xprover.BundledFileExtractor;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.osgi.framework.Bundle;
 
 /**
@@ -39,22 +47,12 @@ public class BundledSolverDesc {
 	 */
 	private SMTSolverConfiguration instance;
 
-	public static class BundledSolverLoadingException extends Exception {
-		/**
-		 * Generated serial version ID.
-		 */
-		private static final long serialVersionUID = -2787953160141168010L;
-
-		public BundledSolverLoadingException(String message) {
-			super(message);
-		}
-	}
-
 	public BundledSolverDesc(final IConfigurationElement configurationElement) {
 		this.configurationElement = configurationElement;
 	}
 
-	public void load() throws BundledSolverLoadingException {
+	public void load() throws BundledSolverLoadingException,
+			InvalidRegistryObjectException {
 		/**
 		 * The ID of the extension. Example: <code>bundled_verit</code>.
 		 */
@@ -70,18 +68,20 @@ public class BundledSolverDesc {
 		 * The name of the extension.
 		 */
 		name = configurationElement.getAttribute("name");
+		final String path = makeSolverPath(nameSpace,
+				configurationElement.getAttribute("binary"));
+		checkPath(path);
 		instance = new SMTSolverConfiguration(id, name,
-				parseSolver(configurationElement.getAttribute("kind")),
-				makeSolverPath(nameSpace,
-						configurationElement.getAttribute("binary")),
+				parseSolver(configurationElement.getAttribute("kind")), path,
 				configurationElement.getAttribute("args"),
 				parseVersion(configurationElement.getAttribute("smt-lib")),
 				!EDITABLE);
 	}
 
 	private static String extractFile(final String bundleName,
-			String localPathString) {
+			String localPathString) throws BundledSolverLoadingException {
 		final Bundle bundle = getBundle(bundleName);
+		checkBundle(bundleName, bundle);
 		final IPath localPath = new Path(localPathString);
 		final IPath path = BundledFileExtractor.extractFile(bundle, localPath,
 				true);
@@ -92,9 +92,11 @@ public class BundledSolverDesc {
 	 * 
 	 * @param bundleName
 	 *            FIXME isn't it available another way ?
+	 * @throws BundledSolverLoadingException
 	 */
 	private static String makeSolverPath(final String bundleName,
-			final String binaryName) {
+			final String binaryName) throws BundledSolverLoadingException {
+		checkBinaryName(binaryName);
 		final StringBuilder localPathBuilder = new StringBuilder();
 		localPathBuilder.append("$os$").append(separatorChar);
 		localPathBuilder.append(binaryName);
@@ -119,14 +121,42 @@ public class BundledSolverDesc {
 	}
 
 	private static void checkId(String id) throws BundledSolverLoadingException {
+		if (id == null) {
+			throw makeNullIDException();
+		}
 		if (id.indexOf('.') != -1) {
-			throw new BundledSolverLoadingException("Invalid id: " + id
-					+ " (must not contain a dot)");
+			throw makeDotInIDException(id);
 		}
 		if (containsWhitespaceOrColon(id)) {
-			throw new BundledSolverLoadingException("Invalid id: " + id
-					+ " (must not contain a whitespace or a colon)");
+			throw makeWhitespaceOrColonInIDException(id);
 		}
+	}
+
+	/**
+	 * @param binaryName
+	 * @throws BundledSolverLoadingException
+	 */
+	private static void checkBinaryName(final String binaryName)
+			throws BundledSolverLoadingException {
+		if (binaryName == null)
+			throw makeNullBinaryNameException();
+	}
+
+	/**
+	 * @param bundleName
+	 * @param bundle
+	 * @throws BundledSolverLoadingException
+	 */
+	private static void checkBundle(final String bundleName, final Bundle bundle)
+			throws BundledSolverLoadingException {
+		if (bundle == null)
+			throw makeNoSuchBundleException(bundleName);
+	}
+
+	private static void checkPath(final String path)
+			throws BundledSolverLoadingException {
+		if (path == null)
+			throw makeNullPathException();
 	}
 
 	public String getId() {

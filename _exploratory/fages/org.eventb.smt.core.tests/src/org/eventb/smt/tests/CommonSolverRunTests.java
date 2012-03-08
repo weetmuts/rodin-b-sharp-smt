@@ -34,8 +34,8 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.internal.ast.SMTBenchmark;
 import org.eventb.smt.internal.ast.SMTSignature;
-import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTPPCall;
 import org.eventb.smt.internal.provers.core.SMTProverCall;
@@ -466,12 +466,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(LAST_CVC3, CVC3, args, smtlibVersion);
 	}
 
-	protected void setPreferencesForBundledCvc3Test()
-			throws BundledSolverLoadingException {
+	protected void setPreferencesForBundledCvc3Test() {
 		final String bundledCvc3ID = "org.eventb.smt.cvc3.bundled_cvc3";
-		final BundledSolverRegistry registry = getBundledSolverRegistry();
-		if (registry.isRegistered(bundledCvc3ID)) {
-			solverConfig = registry.getBundledSolverInstance(bundledCvc3ID);
+		final BundledSolverRegistry registry;
+		try {
+			registry = getBundledSolverRegistry();
+			if (registry.isRegistered(bundledCvc3ID)) {
+				solverConfig = registry.getBundledSolverInstance(bundledCvc3ID);
+			}
+		} catch (BundledSolverLoadingException e) {
+			fail(e.getMessage());
 		}
 	}
 

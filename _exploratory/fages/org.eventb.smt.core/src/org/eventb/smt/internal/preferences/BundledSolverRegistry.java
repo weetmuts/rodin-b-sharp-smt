@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.eventb.smt.internal.preferences;
 
+import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
+import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNoBundledSolversXPointException;
+import static org.eventb.smt.internal.preferences.Messages.BundledSolverLoadingException_DefaultMessage;
 import static org.eventb.smt.internal.translation.Translator.DEBUG_DETAILS;
 
 import java.util.ArrayList;
@@ -19,8 +22,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.internal.provers.core.SMTProversCore;
 
 /**
@@ -28,6 +30,69 @@ import org.eventb.smt.internal.provers.core.SMTProversCore;
  * 
  */
 public class BundledSolverRegistry {
+
+	public static class BundledSolverLoadingException extends Exception {
+		/**
+		 * Generated serial version ID.
+		 */
+		private static final long serialVersionUID = -2787953160141168010L;
+
+		public BundledSolverLoadingException() {
+			this(BundledSolverLoadingException_DefaultMessage);
+		}
+
+		public BundledSolverLoadingException(String message) {
+			super(message);
+		}
+
+		public static final BundledSolverLoadingException makeDotInIDException(
+				final String id) {
+			final StringBuilder errBuilder = new StringBuilder();
+			errBuilder.append("Invalid id: ").append(id);
+			errBuilder.append(" (must not contain a dot).");
+			return new BundledSolverLoadingException(errBuilder.toString());
+		}
+
+		public static final BundledSolverLoadingException makeWhitespaceOrColonInIDException(
+				final String id) {
+			final StringBuilder errBuilder = new StringBuilder();
+			errBuilder.append("Invalid id: ").append(id);
+			errBuilder.append(" (must not contain a whitespace or a colon).");
+			return new BundledSolverLoadingException(errBuilder.toString());
+		}
+
+		public static final BundledSolverLoadingException makeNullIDException() {
+			return new BundledSolverLoadingException(
+					"Invalid id: null pointer.");
+		}
+
+		public static final BundledSolverLoadingException makeNullBinaryNameException() {
+			return new BundledSolverLoadingException(
+					"Invalid binary name: null pointer.");
+		}
+
+		public static final BundledSolverLoadingException makeNoSuchBundleException(
+				final String bundleName) {
+			final StringBuilder errBuilder = new StringBuilder();
+			errBuilder.append("Invalid bundle name: ").append(bundleName);
+			errBuilder.append(" (no such bundle was found installed).");
+			return new BundledSolverLoadingException(errBuilder.toString());
+		}
+
+		public static final BundledSolverLoadingException makeNullPathException() {
+			return new BundledSolverLoadingException(
+					"Invalid path: null pointer.");
+		}
+
+		public static final BundledSolverLoadingException makeNoBundledSolversXPointException() {
+			final StringBuilder errBuilder = new StringBuilder();
+			errBuilder.append("Invalid extension point id: ").append(
+					BUNDLED_SOLVERS_ID);
+			errBuilder.append(" (no such extension point was found).");
+			return new BundledSolverLoadingException(errBuilder.toString());
+		}
+	}
+
 	public static final IllegalArgumentException IllegalBundledSolverExtensionException(
 			final String id) {
 		final StringBuilder description = new StringBuilder();
@@ -37,7 +102,7 @@ public class BundledSolverRegistry {
 		return new IllegalArgumentException(description.toString());
 	}
 
-	private static String BUNDLED_SOLVERS_ID = SMTProversCore.PLUGIN_ID
+	static String BUNDLED_SOLVERS_ID = SMTProversCore.PLUGIN_ID
 			+ ".bundledsolvers";
 
 	private static final BundledSolverRegistry INSTANCE = new BundledSolverRegistry();
@@ -63,7 +128,8 @@ public class BundledSolverRegistry {
 	}
 
 	public synchronized boolean isRegistered(String id)
-			throws BundledSolverLoadingException {
+			throws BundledSolverLoadingException,
+			InvalidRegistryObjectException {
 		if (registry == null) {
 			loadRegistry();
 		}
@@ -71,7 +137,8 @@ public class BundledSolverRegistry {
 	}
 
 	public synchronized String[] getRegisteredIDs()
-			throws BundledSolverLoadingException {
+			throws BundledSolverLoadingException,
+			InvalidRegistryObjectException {
 		if (registry == null) {
 			loadRegistry();
 		}
@@ -85,15 +152,17 @@ public class BundledSolverRegistry {
 	 * @throws BundledSolverLoadingException
 	 */
 	private synchronized void loadRegistry()
-			throws BundledSolverLoadingException {
+			throws BundledSolverLoadingException,
+			InvalidRegistryObjectException {
 		if (registry != null) {
 			// Prevents loading by two thread in parallel
 			return;
 		}
 		registry = new HashMap<String, BundledSolverDesc>();
-		final IExtensionRegistry xRegistry = Platform.getExtensionRegistry();
+		final IExtensionRegistry xRegistry = getExtensionRegistry();
 		final IExtensionPoint xPoint = xRegistry
 				.getExtensionPoint(BUNDLED_SOLVERS_ID);
+		checkXPoint(xPoint);
 		for (IConfigurationElement element : xPoint.getConfigurationElements()) {
 			final BundledSolverDesc desc = new BundledSolverDesc(element);
 			desc.load();
@@ -108,6 +177,16 @@ public class BundledSolverRegistry {
 							+ id);
 			}
 		}
+	}
+
+	/**
+	 * @param xPoint
+	 * @throws BundledSolverLoadingException
+	 */
+	private static void checkXPoint(final IExtensionPoint xPoint)
+			throws BundledSolverLoadingException {
+		if (xPoint == null)
+			throw makeNoBundledSolversXPointException();
 	}
 
 	public List<SMTSolverConfiguration> getSolverConfigs()
