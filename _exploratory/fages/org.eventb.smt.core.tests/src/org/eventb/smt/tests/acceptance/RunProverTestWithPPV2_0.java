@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.internal.preferences.BundledSolverDesc.BundledSolverLoadingException;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -99,8 +99,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testUnsatBundledCvc3Call()
-			throws BundledSolverLoadingException {
+	public void testUnsatBundledCvc3Call() throws BundledSolverLoadingException {
 		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
@@ -111,8 +110,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSatBundledCvc3Call()
-			throws BundledSolverLoadingException {
+	public void testSatBundledCvc3Call() throws BundledSolverLoadingException {
 		setPreferencesForBundledCvc3Test();
 
 		final List<String> hyps = Arrays.asList( //
@@ -228,8 +226,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSatBundledVeritCall()
-			throws BundledSolverLoadingException {
+	public void testSatBundledVeritCall() throws BundledSolverLoadingException {
 		setPreferencesForBundledVeriTTest();
 
 		final List<String> hyps = Arrays.asList( //
