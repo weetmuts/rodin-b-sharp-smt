@@ -93,7 +93,7 @@ public class BundledSolverRegistry {
 		}
 	}
 
-	public static final IllegalArgumentException IllegalBundledSolverExtensionException(
+	public static final IllegalArgumentException makeIllegalBundledSolverXException(
 			final String id) {
 		final StringBuilder description = new StringBuilder();
 		description.append("Duplicated bundled solver extension ");
@@ -118,7 +118,8 @@ public class BundledSolverRegistry {
 	}
 
 	public static BundledSolverRegistry getBundledSolverRegistry()
-			throws BundledSolverLoadingException {
+			throws InvalidRegistryObjectException,
+			BundledSolverLoadingException, IllegalArgumentException {
 		INSTANCE.loadRegistry();
 		return INSTANCE;
 	}
@@ -129,20 +130,11 @@ public class BundledSolverRegistry {
 
 	public synchronized boolean isRegistered(String id)
 			throws BundledSolverLoadingException,
-			InvalidRegistryObjectException {
+			InvalidRegistryObjectException, IllegalArgumentException {
 		if (registry == null) {
 			loadRegistry();
 		}
 		return registry.containsKey(id);
-	}
-
-	public synchronized String[] getRegisteredIDs()
-			throws BundledSolverLoadingException,
-			InvalidRegistryObjectException {
-		if (registry == null) {
-			loadRegistry();
-		}
-		return registry.keySet().toArray(new String[] {});
 	}
 
 	/**
@@ -153,7 +145,7 @@ public class BundledSolverRegistry {
 	 */
 	private synchronized void loadRegistry()
 			throws BundledSolverLoadingException,
-			InvalidRegistryObjectException {
+			InvalidRegistryObjectException, IllegalArgumentException {
 		if (registry != null) {
 			// Prevents loading by two thread in parallel
 			return;
@@ -170,7 +162,7 @@ public class BundledSolverRegistry {
 			final BundledSolverDesc oldDesc = registry.put(id, desc);
 			if (oldDesc != null) {
 				registry.put(id, oldDesc);
-				throw IllegalBundledSolverExtensionException(id);
+				throw makeIllegalBundledSolverXException(id);
 			} else {
 				if (DEBUG_DETAILS)
 					System.out.println("Registered bundled solver extension "
@@ -190,11 +182,19 @@ public class BundledSolverRegistry {
 	}
 
 	public List<SMTSolverConfiguration> getSolverConfigs()
-			throws BundledSolverLoadingException {
+			throws InvalidRegistryObjectException, IllegalArgumentException,
+			BundledSolverLoadingException {
 		final List<SMTSolverConfiguration> solverConfigs = new ArrayList<SMTSolverConfiguration>();
+		if (registry == null) {
+			loadRegistry();
+		}
 		for (final Map.Entry<String, BundledSolverDesc> entry : registry
 				.entrySet()) {
-			solverConfigs.add(entry.getValue().getInstance());
+			final SMTSolverConfiguration solverConfig = entry.getValue()
+					.getInstance();
+			if (solverConfig != null) {
+				solverConfigs.add(solverConfig);
+			}
 		}
 		return solverConfigs;
 	}

@@ -10,9 +10,9 @@
 
 package org.eventb.smt.internal.preferences.ui;
 
-import static org.eclipse.jface.window.Window.CANCEL;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.swt.SWT.APPLICATION_MODAL;
+import static org.eclipse.swt.SWT.CANCEL;
 import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
@@ -22,8 +22,7 @@ import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
 import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
 import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
-import java.util.List;
-
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -220,31 +219,39 @@ public class SMTSolverConfigurationDialog extends Dialog {
 						returnCode = OK;
 						shell.close();
 					}
-				} else
+				} else {
+					final StringBuilder errBuilder = new StringBuilder();
+					errBuilder
+							.append("A solver ID and the solver path are required.\n");
+					errBuilder.append("The solver ID must be unique.\n");
+					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						{
-							final StringBuilder errBuilder = new StringBuilder();
-							final BundledSolverRegistry registry = getBundledSolverRegistry();
-							List<SMTSolverConfiguration> bundledConfigs;
-							bundledConfigs = registry.getSolverConfigs();
-							errBuilder
-									.append("A solver ID and the solver path are required.\n");
-							errBuilder
-									.append("The solver ID must be unique.\n");
-							errBuilder
-									.append("The following solver IDs are reserved:\n");
-							for (final SMTSolverConfiguration bundledConfig : bundledConfigs) {
-								errBuilder.append("'")
-										.append(bundledConfig.getId())
-										.append("'\n");
-							}
-							errBuilder.append("'.");
-							UIUtils.showError(errBuilder.toString());
+						final BundledSolverRegistry registry = getBundledSolverRegistry();
+						errBuilder2
+								.append("The following solver IDs are reserved:\n");
+						for (final SMTSolverConfiguration bundledConfig : registry
+								.getSolverConfigs()) {
+							errBuilder2.append("'");
+							errBuilder2.append(bundledConfig.getId());
+							errBuilder2.append("'\n");
 						}
+						errBuilder2.append("'.");
+					} catch (InvalidRegistryObjectException iroe) {
+						// TODO log the error
+						errBuilder2 = new StringBuilder(
+								"The specified solver ID is reserved.");
 					} catch (BundledSolverLoadingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						// TODO log the error
+						errBuilder2 = new StringBuilder(
+								"The specified solver ID is reserved.");
+					} catch (IllegalArgumentException e) {
+						// TODO log the error
+						errBuilder2 = new StringBuilder(
+								"The specified solver ID is reserved.");
 					}
+					errBuilder.append(errBuilder2);
+					UIUtils.showError(errBuilder.toString());
+				}
 			}
 		});
 

@@ -256,7 +256,8 @@ public class SMTPreferences {
 
 	private static void addSolverConfig(
 			List<SMTSolverConfiguration> solverConfigs,
-			final SMTSolverConfiguration solverConfig) {
+			final SMTSolverConfiguration solverConfig)
+			throws IllegalArgumentException {
 		if (validPath(solverConfig.getPath())) {
 			if (!contains(solverConfigs, solverConfig)) {
 				solverConfigs.add(solverConfig);
@@ -267,12 +268,14 @@ public class SMTPreferences {
 		}
 	}
 
-	public void addSolverConfig(final SMTSolverConfiguration solverConfig) {
+	public void addSolverConfig(final SMTSolverConfiguration solverConfig)
+			throws IllegalArgumentException {
 		addSolverConfig(solverConfigs, solverConfig);
 	}
 
 	public void addSolverConfigToDefault(
-			final SMTSolverConfiguration solverConfig) {
+			final SMTSolverConfiguration solverConfig)
+			throws IllegalArgumentException {
 		addSolverConfig(defaultSolverConfigs, solverConfig);
 	}
 

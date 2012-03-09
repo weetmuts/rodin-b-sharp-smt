@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
@@ -476,6 +477,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 		} catch (BundledSolverLoadingException e) {
 			fail(e.getMessage());
+		} catch (InvalidRegistryObjectException e) {
+			fail(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			fail(e.getMessage());
 		}
 	}
 
@@ -534,10 +539,19 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected void setPreferencesForBundledVeriTTest()
 			throws BundledSolverLoadingException {
 		final String bundledVeriTID = "org.eventb.smt.verit.bundled_verit";
-		final BundledSolverRegistry registry = getBundledSolverRegistry();
-		if (registry.isRegistered(bundledVeriTID)) {
-			solverConfig = registry.getBundledSolverInstance(bundledVeriTID);
-			this.veritPath = solverConfig.getPath();
+		try {
+			final BundledSolverRegistry registry = getBundledSolverRegistry();
+			if (registry.isRegistered(bundledVeriTID)) {
+				solverConfig = registry
+						.getBundledSolverInstance(bundledVeriTID);
+				this.veritPath = solverConfig.getPath();
+			}
+		} catch (BundledSolverLoadingException e) {
+			fail(e.getMessage());
+		} catch (InvalidRegistryObjectException e) {
+			fail(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			fail(e.getMessage());
 		}
 	}
 

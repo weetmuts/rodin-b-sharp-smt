@@ -16,12 +16,14 @@ import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPr
 import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
 import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry;
+import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.translation.SMTThroughPP;
@@ -177,21 +179,28 @@ public class SMTProversCore extends Plugin {
 
 		final SMTPreferences smtPrefs = getSMTPrefs();
 		final SMTPreferences smtDefaultPrefs = getDefaultSMTPrefs();
-		final BundledSolverRegistry registry = getBundledSolverRegistry();
-
 		smtPrefs.removeIncorrectInternalConfigs();
-		for (final SMTSolverConfiguration solverConfig : registry
-				.getSolverConfigs()) {
-			try {
-				smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
-				smtPrefs.addSolverConfig(solverConfig);
-			} catch (IllegalArgumentException iae) {
-				throw iae;
-			} finally {
+		smtPrefs.savePrefs();
+		try {
+			final BundledSolverRegistry registry = getBundledSolverRegistry();
+			for (final SMTSolverConfiguration solverConfig : registry
+					.getSolverConfigs()) {
+				try {
+					smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
+				} catch (IllegalArgumentException iae) {
+					// TODO log the error
+				}
+				try {
+					smtPrefs.addSolverConfig(solverConfig);
+				} catch (IllegalArgumentException iae) {
+					// TODO log the error
+				}
 				smtDefaultPrefs.setSelectedConfigIndex(false, 0);
 				smtPrefs.setSelectedConfigIndex(false, 0);
+
 				// FIXME what if several veriT extensions are added
-				if (solverConfig.getSolver().equals(VERIT)) {
+				if (solverConfig != null
+						&& solverConfig.getSolver().equals(VERIT)) {
 					final String veriTPath = solverConfig.getPath();
 					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
 					smtPrefs.setVeriTPath(veriTPath);
@@ -199,6 +208,12 @@ public class SMTProversCore extends Plugin {
 				smtDefaultPrefs.saveDefaultPrefs();
 				smtPrefs.savePrefs();
 			}
+		} catch (BundledSolverLoadingException bdle) {
+			// TODO log the error
+		} catch (InvalidRegistryObjectException iroe) {
+			// TODO log the error
+		} catch (IllegalArgumentException iae) {
+			// TODO log the error
 		}
 	}
 
