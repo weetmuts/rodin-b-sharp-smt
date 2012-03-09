@@ -13,6 +13,11 @@ package org.eventb.smt.internal.preferences;
 import static java.io.File.separatorChar;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.System.getProperty;
+import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_cannot_execute;
+import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_cannot_read;
+import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_invalid_file;
+import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_missing_path;
+import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_no_file;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
 import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSet;
@@ -49,16 +54,16 @@ public class SMTPreferences {
 	public static final IllegalArgumentException TranslationPathNotSetException = new IllegalArgumentException(
 			SMTPreferences_TranslationPathNotSet);
 
-	public static final String SEPARATOR1 = ",,";
-	public static final String SEPARATOR2 = ";";
-	public static final String TRANSLATION_PATH_ID = "translationpath";
-	public static final String VERIT_PATH_ID = "veritpath";
-	public static final String CONFIG_INDEX_ID = "configindex";
-	public static final String SOLVER_PREFERENCES_ID = "solverpreferences";
-	public static final String DEFAULT_SOLVER_PREFERENCES = "";
-	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir");
+	public static final String SEPARATOR1 = ",,"; //$NON-NLS-1$
+	public static final String SEPARATOR2 = ";"; //$NON-NLS-1$
+	public static final String TRANSLATION_PATH_ID = "translationpath"; //$NON-NLS-1$
+	public static final String VERIT_PATH_ID = "veritpath"; //$NON-NLS-1$
+	public static final String CONFIG_INDEX_ID = "configindex"; //$NON-NLS-1$
+	public static final String SOLVER_PREFERENCES_ID = "solverpreferences"; //$NON-NLS-1$
+	public static final String DEFAULT_SOLVER_PREFERENCES = ""; //$NON-NLS-1$
+	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir"); //$NON-NLS-1$
 	public static final int DEFAULT_CONFIG_INDEX = -1;
-	public static final String DEFAULT_VERIT_PATH = "";
+	public static final String DEFAULT_VERIT_PATH = ""; //$NON-NLS-1$
 
 	public static final IEclipsePreferences SMT_PREFS = ConfigurationScope.INSTANCE
 			.getNode(PLUGIN_ID);
@@ -201,51 +206,49 @@ public class SMTPreferences {
 
 	private static final String getValidPath(final String currentPath,
 			final String newPath, final String defaultPath) {
-		if (validPath(newPath)) {
+		if (isPathValid(newPath)) {
 			return newPath;
-		} else if (!validPath(currentPath)) {
+		} else if (!isPathValid(currentPath)) {
 			return defaultPath;
 		} else {
 			return currentPath;
 		}
 	}
 
-	public static boolean validPath(final String path) {
-		return validPath(path, new StringBuilder(0));
+	public static boolean isPathValid(final String path) {
+		return isPathValid(path, new StringBuilder(0));
 	}
 
-	public static boolean validPath(final String path, final StringBuilder error) {
-		if (path != null) {
-			if (!path.isEmpty()) {
-				final File file = new File(path);
-				try {
-					if (file.exists()) {
-						if (file.isFile()) {
-							if (file.canExecute()) {
-								return true;
-							} else {
-								error.append("Rodin cannot execute the indicated file.");
-								return false;
-							}
-						} else {
-							error.append("The indicated file is not a valid file.");
-							return false;
-						}
-					} else {
-						error.append("The indicated file does not exist.");
-						return false;
-					}
-				} catch (SecurityException se) {
-					error.append("Rodin cannot read or execute the indicated file.");
-					return false;
-				}
-			} else {
-				error.append("The solver path is required.");
-				return false;
-			}
-		} else {
+	public static boolean isPathValid(final String path,
+			final StringBuilder error) {
+		if (path == null) {
 			return false;
 		}
+		if (path.isEmpty()) {
+			error.append(SMTPreferencesError_missing_path);
+			return false;
+		}
+		final File file = new File(path);
+		try {
+			if (!file.exists()) {
+				error.append(SMTPreferencesError_no_file);
+				return false;
+			}
+			if (!file.isFile()) {
+				error.append(SMTPreferencesError_invalid_file);
+				return false;
+			}
+			if (!file.canExecute()) {
+				error.append(SMTPreferencesError_cannot_execute);
+				return false;
+			}
+			return true;
+
+		} catch (SecurityException se) {
+			error.append(SMTPreferencesError_cannot_read);
+			return false;
+		}
+
 	}
 
 	public boolean validId(final String id) {
@@ -258,13 +261,13 @@ public class SMTPreferences {
 			List<SMTSolverConfiguration> solverConfigs,
 			final SMTSolverConfiguration solverConfig)
 			throws IllegalArgumentException {
-		if (validPath(solverConfig.getPath())) {
+		if (isPathValid(solverConfig.getPath())) {
 			if (!contains(solverConfigs, solverConfig)) {
 				solverConfigs.add(solverConfig);
 			}
 		} else {
 			throw new IllegalArgumentException(
-					"Could not add the SMT-solver configuration: invalid path.");
+					"Could not add the SMT-solver configuration: invalid path."); //$NON-NLS-1$
 		}
 	}
 
@@ -371,15 +374,15 @@ public class SMTPreferences {
 			final String path = config.getPath();
 			if (path != null) {
 				final StringBuilder builder = new StringBuilder();
-				builder.append("configuration").append(separatorChar);
-				builder.append("org.eclipse.osgi").append(separatorChar);
-				builder.append("bundles");
+				builder.append("configuration").append(separatorChar); //$NON-NLS-1$
+				builder.append("org.eclipse.osgi").append(separatorChar); //$NON-NLS-1$
+				builder.append("bundles"); //$NON-NLS-1$
 				if (config.getPath().contains(builder.toString())
 				/**
 				 * for developpers only
 				 */
-				|| config.getPath().contains("org.eventb.smt.verit")) {
-					if (!validPath(path)) {
+				|| config.getPath().contains("org.eventb.smt.verit")) { //$NON-NLS-1$
+					if (!isPathValid(path)) {
 						configsIter.remove();
 					}
 				}

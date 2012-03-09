@@ -275,7 +275,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 
 	public static boolean validPath(final String path, final boolean showErrors) {
 		final StringBuilder error = new StringBuilder();
-		if (SMTPreferences.validPath(path, error)) {
+		if (SMTPreferences.isPathValid(path, error)) {
 			return true;
 		} else {
 			if (showErrors)
