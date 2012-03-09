@@ -980,4 +980,129 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		doTest("inverse_verit_2_0", hyps, "A = (A)∼", te, VALID);
 	}
 
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialInjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_injection_verit_2_0", hyps, "A \u2914 B = A \u2914 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalInjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_injection_verit_2_0", hyps, "A \u21a3 B = A \u21a3 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testSurjectiveRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("surjective_relation_verit_2_0", hyps,
+				"A \ue101 B = A \ue101 B", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialSurjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_surjection_verit_2_0", hyps, "A \u2900 B = A \u2900 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalSurjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjection_verit_2_0", hyps, "A \u21a0 B = A \u21a0 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalBijectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_bijection_verit_2_0", hyps, "A \u2916 B = A \u2916 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalSurjectiveRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjective_relation_verit_2_0", hyps,
+				"A \ue102 B = A \ue102 B", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPredecessorForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("predecessor_verit_2_0", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
+	}
+	
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testSucessorForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("sucessor_verit_2_0", hyps, "{1 ↦ 2} ⊂ succ", te, VALID);
+	}
+
+
 }

@@ -812,6 +812,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Result: unknown")
 	public void testInverseForVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -824,6 +825,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	}
 
 	@Test
+	@Ignore("Pre-processing: Segmentation fault")
 	public void testPartialInjectionForVeriTCall() {
 		setPreferencesForVeriTTest();
 
@@ -836,4 +838,113 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 				te, VALID);
 	}
 
+	@Test
+	@Ignore("Pre-processing: Segmentation fault")
+	public void testTotalInjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_injection_verit_1_2", hyps, "A \u21a3 B = A \u21a3 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Sort Pair'_19Int and Int mismatch.")
+	public void testSurjectiveRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("surjective_relation_verit_1_2", hyps,
+				"A \ue101 B = A \ue101 B", te, VALID);
+	}
+
+	@Test
+	@Ignore("Pre-processing: Segmentation fault")
+	public void testPartialSurjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_surjection_verit_1_2", hyps, "A \u2900 B = A \u2900 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Pre-processing: Segmentation fault")
+	public void testTotalSurjectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjection_verit_1_2", hyps, "A \u21a0 B = A \u21a0 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Pre-processing: Segmentation fault")
+	public void testTotalBijectionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_bijection_verit_1_2", hyps, "A \u2916 B = A \u2916 B",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Sort Pair'_19Int and Int mismatch.")
+	public void testTotalSurjectiveRelationForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjective_relation_verit_1_2", hyps,
+				"A \ue102 B = A \ue102 B", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Time exceeded")
+	public void testPredecessorForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("predecessor_verit_1_2", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Time exceeded")
+	public void testSucessorForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("sucessor_verit_1_2", hyps, "{1 ↦ 2} ⊂ succ", te, VALID);
+	}
 }
