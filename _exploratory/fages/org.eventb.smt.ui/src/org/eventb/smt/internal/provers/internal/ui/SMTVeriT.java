@@ -12,6 +12,13 @@ package org.eventb.smt.internal.provers.internal.ui;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
+import static org.eventb.smt.internal.preferences.SMTPreferences.NoSMTSolverSelectedException;
+import static org.eventb.smt.internal.preferences.SMTPreferences.NoSMTSolverSetException;
+import static org.eventb.smt.internal.preferences.SMTPreferences.VeriTPathNotSetException;
+import static org.eventb.smt.internal.provers.internal.ui.SMTFailureTactic.NO_SMT_SOLVER_SELECTED;
+import static org.eventb.smt.internal.provers.internal.ui.SMTFailureTactic.SMT_SOLVER_CONFIG_ERROR;
+import static org.eventb.smt.internal.provers.internal.ui.SMTFailureTactic.VERIT_PATH_NOT_SET;
 
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
@@ -19,9 +26,6 @@ import java.util.regex.PatternSyntaxException;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.internal.preferences.SMTPreferences;
-import org.eventb.smt.internal.provers.core.SMTProversCore;
 import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
 
@@ -36,19 +40,19 @@ public class SMTVeriT extends DefaultTacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				return SMTCore.externalSMTThroughVeriT(true);
+				return externalSMTThroughVeriT(true);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
-				return SMTProversCore.smtSolverError();
+				return SMT_SOLVER_CONFIG_ERROR;
 			} catch (final IllegalArgumentException iae) {
-				if (iae.equals(SMTPreferences.NoSMTSolverSelectedException)) {
-					return SMTProversCore.noSMTSolverSelected();
-				} else if (iae.equals(SMTPreferences.NoSMTSolverSetException)) {
-					return SMTProversCore.noSMTSolverSet();
-				} else if (iae.equals(SMTPreferences.VeriTPathNotSetException)) {
-					return SMTProversCore.veriTPathNotSet();
+				if (iae.equals(NoSMTSolverSelectedException)) {
+					return NO_SMT_SOLVER_SELECTED;
+				} else if (iae.equals(NoSMTSolverSetException)) {
+					return SMTFailureTactic.NO_SMT_SOLVER_SET;
+				} else if (iae.equals(VeriTPathNotSetException)) {
+					return VERIT_PATH_NOT_SET;
 				} else {
-					return SMTProversCore.smtSolverError();
+					return SMT_SOLVER_CONFIG_ERROR;
 				}
 			}
 		}

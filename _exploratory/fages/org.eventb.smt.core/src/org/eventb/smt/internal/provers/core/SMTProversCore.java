@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - minor modifications
  *******************************************************************************/
-
 package org.eventb.smt.internal.provers.core;
 
 import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
@@ -19,9 +18,6 @@ import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eventb.core.seqprover.IProofMonitor;
-import org.eventb.core.seqprover.IProofTreeNode;
-import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.SMTPreferences;
@@ -99,70 +95,6 @@ public class SMTProversCore extends Plugin {
 	 */
 	private void enableAssertions() {
 		getClass().getClassLoader().setDefaultAssertionStatus(true);
-	}
-
-	private static class SMTFailureTactic implements ITactic {
-		private final String message;
-
-		private final static SMTFailureTactic SMT_SOLVER_CONFIG_ERROR = new SMTFailureTactic(
-				Messages.SMTProversCore_SMTSolverConfigError);
-		private final static SMTFailureTactic NO_SMT_SOLVER_SELECTED = new SMTFailureTactic(
-				Messages.SMTProversCore_NoSMTSolverSelected);
-		private final static SMTFailureTactic NO_SMT_SOLVER_SET = new SMTFailureTactic(
-				Messages.SMTProversCore_NoSMTSolverSet);
-		private final static SMTFailureTactic VERIT_PATH_NOT_SET = new SMTFailureTactic(
-				Messages.SMTProversCore_VeriTPathNotSet);
-		private final static SMTFailureTactic PROOF_TREE_ORIGIN_ERROR = new SMTFailureTactic(
-				Messages.SMTProversCore_ProofTreeOriginError);
-
-		private SMTFailureTactic(final String message) {
-			this.message = message;
-		}
-
-		static final SMTFailureTactic getSMTSolverConfigError() {
-			return SMT_SOLVER_CONFIG_ERROR;
-		}
-
-		static final SMTFailureTactic getNoSMTSolverSelected() {
-			return NO_SMT_SOLVER_SELECTED;
-		}
-
-		static final SMTFailureTactic getNoSMTSolverSet() {
-			return NO_SMT_SOLVER_SET;
-		}
-
-		static final SMTFailureTactic getVeriTPathNotSet() {
-			return VERIT_PATH_NOT_SET;
-		}
-
-		static final SMTFailureTactic getProofTreeOriginError() {
-			return PROOF_TREE_ORIGIN_ERROR;
-		}
-
-		@Override
-		public Object apply(final IProofTreeNode ptNode, final IProofMonitor pm) {
-			return message;
-		}
-	}
-
-	public static SMTFailureTactic smtSolverError() {
-		return SMTFailureTactic.getSMTSolverConfigError();
-	}
-
-	public static SMTFailureTactic noSMTSolverSelected() {
-		return SMTFailureTactic.getNoSMTSolverSelected();
-	}
-
-	public static SMTFailureTactic noSMTSolverSet() {
-		return SMTFailureTactic.getNoSMTSolverSet();
-	}
-
-	public static final SMTFailureTactic veriTPathNotSet() {
-		return SMTFailureTactic.getVeriTPathNotSet();
-	}
-
-	public static final SMTFailureTactic proofTreeOriginError() {
-		return SMTFailureTactic.getProofTreeOriginError();
 	}
 
 	/**
