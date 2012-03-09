@@ -39,7 +39,6 @@ import org.osgi.framework.Bundle;
 public class BundledSolverDesc {
 	private final IConfigurationElement configurationElement;
 	private String id;
-	private String name;
 
 	/**
 	 * Bundled solver configuration instance lazily loaded using
@@ -64,14 +63,11 @@ public class BundledSolverDesc {
 		 */
 		final String nameSpace = configurationElement.getNamespaceIdentifier();
 		id = nameSpace + "." + localId;
-		/**
-		 * The name of the extension.
-		 */
-		name = configurationElement.getAttribute("name");
 		final String path = makeSolverPath(nameSpace,
 				configurationElement.getAttribute("binary"));
 		checkPath(path);
-		instance = new SMTSolverConfiguration(id, name,
+		instance = new SMTSolverConfiguration(id,
+				configurationElement.getAttribute("name"),
 				parseSolver(configurationElement.getAttribute("kind")), path,
 				configurationElement.getAttribute("args"),
 				parseVersion(configurationElement.getAttribute("smt-lib")),
@@ -161,10 +157,6 @@ public class BundledSolverDesc {
 
 	public String getId() {
 		return id;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public SMTSolverConfiguration getInstance() {
