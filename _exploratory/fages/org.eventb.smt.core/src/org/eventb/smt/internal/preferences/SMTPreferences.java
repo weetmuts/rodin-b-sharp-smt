@@ -262,7 +262,7 @@ public class SMTPreferences {
 			final SMTSolverConfiguration solverConfig)
 			throws IllegalArgumentException {
 		if (isPathValid(solverConfig.getPath())) {
-			if (!contains(solverConfigs, solverConfig)) {
+			if (!solverConfigs.contains(solverConfig)) {
 				solverConfigs.add(solverConfig);
 			}
 		} else {
