@@ -27,6 +27,7 @@ public class BundledSolverDescTests {
 	public static class BundledSolverConfigElt implements IConfigurationElement {
 		static final IConfigurationElement[] NO_ELEMENT = new IConfigurationElement[] {};
 
+		final private String bundleName;
 		final private String id;
 		final private String name;
 		final private String kind;
@@ -34,15 +35,22 @@ public class BundledSolverDescTests {
 		final private String args;
 		final private String smtlib;
 
-		public BundledSolverConfigElt(final String id, final String name,
-				final String kind, final String binary, final String args,
-				final String smtlib) {
+		public BundledSolverConfigElt(final String bundle, final String id,
+				final String name, final String kind, final String binary,
+				final String args, final String smtlib) {
+			this.bundleName = bundle;
 			this.id = id;
 			this.name = name;
 			this.kind = kind;
 			this.binary = binary;
 			this.args = args;
 			this.smtlib = smtlib;
+		}
+
+		public BundledSolverConfigElt(final String id, final String name,
+				final String kind, final String binary, final String args,
+				final String smtlib) {
+			this("test", id, name, kind, binary, args, smtlib);
 		}
 
 		@Override
@@ -113,12 +121,12 @@ public class BundledSolverDescTests {
 		@Deprecated
 		@Override
 		public String getNamespace() {
-			return "org.name.bin";
+			return bundleName;
 		}
 
 		@Override
 		public String getNamespaceIdentifier() {
-			return "org.name.bin";
+			return bundleName;
 		}
 
 		@Override
@@ -158,7 +166,7 @@ public class BundledSolverDescTests {
 			desc.load();
 			Assert.fail("BundledSolverLoadingException expected because of a null ID.");
 		} catch (InvalidRegistryObjectException e) {
-			Assert.fail("Unexpected exception raised.");
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
 		} catch (BundledSolverLoadingException e) {
 			// expected exception
 		}
@@ -173,7 +181,7 @@ public class BundledSolverDescTests {
 			desc.load();
 			Assert.fail("BundledSolverLoadingException expected because of a dot in the ID.");
 		} catch (InvalidRegistryObjectException e) {
-			Assert.fail("Unexpected exception raised.");
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
 		} catch (BundledSolverLoadingException e) {
 			// expected exception
 		}
@@ -189,7 +197,7 @@ public class BundledSolverDescTests {
 			desc1.load();
 			Assert.fail("BundledSolverLoadingException expected because of a space in the ID.");
 		} catch (InvalidRegistryObjectException e) {
-			Assert.fail("Unexpected exception raised.");
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
 		} catch (BundledSolverLoadingException e) {
 			// expected exception
 		}
@@ -202,11 +210,54 @@ public class BundledSolverDescTests {
 			desc2.load();
 			Assert.fail("BundledSolverLoadingException expected because of a colon in the ID.");
 		} catch (InvalidRegistryObjectException e) {
-			Assert.fail("Unexpected exception raised.");
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
 		} catch (BundledSolverLoadingException e) {
 			// expected exception
 		}
 	}
 
-	
+	@Test
+	public void testNullBinaryException() {
+		final IConfigurationElement configEltWithDotID = new BundledSolverConfigElt(
+				"bundledsolver", "", "", null, "", "");
+		final BundledSolverDesc desc = new BundledSolverDesc(configEltWithDotID);
+		try {
+			desc.load();
+			Assert.fail("BundledSolverLoadingException expected because of a null binary.");
+		} catch (InvalidRegistryObjectException e) {
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
+		} catch (BundledSolverLoadingException e) {
+			// expected exception
+		}
+	}
+
+	@Test
+	public void testInvalidBundleNameException() {
+		final IConfigurationElement configEltWithDotID = new BundledSolverConfigElt(
+				"bundledsolver", "", "", "bundledsolver", "", "");
+		final BundledSolverDesc desc = new BundledSolverDesc(configEltWithDotID);
+		try {
+			desc.load();
+			Assert.fail("BundledSolverLoadingException expected because of an invalid bundleName name.");
+		} catch (InvalidRegistryObjectException e) {
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
+		} catch (BundledSolverLoadingException e) {
+			// expected exception
+		}
+	}
+
+	@Test
+	public void testUnknownBinaryException() {
+		final IConfigurationElement configEltWithDotID = new BundledSolverConfigElt(
+				"bundledsolver", "", "", "bundledsolver", "", "");
+		final BundledSolverDesc desc = new BundledSolverDesc(configEltWithDotID);
+		try {
+			desc.load();
+			Assert.fail("BundledSolverLoadingException expected because of a null binary.");
+		} catch (InvalidRegistryObjectException e) {
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
+		} catch (BundledSolverLoadingException e) {
+			Assert.fail("Unexpected exception raised: " + e.getMessage());
+		}
+	}
 }
