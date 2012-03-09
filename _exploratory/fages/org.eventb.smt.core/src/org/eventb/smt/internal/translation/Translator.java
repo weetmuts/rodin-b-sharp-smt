@@ -42,7 +42,6 @@ import org.eventb.smt.internal.ast.SMTVar;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
-import org.eventb.smt.internal.provers.core.IllegalTagException;
 
 /**
  * This class is a translator from Event-B syntax to SMT-LIB syntax.

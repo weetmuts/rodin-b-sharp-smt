@@ -103,7 +103,6 @@ import org.eventb.smt.internal.ast.theories.SMTLogic.SMTOperator;
 import org.eventb.smt.internal.ast.theories.SMTTheory;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2.Booleans;
-import org.eventb.smt.internal.provers.core.IllegalTagException;
 
 /**
  * This class does the SMT translation through ppTrans. ppTrans is called first,

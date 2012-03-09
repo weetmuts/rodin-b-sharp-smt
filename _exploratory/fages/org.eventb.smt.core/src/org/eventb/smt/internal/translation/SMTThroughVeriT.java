@@ -137,7 +137,6 @@ import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.internal.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.internal.provers.core.IllegalTagException;
 
 /**
  * This class implements the translation from Event-B predicates to Extended
