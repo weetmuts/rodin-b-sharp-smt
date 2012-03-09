@@ -21,6 +21,7 @@ import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.DOMAIN_SUBSTRACT
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.EMPTY;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.FCOMP;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.FINITE;
+import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.FUNP;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.ID;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.IN;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.INJP;
@@ -104,8 +105,12 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?RI_0 Int) (?RI_1 Int)) (Int Bool) (lambda ((?RI_2 Int)) (and (<= ?RI_0 ?RI_2) (<= ?RI_2 ?RI_1)))",
 			0, false, false, EMPTY_MACROS);
 
-	// TODO translate do SMT-LIB 2.0
-	public static SMTPredefinedMacro FUNP_MACRO = BUNION_MACRO;
+	public static final SMTPredefinedMacro FUNP_MACRO = new SMTPredefinedMacro(
+			FUNP,
+			"(par (s t) ("
+					+ FUNP
+					+ " ((?FUNP_0 ((Pair s t ) Bool))) (forall ((?FUNP_1 (Pair s t)) (?FUNP_2 (Pair s t))) (=> (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (=> (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2)))))))",
+			2, true, true, EMPTY_MACROS);
 
 	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
 			FUNP_MACRO, IN_MACRO };
@@ -120,12 +125,11 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?CARD_0 (s Bool)) (?CARD_1 (s Int)) (?CARD_2 Int)) (and (forall ((?CARD_3 Int)) (=> (in ?CARD_3 (range 1 ?CARD_2))(exists ((?CARD_4 s)) (and (in ?CARD_4 ?CARD_0) (= (?CARD_1 ?CARD_4) ?CARD_3)))))(forall ((?CARD_4 s)) (=> (in ?CARD_4 ?CARD_0) (in (?CARD_1 ?CARD_4) (range 1 ?CARD_2))))(forall ((?CARD_5 s) (?CARD_6 s)) (=> (and (in ?CARD_5 ?CARD_0) (in ?CARD_6 ?CARD_0) (= (?CARD_1 ?CARD_5) (?CARD_1 ?CARD_6))) (= ?CARD_5 ?CARD_6))))))",
 			1, false, false, IN_AND_RANGE_INTEGER);
 
-	// FIXME to SMT 2.0
 	public static final SMTPredefinedMacro PARTIAL_FUNCTION_MACRO = new SMTPredefinedMacro(
 			PARTIAL_FUNCTION,
-			"("
+			"(par (s) ("
 					+ PARTIAL_FUNCTION
-					+ "(lambda (?PAR_FUN_0 ('s Bool)) (?PAR_FUN_1  ('t Bool)) (lambda (?PAR_FUN_2 ((Pair 's 't) Bool)) (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
+					+ " ((?PAR_FUN_0 (s Bool)) (?PAR_FUN_1  (t Bool))) (lambda ((?PAR_FUN_2 ((Pair s t) Bool))) (and (in ?PAR_FUN_2 (rel ?PAR_FUN_0 ?PAR_FUN_1)) (funp ?PAR_FUN_2)))))",
 			3, false, false, REL_AND_FUNP_AND_IN);
 
 	public static final SMTPredefinedMacro SUBSETEQ_MACRO = new SMTPredefinedMacro(
@@ -259,7 +263,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?TOT_BIJ_0 (s Bool)) (?TOT_BIJ_1 (s Bool))) (lambda (?TOT_BIJ_2 ((Pair s t) Bool)) (and ((tsur ?TOT_BIJ_0 ?TOT_BIJ_1) ?TOT_BIJ_2) ((tinj ?TOT_BIJ_0 ?TOT_BIJ_1) ?TOT_BIJ_2)))))",
 			5, false, false, TOTAL_SURJECTION_AND_TOTAL_INJECTION);
 
-	// TODO: test
 	public static final SMTPredefinedMacro REL_OVR_MACRO = new SMTPredefinedMacro(
 			OVR,
 			"(par (s t) ("
@@ -323,7 +326,6 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?RELI_0 ((Pair s t) Bool)(?RELI_1 (s Bool)) (lambda (?RELI_2 t) (exists (?RELI_3 s)(and (?RELI_1 ?RELI_3)(?RELI_0 (pair ?RELI_3 ?RELI_2)))))))))",
 			1, true, false, EMPTY_MACROS);
 
-	// TODO: test
 	public static final SMTPredefinedMacro DOM_MACRO = new SMTPredefinedMacro(
 			DOM,
 			"(par (t1 t2) ("
@@ -347,12 +349,11 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?DS_0 (s Bool)) (?DS_1 ((Pair s t) Bool))) (lambda ((?DS_2 (Pair s t))) (and (?DS_1 ?DS_2)(not (?DS_0 (fst ?DS_2)))))))",
 			1, true, true, EMPTY_MACROS);
 
-	// TODO: test
 	public static final SMTPredefinedMacro RANGE_MACRO = new SMTPredefinedMacro(
 			RANGE,
 			"(par (s t) ("
 					+ RANGE
-					+ " (?RANGE_0 ((Pair s t) Bool))) (lambda ((?RANGE_1 t)) (exists ((?RANGE_2 s)) (?RANGE_0 (pair ?RANGE_2 ?RANGE_1)))))",
+					+ " ((?RANGE_0 ((Pair s t) Bool))) (lambda ((?RANGE_1 t)) (exists ((?RANGE_2 s)) (?RANGE_0 (pair ?RANGE_2 ?RANGE_1))))))",
 			1, true, false, EMPTY_MACROS);
 
 	public static final SMTPredefinedMacro SUCCESSOR_MACRO = new SMTPredefinedMacro(

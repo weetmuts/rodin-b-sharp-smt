@@ -1090,7 +1090,7 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 
 		doTest("predecessor_verit_2_0", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
 	}
-	
+
 	@Test
 	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
 	public void testSucessorForVeriTCall() {
@@ -1104,5 +1104,84 @@ public class RunProverTestWithVeriTV2_0 extends CommonSolverRunTests {
 		doTest("sucessor_verit_2_0", hyps, "{1 ↦ 2} ⊂ succ", te, VALID);
 	}
 
+	@Test
+	// TODO Check translation of finite
+	@Ignore("Expected true, but it was false.")
+	public void testFiniteForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("finite_verit_2_0", hyps, "finite({1})", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testRangeForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("range_verit_2_0", hyps, "2 ∈ ran({1↦2})", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testDomForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("dom_verit_2_0", hyps, "2 ∈ dom({2↦1})", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialFunctionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("partial_function_verit_2_0", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)",
+				te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testRelationOverrideForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}", "B={1↦1}");
+
+		doTest("relation_override_verit_2_0", hyps, "A \ue103 A = B", te, VALID);
+	}
+
+	@Test
+	@Ignore("Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testIDForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("id_verit_2_0", hyps, "A ⊂ id", te, VALID);
+	}
 
 }

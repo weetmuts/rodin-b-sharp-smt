@@ -947,4 +947,81 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 		doTest("sucessor_verit_1_2", hyps, "{1 ↦ 2} ⊂ succ", te, VALID);
 	}
+
+	@Test
+	// TODO Check translation of finite
+	@Ignore("Expected true, but it was false.")
+	public void testFiniteForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("finite_verit_1_2", hyps, "finite({1})", te, VALID);
+	}
+
+	@Test
+	public void testRangeForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("range_verit_1_2", hyps, "2 ∈ ran({1↦2})", te, VALID);
+	}
+
+	@Test
+	public void testDomForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("dom_verit_1_2", hyps, "2 ∈ dom({2↦1})", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Time exceeded")
+	public void testPartialFunctionForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("partial_function_verit_1_2", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)",
+				te, VALID);
+	}
+
+	@Test
+	public void testRelationOverrideForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}", "B={1↦1}");
+
+		doTest("relation_override_verit_1_2", hyps, "A \ue103 A = B", te, VALID);
+	}
+
+	@Test
+	@Ignore("error : Assert DAG_sort_binding(DAG_sort(DAG)) failed (tstp-print.c:54)")
+	public void testIDForVeriTCall() {
+		setPreferencesForVeriTTest();
+
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("id_verit_1_2", hyps, "A ⊂ id", te, VALID);
+	}
 }
