@@ -15,6 +15,7 @@ import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.core.seqprover.xprover.XProverReasoner2;
+import org.eventb.smt.core.SMTCore;
 
 /**
  * Runs an external SMT prover as a reasoner.
@@ -22,8 +23,7 @@ import org.eventb.core.seqprover.xprover.XProverReasoner2;
  * @author YGU
  */
 public class ExternalSMTThroughVeriT extends XProverReasoner2 {
-	public static String REASONER_ID = SMTProversCore.PLUGIN_ID
-			+ ".externalSMTVeriT";
+	public static String REASONER_ID = SMTCore.PLUGIN_ID + ".externalSMTVeriT";
 
 	public ExternalSMTThroughVeriT() {
 	}

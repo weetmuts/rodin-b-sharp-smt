@@ -15,15 +15,15 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3_PARAM_AUTO_CONFIG;
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3_PARAM_MBQI;
-import static org.eventb.smt.internal.provers.core.SMTSolver.setZ3ParameterToFalse;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.provers.SMTSolver.Z3_PARAM_AUTO_CONFIG;
+import static org.eventb.smt.core.provers.SMTSolver.Z3_PARAM_MBQI;
+import static org.eventb.smt.core.provers.SMTSolver.setZ3ParameterToFalse;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.internal.translation.Translator.DEBUG_DETAILS;
 
@@ -45,9 +45,10 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.SMTBenchmark;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.internal.translation.TranslationResult;
 import org.eventb.smt.internal.translation.Translator;
 
@@ -98,7 +99,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	SMTSolverConfiguration solverConfig;
+	ISolverConfiguration solverConfig;
 
 	String translationPath = null;
 
@@ -127,7 +128,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            name of the lemma to prove
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final SMTSolverConfiguration solverConfig,
+			final IProofMonitor pm, final ISolverConfiguration solverConfig,
 			final String poName, final String translationPath,
 			final Translator translator) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -136,7 +137,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final SMTSolverConfiguration solverConfig, final String poName,
+			final ISolverConfiguration solverConfig, final String poName,
 			final String translationPath, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
@@ -613,7 +614,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		if (benchmarkIsNull()) {
 			message.append("PP (trivial)");
 		} else {
-			message.append("SMT-").append(solverConfig.getId());
+			message.append("SMT-").append(solverConfig.getID());
 		}
 		return message.toString();
 	}

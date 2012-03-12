@@ -11,11 +11,11 @@
 
 package org.eventb.smt.internal.ast;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.EQUAL;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.LOGIC;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.THEORY;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.internal.ast.symbols;
 
-import org.eventb.smt.internal.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class represent polymorphic sorts, which are used with macros, because

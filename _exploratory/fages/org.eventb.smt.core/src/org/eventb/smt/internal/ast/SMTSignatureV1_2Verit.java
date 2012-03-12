@@ -11,7 +11,7 @@
 
 package org.eventb.smt.internal.ast;
 
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import java.util.HashSet;
 import java.util.Set;

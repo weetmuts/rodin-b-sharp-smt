@@ -11,13 +11,13 @@
 package org.eventb.smt.internal.provers.core;
 
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SMTSolver.Z3;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
-import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.internal.translation.Translator.DEBUG_DETAILS;
 
@@ -32,7 +32,8 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.internal.translation.SMTThroughPP;
 
 /**
@@ -47,7 +48,7 @@ public class SMTPPCall extends SMTProverCall {
 	private File ppTranslationFolder = null;
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final SMTSolverConfiguration solverConfig, final String poName,
+			final ISolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
 				translationPath);
@@ -55,7 +56,7 @@ public class SMTPPCall extends SMTProverCall {
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder,
-			final SMTSolverConfiguration solverConfig, final String poName,
+			final ISolverConfiguration solverConfig, final String poName,
 			final String translationPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughPP(solverConfig.getSmtlibVersion()));

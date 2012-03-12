@@ -13,7 +13,7 @@ package org.eventb.smt.internal.preferences.ui;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
 
 /**
  * This class provides text for each column of a solvers table viewer.
@@ -27,10 +27,10 @@ class SMTSolverConfigurationsLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public String getColumnText(final Object element, final int columnIndex) {
-		final SMTSolverConfiguration solver = (SMTSolverConfiguration) element;
+		final ISolverConfiguration solver = (ISolverConfiguration) element;
 		switch (columnIndex) {
 		case 0:
-			return solver.getId();
+			return solver.getID();
 		case 1:
 			return solver.getName();
 		case 2:

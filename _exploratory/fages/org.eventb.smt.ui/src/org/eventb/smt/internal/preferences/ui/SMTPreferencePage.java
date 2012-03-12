@@ -10,9 +10,9 @@
 
 package org.eventb.smt.internal.preferences.ui;
 
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.eventb.smt.internal.provers.core.SMTProversCore;
+import org.eventb.smt.core.SMTCore;
 
 /**
  * This class contributes a preference page to the Preference dialog. By
@@ -93,7 +93,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return new ScopedPreferenceStore(ConfigurationScope.INSTANCE,
-				SMTProversCore.PLUGIN_ID);
+				SMTCore.PLUGIN_ID);
 	}
 
 	@Override

@@ -17,10 +17,11 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
+import static org.eventb.smt.core.preferences.AbstractBundledSolverRegistry.getBundledSolverRegistry;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
+import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
+import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.internal.preferences.ui.UIUtils.showError;
-import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.swt.SWT;
@@ -36,12 +37,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
-import org.eventb.smt.internal.preferences.SMTPreferences;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.provers.core.SMTSolver;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
+import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.BundledSolverLoadingException;
+import org.eventb.smt.core.preferences.IBundledSolverRegistry;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an
@@ -61,18 +62,18 @@ public class SMTSolverConfigurationDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final SMTPreferences smtPrefs;
-	final SMTSolverConfiguration solverConfig;
+	final AbstractPreferences smtPrefs;
+	ISolverConfiguration solverConfig;
 
 	public SMTSolverConfigurationDialog(final Shell parentShell,
-			final SMTPreferences smtPrefs,
-			final SMTSolverConfiguration solverConfig) {
+			final AbstractPreferences smtPrefs,
+			final ISolverConfiguration solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solverConfig != null) {
 			this.solverConfig = solverConfig;
 		} else {
-			this.solverConfig = new SMTSolverConfiguration();
+			this.solverConfig = newConfig();
 		}
 		setText("Solver configuration");
 	}
@@ -91,7 +92,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		idLabel.setLayoutData(data);
 
 		final Text idText = new Text(shell, SWT.BORDER);
-		idText.setText(solverConfig.getId());
+		idText.setText(solverConfig.getID());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		idText.setLayoutData(data);
@@ -152,7 +153,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				final FileDialog dialog = new FileDialog(shell, getStyle());
 				String path = dialog.open();
-				if (validPath(path, SHOW_ERRORS)) {
+				if (isValidPath(path, SHOW_ERRORS)) {
 					solverPathText.setText(path);
 				}
 			}
@@ -207,15 +208,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			public void widgetSelected(SelectionEvent event) {
 				final String id = idText.getText();
 				final String path = solverPathText.getText();
-				if (id.equals(solverConfig.getId()) || smtPrefs.validId(id)) {
-					if (validPath(path, SHOW_ERRORS)) {
-						solverConfig.setId(id);
-						solverConfig.setSolver(parseSolver(solverCombo
-								.getText()));
-						solverConfig.setPath(path);
-						solverConfig.setArgs(argsText.getText());
-						solverConfig.setSmtlibVersion(parseVersion(smtlibCombo
-								.getText()));
+				if (id.equals(solverConfig.getID()) || smtPrefs.validId(id)) {
+					if (isValidPath(path, SHOW_ERRORS)) {
+						// TODO set the right name value
+						solverConfig = newConfig(id, id,
+								parseSolver(solverCombo.getText()), path,
+								argsText.getText(),
+								parseVersion(smtlibCombo.getText()));
 						returnCode = OK;
 						shell.close();
 					}
@@ -226,13 +225,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 					errBuilder.append("The solver ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final BundledSolverRegistry registry = getBundledSolverRegistry();
+						final IBundledSolverRegistry registry = getBundledSolverRegistry();
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
-						for (final SMTSolverConfiguration bundledConfig : registry
+						for (final ISolverConfiguration bundledConfig : registry
 								.getSolverConfigs()) {
 							errBuilder2.append("'");
-							errBuilder2.append(bundledConfig.getId());
+							errBuilder2.append(bundledConfig.getID());
 							errBuilder2.append("'\n");
 						}
 						errBuilder2.append("'.");
@@ -241,10 +240,6 @@ public class SMTSolverConfigurationDialog extends Dialog {
 						errBuilder2 = new StringBuilder(
 								"The specified solver ID is reserved.");
 					} catch (BundledSolverLoadingException e) {
-						// TODO log the error
-						errBuilder2 = new StringBuilder(
-								"The specified solver ID is reserved.");
-					} catch (IllegalArgumentException e) {
 						// TODO log the error
 						errBuilder2 = new StringBuilder(
 								"The specified solver ID is reserved.");
@@ -273,9 +268,10 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	public static boolean validPath(final String path, final boolean showErrors) {
+	public static boolean isValidPath(final String path,
+			final boolean showErrors) {
 		final StringBuilder error = new StringBuilder();
-		if (SMTPreferences.isPathValid(path, error)) {
+		if (AbstractPreferences.isPathValid(path, error)) {
 			return true;
 		} else {
 			if (showErrors)
@@ -284,7 +280,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		}
 	}
 
-	public SMTSolverConfiguration getSolverConfig() {
+	public ISolverConfiguration getSolverConfig() {
 		return solverConfig;
 	}
 

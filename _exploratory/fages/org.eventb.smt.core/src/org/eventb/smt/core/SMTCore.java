@@ -21,7 +21,7 @@ import static org.eventb.smt.internal.provers.core.SMTProversCore.NO_SOLVER_CONF
 import java.util.List;
 
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
 import org.eventb.smt.internal.provers.core.ExternalSMTThroughPP;
 import org.eventb.smt.internal.provers.core.ExternalSMTThroughVeriT;
 import org.eventb.smt.internal.provers.core.SMTInput;
@@ -31,6 +31,11 @@ import org.eventb.smt.internal.provers.core.SMTInput;
  * 
  */
 public class SMTCore {
+	/**
+	 * The plug-in identifier
+	 */
+	public static final String PLUGIN_ID = "org.eventb.smt.core";
+
 	/**
 	 * This tactic should be called by the parameterised auto tactic.
 	 * 
@@ -46,7 +51,7 @@ public class SMTCore {
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<SMTSolverConfiguration> solverConfigs = getSMTPrefs()
+			final List<ISolverConfiguration> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
@@ -122,7 +127,7 @@ public class SMTCore {
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<SMTSolverConfiguration> solverConfigs = getSMTPrefs()
+			final List<ISolverConfiguration> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();

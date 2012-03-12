@@ -10,17 +10,17 @@
 
 package org.eventb.smt.internal.ast;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 import java.math.BigInteger;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
 import org.eventb.smt.internal.ast.theories.SMTTheoryV2_0;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.

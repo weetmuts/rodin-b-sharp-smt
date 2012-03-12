@@ -14,7 +14,7 @@ import static org.eventb.smt.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.internal.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * Common class for SMT-LIB formulas built from connectives.

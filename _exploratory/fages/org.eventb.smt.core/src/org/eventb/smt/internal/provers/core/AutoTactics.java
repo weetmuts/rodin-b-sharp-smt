@@ -16,7 +16,6 @@ import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
-import static org.eventb.smt.internal.provers.core.SMTProversCore.PLUGIN_ID;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class AutoTactics {
 	private static final String CONFIG_ID = "configId";
 
 	private static final ITacticDescriptor smtPpTacticDescriptor = getAutoTacticRegistry()
-			.getTacticDescriptor(PLUGIN_ID + ".SMTPP");
+			.getTacticDescriptor(SMTCore.PLUGIN_ID + ".SMTPP");
 
 	/**
 	 * This class is not meant to be instantiated

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
+import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
 
 public class AxiomsTestWithOpenSMTPPV2_0 extends AxiomsTestWithPPV2_0 {
 

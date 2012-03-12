@@ -11,22 +11,22 @@ package org.eventb.smt.internal.preferences;
 
 import static java.io.File.separatorChar;
 import static org.eclipse.core.runtime.Platform.getBundle;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeDotInIDException;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNoSuchBundleException;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullBinaryNameException;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullIDException;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeNullPathException;
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException.makeWhitespaceOrColonInIDException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeDotInIDException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNoSuchBundleException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullBinaryNameException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullIDException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullPathException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeWhitespaceOrColonInIDException;
+import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
+import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.EDITABLE;
-import static org.eventb.smt.internal.provers.core.SMTSolver.parseSolver;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eventb.core.seqprover.xprover.BundledFileExtractor;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
+import org.eventb.smt.core.preferences.BundledSolverLoadingException;
 import org.osgi.framework.Bundle;
 
 /**

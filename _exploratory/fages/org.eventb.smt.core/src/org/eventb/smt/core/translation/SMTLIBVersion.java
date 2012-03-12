@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.internal.translation;
+package org.eventb.smt.core.translation;
 
 /**
  * Known SMT-LIB language versions.

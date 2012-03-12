@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 
 public class OpenSMTPerfWithPPV1_2 extends SolverPerfWithPP {

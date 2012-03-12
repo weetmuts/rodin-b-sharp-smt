@@ -12,8 +12,8 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

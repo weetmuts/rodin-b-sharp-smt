@@ -34,6 +34,7 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.SMTFactory;
 import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTNode;

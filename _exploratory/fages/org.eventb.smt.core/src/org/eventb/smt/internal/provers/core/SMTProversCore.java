@@ -10,17 +10,18 @@
  *******************************************************************************/
 package org.eventb.smt.internal.provers.core;
 
+import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
 import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
-import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
-import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
-import org.eventb.smt.internal.preferences.SMTPreferences;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.translation.SMTThroughPP;
 import org.eventb.smt.internal.translation.Translator;
@@ -30,10 +31,6 @@ import org.osgi.framework.BundleContext;
  * This is the main class of the SMT solvers plugin.
  */
 public class SMTProversCore extends Plugin {
-	/**
-	 * The plug-in identifier
-	 */
-	public static final String PLUGIN_ID = "org.eventb.smt.core";
 	/**
 	 * Debug variables
 	 */
@@ -109,10 +106,8 @@ public class SMTProversCore extends Plugin {
 			configureDebugOptions();
 		}
 
-		final SMTPreferences smtPrefs = getSMTPrefs();
-		final SMTPreferences smtDefaultPrefs = getDefaultSMTPrefs();
-		smtPrefs.removeIncorrectInternalConfigs();
-		smtPrefs.savePrefs();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final AbstractPreferences smtDefaultPrefs = getDefaultSMTPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
 			for (final SMTSolverConfiguration solverConfig : registry
@@ -137,8 +132,8 @@ public class SMTProversCore extends Plugin {
 					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
 					smtPrefs.setVeriTPath(veriTPath);
 				}
-				smtDefaultPrefs.saveDefaultPrefs();
-				smtPrefs.savePrefs();
+				smtDefaultPrefs.save();
+				smtPrefs.save();
 			}
 		} catch (BundledSolverLoadingException bdle) {
 			// TODO log the error

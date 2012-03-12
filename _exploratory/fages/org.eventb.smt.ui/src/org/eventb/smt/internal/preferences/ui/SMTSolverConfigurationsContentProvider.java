@@ -14,8 +14,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-
+import org.eventb.smt.core.preferences.ISolverConfiguration;
 
 /**
  * This is a content provider for the Solvers' details viewer.
@@ -32,7 +31,7 @@ public class SMTSolverConfigurationsContentProvider implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
-		return ((List<SMTSolverConfiguration>) inputElement).toArray();
+		return ((List<ISolverConfiguration>) inputElement).toArray();
 	}
 
 	@Override

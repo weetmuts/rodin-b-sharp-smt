@@ -12,15 +12,15 @@
 package org.eventb.smt.internal.provers.core;
 
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
-import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.internal.provers.core.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
 import static org.eventb.smt.internal.provers.core.Messages.SmtProversCall_SMT_file_does_not_exist;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.internal.translation.Translator.DEBUG_DETAILS;
 
@@ -39,9 +39,10 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.SMTBenchmark;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.internal.translation.SMTThroughVeriT;
 
 /**
@@ -92,7 +93,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final SMTSolverConfiguration solverConfig,
+			final IProofMonitor pm, final ISolverConfiguration solverConfig,
 			final String poName, final String translationPath,
 			final String veritPath) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -101,7 +102,7 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final SMTSolverConfiguration solverConfig, final String poName,
+			final ISolverConfiguration solverConfig, final String poName,
 			final String translationPath, final String veritPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));

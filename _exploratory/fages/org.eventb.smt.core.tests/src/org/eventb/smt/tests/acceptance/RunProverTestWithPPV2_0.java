@@ -10,15 +10,15 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.UNKNOWN;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.internal.translation.SMTTranslationApproach.USING_PP;
+import static org.eventb.smt.core.provers.SMTSolver.UNKNOWN;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.translation.SMTTranslationApproach.USING_PP;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
+import org.eventb.smt.core.preferences.BundledSolverLoadingException;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;

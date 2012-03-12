@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
+import static org.eventb.smt.core.provers.SMTSolver.CVC3;
 
 public class AxiomsTestWithCvc3PPV1_2 extends AxiomsTestWithPPV1_2 {
 

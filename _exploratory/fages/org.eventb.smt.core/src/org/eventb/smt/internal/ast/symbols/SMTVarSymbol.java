@@ -10,13 +10,13 @@
 
 package org.eventb.smt.internal.ast.symbols;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.QVAR;
 import static org.eventb.smt.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
-import org.eventb.smt.internal.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * Represents quantified var symbols (constants are represented with

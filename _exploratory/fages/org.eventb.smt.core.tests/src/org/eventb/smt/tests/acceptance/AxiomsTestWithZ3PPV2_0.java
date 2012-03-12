@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
+import static org.eventb.smt.core.provers.SMTSolver.Z3;
 
 public class AxiomsTestWithZ3PPV2_0 extends AxiomsTestWithPPV2_0 {
 

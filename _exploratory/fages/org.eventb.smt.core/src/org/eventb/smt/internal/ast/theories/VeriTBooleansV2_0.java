@@ -10,9 +10,9 @@
 
 package org.eventb.smt.internal.ast.theories;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPolymorphicSortSymbol;

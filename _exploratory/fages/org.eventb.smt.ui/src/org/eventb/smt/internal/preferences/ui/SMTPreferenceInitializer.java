@@ -8,31 +8,20 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.internal.translation;
+package org.eventb.smt.internal.preferences.ui;
+
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eventb.smt.core.preferences.AbstractPreferences;
 
 /**
- * Enumeration used to describe what approach is being used *
+ * Class used to initialize default preference values.
+ * 
+ * FIXME Is this class still needed?
  */
-public enum SMTTranslationApproach {
-	USING_PP("PP"), USING_VERIT("veriT");
-
-	/**
-	 * The name of the approach
-	 */
-	private String name;
-
-	/**
-	 * The constructor of the enum
-	 * 
-	 * @param name
-	 *            the name used to the approach
-	 */
-	SMTTranslationApproach(final String name) {
-		this.name = name;
-	}
+public class SMTPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
-	public String toString() {
-		return name;
+	public void initializeDefaultPreferences() {
+		AbstractPreferences.getDefaultSMTPrefs().save();
 	}
 }

@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.internal.ast.theories.SMTLogic;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 public abstract class SMTSignature {
 	protected final SMTLIBVersion smtlibVersion;

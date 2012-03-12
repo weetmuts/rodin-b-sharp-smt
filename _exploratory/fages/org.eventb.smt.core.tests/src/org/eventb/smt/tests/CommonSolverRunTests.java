@@ -10,15 +10,15 @@
 
 package org.eventb.smt.tests;
 
+import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.core.provers.SMTSolver.CVC3;
+import static org.eventb.smt.core.provers.SMTSolver.CVC4;
+import static org.eventb.smt.core.provers.SMTSolver.MATHSAT5;
+import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
-import static org.eventb.smt.internal.provers.core.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.internal.provers.core.SMTSolver.CVC3;
-import static org.eventb.smt.internal.provers.core.SMTSolver.CVC4;
-import static org.eventb.smt.internal.provers.core.SMTSolver.MATHSAT5;
-import static org.eventb.smt.internal.provers.core.SMTSolver.OPENSMT;
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -33,18 +33,19 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
+import org.eventb.smt.core.preferences.BundledSolverLoadingException;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.SMTTranslationApproach;
 import org.eventb.smt.internal.ast.SMTBenchmark;
 import org.eventb.smt.internal.ast.SMTSignature;
 import org.eventb.smt.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry.BundledSolverLoadingException;
 import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.internal.provers.core.SMTPPCall;
 import org.eventb.smt.internal.provers.core.SMTProverCall;
-import org.eventb.smt.internal.provers.core.SMTSolver;
 import org.eventb.smt.internal.provers.core.SMTVeriTCall;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 import org.eventb.smt.internal.translation.SMTThroughPP;
-import org.eventb.smt.internal.translation.SMTTranslationApproach;
 import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
@@ -75,7 +76,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected static boolean TRIVIAL = true;
 
 	protected Set<org.eventb.smt.utils.Theory> theories;
-	protected SMTSolverConfiguration solverConfig;
+	protected ISolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;
@@ -174,11 +175,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		binPathToString(veritBinPath);
 		VERIT.toString(veritBinPath);
 
-		solverConfig.setId(solverBinaryName);
-		solverConfig.setSolver(solver);
-		solverConfig.setPath(solverPathBuilder.toString());
-		solverConfig.setArgs(solverArgs);
-		solverConfig.setSmtlibVersion(smtlibVersion);
+		solverConfig = new SMTSolverConfiguration(solverBinaryName,
+				solverBinaryName, solver, solverPathBuilder.toString(),
+				solverArgs, smtlibVersion);
 		this.veritPath = veritBinPath.toString();
 	}
 
@@ -278,7 +277,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			printPerf(debugBuilder, lemmaName, solverConfig.getId(),
+			printPerf(debugBuilder, lemmaName, solverConfig.getID(),
 					solverConfig.getSmtlibVersion(), translationApproach,
 					smtProverCall);
 
@@ -397,7 +396,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			} else if (expectedContainsExtracted) {
 				errorBuilder.append(callMessage);
 				errorBuilder.append(" (").append(lemmaName).append(") ");
-				errorBuilder.append(solverConfig.getId());
+				errorBuilder.append(solverConfig.getID());
 				errorBuilder
 						.append(" unsat-core is smaller than the expected one.");
 				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
@@ -700,7 +699,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
-		final String testedSolverConfigId = solverConfig.getId();
+		final String testedSolverConfigId = solverConfig.getID();
 		final SMTLIBVersion testedSmtlibVersion = solverConfig
 				.getSmtlibVersion();
 

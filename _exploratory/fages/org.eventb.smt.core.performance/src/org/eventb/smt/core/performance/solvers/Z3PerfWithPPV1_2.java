@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.Z3;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 
 public class Z3PerfWithPPV1_2 extends SolverPerfWithPP {

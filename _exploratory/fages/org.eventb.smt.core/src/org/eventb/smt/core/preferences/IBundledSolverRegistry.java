@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,20 +7,19 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
+package org.eventb.smt.core.preferences;
 
-package org.eventb.smt.internal.preferences;
+import java.util.List;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 
 /**
- * Class used to initialize default preference values.
+ * @author Systerel (yguyot)
  * 
- * FIXME Is this class still needed?
  */
-public class SMTPreferenceInitializer extends AbstractPreferenceInitializer {
-
-	@Override
-	public void initializeDefaultPreferences() {
-		SMTPreferences.getDefaultSMTPrefs().saveDefaultPrefs();
-	}
+public interface IBundledSolverRegistry {
+	public List<SMTSolverConfiguration> getSolverConfigs()
+			throws InvalidRegistryObjectException,
+			BundledSolverLoadingException;
 }

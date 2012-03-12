@@ -16,7 +16,6 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eventb.smt.internal.preferences.messages"; //$NON-NLS-1$
 
-	public static String BundledSolverLoadingException_DefaultMessage;
 	public static String SMTPreferences_IllegalSMTSolverSettings;
 	public static String SMTPreferences_NoSMTSolverSelected;
 	public static String SMTPreferences_NoSMTSolverSet;

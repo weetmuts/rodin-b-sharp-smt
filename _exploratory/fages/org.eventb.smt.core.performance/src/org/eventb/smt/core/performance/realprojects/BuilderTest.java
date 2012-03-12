@@ -42,12 +42,12 @@ import static org.eventb.smt.core.performance.realprojects.ResourceUtils.simplif
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_CONFIG_INDEX;
-import static org.eventb.smt.internal.preferences.SMTPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.internal.preferences.SMTPreferences.CONFIG_INDEX_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.SOLVER_PREFERENCES_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.internal.preferences.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.CONFIG_INDEX_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_CONFIG_INDEX;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.VERIT_PATH_ID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
-import org.eventb.smt.internal.provers.core.SMTProversCore;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.internal.provers.ui.SmtProversUIPlugin;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
@@ -111,10 +111,10 @@ public abstract class BuilderTest extends TestCase {
 
 	protected static final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
 			.getAutoTacticRegistry().getParameterizerDescriptor(
-					SMTProversCore.PLUGIN_ID + ".SMTPPParam");
+					SMTCore.PLUGIN_ID + ".SMTPPParam");
 	protected static final IParameterizerDescriptor smtVeritParamTacticDescriptor = SequentProver
 			.getAutoTacticRegistry().getParameterizerDescriptor(
-					SMTProversCore.PLUGIN_ID + ".SMTVeriTParam");
+					SMTCore.PLUGIN_ID + ".SMTVeriTParam");
 
 	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
 

@@ -10,11 +10,11 @@
 
 package org.eventb.smt.internal.ast;
 
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * This class handles terms created from Bound Identifier Declarations in

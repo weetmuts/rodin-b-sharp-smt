@@ -11,8 +11,8 @@
 package org.eventb.smt.internal.preferences.ui;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.internal.preferences.SMTPreferences.getDefaultSMTPrefs;
-import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eventb.smt.internal.preferences.SMTPreferences;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -111,7 +111,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 	 */
 	TableViewer configsTableViewer;
 
-	SMTPreferences smtPrefs;
+	AbstractPreferences smtPrefs;
 
 	/**
 	 * Creates a new solver configurations field editor.
@@ -393,7 +393,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 */
 				final int selectionIndex = configsTable.getSelectionIndex();
 				if (smtPrefs.selectedConfigIndexValid()) {
-					final SMTSolverConfiguration configToEdit = smtPrefs
+					final ISolverConfiguration configToEdit = smtPrefs
 							.getSolverConfigs().get(selectionIndex);
 					if (configToEdit != null) {
 						final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(
@@ -475,7 +475,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 
 	@Override
 	protected void doStore() {
-		smtPrefs.savePrefs();
+		smtPrefs.save();
 	}
 
 	@Override

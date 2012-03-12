@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SMTSolver.VERIT;
 
 public class AxiomsTestWithVeriTPPV2_0 extends AxiomsTestWithPPV2_0 {
 

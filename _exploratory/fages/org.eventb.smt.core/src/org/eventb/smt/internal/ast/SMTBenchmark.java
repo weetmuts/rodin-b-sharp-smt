@@ -11,6 +11,7 @@
 
 package org.eventb.smt.internal.ast;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.internal.ast.SMTFactory.SPACE;
@@ -23,7 +24,6 @@ import static org.eventb.smt.internal.ast.commands.SMTSetInfoCommand.setStatusUn
 import static org.eventb.smt.internal.ast.commands.SMTSetOptionCommand.setFalse;
 import static org.eventb.smt.internal.ast.commands.SMTSetOptionCommand.setTrue;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.BENCHMARK;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

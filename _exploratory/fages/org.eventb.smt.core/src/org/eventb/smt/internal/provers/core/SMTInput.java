@@ -10,14 +10,14 @@
 
 package org.eventb.smt.internal.provers.core;
 
-import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
 
 import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
-import org.eventb.smt.internal.preferences.SMTPreferences;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.ISolverConfiguration;
 
 public class SMTInput extends XProverInput {
 	private static final String CONFIG_ID = "config_id";
@@ -25,7 +25,7 @@ public class SMTInput extends XProverInput {
 	private static final String SEQUENT_NAME_ERROR = "Illegal sequent name";
 	private static final String SOLVER_CONFIG_ERROR = "Illegal solver configuration selected in the tactic";
 
-	private final SMTSolverConfiguration solverConfig;
+	private final ISolverConfiguration solverConfig;
 	private final String poName;
 	private final String translationPath;
 	private final String veritPath;
@@ -43,7 +43,7 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super(reader);
 		final String configId = reader.getString(CONFIG_ID);
-		final SMTPreferences smtPrefs = getSMTPrefs();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfiguration(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -62,7 +62,7 @@ public class SMTInput extends XProverInput {
 	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay) {
 		super(restricted, timeOutDelay);
-		final SMTPreferences smtPrefs = getSMTPrefs();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSelectedSolverConfiguration();
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -82,9 +82,9 @@ public class SMTInput extends XProverInput {
 	 *            the solver configuration to set up
 	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay,
-			final SMTSolverConfiguration solverConfig) {
+			final ISolverConfiguration solverConfig) {
 		super(restricted, timeOutDelay);
-		final SMTPreferences smtPrefs = getSMTPrefs();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
 		this.solverConfig = solverConfig;
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -106,7 +106,7 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final String configId) {
 		super(restricted, timeOutDelay);
-		final SMTPreferences smtPrefs = getSMTPrefs();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfiguration(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -142,7 +142,7 @@ public class SMTInput extends XProverInput {
 		}
 	}
 
-	public SMTSolverConfiguration getSolverConfig() {
+	public ISolverConfiguration getSolverConfig() {
 		return solverConfig;
 	}
 
@@ -173,6 +173,6 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super.serialize(writer);
 
-		writer.putString(CONFIG_ID, solverConfig.getId());
+		writer.putString(CONFIG_ID, solverConfig.getID());
 	}
 }

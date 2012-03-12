@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.internal.provers.core.SMTSolver.MATHSAT5;
+import static org.eventb.smt.core.provers.SMTSolver.MATHSAT5;
 
 public class AxiomsTestWithMathSat5PPV1_2 extends AxiomsTestWithPPV1_2 {
 

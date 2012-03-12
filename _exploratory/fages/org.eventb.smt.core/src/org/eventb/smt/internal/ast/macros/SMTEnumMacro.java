@@ -10,9 +10,9 @@
 
 package org.eventb.smt.internal.ast.macros;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.SMTTerm;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * This class is used to create macros that are enumerations. These macros are

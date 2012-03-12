@@ -10,11 +10,11 @@
 
 package org.eventb.smt.internal.ast.macros;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.SMTFormula;
 import org.eventb.smt.internal.ast.SMTQuantifiedFormula;
 import org.eventb.smt.internal.ast.SMTTerm;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * <p>

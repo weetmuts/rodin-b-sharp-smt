@@ -10,14 +10,15 @@
 
 package org.eventb.smt.internal.ast;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.internal.ast.macros.SMTMacroSymbol.MAPSTO;
 import static org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.internal.ast.symbols.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.internal.translation.SMTLIBVersion.V2_0;
 
 import java.util.Set;
 
+import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.internal.ast.macros.SMTMacroTerm;
 import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
@@ -28,7 +29,6 @@ import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.internal.translation.SMTLIBVersion;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
