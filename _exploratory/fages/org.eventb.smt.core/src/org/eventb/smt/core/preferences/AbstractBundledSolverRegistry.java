@@ -10,7 +10,7 @@
 package org.eventb.smt.core.preferences;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.internal.preferences.BundledSolverRegistry;
+import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
 
 /**
  * @author Systerel (yguyot)

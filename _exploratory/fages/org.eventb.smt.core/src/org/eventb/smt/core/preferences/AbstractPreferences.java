@@ -10,22 +10,22 @@
 package org.eventb.smt.core.preferences;
 
 import static java.lang.System.getProperty;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_cannot_execute;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_cannot_read;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_invalid_file;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_missing_path;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferencesError_no_file;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_NoSMTSolverSet;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_TranslationPathNotSet;
-import static org.eventb.smt.internal.preferences.Messages.SMTPreferences_VeriTPathNotSet;
-import static org.eventb.smt.internal.preferences.SMTPreferences.USE_DEFAULT_SCOPE;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_cannot_execute;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_cannot_read;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_invalid_file;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_missing_path;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_no_file;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_IllegalSMTSolverSettings;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_NoSMTSolverSelected;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_NoSMTSolverSet;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_TranslationPathNotSet;
+import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_VeriTPathNotSet;
+import static org.eventb.smt.core.internal.preferences.SMTPreferences.USE_DEFAULT_SCOPE;
 
 import java.io.File;
 import java.util.List;
 
-import org.eventb.smt.internal.preferences.SMTPreferences;
+import org.eventb.smt.core.internal.preferences.SMTPreferences;
 
 /**
  * @author Systerel (yguyot)

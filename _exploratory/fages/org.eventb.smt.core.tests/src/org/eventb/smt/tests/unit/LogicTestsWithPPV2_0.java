@@ -11,8 +11,8 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
+import static org.eventb.smt.core.internal.translation.SMTThroughPP.determineLogic;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.internal.translation.SMTThroughPP.determineLogic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,7 +22,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.pptrans.Translator;
-import org.eventb.smt.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.SMTLogic;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 
@@ -61,23 +61,23 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testBool() {
 		/**
-		 * Reaches org.eventb.smt.internal.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.core.internal.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitTRUE(AtomicExpression)
 		 */
 		testLogic(defaultTe, "TRUE = p", qfufLogic);
 		/**
-		 * Reaches org.eventb.smt.internal.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.core.internal.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOOL(AtomicExpression)
 		 */
 		testLogic(defaultTe, "a↦BOOL↦BOOL ∈ X", qfufLogic);
 		/**
-		 * Reaches org.eventb.smt.internal.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.core.internal.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * visitBOUND_IDENT_DECL(BoundIdentDecl)
 		 */
 		testLogic(defaultTe,
 				"∀ x ⦂ ℤ, X ⦂ ℙ(ℤ), P ⦂ BOOL · (x ∈ X ⇒ P = TRUE)", aufliaLogic);
 		/**
-		 * Reaches org.eventb.smt.internal.translation.SMTThroughPP.BoolTheoryVisitor.
+		 * Reaches org.eventb.smt.core.internal.translation.SMTThroughPP.BoolTheoryVisitor.
 		 * enterIN(RelationalPredicate)
 		 */
 		testLogic(defaultTe, "p ∈ P", qfufLogic);

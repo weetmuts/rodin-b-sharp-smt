@@ -13,7 +13,7 @@ package org.eventb.smt.tests.unit;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eventb.smt.internal.provers.core.tests.unit.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eventb.smt.core.internal.provers.tests.unit.messages"; //$NON-NLS-1$
 
 	public static String SMTLIB_Translation_Failed;
 	static {

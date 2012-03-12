@@ -1,6 +1,6 @@
 package org.eventb.smt.core.preferences;
 
-import static org.eventb.smt.internal.preferences.BundledSolverRegistry.BUNDLED_SOLVERS_ID;
+import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.BUNDLED_SOLVERS_ID;
 
 public class BundledSolverLoadingException extends IllegalArgumentException {
 	public static final BundledSolverLoadingException makeDotInIDException(

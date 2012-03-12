@@ -27,7 +27,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.pptrans.Translator;
-import org.eventb.smt.internal.translation.Gatherer;
+import org.eventb.smt.core.internal.translation.Gatherer;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 

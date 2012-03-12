@@ -12,9 +12,9 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.pptrans.Translator.isInGoal;
+import static org.eventb.smt.core.internal.translation.SMTThroughPP.translateTE;
 import static org.eventb.smt.core.provers.SMTSolver.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.internal.translation.SMTThroughPP.translateTE;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,11 +27,11 @@ import java.util.Set;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
-import org.eventb.smt.internal.ast.SMTBenchmark;
-import org.eventb.smt.internal.ast.SMTFormula;
-import org.eventb.smt.internal.ast.SMTSignature;
-import org.eventb.smt.internal.ast.theories.SMTLogic;
-import org.eventb.smt.internal.translation.SMTThroughPP;
+import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.ast.SMTFormula;
+import org.eventb.smt.core.internal.ast.SMTSignature;
+import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 

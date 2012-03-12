@@ -12,7 +12,7 @@ package org.eventb.smt.core.preferences;
 import java.util.List;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.internal.preferences.SMTSolverConfiguration;
 
 /**
  * @author Systerel (yguyot)

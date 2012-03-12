@@ -13,18 +13,18 @@ package org.eventb.smt.core;
 import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
 import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
-import static org.eventb.smt.internal.preferences.SMTPreferences.getSMTPrefs;
-import static org.eventb.smt.internal.provers.core.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
-import static org.eventb.smt.internal.provers.core.SMTProversCore.DEFAULT_DELAY;
-import static org.eventb.smt.internal.provers.core.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
+import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
 
 import java.util.List;
 
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.internal.provers.ExternalSMTThroughPP;
+import org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT;
+import org.eventb.smt.core.internal.provers.SMTInput;
 import org.eventb.smt.core.preferences.ISolverConfiguration;
-import org.eventb.smt.internal.provers.core.ExternalSMTThroughPP;
-import org.eventb.smt.internal.provers.core.ExternalSMTThroughVeriT;
-import org.eventb.smt.internal.provers.core.SMTInput;
 
 /**
  * @author Systerel (yguyot)

@@ -13,8 +13,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eventb.smt.core.internal.preferences.BundledSolverDesc;
 import org.eventb.smt.core.preferences.BundledSolverLoadingException;
-import org.eventb.smt.internal.preferences.BundledSolverDesc;
 import org.junit.Test;
 
 /**

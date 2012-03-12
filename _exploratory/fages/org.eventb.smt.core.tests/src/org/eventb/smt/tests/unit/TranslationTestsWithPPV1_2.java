@@ -28,12 +28,12 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.pptrans.Translator;
-import org.eventb.smt.internal.ast.SMTBenchmark;
-import org.eventb.smt.internal.ast.SMTFormula;
-import org.eventb.smt.internal.ast.SMTSignatureV1_2;
-import org.eventb.smt.internal.ast.theories.SMTLogic;
-import org.eventb.smt.internal.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.internal.translation.SMTThroughPP;
+import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.ast.SMTFormula;
+import org.eventb.smt.core.internal.ast.SMTSignatureV1_2;
+import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 

@@ -10,17 +10,17 @@
 package org.eventb.smt.core.preferences;
 
 import static java.lang.Boolean.parseBoolean;
+import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.SEPARATOR;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
-import static org.eventb.smt.internal.preferences.SMTSolverConfiguration.SEPARATOR;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.smt.core.internal.preferences.SMTSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.internal.preferences.SMTSolverConfiguration;
 
 /**
  * @author Systerel (yguyot)

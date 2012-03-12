@@ -29,14 +29,14 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
-import org.eventb.smt.internal.ast.SMTBenchmark;
-import org.eventb.smt.internal.ast.SMTFormula;
-import org.eventb.smt.internal.ast.SMTSignature;
-import org.eventb.smt.internal.ast.symbols.SMTFunctionSymbol;
-import org.eventb.smt.internal.ast.symbols.SMTPredicateSymbol;
-import org.eventb.smt.internal.ast.symbols.SMTSortSymbol;
-import org.eventb.smt.internal.translation.TranslationResult;
-import org.eventb.smt.internal.translation.Translator;
+import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.ast.SMTFormula;
+import org.eventb.smt.core.internal.ast.SMTSignature;
+import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
+import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
+import org.eventb.smt.core.internal.translation.TranslationResult;
+import org.eventb.smt.core.internal.translation.Translator;
 
 public abstract class AbstractTests {
 

@@ -18,7 +18,7 @@
             name="%PPtactic.name"
             priority="0"
             skipPostTactic="false"
-            tacticProvider="org.eventb.smt.internal.provers.internal.ui.SMTPP"
+            tacticProvider="org.eventb.smt.ui.internal.provers.SMTPP"
             target="global"
             tooltip="%PPtactic.tooltip">
       </tactic>
@@ -30,7 +30,7 @@
             name="%VeriTtactic.name"
             priority="1"
             skipPostTactic="false"
-            tacticProvider="org.eventb.smt.internal.provers.internal.ui.SMTVeriT"
+            tacticProvider="org.eventb.smt.ui.internal.provers.SMTVeriT"
             target="global"
             tooltip="%VeriTtactic.tooltip">
       </tactic>
@@ -38,13 +38,13 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.eventb.smt.internal.preferences.ui.SMTPreferenceInitializer">
+            class="org.eventb.smt.ui.internal.preferences.SMTPreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.eventb.smt.internal.preferences.ui.SMTPreferencePage"
+            class="org.eventb.smt.ui.internal.preferences.SMTPreferencePage"
             id="org.eventb.smt.provers.ui.page1"
             name="%page.name">
       </page>

@@ -5,12 +5,12 @@
    <extension
          point="org.eventb.core.seqprover.reasoners">
       <reasoner
-            class="org.eventb.smt.internal.provers.core.ExternalSMTThroughPP"
+            class="org.eventb.smt.core.internal.provers.ExternalSMTThroughPP"
             id="externalSMTPP"
             name="%externalSMTPP.name">
       </reasoner>
       <reasoner
-            class="org.eventb.smt.internal.provers.core.ExternalSMTThroughVeriT"
+            class="org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT"
             id="externalSMTVeriT"
             name="%externalSMTVeriT.name">
       </reasoner>
@@ -18,7 +18,7 @@
    <extension
          point="org.eventb.core.seqprover.tacticParameterizers">
       <parameterizer
-            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTPPParameterizer"
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTPPParameterizer"
             id="SMTPPParam"
             name="%SMTPPParam.name">
          <tacticParameter
@@ -41,7 +41,7 @@
          </tacticParameter>
       </parameterizer>
       <parameterizer
-            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTVeriTParameterizer"
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTVeriTParameterizer"
             id="SMTVeriTParam"
             name="%SMTVeriTParam.name">
          <tacticParameter
@@ -67,13 +67,13 @@
    <extension
          point="org.eventb.core.seqprover.autoTactics">
       <autoTactic
-            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTPP"
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTPP"
             description="%SMTPP.description"
             id="SMTPP"
             name="%SMTPP.name">
       </autoTactic>
       <autoTactic
-            class="org.eventb.smt.internal.provers.core.AutoTactics$SMTVeriT"
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTVeriT"
             description="%SMTVeriT.description"
             id="SMTVeriT"
             name="%SMTVeriT.name">
