@@ -11,6 +11,7 @@
 package org.eventb.smt.core.internal.provers;
 
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
 import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
@@ -87,6 +88,10 @@ public class SMTProversCore extends Plugin {
 		SMTThroughPP.SET_THEORY_AXIOMS_ON = parseOption(DEBUG_PP_SET_THEORY_AXIOMS_ON);
 	}
 
+	private void logError(final String message, final Throwable exception) {
+		plugin.getLog().log(smtError(message, exception));
+	}
+
 	/**
 	 * Enables Java assertion checks for this plug-in.
 	 */
@@ -115,12 +120,16 @@ public class SMTProversCore extends Plugin {
 				try {
 					smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
 				} catch (IllegalArgumentException iae) {
-					// TODO log the error
+					logError(
+							"An error occured while trying to add an SMT-solver configuration to the default preferences.",
+							iae);
 				}
 				try {
 					smtPrefs.addSolverConfig(solverConfig);
 				} catch (IllegalArgumentException iae) {
-					// TODO log the error
+					logError(
+							"An error occured while trying to add an SMT-solver configuration to the preferences.",
+							iae);
 				}
 				smtDefaultPrefs.setSelectedConfigIndex(false, 0);
 				smtPrefs.setSelectedConfigIndex(false, 0);
@@ -136,11 +145,13 @@ public class SMTProversCore extends Plugin {
 				smtPrefs.save();
 			}
 		} catch (BundledSolverLoadingException bdle) {
-			// TODO log the error
+			logError(
+					"An error occured while loading the bundled solver registry.",
+					bdle);
 		} catch (InvalidRegistryObjectException iroe) {
-			// TODO log the error
-		} catch (IllegalArgumentException iae) {
-			// TODO log the error
+			logError(
+					"An error occured while loading the bundled solver registry.",
+					iroe);
 		}
 	}
 
