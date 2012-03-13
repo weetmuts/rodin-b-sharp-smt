@@ -10,6 +10,7 @@
 package org.eventb.smt.core.preferences;
 
 import static java.lang.Boolean.parseBoolean;
+import static java.util.regex.Pattern.quote;
 import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.SEPARATOR;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
@@ -26,12 +27,28 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * @author Systerel (yguyot)
  * 
  */
-public class SolverConfigFactory {
-	public static final ISolverConfiguration newConfig() {
+public abstract class AbstractSolverConfiguration {
+	public abstract String getID();
+
+	public abstract String getName();
+
+	public abstract SMTSolver getSolver();
+
+	public abstract String getPath();
+
+	public abstract String getArgs();
+
+	public abstract SMTLIBVersion getSmtlibVersion();
+
+	public abstract boolean isEditable();
+
+	public abstract void toString(final StringBuilder builder);
+
+	public static final AbstractSolverConfiguration newConfig() {
 		return new SMTSolverConfiguration();
 	}
 
-	public static final ISolverConfiguration newConfig(final String id,
+	public static final AbstractSolverConfiguration newConfig(final String id,
 			final String name, final SMTSolver solver, final String path,
 			final String args, final SMTLIBVersion smtlibVersion) {
 		return new SMTSolverConfiguration(id, name, solver, path, args,
@@ -39,27 +56,17 @@ public class SolverConfigFactory {
 	}
 
 	public static final Set<String> getIDs(
-			final List<ISolverConfiguration> solverConfigs) {
+			final List<AbstractSolverConfiguration> solverConfigs) {
 		final Set<String> usedIds = new HashSet<String>();
-		for (final ISolverConfiguration solverConfig : solverConfigs) {
+		for (final AbstractSolverConfiguration solverConfig : solverConfigs) {
 			usedIds.add(solverConfig.getID());
 		}
 		return usedIds;
 	}
 
-	public static final String toString(
-			final List<ISolverConfiguration> solverConfigs) {
-		final StringBuilder sb = new StringBuilder();
-
-		for (final ISolverConfiguration solverConfig : solverConfigs) {
-			solverConfig.toString(sb);
-		}
-
-		return sb.toString();
-	}
-
-	public final static ISolverConfiguration parse(final String solverConfigStr) {
-		final String[] columns = solverConfigStr.split(SEPARATOR);
+	public final static AbstractSolverConfiguration parse(
+			final String solverConfigStr) {
+		final String[] columns = solverConfigStr.split(quote(SEPARATOR));
 		return new SMTSolverConfiguration(columns[0], columns[1],
 				parseSolver(columns[2]), columns[3], columns[4],
 				parseVersion(columns[5]), parseBoolean(columns[6]));

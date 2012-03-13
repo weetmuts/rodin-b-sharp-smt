@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.preferences;
 import static org.eventb.smt.core.provers.SMTSolver.UNKNOWN;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -21,7 +21,7 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * This class describes an SMT solver configuration.
  * 
  */
-public class SMTSolverConfiguration implements ISolverConfiguration {
+public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 	public static final boolean EDITABLE = true;
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
@@ -129,7 +129,7 @@ public class SMTSolverConfiguration implements ISolverConfiguration {
 		builder.append(path).append(SEPARATOR);
 		builder.append(args).append(SEPARATOR);
 		builder.append(smtlibVersion).append(SEPARATOR);
-		builder.append(editable).append(SEPARATOR);
+		builder.append(editable);
 	}
 
 	@Override

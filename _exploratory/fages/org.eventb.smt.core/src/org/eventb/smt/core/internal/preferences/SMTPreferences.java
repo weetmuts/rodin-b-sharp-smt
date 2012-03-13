@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.preferences.SolverConfigFactory.parse;
+import static org.eventb.smt.core.preferences.AbstractSolverConfiguration.parse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
-import org.eventb.smt.core.preferences.SolverConfigFactory;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 
 /**
  * The SMT preferences class
@@ -43,12 +42,12 @@ public class SMTPreferences extends AbstractPreferences {
 			.getNode(SMTCore.PLUGIN_ID);
 
 	private final IEclipsePreferences prefsNode;
-	private List<ISolverConfiguration> solverConfigs;
+	private List<AbstractSolverConfiguration> solverConfigs;
 	private int selectedConfigIndex;
 	private String translationPath;
 	private String veriTPath;
 
-	private List<ISolverConfiguration> defaultSolverConfigs;
+	private List<AbstractSolverConfiguration> defaultSolverConfigs;
 	private String defaultVeriTPath;
 
 	public SMTPreferences(boolean useDefaultScope) {
@@ -57,12 +56,12 @@ public class SMTPreferences extends AbstractPreferences {
 		} else {
 			prefsNode = SMT_PREFS;
 		}
-		defaultSolverConfigs = new ArrayList<ISolverConfiguration>(0);
+		defaultSolverConfigs = new ArrayList<AbstractSolverConfiguration>(0);
 		defaultVeriTPath = DEFAULT_VERIT_PATH;
 	}
 
 	public SMTPreferences(final boolean useDefaultScope,
-			final List<ISolverConfiguration> solverConfigs,
+			final List<AbstractSolverConfiguration> solverConfigs,
 			final int selectedConfigIndex, final String translationPath,
 			final String veriTPath) {
 		this(useDefaultScope);
@@ -81,34 +80,43 @@ public class SMTPreferences extends AbstractPreferences {
 	 * @return The list of solvers and its details parsed from the preferences
 	 *         String
 	 */
-	private static List<ISolverConfiguration> parsePrefs(
+	private static List<AbstractSolverConfiguration> parsePrefs(
 			final String preferences) throws PatternSyntaxException {
-		final List<ISolverConfiguration> solverConfigs = new ArrayList<ISolverConfiguration>();
+		final List<AbstractSolverConfiguration> solverConfigs = new ArrayList<AbstractSolverConfiguration>();
 
 		final String[] rows = preferences.split(SEPARATOR);
 		for (final String row : rows) {
 			if (row.length() > 0) {
-				final ISolverConfiguration solverConfig = parse(row);
+				final AbstractSolverConfiguration solverConfig = parse(row);
 				final String path = solverConfig.getPath();
 				if (path == null) {
 					continue;
 				}
 				/**
 				 * Checks if the configuration was added automatically by the
-				 * plug-in.
+				 * plug-in, then if its path is not correct, it is not added to
+				 * the list.
 				 */
-				if (!isABundlePath(path)) {
-					continue;
-				}
-				/**
-				 * If its path is not correct, it is not added to the list.
-				 */
-				if (isPathValid(path)) {
+				if (!isABundlePath(path) || isPathValid(path)) {
 					solverConfigs.add(solverConfig);
 				}
 			}
 		}
 		return solverConfigs;
+	}
+
+	public static final String toString(
+			final List<AbstractSolverConfiguration> solverConfigs) {
+		final StringBuilder sb = new StringBuilder();
+
+		String separator = "";
+		for (final AbstractSolverConfiguration solverConfig : solverConfigs) {
+			sb.append(separator);
+			solverConfig.toString(sb);
+			separator = SEPARATOR;
+		}
+
+		return sb.toString();
 	}
 
 	public void load() {
@@ -123,20 +131,19 @@ public class SMTPreferences extends AbstractPreferences {
 
 	@Override
 	public void save() {
-		prefsNode.put(SOLVER_PREFERENCES_ID,
-				SolverConfigFactory.toString(solverConfigs));
+		prefsNode.put(SOLVER_PREFERENCES_ID, toString(solverConfigs));
 		prefsNode.putInt(CONFIG_INDEX_ID, selectedConfigIndex);
 		prefsNode.put(TRANSLATION_PATH_ID, translationPath);
 		prefsNode.put(VERIT_PATH_ID, veriTPath);
 	}
 
 	@Override
-	public List<ISolverConfiguration> getSolverConfigs() {
+	public List<AbstractSolverConfiguration> getSolverConfigs() {
 		return solverConfigs;
 	}
 
 	@Override
-	public ISolverConfiguration getSelectedSolverConfiguration() {
+	public AbstractSolverConfiguration getSelectedSolverConfiguration() {
 		try {
 			return solverConfigs.get(selectedConfigIndex);
 		} catch (final IndexOutOfBoundsException ioobe) {
@@ -149,8 +156,9 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public ISolverConfiguration getSolverConfiguration(final String configId) {
-		for (final ISolverConfiguration solverConfig : solverConfigs) {
+	public AbstractSolverConfiguration getSolverConfiguration(
+			final String configId) {
+		for (final AbstractSolverConfiguration solverConfig : solverConfigs) {
 			if (solverConfig.getID().equals(configId)) {
 				return solverConfig;
 			}
@@ -190,13 +198,14 @@ public class SMTPreferences extends AbstractPreferences {
 
 	@Override
 	public boolean validId(final String id) {
-		final Set<String> usedIds = SolverConfigFactory.getIDs(solverConfigs);
+		final Set<String> usedIds = AbstractSolverConfiguration
+				.getIDs(solverConfigs);
 		return !id.isEmpty() && !usedIds.contains(id);
 	}
 
 	private static void addSolverConfig(
-			List<ISolverConfiguration> solverConfigs,
-			final ISolverConfiguration solverConfig)
+			List<AbstractSolverConfiguration> solverConfigs,
+			final AbstractSolverConfiguration solverConfig)
 			throws IllegalArgumentException {
 		if (isPathValid(solverConfig.getPath())) {
 			if (!solverConfigs.contains(solverConfig)) {
@@ -209,13 +218,14 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public void addSolverConfig(final ISolverConfiguration solverConfig)
+	public void addSolverConfig(final AbstractSolverConfiguration solverConfig)
 			throws IllegalArgumentException {
 		addSolverConfig(solverConfigs, solverConfig);
 	}
 
 	@Override
-	public void addSolverConfigToDefault(final ISolverConfiguration solverConfig)
+	public void addSolverConfigToDefault(
+			final AbstractSolverConfiguration solverConfig)
 			throws IllegalArgumentException {
 		addSolverConfig(defaultSolverConfigs, solverConfig);
 	}
@@ -309,8 +319,8 @@ public class SMTPreferences extends AbstractPreferences {
 	private static boolean isABundlePath(final String path) {
 		final IPath bundlesPath = new Path(
 				"configuration/org.eclipse.osgi/bundles");
-		final IPath devBundlesPath = new Path("org.eventb.smt.verit");
+		final String devBundlesFix = "org.eventb.smt.verit";
 		return path.contains(bundlesPath.toOSString())
-				|| path.contains(devBundlesPath.toOSString());
+				|| path.contains(devBundlesFix);
 	}
 }

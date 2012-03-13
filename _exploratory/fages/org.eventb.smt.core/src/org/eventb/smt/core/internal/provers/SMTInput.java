@@ -17,7 +17,7 @@ import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 
 public class SMTInput extends XProverInput {
 	private static final String CONFIG_ID = "config_id";
@@ -25,7 +25,7 @@ public class SMTInput extends XProverInput {
 	private static final String SEQUENT_NAME_ERROR = "Illegal sequent name";
 	private static final String SOLVER_CONFIG_ERROR = "Illegal solver configuration selected in the tactic";
 
-	private final ISolverConfiguration solverConfig;
+	private final AbstractSolverConfiguration solverConfig;
 	private final String poName;
 	private final String translationPath;
 	private final String veritPath;
@@ -82,7 +82,7 @@ public class SMTInput extends XProverInput {
 	 *            the solver configuration to set up
 	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay,
-			final ISolverConfiguration solverConfig) {
+			final AbstractSolverConfiguration solverConfig) {
 		super(restricted, timeOutDelay);
 		final AbstractPreferences smtPrefs = getSMTPrefs();
 		this.solverConfig = solverConfig;
@@ -142,7 +142,7 @@ public class SMTInput extends XProverInput {
 		}
 	}
 
-	public ISolverConfiguration getSolverConfig() {
+	public AbstractSolverConfiguration getSolverConfig() {
 		return solverConfig;
 	}
 

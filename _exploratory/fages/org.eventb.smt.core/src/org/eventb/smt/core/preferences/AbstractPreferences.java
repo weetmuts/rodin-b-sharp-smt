@@ -97,21 +97,22 @@ public abstract class AbstractPreferences {
 
 	public abstract boolean selectedConfigIndexValid();
 
-	public abstract List<ISolverConfiguration> getSolverConfigs();
+	public abstract List<AbstractSolverConfiguration> getSolverConfigs();
 
-	public abstract ISolverConfiguration getSolverConfiguration(
+	public abstract AbstractSolverConfiguration getSolverConfiguration(
 			final String configId);
 
-	public abstract void addSolverConfig(final ISolverConfiguration solverConfig);
+	public abstract void addSolverConfig(
+			final AbstractSolverConfiguration solverConfig);
 
 	public abstract void addSolverConfigToDefault(
-			final ISolverConfiguration solverConfig);
+			final AbstractSolverConfiguration solverConfig);
 
 	public abstract void removeSolverConfig(final int indexToRemove);
 
 	public abstract int getSelectedConfigIndex();
 
-	public abstract ISolverConfiguration getSelectedSolverConfiguration();
+	public abstract AbstractSolverConfiguration getSelectedSolverConfiguration();
 
 	public abstract String getTranslationPath();
 

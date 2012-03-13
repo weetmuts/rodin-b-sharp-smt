@@ -41,7 +41,7 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -93,7 +93,8 @@ public class SMTVeriTCall extends SMTProverCall {
 	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISolverConfiguration solverConfig,
+			final IProofMonitor pm,
+			final AbstractSolverConfiguration solverConfig,
 			final String poName, final String translationPath,
 			final String veritPath) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -102,8 +103,9 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfiguration solverConfig, final String poName,
-			final String translationPath, final String veritPath) {
+			final AbstractSolverConfiguration solverConfig,
+			final String poName, final String translationPath,
+			final String veritPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
 

@@ -48,7 +48,7 @@ import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -99,7 +99,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	ISolverConfiguration solverConfig;
+	AbstractSolverConfiguration solverConfig;
 
 	String translationPath = null;
 
@@ -128,7 +128,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            name of the lemma to prove
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISolverConfiguration solverConfig,
+			final IProofMonitor pm,
+			final AbstractSolverConfiguration solverConfig,
 			final String poName, final String translationPath,
 			final Translator translator) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -137,8 +138,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfiguration solverConfig, final String poName,
-			final String translationPath, final Translator translator) {
+			final AbstractSolverConfiguration solverConfig,
+			final String poName, final String translationPath,
+			final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
