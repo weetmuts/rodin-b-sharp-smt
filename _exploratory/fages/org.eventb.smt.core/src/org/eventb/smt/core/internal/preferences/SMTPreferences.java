@@ -101,8 +101,7 @@ public class SMTPreferences extends AbstractPreferences {
 					continue;
 				}
 				/**
-				 * Particularly checks if its path is correct. If not, it is not
-				 * added to the list.
+				 * If its path is not correct, it is not added to the list.
 				 */
 				if (isPathValid(path)) {
 					solverConfigs.add(solverConfig);

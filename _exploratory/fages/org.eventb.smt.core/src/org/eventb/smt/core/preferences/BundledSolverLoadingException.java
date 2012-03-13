@@ -9,10 +9,10 @@ public class BundledSolverLoadingException extends IllegalArgumentException {
 				+ " (must not contain a dot).");
 	}
 
-	public static final BundledSolverLoadingException makeWhitespaceOrColonInIDException(
+	public static final BundledSolverLoadingException makeInvalidJavaIDException(
 			final String id) {
 		return new BundledSolverLoadingException("Invalid id: " + id
-				+ " (must not contain a whitespace or a colon).");
+				+ " (must be a valid Java identifier).");
 	}
 
 	public static final BundledSolverLoadingException makeNullIDException() {

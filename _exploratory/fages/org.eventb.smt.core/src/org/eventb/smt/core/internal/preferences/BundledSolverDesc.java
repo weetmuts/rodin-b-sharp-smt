@@ -9,15 +9,16 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static java.io.File.separatorChar;
+import static java.lang.Character.isJavaIdentifierPart;
+import static java.lang.Character.isJavaIdentifierStart;
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.EDITABLE;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeDotInIDException;
+import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeInvalidJavaIDException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNoSuchBundleException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullBinaryNameException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullIDException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullPathException;
-import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeWhitespaceOrColonInIDException;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
@@ -93,27 +94,27 @@ public class BundledSolverDesc {
 	private static String makeSolverPath(final String bundleName,
 			final String binaryName) throws BundledSolverLoadingException {
 		checkBinaryName(binaryName);
-		final StringBuilder localPathBuilder = new StringBuilder();
-		localPathBuilder.append("$os$").append(separatorChar);
-		localPathBuilder.append(binaryName);
-		return extractFile(bundleName, localPathBuilder.toString());
+		final IPath localPath = new Path("$os$/" + binaryName);
+		return extractFile(bundleName, localPath.toOSString());
 	}
 
 	/**
-	 * Checks if a string contains a whitespace character or a colon
+	 * Checks if a string is a legal Java identifier
 	 * 
-	 * @param str
-	 *            String to check for.
-	 * @return <code>true</code> iff the string contains a whitespace character
-	 *         or a colon.
+	 * @param s
+	 *            the string to check
+	 * @return true if the string is a legal Java identifier
 	 */
-	private static boolean containsWhitespaceOrColon(String str) {
-		for (int i = 0; i < str.length(); i++) {
-			final char c = str.charAt(i);
-			if (c == ':' || Character.isWhitespace(c))
-				return true;
+	private static boolean isJavaIdentifier(String s) {
+		if (s.length() == 0 || !isJavaIdentifierStart(s.charAt(0))) {
+			return false;
 		}
-		return false;
+		for (int i = 1; i < s.length(); i++) {
+			if (!isJavaIdentifierPart(s.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static void checkId(String id) throws BundledSolverLoadingException {
@@ -123,8 +124,8 @@ public class BundledSolverDesc {
 		if (id.indexOf('.') != -1) {
 			throw makeDotInIDException(id);
 		}
-		if (containsWhitespaceOrColon(id)) {
-			throw makeWhitespaceOrColonInIDException(id);
+		if (!isJavaIdentifier(id)) {
+			throw makeInvalidJavaIDException(id);
 		}
 	}
 

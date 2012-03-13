@@ -606,17 +606,15 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	@Override
 	public String displayMessage() {
-		final StringBuilder message = new StringBuilder();
 		/**
 		 * Currently, when no benchmark was produced, it means that PP found a
 		 * trivial predicate in the sequent.
 		 */
 		if (benchmarkIsNull()) {
-			message.append("PP (trivial)");
+			return "PP (trivial)";
 		} else {
-			message.append("SMT-").append(solverConfig.getID());
+			return "SMT-" + solverConfig.getID();
 		}
-		return message.toString();
 	}
 
 	/**
