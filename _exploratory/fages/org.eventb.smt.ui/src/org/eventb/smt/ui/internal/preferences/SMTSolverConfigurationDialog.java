@@ -18,7 +18,7 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.core.preferences.AbstractBundledSolverRegistry.getBundledSolverRegistry;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
+import static org.eventb.smt.core.preferences.AbstractSolverConfiguration.newConfig;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
@@ -38,9 +38,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.preferences.BundledSolverLoadingException;
 import org.eventb.smt.core.preferences.IBundledSolverRegistry;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -63,11 +63,11 @@ public class SMTSolverConfigurationDialog extends Dialog {
 	int returnCode = 0;
 
 	final AbstractPreferences smtPrefs;
-	ISolverConfiguration solverConfig;
+	AbstractSolverConfiguration solverConfig;
 
 	public SMTSolverConfigurationDialog(final Shell parentShell,
 			final AbstractPreferences smtPrefs,
-			final ISolverConfiguration solverConfig) {
+			final AbstractSolverConfiguration solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solverConfig != null) {
@@ -228,7 +228,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 						final IBundledSolverRegistry registry = getBundledSolverRegistry();
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
-						for (final ISolverConfiguration bundledConfig : registry
+						for (final AbstractSolverConfiguration bundledConfig : registry
 								.getSolverConfigs()) {
 							errBuilder2.append("'");
 							errBuilder2.append(bundledConfig.getID());
@@ -280,7 +280,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		}
 	}
 
-	public ISolverConfiguration getSolverConfig() {
+	public AbstractSolverConfiguration getSolverConfig() {
 		return solverConfig;
 	}
 

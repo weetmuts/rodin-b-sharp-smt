@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -393,7 +393,7 @@ class SMTSolverConfigurationsFieldEditor extends FieldEditor {
 				 */
 				final int selectionIndex = configsTable.getSelectionIndex();
 				if (smtPrefs.selectedConfigIndexValid()) {
-					final ISolverConfiguration configToEdit = smtPrefs
+					final AbstractSolverConfiguration configToEdit = smtPrefs
 							.getSolverConfigs().get(selectionIndex);
 					if (configToEdit != null) {
 						final SMTSolverConfigurationDialog solverConfigDialog = new SMTSolverConfigurationDialog(

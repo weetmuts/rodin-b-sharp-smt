@@ -11,7 +11,7 @@
 package org.eventb.smt.ui.tests;
 
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
+import static org.eventb.smt.core.preferences.AbstractSolverConfiguration.newConfig;
 import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
 import static org.eventb.smt.core.provers.SMTSolver.CVC3;
 import static org.eventb.smt.core.provers.SMTSolver.VERIT;
@@ -19,7 +19,7 @@ import static org.eventb.smt.core.provers.SMTSolver.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Assert;
@@ -101,13 +101,13 @@ public class UiPreferencesTests {
 		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final ISolverConfiguration expectedSolverConfig = newConfig(
+		final AbstractSolverConfiguration expectedSolverConfig = newConfig(
 				expectedName, expectedId, expectedSolver, expectedSolverPath,
 				args, smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
 		final AbstractPreferences smtPrefs = AbstractPreferences.getSMTPrefs();
-		final ISolverConfiguration solverConfig = smtPrefs
+		final AbstractSolverConfiguration solverConfig = smtPrefs
 				.getSelectedSolverConfiguration();
 		final String translationPath = smtPrefs.getTranslationPath();
 		final String veritPath = smtPrefs.getVeriTPath();

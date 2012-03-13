@@ -24,7 +24,7 @@ import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.internal.provers.ExternalSMTThroughPP;
 import org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT;
 import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 
 /**
  * @author Systerel (yguyot)
@@ -51,7 +51,7 @@ public class SMTCore {
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfiguration> solverConfigs = getSMTPrefs()
+			final List<AbstractSolverConfiguration> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
@@ -127,7 +127,7 @@ public class SMTCore {
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfiguration> solverConfigs = getSMTPrefs()
+			final List<AbstractSolverConfiguration> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();

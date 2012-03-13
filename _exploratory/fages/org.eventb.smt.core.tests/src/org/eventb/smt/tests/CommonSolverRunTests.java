@@ -41,8 +41,8 @@ import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
+import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.preferences.BundledSolverLoadingException;
-import org.eventb.smt.core.preferences.ISolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.SMTTranslationApproach;
@@ -76,7 +76,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected static boolean TRIVIAL = true;
 
 	protected Set<org.eventb.smt.utils.Theory> theories;
-	protected ISolverConfiguration solverConfig;
+	protected AbstractSolverConfiguration solverConfig;
 	protected String poName;
 	protected String translationPath;
 	protected String veritPath;

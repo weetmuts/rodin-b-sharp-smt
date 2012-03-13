@@ -25,7 +25,6 @@ import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SolverPerfWithVeriT extends CommonSolverRunTests {
@@ -914,8 +913,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("partial_injection_verit", hyps, "A \u2914 B = A \u2914 B",
-				te, VALID);
+		doTest("partial_injection_verit", hyps, "A \u2914 B = A \u2914 B", te,
+				VALID);
 	}
 
 	@Test
@@ -928,8 +927,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("total_injection_verit", hyps, "A \u21a3 B = A \u21a3 B",
-				te, VALID);
+		doTest("total_injection_verit", hyps, "A \u21a3 B = A \u21a3 B", te,
+				VALID);
 	}
 
 	@Test
@@ -942,8 +941,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("surjective_relation_verit", hyps,
-				"A \ue101 B = A \ue101 B", te, VALID);
+		doTest("surjective_relation_verit", hyps, "A \ue101 B = A \ue101 B",
+				te, VALID);
 	}
 
 	@Test
@@ -956,8 +955,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("partial_surjection_verit", hyps, "A \u2900 B = A \u2900 B",
-				te, VALID);
+		doTest("partial_surjection_verit", hyps, "A \u2900 B = A \u2900 B", te,
+				VALID);
 	}
 
 	@Test
@@ -970,8 +969,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("total_surjection_verit", hyps, "A \u21a0 B = A \u21a0 B",
-				te, VALID);
+		doTest("total_surjection_verit", hyps, "A \u21a0 B = A \u21a0 B", te,
+				VALID);
 	}
 
 	@Test
@@ -984,8 +983,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList();
 
-		doTest("total_bijection_verit", hyps, "A \u2916 B = A \u2916 B",
-				te, VALID);
+		doTest("total_bijection_verit", hyps, "A \u2916 B = A \u2916 B", te,
+				VALID);
 	}
 
 	@Test
@@ -1075,8 +1074,8 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		final List<String> hyps = Arrays.asList("A={1}");
 
-		doTest("partial_function_verit", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)",
-				te, VALID);
+		doTest("partial_function_verit", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)", te,
+				VALID);
 	}
 
 	@Test
