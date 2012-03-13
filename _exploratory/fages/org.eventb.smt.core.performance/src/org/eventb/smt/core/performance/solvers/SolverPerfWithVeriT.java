@@ -25,6 +25,7 @@ import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SolverPerfWithVeriT extends CommonSolverRunTests {
@@ -727,4 +728,380 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 		doTest("test_bool_set_2", hyps, "b = TRUE", arith_te, VALID);
 	}
+
+	@Test
+	public void testUnionForAltErgoCall() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "Sb", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("integer_set", hyps, "(X ∪ Sb) = (X ∪ Sb)", te, VALID);
+	}
+
+	@Test
+	public void testSetMembership() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ");
+
+		final List<String> hyps = Arrays.asList("X = {1}", "a = 1");
+
+		doTest("membership", hyps, "a ∈ X", te, VALID);
+	}
+
+	@Test
+	public void testRelationAltErgocall() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "a ∈ ℤ↔ℤ", te, VALID);
+	}
+
+	@Test
+	public void testCardinality() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"X", "ℙ(ℤ)", "a", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "card({1}) = 1", te, VALID);
+	}
+
+	@Test
+	public void testImplies() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "0 = 0 ⇒ 0 = 0", te, VALID);
+	}
+
+	@Test
+	public void testIntegerRange() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "1 ∈ 1‥2 ", te, VALID);
+	}
+
+	@Test
+	public void testSubseteq() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("subseteq", hyps, "{1} ⊆ ℕ", te, VALID);
+	}
+
+	@Test
+	public void testSubset() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("subsetV", hyps, "{1} ⊂ {1,2}", te, VALID);
+	}
+
+	@Test
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testSetMinus() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A = B");
+
+		doTest("relation", hyps, "A ∖ B = ∅", te, VALID);
+	}
+
+	@Test
+	public void testBools() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("relation", hyps, "TRUE ∈ BOOL", te, VALID);
+	}
+
+	@Test
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPair() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("pair", hyps, "1↦1 ∈ {1↦1,1↦2}", te, VALID);
+	}
+
+	@Test
+	public void testIsMin() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismin_", hyps, "1 = min({1,2})", te, VALID);
+	}
+
+	@Test
+	public void testIsMax() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("ismax", hyps, "2 = max({1,2})", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Sort PairInt'_19 and Int mismatch")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalRelation() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_relation_verit", hyps, "A \ue100 B = A \ue100 B", te,
+				VALID);
+	}
+
+	@Test
+	// "SMT 1.2: VeriT: Time exceeded.")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalFunction() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("total_function_verit", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)", te,
+				VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Result: unknown")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testInverse() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ ↔ ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("inverse_verit", hyps, "A = (A)∼", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Pre-processing: Segmentation fault")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialInjection() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_injection_verit", hyps, "A \u2914 B = A \u2914 B",
+				te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Pre-processing: Segmentation fault")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalInjection() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_injection_verit", hyps, "A \u21a3 B = A \u21a3 B",
+				te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Sort Pair'_19Int and Int mismatch.")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testSurjectiveRelation() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("surjective_relation_verit", hyps,
+				"A \ue101 B = A \ue101 B", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Pre-processing: Segmentation fault")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialSurjection() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("partial_surjection_verit", hyps, "A \u2900 B = A \u2900 B",
+				te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Pre-processing: Segmentation fault")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalSurjection() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjection_verit", hyps, "A \u21a0 B = A \u21a0 B",
+				te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: Pre-processing: Segmentation fault")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalBijection() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_bijection_verit", hyps, "A \u2916 B = A \u2916 B",
+				te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Sort Pair'_19Int and Int mismatch.")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testTotalSurjectiveRelation() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("total_surjective_relation_verit", hyps,
+				"A \ue102 B = A \ue102 B", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Time exceeded")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPredecessor() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("predecessor_verit", hyps, "{2 ↦ 1} ⊂ pred", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Time exceeded")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testSucessor() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("sucessor_verit", hyps, "{1 ↦ 2} ⊂ succ", te, VALID);
+	}
+
+	@Test
+	// TODO Check translation of finite
+	// "SMT 1.2: Expected true, but it was false.")
+	// "SMT 2.0: Expected true, but it was false.")
+	public void testFinite() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("finite_verit", hyps, "finite({1})", te, VALID);
+	}
+
+	@Test
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testRange() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("range_verit", hyps, "2 ∈ ran({1↦2})", te, VALID);
+	}
+
+	@Test
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testDom() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+		);
+
+		final List<String> hyps = Arrays.asList();
+
+		doTest("dom_verit", hyps, "2 ∈ dom({2↦1})", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Time exceeded")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testPartialFunction() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℙ(ℤ)", "B", "ℙ(ℤ)");
+
+		final List<String> hyps = Arrays.asList("A={1}");
+
+		doTest("partial_function_verit", hyps, "¬({2 ↦ 2} ∈ A \u2192 A)",
+				te, VALID);
+	}
+
+	@Test
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testRelationOverride() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}", "B={1↦1}");
+
+		doTest("relation_override_verit", hyps, "A \ue103 A = B", te, VALID);
+	}
+
+	@Test
+	// "SMT 1.2: error : Assert DAG_sort_binding(DAG_sort(DAG)) failed (tstp-print.c:54)")
+	// SMT 2.0:
+	// "Syntax error in declaration: (declare-fun (par (s t) (pair s t (Pair s t))))")
+	public void testID() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"A", "ℤ↔ℤ", "B", "ℤ↔ℤ");
+
+		final List<String> hyps = Arrays.asList("A={1↦1}");
+
+		doTest("id_verit", hyps, "A ⊂ id", te, VALID);
+	}
+
 }
