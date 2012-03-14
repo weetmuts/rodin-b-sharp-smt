@@ -207,11 +207,12 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				final String id = idText.getText();
+				final String name = nameText.getText();
 				final String path = solverPathText.getText();
 				if (id.equals(solverConfig.getID()) || smtPrefs.validId(id)) {
 					if (isValidPath(path, SHOW_ERRORS)) {
 						// TODO set the right name value
-						solverConfig = newConfig(id, id,
+						solverConfig = newConfig(id, name,
 								parseSolver(solverCombo.getText()), path,
 								argsText.getText(),
 								parseVersion(smtlibCombo.getText()));

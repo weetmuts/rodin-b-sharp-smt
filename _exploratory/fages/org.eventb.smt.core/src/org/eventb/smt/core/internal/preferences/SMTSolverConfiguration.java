@@ -13,6 +13,11 @@ package org.eventb.smt.core.internal.preferences;
 import static org.eventb.smt.core.provers.SMTSolver.UNKNOWN;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
+import org.eventb.smt.core.internal.log.SMTStatus;
 import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 import org.eventb.smt.core.provers.SMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -23,15 +28,16 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  */
 public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 	public static final boolean EDITABLE = true;
+	public static final int NB_FIELDS = 7;
+
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
+	private static final String UTF8 = "UTF-8"; //$NON-NLS-1$
 
-	private static final String ESCAPE_CHAR = "`"; //$NON-NLS-1$
-
-	private static final String DEFAULT_CONFIG_ID = "";
-	private static final String DEFAULT_CONFIG_NAME = "";
+	private static final String DEFAULT_CONFIG_ID = ""; //$NON-NLS-1$
+	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
 	private static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
-	private static final String DEFAULT_SOLVER_PATH = "";
-	private static final String DEFAULT_SOLVER_ARGS = "";
+	private static final String DEFAULT_SOLVER_PATH = ""; //$NON-NLS-1$
+	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
 
 	final private String id;
@@ -121,13 +127,33 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 		return editable;
 	}
 
+	private static String encode(final String s) {
+		try {
+			return URLEncoder.encode(s, UTF8);
+		} catch (UnsupportedEncodingException e) {
+			SMTStatus.smtError(
+					"Error while encoding the solver configuration.", e);
+			return "";
+		}
+	}
+
+	public static String decode(final String s) {
+		try {
+			return URLDecoder.decode(s, UTF8);
+		} catch (UnsupportedEncodingException e) {
+			SMTStatus.smtError(
+					"Error while decoding the solver configuration.", e);
+			return "";
+		}
+	}
+
 	@Override
 	public void toString(final StringBuilder builder) {
-		builder.append(id).append(SEPARATOR);
-		builder.append(name).append(SEPARATOR);
+		builder.append(encode(id)).append(SEPARATOR);
+		builder.append(encode(name)).append(SEPARATOR);
 		builder.append(solver).append(SEPARATOR);
-		builder.append(path).append(SEPARATOR);
-		builder.append(args).append(SEPARATOR);
+		builder.append(encode(path)).append(SEPARATOR);
+		builder.append(encode(args)).append(SEPARATOR);
 		builder.append(smtlibVersion).append(SEPARATOR);
 		builder.append(editable);
 	}

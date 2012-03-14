@@ -12,6 +12,7 @@ package org.eventb.smt.core.preferences;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.quote;
 import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.SEPARATOR;
+import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.decode;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
@@ -64,11 +65,19 @@ public abstract class AbstractSolverConfiguration {
 		return usedIds;
 	}
 
-	public final static AbstractSolverConfiguration parse(
-			final String solverConfigStr) {
-		final String[] columns = solverConfigStr.split(quote(SEPARATOR));
-		return new SMTSolverConfiguration(columns[0], columns[1],
-				parseSolver(columns[2]), columns[3], columns[4],
+	/**
+	 * Parses a preference string to build a solver configuration
+	 * 
+	 * @param configStr
+	 *            the string to parse
+	 * @return the solver configuration represented by the string
+	 */
+
+	public final static AbstractSolverConfiguration parse(final String configStr) {
+		final String[] columns = configStr.split(quote(SEPARATOR));
+		return new SMTSolverConfiguration(decode(columns[0]),
+				decode(columns[1]), parseSolver(columns[2]),
+				decode(columns[3]), decode(columns[4]),
 				parseVersion(columns[5]), parseBoolean(columns[6]));
 	}
 }
