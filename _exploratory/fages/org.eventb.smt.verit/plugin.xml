@@ -5,7 +5,7 @@
          point="org.eventb.smt.core.bundledsolvers">
       <solver
             args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3"
-            binary="verit"
+            localpath="$os$/verit"
             id="bundled_verit"
             kind="verit"
             name="bundled_verit"

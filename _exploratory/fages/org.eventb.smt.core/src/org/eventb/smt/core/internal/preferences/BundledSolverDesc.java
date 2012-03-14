@@ -16,7 +16,6 @@ import static org.eventb.smt.core.internal.preferences.SMTSolverConfiguration.ED
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeDotInIDException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeInvalidJavaIDException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNoSuchBundleException;
-import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullBinaryNameException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullIDException;
 import static org.eventb.smt.core.preferences.BundledSolverLoadingException.makeNullPathException;
 import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
@@ -65,7 +64,7 @@ public class BundledSolverDesc {
 		final String nameSpace = configurationElement.getNamespaceIdentifier();
 		id = nameSpace + "." + localId;
 		final String path = makeSolverPath(nameSpace,
-				configurationElement.getAttribute("binary"));
+				configurationElement.getAttribute("localpath"));
 		checkPath(path);
 		instance = new SMTSolverConfiguration(id,
 				configurationElement.getAttribute("name"),
@@ -75,16 +74,6 @@ public class BundledSolverDesc {
 				!EDITABLE);
 	}
 
-	private static String extractFile(final String bundleName,
-			String localPathString) throws BundledSolverLoadingException {
-		final Bundle bundle = getBundle(bundleName);
-		checkBundle(bundleName, bundle);
-		final IPath localPath = new Path(localPathString);
-		final IPath path = BundledFileExtractor.extractFile(bundle, localPath,
-				true);
-		return path != null ? path.toOSString() : null;
-	}
-
 	/**
 	 * 
 	 * @param bundleName
@@ -92,10 +81,13 @@ public class BundledSolverDesc {
 	 * @throws BundledSolverLoadingException
 	 */
 	private static String makeSolverPath(final String bundleName,
-			final String binaryName) throws BundledSolverLoadingException {
-		checkBinaryName(binaryName);
-		final IPath localPath = new Path("$os$/" + binaryName);
-		return extractFile(bundleName, localPath.toOSString());
+			final String localPathStr) throws BundledSolverLoadingException {
+		final Bundle bundle = getBundle(bundleName);
+		checkBundle(bundleName, bundle);
+		checkPath(localPathStr);
+		final IPath path = BundledFileExtractor.extractFile(bundle, new Path(
+				localPathStr), true);
+		return path != null ? path.toOSString() : null;
 	}
 
 	/**
@@ -127,16 +119,6 @@ public class BundledSolverDesc {
 		if (!isJavaIdentifier(id)) {
 			throw makeInvalidJavaIDException(id);
 		}
-	}
-
-	/**
-	 * @param binaryName
-	 * @throws BundledSolverLoadingException
-	 */
-	private static void checkBinaryName(final String binaryName)
-			throws BundledSolverLoadingException {
-		if (binaryName == null)
-			throw makeNullBinaryNameException();
 	}
 
 	/**

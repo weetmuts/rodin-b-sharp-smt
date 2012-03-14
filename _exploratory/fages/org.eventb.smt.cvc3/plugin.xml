@@ -5,9 +5,9 @@
          point="org.eventb.smt.core.bundledsolvers">
       <solver
             args="-lang smt2 -timeout 3"
-            binary="cvc3"
             id="bundled_cvc3"
             kind="cvc3"
+            localpath="$os$/cvc3"
             name="bundled_cvc3"
             smt-lib="V2.0">
       </solver>

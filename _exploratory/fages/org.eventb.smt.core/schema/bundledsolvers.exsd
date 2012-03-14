@@ -77,10 +77,10 @@ org.myplace.myplugin.solverid where solverid is the identifier of this bundled s
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="binary" type="string">
+         <attribute name="localpath" type="string">
             <annotation>
                <documentation>
-                  The name of the binary file for this bundled solver. Its local parent directory must be : $os$.
+                  The local path to the binary file for this bundled solver. Example: &quot;$os$/binary&quot;.
                </documentation>
             </annotation>
          </attribute>

@@ -205,8 +205,7 @@ public class BundledSolverDescTests {
 	}
 
 	@Test(expected = BundledSolverLoadingException.class)
-	public void testNullBinaryException()
-			throws InvalidRegistryObjectException,
+	public void testNullPathException() throws InvalidRegistryObjectException,
 			BundledSolverLoadingException {
 		makeBundledSolverDesc("bundledsolver", "", "", null, "", "");
 
@@ -222,10 +221,5 @@ public class BundledSolverDescTests {
 		bundledSolverDesc.load();
 	}
 
-	@Test
-	public void testUnknownBinaryException() {
-		makeBundledSolverDesc("bundledsolver", "", "", "bundledsolvers", "", "");
-
-		bundledSolverDesc.load();
-	}
+	// TODO other tests...
 }
