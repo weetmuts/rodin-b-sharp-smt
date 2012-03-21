@@ -4,13 +4,21 @@
    <extension
          point="org.eventb.smt.core.bundledsolvers">
       <solver
-            args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3"
             localpath="$os$/verit"
             id="bundled_verit"
             kind="verit"
-            name="bundled_verit"
-            smt-lib="V2.0">
+            name="bundled veriT">
       </solver>
+   </extension>
+   <extension
+         point="org.eventb.smt.core.solverconfigs">
+      <config
+            args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3"
+            id="verit_smt2"
+            name="veriT SMT2"
+            smt-lib="V2.0"
+            solverid="org.eventb.smt.verit.bundled_verit">
+      </config>
    </extension>
 
 </plugin>

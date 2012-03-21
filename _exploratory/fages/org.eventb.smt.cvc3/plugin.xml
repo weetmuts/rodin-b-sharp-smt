@@ -4,12 +4,20 @@
    <extension
          point="org.eventb.smt.core.bundledsolvers">
       <solver
-            args="-lang smt2 -timeout 3"
             id="bundled_cvc3"
             kind="cvc3"
             localpath="$os$/cvc3"
-            name="bundled_cvc3"
-            smt-lib="V2.0">
+            name="bundled_cvc3">
       </solver>
+   </extension>
+   <extension
+         point="org.eventb.smt.core.solverconfigs">
+      <config
+            args="-lang smt2 -timeout 3"
+            id="cvc3_smt2"
+            name="CVC3 SMT2"
+            smt-lib="V2.0"
+            solverid="org.eventb.smt.cvc3.bundled_cvc3">
+      </config>
    </extension>
 </plugin>
