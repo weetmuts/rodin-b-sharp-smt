@@ -9,17 +9,15 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.internal.preferences.SMTSolverConfiguration;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public interface IBundledSolverRegistry {
-	public List<SMTSolverConfiguration> getSolverConfigs()
-			throws InvalidRegistryObjectException,
-			BundledSolverLoadingException;
+public interface IRegistry<T> {
+	public Map<String, T> getMap() throws InvalidRegistryObjectException,
+			ExtensionLoadingException;
 }

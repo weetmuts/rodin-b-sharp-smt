@@ -10,15 +10,15 @@
 package org.eventb.smt.core.preferences;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
+import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public abstract class AbstractBundledSolverRegistry {
-	public static IRegistry<?> getBundledSolverRegistry()
+public abstract class AbstractSolverConfigRegistry {
+	public static IRegistry<?> getSolverConfigRegistry()
 			throws InvalidRegistryObjectException, ExtensionLoadingException {
-		return BundledSolverRegistry.getBundledSolverRegistry();
+		return SolverConfigRegistry.getSolverConfigRegistry();
 	}
 }

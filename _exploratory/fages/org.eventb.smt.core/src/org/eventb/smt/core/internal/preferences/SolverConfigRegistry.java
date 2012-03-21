@@ -11,7 +11,6 @@ package org.eventb.smt.core.internal.preferences;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeIllegalExtensionException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,36 +26,36 @@ import org.eventb.smt.core.preferences.ExtensionLoadingException;
  * @author Systerel (yguyot)
  * 
  */
-public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
-	public static String BUNDLED_SOLVERS_ID = SMTCore.PLUGIN_ID
-			+ ".bundledsolvers";
+public class SolverConfigRegistry extends AbstractRegistry<SolverConfigDesc> {
+	public static String SOLVER_CONFIGS_ID = SMTCore.PLUGIN_ID
+			+ ".solverconfigs";
 
-	private Map<String, BundledSolverDesc> registry;
+	private static final SolverConfigRegistry INSTANCE = new SolverConfigRegistry();
 
-	private static final BundledSolverRegistry INSTANCE = new BundledSolverRegistry();
+	private Map<String, SolverConfigDesc> registry;
 
 	/**
 	 * Private default constructor enforces that only one instance of this class
 	 * is present.
 	 */
-	private BundledSolverRegistry() {
+	private SolverConfigRegistry() {
 		// Singleton implementation
 	}
 
-	public static BundledSolverRegistry getBundledSolverRegistry()
+	public static SolverConfigRegistry getSolverConfigRegistry()
 			throws InvalidRegistryObjectException, ExtensionLoadingException {
 		INSTANCE.loadRegistry();
 		return INSTANCE;
 	}
 
 	@Override
-	public Map<String, BundledSolverDesc> getRegistry() {
+	public Map<String, SolverConfigDesc> getRegistry() {
 		return registry;
 	}
 
 	/**
-	 * Initializes the registry using extensions to the bundled solver extension
-	 * point.
+	 * Initializes the registry using extensions to the solver configurations
+	 * extension point.
 	 * 
 	 * @throws ExtensionLoadingException
 	 */
@@ -67,23 +66,25 @@ public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
 			// Prevents loading by two thread in parallel
 			return;
 		}
-		registry = new HashMap<String, BundledSolverDesc>();
+		registry = new HashMap<String, SolverConfigDesc>();
 		final IExtensionRegistry xRegistry = getExtensionRegistry();
 		final IExtensionPoint point = xRegistry
-				.getExtensionPoint(BUNDLED_SOLVERS_ID);
-		checkPoint(point, BUNDLED_SOLVERS_ID);
+				.getExtensionPoint(SOLVER_CONFIGS_ID);
+		checkPoint(point, SOLVER_CONFIGS_ID);
 		for (IConfigurationElement element : point.getConfigurationElements()) {
-			final BundledSolverDesc desc = new BundledSolverDesc(element);
+			final SolverConfigDesc desc = new SolverConfigDesc(element);
 			desc.load();
 			final String id = desc.getId();
-			final BundledSolverDesc oldDesc = registry.put(id, desc);
+			final SolverConfigDesc oldDesc = registry.put(id, desc);
 			if (oldDesc != null) {
 				registry.put(id, oldDesc);
-				throw makeIllegalExtensionException(id);
+				throw ExtensionLoadingException
+						.makeIllegalExtensionException(id);
 			} else {
 				if (DEBUG_DETAILS)
-					System.out.println("Registered bundled solver extension "
-							+ id);
+					System.out
+							.println("Registered solver configuration extension "
+									+ id);
 			}
 		}
 	}
