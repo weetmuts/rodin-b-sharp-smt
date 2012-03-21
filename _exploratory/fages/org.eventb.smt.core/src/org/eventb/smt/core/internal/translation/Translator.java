@@ -41,7 +41,7 @@ import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.SMTVar;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -140,7 +140,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * Determines and returns the SMT-LIB logic to use in order to discharge the
 	 * current sequent.
 	 */
-	protected abstract SMTLogic determineLogic(final ISimpleSequent sequent);
+	protected abstract Logic determineLogic(final ISimpleSequent sequent);
 
 	/**
 	 * This method takes an Event-B type and returns the equivalent in SMT-LIB.
@@ -151,7 +151,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * This method extracts the type environment from the Event-B sequent and
 	 * builds the SMT-LIB signature to use.
 	 */
-	protected abstract void translateSignature(final SMTLogic logic,
+	protected abstract void translateSignature(final Logic logic,
 			final ISimpleSequent sequent);
 
 	/**

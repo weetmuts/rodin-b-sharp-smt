@@ -16,19 +16,19 @@ import static org.eventb.pptrans.Translator.reduceToPredicateCalulus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeBool;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeInteger;
-import static org.eventb.smt.core.internal.ast.attributes.SMTLabel.GOAL_LABEL;
+import static org.eventb.smt.core.internal.ast.attributes.Label.GOAL_LABEL;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.DIV;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.EXPN;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.GE;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.GT;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.LE;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.LT;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.MINUS;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.MOD;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.MUL;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.PLUS;
-import static org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator.UMINUS;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.DIV;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.EXPN;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.GE;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.GT;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.LE;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.LT;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.MINUS;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.MOD;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.MUL;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.PLUS;
+import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.UMINUS;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
@@ -84,25 +84,25 @@ import org.eventb.smt.core.internal.ast.SMTSignatureV2_0;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.SMTVar;
-import org.eventb.smt.core.internal.ast.attributes.SMTLabel;
+import org.eventb.smt.core.internal.ast.attributes.Label;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.internal.ast.theories.ISMTArithmeticBoolFuns;
-import org.eventb.smt.core.internal.ast.theories.ISMTArithmeticFuns;
-import org.eventb.smt.core.internal.ast.theories.ISMTArithmeticFunsExtended;
-import org.eventb.smt.core.internal.ast.theories.ISMTArithmeticPreds;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.AUFLIAv2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.QF_UFv2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTLIBUnderlyingLogicV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTLogicPP;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2.Booleans;
+import org.eventb.smt.core.internal.ast.theories.IArithBoolFuns;
+import org.eventb.smt.core.internal.ast.theories.IArithFuns;
+import org.eventb.smt.core.internal.ast.theories.IArithFunsExt;
+import org.eventb.smt.core.internal.ast.theories.IArithPreds;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
+import org.eventb.smt.core.internal.ast.theories.Logic.AUFLIAv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_UFv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.SMTLIBUnderlyingLogicV1_2;
+import org.eventb.smt.core.internal.ast.theories.Logic.SMTLogicPP;
+import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2.Booleans;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -132,7 +132,7 @@ public class SMTThroughPP extends Translator {
 	 */
 	private SMTSignature signature;
 
-	private final Map<SMTOperator, SMTSymbol> operatorMap = new HashMap<SMTLogic.SMTOperator, SMTSymbol>();
+	private final Map<SMTOperator, SMTSymbol> operatorMap = new HashMap<Logic.SMTOperator, SMTSymbol>();
 
 	/**
 	 * In order to translate memberships, the approach implemented in this class
@@ -304,14 +304,14 @@ public class SMTThroughPP extends Translator {
 	 * @return the logic that will be used in the benchmark
 	 */
 	@Override
-	protected SMTLogic determineLogic(final ISimpleSequent sequent) {
+	protected Logic determineLogic(final ISimpleSequent sequent) {
 		gatherer = Gatherer.gatherFrom(sequent);
 
 		if (smtlibVersion.equals(V1_2)) {
 			if (gatherer.usesBoolTheory()) {
-				return new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-						SMTTheoryV1_2.Ints.getInstance(),
-						SMTTheoryV1_2.Booleans.getInstance());
+				return new Logic.SMTLogicPP(Logic.UNKNOWN,
+						TheoryV1_2.Ints.getInstance(),
+						TheoryV1_2.Booleans.getInstance());
 			}
 			return SMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
@@ -609,7 +609,7 @@ public class SMTThroughPP extends Translator {
 		if (!gatherer.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
 				if (smtlibVersion.equals(V1_2)) {
-					for (final SMTTheory theories : signature.getLogic()
+					for (final Theory theories : signature.getLogic()
 							.getTheories()) {
 						if (theories instanceof Booleans) {
 							return true;
@@ -1051,15 +1051,15 @@ public class SMTThroughPP extends Translator {
 		boolean arithFuns = false;
 		boolean arithFunsExt = false;
 		boolean arithPreds = false;
-		for (final SMTTheory theory : logic.getTheories()) {
-			if (theory instanceof ISMTArithmeticFuns) {
+		for (final Theory theory : logic.getTheories()) {
+			if (theory instanceof IArithFuns) {
 				arithFuns = true;
 			}
-			if (theory instanceof ISMTArithmeticFunsExtended) {
+			if (theory instanceof IArithFunsExt) {
 				arithFunsExt = true;
 			}
-			if (theory instanceof ISMTArithmeticBoolFuns
-					|| theory instanceof ISMTArithmeticPreds) {
+			if (theory instanceof IArithBoolFuns
+					|| theory instanceof IArithPreds) {
 				arithPreds = true;
 			}
 		}
@@ -1157,7 +1157,7 @@ public class SMTThroughPP extends Translator {
 	 * @return the SMTBenchmark of the translation
 	 */
 	private SMTBenchmark translate(final String lemmaName,
-			final ISimpleSequent sequent, final SMTLogic logic) {
+			final ISimpleSequent sequent, final Logic logic) {
 		translateSignature(logic, sequent);
 
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
@@ -1175,7 +1175,7 @@ public class SMTThroughPP extends Translator {
 		 * If the gatherer found that the boolean theory was needed to discharge
 		 * the sequent,
 		 */
-		for (final SMTTheory t : signature.getLogic().getTheories()) {
+		for (final Theory t : signature.getLogic().getTheories()) {
 			if (t instanceof Booleans) {
 				/**
 				 * If the gatherer found an occurrence of the atomic expression
@@ -1209,7 +1209,7 @@ public class SMTThroughPP extends Translator {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
 					if (smtlibVersion.equals(V2_0)) {
-						final SMTLabel label = ((SMTSignatureV2_0) signature)
+						final Label label = ((SMTSignatureV2_0) signature)
 								.freshLabel(!GOAL_LABEL);
 						assumption.addAnnotation(label);
 						labelMap.put(label.getName(), trackedPredicate);
@@ -1226,7 +1226,7 @@ public class SMTThroughPP extends Translator {
 						new SMTFormula[] { translate(predicate, IN_GOAL) },
 						smtlibVersion);
 				if (smtlibVersion.equals(V2_0)) {
-					final SMTLabel label = ((SMTSignatureV2_0) signature)
+					final Label label = ((SMTSignatureV2_0) signature)
 							.freshLabel(GOAL_LABEL);
 					smtFormula.addAnnotation(label);
 					labelMap.put(label.getName(), trackedPredicate);
@@ -1294,7 +1294,7 @@ public class SMTThroughPP extends Translator {
 	 *            the sequent of which signature must be translated
 	 */
 	@Override
-	protected void translateSignature(final SMTLogic logic,
+	protected void translateSignature(final Logic logic,
 			final ISimpleSequent sequent) {
 		if (logic instanceof SMTLogicPP) {
 			if (smtlibVersion.equals(V1_2)) {
@@ -1333,7 +1333,7 @@ public class SMTThroughPP extends Translator {
 		/**
 		 * Logic auto-configuration
 		 */
-		final SMTLogic logic = determineLogic(simplifiedSequent);
+		final Logic logic = determineLogic(simplifiedSequent);
 
 		/**
 		 * SMT translation
@@ -1351,7 +1351,7 @@ public class SMTThroughPP extends Translator {
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, ff);
-		final SMTLogic logic = translator.determineLogic(sequent);
+		final Logic logic = translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.translate(predicate, IN_GOAL);
 	}
@@ -1359,7 +1359,7 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method is used only to test the SMT translation
 	 */
-	public static SMTSignature translateTE(final SMTLogic logic,
+	public static SMTSignature translateTE(final Logic logic,
 			final ISimpleSequent sequent, final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		translator.determineLogic(sequent);
@@ -1370,7 +1370,7 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method is used only to test the logic determination
 	 */
-	public static SMTLogic determineLogic(final ISimpleSequent sequent,
+	public static Logic determineLogic(final ISimpleSequent sequent,
 			final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		return translator.determineLogic(sequent);

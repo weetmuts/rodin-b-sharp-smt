@@ -124,19 +124,19 @@ import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
+import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
 import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.AUFLIAV2_0VeriT;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.AUFLIAv2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0VeriT;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTLogicVeriT;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.SMTOperator;
+import org.eventb.smt.core.internal.ast.theories.Logic.AUFLIAV2_0VeriT;
+import org.eventb.smt.core.internal.ast.theories.Logic.AUFLIAv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0VeriT;
+import org.eventb.smt.core.internal.ast.theories.Logic.SMTLogicVeriT;
+import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -166,7 +166,7 @@ public class SMTThroughVeriT extends Translator {
 	/**
 	 * This method is used only to test the SMT translation
 	 */
-	public static SMTSignature translateTE(final SMTLogic logic,
+	public static SMTSignature translateTE(final Logic logic,
 			final Predicate predicate, final SMTLIBVersion smtlibVersion,
 			final FormulaFactory ff) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
@@ -202,7 +202,7 @@ public class SMTThroughVeriT extends Translator {
 	/**
 	 * This method is used only to test the SMT translation
 	 */
-	public static SMTFormula translate(final SMTLogic logic,
+	public static SMTFormula translate(final Logic logic,
 			final Predicate predicate, SMTLIBVersion smtlibVersion,
 			final FormulaFactory ff) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
@@ -312,25 +312,25 @@ public class SMTThroughVeriT extends Translator {
 	 * @return the logic that will be used in the benchmark
 	 */
 	@Override
-	protected SMTLogic determineLogic(final ISimpleSequent sequent) {
+	protected Logic determineLogic(final ISimpleSequent sequent) {
 		final Gatherer gatherer = Gatherer.gatherFrom(sequent);
 		if (smtlibVersion.equals(V1_2)) {
 			if (gatherer.usesBoolTheory()) {
-				return new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
+				return new Logic.SMTLogicVeriT(Logic.UNKNOWN,
 						VeritPredefinedTheoryV1_2.getInstance(),
 						VeriTBooleansV1_2.getInstance());
 			}
-			return SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
+			return Logic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
 			if (gatherer.usesBoolTheory()) {
 				if (gatherer.foundQuantifier()) {
-					return new SMTLogic.SMTLogicVeriT(AUFLIAv2_0.getInstance()
-							.getName(), SMTTheoryV2_0.Ints.getInstance(),
+					return new Logic.SMTLogicVeriT(AUFLIAv2_0.getInstance()
+							.getName(), TheoryV2_0.Ints.getInstance(),
 							VeriTBooleansV2_0.getInstance());
 				} else {
-					return new SMTLogic.SMTLogicVeriT(QF_AUFLIAv2_0
+					return new Logic.SMTLogicVeriT(QF_AUFLIAv2_0
 							.getInstance().getName(),
-							SMTTheoryV2_0.Ints.getInstance(),
+							TheoryV2_0.Ints.getInstance(),
 							VeriTBooleansV2_0.getInstance());
 				}
 
@@ -395,8 +395,8 @@ public class SMTThroughVeriT extends Translator {
 	 * @param logic
 	 *            the logic in use.
 	 */
-	private void addBooleanAssumption(final SMTLogic logic) {
-		for (final SMTTheory theory : logic.getTheories()) {
+	private void addBooleanAssumption(final Logic logic) {
+		for (final Theory theory : logic.getTheories()) {
 			if (theory instanceof VeriTBooleansV1_2) {
 				final String boolVarName = signature.freshSymbolName("elem");
 				additionalAssumptions.add(sf
@@ -423,7 +423,7 @@ public class SMTThroughVeriT extends Translator {
 	}
 
 	@Override
-	public void translateSignature(final SMTLogic logic,
+	public void translateSignature(final Logic logic,
 			final ISimpleSequent sequent) {
 		if (smtlibVersion.equals(V1_2)) {
 			if (logic instanceof SMTLogicVeriT) {
@@ -532,7 +532,7 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	public BenchmarkResult translate(final String lemmaName,
 			final ISimpleSequent sequent) {
-		final SMTLogic logic = determineLogic(sequent);
+		final Logic logic = determineLogic(sequent);
 		translateSignature(logic, sequent);
 
 		final List<SMTFormula> translatedAssumptions = new ArrayList<SMTFormula>();
@@ -584,7 +584,7 @@ public class SMTThroughVeriT extends Translator {
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, ff);
-		final SMTLogic logic = translator.determineLogic(sequent);
+		final Logic logic = translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.translate(predicate, IN_GOAL);
 	}
@@ -2197,7 +2197,7 @@ public class SMTThroughVeriT extends Translator {
 		// Creating the name for the 'f' and 'k' variables in SMT-LIB (rule
 		// 25)
 		final SMTFunctionSymbol kVarSymbol = signature.freshConstant("card_k",
-				SMTTheoryV1_2.Ints.getInt());
+				TheoryV1_2.Ints.getInt());
 
 		final Type type = expression.getChild().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -2206,7 +2206,7 @@ public class SMTThroughVeriT extends Translator {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"card_f", es, SMTTheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
+				"card_f", es, TheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
 
 		translateCardPart2(children, kVarSymbol, fVarSymbol);
 	}
@@ -2287,7 +2287,7 @@ public class SMTThroughVeriT extends Translator {
 
 		// Creating the constant 'm'
 		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
-				constantName, SMTTheoryV1_2.Ints.getInt());
+				constantName, TheoryV1_2.Ints.getInt());
 
 		// Creating the macro operator 'ismin'
 		final SMTMacroSymbol opSymbol = SMTMacroFactoryV1_2.getMacroSymbol(
@@ -2332,7 +2332,7 @@ public class SMTThroughVeriT extends Translator {
 
 		// Creating the constant 'm'
 		final SMTFunctionSymbol mVarSymbol = signature.freshConstant(
-				constantName, SMTTheoryV1_2.Ints.getInt());
+				constantName, TheoryV1_2.Ints.getInt());
 
 		// Creating the macro operator 'ismin'
 		final SMTMacroSymbol opSymbol = SMTMacroFactoryV2_0.getMacroSymbol(
@@ -2539,7 +2539,7 @@ public class SMTThroughVeriT extends Translator {
 				"finite_p", empty);
 
 		final SMTFunctionSymbol kVarSymbol = signature.freshConstant(
-				"finite_k", SMTTheoryV1_2.Ints.getInt());
+				"finite_k", TheoryV1_2.Ints.getInt());
 
 		final Type type = predicate.getExpression().getType();
 		SMTSortSymbol expressionSort = typeMap.get(type);
@@ -2548,7 +2548,7 @@ public class SMTThroughVeriT extends Translator {
 		}
 		final SMTSortSymbol[] es = { expressionSort };
 		final SMTFunctionSymbol fVarSymbol = signature.freshFunctionSymbol(
-				"finite_f", es, SMTTheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
+				"finite_f", es, TheoryV1_2.Ints.getInt(), !ASSOCIATIVE);
 
 		if (signature instanceof SMTSignatureV1_2Verit) {
 			SMTSignatureV1_2Verit sig = (SMTSignatureV1_2Verit) signature;
