@@ -23,7 +23,7 @@ import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_V
 import static org.eventb.smt.core.internal.preferences.SMTPreferences.USE_DEFAULT_SCOPE;
 
 import java.io.File;
-import java.util.List;
+import java.util.Map;
 
 import org.eventb.smt.core.internal.preferences.SMTPreferences;
 
@@ -43,11 +43,12 @@ public abstract class AbstractPreferences {
 	public static final IllegalArgumentException TranslationPathNotSetException = new IllegalArgumentException(
 			SMTPreferences_TranslationPathNotSet);
 
-	public static final String SOLVER_PREFERENCES_ID = "solverpreferences"; //$NON-NLS-1$
-	public static final String CONFIG_INDEX_ID = "configindex"; //$NON-NLS-1$
+	public static final String SOLVERS_ID = "solvers"; //$NON-NLS-1$
+	public static final String SOLVER_CONFIGS_ID = "solverconfigs"; //$NON-NLS-1$
+	public static final String SELECTED_CONFIG_ID = "selectedconfig"; //$NON-NLS-1$
 	public static final String VERIT_PATH_ID = "veritpath"; //$NON-NLS-1$
 	public static final String TRANSLATION_PATH_ID = "translationpath"; //$NON-NLS-1$
-	public static final int DEFAULT_CONFIG_INDEX = -1;
+	public static final String DEFAULT_SELECTED_CONFIG = "";
 	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir"); //$NON-NLS-1$
 
 	public static boolean isPathValid(final String path,
@@ -95,31 +96,39 @@ public abstract class AbstractPreferences {
 
 	public abstract boolean validId(final String id);
 
-	public abstract boolean selectedConfigIndexValid();
+	public abstract Map<String, AbstractSMTSolver> getSolvers();
 
-	public abstract List<AbstractSolverConfiguration> getSolverConfigs();
+	public abstract Map<String, AbstractSolverConfig> getSolverConfigs();
 
-	public abstract AbstractSolverConfiguration getSolverConfiguration(
-			final String configId);
+	public abstract AbstractSMTSolver getSolver(final String solverId);
 
-	public abstract void addSolverConfig(
-			final AbstractSolverConfiguration solverConfig);
+	public abstract AbstractSolverConfig getSolverConfig(final String configId);
+
+	public abstract void addSolver(AbstractSMTSolver solver)
+			throws IllegalArgumentException;
+
+	public abstract void addSolverToDefault(AbstractSMTSolver solver)
+			throws IllegalArgumentException;
+
+	public abstract void removeSMTSolver(String solverToRemove);
+
+	public abstract void addSolverConfig(final AbstractSolverConfig solverConfig);
 
 	public abstract void addSolverConfigToDefault(
-			final AbstractSolverConfiguration solverConfig);
+			final AbstractSolverConfig solverConfig);
 
-	public abstract void removeSolverConfig(final int indexToRemove);
+	public abstract void removeSolverConfig(final String configID);
 
-	public abstract int getSelectedConfigIndex();
+	public abstract String getSelectedConfigID();
 
-	public abstract AbstractSolverConfiguration getSelectedSolverConfiguration();
+	public abstract AbstractSolverConfig getSelectedConfig();
 
 	public abstract String getTranslationPath();
 
 	public abstract String getVeriTPath();
 
-	public abstract void setSelectedConfigIndex(
-			final boolean selectionRequested, final int selectionIndex);
+	public abstract void setSelectedConfigID(final boolean selectionRequested,
+			final String configID);
 
 	public abstract void setTranslationPath(final String path);
 

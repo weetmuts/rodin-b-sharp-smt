@@ -13,19 +13,23 @@ package org.eventb.smt.core.internal.provers;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
+import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
 import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.core.internal.preferences.SMTSolverConfiguration;
+import org.eventb.smt.core.internal.preferences.SMTSolver;
+import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
+import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.BundledSolverLoadingException;
+import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -115,39 +119,72 @@ public class SMTProversCore extends Plugin {
 		final AbstractPreferences smtDefaultPrefs = getDefaultSMTPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
-			for (final SMTSolverConfiguration solverConfig : registry
-					.getSolverConfigs()) {
+			for (final Object registryEntry : registry.getMap().values()) {
+				final SMTSolver solver = (SMTSolver) registryEntry;
+				try {
+					smtDefaultPrefs.addSolverToDefault(solver);
+				} catch (IllegalArgumentException iae) {
+					logError(
+							"An error occured while adding a bundled solver to the default preferences.",
+							iae);
+				}
+				try {
+					smtPrefs.addSolver(solver);
+				} catch (IllegalArgumentException iae) {
+					logError(
+							"An error occured while adding a bundled solver to the preferences.",
+							iae);
+				}
+
+				// FIXME what if several veriT extensions are added
+				if (solver != null && solver.getKind().equals(VERIT)) {
+					final String veriTPath = solver.getPath().toOSString();
+					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
+					smtPrefs.setVeriTPath(veriTPath);
+				}
+
+				smtDefaultPrefs.save();
+				smtPrefs.save();
+			}
+		} catch (ExtensionLoadingException ele) {
+			logError(
+					"An error occured while loading the bundled solver registry.",
+					ele);
+		} catch (InvalidRegistryObjectException iroe) {
+			logError(
+					"An error occured while loading the bundled solver registry.",
+					iroe);
+		}
+
+		try {
+			final SolverConfigRegistry registry = getSolverConfigRegistry();
+			for (final Object registryEntry : registry.getMap().values()) {
+				final SolverConfiguration solverConfig = (SolverConfiguration) registryEntry;
 				try {
 					smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
 				} catch (IllegalArgumentException iae) {
 					logError(
-							"An error occured while trying to add an SMT-solver configuration to the default preferences.",
+							"An error occured while adding an SMT-solver configuration to the default preferences.",
 							iae);
 				}
 				try {
 					smtPrefs.addSolverConfig(solverConfig);
 				} catch (IllegalArgumentException iae) {
 					logError(
-							"An error occured while trying to add an SMT-solver configuration to the preferences.",
+							"An error occured while adding an SMT-solver configuration to the preferences.",
 							iae);
 				}
-				smtDefaultPrefs.setSelectedConfigIndex(false, 0);
-				smtPrefs.setSelectedConfigIndex(false, 0);
+				smtDefaultPrefs.setSelectedConfigID(false,
+						DEFAULT_SELECTED_CONFIG);
+				smtPrefs.setSelectedConfigID(false, DEFAULT_SELECTED_CONFIG);
 
-				// FIXME what if several veriT extensions are added
-				if (solverConfig != null
-						&& solverConfig.getSolver().equals(VERIT)) {
-					final String veriTPath = solverConfig.getPath();
-					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
-					smtPrefs.setVeriTPath(veriTPath);
-				}
 				smtDefaultPrefs.save();
 				smtPrefs.save();
 			}
-		} catch (BundledSolverLoadingException bdle) {
+		} catch (ExtensionLoadingException ele) {
 			logError(
 					"An error occured while loading the bundled solver registry.",
-					bdle);
+					ele);
 		} catch (InvalidRegistryObjectException iroe) {
 			logError(
 					"An error occured while loading the bundled solver registry.",
