@@ -12,38 +12,27 @@ package org.eventb.smt.core.internal.ast.commands;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
+import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.DECLARE_SORT;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.eventb.smt.core.internal.ast.attributes.SMTAttribute;
+import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTSetInfoCommand extends SMTCommand {
-	private final SMTAttribute<String> attribute;
+public class DeclareSortCommand extends Command {
+	private final SMTSortSymbol sortSymbol;
 
-	private final static String STATUS = "status";
-	private final static String UNSAT = "unsat";
-	private final static SMTSetInfoCommand STATUS_UNSAT = new SMTSetInfoCommand(
-			STATUS, Arrays.asList(UNSAT));
-
-	public SMTSetInfoCommand(final String keyword, final List<String> values) {
-		super(SMTCommand.SMTCommandName.SET_INFO);
-		attribute = new SMTAttribute<String>(keyword, values);
-	}
-
-	public static SMTSetInfoCommand setStatusUnsat() {
-		return STATUS_UNSAT;
+	public DeclareSortCommand(final SMTSortSymbol sortSymbol) {
+		super(DECLARE_SORT);
+		this.sortSymbol = sortSymbol;
 	}
 
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		builder.append(attribute);
+		sortSymbol.toString(builder);
 		builder.append(CPAR);
 	}
 }

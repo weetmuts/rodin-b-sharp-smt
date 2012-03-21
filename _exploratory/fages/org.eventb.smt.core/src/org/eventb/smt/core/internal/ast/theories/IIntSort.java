@@ -8,22 +8,19 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.core.internal.ast.commands;
+package org.eventb.smt.core.internal.ast.theories;
 
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.CHECK_SAT;
+import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
- * @author Systerel (yguyot)
- * 
+ * This is the interface for boolean sort
  */
-public class SMTCheckSatCommand extends SMTCommand {
-	private final static SMTCheckSatCommand checkSatCommand = new SMTCheckSatCommand();
+public interface IIntSort {
 
-	private SMTCheckSatCommand() {
-		super(CHECK_SAT);
-	}
-
-	public static SMTCheckSatCommand getCheckSatCommand() {
-		return checkSatCommand;
-	}
+	/**
+	 * returns the integer sort.
+	 * 
+	 * @return the integer sort.
+	 */
+	public SMTSortSymbol getIntegerSort();
 }

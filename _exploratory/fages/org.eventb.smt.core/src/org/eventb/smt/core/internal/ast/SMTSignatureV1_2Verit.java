@@ -31,8 +31,8 @@ import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
 
@@ -111,7 +111,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 */
 	private SMTSortSymbol getBoolSort() {
 		boolean veriTBools = false;
-		for (final SMTTheory theory : getLogic().getTheories()) {
+		for (final Theory theory : getLogic().getTheories()) {
 			if (theory instanceof VeriTBooleansV1_2) {
 				veriTBools = true;
 			}
@@ -138,7 +138,7 @@ public class SMTSignatureV1_2Verit extends SMTSignatureV1_2 {
 	 * @param logic
 	 *            the logic of the signature
 	 */
-	public SMTSignatureV1_2Verit(final SMTLogic logic) {
+	public SMTSignatureV1_2Verit(final Logic logic) {
 		super(logic);
 		loadMacroSymbols();
 	}

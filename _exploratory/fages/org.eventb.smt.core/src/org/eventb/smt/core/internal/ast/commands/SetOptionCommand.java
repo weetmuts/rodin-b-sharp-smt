@@ -12,25 +12,37 @@ package org.eventb.smt.core.internal.ast.commands;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.SET_LOGIC;
+import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.SET_OPTION;
+
+import org.eventb.smt.core.internal.ast.attributes.Option;
+import org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTSetLogicCommand extends SMTCommand {
-	private final String logicName;
+public class SetOptionCommand extends Command {
+	private final Option option;
 
-	public SMTSetLogicCommand(final String logicName) {
-		super(SET_LOGIC);
-		this.logicName = logicName;
+	public SetOptionCommand(final SMTOptionKeyword keyword,
+			final boolean value) {
+		super(SET_OPTION);
+		this.option = new Option(keyword, value);
+	}
+
+	public static SetOptionCommand setTrue(final SMTOptionKeyword option) {
+		return new SetOptionCommand(option, true);
+	}
+
+	public static SetOptionCommand setFalse(final SMTOptionKeyword option) {
+		return new SetOptionCommand(option, false);
 	}
 
 	@Override
-	public void toString(StringBuilder builder) {
+	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		builder.append(logicName);
+		builder.append(option);
 		builder.append(CPAR);
 	}
 }

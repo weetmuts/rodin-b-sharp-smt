@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.internal.ast;
 
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 
 public class SMTSignatureV2_0PP extends SMTSignatureV2_0 {
 	/**
@@ -19,12 +19,12 @@ public class SMTSignatureV2_0PP extends SMTSignatureV2_0 {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignatureV2_0PP(final SMTLogic logic) {
+	public SMTSignatureV2_0PP(final Logic logic) {
 		super(logic);
 	}
 
 	@Override
-	public SMTLogic.SMTLogicPP getLogic() {
-		return (SMTLogic.SMTLogicPP) logic;
+	public Logic.SMTLogicPP getLogic() {
+		return (Logic.SMTLogicPP) logic;
 	}
 }

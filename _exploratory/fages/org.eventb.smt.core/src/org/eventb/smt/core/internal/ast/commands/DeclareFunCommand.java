@@ -12,37 +12,28 @@ package org.eventb.smt.core.internal.ast.commands;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.SET_OPTION;
+import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.DECLARE_FUN;
 
-import org.eventb.smt.core.internal.ast.attributes.SMTOption;
-import org.eventb.smt.core.internal.ast.attributes.SMTOption.SMTOptionKeyword;
+import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTSetOptionCommand extends SMTCommand {
-	private final SMTOption option;
+public class DeclareFunCommand extends Command {
+	private final SMTSymbol symbol;
 
-	public SMTSetOptionCommand(final SMTOptionKeyword keyword,
-			final boolean value) {
-		super(SET_OPTION);
-		this.option = new SMTOption(keyword, value);
-	}
-
-	public static SMTSetOptionCommand setTrue(final SMTOptionKeyword option) {
-		return new SMTSetOptionCommand(option, true);
-	}
-
-	public static SMTSetOptionCommand setFalse(final SMTOptionKeyword option) {
-		return new SMTSetOptionCommand(option, false);
+	public DeclareFunCommand(final SMTSymbol symbol) {
+		// FIXME symbol must be an SMTFunctionSymbol or an SMTPredicateSymbol
+		super(DECLARE_FUN);
+		this.symbol = symbol;
 	}
 
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		builder.append(option);
+		symbol.toString(builder);
 		builder.append(CPAR);
 	}
 }

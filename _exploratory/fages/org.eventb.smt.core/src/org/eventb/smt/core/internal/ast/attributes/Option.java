@@ -16,7 +16,7 @@ import java.util.Arrays;
  * @author Systerel (yguyot)
  * 
  */
-public class SMTOption extends SMTAttribute<String> {
+public class Option extends Attribute<String> {
 	public enum SMTOptionKeyword {
 		PRINT_SUCCESS("print-success"), //
 		EXPAND_DEFINITIONS("expand-definitions"), //
@@ -45,7 +45,7 @@ public class SMTOption extends SMTAttribute<String> {
 		}
 	}
 
-	public SMTOption(final SMTOptionKeyword keyword, final boolean value) {
+	public Option(final SMTOptionKeyword keyword, final boolean value) {
 		super(keyword.toString(), Arrays.asList(Boolean.toString(value)));
 	}
 

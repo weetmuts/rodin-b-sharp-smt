@@ -18,8 +18,8 @@ import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import java.math.BigInteger;
 
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
+import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -46,9 +46,9 @@ public final class SMTNumeral extends SMTTerm {
 	@Override
 	public SMTSortSymbol getSort() {
 		if (smtlibVersion.equals(V1_2)) {
-			return SMTTheoryV1_2.Ints.getInstance().getIntegerSort();
+			return TheoryV1_2.Ints.getInstance().getIntegerSort();
 		} else {
-			return SMTTheoryV2_0.Ints.getInstance().getIntegerSort();
+			return TheoryV2_0.Ints.getInstance().getIntegerSort();
 		}
 	}
 
@@ -57,10 +57,10 @@ public final class SMTNumeral extends SMTTerm {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
 			if (smtlibVersion.equals(V1_2)) {
-				builder.append(SMTTheoryV1_2.Ints.getInstance().getUMinus()
+				builder.append(TheoryV1_2.Ints.getInstance().getUMinus()
 						.getName());
 			} else {
-				builder.append(SMTTheoryV2_0.Ints.getInstance().getUMinus()
+				builder.append(TheoryV2_0.Ints.getInstance().getUMinus()
 						.getName());
 			}
 			builder.append(SPACE);

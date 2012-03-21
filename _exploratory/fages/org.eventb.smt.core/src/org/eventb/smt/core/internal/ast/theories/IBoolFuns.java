@@ -14,10 +14,10 @@ import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
- * This interface is meant to be implemented by SMTLogic or SMTTheory instances
+ * This interface is meant to be implemented by Logic or Theory instances
  * which define boolean SMTFunctionSymbol
  */
-public interface ISMTBooleanFuns {
+public interface IBoolFuns {
 	public abstract SMTFunctionSymbol getTrue();
 
 	public abstract SMTFunctionSymbol getFalse();

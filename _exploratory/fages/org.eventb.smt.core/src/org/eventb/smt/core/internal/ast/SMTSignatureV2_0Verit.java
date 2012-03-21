@@ -18,9 +18,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.eventb.smt.core.internal.ast.commands.SMTDeclareFunCommand;
-import org.eventb.smt.core.internal.ast.commands.SMTDeclareSortCommand;
-import org.eventb.smt.core.internal.ast.commands.SMTSetLogicCommand;
+import org.eventb.smt.core.internal.ast.commands.DeclareFunCommand;
+import org.eventb.smt.core.internal.ast.commands.DeclareSortCommand;
+import org.eventb.smt.core.internal.ast.commands.SetLogicCommand;
 import org.eventb.smt.core.internal.ast.macros.SMTEnumMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV2_0;
@@ -34,9 +34,9 @@ import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
+import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
 
 public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
@@ -104,13 +104,13 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * {@link VeriTBooleansV2_0} theory is being used. If so, it returns that
 	 * the Bool sort defined in that theory. If not, returns the Bool sort
 	 * defined in
-	 * {@link org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0.Core}
+	 * {@link org.eventb.smt.core.internal.ast.theories.TheoryV2_0.Core}
 	 * 
 	 * @return a Bool sort
 	 */
 	private SMTSortSymbol getBoolSort() {
 		boolean veriTBools = false;
-		for (final SMTTheory theory : getLogic().getTheories()) {
+		for (final Theory theory : getLogic().getTheories()) {
 			if (theory instanceof VeriTBooleansV2_0) {
 				veriTBools = true;
 			}
@@ -118,7 +118,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 		if (veriTBools) {
 			return VeriTBooleansV2_0.getInstance().getBooleanSort();
 		} else {
-			return SMTTheoryV2_0.Core.getInstance().getBooleanSort();
+			return TheoryV2_0.Core.getInstance().getBooleanSort();
 		}
 	}
 
@@ -137,7 +137,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 * @param logic
 	 *            the logic of the signature
 	 */
-	public SMTSignatureV2_0Verit(final SMTLogic logic) {
+	public SMTSignatureV2_0Verit(final Logic logic) {
 		super(logic);
 		loadMacroSymbols();
 	}
@@ -282,7 +282,7 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 	 *            the StringBuilder
 	 */
 	private void logicSection(final StringBuilder builder) {
-		final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
+		final SetLogicCommand setLogicCommand = new SetLogicCommand(
 				logic.getName());
 		setLogicCommand.toString(builder);
 		builder.append("\n");
@@ -299,10 +299,10 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 		if (!sorts.isEmpty()) {
 			final TreeSet<SMTSortSymbol> sortedSorts = new TreeSet<SMTSortSymbol>(
 					sorts);
-			SMTDeclareSortCommand command;
+			DeclareSortCommand command;
 			for (final SMTSortSymbol sort : sortedSorts) {
 				if (!sort.isPredefined()) {
-					command = new SMTDeclareSortCommand(sort);
+					command = new DeclareSortCommand(sort);
 					command.toString(builder);
 					builder.append("\n");
 				}
@@ -322,10 +322,10 @@ public class SMTSignatureV2_0Verit extends SMTSignatureV2_0 {
 		if (!elements.isEmpty()) {
 			final TreeSet<SMTFunOrPredSymbol> sortedSymbols = new TreeSet<SMTFunOrPredSymbol>(
 					elements);
-			SMTDeclareFunCommand command;
+			DeclareFunCommand command;
 			for (final SMTFunOrPredSymbol symbol : sortedSymbols) {
 				if (!symbol.isPredefined()) {
-					command = new SMTDeclareFunCommand(symbol);
+					command = new DeclareFunCommand(symbol);
 					command.toString(builder);
 					builder.append("\n");
 				}

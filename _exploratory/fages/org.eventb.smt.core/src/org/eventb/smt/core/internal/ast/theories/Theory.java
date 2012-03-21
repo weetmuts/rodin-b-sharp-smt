@@ -20,13 +20,13 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 /**
  * This class represents SMT Theories
  */
-public class SMTTheory {
+public class Theory {
 	private final String name;
 	private final SMTSortSymbol[] sorts;
 	private final SMTPredicateSymbol[] predicates;
 	private final SMTFunctionSymbol[] functions;
 
-	protected SMTTheory(final String name, final SMTSortSymbol[] sorts,
+	protected Theory(final String name, final SMTSortSymbol[] sorts,
 			final SMTPredicateSymbol[] predicates,
 			final SMTFunctionSymbol[] functions) {
 		this.name = name;
@@ -53,7 +53,7 @@ public class SMTTheory {
 
 	@Override
 	public String toString() {
-		return "SMTTheory [name=" + name + ", sorts=" + Arrays.toString(sorts)
+		return "Theory [name=" + name + ", sorts=" + Arrays.toString(sorts)
 				+ ", predicates=" + Arrays.toString(predicates)
 				+ ", functions=" + Arrays.toString(functions) + "]";
 	}

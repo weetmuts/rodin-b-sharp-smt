@@ -18,13 +18,13 @@ import java.util.List;
  * @author Systerel (yguyot)
  * 
  */
-public class SMTAttribute<T> {
+public class Attribute<T> {
 	private static final String KEYWORD_SPECIAL_CHARACTER = ":";
 
 	private final String keyword;
 	final List<T> values;
 
-	public SMTAttribute(final String keyword, final List<T> values) {
+	public Attribute(final String keyword, final List<T> values) {
 		this.keyword = keyword;
 		this.values = values;
 	}

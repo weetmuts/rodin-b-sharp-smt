@@ -22,7 +22,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 public abstract class SMTSignature {
@@ -31,7 +31,7 @@ public abstract class SMTSignature {
 	/**
 	 * The logic of the signature
 	 */
-	protected final SMTLogic logic;
+	protected final Logic logic;
 
 	private final static String NEW_SORT_NAME = "NS";
 	protected final static String NEW_FUNCTION_NAME = "nf";
@@ -64,7 +64,7 @@ public abstract class SMTSignature {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignature(final SMTLogic logic, final SMTLIBVersion smtlibVersion) {
+	public SMTSignature(final Logic logic, final SMTLIBVersion smtlibVersion) {
 		this.smtlibVersion = smtlibVersion;
 		this.logic = logic;
 		loadReservedAndPredefinedSymbols();
@@ -354,7 +354,7 @@ public abstract class SMTSignature {
 	 * 
 	 * @return the logic of the signature
 	 */
-	public SMTLogic getLogic() {
+	public Logic getLogic() {
 		return logic;
 	}
 

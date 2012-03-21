@@ -12,27 +12,25 @@ package org.eventb.smt.core.internal.ast.commands;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.DECLARE_SORT;
-
-import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
+import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.SET_LOGIC;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTDeclareSortCommand extends SMTCommand {
-	private final SMTSortSymbol sortSymbol;
+public class SetLogicCommand extends Command {
+	private final String logicName;
 
-	public SMTDeclareSortCommand(final SMTSortSymbol sortSymbol) {
-		super(DECLARE_SORT);
-		this.sortSymbol = sortSymbol;
+	public SetLogicCommand(final String logicName) {
+		super(SET_LOGIC);
+		this.logicName = logicName;
 	}
 
 	@Override
-	public void toString(final StringBuilder builder) {
+	public void toString(StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		sortSymbol.toString(builder);
+		builder.append(logicName);
 		builder.append(CPAR);
 	}
 }

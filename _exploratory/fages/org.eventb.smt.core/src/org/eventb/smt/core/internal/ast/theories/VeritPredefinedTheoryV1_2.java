@@ -24,9 +24,9 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 /**
  * This class implements the Theories used by VeriT.
  **/
-public class VeritPredefinedTheoryV1_2 extends SMTTheory implements
-		ISMTArithmeticFunsExtended, ISMTArithmeticPreds, ISMTIntegerSort,
-		ISMTBooleanSort {
+public class VeritPredefinedTheoryV1_2 extends Theory implements
+		IArithFunsExt, IArithPreds, IIntSort,
+		IBoolSort {
 
 	private static final String NAME = "verit_theoryV1_2";
 

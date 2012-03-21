@@ -8,22 +8,19 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.core.internal.ast.commands;
+package org.eventb.smt.core.internal.ast.theories;
 
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.GET_UNSAT_CORE;
+import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
- * @author Systerel (yguyot)
- * 
+ * This is the interface for boolean sort
  */
-public class SMTGetUnsatCoreCommand extends SMTCommand {
-	private final static SMTGetUnsatCoreCommand getUnsatCoreCommand = new SMTGetUnsatCoreCommand();
+public interface IBoolSort {
 
-	private SMTGetUnsatCoreCommand() {
-		super(GET_UNSAT_CORE);
-	}
-
-	public static SMTGetUnsatCoreCommand getGetUnsatCoreCommand() {
-		return getUnsatCoreCommand;
-	}
+	/**
+	 * returns the boolean sort.
+	 * 
+	 * @return the boolean sort.
+	 */
+	public SMTSortSymbol getBooleanSort();
 }

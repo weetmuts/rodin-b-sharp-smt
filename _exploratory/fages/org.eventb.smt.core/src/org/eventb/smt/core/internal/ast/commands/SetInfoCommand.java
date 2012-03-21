@@ -12,28 +12,38 @@ package org.eventb.smt.core.internal.ast.commands;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.DECLARE_FUN;
 
-import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eventb.smt.core.internal.ast.attributes.Attribute;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SMTDeclareFunCommand extends SMTCommand {
-	private final SMTSymbol symbol;
+public class SetInfoCommand extends Command {
+	private final Attribute<String> attribute;
 
-	public SMTDeclareFunCommand(final SMTSymbol symbol) {
-		// FIXME symbol must be an SMTFunctionSymbol or an SMTPredicateSymbol
-		super(DECLARE_FUN);
-		this.symbol = symbol;
+	private final static String STATUS = "status";
+	private final static String UNSAT = "unsat";
+	private final static SetInfoCommand STATUS_UNSAT = new SetInfoCommand(
+			STATUS, Arrays.asList(UNSAT));
+
+	public SetInfoCommand(final String keyword, final List<String> values) {
+		super(Command.SMTCommandName.SET_INFO);
+		attribute = new Attribute<String>(keyword, values);
+	}
+
+	public static SetInfoCommand setStatusUnsat() {
+		return STATUS_UNSAT;
 	}
 
 	@Override
 	public void toString(final StringBuilder builder) {
 		openCommand(builder);
 		builder.append(SPACE);
-		symbol.toString(builder);
+		builder.append(attribute);
 		builder.append(CPAR);
 	}
 }

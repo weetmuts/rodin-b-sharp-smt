@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.commands;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName.ASSERT;
+import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.ASSERT;
 
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTNode;
@@ -22,11 +22,11 @@ import org.eventb.smt.core.internal.ast.SMTNode;
  * @author Systerel (yguyot)
  * 
  */
-public class SMTAssertCommand extends SMTCommand {
+public class AssertCommand extends Command {
 	public static final int ASSERT_COMMAND_OFFSET = 8;
 	private final SMTFormula formula;
 
-	public SMTAssertCommand(final SMTFormula formula) {
+	public AssertCommand(final SMTFormula formula) {
 		super(ASSERT);
 		this.formula = formula;
 	}

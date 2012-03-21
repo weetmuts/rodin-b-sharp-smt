@@ -14,14 +14,14 @@ package org.eventb.smt.core.internal.ast;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.internal.ast.attributes.SMTOption.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
-import static org.eventb.smt.core.internal.ast.attributes.SMTOption.SMTOptionKeyword.Z3_AUTO_CONFIG;
-import static org.eventb.smt.core.internal.ast.attributes.SMTOption.SMTOptionKeyword.Z3_MBQI;
-import static org.eventb.smt.core.internal.ast.commands.SMTCheckSatCommand.getCheckSatCommand;
-import static org.eventb.smt.core.internal.ast.commands.SMTGetUnsatCoreCommand.getGetUnsatCoreCommand;
-import static org.eventb.smt.core.internal.ast.commands.SMTSetInfoCommand.setStatusUnsat;
-import static org.eventb.smt.core.internal.ast.commands.SMTSetOptionCommand.setFalse;
-import static org.eventb.smt.core.internal.ast.commands.SMTSetOptionCommand.setTrue;
+import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
+import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.Z3_AUTO_CONFIG;
+import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.Z3_MBQI;
+import static org.eventb.smt.core.internal.ast.commands.CheckSatCommand.getCheckSatCommand;
+import static org.eventb.smt.core.internal.ast.commands.GetUnsatCoreCommand.getGetUnsatCoreCommand;
+import static org.eventb.smt.core.internal.ast.commands.SetInfoCommand.setStatusUnsat;
+import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setFalse;
+import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setTrue;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.BENCHMARK;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.core.internal.ast.commands.SMTAssertCommand;
+import org.eventb.smt.core.internal.ast.commands.AssertCommand;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
@@ -145,7 +145,7 @@ public class SMTBenchmark {
 				/**
 				 * signature.getSMTLIBVersion().equals(V2_0)
 				 */
-				final SMTAssertCommand assertCommand = new SMTAssertCommand(
+				final AssertCommand assertCommand = new AssertCommand(
 						assumption);
 				assertCommand.toString(builder, printAnnotations);
 			}
@@ -170,7 +170,7 @@ public class SMTBenchmark {
 			/**
 			 * signature.getSMTLIBVersion().equals(V2_0)
 			 */
-			final SMTAssertCommand assertCommand = new SMTAssertCommand(formula);
+			final AssertCommand assertCommand = new AssertCommand(formula);
 			assertCommand.toString(builder, printAnnotations);
 			builder.append("\n");
 		}

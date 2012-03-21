@@ -32,22 +32,22 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
  * necessary to discover and standardize how to add new logics/theories to the
  * solvers.
  */
-public class SMTLogic {
+public class Logic {
 	public static String UNKNOWN = "UNKNOWN";
 
 	/** The logic name and symbols */
 	private final String name;
-	protected final SMTTheory[] theories;
+	protected final Theory[] theories;
 
 	/**
-	 * Constructs a new SMTLogic
+	 * Constructs a new Logic
 	 * 
 	 * @param name
-	 *            the name of the SMTLogic
+	 *            the name of the Logic
 	 * @param theories
 	 *            the theories used in the logic
 	 **/
-	public SMTLogic(final String name, final SMTTheory... theories) {
+	public Logic(final String name, final Theory... theories) {
 		this.name = name;
 		this.theories = theories.clone();
 
@@ -62,7 +62,7 @@ public class SMTLogic {
 	 *            theories section.
 	 */
 	private void theoriesSection(final StringBuilder sb) {
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			sb.append(" :");
 			sb.append(THEORY);
 			sb.append(SPACE);
@@ -85,7 +85,7 @@ public class SMTLogic {
 	 * 
 	 * @return the used theories of this logic.
 	 */
-	public final SMTTheory[] getTheories() {
+	public final Theory[] getTheories() {
 		return theories.clone();
 	}
 
@@ -97,7 +97,7 @@ public class SMTLogic {
 	 */
 	public final List<SMTSortSymbol> getSorts() {
 		final List<SMTSortSymbol> sorts = new ArrayList<SMTSortSymbol>();
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			sorts.addAll(theory.getSorts());
 		}
 		return sorts;
@@ -111,7 +111,7 @@ public class SMTLogic {
 	 */
 	public final List<SMTPredicateSymbol> getPredicates() {
 		final List<SMTPredicateSymbol> predicates = new ArrayList<SMTPredicateSymbol>();
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			predicates.addAll(theory.getPredicates());
 		}
 		return predicates;
@@ -125,7 +125,7 @@ public class SMTLogic {
 	 */
 	public final List<SMTFunctionSymbol> getFunctions() {
 		final List<SMTFunctionSymbol> functions = new ArrayList<SMTFunctionSymbol>();
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			functions.addAll(theory.getFunctions());
 		}
 		return functions;
@@ -138,9 +138,9 @@ public class SMTLogic {
 	 * @return the integer sort as defined above.
 	 */
 	public final SMTSortSymbol getIntegerSort() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof ISMTIntegerSort) {
-				return ((ISMTIntegerSort) theory).getIntegerSort();
+		for (final Theory theory : theories) {
+			if (theory instanceof IIntSort) {
+				return ((IIntSort) theory).getIntegerSort();
 			}
 		}
 		return null;
@@ -153,9 +153,9 @@ public class SMTLogic {
 	 * @return the boolean sort as defined above.
 	 */
 	public SMTSortSymbol getBooleanSort() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof ISMTBooleanSort) {
-				return ((ISMTBooleanSort) theory).getBooleanSort();
+		for (final Theory theory : theories) {
+			if (theory instanceof IBoolSort) {
+				return ((IBoolSort) theory).getBooleanSort();
 			}
 		}
 		return null;
@@ -171,80 +171,80 @@ public class SMTLogic {
 	public final SMTSymbol getOperator(final SMTOperator operator) {
 		switch (operator) {
 		case GE:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticPreds) {
-					return ((ISMTArithmeticPreds) theory).getGreaterEqual();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithPreds) {
+					return ((IArithPreds) theory).getGreaterEqual();
 				}
 			}
 			return null;
 		case GT:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticPreds) {
-					return ((ISMTArithmeticPreds) theory).getGreaterThan();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithPreds) {
+					return ((IArithPreds) theory).getGreaterThan();
 				}
 			}
 			return null;
 		case LE:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticPreds) {
-					return ((ISMTArithmeticPreds) theory).getLessEqual();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithPreds) {
+					return ((IArithPreds) theory).getLessEqual();
 				}
 			}
 			return null;
 		case LT:
-			for (final SMTTheory theory : theories) {
+			for (final Theory theory : theories) {
 
-				if (theory instanceof ISMTArithmeticPreds) {
-					return ((ISMTArithmeticPreds) theory).getLessThan();
+				if (theory instanceof IArithPreds) {
+					return ((IArithPreds) theory).getLessThan();
 				}
 			}
 			return null;
 		case MINUS:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getMinus();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFuns) {
+					return ((IArithFuns) theory).getMinus();
 				}
 			}
 			return null;
 		case MUL:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getMul();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFuns) {
+					return ((IArithFuns) theory).getMul();
 				}
 			}
 			return null;
 		case PLUS:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getPlus();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFuns) {
+					return ((IArithFuns) theory).getPlus();
 				}
 			}
 			return null;
 		case UMINUS:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFuns) {
-					return ((ISMTArithmeticFuns) theory).getUMinus();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFuns) {
+					return ((IArithFuns) theory).getUMinus();
 				}
 			}
 			return null;
 		case DIV:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getDiv();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFunsExt) {
+					return ((IArithFunsExt) theory).getDiv();
 				}
 			}
 			return null;
 		case EXPN:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getExpn();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFunsExt) {
+					return ((IArithFunsExt) theory).getExpn();
 				}
 			}
 			return null;
 		case MOD:
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof ISMTArithmeticFunsExtended) {
-					return ((ISMTArithmeticFunsExtended) theory).getMod();
+			for (final Theory theory : theories) {
+				if (theory instanceof IArithFunsExt) {
+					return ((IArithFunsExt) theory).getMod();
 				}
 			}
 			return null;
@@ -296,18 +296,18 @@ public class SMTLogic {
 	 * This class represents the SMT underlying logic used by the PP approach.
 	 * It differs from the standard underlying logic.
 	 */
-	public static class SMTLogicPP extends SMTLogic {
-		public SMTLogicPP(final String name, final SMTTheory... theories) {
+	public static class SMTLogicPP extends Logic {
+		public SMTLogicPP(final String name, final Theory... theories) {
 			super(name, theories);
 		}
 
 		public SMTSortSymbol getPowerSetIntegerSort() {
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof SMTTheoryV1_2.Ints) {
-					return ((SMTTheoryV1_2.Ints) theory)
+			for (final Theory theory : theories) {
+				if (theory instanceof TheoryV1_2.Ints) {
+					return ((TheoryV1_2.Ints) theory)
 							.getPowerSetIntegerSort();
-				} else if (theory instanceof SMTTheoryV2_0.Ints) {
-					return ((SMTTheoryV2_0.Ints) theory)
+				} else if (theory instanceof TheoryV2_0.Ints) {
+					return ((TheoryV2_0.Ints) theory)
 							.getPowerSetIntegerSort();
 				}
 			}
@@ -315,12 +315,12 @@ public class SMTLogic {
 		}
 
 		public SMTSortSymbol getPowerSetBooleanSort() {
-			for (final SMTTheory theory : theories) {
-				if (theory instanceof SMTTheoryV1_2.Booleans) {
-					return ((SMTTheoryV1_2.Booleans) theory)
+			for (final Theory theory : theories) {
+				if (theory instanceof TheoryV1_2.Booleans) {
+					return ((TheoryV1_2.Booleans) theory)
 							.getPowerSetBooleanSort();
-				} else if (theory instanceof SMTTheoryV2_0.Core) {
-					return ((SMTTheoryV2_0.Core) theory)
+				} else if (theory instanceof TheoryV2_0.Core) {
+					return ((TheoryV2_0.Core) theory)
 							.getPowerSetBooleanSort();
 				}
 			}
@@ -336,7 +336,7 @@ public class SMTLogic {
 	 * sort declarations for terms, and so on."
 	 */
 	public static class SMTLIBUnderlyingLogicV1_2 extends SMTLogicPP {
-		private static final SMTTheory[] THEORIES = { SMTTheoryV1_2.Ints
+		private static final Theory[] THEORIES = { TheoryV1_2.Ints
 				.getInstance() };
 
 		private static final SMTLIBUnderlyingLogicV1_2 INSTANCE = new SMTLIBUnderlyingLogicV1_2();
@@ -368,7 +368,7 @@ public class SMTLogic {
 	 * languages."
 	 */
 	public static class SMTLIBUnderlyingLogicV2_0 extends SMTLogicPP {
-		private static final SMTTheory[] THEORIES = { SMTTheoryV2_0.Core
+		private static final Theory[] THEORIES = { TheoryV2_0.Core
 				.getInstance() };
 
 		private static final SMTLIBUnderlyingLogicV2_0 INSTANCE = new SMTLIBUnderlyingLogicV2_0();
@@ -395,7 +395,7 @@ public class SMTLogic {
 	 */
 	public static class QF_UFv2_0 extends SMTLogicPP {
 		private static final String QF_UF_LOGIC_NAME = "QF_UF";
-		private static final SMTTheory[] THEORIES = { SMTTheoryV2_0.Core
+		private static final Theory[] THEORIES = { TheoryV2_0.Core
 				.getInstance() };
 
 		private static final QF_UFv2_0 INSTANCE = new QF_UFv2_0();
@@ -418,9 +418,9 @@ public class SMTLogic {
 	 */
 	public static class QF_AUFLIAv2_0 extends SMTLogicPP {
 		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
-		private static final SMTTheory[] THEORIES = {
-				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance() };
+		private static final Theory[] THEORIES = {
+				TheoryV2_0.Core.getInstance(),
+				TheoryV2_0.Ints.getInstance() };
 
 		private static final QF_AUFLIAv2_0 INSTANCE = new QF_AUFLIAv2_0();
 
@@ -443,9 +443,9 @@ public class SMTLogic {
 	 */
 	public static class AUFLIAv2_0 extends SMTLogicPP {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
-		private static final SMTTheory[] THEORIES = {
-				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance() };
+		private static final Theory[] THEORIES = {
+				TheoryV2_0.Core.getInstance(),
+				TheoryV2_0.Ints.getInstance() };
 
 		private static final AUFLIAv2_0 INSTANCE = new AUFLIAv2_0();
 
@@ -458,8 +458,8 @@ public class SMTLogic {
 		}
 	}
 
-	public static class SMTLogicVeriT extends SMTLogic {
-		public SMTLogicVeriT(final String name, final SMTTheory... theories) {
+	public static class SMTLogicVeriT extends Logic {
+		public SMTLogicVeriT(final String name, final Theory... theories) {
 			super(name, theories);
 		}
 	}
@@ -473,7 +473,7 @@ public class SMTLogic {
 		/**
 		 * The theories used by the veriT logic.
 		 */
-		private static final SMTTheory[] THEORIES = { VeritPredefinedTheoryV1_2
+		private static final Theory[] THEORIES = { VeritPredefinedTheoryV1_2
 				.getInstance() };
 
 		/**
@@ -504,9 +504,9 @@ public class SMTLogic {
 	 */
 	public static class AUFLIAV2_0VeriT extends SMTLogicVeriT {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
-		private static final SMTTheory[] THEORIES = {
-				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance(), };
+		private static final Theory[] THEORIES = {
+				TheoryV2_0.Core.getInstance(),
+				TheoryV2_0.Ints.getInstance(), };
 		// VeriTBooleansV2_0.getInstance() };
 
 		private static final AUFLIAV2_0VeriT INSTANCE = new AUFLIAV2_0VeriT();
@@ -522,9 +522,9 @@ public class SMTLogic {
 
 	public static class QF_AUFLIAv2_0VeriT extends SMTLogicPP {
 		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
-		private static final SMTTheory[] THEORIES = {
-				SMTTheoryV2_0.Core.getInstance(),
-				SMTTheoryV2_0.Ints.getInstance() };
+		private static final Theory[] THEORIES = {
+				TheoryV2_0.Core.getInstance(),
+				TheoryV2_0.Ints.getInstance() };
 		// VeriTBooleansV2_0.getInstance() };
 
 		private static final QF_AUFLIAv2_0VeriT INSTANCE = new QF_AUFLIAv2_0VeriT();
@@ -544,11 +544,11 @@ public class SMTLogic {
 	 * @return the integer sort constant symbol.
 	 */
 	public SMTFunctionSymbol getIntsSet() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof SMTTheoryV1_2.Ints) {
-				return SMTTheoryV1_2.Ints.getIntsSet();
-			} else if (theory instanceof SMTTheoryV2_0.Ints) {
-				return SMTTheoryV2_0.Ints.getIntsSet();
+		for (final Theory theory : theories) {
+			if (theory instanceof TheoryV1_2.Ints) {
+				return TheoryV1_2.Ints.getIntsSet();
+			} else if (theory instanceof TheoryV2_0.Ints) {
+				return TheoryV2_0.Ints.getIntsSet();
 			}
 		}
 		return null;
@@ -560,11 +560,11 @@ public class SMTLogic {
 	 * @return the boolean sort constant symbol.
 	 */
 	public SMTFunctionSymbol getBoolsSet() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof SMTTheoryV1_2.Booleans) {
-				return SMTTheoryV1_2.Booleans.getBoolsSet();
-			} else if (theory instanceof SMTTheoryV2_0.Core) {
-				return SMTTheoryV2_0.Core.getBoolsSet();
+		for (final Theory theory : theories) {
+			if (theory instanceof TheoryV1_2.Booleans) {
+				return TheoryV1_2.Booleans.getBoolsSet();
+			} else if (theory instanceof TheoryV2_0.Core) {
+				return TheoryV2_0.Core.getBoolsSet();
 			}
 		}
 		return null;
@@ -576,18 +576,18 @@ public class SMTLogic {
 	 * @return the {@code true} predicate symbol.
 	 */
 	public SMTPredicateSymbol getTrue() {
-		for (final SMTTheory theory : theories) {
-			if (theory instanceof SMTTheoryV1_2.Booleans) {
-				return SMTTheoryV1_2.Booleans.getTrue();
-			} else if (theory instanceof SMTTheoryV2_0.Core) {
-				return SMTTheoryV2_0.Core.getTrue();
+		for (final Theory theory : theories) {
+			if (theory instanceof TheoryV1_2.Booleans) {
+				return TheoryV1_2.Booleans.getTrue();
+			} else if (theory instanceof TheoryV2_0.Core) {
+				return TheoryV2_0.Core.getTrue();
 			}
 		}
 		return null;
 	}
 
 	public SMTFunctionSymbol getTrueConstant() {
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			if (theory instanceof VeriTBooleansV1_2) {
 				return VeriTBooleansV1_2.getInstance().getTrueConstant();
 			}
@@ -599,7 +599,7 @@ public class SMTLogic {
 	}
 
 	public SMTFunctionSymbol getFalseConstant() {
-		for (final SMTTheory theory : theories) {
+		for (final Theory theory : theories) {
 			if (theory instanceof VeriTBooleansV1_2) {
 				return VeriTBooleansV1_2.getInstance().getFalseConstant();
 			}

@@ -20,7 +20,7 @@ import java.util.List;
  * @author Systerel (yguyot)
  * 
  */
-public abstract class SMTCommand {
+public abstract class Command {
 	private final SMTCommandName name;
 
 	public enum SMTCommandName {
@@ -70,7 +70,7 @@ public abstract class SMTCommand {
 		}
 	}
 
-	public SMTCommand(final SMTCommandName name) {
+	public Command(final SMTCommandName name) {
 		this.name = name;
 	}
 

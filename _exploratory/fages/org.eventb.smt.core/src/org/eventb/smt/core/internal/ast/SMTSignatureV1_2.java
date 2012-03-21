@@ -26,7 +26,7 @@ import java.util.TreeSet;
 
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 
 /**
  * Here are the rules in SMT-LIB V1.2 that we need to implement in this class:
@@ -85,7 +85,7 @@ public abstract class SMTSignatureV1_2 extends SMTSignature {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignatureV1_2(final SMTLogic logic) {
+	public SMTSignatureV1_2(final Logic logic) {
 		super(logic, V1_2);
 	}
 

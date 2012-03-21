@@ -19,7 +19,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
-public class VeriTBooleansV1_2 extends SMTTheory implements ISMTBooleanSort {
+public class VeriTBooleansV1_2 extends Theory implements IBoolSort {
 
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 

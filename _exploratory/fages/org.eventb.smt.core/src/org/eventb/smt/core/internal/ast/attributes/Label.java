@@ -18,13 +18,13 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
  * @author Systerel (yguyot)
  * 
  */
-public class SMTLabel extends SMTAttribute<SMTSymbol> {
+public class Label extends Attribute<SMTSymbol> {
 	public static final boolean GOAL_LABEL = true;
 	public static final String LABEL_KEYWORD = "named";
 	public static final String DEFAULT_HYPOTHESIS_LABEL = "hyp";
 	public static final String DEFAULT_GOAL_LABEL = "goal";
 
-	public SMTLabel(final SMTSymbol name) {
+	public Label(final SMTSymbol name) {
 		super(LABEL_KEYWORD, Arrays.asList(name));
 	}
 

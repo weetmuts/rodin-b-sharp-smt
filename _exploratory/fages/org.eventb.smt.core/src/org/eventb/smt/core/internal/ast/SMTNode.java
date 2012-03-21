@@ -18,8 +18,8 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.smt.core.internal.ast.attributes.SMTAttribute;
-import org.eventb.smt.core.internal.ast.commands.SMTAssertCommand;
+import org.eventb.smt.core.internal.ast.attributes.Attribute;
+import org.eventb.smt.core.internal.ast.commands.AssertCommand;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
@@ -28,7 +28,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
  */
 public abstract class SMTNode<T extends SMTNode<T>> {
 	private static final String ANNOTATION_OPERATOR = "!";
-	private final List<SMTAttribute<?>> annotations = new ArrayList<SMTAttribute<?>>();
+	private final List<Attribute<?>> annotations = new ArrayList<Attribute<?>>();
 
 	/**
 	 * Checks the rank for associative symbol (predicate or function symbol).
@@ -83,7 +83,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 		}
 	}
 
-	public void addAnnotation(final SMTAttribute<?> attribute) {
+	public void addAnnotation(final Attribute<?> attribute) {
 		annotations.add(attribute);
 	}
 
@@ -109,9 +109,9 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 */
 	public void printAnnotations(final StringBuilder builder) {
 		builder.append("\n");
-		indent(builder, SMTAssertCommand.ASSERT_COMMAND_OFFSET);
+		indent(builder, AssertCommand.ASSERT_COMMAND_OFFSET);
 		builder.append(SPACE);
-		for (final SMTAttribute<?> attribute : annotations) {
+		for (final Attribute<?> attribute : annotations) {
 			attribute.toString(builder);
 		}
 		builder.append(CPAR);

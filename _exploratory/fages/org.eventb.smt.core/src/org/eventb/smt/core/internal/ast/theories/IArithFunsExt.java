@@ -13,11 +13,11 @@ package org.eventb.smt.core.internal.ast.theories;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
- * This interface is meant to be implemented by SMTLogic or SMTTheory instances
+ * This interface is meant to be implemented by Logic or Theory instances
  * which define arithmetic SMTFunctionSymbol which string representations are
  * the SMT-LIB symbols "÷", "expn".
  */
-public interface ISMTArithmeticFunsExtended extends ISMTArithmeticFuns {
+public interface IArithFunsExt extends IArithFuns {
 
 	/**
 	 * returns the division function symbol

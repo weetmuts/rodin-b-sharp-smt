@@ -11,8 +11,8 @@
 
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.internal.ast.attributes.SMTLabel.DEFAULT_GOAL_LABEL;
-import static org.eventb.smt.core.internal.ast.attributes.SMTLabel.DEFAULT_HYPOTHESIS_LABEL;
+import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_GOAL_LABEL;
+import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_HYPOTHESIS_LABEL;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
@@ -22,16 +22,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eventb.smt.core.internal.ast.attributes.SMTLabel;
-import org.eventb.smt.core.internal.ast.commands.SMTDeclareFunCommand;
-import org.eventb.smt.core.internal.ast.commands.SMTDeclareSortCommand;
-import org.eventb.smt.core.internal.ast.commands.SMTSetLogicCommand;
-import org.eventb.smt.core.internal.ast.commands.SMTCommand.SMTCommandName;
+import org.eventb.smt.core.internal.ast.attributes.Label;
+import org.eventb.smt.core.internal.ast.commands.DeclareFunCommand;
+import org.eventb.smt.core.internal.ast.commands.DeclareSortCommand;
+import org.eventb.smt.core.internal.ast.commands.SetLogicCommand;
+import org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName;
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 
 public abstract class SMTSignatureV2_0 extends SMTSignature {
 	/**
@@ -45,7 +45,7 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignatureV2_0(final SMTLogic logic) {
+	public SMTSignatureV2_0(final Logic logic) {
 		super(logic, V2_0);
 	}
 
@@ -88,10 +88,10 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 		if (!sorts.isEmpty()) {
 			final TreeSet<SMTSortSymbol> sortedSorts = new TreeSet<SMTSortSymbol>(
 					sorts);
-			SMTDeclareSortCommand command;
+			DeclareSortCommand command;
 			for (final SMTSortSymbol sort : sortedSorts) {
 				if (!sort.isPredefined()) {
-					command = new SMTDeclareSortCommand(sort);
+					command = new DeclareSortCommand(sort);
 					command.toString(builder);
 					builder.append("\n");
 				}
@@ -111,10 +111,10 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 		if (!elements.isEmpty()) {
 			final TreeSet<SMTFunOrPredSymbol> sortedSymbols = new TreeSet<SMTFunOrPredSymbol>(
 					elements);
-			SMTDeclareFunCommand command;
+			DeclareFunCommand command;
 			for (final SMTFunOrPredSymbol symbol : sortedSymbols) {
 				if (!symbol.isPredefined()) {
-					command = new SMTDeclareFunCommand(symbol);
+					command = new DeclareFunCommand(symbol);
 					command.toString(builder);
 					builder.append("\n");
 				}
@@ -130,7 +130,7 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	 *            the StringBuilder
 	 */
 	private void logicSection(final StringBuilder builder) {
-		final SMTSetLogicCommand setLogicCommand = new SMTSetLogicCommand(
+		final SetLogicCommand setLogicCommand = new SetLogicCommand(
 				logic.getName());
 		setLogicCommand.toString(builder);
 		builder.append("\n");
@@ -170,16 +170,16 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	 * These labels are used to annotate assertions. That's why their type is
 	 * Bool.
 	 */
-	public SMTLabel freshLabel(final boolean goalLabel) {
+	public Label freshLabel(final boolean goalLabel) {
 		final String label;
 		if (goalLabel) {
 			label = DEFAULT_GOAL_LABEL;
 		} else {
 			label = DEFAULT_HYPOTHESIS_LABEL;
 		}
-		final SMTSymbol labelSymbol = freshConstant(label, SMTTheoryV2_0.Core
+		final SMTSymbol labelSymbol = freshConstant(label, TheoryV2_0.Core
 				.getInstance().getBooleanSort());
-		return new SMTLabel(labelSymbol);
+		return new Label(labelSymbol);
 	}
 
 	/**

@@ -71,7 +71,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTPolymorphicSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -139,13 +139,13 @@ public abstract class SMTMacroFactory {
 			POLYMORPHIC };
 	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
 	private static SMTSortSymbol[] ISMIN_MAX_SORTS = {
-			SMTTheoryV1_2.Ints.getInt(), POLYMORPHIC };
+			TheoryV1_2.Ints.getInt(), POLYMORPHIC };
 	private static SMTSortSymbol[] FINITE_SORTS = {
 			VeriTBooleansV1_2.getInstance().getBooleanSort(), POLYMORPHIC,
-			SMTTheoryV1_2.Ints.getInt(), SMTTheoryV1_2.Ints.getInt() };
+			TheoryV1_2.Ints.getInt(), TheoryV1_2.Ints.getInt() };
 
 	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC,
-			SMTTheoryV1_2.Ints.getInt(), SMTTheoryV1_2.Ints.getInt() };
+			TheoryV1_2.Ints.getInt(), TheoryV1_2.Ints.getInt() };
 
 	protected static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE, POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);

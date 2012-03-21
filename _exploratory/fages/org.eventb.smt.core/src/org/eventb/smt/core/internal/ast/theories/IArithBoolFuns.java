@@ -10,40 +10,40 @@
 
 package org.eventb.smt.core.internal.ast.theories;
 
-import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
+import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 
 /**
- * This interface is meant to be implemented by SMTLogic or SMTTheory instances
- * which define arithmetic SMTPredicateSymbol which string representations are
+ * This interface is meant to be implemented by Logic or Theory instances
+ * which define arithmetic SMTFunctionSymbol which string representations are
  * the SMT-LIB symbols "<", "<=", ">" and ">=".
  */
-public interface ISMTArithmeticPreds {
+public interface IArithBoolFuns {
 
 	/**
 	 * returns the predicate < (less than)
 	 * 
 	 * @return the predicate < (less than)
 	 */
-	public SMTPredicateSymbol getLessThan();
+	public SMTFunctionSymbol getLessThan();
 
 	/**
 	 * returns the predicate <= (less or equal than)
 	 * 
 	 * @return the predicate <= (less or equal than)
 	 */
-	public SMTPredicateSymbol getLessEqual();
+	public SMTFunctionSymbol getLessEqual();
 
 	/**
 	 * returns the predicate > (greater than)
 	 * 
 	 * @return the predicate > (greater than)
 	 */
-	public SMTPredicateSymbol getGreaterThan();
+	public SMTFunctionSymbol getGreaterThan();
 
 	/**
 	 * returns the predicate >= (greater equal than)
 	 * 
 	 * @return the predicate >= (greater equal than)
 	 */
-	public SMTPredicateSymbol getGreaterEqual();
+	public SMTFunctionSymbol getGreaterEqual();
 }

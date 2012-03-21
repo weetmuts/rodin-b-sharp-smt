@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.theories;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 
 /**
- * This interface is meant to be implemented by SMTLogic or SMTTheory instances
+ * This interface is meant to be implemented by Logic or Theory instances
  * which define arithmetic SMTFunctionSymbol which string representations are
  * the SMT-LIB symbols "+", "*", "-".
  */
@@ -24,7 +24,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
  * is more restrictive: {0, s, +, <}. But this is not a problem as far as such
  * logics will not be used.
  **/
-public interface ISMTArithmeticFuns {
+public interface IArithFuns {
 	/**
 	 * returns the function symbol ~ (uminus)
 	 * 
