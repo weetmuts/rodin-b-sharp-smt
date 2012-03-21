@@ -17,13 +17,13 @@ import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
-import static org.eventb.smt.core.provers.SMTSolver.Z3;
-import static org.eventb.smt.core.provers.SMTSolver.Z3_PARAM_AUTO_CONFIG;
-import static org.eventb.smt.core.provers.SMTSolver.Z3_PARAM_MBQI;
-import static org.eventb.smt.core.provers.SMTSolver.setZ3ParameterToFalse;
+import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
+import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
+import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_AUTO_CONFIG;
+import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_MBQI;
+import static org.eventb.smt.core.provers.SolverKind.setZ3ParameterToFalse;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
@@ -46,10 +46,12 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.preferences.SMTPreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
-import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.preferences.AbstractSMTSolver;
+import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -99,7 +101,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	AbstractSolverConfiguration solverConfig;
+	AbstractSolverConfig solverConfig;
+
+	AbstractSMTSolver solver;
 
 	String translationPath = null;
 
@@ -128,8 +132,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            name of the lemma to prove
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm,
-			final AbstractSolverConfiguration solverConfig,
+			final IProofMonitor pm, final AbstractSolverConfig solverConfig,
 			final String poName, final String translationPath,
 			final Translator translator) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -138,12 +141,14 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final AbstractSolverConfiguration solverConfig,
-			final String poName, final String translationPath,
-			final Translator translator) {
+			final AbstractSolverConfig solverConfig, final String poName,
+			final String translationPath, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
+		// FIXME exception thrown ?
+		solver = SMTPreferences.getSMTPrefs().getSolver(
+				solverConfig.getSolverId());
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
 		this.translator = translator;
@@ -204,13 +209,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Selected solver binary path
 		 */
-		commandLine.add(solverConfig.getPath());
+		commandLine.add(solver.getPath().toOSString());
 
 		/**
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
 		 */
 		if (solverConfig.getSmtlibVersion().equals(SMTLIBVersion.V1_2)
-				&& solverConfig.getSolver().equals(SMTSolver.Z3)) {
+				&& solverConfig.getSolverId().equals(SolverKind.Z3)) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
@@ -229,7 +234,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
-		if (solverConfig.getSolver().equals(SMTSolver.MATHSAT5)) {
+		if (solverConfig.getSolverId().equals(SolverKind.MATHSAT5)) {
 			commandLine.add("< " + smtBenchmarkFile.getAbsolutePath());
 		} else {
 			commandLine.add(smtBenchmarkFile.getAbsolutePath());
@@ -304,7 +309,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 			return false;
 		} else {
 			throw new IllegalArgumentException("Unexpected response of "
-					+ solverConfig.getSolver().toString() + ". See "
+					+ solverConfig.getSolverId().toString() + ". See "
 					+ lemmaName + ".res for more details.");
 		}
 	}
@@ -405,9 +410,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 			}
 		}
 
-		final SMTSolver solver = solverConfig.getSolver();
+		final SolverKind solverKind = solver.getKind();
 		if (solverConfig.getSmtlibVersion().equals(V2_0)
-				&& (solver.equals(ALT_ERGO) || solver.equals(OPENSMT))) {
+				&& (solverKind.equals(ALT_ERGO) || solverKind.equals(OPENSMT))) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					NON_STANDARD_SMT_LIB2_FILE_EXTENSION, smtTranslationDir);
 		} else {
@@ -428,8 +433,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 		if (DEBUG) {
 			smtResultFile = File.createTempFile(
-					lemmaName + "_" + solver.toString(), RES_FILE_EXTENSION,
-					smtTranslationDir);
+					lemmaName + "_" + solverKind.toString(),
+					RES_FILE_EXTENSION, smtTranslationDir);
 			if (DEBUG_DETAILS) {
 				debugBuilder.append("Created temporary SMT result file '");
 				debugBuilder.append(smtResultFile).append("'\n");
@@ -514,7 +519,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (translationPerformed) {
-					final String solverName = solverConfig.getSolver()
+					final String solverName = solverConfig.getSolverId()
 							.toString();
 					if (DEBUG_DETAILS) {
 						debugBuilder.append("Launching ").append(solverName);
@@ -538,10 +543,10 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (isValid()) {
-					if ((solverConfig.getSolver().equals(VERIT) //
+					if ((solverConfig.getSolverId().equals(VERIT) //
 							&& solverConfig.getArgs().contains("--proof=")) //
 							|| (solverConfig.getSmtlibVersion().equals(V2_0) //
-							&& solverConfig.getSolver().equals(Z3))) {
+							&& solverConfig.getSolverId().equals(Z3))) {
 						// FIXME it is not possible to check z3 version, so make
 						// errors be catched if not a version capable of manage
 						// unsat-cores.

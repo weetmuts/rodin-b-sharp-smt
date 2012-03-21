@@ -17,9 +17,9 @@ import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_CO
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
-import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +33,8 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
-import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.provers.SolverKind;
 
 /**
  * This class represents a call to an SMT solver using the PP approach. More
@@ -48,16 +48,16 @@ public class SMTPPCall extends SMTProverCall {
 	private File ppTranslationFolder = null;
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final AbstractSolverConfiguration solverConfig,
-			final String poName, final String translationPath) {
+			final AbstractSolverConfig solverConfig, final String poName,
+			final String translationPath) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
 				translationPath);
 	}
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder,
-			final AbstractSolverConfiguration solverConfig,
-			final String poName, final String translationPath) {
+			final AbstractSolverConfig solverConfig, final String poName,
+			final String translationPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughPP(solverConfig.getSmtlibVersion()));
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {
@@ -138,11 +138,11 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		final SMTSolver solver = solverConfig.getSolver();
-		if (solver.equals(Z3)) { // FIXME Add Z3 version checking
+		final SolverKind solverKind = solver.getKind();
+		if (solverKind.equals(Z3)) { // FIXME Add Z3 version checking
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
 					PRINT_GET_UNSAT_CORE_COMMANDS, PRINT_Z3_SPECIFIC_COMMANDS);
-		} else if (solver.equals(ALT_ERGO) || solver.equals(VERIT)) {
+		} else if (solverKind.equals(ALT_ERGO) || solverKind.equals(VERIT)) {
 			benchmark
 					.print(smtFileWriter, PRINT_ANNOTATIONS,
 							!PRINT_GET_UNSAT_CORE_COMMANDS,
