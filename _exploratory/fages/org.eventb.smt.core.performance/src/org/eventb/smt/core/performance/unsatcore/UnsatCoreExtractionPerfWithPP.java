@@ -10,14 +10,14 @@
 
 package org.eventb.smt.core.performance.unsatcore;
 
-import static org.eventb.smt.core.translation.SMTTranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
@@ -30,7 +30,7 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public UnsatCoreExtractionPerfWithPP(final SMTSolver solver,
+	public UnsatCoreExtractionPerfWithPP(final SolverKind solver,
 			final SMTLIBVersion smtlibVersion) {
 		super(solver, null, smtlibVersion, GET_UNSAT_CORE);
 	}

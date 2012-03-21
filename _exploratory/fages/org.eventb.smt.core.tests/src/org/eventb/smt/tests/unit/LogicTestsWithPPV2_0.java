@@ -22,31 +22,31 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.pptrans.Translator;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 
 public class LogicTestsWithPPV2_0 extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
-	private static final SMTLogic qfufLogic;
-	private static final SMTLogic aufliaLogic;
-	private static final SMTLogic qfAufliaLogic;
+	private static final Logic qfufLogic;
+	private static final Logic aufliaLogic;
+	private static final Logic qfAufliaLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
-		qfufLogic = SMTLogic.QF_UFv2_0.getInstance();
-		aufliaLogic = SMTLogic.AUFLIAv2_0.getInstance();
-		qfAufliaLogic = SMTLogic.QF_AUFLIAv2_0.getInstance();
+		qfufLogic = Logic.QF_UFv2_0.getInstance();
+		aufliaLogic = Logic.AUFLIAv2_0.getInstance();
+		qfAufliaLogic = Logic.QF_AUFLIAv2_0.getInstance();
 	}
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
-			final String ppPredStr, final SMTLogic expectedSMTLogic) {
+			final String ppPredStr, final Logic expectedSMTLogic) {
 		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv);
 		final ISimpleSequent sequent = make((List<Predicate>) null,
 				goalPredicate, ff);
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(sequent));
 
-		final SMTLogic logic = determineLogic(sequent, V2_0);
+		final Logic logic = determineLogic(sequent, V2_0);
 
 		assertEquals("", expectedSMTLogic.toString(), logic.toString());
 	}

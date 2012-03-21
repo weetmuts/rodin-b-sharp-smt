@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 

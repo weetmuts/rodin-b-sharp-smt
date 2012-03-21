@@ -42,10 +42,10 @@ import static org.eventb.smt.core.performance.realprojects.ResourceUtils.simplif
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.core.preferences.AbstractPreferences.CONFIG_INDEX_ID;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_CONFIG_INDEX;
+import static org.eventb.smt.core.preferences.AbstractPreferences.SELECTED_CONFIG_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVER_PREFERENCES_ID;
+import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.AbstractPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.AbstractPreferences.VERIT_PATH_ID;
 
@@ -367,8 +367,8 @@ public abstract class BuilderTest extends TestCase {
 
 		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
-		store.setValue(SOLVER_PREFERENCES_ID, preferencesBuilder.toString());
-		store.setValue(CONFIG_INDEX_ID, DEFAULT_CONFIG_INDEX);
+		store.setValue(SOLVER_CONFIGS_ID, preferencesBuilder.toString());
+		store.setValue(SELECTED_CONFIG_ID, DEFAULT_SELECTED_CONFIG);
 		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");
 		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}

@@ -12,7 +12,7 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,11 +38,11 @@ import org.eventb.smt.core.internal.ast.SMTSignatureV2_0Verit;
 import org.eventb.smt.core.internal.ast.macros.SMTMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
+import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.QF_AUFLIAv2_0;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Ignore;
@@ -57,7 +57,7 @@ import org.junit.Test;
 public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe,
 			powpowTe;
-	protected static final SMTLogic defaultLogic, veriTLogicWithBool;
+	protected static final Logic defaultLogic, veriTLogicWithBool;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 
 	static {
@@ -74,9 +74,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		powpowTe = mTypeEnvironment(//
 				"S", "ℙ(S)", "R", "ℙ(R)", "e", "ℙ(ℙ(S) ↔ ℤ) ↔ ℙ(R)");
 
-		defaultLogic = SMTLogic.QF_AUFLIAv2_0VeriT.getInstance();
-		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
-				SMTTheoryV2_0.Ints.getInstance(),
+		defaultLogic = Logic.QF_AUFLIAv2_0VeriT.getInstance();
+		veriTLogicWithBool = new Logic.SMTLogicVeriT(Logic.UNKNOWN,
+				TheoryV2_0.Ints.getInstance(),
 				VeriTBooleansV2_0.getInstance());
 	}
 
@@ -88,7 +88,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 	private static void testTranslationV2_0ChooseLogic(
 			final ITypeEnvironment typeEnvironment, final String predStr,
-			final String expectedSMTNode, final SMTLogic logic) {
+			final String expectedSMTNode, final Logic logic) {
 		testTranslationV2_0(typeEnvironment, predStr, expectedSMTNode,
 				defaultFailMessage, VERIT.toString(), logic);
 	}
@@ -123,7 +123,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 	private static void testTranslationV2_0(final ITypeEnvironment iTypeEnv,
 			final String predStr, final String expectedSMTNode,
-			final String failMessage, final String solver, final SMTLogic logic)
+			final String failMessage, final String solver, final Logic logic)
 			throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
 
@@ -180,7 +180,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 	private static void testTranslationV2_0Verit(final Predicate ppred,
 			final String expectedSMTNode, final String failMessage,
-			final String solver, final SMTLogic logic) {
+			final String solver, final Logic logic) {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
@@ -189,7 +189,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
-	public static void testTypeEnvironmentFuns(final SMTLogic logic,
+	public static void testTypeEnvironmentFuns(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV2_0 signature = translateTypeEnvironment(logic, te,
@@ -218,7 +218,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		}
 	}
 
-	public static void testTypeEnvironmentSorts(final SMTLogic logic,
+	public static void testTypeEnvironmentSorts(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV2_0 signature = translateTypeEnvironment(logic, te,
@@ -226,7 +226,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
 	}
 
-	public static void testTypeEnvironmentPreds(final SMTLogic logic,
+	public static void testTypeEnvironmentPreds(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV2_0 signature = translateTypeEnvironment(logic, te,
@@ -235,7 +235,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	}
 
 	protected static SMTSignatureV2_0 translateTypeEnvironment(
-			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
+			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
@@ -431,9 +431,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
-				QF_AUFLIAv2_0.getInstance().getName(), new SMTTheory[] {
-						SMTTheoryV2_0.Ints.getInstance(),
+		final Logic defaultPlusBooleanLogic = new Logic.SMTLogicVeriT(
+				QF_AUFLIAv2_0.getInstance().getName(), new Theory[] {
+						TheoryV2_0.Ints.getInstance(),
 						VeriTBooleansV2_0.getInstance() });
 
 		testTranslationV2_0ChooseLogic(defaultTe, "u = TRUE", "(= u TRUE)",
@@ -873,9 +873,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 	@Test
 	public void testRule21() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
-				QF_AUFLIAv2_0.getInstance().getName(), new SMTTheory[] {
-						SMTTheoryV2_0.Ints.getInstance(),
+		final Logic defaultPlusBooleanLogic = new Logic.SMTLogicVeriT(
+				QF_AUFLIAv2_0.getInstance().getName(), new Theory[] {
+						TheoryV2_0.Ints.getInstance(),
 						VeriTBooleansV2_0.getInstance() });
 
 		testTranslationV2_0ChooseLogic(defaultTe, "bool(⊤) ∈ BOOL",

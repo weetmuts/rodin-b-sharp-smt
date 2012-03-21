@@ -11,13 +11,13 @@
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.SMTTranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class AxiomsTestWithPPV2_0 extends CommonSolverRunTests {
 	static ITypeEnvironment simple_te = mTypeEnvironment(//
 			"PS", "ℙ(ℙ(ℤ))", "S", "ℙ(ℤ)", "x", "ℤ");
 
-	public AxiomsTestWithPPV2_0(final SMTSolver solver) {
+	public AxiomsTestWithPPV2_0(final SolverKind solver) {
 		super(solver, null, V2_0, !GET_UNSAT_CORE);
 	}
 

@@ -13,7 +13,7 @@ package org.eventb.smt.tests.unit;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.pptrans.Translator.isInGoal;
 import static org.eventb.smt.core.internal.translation.SMTThroughPP.translateTE;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +30,7 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
+import org.eventb.smt.core.internal.ast.theories.Logic;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
@@ -44,11 +44,11 @@ import org.junit.Test;
  */
 public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe;
-	public static final SMTLogic defaultLogic;
+	public static final Logic defaultLogic;
 	static {
 		defaultTe = mTypeEnvironment("S", "ℙ(S)", "r", "ℙ(R)", "s", "ℙ(R)",
 				"a", "ℤ", "b", "ℤ", "c", "ℤ", "u", "BOOL", "v", "BOOL");
-		defaultLogic = SMTLogic.AUFLIAv2_0.getInstance();
+		defaultLogic = Logic.AUFLIAv2_0.getInstance();
 	}
 
 	private void testTranslationV2_0(final ITypeEnvironment te,
@@ -109,7 +109,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 				SMTLIB_Translation_Failed);
 	}
 
-	public static void testTypeEnvironmentFuns(final SMTLogic logic,
+	public static void testTypeEnvironmentFuns(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignature signature = translateTypeEnvironment(logic, te,
@@ -117,7 +117,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		testTypeEnvironmentFuns(signature, expectedFunctions, predString);
 	}
 
-	public static void testTypeEnvironmentSorts(final SMTLogic logic,
+	public static void testTypeEnvironmentSorts(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignature signature = translateTypeEnvironment(logic, te,
@@ -126,7 +126,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	protected static SMTSignature translateTypeEnvironment(
-			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
+			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 

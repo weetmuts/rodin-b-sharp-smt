@@ -13,8 +13,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.internal.preferences.BundledSolverDesc;
-import org.eventb.smt.core.preferences.BundledSolverLoadingException;
+import org.eventb.smt.core.internal.preferences.SolverConfigDesc;
+import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.junit.Test;
 
 /**
@@ -23,20 +23,20 @@ import org.junit.Test;
  */
 public class BundledSolverDescTests {
 
-	BundledSolverDesc bundledSolverDesc;
+	SolverConfigDesc bundledSolverDesc;
 
 	public void makeBundledSolverDesc(final String bundle, final String id,
 			final String name, final String kind, final String binary,
 			final String args, final String smtlib) {
-		bundledSolverDesc = new BundledSolverDesc(new BundledSolverConfigElt(
+		bundledSolverDesc = new SolverConfigDesc(new BundledSolverConfigElt(
 				bundle, id, name, kind, binary, args, smtlib));
 	}
 
 	public void makeBundledSolverDesc(final String id, final String name,
 			final String kind, final String binary, final String args,
 			final String smtlib) {
-		bundledSolverDesc = new BundledSolverDesc(new BundledSolverConfigElt(
-				id, name, kind, binary, args, smtlib));
+		bundledSolverDesc = new SolverConfigDesc(new BundledSolverConfigElt(id,
+				name, kind, binary, args, smtlib));
 	}
 
 	public static class BundledSolverConfigElt implements IConfigurationElement {
@@ -172,50 +172,49 @@ public class BundledSolverDescTests {
 		}
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void nullID() throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			ExtensionLoadingException {
 		makeBundledSolverDesc(null, "", "", "", "", "");
 
 		bundledSolverDesc.load();
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void dotInID() throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			ExtensionLoadingException {
 		makeBundledSolverDesc("bundled.solver", "", "", "", "", "", "");
 
 		bundledSolverDesc.load();
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void whitespaceInID() throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			ExtensionLoadingException {
 		makeBundledSolverDesc("bundled solver", "", "", "", "", "", "");
 
 		bundledSolverDesc.load();
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void testColonInIDException() throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			ExtensionLoadingException {
 		makeBundledSolverDesc("bundled:solver", "", "", "", "", "", "");
 
 		bundledSolverDesc.load();
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void testNullPathException() throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			ExtensionLoadingException {
 		makeBundledSolverDesc("bundledsolver", "", "", null, "", "");
 
 		bundledSolverDesc.load();
 	}
 
-	@Test(expected = BundledSolverLoadingException.class)
+	@Test(expected = ExtensionLoadingException.class)
 	public void testInvalidBundleNameException()
-			throws InvalidRegistryObjectException,
-			BundledSolverLoadingException {
+			throws InvalidRegistryObjectException, ExtensionLoadingException {
 		makeBundledSolverDesc("bundledsolver", "", "", "bundledsolver", "", "");
 
 		bundledSolverDesc.load();

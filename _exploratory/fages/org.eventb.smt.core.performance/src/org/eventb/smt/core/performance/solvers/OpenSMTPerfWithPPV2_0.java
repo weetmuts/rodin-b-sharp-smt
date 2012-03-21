@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.core.provers.SMTSolver.OPENSMT;
+import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 

@@ -22,33 +22,33 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.pptrans.Translator;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheoryV1_2;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Test;
 
 public class LogicTestsWithPPV1_2 extends AbstractTests {
 	private static final ITypeEnvironment defaultTe;
-	private static final SMTLogic smtLibUnderlyingLogic;
-	private static final SMTLogic boolLogic;
+	private static final Logic smtLibUnderlyingLogic;
+	private static final Logic boolLogic;
 	static {
 		defaultTe = mTypeEnvironment("a", "ℤ", "p", "BOOL", "P", "ℙ(BOOL)");
-		boolLogic = new SMTLogic.SMTLogicPP(SMTLogic.UNKNOWN,
-				SMTTheoryV1_2.Ints.getInstance(),
-				SMTTheoryV1_2.Booleans.getInstance());
-		smtLibUnderlyingLogic = SMTLogic.SMTLIBUnderlyingLogicV1_2
+		boolLogic = new Logic.SMTLogicPP(Logic.UNKNOWN,
+				TheoryV1_2.Ints.getInstance(),
+				TheoryV1_2.Booleans.getInstance());
+		smtLibUnderlyingLogic = Logic.SMTLIBUnderlyingLogicV1_2
 				.getInstance();
 	}
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
-			final String ppPredStr, final SMTLogic expectedSMTLogic) {
+			final String ppPredStr, final Logic expectedSMTLogic) {
 		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv);
 		final ISimpleSequent sequent = make((List<Predicate>) null,
 				goalPredicate, ff);
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(sequent));
 
-		final SMTLogic logic = determineLogic(sequent, V1_2);
+		final Logic logic = determineLogic(sequent, V1_2);
 
 		assertEquals("", expectedSMTLogic.toString(), logic.toString());
 	}

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.unsatcore;
 
-import static org.eventb.smt.core.provers.SMTSolver.Z3;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 public class UnsatCoreZ3PerfWithPP extends UnsatCoreExtractionPerfWithPP {

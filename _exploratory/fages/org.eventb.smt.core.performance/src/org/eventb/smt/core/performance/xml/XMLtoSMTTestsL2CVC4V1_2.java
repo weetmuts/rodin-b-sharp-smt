@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.provers.SMTSolver.CVC4;
+import static org.eventb.smt.core.provers.SolverKind.CVC4;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
 

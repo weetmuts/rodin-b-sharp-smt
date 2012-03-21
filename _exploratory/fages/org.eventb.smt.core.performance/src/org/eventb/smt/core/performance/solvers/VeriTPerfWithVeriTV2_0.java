@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 public class VeriTPerfWithVeriTV2_0 extends SolverPerfWithVeriT {

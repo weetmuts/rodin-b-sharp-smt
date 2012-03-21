@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.core.provers.SMTSolver.ALT_ERGO;
+import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 
 public class AxiomsTestWithAltErgoPPV2_0 extends AxiomsTestWithPPV2_0 {
 

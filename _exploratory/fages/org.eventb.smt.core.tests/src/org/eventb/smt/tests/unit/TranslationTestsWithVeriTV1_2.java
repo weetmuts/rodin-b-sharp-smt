@@ -12,7 +12,7 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
-import static org.eventb.smt.core.provers.SMTSolver.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,11 +38,11 @@ import org.eventb.smt.core.internal.ast.SMTSignatureV1_2Verit;
 import org.eventb.smt.core.internal.ast.macros.SMTMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic;
-import org.eventb.smt.core.internal.ast.theories.SMTTheory;
+import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Theory;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2;
+import org.eventb.smt.core.internal.ast.theories.Logic.VeriTSMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Ignore;
@@ -58,7 +58,7 @@ import org.junit.Test;
 public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe,
 			powpowTe;
-	protected static final SMTLogic defaultLogic, veriTLogicWithBool;
+	protected static final Logic defaultLogic, veriTLogicWithBool;
 	protected static final String defaultFailMessage = "SMT-LIB translation failed: ";
 
 	static {
@@ -75,8 +75,8 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		powpowTe = mTypeEnvironment(//
 				"S", "ℙ(S)", "R", "ℙ(R)", "e", "ℙ(ℙ(S) ↔ ℤ) ↔ ℙ(R)");
 
-		defaultLogic = SMTLogic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
-		veriTLogicWithBool = new SMTLogic.SMTLogicVeriT(SMTLogic.UNKNOWN,
+		defaultLogic = Logic.VeriTSMTLIBUnderlyingLogicV1_2.getInstance();
+		veriTLogicWithBool = new Logic.SMTLogicVeriT(Logic.UNKNOWN,
 				VeritPredefinedTheoryV1_2.getInstance(),
 				VeriTBooleansV1_2.getInstance());
 	}
@@ -89,7 +89,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	private static void testTranslationV1_2ChooseLogic(
 			final ITypeEnvironment typeEnvironment, final String predStr,
-			final String expectedSMTNode, final SMTLogic logic) {
+			final String expectedSMTNode, final Logic logic) {
 		testTranslationV1_2(typeEnvironment, predStr, expectedSMTNode,
 				defaultFailMessage, VERIT.toString(), logic);
 	}
@@ -124,7 +124,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
 			final String predStr, final String expectedSMTNode,
-			final String failMessage, final String solver, final SMTLogic logic)
+			final String failMessage, final String solver, final Logic logic)
 			throws AssertionError {
 		final Predicate pred = parse(predStr, iTypeEnv);
 
@@ -181,7 +181,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	private static void testTranslationV1_2Verit(final Predicate ppred,
 			final String expectedSMTNode, final String failMessage,
-			final String solver, final SMTLogic logic) {
+			final String solver, final Logic logic) {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
@@ -190,7 +190,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
-	public static void testTypeEnvironmentFuns(final SMTLogic logic,
+	public static void testTypeEnvironmentFuns(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
@@ -219,7 +219,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		}
 	}
 
-	public static void testTypeEnvironmentSorts(final SMTLogic logic,
+	public static void testTypeEnvironmentSorts(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
@@ -227,7 +227,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 		testTypeEnvironmentSorts(signature, expectedFunctions, predString);
 	}
 
-	public static void testTypeEnvironmentPreds(final SMTLogic logic,
+	public static void testTypeEnvironmentPreds(final Logic logic,
 			final ITypeEnvironment te, final Set<String> expectedFunctions,
 			final String predString) {
 		final SMTSignatureV1_2 signature = translateTypeEnvironment(logic, te,
@@ -236,7 +236,7 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	}
 
 	protected static SMTSignatureV1_2 translateTypeEnvironment(
-			final SMTLogic logic, final ITypeEnvironment iTypeEnv,
+			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 		return (SMTSignatureV1_2) SMTThroughVeriT.translateTE(logic, ppPred,
@@ -436,9 +436,9 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	 */
 	@Test
 	public void testPredBoolEqu() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
+		final Logic defaultPlusBooleanLogic = new Logic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
-				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
+				new Theory[] { VeritPredefinedTheoryV1_2.getInstance(),
 						VeriTBooleansV1_2.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "u = TRUE", "(= u TRUE)",
@@ -893,9 +893,9 @@ public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 
 	@Test
 	public void testRule21() {
-		final SMTLogic defaultPlusBooleanLogic = new SMTLogic.SMTLogicVeriT(
+		final Logic defaultPlusBooleanLogic = new Logic.SMTLogicVeriT(
 				VeriTSMTLIBUnderlyingLogicV1_2.getInstance().getName(),
-				new SMTTheory[] { VeritPredefinedTheoryV1_2.getInstance(),
+				new Theory[] { VeritPredefinedTheoryV1_2.getInstance(),
 						VeriTBooleansV1_2.getInstance() });
 
 		testTranslationV1_2ChooseLogic(defaultTe, "bool(⊤) ∈ BOOL",

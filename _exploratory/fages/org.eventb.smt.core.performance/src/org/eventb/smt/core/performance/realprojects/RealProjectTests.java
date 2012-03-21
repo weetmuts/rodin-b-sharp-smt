@@ -11,8 +11,8 @@
 package org.eventb.smt.core.performance.realprojects;
 
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
-import static org.eventb.smt.core.translation.SMTTranslationApproach.USING_PP;
-import static org.eventb.smt.core.translation.SMTTranslationApproach.USING_VERIT;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import java.io.File;
 import java.net.URL;
@@ -23,7 +23,7 @@ import org.eventb.core.IPSRoot;
 import org.eventb.core.IPSStatus;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
-import org.eventb.smt.core.translation.SMTTranslationApproach;
+import org.eventb.smt.core.translation.TranslationApproach;
 import org.rodinp.core.RodinDBException;
 
 /**
@@ -54,10 +54,10 @@ public class RealProjectTests extends BuilderTest {
 		enableAutoProver();
 	}
 
-	private final void setSMTTactic(final SMTTranslationApproach approach,
+	private final void setSMTTactic(final TranslationApproach approach,
 			final String solverConfigId) {
 		final IParameterizerDescriptor tacticDescriptor;
-		if (approach.equals(SMTTranslationApproach.USING_PP)) {
+		if (approach.equals(TranslationApproach.USING_PP)) {
 			tacticDescriptor = smtPpParamTacticDescriptor;
 		} else {
 			tacticDescriptor = smtVeritParamTacticDescriptor;
@@ -106,7 +106,7 @@ public class RealProjectTests extends BuilderTest {
 		}
 	}
 
-	private final void doSMTTest(final SMTTranslationApproach approach,
+	private final void doSMTTest(final TranslationApproach approach,
 			final String solverConfigId) throws Exception {
 		setSMTTactic(approach, solverConfigId);
 		System.out
