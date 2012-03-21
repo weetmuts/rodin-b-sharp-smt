@@ -45,8 +45,26 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.eventb.smt.ui.internal.preferences.SMTPreferencePage"
-            id="org.eventb.smt.provers.ui.page1"
-            name="%page.name">
+            id="org.eventb.smt.ui.preferences.smt"
+            name="%preferencePage.smtcategory.name">
+      </page>
+      <page
+            category="org.eventb.smt.ui.preferences.smt"
+            class="org.eventb.smt.ui.internal.preferences.SolverConfigsPreferencePage"
+            id="org.eventb.smt.ui.preferences.configurations"
+            name="%preferencePage.configspage.name">
+      </page>
+      <page
+            category="org.eventb.smt.ui.preferences.smt"
+            class="org.eventb.smt.ui.internal.preferences.SMTSolversPreferencePage"
+            id="org.eventb.smt.ui.preferences.solvers"
+            name="%preferencePage.solverspage.name">
+      </page>
+      <page
+            category="org.eventb.smt.ui.preferences.smt"
+            class="org.eventb.smt.ui.internal.preferences.SMTTranslationPreferencePage"
+            id="org.eventb.smt.ui.preferences.translation"
+            name="%preferencePage.translationpage.name">
       </page>
    </extension>
 </plugin>
