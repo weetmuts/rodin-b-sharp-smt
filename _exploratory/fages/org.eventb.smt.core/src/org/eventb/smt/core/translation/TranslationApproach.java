@@ -13,7 +13,7 @@ package org.eventb.smt.core.translation;
 /**
  * Enumeration used to describe what approach is being used *
  */
-public enum SMTTranslationApproach {
+public enum TranslationApproach {
 	USING_PP("PP"), USING_VERIT("veriT");
 
 	/**
@@ -27,7 +27,7 @@ public enum SMTTranslationApproach {
 	 * @param name
 	 *            the name used to the approach
 	 */
-	private SMTTranslationApproach(final String name) {
+	private TranslationApproach(final String name) {
 		this.name = name;
 	}
 

@@ -16,7 +16,7 @@ package org.eventb.smt.core.provers;
  * @author vitor
  * 
  */
-public enum SMTSolver {
+public enum SolverKind {
 	ALT_ERGO("alt-ergo"), //
 	CVC3("cvc3"), //
 	CVC4("cvc4"), //
@@ -31,11 +31,11 @@ public enum SMTSolver {
 
 	private final String solverName;
 
-	private SMTSolver(final String name) {
+	private SolverKind(final String name) {
 		solverName = name;
 	}
 
-	private SMTSolver() {
+	private SolverKind() {
 		solverName = "unknown";
 	}
 
@@ -45,9 +45,9 @@ public enum SMTSolver {
 	 *            the name of the solver we want to get, must not be null
 	 * @return the solver which name is the given name, or UNKNOWN
 	 */
-	public static SMTSolver parseSolver(final String name) {
+	public static SolverKind parseKind(final String name) {
 		if (name != null) {
-			for (final SMTSolver solver : SMTSolver.values()) {
+			for (final SolverKind solver : SolverKind.values()) {
 				if (solver.solverName.equals(name)) {
 					return solver;
 				}

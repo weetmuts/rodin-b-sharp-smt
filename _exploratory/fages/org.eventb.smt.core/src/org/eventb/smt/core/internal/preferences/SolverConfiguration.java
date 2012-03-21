@@ -10,33 +10,24 @@
 
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.provers.SMTSolver.UNKNOWN;
+import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
-import org.eventb.smt.core.internal.log.SMTStatus;
-import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
-import org.eventb.smt.core.provers.SMTSolver;
+import org.eventb.smt.core.preferences.AbstractSolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
- * This class describes an SMT solver configuration.
+ * This class describes an SMT solverId configuration.
  * 
  */
-public class SMTSolverConfiguration extends AbstractSolverConfiguration {
+public class SolverConfiguration extends AbstractSolverConfig {
 	public static final boolean EDITABLE = true;
 	public static final int NB_FIELDS = 7;
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
-	private static final String UTF8 = "UTF-8"; //$NON-NLS-1$
 
 	private static final String DEFAULT_CONFIG_ID = ""; //$NON-NLS-1$
 	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
-	private static final SMTSolver DEFAULT_SOLVER = UNKNOWN;
-	private static final String DEFAULT_SOLVER_PATH = ""; //$NON-NLS-1$
 	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
 
@@ -44,9 +35,7 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 
 	final private String name;
 
-	final private SMTSolver solver;
-
-	final private String path;
+	final private String solverId;
 
 	final private String args;
 
@@ -55,40 +44,38 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 	final private boolean editable;
 
 	/**
-	 * Constructs a new SMTSolverConfiguration
+	 * Constructs a new SolverConfiguration
 	 * 
 	 * @param id
-	 *            the id of the solver
-	 * @param solver
-	 *            the solver
-	 * @param path
-	 *            the path of the solver
+	 *            the id of the configuration
+	 * @param solverId
+	 *            the id of the solverId
 	 * @param args
-	 *            arguments that the solver can use
+	 *            arguments that the solverId can use
 	 * @param smtlibVersion
-	 *            version of SMT-LIB to use with this solver configuration
+	 *            version of SMT-LIB to use with this solverId configuration
+	 * @param editable
+	 *            either the configuration is editable by the user or not
 	 */
-	public SMTSolverConfiguration(final String id, final String name,
-			final SMTSolver solver, final String path, final String args,
+	public SolverConfiguration(final String id, final String name,
+			final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion, final boolean editable) {
 		this.id = id;
 		this.name = name;
-		this.solver = solver;
-		this.path = path;
+		this.solverId = solverId;
 		this.args = args;
 		this.smtlibVersion = smtlibVersion;
 		this.editable = editable;
 	}
 
-	public SMTSolverConfiguration(final String id, final String name,
-			final SMTSolver solver, final String path, final String args,
+	public SolverConfiguration(final String id, final String name,
+			final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, name, solver, path, args, smtlibVersion, EDITABLE);
+		this(id, name, solverId, args, smtlibVersion, EDITABLE);
 	}
 
-	public SMTSolverConfiguration() {
-		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER,
-				DEFAULT_SOLVER_PATH, DEFAULT_SOLVER_ARGS,
+	public SolverConfiguration() {
+		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, null, DEFAULT_SOLVER_ARGS,
 				DEFAULT_SMTLIB_VERSION);
 	}
 
@@ -103,13 +90,8 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 	}
 
 	@Override
-	public SMTSolver getSolver() {
-		return solver;
-	}
-
-	@Override
-	public String getPath() {
-		return path;
+	public String getSolverId() {
+		return solverId;
 	}
 
 	@Override
@@ -127,32 +109,11 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 		return editable;
 	}
 
-	private static String encode(final String s) {
-		try {
-			return URLEncoder.encode(s, UTF8);
-		} catch (UnsupportedEncodingException e) {
-			SMTStatus.smtError(
-					"Error while encoding the solver configuration.", e);
-			return "";
-		}
-	}
-
-	public static String decode(final String s) {
-		try {
-			return URLDecoder.decode(s, UTF8);
-		} catch (UnsupportedEncodingException e) {
-			SMTStatus.smtError(
-					"Error while decoding the solver configuration.", e);
-			return "";
-		}
-	}
-
 	@Override
 	public void toString(final StringBuilder builder) {
 		builder.append(encode(id)).append(SEPARATOR);
 		builder.append(encode(name)).append(SEPARATOR);
-		builder.append(solver).append(SEPARATOR);
-		builder.append(encode(path)).append(SEPARATOR);
+		builder.append(solverId).append(SEPARATOR);
 		builder.append(encode(args)).append(SEPARATOR);
 		builder.append(smtlibVersion).append(SEPARATOR);
 		builder.append(editable);
@@ -164,8 +125,7 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 		int result = 1;
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
-		result = prime * result + (solver == null ? 0 : solver.hashCode());
-		result = prime * result + (path == null ? 0 : path.hashCode());
+		result = prime * result + (solverId == null ? 0 : solverId.hashCode());
 		result = prime * result + (args == null ? 0 : args.hashCode());
 		result = prime * result
 				+ (smtlibVersion == null ? 0 : smtlibVersion.hashCode());
@@ -191,7 +151,7 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final SMTSolverConfiguration other = (SMTSolverConfiguration) obj;
+		final SolverConfiguration other = (SolverConfiguration) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -206,18 +166,11 @@ public class SMTSolverConfiguration extends AbstractSolverConfiguration {
 		} else if (!name.equals(other.name)) {
 			return false;
 		}
-		if (solver == null) {
-			if (other.solver != null) {
+		if (solverId == null) {
+			if (other.solverId != null) {
 				return false;
 			}
-		} else if (!solver.equals(other.solver)) {
-			return false;
-		}
-		if (path == null) {
-			if (other.path != null) {
-				return false;
-			}
-		} else if (!path.equals(other.path)) {
+		} else if (!solverId.equals(other.solverId)) {
 			return false;
 		}
 		if (args == null) {
