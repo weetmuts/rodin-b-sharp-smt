@@ -10,17 +10,15 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
 
 /**
  * This is a content provider for the Solvers' details viewer.
  */
-public class SMTSolverConfigurationsContentProvider implements
-		IStructuredContentProvider {
+public class ContentProvider<T> implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
@@ -31,7 +29,7 @@ public class SMTSolverConfigurationsContentProvider implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(final Object inputElement) {
-		return ((List<AbstractSolverConfiguration>) inputElement).toArray();
+		return ((Map<String, T>) inputElement).values().toArray();
 	}
 
 	@Override

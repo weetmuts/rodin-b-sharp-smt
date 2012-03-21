@@ -18,12 +18,13 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.core.preferences.AbstractBundledSolverRegistry.getBundledSolverRegistry;
-import static org.eventb.smt.core.preferences.AbstractSolverConfiguration.newConfig;
-import static org.eventb.smt.core.provers.SMTSolver.parseSolver;
-import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
+import static org.eventb.smt.core.preferences.AbstractSMTSolver.newSolver;
+import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,11 +39,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSolverConfiguration;
-import org.eventb.smt.core.preferences.BundledSolverLoadingException;
-import org.eventb.smt.core.preferences.IBundledSolverRegistry;
-import org.eventb.smt.core.provers.SMTSolver;
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.preferences.AbstractSMTSolver;
+import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.IRegistry;
+import org.eventb.smt.core.provers.SolverKind;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an
@@ -50,32 +50,29 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * 
  * @author guyot
  */
-public class SMTSolverConfigurationDialog extends Dialog {
-	private static final String CONFIG_ID_LABEL = "Config ID";
-	private static final String CONFIG_NAME_LABEL = "Config name";
-	private static final String SOLVER_LABEL = "Solver";
-	private static final String SOLVER_PATH_LABEL = "Solver path";
-	private static final String SOLVER_ARGS_LABEL = "Solver arguments";
-	private static final String SMT_LIB_LABEL = "SMT-LIB";
+public class SMTSolverDialog extends Dialog {
+	private static final String SOLVER_ID_LABEL = "Solver ID";
+	private static final String SOLVER_NAME_LABEL = "Name";
+	private static final String SOLVER_KIND_LABEL = "Kind";
+	private static final String SOLVER_PATH_LABEL = "Path";
 
 	public static final boolean SHOW_ERRORS = true;
 
 	int returnCode = 0;
 
 	final AbstractPreferences smtPrefs;
-	AbstractSolverConfiguration solverConfig;
+	AbstractSMTSolver solver;
 
-	public SMTSolverConfigurationDialog(final Shell parentShell,
-			final AbstractPreferences smtPrefs,
-			final AbstractSolverConfiguration solverConfig) {
+	public SMTSolverDialog(final Shell parentShell,
+			final AbstractPreferences smtPrefs, final AbstractSMTSolver solver) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
-		if (solverConfig != null) {
-			this.solverConfig = solverConfig;
+		if (solver != null) {
+			this.solver = solver;
 		} else {
-			this.solverConfig = newConfig();
+			this.solver = newSolver();
 		}
-		setText("Solver configuration");
+		setText("Solver integration");
 	}
 
 	private void createContents(final Shell shell) {
@@ -86,13 +83,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		 * Configuration ID
 		 */
 		final Label idLabel = new Label(shell, SWT.NONE);
-		idLabel.setText(CONFIG_ID_LABEL);
+		idLabel.setText(SOLVER_ID_LABEL);
 		data = new GridData();
 		data.horizontalSpan = 1;
 		idLabel.setLayoutData(data);
 
 		final Text idText = new Text(shell, SWT.BORDER);
-		idText.setText(solverConfig.getID());
+		idText.setText(solver.getID());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		idText.setLayoutData(data);
@@ -101,13 +98,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		 * Configuration name
 		 */
 		final Label nameLabel = new Label(shell, SWT.NONE);
-		nameLabel.setText(CONFIG_NAME_LABEL);
+		nameLabel.setText(SOLVER_NAME_LABEL);
 		data = new GridData();
 		data.horizontalSpan = 1;
 		nameLabel.setLayoutData(data);
 
 		final Text nameText = new Text(shell, SWT.BORDER);
-		nameText.setText(solverConfig.getName());
+		nameText.setText(solver.getName());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		nameText.setLayoutData(data);
@@ -116,17 +113,17 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		 * Solver
 		 */
 		final Label solverLabel = new Label(shell, SWT.NONE);
-		solverLabel.setText(SOLVER_LABEL);
+		solverLabel.setText(SOLVER_KIND_LABEL);
 		data = new GridData();
 		data.horizontalSpan = 1;
 		solverLabel.setLayoutData(data);
 
 		final Combo solverCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
-		for (final SMTSolver solver : SMTSolver.values()) {
-			solverCombo.add(solver.toString());
+		for (final SolverKind kind : SolverKind.values()) {
+			solverCombo.add(kind.toString());
 		}
-		solverCombo.setText(solverConfig.getSolver().toString());
+		solverCombo.setText(solver.getKind().toString());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
@@ -141,7 +138,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		solverPathLabel.setLayoutData(data);
 
 		final Text solverPathText = new Text(shell, SWT.BORDER);
-		solverPathText.setText(solverConfig.getPath());
+		solverPathText.setText(solver.getPath().toOSString());
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		solverPathText.setLayoutData(data);
@@ -163,40 +160,6 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		browseButton.setLayoutData(data);
 
 		/**
-		 * Solver arguments
-		 */
-		final Label argsLabel = new Label(shell, SWT.NONE);
-		argsLabel.setText(SOLVER_ARGS_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		argsLabel.setLayoutData(data);
-
-		final Text argsText = new Text(shell, SWT.BORDER);
-		argsText.setText(solverConfig.getArgs());
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		argsText.setLayoutData(data);
-
-		/**
-		 * SMT-LIB version
-		 */
-		final Label smtlibLabel = new Label(shell, SWT.NONE);
-		smtlibLabel.setText(SMT_LIB_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		smtlibLabel.setLayoutData(data);
-
-		final Combo smtlibCombo = new Combo(shell, getStyle() | DROP_DOWN
-				| READ_ONLY);
-		for (final SMTLIBVersion smtlibVersion : SMTLIBVersion.values()) {
-			smtlibCombo.add(smtlibVersion.toString());
-		}
-		smtlibCombo.setText(solverConfig.getSmtlibVersion().toString());
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		smtlibCombo.setLayoutData(data);
-
-		/**
 		 * OK Button
 		 */
 		final Button okButton = new Button(shell, SWT.PUSH);
@@ -208,14 +171,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 			public void widgetSelected(SelectionEvent event) {
 				final String id = idText.getText();
 				final String name = nameText.getText();
-				final String path = solverPathText.getText();
-				if (id.equals(solverConfig.getID()) || smtPrefs.validId(id)) {
-					if (isValidPath(path, SHOW_ERRORS)) {
+				final String pathStr = solverPathText.getText();
+				if (id.equals(solver.getID()) || smtPrefs.validId(id)) {
+					if (isValidPath(pathStr, SHOW_ERRORS)) {
+						final IPath path = new Path(pathStr);
 						// TODO set the right name value
-						solverConfig = newConfig(id, name,
-								parseSolver(solverCombo.getText()), path,
-								argsText.getText(),
-								parseVersion(smtlibCombo.getText()));
+						solver = newSolver(id, name,
+								parseKind(solverCombo.getText()), path);
 						returnCode = OK;
 						shell.close();
 					}
@@ -226,13 +188,13 @@ public class SMTSolverConfigurationDialog extends Dialog {
 					errBuilder.append("The solver ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final IBundledSolverRegistry registry = getBundledSolverRegistry();
+						final IRegistry<?> registry = getBundledSolverRegistry();
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
-						for (final AbstractSolverConfiguration bundledConfig : registry
-								.getSolverConfigs()) {
+						for (final Object elem : registry.getMap().values()) {
+							final AbstractSMTSolver bundledSolver = (AbstractSMTSolver) elem;
 							errBuilder2.append("'");
-							errBuilder2.append(bundledConfig.getID());
+							errBuilder2.append(bundledSolver.getID());
 							errBuilder2.append("'\n");
 						}
 						errBuilder2.append("'.");
@@ -240,7 +202,7 @@ public class SMTSolverConfigurationDialog extends Dialog {
 						// TODO log the error
 						errBuilder2 = new StringBuilder(
 								"The specified solver ID is reserved.");
-					} catch (BundledSolverLoadingException e) {
+					} catch (ExtensionLoadingException e) {
 						// TODO log the error
 						errBuilder2 = new StringBuilder(
 								"The specified solver ID is reserved.");
@@ -281,8 +243,8 @@ public class SMTSolverConfigurationDialog extends Dialog {
 		}
 	}
 
-	public AbstractSolverConfiguration getSolverConfig() {
-		return solverConfig;
+	public AbstractSMTSolver getSolver() {
+		return solver;
 	}
 
 	public int open() {
