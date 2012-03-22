@@ -42,6 +42,7 @@ import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
+import org.eventb.smt.core.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.AbstractSMTSolver;
 import org.eventb.smt.core.preferences.AbstractSolverConfig;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
@@ -59,8 +60,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String LAST_OPENSMT_BIN = "opensmt-20101017";
 	public static final String LAST_VERIT_BIN = "veriT-dev-r2863";
 	public static final String LAST_Z3_BIN = "z3-3.2";
-	public static final String BUNDLED_VERIT = "bundled_verit";
-	public static final String BUNDLED_CVC3 = "bundled_cvc3";
+	public static final String BUNDLED_VERIT = "org.eventb.smt.verit.verit_smt2";
+	public static final String BUNDLED_CVC3 = "org.eventb.smt.cvc3.cvc3_smt2";
 	public static final boolean GET_UNSAT_CORE = true;
 	public static final IPath DEFAULT_TEST_TRANSLATION_PATH = new Path(
 			System.getProperty("user.home") + File.separatorChar
@@ -195,33 +196,35 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static void setSolvers() {
-		getSMTPrefs().addSolver(LAST_ALTERGO);
-		getSMTPrefs().addSolver(LAST_CVC3);
-		getSMTPrefs().addSolver(LAST_CVC4);
-		getSMTPrefs().addSolver(LAST_MATHSAT5);
-		getSMTPrefs().addSolver(LAST_OPENSMT);
-		getSMTPrefs().addSolver(LAST_VERIT);
-		getSMTPrefs().addSolver(LAST_Z3);
-		getSMTPrefs().save();
-		System.out.println(getSMTPrefs().getSolvers().entrySet().toString());
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.addSolver(LAST_ALTERGO);
+		smtPrefs.addSolver(LAST_CVC3);
+		smtPrefs.addSolver(LAST_CVC4);
+		smtPrefs.addSolver(LAST_MATHSAT5);
+		smtPrefs.addSolver(LAST_OPENSMT);
+		smtPrefs.addSolver(LAST_VERIT);
+		smtPrefs.addSolver(LAST_Z3);
+		smtPrefs.save();
+		System.out.println(smtPrefs.getSolvers().entrySet().toString());
 	}
 
 	private static void setSolversConfigs() {
-		getSMTPrefs().addSolverConfig(ALTERGO_SMT1);
-		getSMTPrefs().addSolverConfig(ALTERGO_SMT2);
-		getSMTPrefs().addSolverConfig(CVC3_SMT1);
-		getSMTPrefs().addSolverConfig(CVC3_SMT2);
-		getSMTPrefs().addSolverConfig(CVC4_SMT1);
-		getSMTPrefs().addSolverConfig(CVC4_SMT2);
-		getSMTPrefs().addSolverConfig(MATHSAT5_SMT1);
-		getSMTPrefs().addSolverConfig(MATHSAT5_SMT2);
-		getSMTPrefs().addSolverConfig(OPENSMT_SMT1);
-		getSMTPrefs().addSolverConfig(OPENSMT_SMT2);
-		getSMTPrefs().addSolverConfig(VERIT_SMT1);
-		getSMTPrefs().addSolverConfig(VERIT_SMT2);
-		getSMTPrefs().addSolverConfig(Z3_SMT1);
-		getSMTPrefs().addSolverConfig(Z3_SMT2);
-		getSMTPrefs().save();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.addSolverConfig(ALTERGO_SMT1);
+		smtPrefs.addSolverConfig(ALTERGO_SMT2);
+		smtPrefs.addSolverConfig(CVC3_SMT1);
+		smtPrefs.addSolverConfig(CVC3_SMT2);
+		smtPrefs.addSolverConfig(CVC4_SMT1);
+		smtPrefs.addSolverConfig(CVC4_SMT2);
+		smtPrefs.addSolverConfig(MATHSAT5_SMT1);
+		smtPrefs.addSolverConfig(MATHSAT5_SMT2);
+		smtPrefs.addSolverConfig(OPENSMT_SMT1);
+		smtPrefs.addSolverConfig(OPENSMT_SMT2);
+		smtPrefs.addSolverConfig(VERIT_SMT1);
+		smtPrefs.addSolverConfig(VERIT_SMT2);
+		smtPrefs.addSolverConfig(Z3_SMT1);
+		smtPrefs.addSolverConfig(Z3_SMT2);
+		smtPrefs.save();
 	}
 
 	private static IPath makeSolverPath(final String binaryName) {
@@ -240,10 +243,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static void setTranslationPreferences() {
-		getSMTPrefs().setTranslationPath(
-				DEFAULT_TEST_TRANSLATION_PATH.toOSString());
-		getSMTPrefs().setVeriTPath(LAST_VERIT.getPath().toOSString());
-		getSMTPrefs().save();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH.toOSString());
+		smtPrefs.setVeriTPath(LAST_VERIT.getPath().toOSString());
+		smtPrefs.save();
 	}
 
 	/**
@@ -252,35 +255,36 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static void setSolverPreferences(final SolverKind kind,
 			final SMTLIBVersion smtlibVersion) {
+		final AbstractPreferences smtPrefs = getSMTPrefs();
 		switch (smtlibVersion) {
 		case V1_2:
 			switch (kind) {
 			case ALT_ERGO:
-				getSMTPrefs().setSelectedConfigID(true, ALTERGO_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, ALTERGO_SMT1.getID());
 				break;
 
 			case CVC3:
-				getSMTPrefs().setSelectedConfigID(true, CVC3_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, CVC3_SMT1.getID());
 				break;
 
 			case CVC4:
-				getSMTPrefs().setSelectedConfigID(true, CVC4_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, CVC4_SMT1.getID());
 				break;
 
 			case MATHSAT5:
-				getSMTPrefs().setSelectedConfigID(true, MATHSAT5_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, MATHSAT5_SMT1.getID());
 				break;
 
 			case OPENSMT:
-				getSMTPrefs().setSelectedConfigID(true, OPENSMT_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, OPENSMT_SMT1.getID());
 				break;
 
 			case VERIT:
-				getSMTPrefs().setSelectedConfigID(true, VERIT_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, VERIT_SMT1.getID());
 				break;
 
 			case Z3:
-				getSMTPrefs().setSelectedConfigID(true, Z3_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, Z3_SMT1.getID());
 				break;
 
 			default:
@@ -292,31 +296,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		default:
 			switch (kind) {
 			case ALT_ERGO:
-				getSMTPrefs().setSelectedConfigID(true, ALTERGO_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, ALTERGO_SMT2.getID());
 				break;
 
 			case CVC3:
-				getSMTPrefs().setSelectedConfigID(true, CVC3_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, CVC3_SMT2.getID());
 				break;
 
 			case CVC4:
-				getSMTPrefs().setSelectedConfigID(true, CVC4_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, CVC4_SMT2.getID());
 				break;
 
 			case MATHSAT5:
-				getSMTPrefs().setSelectedConfigID(true, MATHSAT5_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, MATHSAT5_SMT2.getID());
 				break;
 
 			case OPENSMT:
-				getSMTPrefs().setSelectedConfigID(true, OPENSMT_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, OPENSMT_SMT2.getID());
 				break;
 
 			case VERIT:
-				getSMTPrefs().setSelectedConfigID(true, VERIT_SMT2.getID());
+				smtPrefs.setSelectedConfigID(true, VERIT_SMT2.getID());
 				break;
 
 			case Z3:
-				getSMTPrefs().setSelectedConfigID(true, Z3_SMT1.getID());
+				smtPrefs.setSelectedConfigID(true, Z3_SMT2.getID());
 				break;
 
 			default:
@@ -325,7 +329,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 			break;
 		}
-		getSMTPrefs().save();
+		smtPrefs.save();
 	}
 
 	protected static void setSolverV1_2Preferences(final SolverKind kind) {
@@ -337,13 +341,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected static void setPreferencesForBundledVeriT() {
-		getSMTPrefs().setSelectedConfigID(true, BUNDLED_VERIT);
-		getSMTPrefs().save();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.setSelectedConfigID(true, BUNDLED_VERIT);
+		smtPrefs.save();
 	}
 
 	protected static void setPreferencesForBundledCvc3() {
-		getSMTPrefs().setSelectedConfigID(true, BUNDLED_CVC3);
-		getSMTPrefs().save();
+		final AbstractPreferences smtPrefs = getSMTPrefs();
+		smtPrefs.setSelectedConfigID(true, BUNDLED_CVC3);
+		smtPrefs.save();
+		System.out.println(getSMTPrefs().getSolverConfigs());
 	}
 
 	private void printPerf(final StringBuilder debugBuilder,
@@ -576,7 +583,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			} else if (expectedContainsExtracted) {
 				errorBuilder.append(callMessage);
 				errorBuilder.append(" (").append(lemmaName).append(") ");
-				errorBuilder.append(solverConfig.getID());
+				errorBuilder.append(solverConfig.getName());
 				errorBuilder
 						.append(" unsat-core is smaller than the expected one.");
 				return new SMTProverCallTestResult(smtProverCall, errorBuilder);

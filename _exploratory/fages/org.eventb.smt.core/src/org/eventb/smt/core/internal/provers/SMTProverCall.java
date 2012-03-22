@@ -215,7 +215,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
 		 */
 		if (solverConfig.getSmtlibVersion().equals(SMTLIBVersion.V1_2)
-				&& solverConfig.getSolverId().equals(SolverKind.Z3)) {
+				&& solver.getKind().equals(SolverKind.Z3)) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
@@ -519,8 +519,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (translationPerformed) {
-					final String solverName = solverConfig.getSolverId()
-							.toString();
+					final String solverName = solver.getName();
 					if (DEBUG_DETAILS) {
 						debugBuilder.append("Launching ").append(solverName);
 						debugBuilder.append(" with input:\n\n");
@@ -620,7 +619,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		if (benchmarkIsNull()) {
 			return "PP (trivial)";
 		} else {
-			return "SMT-" + solverConfig.getID();
+			return "SMT-" + solverConfig.getName();
 		}
 	}
 

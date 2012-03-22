@@ -93,8 +93,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm,
-			final AbstractSolverConfig solverConfig,
+			final IProofMonitor pm, final AbstractSolverConfig solverConfig,
 			final String poName, final String translationPath,
 			final String veritPath) {
 		this(sequent, pm, new StringBuilder(), solverConfig, poName,
@@ -103,9 +102,8 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final AbstractSolverConfig solverConfig,
-			final String poName, final String translationPath,
-			final String veritPath) {
+			final AbstractSolverConfig solverConfig, final String poName,
+			final String translationPath, final String veritPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
 
@@ -372,7 +370,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			final FileWriter smtBenchmarkWriter = new FileWriter(
 					smtBenchmarkFile);
 			// FIXME this bug will be fixed in veriT
-			if (solverConfig.getSolverId().equals(SolverKind.VERIT)) {
+			if (solver.getKind().equals(VERIT)) {
 				veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
 				veriTResult = veriTResult.replace(":extrasorts ()", "");
 			}
