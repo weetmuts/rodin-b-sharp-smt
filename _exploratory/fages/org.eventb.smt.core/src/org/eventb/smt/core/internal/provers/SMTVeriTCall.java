@@ -344,7 +344,7 @@ public class SMTVeriTCall extends SMTProverCall {
 				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		veriTBenchmarkWriter.close();
 		if (!veriTBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			System.out.println(SmtProversCall_SMT_file_does_not_exist);
 		}
 
 		/**
@@ -380,7 +380,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			throw new IllegalArgumentException(veriTResult);
 		}
 		if (!smtBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			System.out.println(SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
 
@@ -411,8 +411,7 @@ public class SMTVeriTCall extends SMTProverCall {
 							!PRINT_Z3_SPECIFIC_COMMANDS);
 			veriTBenchmarkWriter.close();
 			if (!veriTBenchmarkFile.exists()) {
-				System.out
-						.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+				System.out.println(SmtProversCall_SMT_file_does_not_exist);
 			}
 
 			/**

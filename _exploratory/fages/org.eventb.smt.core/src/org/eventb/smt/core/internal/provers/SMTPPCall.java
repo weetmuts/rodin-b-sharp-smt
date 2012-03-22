@@ -14,6 +14,7 @@ import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
+import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
@@ -112,7 +113,7 @@ public class SMTPPCall extends SMTProverCall {
 				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			System.out.println(SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
 
@@ -155,7 +156,7 @@ public class SMTPPCall extends SMTProverCall {
 		}
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
-			System.out.println(Messages.SmtProversCall_SMT_file_does_not_exist);
+			System.out.println(SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
 

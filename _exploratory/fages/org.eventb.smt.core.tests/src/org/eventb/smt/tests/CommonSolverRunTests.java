@@ -205,7 +205,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		smtPrefs.addSolver(LAST_VERIT);
 		smtPrefs.addSolver(LAST_Z3);
 		smtPrefs.save();
-		System.out.println(smtPrefs.getSolvers().entrySet().toString());
 	}
 
 	private static void setSolversConfigs() {
@@ -350,7 +349,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final AbstractPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.setSelectedConfigID(true, BUNDLED_CVC3);
 		smtPrefs.save();
-		System.out.println(getSMTPrefs().getSolverConfigs());
 	}
 
 	private void printPerf(final StringBuilder debugBuilder,
