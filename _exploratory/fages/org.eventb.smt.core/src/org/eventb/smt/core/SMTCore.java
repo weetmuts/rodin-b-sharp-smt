@@ -18,6 +18,7 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
 import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eventb.core.seqprover.ITactic;
@@ -56,11 +57,13 @@ public class SMTCore {
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
+				final Iterator<AbstractSolverConfig> configsIterator = solverConfigs
+						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(
 							new ExternalSMTThroughPP(),
-							new SMTInput(restricted, timeout, solverConfigs
-									.get(i)));
+							new SMTInput(restricted, timeout, configsIterator
+									.next()));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
@@ -132,11 +135,13 @@ public class SMTCore {
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
+				final Iterator<AbstractSolverConfig> configsIterator = solverConfigs
+						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(
 							new ExternalSMTThroughVeriT(),
-							new SMTInput(restricted, timeout, solverConfigs
-									.get(i)));
+							new SMTInput(restricted, timeout, configsIterator
+									.next()));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
