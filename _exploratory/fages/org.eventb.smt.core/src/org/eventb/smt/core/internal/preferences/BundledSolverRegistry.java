@@ -29,7 +29,7 @@ import org.eventb.smt.core.preferences.ExtensionLoadingException;
  */
 public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
 	public static String BUNDLED_SOLVERS_ID = SMTCore.PLUGIN_ID
-			+ ".bundledsolvers";
+			+ ".solvers";
 
 	private Map<String, BundledSolverDesc> registry;
 

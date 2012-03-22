@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eventb.smt.core.bundledsolvers">
+         point="org.eventb.smt.core.solvers">
       <solver
             id="bundled_cvc3"
             kind="cvc3"
@@ -11,13 +11,13 @@
       </solver>
    </extension>
    <extension
-         point="org.eventb.smt.core.solverconfigs">
-      <config
+         point="org.eventb.smt.core.configurations">
+      <configuration
             args="-lang smt2 -timeout 3"
             id="cvc3_smt2"
             name="CVC3 SMT2"
             smt-lib="V2.0"
             solverid="org.eventb.smt.cvc3.bundled_cvc3">
-      </config>
+      </configuration>
    </extension>
 </plugin>

@@ -3,10 +3,10 @@
 <schema targetNamespace="org.eventb.smt.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eventb.smt.core" id="bundledsolvers" name="%point.bundledsolvers"/>
+         <meta.schema plugin="org.eventb.smt.core" id="solverconfigs" name="%point.solverconfigs"/>
       </appinfo>
       <documentation>
-         This extension point accepts definition of bundled solvers.
+         This extension point accepts definition of SMT-solvers configurations.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="solver" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="configuration" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,41 +47,46 @@
       </complexType>
    </element>
 
-   <element name="solver">
+   <element name="configuration">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  The identifier for this bundled solver (simple id token). The token cannot contain a dot (.) or whitespace.
-
-The id returned by the corresponding method in the SMT-solver class must correspond to this identifier prefixed by the declaring plugin id followed by a dot(.).
+                  The identifier for this SMT-solver configuration (simple id token). The token cannot contain a dot (.) or whitespace.
 For example :
-org.myplace.myplugin.solverid where solverid is the identifier of this configuration.
+org.myplace.myplugin.configid where configid is the identifier of this configuration.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  The human-readable name of this bundled solver.
+                  The human-readable name of this SMT-solver configuration.
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="kind" type="string">
+         <attribute name="solverid" type="string" use="required">
             <annotation>
                <documentation>
-                  The kind of this bundled solver. A value in the enum class for solver kinds. Default value : &quot;UNKNOWN&quot;.
+                  The ID of the solver of this configuration.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="localpath" type="string" use="required">
+         <attribute name="args" type="string">
             <annotation>
                <documentation>
-                  The local path of this bundled solver.
-Example: &quot;$os$/binary&quot;.
+                  The arguments to use with this configuration.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="smt-lib" type="string">
+            <annotation>
+               <documentation>
+                  The version of the SMT-LIB language which must be used as the target of the translation. One of the following values: &quot;V1.2&quot; or &quot;V2.0&quot;.
+Default value: &quot;V2.0&quot;.
                </documentation>
             </annotation>
          </attribute>

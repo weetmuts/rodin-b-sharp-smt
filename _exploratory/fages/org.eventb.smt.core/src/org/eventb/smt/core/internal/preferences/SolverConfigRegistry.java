@@ -28,7 +28,7 @@ import org.eventb.smt.core.preferences.ExtensionLoadingException;
  */
 public class SolverConfigRegistry extends AbstractRegistry<SolverConfigDesc> {
 	public static String SOLVER_CONFIGS_ID = SMTCore.PLUGIN_ID
-			+ ".solverconfigs";
+			+ ".configurations";
 
 	private static final SolverConfigRegistry INSTANCE = new SolverConfigRegistry();
 
