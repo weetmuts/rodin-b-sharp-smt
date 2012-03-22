@@ -17,6 +17,7 @@ import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
@@ -46,7 +47,6 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
-import org.eventb.smt.core.internal.preferences.SMTPreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -147,8 +147,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		// FIXME exception thrown ?
-		solver = SMTPreferences.getSMTPrefs().getSolver(
-				solverConfig.getSolverId());
+		solver = getSMTPrefs().getSolver(solverConfig.getSolverId());
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
 		this.translator = translator;

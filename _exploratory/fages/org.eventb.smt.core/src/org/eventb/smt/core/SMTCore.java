@@ -16,7 +16,7 @@ import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import java.util.Iterator;
 import java.util.Map;

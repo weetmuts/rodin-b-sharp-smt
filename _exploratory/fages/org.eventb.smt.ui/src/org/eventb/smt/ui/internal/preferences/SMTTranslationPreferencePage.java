@@ -10,8 +10,8 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.preferences.AbstractPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;

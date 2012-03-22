@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
@@ -43,8 +43,8 @@ import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
@@ -192,7 +192,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static void setSolvers() {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.addSolver(LAST_ALTERGO);
 		smtPrefs.addSolver(LAST_CVC3);
 		smtPrefs.addSolver(LAST_CVC4);
@@ -204,7 +204,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static void setSolversConfigs() {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.addSolverConfig(ALTERGO_SMT1);
 		smtPrefs.addSolverConfig(ALTERGO_SMT2);
 		smtPrefs.addSolverConfig(CVC3_SMT1);
@@ -238,7 +238,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static void setTranslationPreferences() {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH.toOSString());
 		smtPrefs.setVeriTPath(LAST_VERIT.getPath().toOSString());
 		smtPrefs.save();
@@ -250,7 +250,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 */
 	protected static void setSolverPreferences(final SolverKind kind,
 			final SMTLIBVersion smtlibVersion) {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		switch (smtlibVersion) {
 		case V1_2:
 			switch (kind) {
@@ -336,13 +336,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	protected static void setPreferencesForBundledVeriT() {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.setSelectedConfigID(true, BUNDLED_VERIT);
 		smtPrefs.save();
 	}
 
 	protected static void setPreferencesForBundledCvc3() {
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		smtPrefs.setSelectedConfigID(true, BUNDLED_CVC3);
 		smtPrefs.save();
 	}

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
@@ -446,8 +446,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		final ISolverConfig solverConfig = getSMTPrefs()
-				.getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
 		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(
 					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",

@@ -42,12 +42,12 @@ import static org.eventb.smt.core.performance.realprojects.ResourceUtils.simplif
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.core.preferences.AbstractPreferences.SELECTED_CONFIG_ID;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVER_CONFIGS_ID;
-import static org.eventb.smt.core.preferences.AbstractPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.preferences.AbstractPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.preferences.PreferenceManager.SELECTED_CONFIG_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -11,8 +11,8 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import java.util.Map;
 
@@ -97,8 +97,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 
 		createColumns(tableViewer);
 		tableViewer.setColumnProperties(getColumnsLabel());
-		tableViewer
-				.setContentProvider(new ContentProvider<ISMTSolver>());
+		tableViewer.setContentProvider(new ContentProvider<ISMTSolver>());
 		tableViewer.setLabelProvider(new SMTSolversLabelProvider());
 	}
 
@@ -208,8 +207,8 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 				final String selectionID = solversTable.getSelection()[0]
 						.getText();
 				if (smtPrefs.getSolvers().containsKey(selectionID)) {
-					final ISMTSolver solverToEdit = smtPrefs
-							.getSolvers().get(selectionID);
+					final ISMTSolver solverToEdit = smtPrefs.getSolvers().get(
+							selectionID);
 					if (solverToEdit != null) {
 						final SMTSolverDialog solverDialog = new SMTSolverDialog(
 								buttonsGroup.getShell(), smtPrefs, solverToEdit);

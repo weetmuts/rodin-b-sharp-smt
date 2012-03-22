@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.SOLVERS_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.FieldEditor;

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.viewers.TableViewer;
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.IPreferences;
 
 /**
  * This class is used to build the tables printed in the preference pages. This
@@ -77,7 +77,7 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 	 */
 	TableViewer tableViewer;
 
-	AbstractPreferences smtPrefs;
+	IPreferences smtPrefs;
 
 	/**
 	 * Creates a new table field editor.

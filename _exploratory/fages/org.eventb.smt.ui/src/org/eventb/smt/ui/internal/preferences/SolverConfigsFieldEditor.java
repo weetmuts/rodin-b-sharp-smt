@@ -11,9 +11,9 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
+import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import java.util.Map;
 
@@ -53,8 +53,7 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  * 
  * @author guyot
  */
-class SolverConfigsFieldEditor extends
-		AbstractTableFieldEditor<ISolverConfig> {
+class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 	/**
 	 * This constant represents a click on the 'SELECT' button.
 	 */
@@ -116,8 +115,7 @@ class SolverConfigsFieldEditor extends
 
 		createColumns(tableViewer);
 		tableViewer.setColumnProperties(getColumnsLabel());
-		tableViewer
-				.setContentProvider(new ContentProvider<ISolverConfig>());
+		tableViewer.setContentProvider(new ContentProvider<ISolverConfig>());
 		tableViewer.setLabelProvider(new SolverConfigsLabelProvider());
 	}
 

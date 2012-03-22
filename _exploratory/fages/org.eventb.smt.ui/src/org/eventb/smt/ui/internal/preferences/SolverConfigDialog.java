@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISolverConfig;
@@ -57,11 +57,11 @@ public class SolverConfigDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final AbstractPreferences smtPrefs;
+	final IPreferences smtPrefs;
 	ISolverConfig solverConfig;
 
 	public SolverConfigDialog(final Shell parentShell,
-			final AbstractPreferences smtPrefs, final ISolverConfig solverConfig) {
+			final IPreferences smtPrefs, final ISolverConfig solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solverConfig != null) {

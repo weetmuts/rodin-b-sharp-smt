@@ -14,9 +14,9 @@ import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
+import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -28,8 +28,8 @@ import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -115,8 +115,8 @@ public class SMTProversCore extends Plugin {
 			configureDebugOptions();
 		}
 
-		final AbstractPreferences smtPrefs = getSMTPrefs();
-		final AbstractPreferences smtDefaultPrefs = getDefaultSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtDefaultPrefs = getDefaultSMTPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
 			for (final Object registryEntry : registry.getMap().values()) {

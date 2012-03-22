@@ -12,8 +12,8 @@ package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.eventb.smt.core.preferences.AbstractPreferences.NoSMTSolverSelectedException;
-import static org.eventb.smt.core.preferences.AbstractPreferences.NoSMTSolverSetException;
+import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
+import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SELECTED;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SET;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.SMT_SOLVER_CONFIG_ERROR;

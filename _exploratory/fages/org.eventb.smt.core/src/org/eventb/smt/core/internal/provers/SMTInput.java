@@ -10,13 +10,13 @@
 
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
-import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 
 public class SMTInput extends XProverInput {
@@ -43,7 +43,7 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super(reader);
 		final String configId = reader.getString(CONFIG_ID);
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfig(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -62,7 +62,7 @@ public class SMTInput extends XProverInput {
 	 */
 	public SMTInput(final boolean restricted, final long timeOutDelay) {
 		super(restricted, timeOutDelay);
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSelectedConfig();
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -84,7 +84,7 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final ISolverConfig solverConfig) {
 		super(restricted, timeOutDelay);
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		this.solverConfig = solverConfig;
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -106,7 +106,7 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final String configId) {
 		super(restricted, timeOutDelay);
-		final AbstractPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfig(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();

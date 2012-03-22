@@ -10,6 +10,17 @@
 
 package org.eventb.smt.core.internal.preferences;
 
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
+import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
+import static org.eventb.smt.core.preferences.PreferenceManager.SELECTED_CONFIG_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
@@ -18,14 +29,15 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.PreferenceManager;
 
 /**
  * The SMT preferences class
  */
-public class SMTPreferences extends AbstractPreferences {
+public class SMTPreferences implements IPreferences {
 	public static final boolean USE_DEFAULT_SCOPE = true;
 
 	public static final String SEPARATOR = ";"; //$NON-NLS-1$
@@ -235,7 +247,7 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	public static boolean isPathValid(final String path) {
-		return isPathValid(path, new StringBuilder(0));
+		return PreferenceManager.isPathValid(path, new StringBuilder(0));
 	}
 
 	@Override
@@ -248,8 +260,7 @@ public class SMTPreferences extends AbstractPreferences {
 			final ISolverConfig solverConfig) throws IllegalArgumentException {
 		// FIXME exception thrown ?
 		final String solverId = solverConfig.getSolverId();
-		final ISMTSolver solver = SMTPreferences.getSMTPrefs().getSolver(
-				solverId);
+		final ISMTSolver solver = getSMTPrefs().getSolver(solverId);
 		if (isPathValid(solver.getPath().toOSString())) {
 			final String id = solverConfig.getID();
 			if (!solverConfigs.containsKey(id)) {

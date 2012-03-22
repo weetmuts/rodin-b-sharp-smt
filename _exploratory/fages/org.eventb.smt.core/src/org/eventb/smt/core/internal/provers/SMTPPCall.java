@@ -17,7 +17,7 @@ import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_CO
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
@@ -56,9 +56,8 @@ public class SMTPPCall extends SMTProverCall {
 	}
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final String poName,
-			final String translationPath) {
+			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
+			final String poName, final String translationPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughPP(solverConfig.getSmtlibVersion()));
 		if (this.translationPath != null && !this.translationPath.isEmpty()) {

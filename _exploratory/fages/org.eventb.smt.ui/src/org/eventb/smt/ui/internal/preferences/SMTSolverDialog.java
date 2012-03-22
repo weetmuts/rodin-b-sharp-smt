@@ -37,10 +37,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.AbstractPreferences;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.PreferenceManager;
 import org.eventb.smt.core.preferences.SMTSolverFactory;
 import org.eventb.smt.core.provers.SolverKind;
 
@@ -60,11 +61,11 @@ public class SMTSolverDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final AbstractPreferences smtPrefs;
+	final IPreferences smtPrefs;
 	ISMTSolver solver;
 
 	public SMTSolverDialog(final Shell parentShell,
-			final AbstractPreferences smtPrefs, final ISMTSolver solver) {
+			final IPreferences smtPrefs, final ISMTSolver solver) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solver != null) {
@@ -234,7 +235,7 @@ public class SMTSolverDialog extends Dialog {
 	public static boolean isValidPath(final String path,
 			final boolean showErrors) {
 		final StringBuilder error = new StringBuilder();
-		if (AbstractPreferences.isPathValid(path, error)) {
+		if (PreferenceManager.isPathValid(path, error)) {
 			return true;
 		} else {
 			if (showErrors)
