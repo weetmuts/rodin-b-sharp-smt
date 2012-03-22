@@ -10,19 +10,29 @@
 
 package org.eventb.smt.core.internal.preferences;
 
+import static java.lang.Boolean.parseBoolean;
+import static java.util.regex.Pattern.quote;
+import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
+import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class describes an SMT solverId configuration.
  * 
  */
-public class SolverConfiguration extends AbstractSolverConfig {
+public class SolverConfiguration implements ISolverConfig {
 	public static final boolean EDITABLE = true;
-	public static final int NB_FIELDS = 7;
+
+	public static final int ID_COL = 0;
+	public static final int NAME_COL = 1;
+	public static final int SOLVER_ID_COL = 2;
+	public static final int ARGS_COL = 3;
+	public static final int SMTLIB_VERSION_COL = 4;
+	public static final int EDITABLE_COL = 5;
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
@@ -107,6 +117,22 @@ public class SolverConfiguration extends AbstractSolverConfig {
 	@Override
 	public boolean isEditable() {
 		return editable;
+	}
+
+	/**
+	 * Parses a preference string to build a solver configuration
+	 * 
+	 * @param configStr
+	 *            the string to parse
+	 * @return the solver configuration represented by the string
+	 */
+	public final static ISolverConfig parseConfig(final String configStr) {
+		final String[] columns = configStr.split(quote(SEPARATOR));
+		return new SolverConfiguration(decode(columns[ID_COL]),
+				decode(columns[NAME_COL]), decode(columns[SOLVER_ID_COL]),
+				decode(columns[ARGS_COL]),
+				parseVersion(columns[SMTLIB_VERSION_COL]),
+				parseBoolean(columns[EDITABLE_COL]));
 	}
 
 	@Override

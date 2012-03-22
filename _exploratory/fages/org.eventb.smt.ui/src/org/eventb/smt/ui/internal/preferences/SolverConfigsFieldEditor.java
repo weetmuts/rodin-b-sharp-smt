@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -54,7 +54,7 @@ import org.eventb.smt.core.preferences.AbstractSolverConfig;
  * @author guyot
  */
 class SolverConfigsFieldEditor extends
-		AbstractTableFieldEditor<AbstractSolverConfig> {
+		AbstractTableFieldEditor<ISolverConfig> {
 	/**
 	 * This constant represents a click on the 'SELECT' button.
 	 */
@@ -117,7 +117,7 @@ class SolverConfigsFieldEditor extends
 		createColumns(tableViewer);
 		tableViewer.setColumnProperties(getColumnsLabel());
 		tableViewer
-				.setContentProvider(new ContentProvider<AbstractSolverConfig>());
+				.setContentProvider(new ContentProvider<ISolverConfig>());
 		tableViewer.setLabelProvider(new SolverConfigsLabelProvider());
 	}
 
@@ -151,7 +151,7 @@ class SolverConfigsFieldEditor extends
 		final Table configsTable = tableViewer.getTable();
 		final TableItem selection = configsTable.getSelection()[0];
 		final String selectedConfigID = selection.getText();
-		final Map<String, AbstractSolverConfig> solverConfigs = smtPrefs
+		final Map<String, ISolverConfig> solverConfigs = smtPrefs
 				.getSolverConfigs();
 		final boolean validSelection = solverConfigs
 				.containsKey(selectedConfigID);
@@ -297,7 +297,7 @@ class SolverConfigsFieldEditor extends
 				final String selectionID = configsTable.getSelection()[0]
 						.getText();
 				if (smtPrefs.getSolverConfigs().containsKey(selectionID)) {
-					final AbstractSolverConfig configToEdit = smtPrefs
+					final ISolverConfig configToEdit = smtPrefs
 							.getSolverConfigs().get(selectionID);
 					if (configToEdit != null) {
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(

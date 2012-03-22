@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * This class provides text for each column of a solvers table viewer.
@@ -18,7 +18,7 @@ import org.eventb.smt.core.preferences.AbstractSolverConfig;
 class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 	@Override
 	public String getColumnText(final Object element, final int columnIndex) {
-		final AbstractSolverConfig config = (AbstractSolverConfig) element;
+		final ISolverConfig config = (ISolverConfig) element;
 		switch (columnIndex) {
 		case 0:
 			return config.getID();

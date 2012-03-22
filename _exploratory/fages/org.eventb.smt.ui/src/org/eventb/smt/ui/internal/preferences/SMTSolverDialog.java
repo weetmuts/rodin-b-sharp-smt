@@ -18,7 +18,6 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.core.preferences.AbstractBundledSolverRegistry.getBundledSolverRegistry;
-import static org.eventb.smt.core.preferences.AbstractSMTSolver.newSolver;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
@@ -39,9 +38,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSMTSolver;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IRegistry;
+import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.SMTSolverFactory;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
@@ -61,16 +61,16 @@ public class SMTSolverDialog extends Dialog {
 	int returnCode = 0;
 
 	final AbstractPreferences smtPrefs;
-	AbstractSMTSolver solver;
+	ISMTSolver solver;
 
 	public SMTSolverDialog(final Shell parentShell,
-			final AbstractPreferences smtPrefs, final AbstractSMTSolver solver) {
+			final AbstractPreferences smtPrefs, final ISMTSolver solver) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solver != null) {
 			this.solver = solver;
 		} else {
-			this.solver = newSolver();
+			this.solver = SMTSolverFactory.newSolver();
 		}
 		setText("Solver integration");
 	}
@@ -176,7 +176,7 @@ public class SMTSolverDialog extends Dialog {
 					if (isValidPath(pathStr, SHOW_ERRORS)) {
 						final IPath path = new Path(pathStr);
 						// TODO set the right name value
-						solver = newSolver(id, name,
+						solver = SMTSolverFactory.newSolver(id, name,
 								parseKind(solverCombo.getText()), path);
 						returnCode = OK;
 						shell.close();
@@ -192,7 +192,7 @@ public class SMTSolverDialog extends Dialog {
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
 						for (final Object elem : registry.getMap().values()) {
-							final AbstractSMTSolver bundledSolver = (AbstractSMTSolver) elem;
+							final ISMTSolver bundledSolver = (ISMTSolver) elem;
 							errBuilder2.append("'");
 							errBuilder2.append(bundledSolver.getID());
 							errBuilder2.append("'\n");
@@ -243,7 +243,7 @@ public class SMTSolverDialog extends Dialog {
 		}
 	}
 
-	public AbstractSMTSolver getSolver() {
+	public ISMTSolver getSolver() {
 		return solver;
 	}
 

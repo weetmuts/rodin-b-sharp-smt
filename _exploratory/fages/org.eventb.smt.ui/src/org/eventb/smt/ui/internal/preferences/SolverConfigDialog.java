@@ -17,7 +17,6 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.core.preferences.AbstractSolverConfig.newConfig;
 import static org.eventb.smt.core.preferences.AbstractSolverConfigRegistry.getSolverConfigRegistry;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
@@ -35,9 +34,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IRegistry;
+import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -58,17 +58,16 @@ public class SolverConfigDialog extends Dialog {
 	int returnCode = 0;
 
 	final AbstractPreferences smtPrefs;
-	AbstractSolverConfig solverConfig;
+	ISolverConfig solverConfig;
 
 	public SolverConfigDialog(final Shell parentShell,
-			final AbstractPreferences smtPrefs,
-			final AbstractSolverConfig solverConfig) {
+			final AbstractPreferences smtPrefs, final ISolverConfig solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
 		if (solverConfig != null) {
 			this.solverConfig = solverConfig;
 		} else {
-			this.solverConfig = newConfig();
+			this.solverConfig = SolverConfigFactory.newConfig();
 		}
 		setText("Solver configuration");
 	}
@@ -174,8 +173,8 @@ public class SolverConfigDialog extends Dialog {
 				final String name = nameText.getText();
 				if (id.equals(solverConfig.getID()) || smtPrefs.validId(id)) {
 					// TODO set the right name value
-					solverConfig = newConfig(id, name, solverCombo.getText(),
-							argsText.getText(),
+					solverConfig = SolverConfigFactory.newConfig(id, name,
+							solverCombo.getText(), argsText.getText(),
 							parseVersion(smtlibCombo.getText()));
 					returnCode = OK;
 					shell.close();
@@ -190,7 +189,7 @@ public class SolverConfigDialog extends Dialog {
 						errBuilder2
 								.append("The following config IDs are reserved:\n");
 						for (final Object elem : registry.getMap().values()) {
-							final AbstractSolverConfig bundledConfig = (AbstractSolverConfig) elem;
+							final ISolverConfig bundledConfig = (ISolverConfig) elem;
 							errBuilder2.append("'");
 							errBuilder2.append(bundledConfig.getID());
 							errBuilder2.append("'\n");
@@ -229,7 +228,7 @@ public class SolverConfigDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	public AbstractSolverConfig getSolverConfig() {
+	public ISolverConfig getSolverConfig() {
 		return solverConfig;
 	}
 

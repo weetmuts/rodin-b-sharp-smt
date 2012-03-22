@@ -10,9 +10,6 @@
 
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.preferences.AbstractSMTSolver.parseSolver;
-import static org.eventb.smt.core.preferences.AbstractSolverConfig.parseConfig;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
@@ -22,8 +19,8 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSMTSolver;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * The SMT preferences class
@@ -42,14 +39,14 @@ public class SMTPreferences extends AbstractPreferences {
 			.getNode(SMTCore.PLUGIN_ID);
 
 	private final IEclipsePreferences prefsNode;
-	private Map<String, AbstractSMTSolver> solvers;
-	private Map<String, AbstractSolverConfig> solverConfigs;
+	private Map<String, ISMTSolver> solvers;
+	private Map<String, ISolverConfig> solverConfigs;
 	private String selectedConfigID;
 	private String translationPath;
 	private String veriTPath;
 
-	private Map<String, AbstractSMTSolver> defaultSolvers;
-	private Map<String, AbstractSolverConfig> defaultSolverConfigs;
+	private Map<String, ISMTSolver> defaultSolvers;
+	private Map<String, ISolverConfig> defaultSolverConfigs;
 	private String defaultVeriTPath;
 
 	public SMTPreferences(boolean useDefaultScope) {
@@ -58,14 +55,14 @@ public class SMTPreferences extends AbstractPreferences {
 		} else {
 			prefsNode = SMT_PREFS;
 		}
-		defaultSolvers = new LinkedHashMap<String, AbstractSMTSolver>();
-		defaultSolverConfigs = new LinkedHashMap<String, AbstractSolverConfig>();
+		defaultSolvers = new LinkedHashMap<String, ISMTSolver>();
+		defaultSolverConfigs = new LinkedHashMap<String, ISolverConfig>();
 		defaultVeriTPath = DEFAULT_VERIT_PATH;
 	}
 
 	public SMTPreferences(final boolean useDefaultScope,
-			final Map<String, AbstractSMTSolver> solvers,
-			final Map<String, AbstractSolverConfig> solverConfigs,
+			final Map<String, ISMTSolver> solvers,
+			final Map<String, ISolverConfig> solverConfigs,
 			final String selectedConfigID, final String translationPath,
 			final String veriTPath) {
 		this(useDefaultScope);
@@ -85,14 +82,15 @@ public class SMTPreferences extends AbstractPreferences {
 	 * @return The map of configs and its details parsed from the preferences
 	 *         string
 	 */
-	private static Map<String, AbstractSolverConfig> parseConfigs(
+	private static Map<String, ISolverConfig> parseConfigs(
 			final String preferences) throws PatternSyntaxException {
-		final Map<String, AbstractSolverConfig> solverConfigs = new LinkedHashMap<String, AbstractSolverConfig>();
+		final Map<String, ISolverConfig> solverConfigs = new LinkedHashMap<String, ISolverConfig>();
 
 		final String[] rows = preferences.split(SEPARATOR);
 		for (final String row : rows) {
 			if (row.length() > 0) {
-				final AbstractSolverConfig solverConfig = parseConfig(row);
+				final ISolverConfig solverConfig = SolverConfiguration
+						.parseConfig(row);
 				// TODO if not editable check the solver exists
 				solverConfigs.put(solverConfig.getID(), solverConfig);
 			}
@@ -108,14 +106,14 @@ public class SMTPreferences extends AbstractPreferences {
 	 * @return The map of solvers and its details parsed from the preferences
 	 *         string
 	 */
-	private static Map<String, AbstractSMTSolver> parseSolvers(
-			final String preferences) throws PatternSyntaxException {
-		final Map<String, AbstractSMTSolver> solvers = new LinkedHashMap<String, AbstractSMTSolver>();
+	private static Map<String, ISMTSolver> parseSolvers(final String preferences)
+			throws PatternSyntaxException {
+		final Map<String, ISMTSolver> solvers = new LinkedHashMap<String, ISMTSolver>();
 
 		final String[] rows = preferences.split(SEPARATOR);
 		for (final String row : rows) {
 			if (row.length() > 0) {
-				final AbstractSMTSolver solver = parseSolver(row);
+				final ISMTSolver solver = SMTSolver.parseSolver(row);
 				final String path = solver.getPath().toOSString();
 				if (path == null) {
 					continue;
@@ -134,11 +132,11 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	public static final String configsToString(
-			final Map<String, AbstractSolverConfig> solverConfigs) {
+			final Map<String, ISolverConfig> solverConfigs) {
 		final StringBuilder sb = new StringBuilder();
 
 		String separator = "";
-		for (final AbstractSolverConfig solverConfig : solverConfigs.values()) {
+		for (final ISolverConfig solverConfig : solverConfigs.values()) {
 			sb.append(separator);
 			solverConfig.toString(sb);
 			separator = SEPARATOR;
@@ -148,11 +146,11 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	public static final String solversToString(
-			final Map<String, AbstractSMTSolver> solvers) {
+			final Map<String, ISMTSolver> solvers) {
 		final StringBuilder sb = new StringBuilder();
 
 		String separator = "";
-		for (final AbstractSMTSolver solver : solvers.values()) {
+		for (final ISMTSolver solver : solvers.values()) {
 			sb.append(separator);
 			solver.toString(sb);
 			separator = SEPARATOR;
@@ -182,17 +180,17 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public Map<String, AbstractSMTSolver> getSolvers() {
+	public Map<String, ISMTSolver> getSolvers() {
 		return solvers;
 	}
 
 	@Override
-	public Map<String, AbstractSolverConfig> getSolverConfigs() {
+	public Map<String, ISolverConfig> getSolverConfigs() {
 		return solverConfigs;
 	}
 
 	@Override
-	public AbstractSolverConfig getSelectedConfig() {
+	public ISolverConfig getSelectedConfig() {
 		if (solverConfigs.size() <= 0)
 			throw NoSMTSolverSetException;
 		if (selectedConfigID == null || selectedConfigID.isEmpty())
@@ -201,12 +199,12 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public AbstractSMTSolver getSolver(final String solverId) {
+	public ISMTSolver getSolver(final String solverId) {
 		return solvers.get(solverId);
 	}
 
 	@Override
-	public AbstractSolverConfig getSolverConfig(final String configId) {
+	public ISolverConfig getSolverConfig(final String configId) {
 		return solverConfigs.get(configId);
 	}
 
@@ -246,13 +244,12 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	private static void addSolverConfig(
-			Map<String, AbstractSolverConfig> solverConfigs,
-			final AbstractSolverConfig solverConfig)
-			throws IllegalArgumentException {
+			Map<String, ISolverConfig> solverConfigs,
+			final ISolverConfig solverConfig) throws IllegalArgumentException {
 		// FIXME exception thrown ?
 		final String solverId = solverConfig.getSolverId();
-		final AbstractSMTSolver solver = SMTPreferences.getSMTPrefs()
-				.getSolver(solverId);
+		final ISMTSolver solver = SMTPreferences.getSMTPrefs().getSolver(
+				solverId);
 		if (isPathValid(solver.getPath().toOSString())) {
 			final String id = solverConfig.getID();
 			if (!solverConfigs.containsKey(id)) {
@@ -264,8 +261,8 @@ public class SMTPreferences extends AbstractPreferences {
 		}
 	}
 
-	private static void addSolver(Map<String, AbstractSMTSolver> solvers,
-			final AbstractSMTSolver solver) throws IllegalArgumentException {
+	private static void addSolver(Map<String, ISMTSolver> solvers,
+			final ISMTSolver solver) throws IllegalArgumentException {
 		if (isPathValid(solver.getPath().toOSString())) {
 			final String id = solver.getID();
 			if (!solvers.containsKey(id)) {
@@ -278,13 +275,13 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public void addSolver(final AbstractSMTSolver solver)
+	public void addSolver(final ISMTSolver solver)
 			throws IllegalArgumentException {
 		addSolver(solvers, solver);
 	}
 
 	@Override
-	public void addSolverToDefault(final AbstractSMTSolver solver)
+	public void addSolverToDefault(final ISMTSolver solver)
 			throws IllegalArgumentException {
 		addSolver(defaultSolvers, solver);
 	}
@@ -295,13 +292,13 @@ public class SMTPreferences extends AbstractPreferences {
 	}
 
 	@Override
-	public void addSolverConfig(final AbstractSolverConfig solverConfig)
+	public void addSolverConfig(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
 		addSolverConfig(solverConfigs, solverConfig);
 	}
 
 	@Override
-	public void addSolverConfigToDefault(final AbstractSolverConfig solverConfig)
+	public void addSolverConfigToDefault(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
 		addSolverConfig(defaultSolverConfigs, solverConfig);
 	}

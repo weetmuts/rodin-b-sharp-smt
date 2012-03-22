@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eventb.smt.core.preferences.AbstractSMTSolver;
+import org.eventb.smt.core.preferences.ISMTSolver;
 
 /**
  * This class is used to build the solver table printed in the preferences page.
@@ -48,7 +48,7 @@ import org.eventb.smt.core.preferences.AbstractSMTSolver;
  * 
  * @author guyot
  */
-class SMTSolversFieldEditor extends AbstractTableFieldEditor<AbstractSMTSolver> {
+class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 	/**
 	 * Labels
 	 */
@@ -98,7 +98,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<AbstractSMTSolver> 
 		createColumns(tableViewer);
 		tableViewer.setColumnProperties(getColumnsLabel());
 		tableViewer
-				.setContentProvider(new ContentProvider<AbstractSMTSolver>());
+				.setContentProvider(new ContentProvider<ISMTSolver>());
 		tableViewer.setLabelProvider(new SMTSolversLabelProvider());
 	}
 
@@ -125,7 +125,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<AbstractSMTSolver> 
 		final Table solversTable = tableViewer.getTable();
 		final TableItem selection = solversTable.getSelection()[0];
 		final String selectedSolverID = selection.getText();
-		final Map<String, AbstractSMTSolver> solvers = smtPrefs.getSolvers();
+		final Map<String, ISMTSolver> solvers = smtPrefs.getSolvers();
 		final boolean validSelection = solvers.containsKey(selectedSolverID);
 		final boolean validEditableSelection = validSelection ? solvers.get(
 				selectedSolverID).isEditable() : false;
@@ -208,7 +208,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<AbstractSMTSolver> 
 				final String selectionID = solversTable.getSelection()[0]
 						.getText();
 				if (smtPrefs.getSolvers().containsKey(selectionID)) {
-					final AbstractSMTSolver solverToEdit = smtPrefs
+					final ISMTSolver solverToEdit = smtPrefs
 							.getSolvers().get(selectionID);
 					if (solverToEdit != null) {
 						final SMTSolverDialog solverDialog = new SMTSolverDialog(

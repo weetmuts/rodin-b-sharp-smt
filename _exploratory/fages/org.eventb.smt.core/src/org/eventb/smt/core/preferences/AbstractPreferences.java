@@ -96,32 +96,32 @@ public abstract class AbstractPreferences {
 
 	public abstract boolean validId(final String id);
 
-	public abstract Map<String, AbstractSMTSolver> getSolvers();
+	public abstract Map<String, ISMTSolver> getSolvers();
 
-	public abstract Map<String, AbstractSolverConfig> getSolverConfigs();
+	public abstract Map<String, ISolverConfig> getSolverConfigs();
 
-	public abstract AbstractSMTSolver getSolver(final String solverId);
+	public abstract ISMTSolver getSolver(final String solverId);
 
-	public abstract AbstractSolverConfig getSolverConfig(final String configId);
+	public abstract ISolverConfig getSolverConfig(final String configId);
 
-	public abstract void addSolver(AbstractSMTSolver solver)
+	public abstract void addSolver(ISMTSolver solver)
 			throws IllegalArgumentException;
 
-	public abstract void addSolverToDefault(AbstractSMTSolver solver)
+	public abstract void addSolverToDefault(ISMTSolver solver)
 			throws IllegalArgumentException;
 
 	public abstract void removeSMTSolver(String solverToRemove);
 
-	public abstract void addSolverConfig(final AbstractSolverConfig solverConfig);
+	public abstract void addSolverConfig(final ISolverConfig solverConfig);
 
 	public abstract void addSolverConfigToDefault(
-			final AbstractSolverConfig solverConfig);
+			final ISolverConfig solverConfig);
 
 	public abstract void removeSolverConfig(final String configID);
 
 	public abstract String getSelectedConfigID();
 
-	public abstract AbstractSolverConfig getSelectedConfig();
+	public abstract ISolverConfig getSelectedConfig();
 
 	public abstract String getTranslationPath();
 

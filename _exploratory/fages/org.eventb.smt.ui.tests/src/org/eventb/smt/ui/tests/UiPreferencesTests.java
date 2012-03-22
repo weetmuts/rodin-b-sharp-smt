@@ -12,7 +12,6 @@ package org.eventb.smt.ui.tests;
 
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.AbstractPreferences.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.AbstractSolverConfig.newConfig;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
@@ -20,7 +19,8 @@ import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Assert;
@@ -53,8 +53,9 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		smtPrefs.addSolverConfig(newConfig(solverBinaryName, solverBinaryName,
-				solver.toString(), solverArgs, smtlibVersion));
+		smtPrefs.addSolverConfig(SolverConfigFactory.newConfig(
+				solverBinaryName, solverBinaryName, solver.toString(),
+				solverArgs, smtlibVersion));
 		smtPrefs.setSelectedConfigID(false, DEFAULT_SELECTED_CONFIG);
 		smtPrefs.setTranslationPath(DEFAULT_TRANSLATION_PATH);
 		smtPrefs.setVeriTPath(BIN_PATH + VERIT);
@@ -98,13 +99,13 @@ public class UiPreferencesTests {
 		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final AbstractSolverConfig expectedSolverConfig = newConfig(
-				expectedName, expectedId, expectedSolver.toString(), args,
-				smtlibVersion);
+		final ISolverConfig expectedSolverConfig = SolverConfigFactory
+				.newConfig(expectedName, expectedId, expectedSolver.toString(),
+						args, smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
 		final AbstractPreferences smtPrefs = AbstractPreferences.getSMTPrefs();
-		final AbstractSolverConfig solverConfig = smtPrefs.getSelectedConfig();
+		final ISolverConfig solverConfig = smtPrefs.getSelectedConfig();
 		final String translationPath = smtPrefs.getTranslationPath();
 		final String veritPath = smtPrefs.getVeriTPath();
 

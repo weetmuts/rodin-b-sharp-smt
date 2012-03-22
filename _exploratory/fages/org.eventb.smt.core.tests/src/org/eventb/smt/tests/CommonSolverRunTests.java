@@ -11,7 +11,8 @@
 package org.eventb.smt.tests;
 
 import static org.eventb.smt.core.preferences.AbstractPreferences.getSMTPrefs;
-import static org.eventb.smt.core.preferences.AbstractSMTSolver.newSolver;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
 import static org.eventb.smt.core.provers.SolverKind.CVC4;
@@ -43,9 +44,9 @@ import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.preferences.AbstractPreferences;
-import org.eventb.smt.core.preferences.AbstractSMTSolver;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -67,54 +68,50 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			System.getProperty("user.home") + File.separatorChar
 					+ "rodin_smtlib_temp_files");
 
-	public static final AbstractSMTSolver LAST_ALTERGO = newSolver(
-			LAST_ALTERGO_BIN, LAST_ALTERGO_BIN, ALT_ERGO,
-			makeSolverPath(LAST_ALTERGO_BIN));
-	public static final AbstractSMTSolver LAST_CVC3 = newSolver(LAST_CVC3_BIN,
+	public static final ISMTSolver LAST_ALTERGO = newSolver(LAST_ALTERGO_BIN,
+			LAST_ALTERGO_BIN, ALT_ERGO, makeSolverPath(LAST_ALTERGO_BIN));
+	public static final ISMTSolver LAST_CVC3 = newSolver(LAST_CVC3_BIN,
 			LAST_CVC3_BIN, CVC3, makeSolverPath(LAST_CVC3_BIN));
-	public static final AbstractSMTSolver LAST_CVC4 = newSolver(LAST_CVC4_BIN,
+	public static final ISMTSolver LAST_CVC4 = newSolver(LAST_CVC4_BIN,
 			LAST_CVC4_BIN, CVC4, makeSolverPath(LAST_CVC4_BIN));
-	public static final AbstractSMTSolver LAST_MATHSAT5 = newSolver(
-			LAST_MATHSAT5_BIN, LAST_MATHSAT5_BIN, MATHSAT5,
-			makeSolverPath(LAST_MATHSAT5_BIN));
-	public static final AbstractSMTSolver LAST_OPENSMT = newSolver(
-			LAST_OPENSMT_BIN, LAST_OPENSMT_BIN, OPENSMT,
-			makeSolverPath(LAST_OPENSMT_BIN));
-	public static final AbstractSMTSolver LAST_VERIT = newSolver(
-			LAST_VERIT_BIN, LAST_VERIT_BIN, VERIT,
-			makeSolverPath(LAST_VERIT_BIN));
-	public static final AbstractSMTSolver LAST_Z3 = newSolver(LAST_Z3_BIN,
+	public static final ISMTSolver LAST_MATHSAT5 = newSolver(LAST_MATHSAT5_BIN,
+			LAST_MATHSAT5_BIN, MATHSAT5, makeSolverPath(LAST_MATHSAT5_BIN));
+	public static final ISMTSolver LAST_OPENSMT = newSolver(LAST_OPENSMT_BIN,
+			LAST_OPENSMT_BIN, OPENSMT, makeSolverPath(LAST_OPENSMT_BIN));
+	public static final ISMTSolver LAST_VERIT = newSolver(LAST_VERIT_BIN,
+			LAST_VERIT_BIN, VERIT, makeSolverPath(LAST_VERIT_BIN));
+	public static final ISMTSolver LAST_Z3 = newSolver(LAST_Z3_BIN,
 			LAST_Z3_BIN, Z3, makeSolverPath(LAST_Z3_BIN));
 
-	public static final AbstractSolverConfig ALTERGO_SMT1 = makeConfig(
+	public static final ISolverConfig ALTERGO_SMT1 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", V1_2);
-	public static final AbstractSolverConfig ALTERGO_SMT2 = makeConfig(
+	public static final ISolverConfig ALTERGO_SMT2 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", V2_0);
-	public static final AbstractSolverConfig CVC3_SMT1 = makeConfig(
-			LAST_CVC3_BIN, LAST_CVC3, "-lang smt", V1_2);
-	public static final AbstractSolverConfig CVC3_SMT2 = makeConfig(
-			LAST_CVC3_BIN, LAST_CVC3, "-lang smt2", V2_0);
-	public static final AbstractSolverConfig CVC4_SMT1 = makeConfig(
-			LAST_CVC4_BIN, LAST_CVC4, "--lang smt", V1_2);
-	public static final AbstractSolverConfig CVC4_SMT2 = makeConfig(
-			LAST_CVC4_BIN, LAST_CVC4, "--lang smt2", V2_0);
-	public static final AbstractSolverConfig MATHSAT5_SMT1 = makeConfig(
+	public static final ISolverConfig CVC3_SMT1 = makeConfig(LAST_CVC3_BIN,
+			LAST_CVC3, "-lang smt", V1_2);
+	public static final ISolverConfig CVC3_SMT2 = makeConfig(LAST_CVC3_BIN,
+			LAST_CVC3, "-lang smt2", V2_0);
+	public static final ISolverConfig CVC4_SMT1 = makeConfig(LAST_CVC4_BIN,
+			LAST_CVC4, "--lang smt", V1_2);
+	public static final ISolverConfig CVC4_SMT2 = makeConfig(LAST_CVC4_BIN,
+			LAST_CVC4, "--lang smt2", V2_0);
+	public static final ISolverConfig MATHSAT5_SMT1 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", V1_2);
-	public static final AbstractSolverConfig MATHSAT5_SMT2 = makeConfig(
+	public static final ISolverConfig MATHSAT5_SMT2 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", V2_0);
-	public static final AbstractSolverConfig OPENSMT_SMT1 = makeConfig(
+	public static final ISolverConfig OPENSMT_SMT1 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", V1_2);
-	public static final AbstractSolverConfig OPENSMT_SMT2 = makeConfig(
+	public static final ISolverConfig OPENSMT_SMT2 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", V2_0);
-	public static final AbstractSolverConfig VERIT_SMT1 = makeConfig(
-			LAST_VERIT_BIN, LAST_VERIT, "--enable-e --max-time=2.9", V1_2);
-	public static final AbstractSolverConfig VERIT_SMT2 = makeConfig(
-			LAST_VERIT_BIN, LAST_VERIT,
+	public static final ISolverConfig VERIT_SMT1 = makeConfig(LAST_VERIT_BIN,
+			LAST_VERIT, "--enable-e --max-time=2.9", V1_2);
+	public static final ISolverConfig VERIT_SMT2 = makeConfig(LAST_VERIT_BIN,
+			LAST_VERIT,
 			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
 			V2_0);
-	public static final AbstractSolverConfig Z3_SMT1 = makeConfig(LAST_Z3_BIN,
+	public static final ISolverConfig Z3_SMT1 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "", V1_2);
-	public static final AbstractSolverConfig Z3_SMT2 = makeConfig(LAST_Z3_BIN,
+	public static final ISolverConfig Z3_SMT2 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "-smt2", V2_0);
 
 	private static final NullProofMonitor MONITOR = new NullProofMonitor();
@@ -186,13 +183,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	private static AbstractSolverConfig makeConfig(final String id,
-			final AbstractSMTSolver solver, final String args,
+	private static ISolverConfig makeConfig(final String id,
+			final ISMTSolver solver, final String args,
 			final SMTLIBVersion smtlibVersion) {
 		final String newID = id
 				+ (smtlibVersion.equals(V1_2) ? "-SMT1" : "-SMT2");
-		return AbstractSolverConfig.newConfig(newID, newID, solver.getID(),
-				args, smtlibVersion);
+		return newConfig(newID, newID, solver.getID(), args, smtlibVersion);
 	}
 
 	private static void setSolvers() {
@@ -424,8 +420,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final SMTProverCall smtProverCall;
 
-		final AbstractSolverConfig solverConfig = getSMTPrefs()
-				.getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
 
 		try {
 			switch (translationApproach) {
@@ -472,8 +467,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
-		final AbstractSolverConfig solverConfig = getSMTPrefs()
-				.getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
 
 		try {
 			switch (translationApproach) {
@@ -522,8 +516,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
-		final AbstractSolverConfig solverConfig = getSMTPrefs()
-				.getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
 
 		try {
 			switch (translationApproach) {
@@ -710,8 +703,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 
-		final AbstractSolverConfig solverConfig = getSMTPrefs()
-				.getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
 
 		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
 		for (final String hyp : inputHyps) {
@@ -820,7 +812,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		 */
 		debugBuilder.append("unsat-core checking\n");
 
-		final AbstractSMTSolver solver = getSMTPrefs().getSolver(
+		final ISMTSolver solver = getSMTPrefs().getSolver(
 				getSMTPrefs().getSelectedConfig().getSolverId());
 		final SolverKind solverKind = solver.getKind();
 		if (!solverKind.equals(Z3)) {

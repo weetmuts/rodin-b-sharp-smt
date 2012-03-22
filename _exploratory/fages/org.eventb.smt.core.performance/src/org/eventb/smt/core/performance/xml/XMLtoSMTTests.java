@@ -43,7 +43,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
 import org.eventb.smt.core.performance.xml.utils.LemmaParser;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
@@ -446,7 +446,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		final AbstractSolverConfig solverConfig = getSMTPrefs()
+		final ISolverConfig solverConfig = getSMTPrefs()
 				.getSelectedConfig();
 		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(

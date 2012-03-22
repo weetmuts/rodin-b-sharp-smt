@@ -25,7 +25,7 @@ import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.internal.provers.ExternalSMTThroughPP;
 import org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT;
 import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.preferences.AbstractSolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * @author Systerel (yguyot)
@@ -52,12 +52,12 @@ public class SMTCore {
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final Map<String, AbstractSolverConfig> solverConfigs = getSMTPrefs()
+			final Map<String, ISolverConfig> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				final Iterator<AbstractSolverConfig> configsIterator = solverConfigs
+				final Iterator<ISolverConfig> configsIterator = solverConfigs
 						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(
@@ -130,12 +130,12 @@ public class SMTCore {
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final Map<String, AbstractSolverConfig> solverConfigs = getSMTPrefs()
+			final Map<String, ISolverConfig> solverConfigs = getSMTPrefs()
 					.getSolverConfigs();
 			if (solverConfigs != null && !solverConfigs.isEmpty()) {
 				final int nbSolverConfigs = solverConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				final Iterator<AbstractSolverConfig> configsIterator = solverConfigs
+				final Iterator<ISolverConfig> configsIterator = solverConfigs
 						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(

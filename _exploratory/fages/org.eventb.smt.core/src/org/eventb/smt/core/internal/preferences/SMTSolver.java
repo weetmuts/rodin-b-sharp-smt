@@ -9,12 +9,16 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
+import static java.lang.Boolean.parseBoolean;
+import static java.util.regex.Pattern.quote;
+import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.preferences.AbstractSMTSolver;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
@@ -23,9 +27,15 @@ import org.eventb.smt.core.provers.SolverKind;
  * 
  * @author Systerel (yguyot)
  */
-public class SMTSolver extends AbstractSMTSolver {
+public class SMTSolver implements ISMTSolver {
 	public static final boolean EDITABLE = true;
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
+
+	public static final int ID_COL = 0;
+	public static final int NAME_COL = 1;
+	public static final int KIND_COL = 2;
+	public static final int PATH_COL = 3;
+	public static final int EDITABLE_COL = 4;
 
 	private static final IPath DEFAULT_SOLVER_PATH = new Path(""); //$NON-NLS-1$
 
@@ -109,5 +119,20 @@ public class SMTSolver extends AbstractSMTSolver {
 		builder.append(encode(kind.toString())).append(SEPARATOR);
 		builder.append(encode(path.toOSString())).append(SEPARATOR);
 		builder.append(editable);
+	}
+
+	/**
+	 * Parses a preference string to build a solver
+	 * 
+	 * @param solverStr
+	 *            the string to parse
+	 * @return the solver represented by the string
+	 */
+	public final static ISMTSolver parseSolver(final String solverStr) {
+		final String[] columns = solverStr.split(quote(SEPARATOR));
+		return new SMTSolver(decode(columns[ID_COL]),
+				decode(columns[NAME_COL]), parseKind(columns[KIND_COL]),
+				new Path(decode(columns[PATH_COL])),
+				parseBoolean(columns[EDITABLE_COL]));
 	}
 }
