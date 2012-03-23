@@ -29,11 +29,12 @@ import org.eventb.smt.core.SMTCore;
  */
 public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
-	private static final String SMT_SOLVER_CONFIGS_LABEL = "SMT-Solvers configurations";
+	private static final String SMT_SOLVER_CONFIGS_LABEL = "";
+	private static final String SMT_SOLVER_CONFIGS_DESCRIPTION = "Customize SMT-solvers configurations...";
 
 	public SolverConfigsPreferencePage() {
 		super(FLAT);
-		setDescription(SMT_SOLVER_CONFIGS_LABEL);
+		setDescription(SMT_SOLVER_CONFIGS_DESCRIPTION);
 	}
 
 	/**

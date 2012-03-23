@@ -29,11 +29,12 @@ import org.eventb.smt.core.SMTCore;
  */
 public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
-	private static final String SMT_SOLVERS_LABEL = "SMT-Solvers";
+	private static final String SMT_SOLVERS_LABEL = "";
+	private static final String SMT_SOLVERS_DESCRIPTION = "Connect SMT-solvers to the platform...";
 
 	public SMTSolversPreferencePage() {
 		super(FLAT);
-		setDescription(SMT_SOLVERS_LABEL);
+		setDescription(SMT_SOLVERS_DESCRIPTION);
 	}
 
 	/**
