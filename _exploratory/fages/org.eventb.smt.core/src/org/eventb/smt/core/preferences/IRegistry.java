@@ -9,15 +9,16 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
-import java.util.Map;
-
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import java.util.Set;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
 public interface IRegistry<T> {
-	public Map<String, T> getMap() throws InvalidRegistryObjectException,
-			ExtensionLoadingException;
+	public Set<String> getIDs();
+
+	public boolean isRegistered(String id);
+
+	public T get(String id);
 }

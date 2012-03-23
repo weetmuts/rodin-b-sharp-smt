@@ -14,7 +14,6 @@ import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeIllegalExtensionException;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -22,16 +21,16 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.ISMTSolver;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
-	public static String BUNDLED_SOLVERS_ID = SMTCore.PLUGIN_ID
-			+ ".solvers";
+public class BundledSolverRegistry extends AbstractRegistry<ISMTSolver> {
+	public static String BUNDLED_SOLVERS_ID = SMTCore.PLUGIN_ID + ".solvers";
 
-	private Map<String, BundledSolverDesc> registry;
+	private HashMap<String, ISMTSolver> registry;
 
 	private static final BundledSolverRegistry INSTANCE = new BundledSolverRegistry();
 
@@ -50,7 +49,7 @@ public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
 	}
 
 	@Override
-	public Map<String, BundledSolverDesc> getRegistry() {
+	public HashMap<String, ISMTSolver> getRegistry() {
 		return registry;
 	}
 
@@ -67,23 +66,25 @@ public class BundledSolverRegistry extends AbstractRegistry<BundledSolverDesc> {
 			// Prevents loading by two thread in parallel
 			return;
 		}
-		registry = new HashMap<String, BundledSolverDesc>();
+		registry = new HashMap<String, ISMTSolver>();
 		final IExtensionRegistry xRegistry = getExtensionRegistry();
 		final IExtensionPoint point = xRegistry
 				.getExtensionPoint(BUNDLED_SOLVERS_ID);
 		checkPoint(point, BUNDLED_SOLVERS_ID);
 		for (IConfigurationElement element : point.getConfigurationElements()) {
-			final BundledSolverDesc desc = new BundledSolverDesc(element);
-			desc.load();
-			final String id = desc.getId();
-			final BundledSolverDesc oldDesc = registry.put(id, desc);
-			if (oldDesc != null) {
-				registry.put(id, oldDesc);
-				throw makeIllegalExtensionException(id);
+			final BundledSolverLoader bundledSolverLoader = new BundledSolverLoader(
+					element);
+			final SMTSolver solver = bundledSolverLoader.load();
+			final String solverId = solver.getID();
+			final ISMTSolver oldSolver = registry.put(solverId, solver);
+			if (oldSolver != null) {
+				registry.put(solverId, oldSolver);
+				// FIXME must not throw an exception, but log the error silently
+				throw makeIllegalExtensionException(solverId);
 			} else {
 				if (DEBUG_DETAILS)
 					System.out.println("Registered bundled solver extension "
-							+ id);
+							+ solverId);
 			}
 		}
 	}

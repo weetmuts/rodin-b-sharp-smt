@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.PreferenceManager;
@@ -189,13 +189,12 @@ public class SMTSolverDialog extends Dialog {
 					errBuilder.append("The solver ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final IRegistry<?> registry = getBundledSolverRegistry();
+						final IRegistry<ISMTSolver> registry = getBundledSolverRegistry();
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
-						for (final Object elem : registry.getMap().values()) {
-							final ISMTSolver bundledSolver = (ISMTSolver) elem;
+						for (final String reservedId : registry.getIDs()) {
 							errBuilder2.append("'");
-							errBuilder2.append(bundledSolver.getID());
+							errBuilder2.append(reservedId);
 							errBuilder2.append("'\n");
 						}
 						errBuilder2.append("'.");

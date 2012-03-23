@@ -15,11 +15,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * @author Systerel (yguyot)
  * 
  */
-public abstract class AbstractDescriptor {
+public abstract class AbstractLoader<T> {
 	protected final IConfigurationElement configurationElement;
 	protected String id;
 
-	public AbstractDescriptor(final IConfigurationElement configurationElement) {
+	public AbstractLoader(final IConfigurationElement configurationElement) {
 		this.configurationElement = configurationElement;
 	}
 
@@ -27,7 +27,5 @@ public abstract class AbstractDescriptor {
 		return id;
 	}
 
-	public abstract void load();
-
-	public abstract Object getInstance();
+	public abstract T load();
 }

@@ -17,7 +17,7 @@ import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
  * 
  */
 public abstract class AbstractBundledSolverRegistry {
-	public static IRegistry<?> getBundledSolverRegistry()
+	public static IRegistry<ISMTSolver> getBundledSolverRegistry()
 			throws InvalidRegistryObjectException, ExtensionLoadingException {
 		return BundledSolverRegistry.getBundledSolverRegistry();
 	}

@@ -27,7 +27,7 @@ import org.eventb.smt.tests.acceptance.AxiomsTestWithZ3PPV2_0;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
 import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV1_2;
-import org.eventb.smt.tests.unit.BundledSolverDescTests;
+import org.eventb.smt.tests.unit.BundledSolverLoaderTests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV2_0;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV1_2;
@@ -55,7 +55,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		AxiomsTestWithCvc3PPV2_0.class, AxiomsTestWithCvc4PPV2_0.class,
 		AxiomsTestWithMathSat5PPV2_0.class, AxiomsTestWithOpenSMTPPV2_0.class,
 		AxiomsTestWithVeriTPPV2_0.class, AxiomsTestWithZ3PPV2_0.class,
-		BundledSolverDescTests.class })
+		BundledSolverLoaderTests.class })
 public class QuickRegressionTestSuite {
 	// Just for tests
 }

@@ -31,37 +31,39 @@ import org.osgi.framework.Bundle;
  * @author Systerel (yguyot)
  * 
  */
-public class BundledSolverDesc extends AbstractDescriptor {
-	/**
-	 * Bundled solver instance lazily loaded using
-	 * <code>configurationElement</code>
-	 */
-	private SMTSolver instance;
-
-	public BundledSolverDesc(IConfigurationElement configurationElement) {
+public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
+	public BundledSolverLoader(IConfigurationElement configurationElement) {
 		super(configurationElement);
 	}
 
+	/**
+	 * Quickly loads the configuration element attributes, then checks the
+	 * values and builds the <code>SMTSolver</code> instance to return.
+	 */
 	@Override
-	public void load() throws ExtensionLoadingException,
+	public SMTSolver load() throws ExtensionLoadingException,
 			InvalidRegistryObjectException {
 		/**
 		 * The ID of the extension. Example: <code>bundled_verit</code>.
 		 */
 		final String localId = configurationElement.getAttribute("id");
-		checkId(localId);
 		/**
 		 * The bundle name of the extension. Example
 		 * <code>org.eventb.smt.verit</code>.
 		 */
 		final String nameSpace = configurationElement.getNamespaceIdentifier();
+		final String localPathStr = configurationElement
+				.getAttribute("localpath");
+		final String name = configurationElement.getAttribute("name");
+		final String kindStr = configurationElement.getAttribute("kind");
+
 		id = nameSpace + "." + localId;
-		final IPath path = makeSolverPath(nameSpace,
-				configurationElement.getAttribute("localpath"));
+
+		checkId(localId);
+		final IPath path = makeSolverPath(nameSpace, localPathStr);
 		checkPath(path);
-		instance = new SMTSolver(id, configurationElement.getAttribute("name"),
-				parseKind(configurationElement.getAttribute("kind")), path,
-				!EDITABLE);
+
+		return new SMTSolver(id, name, parseKind(kindStr), path, !EDITABLE);
 	}
 
 	/**
@@ -83,10 +85,5 @@ public class BundledSolverDesc extends AbstractDescriptor {
 			throws ExtensionLoadingException {
 		if (path == null)
 			throw makeNullPathException();
-	}
-
-	@Override
-	public SMTSolver getInstance() {
-		return instance;
 	}
 }

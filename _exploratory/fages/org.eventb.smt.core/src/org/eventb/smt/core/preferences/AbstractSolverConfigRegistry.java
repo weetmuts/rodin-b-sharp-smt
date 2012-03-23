@@ -17,7 +17,7 @@ import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
  * 
  */
 public abstract class AbstractSolverConfigRegistry {
-	public static IRegistry<?> getSolverConfigRegistry()
+	public static IRegistry<ISolverConfig> getSolverConfigRegistry()
 			throws InvalidRegistryObjectException, ExtensionLoadingException {
 		return SolverConfigRegistry.getSolverConfigRegistry();
 	}

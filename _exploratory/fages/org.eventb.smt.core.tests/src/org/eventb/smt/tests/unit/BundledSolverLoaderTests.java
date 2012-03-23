@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.internal.preferences.SolverConfigDesc;
+import org.eventb.smt.core.internal.preferences.SolverConfigLoader;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.junit.Test;
 
@@ -21,21 +21,21 @@ import org.junit.Test;
  * @author Systerel (yguyot)
  * 
  */
-public class BundledSolverDescTests {
+public class BundledSolverLoaderTests {
 
-	SolverConfigDesc bundledSolverDesc;
+	SolverConfigLoader bundledSolverDesc;
 
 	public void makeBundledSolverDesc(final String bundle, final String id,
 			final String name, final String kind, final String binary,
 			final String args, final String smtlib) {
-		bundledSolverDesc = new SolverConfigDesc(new BundledSolverConfigElt(
+		bundledSolverDesc = new SolverConfigLoader(new BundledSolverConfigElt(
 				bundle, id, name, kind, binary, args, smtlib));
 	}
 
 	public void makeBundledSolverDesc(final String id, final String name,
 			final String kind, final String binary, final String args,
 			final String smtlib) {
-		bundledSolverDesc = new SolverConfigDesc(new BundledSolverConfigElt(id,
+		bundledSolverDesc = new SolverConfigLoader(new BundledSolverConfigElt(id,
 				name, kind, binary, args, smtlib));
 	}
 

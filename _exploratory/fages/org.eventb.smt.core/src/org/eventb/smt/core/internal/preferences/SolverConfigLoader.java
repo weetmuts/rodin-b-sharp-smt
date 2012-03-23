@@ -24,42 +24,39 @@ import org.eventb.smt.core.preferences.ExtensionLoadingException;
  * @author Systerel (yguyot)
  * 
  */
-public class SolverConfigDesc extends AbstractDescriptor {
-	/**
-	 * Solver configuration instance lazily loaded using
-	 * <code>configurationElement</code>
-	 */
-	private SolverConfiguration instance;
-
-	public SolverConfigDesc(final IConfigurationElement configurationElement) {
+public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
+	public SolverConfigLoader(final IConfigurationElement configurationElement) {
 		super(configurationElement);
 	}
 
+	/**
+	 * Quickly loads the configuration element attributes, then checks the
+	 * values and builds the <code>SolverConfiguration</code> instance to
+	 * return.
+	 */
 	@Override
-	public void load() throws ExtensionLoadingException,
+	public SolverConfiguration load() throws ExtensionLoadingException,
 			InvalidRegistryObjectException {
 		/**
 		 * The ID of the extension.
 		 */
 		final String localId = configurationElement.getAttribute("id");
-		checkId(localId);
 		/**
 		 * The bundle name of the extension. Example
 		 * <code>org.eventb.smt.verit</code>.
 		 */
 		final String nameSpace = configurationElement.getNamespaceIdentifier();
+		final String name = configurationElement.getAttribute("name");
+		final String solverId = configurationElement.getAttribute("solverid");
+		final String args = configurationElement.getAttribute("args");
+		final String smtlibVersion = configurationElement
+				.getAttribute("smt-lib");
+
 		id = nameSpace + "." + localId;
 
-		instance = new SolverConfiguration(id,
-				configurationElement.getAttribute("name"),
-				configurationElement.getAttribute("solverid"),
-				configurationElement.getAttribute("args"),
-				parseVersion(configurationElement.getAttribute("smt-lib")),
-				!EDITABLE);
-	}
+		checkId(localId);
 
-	@Override
-	public SolverConfiguration getInstance() {
-		return instance;
+		return new SolverConfiguration(id, name, solverId, args,
+				parseVersion(smtlibVersion), !EDITABLE);
 	}
 }

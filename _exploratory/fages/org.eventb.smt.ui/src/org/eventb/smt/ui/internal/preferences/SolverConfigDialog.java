@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.SolverConfigFactory;
@@ -185,13 +185,12 @@ public class SolverConfigDialog extends Dialog {
 					errBuilder.append("The config ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final IRegistry<?> registry = getSolverConfigRegistry();
+						final IRegistry<ISolverConfig> registry = getSolverConfigRegistry();
 						errBuilder2
 								.append("The following config IDs are reserved:\n");
-						for (final Object elem : registry.getMap().values()) {
-							final ISolverConfig bundledConfig = (ISolverConfig) elem;
+						for (final String reservedId : registry.getIDs()) {
 							errBuilder2.append("'");
-							errBuilder2.append(bundledConfig.getID());
+							errBuilder2.append(reservedId);
 							errBuilder2.append("'\n");
 						}
 						errBuilder2.append("'.");

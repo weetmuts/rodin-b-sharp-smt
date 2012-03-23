@@ -11,8 +11,8 @@ package org.eventb.smt.core.internal.preferences;
 
 import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeNoExtensionException;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -23,20 +23,32 @@ import org.eventb.smt.core.preferences.IRegistry;
  * @author Systerel (yguyot)
  * 
  */
-public abstract class AbstractRegistry<T extends AbstractDescriptor> implements
-		IRegistry<Object> {
+public abstract class AbstractRegistry<T> implements IRegistry<T> {
 	public abstract Map<String, T> getRegistry();
 
-	public Object getContentInstance(String id) {
-		return getRegistry().get(id).getInstance();
+	@Override
+	public Set<String> getIDs() {
+		if (getRegistry() == null) {
+			loadRegistry();
+		}
+		return getRegistry().keySet();
 	}
 
+	@Override
 	public synchronized boolean isRegistered(String id)
 			throws ExtensionLoadingException, InvalidRegistryObjectException {
 		if (getRegistry() == null) {
 			loadRegistry();
 		}
 		return getRegistry().containsKey(id);
+	}
+
+	@Override
+	public T get(String id) {
+		if (getRegistry() == null) {
+			loadRegistry();
+		}
+		return getRegistry().get(id);
 	}
 
 	/**
@@ -55,21 +67,5 @@ public abstract class AbstractRegistry<T extends AbstractDescriptor> implements
 			final String id) throws ExtensionLoadingException {
 		if (point == null)
 			throw makeNoExtensionException(id);
-	}
-
-	@Override
-	public Map<String, Object> getMap() throws InvalidRegistryObjectException,
-			ExtensionLoadingException {
-		final Map<String, Object> map = new LinkedHashMap<String, Object>();
-		if (getRegistry() == null) {
-			loadRegistry();
-		}
-		for (final Map.Entry<String, T> entry : getRegistry().entrySet()) {
-			final Object instance = entry.getValue().getInstance();
-			if (instance != null) {
-				map.put(entry.getKey(), instance);
-			}
-		}
-		return map;
 	}
 }

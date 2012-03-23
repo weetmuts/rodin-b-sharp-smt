@@ -23,13 +23,13 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
-import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IPreferences;
+import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISolverConfig;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -119,8 +119,8 @@ public class SMTProversCore extends Plugin {
 		final IPreferences smtDefaultPrefs = getDefaultSMTPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
-			for (final Object registryEntry : registry.getMap().values()) {
-				final SMTSolver solver = (SMTSolver) registryEntry;
+			for (final String solverId : registry.getIDs()) {
+				final ISMTSolver solver = registry.get(solverId);
 				try {
 					smtDefaultPrefs.addSolverToDefault(solver);
 				} catch (IllegalArgumentException iae) {
@@ -158,8 +158,8 @@ public class SMTProversCore extends Plugin {
 
 		try {
 			final SolverConfigRegistry registry = getSolverConfigRegistry();
-			for (final Object registryEntry : registry.getMap().values()) {
-				final SolverConfiguration solverConfig = (SolverConfiguration) registryEntry;
+			for (final String configId : registry.getIDs()) {
+				final ISolverConfig solverConfig = registry.get(configId);
 				try {
 					smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
 				} catch (IllegalArgumentException iae) {

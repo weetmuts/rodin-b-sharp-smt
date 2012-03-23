@@ -11,9 +11,9 @@ package org.eventb.smt.core.internal.preferences;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
+import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeIllegalExtensionException;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -21,18 +21,19 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * @author Systerel (yguyot)
  * 
  */
-public class SolverConfigRegistry extends AbstractRegistry<SolverConfigDesc> {
+public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 	public static String SOLVER_CONFIGS_ID = SMTCore.PLUGIN_ID
 			+ ".configurations";
 
-	private static final SolverConfigRegistry INSTANCE = new SolverConfigRegistry();
+	private HashMap<String, ISolverConfig> registry;
 
-	private Map<String, SolverConfigDesc> registry;
+	private static final SolverConfigRegistry INSTANCE = new SolverConfigRegistry();
 
 	/**
 	 * Private default constructor enforces that only one instance of this class
@@ -49,7 +50,7 @@ public class SolverConfigRegistry extends AbstractRegistry<SolverConfigDesc> {
 	}
 
 	@Override
-	public Map<String, SolverConfigDesc> getRegistry() {
+	public HashMap<String, ISolverConfig> getRegistry() {
 		return registry;
 	}
 
@@ -66,25 +67,26 @@ public class SolverConfigRegistry extends AbstractRegistry<SolverConfigDesc> {
 			// Prevents loading by two thread in parallel
 			return;
 		}
-		registry = new HashMap<String, SolverConfigDesc>();
+		registry = new HashMap<String, ISolverConfig>();
 		final IExtensionRegistry xRegistry = getExtensionRegistry();
 		final IExtensionPoint point = xRegistry
 				.getExtensionPoint(SOLVER_CONFIGS_ID);
 		checkPoint(point, SOLVER_CONFIGS_ID);
 		for (IConfigurationElement element : point.getConfigurationElements()) {
-			final SolverConfigDesc desc = new SolverConfigDesc(element);
-			desc.load();
-			final String id = desc.getId();
-			final SolverConfigDesc oldDesc = registry.put(id, desc);
-			if (oldDesc != null) {
-				registry.put(id, oldDesc);
-				throw ExtensionLoadingException
-						.makeIllegalExtensionException(id);
+			final SolverConfigLoader solverConfigLoader = new SolverConfigLoader(
+					element);
+			final SolverConfiguration config = solverConfigLoader.load();
+			final String configId = config.getID();
+			final ISolverConfig oldConfig = registry.put(configId, config);
+			if (oldConfig != null) {
+				registry.put(configId, oldConfig);
+				// FIXME must not throw an exception, but log the error silently
+				throw makeIllegalExtensionException(configId);
 			} else {
 				if (DEBUG_DETAILS)
 					System.out
 							.println("Registered solver configuration extension "
-									+ id);
+									+ configId);
 			}
 		}
 	}
