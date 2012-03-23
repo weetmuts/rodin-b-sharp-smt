@@ -17,7 +17,6 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.core.preferences.AbstractSolverConfigRegistry.getSolverConfigRegistry;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -37,6 +36,7 @@ import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.PreferenceManager;
 import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -185,7 +185,8 @@ public class SolverConfigDialog extends Dialog {
 					errBuilder.append("The config ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final IRegistry<ISolverConfig> registry = getSolverConfigRegistry();
+						final IRegistry<ISolverConfig> registry = PreferenceManager
+								.getSolverConfigRegistry();
 						errBuilder2
 								.append("The following config IDs are reserved:\n");
 						for (final String reservedId : registry.getIDs()) {

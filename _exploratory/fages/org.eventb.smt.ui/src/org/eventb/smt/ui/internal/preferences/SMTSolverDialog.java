@@ -17,7 +17,6 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
-import static org.eventb.smt.core.preferences.AbstractBundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
@@ -189,7 +188,8 @@ public class SMTSolverDialog extends Dialog {
 					errBuilder.append("The solver ID must be unique.\n");
 					StringBuilder errBuilder2 = new StringBuilder();
 					try {
-						final IRegistry<ISMTSolver> registry = getBundledSolverRegistry();
+						final IRegistry<ISMTSolver> registry = PreferenceManager
+								.getBundledSolverRegistry();
 						errBuilder2
 								.append("The following solver IDs are reserved:\n");
 						for (final String reservedId : registry.getIDs()) {
