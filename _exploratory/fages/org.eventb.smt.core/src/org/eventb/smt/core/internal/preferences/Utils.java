@@ -11,17 +11,16 @@ package org.eventb.smt.core.internal.preferences;
 
 import static java.lang.Character.isJavaIdentifierPart;
 import static java.lang.Character.isJavaIdentifierStart;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeDotInIDException;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeInvalidJavaIDException;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeNoSuchBundleException;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeNullIDException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeDotInIDException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeInvalidJavaIDException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNoSuchBundleException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullIDException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import org.eventb.smt.core.internal.log.SMTStatus;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.osgi.framework.Bundle;
 
 /**

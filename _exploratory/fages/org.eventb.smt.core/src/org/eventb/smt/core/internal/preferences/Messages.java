@@ -16,6 +16,10 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eventb.smt.core.internal.preferences.messages"; //$NON-NLS-1$
 
+	public static String BundledSolverRegistry_RegistrationError;
+
+	public static String BundledSolverRegistry_SuccessfullRegistration;
+
 	public static String SMTPreferences_IllegalSMTSolverSettings;
 	public static String SMTPreferences_NoSMTSolverSelected;
 	public static String SMTPreferences_NoSMTSolverSet;
@@ -26,6 +30,10 @@ public class Messages extends NLS {
 	public static String SMTPreferencesError_invalid_file;
 	public static String SMTPreferencesError_missing_path;
 	public static String SMTPreferencesError_no_file;
+
+	public static String SolverConfigRegistry_RegistrationError;
+
+	public static String SolverConfigRegistry_SuccessfullRegistration;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

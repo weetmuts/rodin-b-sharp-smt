@@ -9,14 +9,14 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeNoExtensionException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNoExtensionException;
 
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IRegistry;
 
 /**
@@ -67,5 +67,15 @@ public abstract class AbstractRegistry<T> implements IRegistry<T> {
 			final String id) throws ExtensionLoadingException {
 		if (point == null)
 			throw makeNoExtensionException(id);
+	}
+
+	/**
+	 * @param registry
+	 * @throws ExtensionLoadingException
+	 */
+	protected static void checkRegistry(final IExtensionRegistry registry)
+			throws ExtensionLoadingException {
+		if (registry == null)
+			throw ExtensionLoadingException.makeNullRegistryException();
 	}
 }

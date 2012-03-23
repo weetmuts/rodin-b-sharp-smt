@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -106,7 +105,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testUnsatBundledCvc3Call() throws ExtensionLoadingException {
+	public void testUnsatBundledCvc3Call() {
 		setPreferencesForBundledCvc3();
 
 		final List<String> hyps = Arrays.asList( //
@@ -117,7 +116,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSatBundledCvc3Call() throws ExtensionLoadingException {
+	public void testSatBundledCvc3Call() {
 		setPreferencesForBundledCvc3();
 
 		final List<String> hyps = Arrays.asList( //
@@ -221,7 +220,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testUnsatBundledVeriTCall() throws ExtensionLoadingException {
+	public void testUnsatBundledVeriTCall() {
 		setPreferencesForBundledVeriT();
 
 		final List<String> hyps = Arrays.asList( //
@@ -232,7 +231,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSatBundledVeritCall() throws ExtensionLoadingException {
+	public void testSatBundledVeritCall() {
 		setPreferencesForBundledVeriT();
 
 		final List<String> hyps = Arrays.asList( //
@@ -287,7 +286,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredBundledCVC3Call() throws ExtensionLoadingException {
+	public void testTRUEPredBundledCVC3Call() {
 		setPreferencesForBundledCvc3();
 
 		final List<String> hyps = Arrays.asList( //
@@ -320,7 +319,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testTRUEPredBundledVeriTCall() throws ExtensionLoadingException {
+	public void testTRUEPredBundledVeriTCall() {
 		setPreferencesForBundledVeriT();
 
 		final List<String> hyps = Arrays.asList( //
@@ -364,7 +363,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetBundledVeriTCall2() throws ExtensionLoadingException {
+	public void testBOOLSetBundledVeriTCall2() {
 		setPreferencesForBundledVeriT();
 
 		final List<String> hyps = Arrays.asList( //
@@ -386,7 +385,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testBOOLSetBundledCVC3Call() throws ExtensionLoadingException {
+	public void testBOOLSetBundledCVC3Call() {
 		setPreferencesForBundledCvc3();
 
 		final List<String> hyps = Arrays.asList( //
@@ -427,8 +426,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSetsEqualityBundledCVC3Call()
-			throws ExtensionLoadingException {
+	public void testSetsEqualityBundledCVC3Call() {
 		setPreferencesForBundledCvc3();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
@@ -473,8 +471,7 @@ public class RunProverTestWithPPV2_0 extends CommonSolverRunTests {
 	}
 
 	@Test
-	public void testSetsEqualityBundledVeriTCall()
-			throws ExtensionLoadingException {
+	public void testSetsEqualityBundledVeriTCall() {
 		setPreferencesForBundledVeriT();
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");

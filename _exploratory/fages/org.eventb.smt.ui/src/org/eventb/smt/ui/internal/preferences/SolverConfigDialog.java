@@ -19,7 +19,8 @@ import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import java.util.Set;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISolverConfig;
@@ -183,28 +183,19 @@ public class SolverConfigDialog extends Dialog {
 					errBuilder
 							.append("A config ID and the solver ID are required.\n");
 					errBuilder.append("The config ID must be unique.\n");
-					StringBuilder errBuilder2 = new StringBuilder();
-					try {
-						final IRegistry<ISolverConfig> registry = PreferenceManager
-								.getSolverConfigRegistry();
-						errBuilder2
+					final IRegistry<ISolverConfig> registry = PreferenceManager
+							.getSolverConfigRegistry();
+					final Set<String> reservedIDs = registry.getIDs();
+					if (!reservedIDs.isEmpty()) {
+						errBuilder
 								.append("The following config IDs are reserved:\n");
 						for (final String reservedId : registry.getIDs()) {
-							errBuilder2.append("'");
-							errBuilder2.append(reservedId);
-							errBuilder2.append("'\n");
+							errBuilder.append("'");
+							errBuilder.append(reservedId);
+							errBuilder.append("'\n");
 						}
-						errBuilder2.append("'.");
-					} catch (InvalidRegistryObjectException iroe) {
-						// TODO log the error
-						errBuilder2 = new StringBuilder(
-								"The specified solver ID is reserved.");
-					} catch (ExtensionLoadingException e) {
-						// TODO log the error
-						errBuilder2 = new StringBuilder(
-								"The specified solver ID is reserved.");
+						errBuilder.append("'.");
 					}
-					errBuilder.append(errBuilder2);
 					UIUtils.showError(errBuilder.toString());
 				}
 			}

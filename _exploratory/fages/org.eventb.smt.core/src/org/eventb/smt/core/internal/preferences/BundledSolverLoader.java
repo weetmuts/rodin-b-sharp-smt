@@ -10,10 +10,10 @@
 package org.eventb.smt.core.internal.preferences;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullPathException;
 import static org.eventb.smt.core.internal.preferences.SMTSolver.EDITABLE;
 import static org.eventb.smt.core.internal.preferences.Utils.checkBundle;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
-import static org.eventb.smt.core.preferences.ExtensionLoadingException.makeNullPathException;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eventb.core.seqprover.xprover.BundledFileExtractor;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.osgi.framework.Bundle;
 
 /**

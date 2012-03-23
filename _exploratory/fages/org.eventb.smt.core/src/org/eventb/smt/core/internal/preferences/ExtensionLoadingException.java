@@ -1,4 +1,4 @@
-package org.eventb.smt.core.preferences;
+package org.eventb.smt.core.internal.preferences;
 
 public class ExtensionLoadingException extends IllegalArgumentException {
 	public static final ExtensionLoadingException makeDotInIDException(
@@ -30,6 +30,11 @@ public class ExtensionLoadingException extends IllegalArgumentException {
 
 	public static final ExtensionLoadingException makeNullPathException() {
 		return new ExtensionLoadingException("Invalid path: null pointer.");
+	}
+
+	public static final ExtensionLoadingException makeNullRegistryException() {
+		return new ExtensionLoadingException(
+				"Invalid extension registry: null pointer.");
 	}
 
 	public static final ExtensionLoadingException makeNoExtensionException(

@@ -15,7 +15,6 @@ import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 
 /**
  * Bridge class used by the solver configurations registry to store data about

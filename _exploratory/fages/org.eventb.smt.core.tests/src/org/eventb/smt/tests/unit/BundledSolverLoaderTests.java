@@ -13,8 +13,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.SolverConfigLoader;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.junit.Test;
 
 /**

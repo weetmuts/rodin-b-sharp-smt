@@ -20,8 +20,9 @@ import static org.eclipse.swt.SWT.RESIZE;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,7 +37,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -186,28 +186,19 @@ public class SMTSolverDialog extends Dialog {
 					errBuilder
 							.append("A solver ID and the solver path are required.\n");
 					errBuilder.append("The solver ID must be unique.\n");
-					StringBuilder errBuilder2 = new StringBuilder();
-					try {
-						final IRegistry<ISMTSolver> registry = PreferenceManager
-								.getBundledSolverRegistry();
-						errBuilder2
+					final IRegistry<ISMTSolver> registry = PreferenceManager
+							.getBundledSolverRegistry();
+					final Set<String> reservedIDs = registry.getIDs();
+					if (!reservedIDs.isEmpty()) {
+						errBuilder
 								.append("The following solver IDs are reserved:\n");
-						for (final String reservedId : registry.getIDs()) {
-							errBuilder2.append("'");
-							errBuilder2.append(reservedId);
-							errBuilder2.append("'\n");
+						for (final String reservedId : reservedIDs) {
+							errBuilder.append("'");
+							errBuilder.append(reservedId);
+							errBuilder.append("'\n");
 						}
-						errBuilder2.append("'.");
-					} catch (InvalidRegistryObjectException iroe) {
-						// TODO log the error
-						errBuilder2 = new StringBuilder(
-								"The specified solver ID is reserved.");
-					} catch (ExtensionLoadingException e) {
-						// TODO log the error
-						errBuilder2 = new StringBuilder(
-								"The specified solver ID is reserved.");
+						errBuilder.append("'.");
 					}
-					errBuilder.append(errBuilder2);
 					UIUtils.showError(errBuilder.toString());
 				}
 			}

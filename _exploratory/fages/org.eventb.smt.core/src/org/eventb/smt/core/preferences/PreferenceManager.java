@@ -24,7 +24,6 @@ import static org.eventb.smt.core.internal.preferences.SMTPreferences.USE_DEFAUL
 
 import java.io.File;
 
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.core.internal.preferences.SMTPreferences;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
@@ -96,13 +95,11 @@ public class PreferenceManager {
 		}
 	}
 
-	public static IRegistry<ISMTSolver> getBundledSolverRegistry()
-			throws InvalidRegistryObjectException, ExtensionLoadingException {
+	public static IRegistry<ISMTSolver> getBundledSolverRegistry() {
 		return BundledSolverRegistry.getBundledSolverRegistry();
 	}
 
-	public static IRegistry<ISolverConfig> getSolverConfigRegistry()
-			throws InvalidRegistryObjectException, ExtensionLoadingException {
+	public static IRegistry<ISolverConfig> getSolverConfigRegistry() {
 		return SolverConfigRegistry.getSolverConfigRegistry();
 	}
 }

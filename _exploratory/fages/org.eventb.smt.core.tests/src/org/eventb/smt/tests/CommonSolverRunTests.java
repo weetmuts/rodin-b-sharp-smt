@@ -43,7 +43,6 @@ import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
@@ -173,11 +172,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolversConfigs();
 		this.theories = theories;
 		if (getUnsatCore && solverKind.equals(SolverKind.VERIT)) {
-			try {
-				setPreferencesForBundledVeriT();
-			} catch (ExtensionLoadingException e) {
-				e.printStackTrace();
-			}
+			setPreferencesForBundledVeriT();
 		} else {
 			setSolverPreferences(solverKind, smtlibVersion);
 		}
