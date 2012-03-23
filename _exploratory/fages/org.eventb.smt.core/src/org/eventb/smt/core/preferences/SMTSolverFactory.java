@@ -14,8 +14,9 @@ import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
- * @author Systerel (yguyot)
+ * This factory provides method to construct SMT-solvers instances.
  * 
+ * @author Systerel (yguyot)
  */
 public class SMTSolverFactory {
 	public static final ISMTSolver newSolver() {

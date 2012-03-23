@@ -13,8 +13,9 @@ import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
- * @author Systerel (yguyot)
+ * This factory provides method to construct solver configurations instances.
  * 
+ * @author Systerel (yguyot)
  */
 public class SolverConfigFactory {
 	public static final ISolverConfig newConfig() {
