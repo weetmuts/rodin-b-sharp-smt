@@ -10,18 +10,17 @@
 
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
-import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
-import static org.eventb.smt.core.preferences.PreferenceManager.SELECTED_CONFIG_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
@@ -53,7 +52,6 @@ public class SMTPreferences implements IPreferences {
 	private final IEclipsePreferences prefsNode;
 	private Map<String, ISMTSolver> solvers;
 	private Map<String, ISolverConfig> solverConfigs;
-	private String selectedConfigID;
 	private String translationPath;
 	private String veriTPath;
 
@@ -75,12 +73,10 @@ public class SMTPreferences implements IPreferences {
 	public SMTPreferences(final boolean useDefaultScope,
 			final Map<String, ISMTSolver> solvers,
 			final Map<String, ISolverConfig> solverConfigs,
-			final String selectedConfigID, final String translationPath,
-			final String veriTPath) {
+			final String translationPath, final String veriTPath) {
 		this(useDefaultScope);
 		this.solvers = solvers;
 		this.solverConfigs = solverConfigs;
-		this.selectedConfigID = selectedConfigID;
 		this.translationPath = translationPath;
 		this.veriTPath = veriTPath;
 	}
@@ -175,8 +171,6 @@ public class SMTPreferences implements IPreferences {
 		solvers = parseSolvers(prefsNode.get(SOLVERS_ID, DEFAULT_SOLVERS));
 		solverConfigs = parseConfigs(prefsNode.get(SOLVER_CONFIGS_ID,
 				DEFAULT_CONFIGS));
-		selectedConfigID = prefsNode.get(SELECTED_CONFIG_ID,
-				DEFAULT_SELECTED_CONFIG);
 		translationPath = prefsNode.get(TRANSLATION_PATH_ID,
 				DEFAULT_TRANSLATION_PATH);
 		veriTPath = prefsNode.get(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
@@ -186,7 +180,6 @@ public class SMTPreferences implements IPreferences {
 	public void save() {
 		prefsNode.put(SOLVERS_ID, solversToString(solvers));
 		prefsNode.put(SOLVER_CONFIGS_ID, configsToString(solverConfigs));
-		prefsNode.put(SELECTED_CONFIG_ID, selectedConfigID);
 		prefsNode.put(TRANSLATION_PATH_ID, translationPath);
 		prefsNode.put(VERIT_PATH_ID, veriTPath);
 	}
@@ -202,15 +195,6 @@ public class SMTPreferences implements IPreferences {
 	}
 
 	@Override
-	public ISolverConfig getSelectedConfig() {
-		if (solverConfigs.size() <= 0)
-			throw NoSMTSolverSetException;
-		if (selectedConfigID == null || selectedConfigID.isEmpty())
-			throw NoSMTSolverSelectedException;
-		return solverConfigs.get(selectedConfigID);
-	}
-
-	@Override
 	public ISMTSolver getSolver(final String solverId) {
 		return solvers.get(solverId);
 	}
@@ -218,11 +202,6 @@ public class SMTPreferences implements IPreferences {
 	@Override
 	public ISolverConfig getSolverConfig(final String configId) {
 		return solverConfigs.get(configId);
-	}
-
-	@Override
-	public String getSelectedConfigID() {
-		return selectedConfigID;
 	}
 
 	@Override
@@ -315,50 +294,13 @@ public class SMTPreferences implements IPreferences {
 	}
 
 	@Override
-	public void removeSolverConfig(final String configID) {
-		solverConfigs.remove(configID);
-		if (selectedConfigID.equals(configID)) {
-			if (!solverConfigs.isEmpty()) {
-				selectedConfigID = (String) solverConfigs.keySet().toArray()[0];
-			}
-		}
+	public void setConfigEnabled(String configID, boolean enabled) {
+		solverConfigs.get(configID).setEnabled(enabled);
 	}
 
 	@Override
-	public void setSelectedConfigID(final boolean selectionRequested,
-			final String configID) {
-		/**
-		 * If there is only one solver set in the table, it is selected for SMT
-		 * proofs
-		 */
-		if (solverConfigs.size() == 1) {
-			selectedConfigID = (String) solverConfigs.keySet().toArray()[0];
-		} else {
-			/**
-			 * Else, if a selection was requested, the corresponding
-			 * configuration is selected for SMT proofs.
-			 */
-			if (selectionRequested) {
-				selectedConfigID = configID;
-			} else {
-				/**
-				 * Else if the current selected solver is not valid...
-				 */
-				if (!solverConfigs.containsKey(selectedConfigID)) {
-					/**
-					 * if there is some configurations set in the list, the
-					 * first one is selected for SMT proofs, else the selected
-					 * configuration index is set to -1.
-					 */
-					if (solverConfigs.size() > 1) {
-						selectedConfigID = (String) solverConfigs.keySet()
-								.toArray()[0];
-					} else {
-						selectedConfigID = DEFAULT_SELECTED_CONFIG;
-					}
-				}
-			}
-		}
+	public void removeSolverConfig(final String configID) {
+		solverConfigs.remove(configID);
 	}
 
 	/**
@@ -384,5 +326,20 @@ public class SMTPreferences implements IPreferences {
 	public void setDefaultVeriTPath(final String veriTPath) {
 		this.defaultVeriTPath = getValidPath(this.defaultVeriTPath, veriTPath,
 				DEFAULT_VERIT_PATH);
+	}
+
+	// FIXME how to filter with efficiency ?
+	@Override
+	public List<ISolverConfig> getEnabledConfigs() {
+		final List<ISolverConfig> enabledConfigs = new ArrayList<ISolverConfig>();
+		final Iterator<ISolverConfig> configsIterator = solverConfigs.values()
+				.iterator();
+		while (configsIterator.hasNext()) {
+			final ISolverConfig config = configsIterator.next();
+			if (config.isEnabled()) {
+				enabledConfigs.add(config);
+			}
+		}
+		return enabledConfigs;
 	}
 }

@@ -37,6 +37,8 @@ public class SMTSolver implements ISMTSolver {
 	public static final int PATH_COL = 3;
 	public static final int EDITABLE_COL = 4;
 
+	static final String DEFAULT_SOLVER_ID = ""; //$NON-NLS-1$
+	private static final String DEFAULT_SOLVER_NAME = ""; //$NON-NLS-1$
 	private static final IPath DEFAULT_SOLVER_PATH = new Path(""); //$NON-NLS-1$
 
 	private final String id;
@@ -46,10 +48,10 @@ public class SMTSolver implements ISMTSolver {
 	private final boolean editable;
 
 	public SMTSolver() {
-		id = "";
-		name = "";
+		id = DEFAULT_SOLVER_ID;
+		name = DEFAULT_SOLVER_NAME;
 		kind = UNKNOWN;
-		path = new Path("");
+		path = DEFAULT_SOLVER_PATH;
 		editable = true;
 	}
 

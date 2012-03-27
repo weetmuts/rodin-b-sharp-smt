@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +22,8 @@ public interface IPreferences {
 	public abstract Map<String, ISMTSolver> getSolvers();
 
 	public abstract Map<String, ISolverConfig> getSolverConfigs();
+
+	public abstract List<ISolverConfig> getEnabledConfigs();
 
 	public abstract ISMTSolver getSolver(final String solverId);
 
@@ -39,24 +42,20 @@ public interface IPreferences {
 	public abstract void addSolverConfigToDefault(
 			final ISolverConfig solverConfig);
 
+	public abstract void setConfigEnabled(final String configID,
+			final boolean enabled);
+
 	public abstract void removeSolverConfig(final String configID);
-
-	public abstract String getSelectedConfigID();
-
-	public abstract ISolverConfig getSelectedConfig();
 
 	public abstract String getTranslationPath();
 
-	public abstract String getVeriTPath();
-
-	public abstract void setSelectedConfigID(final boolean selectionRequested,
-			final String configID);
-
 	public abstract void setTranslationPath(final String path);
 
-	public abstract void setDefaultVeriTPath(final String path);
+	public abstract String getVeriTPath();
 
 	public abstract void setVeriTPath(final String path);
+
+	public abstract void setDefaultVeriTPath(final String path);
 
 	public abstract void save();
 }

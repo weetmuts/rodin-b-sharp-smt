@@ -404,7 +404,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		if (getSMTPrefs().getSelectedConfig().getSmtlibVersion().equals(V2_0)) {
+		if (getSMTPrefs().getEnabledConfigs().iterator().next()
+				.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
 					"SMT-LIB 2.0 is not handled by the veriT approach yet",
 					false);
@@ -446,7 +447,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getEnabledConfigs()
+				.iterator().next();
 		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(
 					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",

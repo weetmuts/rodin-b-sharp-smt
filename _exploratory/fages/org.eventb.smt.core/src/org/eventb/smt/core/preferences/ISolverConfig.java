@@ -33,44 +33,55 @@ public interface ISolverConfig {
 	 * 
 	 * @return the ID of this configuration
 	 */
-	public abstract String getID();
+	public String getID();
 
 	/**
 	 * Returns the name of this configuration. It is human-readable.
 	 * 
 	 * @return the name of this configuration
 	 */
-	public abstract String getName();
+	public String getName();
 
 	/**
 	 * Returns the ID of the solver used in this configuration.
 	 * 
 	 * @return the ID of the configured solver
 	 */
-	public abstract String getSolverId();
+	public String getSolverId();
 
 	/**
 	 * Returns the arguments given to the solver when using this configuration.
 	 * 
 	 * @return the arguments of this configuration solver
 	 */
-	public abstract String getArgs();
+	public String getArgs();
 
 	/**
 	 * Returns the version of SMT-LIB target by the SMT translation.
 	 * 
 	 * @return the SMT-LIB version of this configuration
 	 */
-	public abstract SMTLIBVersion getSmtlibVersion();
+	public SMTLIBVersion getSmtlibVersion();
 
 	/**
 	 * Tells whether this configuration is editable by the user (through the UI
 	 * of the SMT-Solvers Plug-in) or not.
 	 * 
 	 * @return <code>true</code> if this configuration is editable, otherwise
-	 *         <code>false</code>.
+	 *         <code>false</code>
 	 */
-	public abstract boolean isEditable();
+	public boolean isEditable();
+
+	/**
+	 * Tells whether this configuration is enabled for execution when the user
+	 * calls the SMT tactic, or not.
+	 * 
+	 * @return <code>true</code> if this configuration is enabled, otherwise
+	 *         <code>false</code>
+	 */
+	public boolean isEnabled();
+
+	public void setEnabled(final boolean value);
 
 	/**
 	 * Appends the encoded string representation of this configuration into the
@@ -80,5 +91,5 @@ public interface ISolverConfig {
 	 *            the buffer in which this solver string representation must be
 	 *            appended.
 	 */
-	public abstract void toString(final StringBuilder builder);
+	public void toString(final StringBuilder builder);
 }

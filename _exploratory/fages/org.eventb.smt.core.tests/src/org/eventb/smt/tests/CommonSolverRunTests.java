@@ -12,6 +12,7 @@ package org.eventb.smt.tests;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ENABLED;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
@@ -169,7 +170,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean getUnsatCore) {
 		setTranslationPreferences();
 		setSolvers();
-		setSolversConfigs();
 		this.theories = theories;
 		if (getUnsatCore && solverKind.equals(SolverKind.VERIT)) {
 			setPreferencesForBundledVeriT();
@@ -195,25 +195,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		smtPrefs.addSolver(LAST_OPENSMT);
 		smtPrefs.addSolver(LAST_VERIT);
 		smtPrefs.addSolver(LAST_Z3);
-		smtPrefs.save();
-	}
-
-	private static void setSolversConfigs() {
-		final IPreferences smtPrefs = getSMTPrefs();
-		smtPrefs.addSolverConfig(ALTERGO_SMT1);
-		smtPrefs.addSolverConfig(ALTERGO_SMT2);
-		smtPrefs.addSolverConfig(CVC3_SMT1);
-		smtPrefs.addSolverConfig(CVC3_SMT2);
-		smtPrefs.addSolverConfig(CVC4_SMT1);
-		smtPrefs.addSolverConfig(CVC4_SMT2);
-		smtPrefs.addSolverConfig(MATHSAT5_SMT1);
-		smtPrefs.addSolverConfig(MATHSAT5_SMT2);
-		smtPrefs.addSolverConfig(OPENSMT_SMT1);
-		smtPrefs.addSolverConfig(OPENSMT_SMT2);
-		smtPrefs.addSolverConfig(VERIT_SMT1);
-		smtPrefs.addSolverConfig(VERIT_SMT2);
-		smtPrefs.addSolverConfig(Z3_SMT1);
-		smtPrefs.addSolverConfig(Z3_SMT2);
 		smtPrefs.save();
 	}
 
@@ -250,31 +231,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		case V1_2:
 			switch (kind) {
 			case ALT_ERGO:
-				smtPrefs.setSelectedConfigID(true, ALTERGO_SMT1.getID());
+				smtPrefs.addSolverConfig(ALTERGO_SMT1);
 				break;
 
 			case CVC3:
-				smtPrefs.setSelectedConfigID(true, CVC3_SMT1.getID());
+				smtPrefs.addSolverConfig(CVC3_SMT1);
 				break;
 
 			case CVC4:
-				smtPrefs.setSelectedConfigID(true, CVC4_SMT1.getID());
+				smtPrefs.addSolverConfig(CVC4_SMT1);
 				break;
 
 			case MATHSAT5:
-				smtPrefs.setSelectedConfigID(true, MATHSAT5_SMT1.getID());
+				smtPrefs.addSolverConfig(MATHSAT5_SMT1);
 				break;
 
 			case OPENSMT:
-				smtPrefs.setSelectedConfigID(true, OPENSMT_SMT1.getID());
+				smtPrefs.addSolverConfig(OPENSMT_SMT1);
 				break;
 
 			case VERIT:
-				smtPrefs.setSelectedConfigID(true, VERIT_SMT1.getID());
+				smtPrefs.addSolverConfig(VERIT_SMT1);
 				break;
 
 			case Z3:
-				smtPrefs.setSelectedConfigID(true, Z3_SMT1.getID());
+				smtPrefs.addSolverConfig(Z3_SMT1);
 				break;
 
 			default:
@@ -286,31 +267,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		default:
 			switch (kind) {
 			case ALT_ERGO:
-				smtPrefs.setSelectedConfigID(true, ALTERGO_SMT2.getID());
+				smtPrefs.addSolverConfig(ALTERGO_SMT2);
 				break;
 
 			case CVC3:
-				smtPrefs.setSelectedConfigID(true, CVC3_SMT2.getID());
+				smtPrefs.addSolverConfig(CVC3_SMT2);
 				break;
 
 			case CVC4:
-				smtPrefs.setSelectedConfigID(true, CVC4_SMT2.getID());
+				smtPrefs.addSolverConfig(CVC4_SMT2);
 				break;
 
 			case MATHSAT5:
-				smtPrefs.setSelectedConfigID(true, MATHSAT5_SMT2.getID());
+				smtPrefs.addSolverConfig(MATHSAT5_SMT2);
 				break;
 
 			case OPENSMT:
-				smtPrefs.setSelectedConfigID(true, OPENSMT_SMT2.getID());
+				smtPrefs.addSolverConfig(OPENSMT_SMT2);
 				break;
 
 			case VERIT:
-				smtPrefs.setSelectedConfigID(true, VERIT_SMT2.getID());
+				smtPrefs.addSolverConfig(VERIT_SMT2);
 				break;
 
 			case Z3:
-				smtPrefs.setSelectedConfigID(true, Z3_SMT2.getID());
+				smtPrefs.addSolverConfig(Z3_SMT2);
 				break;
 
 			default:
@@ -319,6 +300,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 			break;
 		}
+		smtPrefs.setConfigEnabled(BUNDLED_VERIT, !ENABLED);
+		smtPrefs.setConfigEnabled(BUNDLED_CVC3, !ENABLED);
 		smtPrefs.save();
 	}
 
@@ -332,13 +315,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	protected static void setPreferencesForBundledVeriT() {
 		final IPreferences smtPrefs = getSMTPrefs();
-		smtPrefs.setSelectedConfigID(true, BUNDLED_VERIT);
+		smtPrefs.setConfigEnabled(BUNDLED_VERIT, ENABLED);
 		smtPrefs.save();
 	}
 
 	protected static void setPreferencesForBundledCvc3() {
 		final IPreferences smtPrefs = getSMTPrefs();
-		smtPrefs.setSelectedConfigID(true, BUNDLED_CVC3);
+		smtPrefs.setConfigEnabled(BUNDLED_CVC3, ENABLED);
 		smtPrefs.save();
 	}
 
@@ -415,7 +398,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final SMTProverCall smtProverCall;
 
-		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getEnabledConfigs()
+				.iterator().next();
 
 		try {
 			switch (translationApproach) {
@@ -462,7 +446,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
-		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getEnabledConfigs()
+				.iterator().next();
 
 		try {
 			switch (translationApproach) {
@@ -511,7 +496,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
-		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getEnabledConfigs()
+				.iterator().next();
 
 		try {
 			switch (translationApproach) {
@@ -613,7 +599,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		// FIXME should not be PP because could this is used by veriT tests
 		final SMTThroughPP translator = new SMTThroughPP(getSMTPrefs()
-				.getSelectedConfig().getSmtlibVersion());
+				.getEnabledConfigs().iterator().next().getSmtlibVersion());
 		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
 
 		final SMTSignature signature = benchmark.getSignature();
@@ -698,7 +684,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
 
-		final ISolverConfig solverConfig = getSMTPrefs().getSelectedConfig();
+		final ISolverConfig solverConfig = getSMTPrefs().getEnabledConfigs()
+				.iterator().next();
 
 		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
 		for (final String hyp : inputHyps) {
@@ -808,7 +795,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		debugBuilder.append("unsat-core checking\n");
 
 		final ISMTSolver solver = getSMTPrefs().getSolver(
-				getSMTPrefs().getSelectedConfig().getSolverId());
+				getSMTPrefs().getEnabledConfigs().iterator().next()
+						.getSolverId());
 		final SolverKind solverKind = solver.getKind();
 		if (!solverKind.equals(Z3)) {
 			setSolverPreferences(Z3, V2_0);

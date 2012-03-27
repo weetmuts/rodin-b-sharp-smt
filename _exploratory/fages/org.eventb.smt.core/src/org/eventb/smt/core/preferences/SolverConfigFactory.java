@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
+import static org.eventb.smt.core.internal.preferences.SolverConfiguration.ENABLED_COL;
+
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -18,6 +20,8 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * @author Systerel (yguyot)
  */
 public class SolverConfigFactory {
+	public static final boolean ENABLED = SolverConfiguration.ENABLED;
+
 	public static final ISolverConfig newConfig() {
 		return new SolverConfiguration();
 	}
@@ -26,5 +30,9 @@ public class SolverConfigFactory {
 			final String name, final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion) {
 		return new SolverConfiguration(id, name, solverId, args, smtlibVersion);
+	}
+
+	public static final int getEnabledColumnNumber() {
+		return ENABLED_COL;
 	}
 }

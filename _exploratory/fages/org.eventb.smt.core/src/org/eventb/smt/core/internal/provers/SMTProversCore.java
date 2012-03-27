@@ -14,7 +14,6 @@ import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
@@ -174,9 +173,6 @@ public class SMTProversCore extends Plugin {
 							"An error occured while adding an SMT-solver configuration to the preferences.",
 							iae);
 				}
-				smtDefaultPrefs.setSelectedConfigID(false,
-						DEFAULT_SELECTED_CONFIG);
-				smtPrefs.setSelectedConfigID(false, DEFAULT_SELECTED_CONFIG);
 
 				smtDefaultPrefs.save();
 				smtPrefs.save();

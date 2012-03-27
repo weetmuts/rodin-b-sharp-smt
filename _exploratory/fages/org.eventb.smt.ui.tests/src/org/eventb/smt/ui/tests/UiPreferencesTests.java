@@ -10,7 +10,6 @@
 
 package org.eventb.smt.ui.tests;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
@@ -20,7 +19,6 @@ import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.core.preferences.IPreferences;
-import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -57,7 +55,6 @@ public class UiPreferencesTests {
 		smtPrefs.addSolverConfig(SolverConfigFactory.newConfig(
 				solverBinaryName, solverBinaryName, solver.toString(),
 				solverArgs, smtlibVersion));
-		smtPrefs.setSelectedConfigID(false, DEFAULT_SELECTED_CONFIG);
 		smtPrefs.setTranslationPath(DEFAULT_TRANSLATION_PATH);
 		smtPrefs.setVeriTPath(BIN_PATH + VERIT);
 	}
@@ -93,24 +90,14 @@ public class UiPreferencesTests {
 		/**
 		 * Get back preferences from UI
 		 */
-		final String expectedId = ALT_ERGO.toString();
-		final String expectedName = ALT_ERGO.toString();
-		final SolverKind expectedSolver = ALT_ERGO;
-		final String args = "";
-		final SMTLIBVersion smtlibVersion = V1_2;
 		final String expectedVeriTPath = BIN_PATH + VERIT;
 
-		final ISolverConfig expectedSolverConfig = SolverConfigFactory
-				.newConfig(expectedName, expectedId, expectedSolver.toString(),
-						args, smtlibVersion);
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
 		final IPreferences smtPrefs = getSMTPrefs();
-		final ISolverConfig solverConfig = smtPrefs.getSelectedConfig();
 		final String translationPath = smtPrefs.getTranslationPath();
 		final String veritPath = smtPrefs.getVeriTPath();
 
-		Assert.assertEquals(expectedSolverConfig, solverConfig);
 		Assert.assertEquals(expectedTranslationPath, translationPath);
 		Assert.assertEquals(expectedVeriTPath, veritPath);
 	}

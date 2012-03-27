@@ -18,14 +18,12 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.IPreferences;
 
 /**
@@ -139,37 +137,9 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 	abstract void removeCurrentSelection(final Table elementsTable);
 
 	/**
-	 * Tells whether the current selection index is valid or not
-	 * 
-	 * @param index
-	 *            the current selection index
-	 * @param itemCount
-	 *            the count of items in the solvers table
-	 * @return whether the current selection index is valid or not
-	 */
-	boolean isValidIndex(final int index, final int itemCount) {
-		return index >= 0 && index < itemCount;
-	}
-
-	/**
 	 * Sets the buttons statuses depending on the selection in the table.
 	 */
 	abstract void selectionChanged();
-
-	/**
-	 * Updates the colors of the table.
-	 */
-	void updateConfigsTableColors() {
-		final Color white = top.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-		final Color black = top.getDisplay().getSystemColor(SWT.COLOR_BLACK);
-
-		final Table table = tableViewer.getTable();
-		final TableItem[] items = table.getItems();
-		for (int i = 0; i < items.length; i++) {
-			items[i].setBackground(white);
-			items[i].setForeground(black);
-		}
-	}
 
 	@Override
 	protected void adjustForNumColumns(int numColumns) {
@@ -201,12 +171,12 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 		/**
 		 * Configures the table
 		 */
-		final Table solversTable = tableViewer.getTable();
-		solversTable.setHeaderVisible(true);
-		solversTable.setLinesVisible(true);
-		solversTable
+		final Table table = tableViewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		table
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		solversTable.addSelectionListener(new SelectionAdapter() {
+		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectionChanged();

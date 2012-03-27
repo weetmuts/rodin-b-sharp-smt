@@ -11,22 +11,25 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.getEnabledColumnNumber;
 
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISolverConfig;
@@ -40,8 +43,6 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  * <li>The 'Add' button to add a new SMT solver configuration into the table.</li>
  * <li>The 'Edit' button to modify a previously added SMT solver configuration.</li>
  * <li>The 'Remove' button to remove an existing SMT solver configuration.</li>
- * <li>The 'Select' button to select the solver which will be used to discharge
- * a sequent using the SMT tactic.</li>
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
  * <code>TableViewer</code>. The data are contained in a
@@ -55,15 +56,10 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  */
 class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 	/**
-	 * This constant represents a click on the 'SELECT' button.
-	 */
-	private static final boolean SELECTION_REQUESTED = true;
-
-	/**
 	 * Labels
 	 */
-	private static final String SELECT_LABEL = "Select";
 	private static final String CONFIG_ID_LABEL = "ID";
+	private static final String EXECUTION_LABEL = "Execution";
 	private static final String CONFIG_NAME_LABEL = "Name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
@@ -74,15 +70,19 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 	 * Column labels and bounds
 	 */
 	private static final String[] COLUMNS_LABELS = { CONFIG_ID_LABEL,
-			CONFIG_NAME_LABEL, SOLVER_LABEL, SOLVER_ARGS_LABEL, SMTLIB_LABEL,
-			IS_EDITABLE_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 0, 70, 70, 200, 50, 0 };
+			EXECUTION_LABEL, CONFIG_NAME_LABEL, SOLVER_LABEL,
+			SOLVER_ARGS_LABEL, SMTLIB_LABEL, IS_EDITABLE_LABEL };
+	private static final int[] COLUMN_BOUNDS = { 0, 80, 90, 90, 200, 70, 0 };
 
-	/**
-	 * The button for setting the currently selected solver as the solver to be
-	 * used for SMT proofs.
-	 */
-	private Button selectButton;
+	static final int ENABLED_INDEX = 0;
+	static final int DISABLED_INDEX = 1;
+	static final String ENABLED = "enabled";
+	static final String DISABLED = "disabled";
+	static final String[] ENABLED_COMBO_VALUES = new String[2];
+	static {
+		ENABLED_COMBO_VALUES[ENABLED_INDEX] = ENABLED;
+		ENABLED_COMBO_VALUES[DISABLED_INDEX] = DISABLED;
+	}
 
 	/**
 	 * Creates a new solver configurations field editor.
@@ -117,6 +117,49 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 		tableViewer.setColumnProperties(getColumnsLabel());
 		tableViewer.setContentProvider(new ContentProvider<ISolverConfig>());
 		tableViewer.setLabelProvider(new SolverConfigsLabelProvider());
+
+		CellEditor[] editors = new CellEditor[COLUMNS_LABELS.length];
+
+		// editors[getEnabledColumnNumber()] = new CheckboxCellEditor(
+		// tableViewer.getTable());
+		editors[getEnabledColumnNumber()] = new ComboBoxCellEditor(
+				tableViewer.getTable(), ENABLED_COMBO_VALUES, SWT.READ_ONLY);
+
+		tableViewer.setCellEditors(editors);
+
+		tableViewer.setCellModifier(new ICellModifier() {
+
+			@Override
+			public void modify(Object element, String property, Object value) {
+				if (element instanceof Item)
+					element = ((Item) element).getData();
+
+				final ISolverConfig config = (ISolverConfig) element;
+				if (property.equals(EXECUTION_LABEL)) {
+					final int comboIndex = (Integer) value;
+					final boolean enable = ENABLED_COMBO_VALUES[comboIndex]
+							.equals(ENABLED);
+					// config.setEnabled(enable);
+					smtPrefs.getSolverConfig(config.getID()).setEnabled(enable);
+					tableViewer.refresh();
+				}
+			}
+
+			@Override
+			public Object getValue(Object element, String property) {
+				if (property.equals(EXECUTION_LABEL)) {
+					final ISolverConfig config = (ISolverConfig) element;
+					return config.isEnabled() ? ENABLED_INDEX : DISABLED_INDEX;
+				}
+
+				return null;
+			}
+
+			@Override
+			public boolean canModify(Object element, String property) {
+				return property.equals(EXECUTION_LABEL);
+			}
+		});
 	}
 
 	/**
@@ -132,12 +175,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 		final String configToRemove = solversTable.getSelection()[0].getText();
 		smtPrefs.removeSolverConfig(configToRemove);
 		tableViewer.refresh();
-
-		/**
-		 * setSelectedConfigIndex is called so that another configuration is
-		 * automatically selected
-		 */
-		setSelectedConfigIndex(!SELECTION_REQUESTED);
 		selectionChanged();
 	}
 
@@ -157,59 +194,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 				.get(selectedConfigID).isEditable() : false;
 		removeButton.setEnabled(validEditableSelection);
 		editButton.setEnabled(validEditableSelection);
-		selectButton.setEnabled(validSelection);
-	}
-
-	/**
-	 * This method sets the selected configuration index to the current
-	 * selection in the configurations table if it was requested, or to a valid
-	 * index. If there is only one configuration in the table, it is selected.
-	 * If there is no configuration in the table, it is set to the default value
-	 * (-1).
-	 * 
-	 * Then, the selected configuration background color is set to BLUE.
-	 */
-	void setSelectedConfigIndex(final boolean selectionRequested) {
-		final Table configsTable = tableViewer.getTable();
-		final TableItem[] items = configsTable.getSelection();
-		final String selectionID;
-		if (selectionRequested && items.length > 0) {
-			final TableItem selectedItem = items[0];
-			selectionID = selectedItem.getText();
-		} else {
-			selectionID = DEFAULT_SELECTED_CONFIG;
-		}
-
-		/**
-		 * If the 'SELECT' button was pushed, the current selection is selected
-		 * for SMT proofs. Notice that if the 'SELECT' button has been pushed,
-		 * it means that the current selection is valid.
-		 */
-		smtPrefs.setSelectedConfigID(selectionRequested, selectionID);
-
-		updateConfigsTableColors();
-	}
-
-	/**
-	 * Updates the colors of the configs table, the selected config background
-	 * color is set to BLUE.
-	 */
-	@Override
-	void updateConfigsTableColors() {
-		final Color blue = top.getDisplay().getSystemColor(SWT.COLOR_BLUE);
-		final Color white = top.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-		final Color black = top.getDisplay().getSystemColor(SWT.COLOR_BLACK);
-
-		final Table configsTable = tableViewer.getTable();
-		for (TableItem item : configsTable.getItems()) {
-			if (item.getText().equals(smtPrefs.getSelectedConfigID())) {
-				item.setBackground(blue);
-				item.setForeground(white);
-			} else {
-				item.setBackground(white);
-				item.setForeground(black);
-			}
-		}
 	}
 
 	@Override
@@ -243,13 +227,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 					 * Refreshes the table viewer.
 					 */
 					tableViewer.refresh();
-					/**
-					 * setSelectedConfigIndex is called so that if the added
-					 * configuration was the first one to be added, it is
-					 * automatically selected as the configuration to be used
-					 * for SMT proofs.
-					 */
-					setSelectedConfigIndex(!SELECTION_REQUESTED);
 					selectionChanged();
 				}
 			}
@@ -316,27 +293,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 		editButton.setLayoutData(editButtonData);
 
 		/**
-		 * 'select' button
-		 */
-		selectButton = new Button(buttonsGroup, SWT.PUSH);
-		selectButton.setEnabled(false);
-		selectButton.setText(SELECT_LABEL);
-		selectButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent event) {
-				/**
-				 * When pushed, sets the currently selected configuration in the
-				 * table as the selected configuration for SMT proofs.
-				 */
-				setSelectedConfigIndex(SELECTION_REQUESTED);
-			}
-		});
-		final GridData selectButtonData = new GridData(GridData.FILL_HORIZONTAL);
-		selectButtonData.widthHint = convertHorizontalDLUsToPixels(
-				selectButton, IDialogConstants.BUTTON_WIDTH);
-		selectButton.setLayoutData(selectButtonData);
-
-		/**
 		 * Packs everything.
 		 */
 		configsTable.pack();
@@ -348,7 +304,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 		smtPrefs = getSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
-		setSelectedConfigIndex(!SELECTION_REQUESTED);
 	}
 
 	@Override
@@ -356,7 +311,6 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 		smtPrefs = getDefaultSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
-		setSelectedConfigIndex(!SELECTION_REQUESTED);
 		selectionChanged();
 	}
 }

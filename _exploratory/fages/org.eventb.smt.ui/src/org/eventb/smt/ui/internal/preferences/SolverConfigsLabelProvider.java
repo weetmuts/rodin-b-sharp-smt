@@ -10,6 +10,9 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
+import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
+
 import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
@@ -23,14 +26,16 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 		case 0:
 			return config.getID();
 		case 1:
-			return config.getName();
+			return config.isEnabled() ? ENABLED : DISABLED;
 		case 2:
-			return config.getSolverId();
+			return config.getName();
 		case 3:
-			return config.getArgs();
+			return config.getSolverId();
 		case 4:
-			return config.getSmtlibVersion().toString();
+			return config.getArgs();
 		case 5:
+			return config.getSmtlibVersion().toString();
+		case 6:
 			return Boolean.toString(config.isEditable());
 		}
 		return null;

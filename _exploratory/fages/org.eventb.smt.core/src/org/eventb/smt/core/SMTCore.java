@@ -18,8 +18,7 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
 import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.internal.provers.ExternalSMTThroughPP;
@@ -51,47 +50,26 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
-		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final Map<String, ISolverConfig> solverConfigs = getSMTPrefs()
-					.getSolverConfigs();
-			if (solverConfigs != null && !solverConfigs.isEmpty()) {
-				final int nbSolverConfigs = solverConfigs.size();
+		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<ISolverConfig> enabledConfigs = getSMTPrefs()
+					.getEnabledConfigs();
+			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
+				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				final Iterator<ISolverConfig> configsIterator = solverConfigs
-						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(
 							new ExternalSMTThroughPP(),
-							new SMTInput(restricted, timeout, configsIterator
-									.next()));
+							new SMTInput(restricted, timeout, enabledConfigs
+									.get(i)));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
 				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
-		} else if (configId.equals("")) {
-			return reasonerTac(new ExternalSMTThroughPP(), new SMTInput(
-					restricted, timeout));
 		} else {
 			return reasonerTac(new ExternalSMTThroughPP(), //
 					new SMTInput(restricted, timeout, configId));
 		}
-	}
-
-	/**
-	 * This tactic should be called when it is not parameterised and the user
-	 * just want the current solver configuration to be used
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @param timeout
-	 *            delay before timeout in milliseconds
-	 * @return the SMT tactic
-	 */
-	public static ITactic externalSMTThroughPP(boolean restricted, long timeout) {
-		return reasonerTac(new ExternalSMTThroughPP(), //
-				new SMTInput(restricted, timeout));
 	}
 
 	/**
@@ -112,7 +90,8 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughPP(final boolean restricted) {
-		return externalSMTThroughPP(restricted, DEFAULT_DELAY);
+		return externalSMTThroughPP(restricted, DEFAULT_DELAY,
+				ALL_SOLVER_CONFIGURATIONS);
 	}
 
 	/**
@@ -129,48 +108,26 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
-		if (configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final Map<String, ISolverConfig> solverConfigs = getSMTPrefs()
-					.getSolverConfigs();
-			if (solverConfigs != null && !solverConfigs.isEmpty()) {
-				final int nbSolverConfigs = solverConfigs.size();
+		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<ISolverConfig> enabledConfigs = getSMTPrefs()
+					.getEnabledConfigs();
+			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
+				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				final Iterator<ISolverConfig> configsIterator = solverConfigs
-						.values().iterator();
 				for (int i = 0; i < nbSolverConfigs; i++) {
 					smtTactics[i] = reasonerTac(
 							new ExternalSMTThroughVeriT(),
-							new SMTInput(restricted, timeout, configsIterator
-									.next()));
+							new SMTInput(restricted, timeout, enabledConfigs
+									.get(i)));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
 				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
-		} else if (configId.equals("")) {
-			return reasonerTac(new ExternalSMTThroughVeriT(), new SMTInput(
-					restricted, timeout));
 		} else {
 			return reasonerTac(new ExternalSMTThroughVeriT(), //
 					new SMTInput(restricted, timeout, configId));
 		}
-	}
-
-	/**
-	 * This tactic should be called when it is not parameterised and the user
-	 * just want the current solver configuration to be used
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @param timeout
-	 *            delay before timeout in milliseconds
-	 * @return the SMT tactic
-	 */
-	public static ITactic externalSMTThroughVeriT(boolean restricted,
-			long timeout) {
-		return reasonerTac(new ExternalSMTThroughVeriT(), //
-				new SMTInput(restricted, timeout));
 	}
 
 	/**
@@ -191,6 +148,7 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
-		return externalSMTThroughVeriT(restricted, DEFAULT_DELAY);
+		return externalSMTThroughVeriT(restricted, DEFAULT_DELAY,
+				ALL_SOLVER_CONFIGURATIONS);
 	}
 }

@@ -12,6 +12,7 @@ package org.eventb.smt.core.internal.preferences;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.quote;
+import static org.eventb.smt.core.internal.preferences.SMTSolver.DEFAULT_SOLVER_ID;
 import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
@@ -25,14 +26,16 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * 
  */
 public class SolverConfiguration implements ISolverConfig {
+	public static final boolean ENABLED = true;
 	public static final boolean EDITABLE = true;
 
 	public static final int ID_COL = 0;
-	public static final int NAME_COL = 1;
-	public static final int SOLVER_ID_COL = 2;
-	public static final int ARGS_COL = 3;
-	public static final int SMTLIB_VERSION_COL = 4;
-	public static final int EDITABLE_COL = 5;
+	public static final int ENABLED_COL = 1;
+	public static final int NAME_COL = 2;
+	public static final int SOLVER_ID_COL = 3;
+	public static final int ARGS_COL = 4;
+	public static final int SMTLIB_VERSION_COL = 5;
+	public static final int EDITABLE_COL = 6;
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
@@ -53,6 +56,8 @@ public class SolverConfiguration implements ISolverConfig {
 
 	final private boolean editable;
 
+	private boolean enabled = true;
+
 	/**
 	 * Constructs a new SolverConfiguration
 	 * 
@@ -67,10 +72,11 @@ public class SolverConfiguration implements ISolverConfig {
 	 * @param editable
 	 *            either the configuration is editable by the user or not
 	 */
-	public SolverConfiguration(final String id, final String name,
-			final String solverId, final String args,
+	public SolverConfiguration(final String id, final boolean enabled,
+			final String name, final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion, final boolean editable) {
 		this.id = id;
+		this.enabled = enabled;
 		this.name = name;
 		this.solverId = solverId;
 		this.args = args;
@@ -80,13 +86,19 @@ public class SolverConfiguration implements ISolverConfig {
 
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
+			final SMTLIBVersion smtlibVersion, final boolean editable) {
+		this(id, ENABLED, name, solverId, args, smtlibVersion, editable);
+	}
+
+	public SolverConfiguration(final String id, final String name,
+			final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, name, solverId, args, smtlibVersion, EDITABLE);
+		this(id, ENABLED, name, solverId, args, smtlibVersion, EDITABLE);
 	}
 
 	public SolverConfiguration() {
-		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, null, DEFAULT_SOLVER_ARGS,
-				DEFAULT_SMTLIB_VERSION);
+		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER_ID,
+				DEFAULT_SOLVER_ARGS, DEFAULT_SMTLIB_VERSION);
 	}
 
 	@Override
@@ -119,6 +131,16 @@ public class SolverConfiguration implements ISolverConfig {
 		return editable;
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	@Override
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	/**
 	 * Parses a preference string to build a solver configuration
 	 * 
@@ -129,8 +151,8 @@ public class SolverConfiguration implements ISolverConfig {
 	public final static ISolverConfig parseConfig(final String configStr) {
 		final String[] columns = configStr.split(quote(SEPARATOR));
 		return new SolverConfiguration(decode(columns[ID_COL]),
-				decode(columns[NAME_COL]), decode(columns[SOLVER_ID_COL]),
-				decode(columns[ARGS_COL]),
+				parseBoolean(columns[ENABLED_COL]), decode(columns[NAME_COL]),
+				decode(columns[SOLVER_ID_COL]), decode(columns[ARGS_COL]),
 				parseVersion(columns[SMTLIB_VERSION_COL]),
 				parseBoolean(columns[EDITABLE_COL]));
 	}
@@ -138,6 +160,7 @@ public class SolverConfiguration implements ISolverConfig {
 	@Override
 	public void toString(final StringBuilder builder) {
 		builder.append(encode(id)).append(SEPARATOR);
+		builder.append(enabled).append(SEPARATOR);
 		builder.append(encode(name)).append(SEPARATOR);
 		builder.append(solverId).append(SEPARATOR);
 		builder.append(encode(args)).append(SEPARATOR);
@@ -150,6 +173,7 @@ public class SolverConfiguration implements ISolverConfig {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (enabled ? 1 : 0);
 		result = prime * result + (name == null ? 0 : name.hashCode());
 		result = prime * result + (solverId == null ? 0 : solverId.hashCode());
 		result = prime * result + (args == null ? 0 : args.hashCode());
