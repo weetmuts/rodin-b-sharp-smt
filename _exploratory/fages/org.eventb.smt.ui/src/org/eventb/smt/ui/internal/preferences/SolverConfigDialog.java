@@ -19,6 +19,7 @@ import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
 import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
@@ -34,7 +35,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -54,13 +54,11 @@ public class SolverConfigDialog extends Dialog {
 
 	int returnCode = 0;
 
-	final IPreferences smtPrefs;
 	ISolverConfig solverConfig;
 
 	public SolverConfigDialog(final Shell parentShell,
-			final IPreferences smtPrefs, final ISolverConfig solverConfig) {
+			final ISolverConfig solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
-		this.smtPrefs = smtPrefs;
 		this.solverConfig = solverConfig;
 		setText("Solver configuration");
 	}
@@ -95,7 +93,8 @@ public class SolverConfigDialog extends Dialog {
 
 		final Combo solverCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
-		for (final String key : smtPrefs.getSolvers().keySet()) {
+		for (final String key : getPreferenceManager().getSMTSolversPrefs()
+				.getSolvers().keySet()) {
 			solverCombo.add(key);
 		}
 		solverCombo.setText(solverConfig.getSolverId());

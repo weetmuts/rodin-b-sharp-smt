@@ -11,6 +11,7 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
+import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -56,7 +58,8 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  * 
  * @author guyot
  */
-class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
+class SolverConfigsFieldEditor extends
+		AbstractTableFieldEditor<ISolverConfigsPreferences> {
 	/**
 	 * Labels
 	 */
@@ -98,7 +101,8 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 	 */
 	public SolverConfigsFieldEditor(final String name, final String labelText,
 			final Composite parent) {
-		super(name, labelText, parent);
+		super(name, labelText, parent, getPreferenceManager()
+				.getSolverConfigsPrefs());
 	}
 
 	@Override
@@ -227,7 +231,7 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 				}
 
 				final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-						buttonsGroup.getShell(), smtPrefs, newConfig(freshID));
+						buttonsGroup.getShell(), newConfig(freshID));
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SolverConfiguration</code> object,
@@ -289,7 +293,7 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 							.getSolverConfigs().get(selectionID);
 					if (configToEdit != null) {
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-								buttonsGroup.getShell(), smtPrefs, configToEdit);
+								buttonsGroup.getShell(), configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
 							smtPrefs.addSolverConfig(
 									solverConfigDialog.getSolverConfig(),
@@ -317,14 +321,14 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 
 	@Override
 	protected void doLoad() {
-		smtPrefs = getPreferenceManager().getSMTPrefs();
+		smtPrefs = getPreferenceManager().getSolverConfigsPrefs(FORCE_RELOAD);
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
 	}
 
 	@Override
 	protected void doLoadDefault() {
-		smtPrefs = getPreferenceManager().getDefaultSMTPrefs();
+		smtPrefs.loadDefault();
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
 		selectionChanged();

@@ -31,8 +31,8 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 		case 2:
 			return config.getName();
 		case 3:
-			return getPreferenceManager().getSMTPrefs()
-					.getSolver(config.getSolverId()).getName();
+			return getPreferenceManager().getSMTSolversPrefs()
+					.get(config.getSolverId()).getName();
 		case 4:
 			return config.getArgs();
 		case 5:

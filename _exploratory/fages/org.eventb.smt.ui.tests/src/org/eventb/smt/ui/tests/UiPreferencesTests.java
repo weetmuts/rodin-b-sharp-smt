@@ -18,7 +18,7 @@ import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
-import org.eventb.smt.core.preferences.IPreferences;
+import org.eventb.smt.core.preferences.ITranslationPreferences;
 import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -40,7 +40,6 @@ public class UiPreferencesTests {
 	protected static void setSolverPreferences(final String solverBinaryName,
 			final SolverKind solver, final String solverArgs,
 			final SMTLIBVersion smtlibVersion) {
-		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		final String OS = System.getProperty("os.name");
 		final String solverPath;
 
@@ -52,11 +51,14 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		smtPrefs.addSolverConfig(SolverConfigFactory.newConfig(
-				solverBinaryName, solverBinaryName, solver.toString(),
-				solverArgs, smtlibVersion));
-		smtPrefs.setTranslationPath(DEFAULT_TRANSLATION_PATH);
-		smtPrefs.setVeriTPath(BIN_PATH + VERIT);
+		getPreferenceManager().getSolverConfigsPrefs().addSolverConfig(
+				SolverConfigFactory.newConfig(solverBinaryName,
+						solverBinaryName, solver.toString(), solverArgs,
+						smtlibVersion));
+		getPreferenceManager().getTranslationPrefs().setTranslationPath(
+				DEFAULT_TRANSLATION_PATH);
+		getPreferenceManager().getTranslationPrefs().setVeriTPath(
+				BIN_PATH + VERIT);
 	}
 
 	protected static void setPreferencesForVeriTTest() {
@@ -94,9 +96,10 @@ public class UiPreferencesTests {
 
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
-		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
-		final String translationPath = smtPrefs.getTranslationPath();
-		final String veritPath = smtPrefs.getVeriTPath();
+		final ITranslationPreferences translationPrefs = getPreferenceManager()
+				.getTranslationPrefs();
+		final String translationPath = translationPrefs.getTranslationPath();
+		final String veritPath = translationPrefs.getVeriTPath();
 
 		Assert.assertEquals(expectedTranslationPath, translationPath);
 		Assert.assertEquals(expectedVeriTPath, veritPath);

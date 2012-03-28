@@ -25,9 +25,11 @@ import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.core.preferences.ITranslationPreferences;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -113,22 +115,30 @@ public class SMTProversCore extends Plugin {
 			configureDebugOptions();
 		}
 
-		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
-		final IPreferences smtDefaultPrefs = getPreferenceManager()
-				.getDefaultSMTPrefs();
+		final ISMTSolversPreferences solversPrefs = getPreferenceManager()
+				.getSMTSolversPrefs();
+		final ISMTSolversPreferences defaultSolversPrefs = getPreferenceManager()
+				.getDefaultSMTSolversPrefs();
+		final ITranslationPreferences translationPrefs = getPreferenceManager()
+				.getTranslationPrefs();
+		final ITranslationPreferences defaultTranslationPrefs = getPreferenceManager()
+				.getDefaultTranslationPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
 			for (final String solverId : registry.getIDs()) {
 				final ISMTSolver solver = registry.get(solverId);
 				try {
-					smtDefaultPrefs.addSolver(solver);
+					defaultSolversPrefs.add(solver);
+					defaultSolversPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding a bundled solver to the default preferences.",
 							iae);
 				}
+
 				try {
-					smtPrefs.addSolver(solver);
+					solversPrefs.add(solver);
+					solversPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding a bundled solver to the preferences.",
@@ -138,12 +148,13 @@ public class SMTProversCore extends Plugin {
 				// FIXME what if several veriT extensions are added
 				if (solver != null && solver.getKind().equals(VERIT)) {
 					final String veriTPath = solver.getPath().toOSString();
-					smtDefaultPrefs.setVeriTPath(veriTPath);
-					smtPrefs.setVeriTPath(veriTPath);
-				}
 
-				smtDefaultPrefs.save();
-				smtPrefs.save();
+					defaultTranslationPrefs.setVeriTPath(veriTPath);
+					defaultTranslationPrefs.save();
+
+					translationPrefs.setVeriTPath(veriTPath);
+					translationPrefs.save();
+				}
 			}
 		} catch (ExtensionLoadingException ele) {
 			logError(
@@ -155,27 +166,30 @@ public class SMTProversCore extends Plugin {
 					iroe);
 		}
 
+		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
+				.getSolverConfigsPrefs();
+		final ISolverConfigsPreferences defaultConfigsPrefs = getPreferenceManager()
+				.getDefaultSolverConfigsPrefs();
 		try {
 			final SolverConfigRegistry registry = getSolverConfigRegistry();
 			for (final String configId : registry.getIDs()) {
 				final ISolverConfig solverConfig = registry.get(configId);
 				try {
-					smtDefaultPrefs.addSolverConfig(solverConfig);
+					defaultConfigsPrefs.addSolverConfig(solverConfig);
+					defaultConfigsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding an SMT-solver configuration to the default preferences.",
 							iae);
 				}
 				try {
-					smtPrefs.addSolverConfig(solverConfig);
+					configsPrefs.addSolverConfig(solverConfig);
+					configsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding an SMT-solver configuration to the preferences.",
 							iae);
 				}
-
-				smtDefaultPrefs.save();
-				smtPrefs.save();
 			}
 		} catch (ExtensionLoadingException ele) {
 			logError(

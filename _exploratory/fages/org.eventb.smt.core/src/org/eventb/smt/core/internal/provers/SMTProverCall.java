@@ -147,7 +147,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		// FIXME exception thrown ?
-		solver = getPreferenceManager().getSMTPrefs().getSolver(
+		solver = getPreferenceManager().getSMTSolversPrefs().get(
 				solverConfig.getSolverId());
 		this.lemmaName = poName;
 		this.translationPath = translationPath;

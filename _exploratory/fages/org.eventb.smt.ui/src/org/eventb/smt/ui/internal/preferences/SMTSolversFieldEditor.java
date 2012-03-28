@@ -11,6 +11,7 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
+import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 
 /**
  * This class is used to build the solver table printed in the preferences page.
@@ -50,7 +52,8 @@ import org.eventb.smt.core.preferences.ISMTSolver;
  * 
  * @author guyot
  */
-class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
+class SMTSolversFieldEditor extends
+		AbstractTableFieldEditor<ISMTSolversPreferences> {
 	/**
 	 * Labels
 	 */
@@ -80,7 +83,8 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 	 */
 	public SMTSolversFieldEditor(final String name, final String labelText,
 			final Composite parent) {
-		super(name, labelText, parent);
+		super(name, labelText, parent, getPreferenceManager()
+				.getSMTSolversPrefs());
 	}
 
 	@Override
@@ -113,7 +117,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 	@Override
 	void removeCurrentSelection(final Table elementsTable) {
 		final String solverToRemove = elementsTable.getSelection()[0].getText();
-		smtPrefs.removeSMTSolver(solverToRemove);
+		smtPrefs.remove(solverToRemove);
 		tableViewer.refresh();
 		selectionChanged();
 	}
@@ -170,7 +174,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 					 * Creates a new <code>SMTSolver</code> object, and adds it
 					 * to the list.
 					 */
-					smtPrefs.addSolver(solverDialog.getSolver());
+					smtPrefs.add(solverDialog.getSolver());
 
 					/**
 					 * Refreshes the table viewer.
@@ -227,7 +231,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 						final SMTSolverDialog solverDialog = new SMTSolverDialog(
 								buttonsGroup.getShell(), smtPrefs, solverToEdit);
 						if (solverDialog.open() == Window.OK) {
-							smtPrefs.addSolver(solverDialog.getSolver(),
+							smtPrefs.add(solverDialog.getSolver(),
 									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.
@@ -252,14 +256,14 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 
 	@Override
 	protected void doLoad() {
-		smtPrefs = getPreferenceManager().getSMTPrefs();
+		smtPrefs = getPreferenceManager().getSMTSolversPrefs(FORCE_RELOAD);
 		tableViewer.setInput(smtPrefs.getSolvers());
 		tableViewer.refresh();
 	}
 
 	@Override
 	protected void doLoadDefault() {
-		smtPrefs = getPreferenceManager().getDefaultSMTPrefs();
+		smtPrefs.loadDefault();
 		tableViewer.setInput(smtPrefs.getSolvers());
 		tableViewer.refresh();
 	}

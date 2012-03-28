@@ -9,13 +9,23 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
+import java.util.Map;
 
 /**
  * @author Systerel (yguyot)
- * 
+ *
  */
-public interface IPreferences {
-	public void loadDefault();
+public interface ISMTSolversPreferences extends IPreferences {
 
-	public void save();
+	public abstract Map<String, ISMTSolver> getSolvers();
+
+	public abstract ISMTSolver get(final String solverId);
+
+	public abstract void add(final ISMTSolver solver);
+
+	public abstract void add(final ISMTSolver solver,
+	final boolean replace);
+
+	public abstract void remove(final String solverToRemove);
+
 }

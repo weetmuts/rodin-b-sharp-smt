@@ -52,7 +52,7 @@ public class SMTCore {
 			long timeout, final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
 			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
-					.getSMTPrefs().getEnabledConfigs();
+					.getSolverConfigsPrefs().getEnabledConfigs();
 			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
@@ -110,7 +110,7 @@ public class SMTCore {
 			long timeout, final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
 			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
-					.getSMTPrefs().getEnabledConfigs();
+					.getSolverConfigsPrefs().getEnabledConfigs();
 			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];

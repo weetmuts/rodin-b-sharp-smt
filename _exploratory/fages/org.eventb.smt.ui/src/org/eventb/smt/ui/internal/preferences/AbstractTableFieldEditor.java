@@ -10,8 +10,6 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -43,7 +41,8 @@ import org.eventb.smt.core.preferences.IPreferences;
  * 
  * @author guyot
  */
-abstract class AbstractTableFieldEditor<T> extends FieldEditor {
+abstract class AbstractTableFieldEditor<T extends IPreferences> extends
+		FieldEditor {
 	/**
 	 * Labels
 	 */
@@ -75,7 +74,7 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 	 */
 	TableViewer tableViewer;
 
-	IPreferences smtPrefs;
+	T smtPrefs;
 
 	/**
 	 * Creates a new table field editor.
@@ -88,9 +87,9 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 	 *            the parent of the field editor's control
 	 */
 	public AbstractTableFieldEditor(final String name, final String labelText,
-			final Composite parent) {
+			final Composite parent, final T smtPrefs) {
 		super(name, labelText, parent);
-		smtPrefs = getPreferenceManager().getSMTPrefs();
+		this.smtPrefs = smtPrefs;
 	}
 
 	/**

@@ -9,13 +9,18 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
-
 /**
  * @author Systerel (yguyot)
- * 
+ *
  */
-public interface IPreferences {
-	public void loadDefault();
+public interface ITranslationPreferences extends IPreferences {
 
-	public void save();
+	public abstract String getTranslationPath();
+
+	public abstract void setTranslationPath(final String path);
+
+	public abstract String getVeriTPath();
+
+	public abstract void setVeriTPath(final String path);
+
 }
