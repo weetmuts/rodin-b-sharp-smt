@@ -15,13 +15,13 @@ import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -37,19 +37,31 @@ import org.eventb.smt.core.preferences.PreferenceManager;
  * The SMT preferences class
  */
 public class SMTPreferences implements IPreferences {
-	public static final boolean USE_DEFAULT_SCOPE = true;
+	private static final boolean USE_DEFAULT_SCOPE = true;
+	private static final long SEED = 20120327;
+
+	private static final IEclipsePreferences SMT_PREFS_NODE = ConfigurationScope.INSTANCE
+			.getNode(SMTCore.PLUGIN_ID);
+	private static final IEclipsePreferences DEFAULT_SMT_PREFS_NODE = DefaultScope.INSTANCE
+			.getNode(SMTCore.PLUGIN_ID);
+
+	private static final SMTPreferences SMT_PREFS = new SMTPreferences(
+			!USE_DEFAULT_SCOPE);
+	private static final SMTPreferences DEFAULT_SMT_PREFS = new SMTPreferences(
+			USE_DEFAULT_SCOPE);
+
+	public static final boolean FORCE_RELOAD = true;
+	public static final boolean FORCE_REPLACE = true;
+	public static final Random RANDOM = new Random(SEED);
+	public static final int IDS_UPPER_BOUND = 100000;
 
 	public static final String SEPARATOR = ";"; //$NON-NLS-1$
 	public static final String DEFAULT_SOLVERS = ""; //$NON-NLS-1$
 	public static final String DEFAULT_CONFIGS = ""; //$NON-NLS-1$
 	public static final String DEFAULT_VERIT_PATH = ""; //$NON-NLS-1$
 
-	public static final IEclipsePreferences SMT_PREFS = ConfigurationScope.INSTANCE
-			.getNode(SMTCore.PLUGIN_ID);
-	public static final IEclipsePreferences DEFAULT_SMT_PREFS = DefaultScope.INSTANCE
-			.getNode(SMTCore.PLUGIN_ID);
-
 	private final IEclipsePreferences prefsNode;
+	private boolean loaded;
 	private Map<String, ISMTSolver> solvers;
 	private Map<String, ISolverConfig> solverConfigs;
 	private String translationPath;
@@ -59,26 +71,26 @@ public class SMTPreferences implements IPreferences {
 	private Map<String, ISolverConfig> defaultSolverConfigs;
 	private String defaultVeriTPath;
 
-	public SMTPreferences(boolean useDefaultScope) {
+	private SMTPreferences(boolean useDefaultScope) {
+		loaded = false;
 		if (useDefaultScope) {
-			prefsNode = DEFAULT_SMT_PREFS;
+			prefsNode = DEFAULT_SMT_PREFS_NODE;
 		} else {
-			prefsNode = SMT_PREFS;
+			prefsNode = SMT_PREFS_NODE;
 		}
 		defaultSolvers = new LinkedHashMap<String, ISMTSolver>();
 		defaultSolverConfigs = new LinkedHashMap<String, ISolverConfig>();
 		defaultVeriTPath = DEFAULT_VERIT_PATH;
 	}
 
-	public SMTPreferences(final boolean useDefaultScope,
-			final Map<String, ISMTSolver> solvers,
-			final Map<String, ISolverConfig> solverConfigs,
-			final String translationPath, final String veriTPath) {
-		this(useDefaultScope);
-		this.solvers = solvers;
-		this.solverConfigs = solverConfigs;
-		this.translationPath = translationPath;
-		this.veriTPath = veriTPath;
+	public static SMTPreferences getSMTPrefs(final boolean reload) {
+		SMT_PREFS.load(reload);
+		return SMT_PREFS;
+	}
+
+	public static SMTPreferences getDefaultSMTPrefs(final boolean reload) {
+		DEFAULT_SMT_PREFS.load(reload);
+		return DEFAULT_SMT_PREFS;
 	}
 
 	/**
@@ -167,13 +179,17 @@ public class SMTPreferences implements IPreferences {
 		return sb.toString();
 	}
 
-	public void load() {
+	public void load(final boolean reload) {
+		if (loaded && !reload) {
+			return;
+		}
 		solvers = parseSolvers(prefsNode.get(SOLVERS_ID, DEFAULT_SOLVERS));
 		solverConfigs = parseConfigs(prefsNode.get(SOLVER_CONFIGS_ID,
 				DEFAULT_CONFIGS));
 		translationPath = prefsNode.get(TRANSLATION_PATH_ID,
 				DEFAULT_TRANSLATION_PATH);
 		veriTPath = prefsNode.get(VERIT_PATH_ID, DEFAULT_VERIT_PATH);
+		loaded = true;
 	}
 
 	@Override
@@ -225,7 +241,7 @@ public class SMTPreferences implements IPreferences {
 		}
 	}
 
-	public static boolean isPathValid(final String path) {
+	private static boolean isPathValid(final String path) {
 		return PreferenceManager.isPathValid(path, new StringBuilder(0));
 	}
 
@@ -234,28 +250,12 @@ public class SMTPreferences implements IPreferences {
 		return !id.isEmpty() && !solverConfigs.containsKey(id);
 	}
 
-	private static void addSolverConfig(
-			Map<String, ISolverConfig> solverConfigs,
-			final ISolverConfig solverConfig) throws IllegalArgumentException {
-		// FIXME exception thrown ?
-		final String solverId = solverConfig.getSolverId();
-		final ISMTSolver solver = getSMTPrefs().getSolver(solverId);
-		if (isPathValid(solver.getPath().toOSString())) {
-			final String id = solverConfig.getID();
-			if (!solverConfigs.containsKey(id)) {
-				solverConfigs.put(id, solverConfig);
-			}
-		} else {
-			throw new IllegalArgumentException(
-					"Could not add the SMT-solver configuration: invalid path."); //$NON-NLS-1$
-		}
-	}
-
 	private static void addSolver(Map<String, ISMTSolver> solvers,
-			final ISMTSolver solver) throws IllegalArgumentException {
+			final ISMTSolver solver, final boolean replace)
+			throws IllegalArgumentException {
 		if (isPathValid(solver.getPath().toOSString())) {
 			final String id = solver.getID();
-			if (!solvers.containsKey(id)) {
+			if (replace || !solvers.containsKey(id)) {
 				solvers.put(id, solver);
 			}
 		} else {
@@ -264,16 +264,41 @@ public class SMTPreferences implements IPreferences {
 		}
 	}
 
+	private static void addSolverConfig(
+			Map<String, ISolverConfig> solverConfigs,
+			final ISolverConfig solverConfig,
+			final Map<String, ISMTSolver> solvers, final boolean replace)
+			throws IllegalArgumentException {
+		// FIXME exception thrown ?
+		final String solverId = solverConfig.getSolverId();
+		final ISMTSolver solver = solvers.get(solverId);
+		if (isPathValid(solver.getPath().toOSString())) {
+			final String id = solverConfig.getID();
+			if (replace || !solverConfigs.containsKey(id)) {
+				solverConfigs.put(id, solverConfig);
+			}
+		} else {
+			throw new IllegalArgumentException(
+					"Could not add the SMT-solver configuration: the solver path is invalid."); //$NON-NLS-1$
+		}
+	}
+
+	@Override
+	public void addSolver(final ISMTSolver solver, final boolean replace)
+			throws IllegalArgumentException {
+		addSolver(solvers, solver, replace);
+	}
+
 	@Override
 	public void addSolver(final ISMTSolver solver)
 			throws IllegalArgumentException {
-		addSolver(solvers, solver);
+		addSolver(solvers, solver, !FORCE_REPLACE);
 	}
 
 	@Override
 	public void addSolverToDefault(final ISMTSolver solver)
 			throws IllegalArgumentException {
-		addSolver(defaultSolvers, solver);
+		addSolver(defaultSolvers, solver, !FORCE_REPLACE);
 	}
 
 	@Override
@@ -282,15 +307,22 @@ public class SMTPreferences implements IPreferences {
 	}
 
 	@Override
+	public void addSolverConfig(final ISolverConfig solverConfig,
+			final boolean replace) throws IllegalArgumentException {
+		addSolverConfig(solverConfigs, solverConfig, solvers, replace);
+	}
+
+	@Override
 	public void addSolverConfig(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
-		addSolverConfig(solverConfigs, solverConfig);
+		addSolverConfig(solverConfig, !FORCE_REPLACE);
 	}
 
 	@Override
 	public void addSolverConfigToDefault(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
-		addSolverConfig(defaultSolverConfigs, solverConfig);
+		addSolverConfig(defaultSolverConfigs, solverConfig, defaultSolvers,
+				!FORCE_REPLACE);
 	}
 
 	@Override

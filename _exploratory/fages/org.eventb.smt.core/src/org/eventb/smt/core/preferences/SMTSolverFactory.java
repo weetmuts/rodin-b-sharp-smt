@@ -19,8 +19,8 @@ import org.eventb.smt.core.provers.SolverKind;
  * @author Systerel (yguyot)
  */
 public class SMTSolverFactory {
-	public static final ISMTSolver newSolver() {
-		return new SMTSolver();
+	public static final ISMTSolver newSolver(String id) {
+		return new SMTSolver(id);
 	}
 
 	public static final ISMTSolver newSolver(final String id,

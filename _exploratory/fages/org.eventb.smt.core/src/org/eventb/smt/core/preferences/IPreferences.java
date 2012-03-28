@@ -29,15 +29,20 @@ public interface IPreferences {
 
 	public abstract ISolverConfig getSolverConfig(final String configId);
 
-	public abstract void addSolver(ISMTSolver solver)
+	public abstract void addSolver(final ISMTSolver solver);
+
+	public abstract void addSolver(final ISMTSolver solver,
+			final boolean replace);
+
+	public abstract void addSolverToDefault(final ISMTSolver solver)
 			throws IllegalArgumentException;
 
-	public abstract void addSolverToDefault(ISMTSolver solver)
-			throws IllegalArgumentException;
-
-	public abstract void removeSMTSolver(String solverToRemove);
+	public abstract void removeSMTSolver(final String solverToRemove);
 
 	public abstract void addSolverConfig(final ISolverConfig solverConfig);
+
+	public abstract void addSolverConfig(final ISolverConfig solverConfig,
+			final boolean replace);
 
 	public abstract void addSolverConfigToDefault(
 			final ISolverConfig solverConfig);

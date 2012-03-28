@@ -14,8 +14,7 @@ import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
-import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -114,8 +113,9 @@ public class SMTProversCore extends Plugin {
 			configureDebugOptions();
 		}
 
-		final IPreferences smtPrefs = getSMTPrefs();
-		final IPreferences smtDefaultPrefs = getDefaultSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
+		final IPreferences smtDefaultPrefs = getPreferenceManager()
+				.getDefaultSMTPrefs();
 		try {
 			final BundledSolverRegistry registry = getBundledSolverRegistry();
 			for (final String solverId : registry.getIDs()) {

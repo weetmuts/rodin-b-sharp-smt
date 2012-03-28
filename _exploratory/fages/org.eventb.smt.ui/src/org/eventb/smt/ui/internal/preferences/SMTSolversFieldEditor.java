@@ -11,8 +11,10 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
+import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 
 import java.util.Map;
 
@@ -64,7 +66,7 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 	private static final String[] COLUMNS_LABELS = { SOLVER_ID_LABEL,
 			SOLVER_NAME_LABEL, SOLVER_KIND_LABEL, SOLVER_PATH_LABEL,
 			IS_EDITABLE_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 0, 70, 70, 250, 0 };
+	private static final int[] COLUMN_BOUNDS = { 0, 100, 70, 300, 0 };
 
 	/**
 	 * Creates a new solvers field editor.
@@ -122,14 +124,21 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 	@Override
 	void selectionChanged() {
 		final Table solversTable = tableViewer.getTable();
-		final TableItem selection = solversTable.getSelection()[0];
-		final String selectedSolverID = selection.getText();
-		final Map<String, ISMTSolver> solvers = smtPrefs.getSolvers();
-		final boolean validSelection = solvers.containsKey(selectedSolverID);
-		final boolean validEditableSelection = validSelection ? solvers.get(
-				selectedSolverID).isEditable() : false;
-		removeButton.setEnabled(validEditableSelection);
-		editButton.setEnabled(validEditableSelection);
+		final TableItem[] selection = solversTable.getSelection();
+		if (selection.length == 0) {
+			removeButton.setEnabled(false);
+			editButton.setEnabled(false);
+		} else {
+			final TableItem firstItem = selection[0];
+			final String selectedSolverID = firstItem.getText();
+			final Map<String, ISMTSolver> solvers = smtPrefs.getSolvers();
+			final boolean validSelection = solvers
+					.containsKey(selectedSolverID);
+			final boolean validEditableSelection = validSelection ? solvers
+					.get(selectedSolverID).isEditable() : false;
+			removeButton.setEnabled(validEditableSelection);
+			editButton.setEnabled(validEditableSelection);
+		}
 	}
 
 	@Override
@@ -149,8 +158,13 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 				/**
 				 * When pushed, opens the solver configuration shell
 				 */
+				final String freshID = freshSolverID();
+				if (freshID == null) {
+					return;
+				}
+
 				final SMTSolverDialog solverDialog = new SMTSolverDialog(
-						buttonsGroup.getShell(), smtPrefs, null);
+						buttonsGroup.getShell(), smtPrefs, newSolver(freshID));
 				if (solverDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolver</code> object, and adds it
@@ -213,6 +227,8 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 						final SMTSolverDialog solverDialog = new SMTSolverDialog(
 								buttonsGroup.getShell(), smtPrefs, solverToEdit);
 						if (solverDialog.open() == Window.OK) {
+							smtPrefs.addSolver(solverDialog.getSolver(),
+									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.
 							 */
@@ -236,14 +252,14 @@ class SMTSolversFieldEditor extends AbstractTableFieldEditor<ISMTSolver> {
 
 	@Override
 	protected void doLoad() {
-		smtPrefs = getSMTPrefs();
+		smtPrefs = getPreferenceManager().getSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolvers());
 		tableViewer.refresh();
 	}
 
 	@Override
 	protected void doLoadDefault() {
-		smtPrefs = getDefaultSMTPrefs();
+		smtPrefs = getPreferenceManager().getDefaultSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolvers());
 		tableViewer.refresh();
 	}

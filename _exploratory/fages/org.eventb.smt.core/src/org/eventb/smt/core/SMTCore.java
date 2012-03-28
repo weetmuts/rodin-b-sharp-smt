@@ -16,7 +16,7 @@ import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.List;
 
@@ -51,8 +51,8 @@ public class SMTCore {
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfig> enabledConfigs = getSMTPrefs()
-					.getEnabledConfigs();
+			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
+					.getSMTPrefs().getEnabledConfigs();
 			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
@@ -109,8 +109,8 @@ public class SMTCore {
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			long timeout, final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfig> enabledConfigs = getSMTPrefs()
-					.getEnabledConfigs();
+			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
+					.getSMTPrefs().getEnabledConfigs();
 			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];

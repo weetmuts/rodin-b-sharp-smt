@@ -17,10 +17,11 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
+import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
+import static org.eventb.smt.core.preferences.PreferenceManager.solverExists;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
-
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -38,10 +39,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.IPreferences;
-import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.PreferenceManager;
-import org.eventb.smt.core.preferences.SMTSolverFactory;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
@@ -51,7 +50,6 @@ import org.eventb.smt.core.provers.SolverKind;
  * @author guyot
  */
 public class SMTSolverDialog extends Dialog {
-	private static final String SOLVER_ID_LABEL = "Solver ID";
 	private static final String SOLVER_NAME_LABEL = "Name";
 	private static final String SOLVER_KIND_LABEL = "Kind";
 	private static final String SOLVER_PATH_LABEL = "Path";
@@ -67,11 +65,7 @@ public class SMTSolverDialog extends Dialog {
 			final IPreferences smtPrefs, final ISMTSolver solver) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
-		if (solver != null) {
-			this.solver = solver;
-		} else {
-			this.solver = SMTSolverFactory.newSolver();
-		}
+		this.solver = solver;
 		setText("Solver integration");
 	}
 
@@ -80,22 +74,7 @@ public class SMTSolverDialog extends Dialog {
 		GridData data;
 
 		/**
-		 * Configuration ID
-		 */
-		final Label idLabel = new Label(shell, SWT.NONE);
-		idLabel.setText(SOLVER_ID_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		idLabel.setLayoutData(data);
-
-		final Text idText = new Text(shell, SWT.BORDER);
-		idText.setText(solver.getID());
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		idText.setLayoutData(data);
-
-		/**
-		 * Configuration name
+		 * Solver name
 		 */
 		final Label nameLabel = new Label(shell, SWT.NONE);
 		nameLabel.setText(SOLVER_NAME_LABEL);
@@ -105,12 +84,12 @@ public class SMTSolverDialog extends Dialog {
 
 		final Text nameText = new Text(shell, SWT.BORDER);
 		nameText.setText(solver.getName());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		nameText.setLayoutData(data);
 
 		/**
-		 * Solver
+		 * Solver kind
 		 */
 		final Label solverLabel = new Label(shell, SWT.NONE);
 		solverLabel.setText(SOLVER_KIND_LABEL);
@@ -124,7 +103,7 @@ public class SMTSolverDialog extends Dialog {
 			solverCombo.add(kind.toString());
 		}
 		solverCombo.setText(solver.getKind().toString());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
 
@@ -139,7 +118,7 @@ public class SMTSolverDialog extends Dialog {
 
 		final Text solverPathText = new Text(shell, SWT.BORDER);
 		solverPathText.setText(solver.getPath().toOSString());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		solverPathText.setLayoutData(data);
 
@@ -155,7 +134,7 @@ public class SMTSolverDialog extends Dialog {
 				}
 			}
 		});
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
 		browseButton.setLayoutData(data);
 
@@ -164,42 +143,30 @@ public class SMTSolverDialog extends Dialog {
 		 */
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText("OK");
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		okButton.setLayoutData(data);
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				final String id = idText.getText();
 				final String name = nameText.getText();
 				final String pathStr = solverPathText.getText();
-				if (id.equals(solver.getID()) || smtPrefs.validId(id)) {
-					if (isValidPath(pathStr, SHOW_ERRORS)) {
-						final IPath path = new Path(pathStr);
-						// TODO set the right name value
-						solver = SMTSolverFactory.newSolver(id, name,
-								parseKind(solverCombo.getText()), path);
-						returnCode = OK;
-						shell.close();
-					}
-				} else {
-					final StringBuilder errBuilder = new StringBuilder();
+				final StringBuilder errBuilder = new StringBuilder();
+				if (name.isEmpty()
+						|| (!name.equals(solver.getName()) && solverExists(name))) {
 					errBuilder
-							.append("A solver ID and the solver path are required.\n");
-					errBuilder.append("The solver ID must be unique.\n");
-					final IRegistry<ISMTSolver> registry = PreferenceManager
-							.getBundledSolverRegistry();
-					final Set<String> reservedIDs = registry.getIDs();
-					if (!reservedIDs.isEmpty()) {
-						errBuilder
-								.append("The following solver IDs are reserved:\n");
-						for (final String reservedId : reservedIDs) {
-							errBuilder.append("'");
-							errBuilder.append(reservedId);
-							errBuilder.append("'\n");
-						}
-						errBuilder.append("'.");
-					}
+							.append("A unique non-empty solver name is required.\n");
+				}
+				if (!isValidPath(pathStr, !SHOW_ERRORS)) {
+					errBuilder.append("A valid solver path is required.\n");
+				}
+				if (errBuilder.length() != 0) {
 					UIUtils.showError(errBuilder.toString());
+				} else {
+					final IPath path = new Path(pathStr);
+					solver = newSolver(solver.getID(), name,
+							parseKind(solverCombo.getText()), path);
+					returnCode = OK;
+					shell.close();
 				}
 			}
 		});
@@ -209,7 +176,7 @@ public class SMTSolverDialog extends Dialog {
 		 */
 		final Button cancelButton = new Button(shell, SWT.PUSH);
 		cancelButton.setText("Cancel");
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		cancelButton.setLayoutData(data);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -224,6 +191,9 @@ public class SMTSolverDialog extends Dialog {
 
 	public static boolean isValidPath(final String path,
 			final boolean showErrors) {
+		if (path == null || path.isEmpty()) {
+			return false;
+		}
 		final StringBuilder error = new StringBuilder();
 		if (PreferenceManager.isPathValid(path, error)) {
 			return true;

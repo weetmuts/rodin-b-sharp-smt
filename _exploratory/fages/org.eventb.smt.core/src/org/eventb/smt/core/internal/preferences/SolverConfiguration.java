@@ -39,7 +39,6 @@ public class SolverConfiguration implements ISolverConfig {
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
-	private static final String DEFAULT_CONFIG_ID = ""; //$NON-NLS-1$
 	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
 	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
@@ -96,9 +95,9 @@ public class SolverConfiguration implements ISolverConfig {
 		this(id, ENABLED, name, solverId, args, smtlibVersion, EDITABLE);
 	}
 
-	public SolverConfiguration() {
-		this(DEFAULT_CONFIG_ID, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER_ID,
-				DEFAULT_SOLVER_ARGS, DEFAULT_SMTLIB_VERSION);
+	public SolverConfiguration(final String id) {
+		this(id, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER_ID, DEFAULT_SOLVER_ARGS,
+				DEFAULT_SMTLIB_VERSION);
 	}
 
 	@Override

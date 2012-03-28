@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
@@ -43,7 +43,7 @@ public class SMTInput extends XProverInput {
 			throws SerializeException {
 		super(reader);
 		final String configId = reader.getString(CONFIG_ID);
-		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfig(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -65,7 +65,7 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final ISolverConfig solverConfig) {
 		super(restricted, timeOutDelay);
-		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		this.solverConfig = solverConfig;
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();
@@ -87,7 +87,7 @@ public class SMTInput extends XProverInput {
 	public SMTInput(final boolean restricted, final long timeOutDelay,
 			final String configId) {
 		super(restricted, timeOutDelay);
-		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		solverConfig = smtPrefs.getSolverConfig(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = smtPrefs.getTranslationPath();

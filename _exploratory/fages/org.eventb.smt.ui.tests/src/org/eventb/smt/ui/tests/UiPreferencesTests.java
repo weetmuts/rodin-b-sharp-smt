@@ -11,7 +11,7 @@
 package org.eventb.smt.ui.tests;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
@@ -40,7 +40,7 @@ public class UiPreferencesTests {
 	protected static void setSolverPreferences(final String solverBinaryName,
 			final SolverKind solver, final String solverArgs,
 			final SMTLIBVersion smtlibVersion) {
-		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		final String OS = System.getProperty("os.name");
 		final String solverPath;
 
@@ -94,7 +94,7 @@ public class UiPreferencesTests {
 
 		final String expectedTranslationPath = DEFAULT_TRANSLATION_PATH;
 
-		final IPreferences smtPrefs = getSMTPrefs();
+		final IPreferences smtPrefs = getPreferenceManager().getSMTPrefs();
 		final String translationPath = smtPrefs.getTranslationPath();
 		final String veritPath = smtPrefs.getVeriTPath();
 

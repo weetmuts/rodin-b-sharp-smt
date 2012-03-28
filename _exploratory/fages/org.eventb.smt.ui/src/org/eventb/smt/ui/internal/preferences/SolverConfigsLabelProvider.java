@@ -10,6 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
 
@@ -30,7 +31,8 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 		case 2:
 			return config.getName();
 		case 3:
-			return config.getSolverId();
+			return getPreferenceManager().getSMTPrefs()
+					.getSolver(config.getSolverId()).getName();
 		case 4:
 			return config.getArgs();
 		case 5:

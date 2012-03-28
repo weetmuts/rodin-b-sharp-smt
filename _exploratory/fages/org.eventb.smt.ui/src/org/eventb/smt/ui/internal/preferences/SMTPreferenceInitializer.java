@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
@@ -23,6 +23,6 @@ public class SMTPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		getDefaultSMTPrefs().save();
+		getPreferenceManager().getDefaultSMTPrefs().save();
 	}
 }

@@ -11,9 +11,11 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.PreferenceManager.getDefaultSMTPrefs;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
+import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.getEnabledColumnNumber;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 
 import java.util.Map;
 
@@ -184,16 +186,22 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 	@Override
 	void selectionChanged() {
 		final Table configsTable = tableViewer.getTable();
-		final TableItem selection = configsTable.getSelection()[0];
-		final String selectedConfigID = selection.getText();
-		final Map<String, ISolverConfig> solverConfigs = smtPrefs
-				.getSolverConfigs();
-		final boolean validSelection = solverConfigs
-				.containsKey(selectedConfigID);
-		final boolean validEditableSelection = validSelection ? solverConfigs
-				.get(selectedConfigID).isEditable() : false;
-		removeButton.setEnabled(validEditableSelection);
-		editButton.setEnabled(validEditableSelection);
+		final TableItem[] selection = configsTable.getSelection();
+		if (selection.length == 0) {
+			removeButton.setEnabled(false);
+			editButton.setEnabled(false);
+		} else {
+			final TableItem firstItem = configsTable.getSelection()[0];
+			final String selectedConfigID = firstItem.getText();
+			final Map<String, ISolverConfig> solverConfigs = smtPrefs
+					.getSolverConfigs();
+			final boolean validSelection = solverConfigs
+					.containsKey(selectedConfigID);
+			final boolean validEditableSelection = validSelection ? solverConfigs
+					.get(selectedConfigID).isEditable() : false;
+			removeButton.setEnabled(validEditableSelection);
+			editButton.setEnabled(validEditableSelection);
+		}
 	}
 
 	@Override
@@ -213,8 +221,13 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 				/**
 				 * When pushed, opens the solver configuration shell
 				 */
+				final String freshID = freshConfigID();
+				if (freshID == null) {
+					return;
+				}
+
 				final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-						buttonsGroup.getShell(), smtPrefs, null);
+						buttonsGroup.getShell(), smtPrefs, newConfig(freshID));
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SolverConfiguration</code> object,
@@ -278,6 +291,9 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
 								buttonsGroup.getShell(), smtPrefs, configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
+							smtPrefs.addSolverConfig(
+									solverConfigDialog.getSolverConfig(),
+									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.
 							 */
@@ -301,14 +317,14 @@ class SolverConfigsFieldEditor extends AbstractTableFieldEditor<ISolverConfig> {
 
 	@Override
 	protected void doLoad() {
-		smtPrefs = getSMTPrefs();
+		smtPrefs = getPreferenceManager().getSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
 	}
 
 	@Override
 	protected void doLoadDefault() {
-		smtPrefs = getDefaultSMTPrefs();
+		smtPrefs = getPreferenceManager().getDefaultSMTPrefs();
 		tableViewer.setInput(smtPrefs.getSolverConfigs());
 		tableViewer.refresh();
 		selectionChanged();

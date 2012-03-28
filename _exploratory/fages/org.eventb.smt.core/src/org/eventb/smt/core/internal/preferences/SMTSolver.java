@@ -47,14 +47,6 @@ public class SMTSolver implements ISMTSolver {
 	private final IPath path;
 	private final boolean editable;
 
-	public SMTSolver() {
-		id = DEFAULT_SOLVER_ID;
-		name = DEFAULT_SOLVER_NAME;
-		kind = UNKNOWN;
-		path = DEFAULT_SOLVER_PATH;
-		editable = true;
-	}
-
 	public SMTSolver(final String id, final String name, final SolverKind kind,
 			final IPath path, final boolean editable) {
 		this.id = id;
@@ -72,6 +64,10 @@ public class SMTSolver implements ISMTSolver {
 	public SMTSolver(final String id, final String name, final SolverKind kind,
 			final boolean editable) {
 		this(id, name, kind, DEFAULT_SOLVER_PATH, editable);
+	}
+
+	public SMTSolver(String id) {
+		this(id, DEFAULT_SOLVER_NAME, UNKNOWN, DEFAULT_SOLVER_PATH);
 	}
 
 	/**

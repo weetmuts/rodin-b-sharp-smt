@@ -22,8 +22,8 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
 public class SolverConfigFactory {
 	public static final boolean ENABLED = SolverConfiguration.ENABLED;
 
-	public static final ISolverConfig newConfig() {
-		return new SolverConfiguration();
+	public static final ISolverConfig newConfig(final String id) {
+		return new SolverConfiguration(id);
 	}
 
 	public static final ISolverConfig newConfig(final String id,

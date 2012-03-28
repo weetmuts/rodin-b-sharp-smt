@@ -10,7 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getSMTPrefs;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.viewers.TableViewer;
@@ -90,7 +90,7 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 	public AbstractTableFieldEditor(final String name, final String labelText,
 			final Composite parent) {
 		super(name, labelText, parent);
-		smtPrefs = getSMTPrefs();
+		smtPrefs = getPreferenceManager().getSMTPrefs();
 	}
 
 	/**
@@ -174,8 +174,7 @@ abstract class AbstractTableFieldEditor<T> extends FieldEditor {
 		final Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

@@ -17,9 +17,10 @@ import static org.eclipse.swt.SWT.DIALOG_TRIM;
 import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
+import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
+import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
-
-import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -34,10 +35,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.IPreferences;
-import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.PreferenceManager;
-import org.eventb.smt.core.preferences.SolverConfigFactory;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -47,9 +45,8 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * @author guyot
  */
 public class SolverConfigDialog extends Dialog {
-	private static final String CONFIG_ID_LABEL = "Config ID";
 	private static final String CONFIG_NAME_LABEL = "Name";
-	private static final String SOLVER_ID_LABEL = "Solver ID";
+	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
 	private static final String SMT_LIB_LABEL = "SMT-LIB";
 
@@ -64,32 +61,13 @@ public class SolverConfigDialog extends Dialog {
 			final IPreferences smtPrefs, final ISolverConfig solverConfig) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		this.smtPrefs = smtPrefs;
-		if (solverConfig != null) {
-			this.solverConfig = solverConfig;
-		} else {
-			this.solverConfig = SolverConfigFactory.newConfig();
-		}
+		this.solverConfig = solverConfig;
 		setText("Solver configuration");
 	}
 
 	private void createContents(final Shell shell) {
 		shell.setLayout(new GridLayout(4, true));
 		GridData data;
-
-		/**
-		 * Configuration ID
-		 */
-		final Label idLabel = new Label(shell, SWT.NONE);
-		idLabel.setText(CONFIG_ID_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		idLabel.setLayoutData(data);
-
-		final Text idText = new Text(shell, SWT.BORDER);
-		idText.setText(solverConfig.getID());
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		idText.setLayoutData(data);
 
 		/**
 		 * Configuration name
@@ -102,7 +80,7 @@ public class SolverConfigDialog extends Dialog {
 
 		final Text nameText = new Text(shell, SWT.BORDER);
 		nameText.setText(solverConfig.getName());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		nameText.setLayoutData(data);
 
@@ -110,7 +88,7 @@ public class SolverConfigDialog extends Dialog {
 		 * Solver
 		 */
 		final Label solverLabel = new Label(shell, SWT.NONE);
-		solverLabel.setText(SOLVER_ID_LABEL);
+		solverLabel.setText(SOLVER_NAME_LABEL);
 		data = new GridData();
 		data.horizontalSpan = 1;
 		solverLabel.setLayoutData(data);
@@ -121,7 +99,7 @@ public class SolverConfigDialog extends Dialog {
 			solverCombo.add(key);
 		}
 		solverCombo.setText(solverConfig.getSolverId());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
 
@@ -136,7 +114,7 @@ public class SolverConfigDialog extends Dialog {
 
 		final Text argsText = new Text(shell, SWT.BORDER);
 		argsText.setText(solverConfig.getArgs());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		argsText.setLayoutData(data);
 
@@ -155,7 +133,7 @@ public class SolverConfigDialog extends Dialog {
 			smtlibCombo.add(smtlibVersion.toString());
 		}
 		smtlibCombo.setText(solverConfig.getSmtlibVersion().toString());
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		smtlibCombo.setLayoutData(data);
 
@@ -164,39 +142,30 @@ public class SolverConfigDialog extends Dialog {
 		 */
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText("OK");
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		okButton.setLayoutData(data);
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				final String id = idText.getText();
 				final String name = nameText.getText();
-				if (id.equals(solverConfig.getID()) || smtPrefs.validId(id)) {
-					// TODO set the right name value
-					solverConfig = SolverConfigFactory.newConfig(id, name,
+				final String solver = solverCombo.getText();
+				final StringBuilder errBuilder = new StringBuilder();
+				if (name.isEmpty()
+						|| (!name.equals(solverConfig.getName()) && configExists(name))) {
+					errBuilder
+							.append("A unique non-empty config name is required.\n");
+				}
+				if (solver.isEmpty()) {
+					errBuilder.append("A solver must be selected.\n");
+				}
+				if (errBuilder.length() != 0) {
+					UIUtils.showError(errBuilder.toString());
+				} else {
+					solverConfig = newConfig(solverConfig.getID(), name,
 							solverCombo.getText(), argsText.getText(),
 							parseVersion(smtlibCombo.getText()));
 					returnCode = OK;
 					shell.close();
-				} else {
-					final StringBuilder errBuilder = new StringBuilder();
-					errBuilder
-							.append("A config ID and the solver ID are required.\n");
-					errBuilder.append("The config ID must be unique.\n");
-					final IRegistry<ISolverConfig> registry = PreferenceManager
-							.getSolverConfigRegistry();
-					final Set<String> reservedIDs = registry.getIDs();
-					if (!reservedIDs.isEmpty()) {
-						errBuilder
-								.append("The following config IDs are reserved:\n");
-						for (final String reservedId : registry.getIDs()) {
-							errBuilder.append("'");
-							errBuilder.append(reservedId);
-							errBuilder.append("'\n");
-						}
-						errBuilder.append("'.");
-					}
-					UIUtils.showError(errBuilder.toString());
 				}
 			}
 		});
@@ -206,7 +175,7 @@ public class SolverConfigDialog extends Dialog {
 		 */
 		final Button cancelButton = new Button(shell, SWT.PUSH);
 		cancelButton.setText("Cancel");
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		data = new GridData(FILL_HORIZONTAL);
 		cancelButton.setLayoutData(data);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
