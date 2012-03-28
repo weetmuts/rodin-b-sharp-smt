@@ -34,18 +34,12 @@ public interface IPreferences {
 	public abstract void addSolver(final ISMTSolver solver,
 			final boolean replace);
 
-	public abstract void addSolverToDefault(final ISMTSolver solver)
-			throws IllegalArgumentException;
-
 	public abstract void removeSMTSolver(final String solverToRemove);
 
 	public abstract void addSolverConfig(final ISolverConfig solverConfig);
 
 	public abstract void addSolverConfig(final ISolverConfig solverConfig,
 			final boolean replace);
-
-	public abstract void addSolverConfigToDefault(
-			final ISolverConfig solverConfig);
 
 	public abstract void setConfigEnabled(final String configID,
 			final boolean enabled);
@@ -59,8 +53,6 @@ public interface IPreferences {
 	public abstract String getVeriTPath();
 
 	public abstract void setVeriTPath(final String path);
-
-	public abstract void setDefaultVeriTPath(final String path);
 
 	public abstract void save();
 }

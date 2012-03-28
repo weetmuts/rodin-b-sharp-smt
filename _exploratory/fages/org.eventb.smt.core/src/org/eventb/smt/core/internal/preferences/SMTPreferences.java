@@ -67,10 +67,6 @@ public class SMTPreferences implements IPreferences {
 	private String translationPath;
 	private String veriTPath;
 
-	private Map<String, ISMTSolver> defaultSolvers;
-	private Map<String, ISolverConfig> defaultSolverConfigs;
-	private String defaultVeriTPath;
-
 	private SMTPreferences(boolean useDefaultScope) {
 		loaded = false;
 		if (useDefaultScope) {
@@ -78,9 +74,6 @@ public class SMTPreferences implements IPreferences {
 		} else {
 			prefsNode = SMT_PREFS_NODE;
 		}
-		defaultSolvers = new LinkedHashMap<String, ISMTSolver>();
-		defaultSolverConfigs = new LinkedHashMap<String, ISolverConfig>();
-		defaultVeriTPath = DEFAULT_VERIT_PATH;
 	}
 
 	public static SMTPreferences getSMTPrefs(final boolean reload) {
@@ -296,12 +289,6 @@ public class SMTPreferences implements IPreferences {
 	}
 
 	@Override
-	public void addSolverToDefault(final ISMTSolver solver)
-			throws IllegalArgumentException {
-		addSolver(defaultSolvers, solver, !FORCE_REPLACE);
-	}
-
-	@Override
 	public void removeSMTSolver(final String solverID) {
 		solvers.remove(solverID);
 	}
@@ -316,13 +303,6 @@ public class SMTPreferences implements IPreferences {
 	public void addSolverConfig(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
 		addSolverConfig(solverConfig, !FORCE_REPLACE);
-	}
-
-	@Override
-	public void addSolverConfigToDefault(final ISolverConfig solverConfig)
-			throws IllegalArgumentException {
-		addSolverConfig(defaultSolverConfigs, solverConfig, defaultSolvers,
-				!FORCE_REPLACE);
 	}
 
 	@Override
@@ -351,12 +331,6 @@ public class SMTPreferences implements IPreferences {
 	@Override
 	public void setVeriTPath(final String veriTPath) {
 		this.veriTPath = getValidPath(this.veriTPath, veriTPath,
-				DEFAULT_VERIT_PATH);
-	}
-
-	@Override
-	public void setDefaultVeriTPath(final String veriTPath) {
-		this.defaultVeriTPath = getValidPath(this.defaultVeriTPath, veriTPath,
 				DEFAULT_VERIT_PATH);
 	}
 

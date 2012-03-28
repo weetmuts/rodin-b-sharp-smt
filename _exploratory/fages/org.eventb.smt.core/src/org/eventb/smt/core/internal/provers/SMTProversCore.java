@@ -121,7 +121,7 @@ public class SMTProversCore extends Plugin {
 			for (final String solverId : registry.getIDs()) {
 				final ISMTSolver solver = registry.get(solverId);
 				try {
-					smtDefaultPrefs.addSolverToDefault(solver);
+					smtDefaultPrefs.addSolver(solver);
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding a bundled solver to the default preferences.",
@@ -138,7 +138,7 @@ public class SMTProversCore extends Plugin {
 				// FIXME what if several veriT extensions are added
 				if (solver != null && solver.getKind().equals(VERIT)) {
 					final String veriTPath = solver.getPath().toOSString();
-					smtDefaultPrefs.setDefaultVeriTPath(veriTPath);
+					smtDefaultPrefs.setVeriTPath(veriTPath);
 					smtPrefs.setVeriTPath(veriTPath);
 				}
 
@@ -160,7 +160,7 @@ public class SMTProversCore extends Plugin {
 			for (final String configId : registry.getIDs()) {
 				final ISolverConfig solverConfig = registry.get(configId);
 				try {
-					smtDefaultPrefs.addSolverConfigToDefault(solverConfig);
+					smtDefaultPrefs.addSolverConfig(solverConfig);
 				} catch (IllegalArgumentException iae) {
 					logError(
 							"An error occured while adding an SMT-solver configuration to the default preferences.",

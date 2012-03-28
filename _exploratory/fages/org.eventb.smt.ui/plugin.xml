@@ -36,12 +36,6 @@
       </tactic>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.eventb.smt.ui.internal.preferences.SMTPreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.eventb.smt.ui.internal.preferences.SMTPreferencePage"
