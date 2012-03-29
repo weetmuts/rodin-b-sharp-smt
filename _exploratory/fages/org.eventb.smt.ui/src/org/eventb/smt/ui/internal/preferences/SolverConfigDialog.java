@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -106,7 +107,13 @@ public class SolverConfigDialog extends Dialog {
 			nameToKey.put(name, key);
 			solverCombo.add(name);
 		}
-		solverCombo.setText(solverConfig.getSolverId());
+		final ISMTSolver solver = getPreferenceManager().getSMTSolversPrefs()
+				.get(solverConfig.getSolverId());
+		if (solver != null) {
+			solverCombo.setText(solver.getName());
+		} else {
+			solverCombo.setText(solverConfig.getSolverId());
+		}
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
@@ -171,14 +178,14 @@ public class SolverConfigDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				final String name = nameText.getText();
-				final String solver = solverCombo.getText();
+				final String solverStr = solverCombo.getText();
 				final StringBuilder errBuilder = new StringBuilder();
 				if (name.isEmpty()
 						|| (!name.equals(solverConfig.getName()) && configExists(name))) {
 					errBuilder
 							.append("A unique non-empty config name is required.\n");
 				}
-				if (solver.isEmpty()) {
+				if (solverStr.isEmpty()) {
 					errBuilder.append("A solver must be selected.\n");
 				}
 				if (errBuilder.length() != 0) {
