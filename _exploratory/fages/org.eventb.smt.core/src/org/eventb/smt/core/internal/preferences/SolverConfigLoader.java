@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
+import static java.lang.Integer.parseInt;
 import static org.eventb.smt.core.internal.preferences.SolverConfiguration.EDITABLE;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
@@ -50,12 +51,13 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		final String args = configurationElement.getAttribute("args");
 		final String smtlibVersion = configurationElement
 				.getAttribute("smt-lib");
+		final String timeOut = configurationElement.getAttribute("time-out");
 
 		id = nameSpace + "." + localId;
 
 		checkId(localId);
 
 		return new SolverConfiguration(id, name, solverId, args,
-				parseVersion(smtlibVersion), !EDITABLE);
+				parseVersion(smtlibVersion), parseInt(timeOut), !EDITABLE);
 	}
 }

@@ -15,9 +15,17 @@ import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.getEnabledColumnNumber;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ENABLED_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ID_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.NAME_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.TIME_OUT_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -63,21 +71,55 @@ class SolverConfigsFieldEditor extends
 	/**
 	 * Labels
 	 */
-	private static final String CONFIG_ID_LABEL = "ID";
+	private static final String ID_LABEL = "ID";
 	private static final String EXECUTION_LABEL = "Execution";
-	private static final String CONFIG_NAME_LABEL = "Name";
+	private static final String NAME_LABEL = "Name";
 	private static final String SOLVER_LABEL = "Solver";
-	private static final String SOLVER_ARGS_LABEL = "Arguments";
+	private static final String ARGS_LABEL = "Arguments";
 	private static final String SMTLIB_LABEL = "SMT-LIB";
-	private static final String IS_EDITABLE_LABEL = "Editable";
+	private static final String TIMEOUT_LABEL = "Time Out";
+	private static final String EDITABLE_LABEL = "Editable";
+
+	private static final int ID_COL_BOUND = 0;
+	private static final int EXECUTION_COL_BOUND = 80;
+	private static final int NAME_COL_BOUND = 100;
+	private static final int SOLVER_COL_BOUND = 100;
+	private static final int ARGS_COL_BOUND = 200;
+	private static final int SMTLIB_COL_BOUND = 70;
+	private static final int TIMEOUT_COL_BOUND = 70;
+	private static final int EDITABLE_COL_BOUND = 0;
 
 	/**
 	 * Column labels and bounds
 	 */
-	private static final String[] COLUMNS_LABELS = { CONFIG_ID_LABEL,
-			EXECUTION_LABEL, CONFIG_NAME_LABEL, SOLVER_LABEL,
-			SOLVER_ARGS_LABEL, SMTLIB_LABEL, IS_EDITABLE_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 0, 80, 90, 90, 200, 70, 0 };
+	private static final String[] COLUMNS_LABELS;
+	static {
+		ArrayList<String> columnsLabels = new ArrayList<String>();
+		columnsLabels.add(ID_COL, ID_LABEL);
+		columnsLabels.add(ENABLED_COL, EXECUTION_LABEL);
+		columnsLabels.add(NAME_COL, NAME_LABEL);
+		columnsLabels.add(SOLVER_COL, SOLVER_LABEL);
+		columnsLabels.add(ARGS_COL, ARGS_LABEL);
+		columnsLabels.add(SMTLIB_COL, SMTLIB_LABEL);
+		columnsLabels.add(TIME_OUT_COL, TIMEOUT_LABEL);
+		columnsLabels.add(EDITABLE_COL, EDITABLE_LABEL);
+		COLUMNS_LABELS = new String[columnsLabels.size()];
+		columnsLabels.toArray(COLUMNS_LABELS);
+	}
+	private static final Integer[] COLUMNS_BOUNDS;
+	static {
+		ArrayList<Integer> columnsBounds = new ArrayList<Integer>();
+		columnsBounds.add(ID_COL, ID_COL_BOUND);
+		columnsBounds.add(ENABLED_COL, EXECUTION_COL_BOUND);
+		columnsBounds.add(NAME_COL, NAME_COL_BOUND);
+		columnsBounds.add(SOLVER_COL, SOLVER_COL_BOUND);
+		columnsBounds.add(ARGS_COL, ARGS_COL_BOUND);
+		columnsBounds.add(SMTLIB_COL, SMTLIB_COL_BOUND);
+		columnsBounds.add(TIME_OUT_COL, TIMEOUT_COL_BOUND);
+		columnsBounds.add(EDITABLE_COL, EDITABLE_COL_BOUND);
+		COLUMNS_BOUNDS = new Integer[columnsBounds.size()];
+		columnsBounds.toArray(COLUMNS_BOUNDS);
+	}
 
 	static final int ENABLED_INDEX = 0;
 	static final int DISABLED_INDEX = 1;
@@ -111,8 +153,8 @@ class SolverConfigsFieldEditor extends
 	}
 
 	@Override
-	protected int[] getColumnsBounds() {
-		return COLUMN_BOUNDS;
+	protected Integer[] getColumnsBounds() {
+		return COLUMNS_BOUNDS;
 	}
 
 	@Override
@@ -124,12 +166,12 @@ class SolverConfigsFieldEditor extends
 		tableViewer.setContentProvider(new ContentProvider<ISolverConfig>());
 		tableViewer.setLabelProvider(new SolverConfigsLabelProvider());
 
-		CellEditor[] editors = new CellEditor[COLUMNS_LABELS.length];
+		CellEditor[] editors = new CellEditor[getColumnsLabel().length];
 
 		// editors[getEnabledColumnNumber()] = new CheckboxCellEditor(
 		// tableViewer.getTable());
-		editors[getEnabledColumnNumber()] = new ComboBoxCellEditor(
-				tableViewer.getTable(), ENABLED_COMBO_VALUES, SWT.READ_ONLY);
+		editors[ENABLED_COL] = new ComboBoxCellEditor(tableViewer.getTable(),
+				ENABLED_COMBO_VALUES, SWT.READ_ONLY);
 
 		tableViewer.setCellEditors(editors);
 
@@ -238,7 +280,7 @@ class SolverConfigsFieldEditor extends
 					 * and adds it to the list.
 					 */
 					final ISolverConfig config = solverConfigDialog
-							.getSolverConfig(); 
+							.getSolverConfig();
 					smtPrefs.add(config);
 
 					/**
@@ -296,8 +338,7 @@ class SolverConfigsFieldEditor extends
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
 								buttonsGroup.getShell(), configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
-							smtPrefs.add(
-									solverConfigDialog.getSolverConfig(),
+							smtPrefs.add(solverConfigDialog.getSolverConfig(),
 									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.

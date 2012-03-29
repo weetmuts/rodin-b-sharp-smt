@@ -15,8 +15,14 @@ import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.EDITABLE_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.ID_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.KIND_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.NAME_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.PATH_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -57,19 +63,43 @@ class SMTSolversFieldEditor extends
 	/**
 	 * Labels
 	 */
-	private static final String SOLVER_ID_LABEL = "ID";
-	private static final String SOLVER_NAME_LABEL = "Name";
-	private static final String SOLVER_KIND_LABEL = "Kind";
-	private static final String SOLVER_PATH_LABEL = "Path";
-	private static final String IS_EDITABLE_LABEL = "Editable";
+	private static final String ID_LABEL = "ID";
+	private static final String NAME_LABEL = "Name";
+	private static final String KIND_LABEL = "Kind";
+	private static final String PATH_LABEL = "Path";
+	private static final String EDITABLE_LABEL = "Editable";
+
+	private static final int ID_COL_BOUND = 0;
+	private static final int NAME_COL_BOUND = 100;
+	private static final int KIND_COL_BOUND = 70;
+	private static final int PATH_COL_BOUND = 300;
+	private static final int EDITABLE_COL_BOUND = 0;
 
 	/**
 	 * Column labels and bounds
 	 */
-	private static final String[] COLUMNS_LABELS = { SOLVER_ID_LABEL,
-			SOLVER_NAME_LABEL, SOLVER_KIND_LABEL, SOLVER_PATH_LABEL,
-			IS_EDITABLE_LABEL };
-	private static final int[] COLUMN_BOUNDS = { 0, 100, 70, 300, 0 };
+	private static final String[] COLUMNS_LABELS;
+	static {
+		ArrayList<String> columnsLabels = new ArrayList<String>();
+		columnsLabels.add(ID_COL, ID_LABEL);
+		columnsLabels.add(NAME_COL, NAME_LABEL);
+		columnsLabels.add(KIND_COL, KIND_LABEL);
+		columnsLabels.add(PATH_COL, PATH_LABEL);
+		columnsLabels.add(EDITABLE_COL, EDITABLE_LABEL);
+		COLUMNS_LABELS = new String[columnsLabels.size()];
+		columnsLabels.toArray(COLUMNS_LABELS);
+	}
+	private static final Integer[] COLUMNS_BOUNDS;
+	static {
+		ArrayList<Integer> columnsBounds = new ArrayList<Integer>();
+		columnsBounds.add(ID_COL, ID_COL_BOUND);
+		columnsBounds.add(NAME_COL, NAME_COL_BOUND);
+		columnsBounds.add(KIND_COL, KIND_COL_BOUND);
+		columnsBounds.add(PATH_COL, PATH_COL_BOUND);
+		columnsBounds.add(EDITABLE_COL, EDITABLE_COL_BOUND);
+		COLUMNS_BOUNDS = new Integer[columnsBounds.size()];
+		columnsBounds.toArray(COLUMNS_BOUNDS);
+	}
 
 	/**
 	 * Creates a new solvers field editor.
@@ -93,8 +123,8 @@ class SMTSolversFieldEditor extends
 	}
 
 	@Override
-	protected int[] getColumnsBounds() {
-		return COLUMN_BOUNDS;
+	protected Integer[] getColumnsBounds() {
+		return COLUMNS_BOUNDS;
 	}
 
 	@Override

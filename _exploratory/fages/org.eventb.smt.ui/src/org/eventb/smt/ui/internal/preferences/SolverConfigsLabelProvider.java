@@ -11,6 +11,14 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ENABLED_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.ID_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.NAME_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.TIME_OUT_COL;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
 
@@ -24,20 +32,22 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 	public String getColumnText(final Object element, final int columnIndex) {
 		final ISolverConfig config = (ISolverConfig) element;
 		switch (columnIndex) {
-		case 0:
+		case ID_COL:
 			return config.getID();
-		case 1:
+		case ENABLED_COL:
 			return config.isEnabled() ? ENABLED : DISABLED;
-		case 2:
+		case NAME_COL:
 			return config.getName();
-		case 3:
+		case SOLVER_COL:
 			return getPreferenceManager().getSMTSolversPrefs()
 					.get(config.getSolverId()).getName();
-		case 4:
+		case ARGS_COL:
 			return config.getArgs();
-		case 5:
+		case SMTLIB_COL:
 			return config.getSmtlibVersion().toString();
-		case 6:
+		case TIME_OUT_COL:
+			return Integer.toString(config.getTimeOut());
+		case EDITABLE_COL:
 			return Boolean.toString(config.isEditable());
 		}
 		return null;

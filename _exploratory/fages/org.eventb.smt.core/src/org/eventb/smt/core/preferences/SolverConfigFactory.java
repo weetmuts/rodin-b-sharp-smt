@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
-import static org.eventb.smt.core.internal.preferences.SolverConfiguration.ENABLED_COL;
-
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -21,6 +19,14 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  */
 public class SolverConfigFactory {
 	public static final boolean ENABLED = SolverConfiguration.ENABLED;
+	public static final int ID_COL = SolverConfiguration.ID_COL;
+	public static final int ENABLED_COL = SolverConfiguration.ENABLED_COL;
+	public static final int NAME_COL = SolverConfiguration.NAME_COL;
+	public static final int SOLVER_COL = SolverConfiguration.SOLVER_ID_COL;
+	public static final int ARGS_COL = SolverConfiguration.ARGS_COL;
+	public static final int SMTLIB_COL = SolverConfiguration.SMTLIB_VERSION_COL;
+	public static final int TIME_OUT_COL = SolverConfiguration.TIME_OUT_COL;
+	public static final int EDITABLE_COL = SolverConfiguration.EDITABLE_COL;
 
 	public static final ISolverConfig newConfig(final String id) {
 		return new SolverConfiguration(id);
@@ -32,7 +38,10 @@ public class SolverConfigFactory {
 		return new SolverConfiguration(id, name, solverId, args, smtlibVersion);
 	}
 
-	public static final int getEnabledColumnNumber() {
-		return ENABLED_COL;
+	public static final ISolverConfig newConfig(final String id,
+			final String name, final String solverId, final String args,
+			final SMTLIBVersion smtlibVersion, final int timeOut) {
+		return new SolverConfiguration(id, name, solverId, args, smtlibVersion,
+				timeOut);
 	}
 }

@@ -90,6 +90,14 @@ Default value: &quot;V2.0&quot;.
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="time-out" type="string">
+            <annotation>
+               <documentation>
+                  The time in milliseconds after which the Rodin platform terminates the solver if it has not returned.
+Default value: &quot;3000&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

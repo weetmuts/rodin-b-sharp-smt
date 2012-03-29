@@ -102,7 +102,7 @@ abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 
 	abstract protected String[] getColumnsLabel();
 
-	abstract protected int[] getColumnsBounds();
+	abstract protected Integer[] getColumnsBounds();
 
 	/**
 	 * Creates the columns of the table viewer.

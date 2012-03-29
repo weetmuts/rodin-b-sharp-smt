@@ -19,6 +19,12 @@ import org.eventb.smt.core.provers.SolverKind;
  * @author Systerel (yguyot)
  */
 public class SMTSolverFactory {
+	public static final int ID_COL = SMTSolver.ID_COL;
+	public static final int NAME_COL = SMTSolver.NAME_COL;
+	public static final int KIND_COL = SMTSolver.KIND_COL;
+	public static final int PATH_COL = SMTSolver.PATH_COL;
+	public static final int EDITABLE_COL = SMTSolver.EDITABLE_COL;
+
 	public static final ISMTSolver newSolver(String id) {
 		return new SMTSolver(id);
 	}

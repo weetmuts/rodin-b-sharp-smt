@@ -17,7 +17,8 @@
             id="verit_smt2"
             name="veriT SMT2"
             smt-lib="V2.0"
-            solverid="org.eventb.smt.verit.bundled_verit">
+            solverid="org.eventb.smt.verit.bundled_verit"
+            time-out="3000">
       </configuration>
    </extension>
 

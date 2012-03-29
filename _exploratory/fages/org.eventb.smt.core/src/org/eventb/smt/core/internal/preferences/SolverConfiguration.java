@@ -11,6 +11,7 @@
 package org.eventb.smt.core.internal.preferences;
 
 import static java.lang.Boolean.parseBoolean;
+import static java.lang.Integer.parseInt;
 import static java.util.regex.Pattern.quote;
 import static org.eventb.smt.core.internal.preferences.SMTSolver.DEFAULT_SOLVER_ID;
 import static org.eventb.smt.core.internal.preferences.Utils.decode;
@@ -18,6 +19,7 @@ import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
+import org.eventb.smt.core.internal.log.SMTStatus;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -35,13 +37,15 @@ public class SolverConfiguration implements ISolverConfig {
 	public static final int SOLVER_ID_COL = 3;
 	public static final int ARGS_COL = 4;
 	public static final int SMTLIB_VERSION_COL = 5;
-	public static final int EDITABLE_COL = 6;
+	public static final int TIME_OUT_COL = 6;
+	public static final int EDITABLE_COL = 7;
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
 	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
 	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
+	private static final int DEFAULT_TIME_OUT = 3000;
 
 	final private String id;
 
@@ -52,6 +56,8 @@ public class SolverConfiguration implements ISolverConfig {
 	final private String args;
 
 	final private SMTLIBVersion smtlibVersion;
+
+	final private int timeOut;
 
 	final private boolean editable;
 
@@ -73,31 +79,78 @@ public class SolverConfiguration implements ISolverConfig {
 	 */
 	public SolverConfiguration(final String id, final boolean enabled,
 			final String name, final String solverId, final String args,
-			final SMTLIBVersion smtlibVersion, final boolean editable) {
+			final SMTLIBVersion smtlibVersion, final int timeOut,
+			final boolean editable) {
 		this.id = id;
 		this.enabled = enabled;
 		this.name = name;
 		this.solverId = solverId;
 		this.args = args;
 		this.smtlibVersion = smtlibVersion;
+		this.timeOut = timeOut;
 		this.editable = editable;
 	}
 
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
-			final SMTLIBVersion smtlibVersion, final boolean editable) {
-		this(id, ENABLED, name, solverId, args, smtlibVersion, editable);
+			final SMTLIBVersion smtlibVersion, final int timeOut,
+			final boolean editable) {
+		this(id, ENABLED, name, solverId, args, smtlibVersion, timeOut,
+				editable);
+	}
+
+	public SolverConfiguration(final String id, final String name,
+			final String solverId, final String args,
+			final SMTLIBVersion smtlibVersion, final int timeOut) {
+		this(id, ENABLED, name, solverId, args, smtlibVersion, timeOut,
+				EDITABLE);
 	}
 
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, ENABLED, name, solverId, args, smtlibVersion, EDITABLE);
+		this(id, ENABLED, name, solverId, args, smtlibVersion,
+				DEFAULT_TIME_OUT, EDITABLE);
 	}
 
 	public SolverConfiguration(final String id) {
 		this(id, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER_ID, DEFAULT_SOLVER_ARGS,
-				DEFAULT_SMTLIB_VERSION);
+				DEFAULT_SMTLIB_VERSION, DEFAULT_TIME_OUT);
+	}
+
+	/**
+	 * Parses a preference string to build a solver configuration
+	 * 
+	 * @param configStr
+	 *            the string to parse
+	 * @return the solver configuration represented by the string
+	 */
+	public final static ISolverConfig parseConfig(final String configStr) {
+		final String[] columns = configStr.split(quote(SEPARATOR));
+		return new SolverConfiguration(decode(columns[ID_COL]),
+				parseBoolean(columns[ENABLED_COL]), decode(columns[NAME_COL]),
+				decode(columns[SOLVER_ID_COL]), decode(columns[ARGS_COL]),
+				parseVersion(columns[SMTLIB_VERSION_COL]),
+				parseInt(columns[TIME_OUT_COL]),
+				parseBoolean(columns[EDITABLE_COL]));
+	}
+
+	public final static int parseTimeOut(final String timeOutStr) {
+		int timeOut = DEFAULT_TIME_OUT;
+		try {
+			timeOut = Integer.parseInt(timeOutStr);
+			if (timeOut <= 0) {
+				SMTStatus.smtError(
+						"Illegal time-out value (less than or equal to zero).",
+						null);
+				timeOut = DEFAULT_TIME_OUT;
+			}
+		} catch (NumberFormatException nfe) {
+			SMTStatus.smtError(
+					"An error occured while parsing a time-out string.", nfe);
+			timeOut = DEFAULT_TIME_OUT;
+		}
+		return timeOut;
 	}
 
 	@Override
@@ -126,6 +179,11 @@ public class SolverConfiguration implements ISolverConfig {
 	}
 
 	@Override
+	public int getTimeOut() {
+		return timeOut;
+	}
+
+	@Override
 	public boolean isEditable() {
 		return editable;
 	}
@@ -140,22 +198,6 @@ public class SolverConfiguration implements ISolverConfig {
 		this.enabled = enabled;
 	}
 
-	/**
-	 * Parses a preference string to build a solver configuration
-	 * 
-	 * @param configStr
-	 *            the string to parse
-	 * @return the solver configuration represented by the string
-	 */
-	public final static ISolverConfig parseConfig(final String configStr) {
-		final String[] columns = configStr.split(quote(SEPARATOR));
-		return new SolverConfiguration(decode(columns[ID_COL]),
-				parseBoolean(columns[ENABLED_COL]), decode(columns[NAME_COL]),
-				decode(columns[SOLVER_ID_COL]), decode(columns[ARGS_COL]),
-				parseVersion(columns[SMTLIB_VERSION_COL]),
-				parseBoolean(columns[EDITABLE_COL]));
-	}
-
 	@Override
 	public void toString(final StringBuilder builder) {
 		builder.append(encode(id)).append(SEPARATOR);
@@ -164,6 +206,7 @@ public class SolverConfiguration implements ISolverConfig {
 		builder.append(solverId).append(SEPARATOR);
 		builder.append(encode(args)).append(SEPARATOR);
 		builder.append(smtlibVersion).append(SEPARATOR);
+		builder.append(timeOut).append(SEPARATOR);
 		builder.append(editable);
 	}
 
@@ -178,6 +221,7 @@ public class SolverConfiguration implements ISolverConfig {
 		result = prime * result + (args == null ? 0 : args.hashCode());
 		result = prime * result
 				+ (smtlibVersion == null ? 0 : smtlibVersion.hashCode());
+		result = prime * result + timeOut;
 		result = prime * result + (editable ? 1 : 0);
 		return result;
 	}
@@ -234,6 +278,9 @@ public class SolverConfiguration implements ISolverConfig {
 				return false;
 			}
 		} else if (!smtlibVersion.equals(other.smtlibVersion)) {
+			return false;
+		}
+		if (timeOut != other.timeOut) {
 			return false;
 		}
 		if (editable != other.editable) {

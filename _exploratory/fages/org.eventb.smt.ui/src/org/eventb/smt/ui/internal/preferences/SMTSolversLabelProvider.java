@@ -10,6 +10,12 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eventb.smt.core.preferences.SMTSolverFactory.EDITABLE_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.ID_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.KIND_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.NAME_COL;
+import static org.eventb.smt.core.preferences.SMTSolverFactory.PATH_COL;
+
 import org.eventb.smt.core.preferences.ISMTSolver;
 
 /**
@@ -20,15 +26,15 @@ class SMTSolversLabelProvider extends AbstractTableLabelProvider {
 	public String getColumnText(final Object element, final int columnIndex) {
 		final ISMTSolver solver = (ISMTSolver) element;
 		switch (columnIndex) {
-		case 0:
+		case ID_COL:
 			return solver.getID();
-		case 1:
+		case NAME_COL:
 			return solver.getName();
-		case 2:
+		case KIND_COL:
 			return solver.getKind().toString();
-		case 3:
+		case PATH_COL:
 			return solver.getPath().toOSString();
-		case 4:
+		case EDITABLE_COL:
 			return Boolean.toString(solver.isEditable());
 		}
 		return null;
