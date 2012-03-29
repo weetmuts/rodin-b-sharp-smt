@@ -23,6 +23,9 @@ import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceMan
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -93,9 +96,13 @@ public class SolverConfigDialog extends Dialog {
 
 		final Combo solverCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
+		final Map<String, String> nameToKey = new HashMap<String, String>();
 		for (final String key : getPreferenceManager().getSMTSolversPrefs()
 				.getSolvers().keySet()) {
-			solverCombo.add(key);
+			final String name = getPreferenceManager().getSMTSolversPrefs()
+					.get(key).getName();
+			nameToKey.put(name, key);
+			solverCombo.add(name);
 		}
 		solverCombo.setText(solverConfig.getSolverId());
 		data = new GridData(FILL_HORIZONTAL);
@@ -161,7 +168,8 @@ public class SolverConfigDialog extends Dialog {
 					UIUtils.showError(errBuilder.toString());
 				} else {
 					solverConfig = newConfig(solverConfig.getID(), name,
-							solverCombo.getText(), argsText.getText(),
+							nameToKey.get(solverCombo.getText()),
+							argsText.getText(),
 							parseVersion(smtlibCombo.getText()));
 					returnCode = OK;
 					shell.close();
