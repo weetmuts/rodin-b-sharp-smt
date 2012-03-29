@@ -42,8 +42,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		super(useDefaultScope);
 	}
 
-	private static void addSolverConfig(
-			Map<String, ISolverConfig> solverConfigs,
+	private static void add(Map<String, ISolverConfig> solverConfigs,
 			final ISolverConfig solverConfig,
 			final Map<String, ISMTSolver> solvers, final boolean replace)
 			throws IllegalArgumentException {
@@ -118,6 +117,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			return;
 		}
 		solverConfigs = parse(prefsNode.get(SOLVER_CONFIGS_ID, DEFAULT_CONFIGS));
+		loaded = true;
 	}
 
 	@Override
@@ -147,18 +147,18 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 	}
 
 	@Override
-	public void addSolverConfig(final ISolverConfig solverConfig,
+	public void add(final ISolverConfig solverConfig,
 			final boolean replace) throws IllegalArgumentException {
 		// FIXME shall reload solvers ?
 		final Map<String, ISMTSolver> solvers = getPreferenceManager()
 				.getSMTSolversPrefs().getSolvers();
-		addSolverConfig(solverConfigs, solverConfig, solvers, replace);
+		add(solverConfigs, solverConfig, solvers, replace);
 	}
 
 	@Override
-	public void addSolverConfig(final ISolverConfig solverConfig)
+	public void add(final ISolverConfig solverConfig)
 			throws IllegalArgumentException {
-		addSolverConfig(solverConfig, !FORCE_REPLACE);
+		add(solverConfig, !FORCE_REPLACE);
 	}
 
 	@Override

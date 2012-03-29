@@ -175,7 +175,7 @@ public class SMTProversCore extends Plugin {
 			for (final String configId : registry.getIDs()) {
 				final ISolverConfig solverConfig = registry.get(configId);
 				try {
-					defaultConfigsPrefs.addSolverConfig(solverConfig);
+					defaultConfigsPrefs.add(solverConfig);
 					defaultConfigsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
@@ -183,7 +183,7 @@ public class SMTProversCore extends Plugin {
 							iae);
 				}
 				try {
-					configsPrefs.addSolverConfig(solverConfig);
+					configsPrefs.add(solverConfig);
 					configsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(

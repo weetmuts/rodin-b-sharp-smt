@@ -237,31 +237,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		case V1_2:
 			switch (kind) {
 			case ALT_ERGO:
-				configsPrefs.addSolverConfig(ALTERGO_SMT1);
+				configsPrefs.add(ALTERGO_SMT1);
 				break;
 
 			case CVC3:
-				configsPrefs.addSolverConfig(CVC3_SMT1);
+				configsPrefs.add(CVC3_SMT1);
 				break;
 
 			case CVC4:
-				configsPrefs.addSolverConfig(CVC4_SMT1);
+				configsPrefs.add(CVC4_SMT1);
 				break;
 
 			case MATHSAT5:
-				configsPrefs.addSolverConfig(MATHSAT5_SMT1);
+				configsPrefs.add(MATHSAT5_SMT1);
 				break;
 
 			case OPENSMT:
-				configsPrefs.addSolverConfig(OPENSMT_SMT1);
+				configsPrefs.add(OPENSMT_SMT1);
 				break;
 
 			case VERIT:
-				configsPrefs.addSolverConfig(VERIT_SMT1);
+				configsPrefs.add(VERIT_SMT1);
 				break;
 
 			case Z3:
-				configsPrefs.addSolverConfig(Z3_SMT1);
+				configsPrefs.add(Z3_SMT1);
 				break;
 
 			default:
@@ -273,31 +273,31 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		default:
 			switch (kind) {
 			case ALT_ERGO:
-				configsPrefs.addSolverConfig(ALTERGO_SMT2);
+				configsPrefs.add(ALTERGO_SMT2);
 				break;
 
 			case CVC3:
-				configsPrefs.addSolverConfig(CVC3_SMT2);
+				configsPrefs.add(CVC3_SMT2);
 				break;
 
 			case CVC4:
-				configsPrefs.addSolverConfig(CVC4_SMT2);
+				configsPrefs.add(CVC4_SMT2);
 				break;
 
 			case MATHSAT5:
-				configsPrefs.addSolverConfig(MATHSAT5_SMT2);
+				configsPrefs.add(MATHSAT5_SMT2);
 				break;
 
 			case OPENSMT:
-				configsPrefs.addSolverConfig(OPENSMT_SMT2);
+				configsPrefs.add(OPENSMT_SMT2);
 				break;
 
 			case VERIT:
-				configsPrefs.addSolverConfig(VERIT_SMT2);
+				configsPrefs.add(VERIT_SMT2);
 				break;
 
 			case Z3:
-				configsPrefs.addSolverConfig(Z3_SMT2);
+				configsPrefs.add(Z3_SMT2);
 				break;
 
 			default:

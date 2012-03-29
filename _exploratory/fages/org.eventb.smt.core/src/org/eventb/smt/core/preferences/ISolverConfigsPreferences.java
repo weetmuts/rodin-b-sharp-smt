@@ -25,9 +25,9 @@ public interface ISolverConfigsPreferences extends IPreferences {
 
 	public abstract ISolverConfig getSolverConfig(final String configId);
 
-	public abstract void addSolverConfig(final ISolverConfig solverConfig);
+	public abstract void add(final ISolverConfig solverConfig);
 
-	public abstract void addSolverConfig(final ISolverConfig solverConfig,
+	public abstract void add(final ISolverConfig solverConfig,
 	final boolean replace);
 
 	public abstract void setConfigEnabled(final String configID,

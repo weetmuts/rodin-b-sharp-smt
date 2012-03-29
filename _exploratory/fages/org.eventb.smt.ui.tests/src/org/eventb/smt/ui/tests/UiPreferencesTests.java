@@ -51,7 +51,7 @@ public class UiPreferencesTests {
 
 		System.out.println(solverPath);
 
-		getPreferenceManager().getSolverConfigsPrefs().addSolverConfig(
+		getPreferenceManager().getSolverConfigsPrefs().add(
 				SolverConfigFactory.newConfig(solverBinaryName,
 						solverBinaryName, solver.toString(), solverArgs,
 						smtlibVersion));

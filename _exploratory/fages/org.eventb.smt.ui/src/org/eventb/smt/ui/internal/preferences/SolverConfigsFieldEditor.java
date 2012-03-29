@@ -237,8 +237,9 @@ class SolverConfigsFieldEditor extends
 					 * Creates a new <code>SolverConfiguration</code> object,
 					 * and adds it to the list.
 					 */
-					smtPrefs.addSolverConfig(solverConfigDialog
-							.getSolverConfig());
+					final ISolverConfig config = solverConfigDialog
+							.getSolverConfig(); 
+					smtPrefs.add(config);
 
 					/**
 					 * Refreshes the table viewer.
@@ -295,7 +296,7 @@ class SolverConfigsFieldEditor extends
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
 								buttonsGroup.getShell(), configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
-							smtPrefs.addSolverConfig(
+							smtPrefs.add(
 									solverConfigDialog.getSolverConfig(),
 									FORCE_REPLACE);
 							/**
