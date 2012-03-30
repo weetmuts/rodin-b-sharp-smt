@@ -24,7 +24,7 @@ import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_T
 import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_VeriTPathNotSet;
 
 import java.io.File;
-import java.util.Set;
+import java.util.Map;
 
 import org.eventb.smt.core.internal.log.SMTStatus;
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
@@ -175,26 +175,24 @@ public class PreferenceManager {
 		return false;
 	}
 
-	public static String freshID(final Set<String> usedIDs) {
-		if (usedIDs.size() == IDS_UPPER_BOUND) {
+	public static <T> String freshID(final Map<String, T> map) {
+		if (map.size() == IDS_UPPER_BOUND) {
 			SMTStatus.smtError("Too many items.", null);
 			return null;
 		}
 		String randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
-		while (usedIDs.contains(randomID)) {
+		while (map.containsKey(randomID)) {
 			randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
 		}
 		return randomID;
 	}
 
 	public static String freshConfigID() {
-		final Set<String> usedIDs = SINGLETON.getSolverConfigsPrefs()
-				.getSolverConfigs().keySet();
-		return freshID(usedIDs);
+		return freshID(SINGLETON.getSolverConfigsPrefs().getSolverConfigs());
 	}
 
 	public static String freshSolverID() {
-		return freshID(SINGLETON.getSMTSolversPrefs().getSolvers().keySet());
+		return freshID(SINGLETON.getSMTSolversPrefs().getSolvers());
 	}
 
 	public static IRegistry<ISMTSolver> getBundledSolverRegistry() {
