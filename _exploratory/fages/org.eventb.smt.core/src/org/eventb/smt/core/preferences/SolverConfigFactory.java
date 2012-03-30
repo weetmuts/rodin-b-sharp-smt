@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
+import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
+
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -28,8 +30,12 @@ public class SolverConfigFactory {
 	public static final int TIME_OUT_COL = SolverConfiguration.TIME_OUT_COL;
 	public static final int EDITABLE_COL = SolverConfiguration.EDITABLE_COL;
 
-	public static final ISolverConfig newConfig(final String id) {
-		return new SolverConfiguration(id);
+	public static final ISolverConfig newConfig() {
+		final String freshID = freshConfigID();
+		if (freshID == null) {
+			return null;
+		}
+		return new SolverConfiguration(freshID);
 	}
 
 	public static final ISolverConfig newConfig(final String id,
@@ -43,5 +49,16 @@ public class SolverConfigFactory {
 			final SMTLIBVersion smtlibVersion, final int timeOut) {
 		return new SolverConfiguration(id, name, solverId, args, smtlibVersion,
 				timeOut);
+	}
+
+	public static ISolverConfig newConfig(final ISolverConfig configToDuplicate) {
+		final String freshID = freshConfigID();
+		if (freshID == null) {
+			return null;
+		}
+		return new SolverConfiguration(freshID, configToDuplicate.getName(),
+				configToDuplicate.getSolverId(), configToDuplicate.getArgs(),
+				configToDuplicate.getSmtlibVersion(),
+				configToDuplicate.getTimeOut());
 	}
 }

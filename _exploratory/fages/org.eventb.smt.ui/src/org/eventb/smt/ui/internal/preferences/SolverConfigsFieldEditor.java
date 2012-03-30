@@ -13,7 +13,6 @@ package org.eventb.smt.ui.internal.preferences;
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
-import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
@@ -45,6 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.core.preferences.SolverConfigFactory;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -71,6 +71,7 @@ class SolverConfigsFieldEditor extends
 	/**
 	 * Labels
 	 */
+	private static final String DUPLICATE_LABEL = "Duplicate...";
 	private static final String ID_LABEL = "ID";
 	private static final String EXECUTION_LABEL = "Execution";
 	private static final String NAME_LABEL = "Name";
@@ -88,6 +89,11 @@ class SolverConfigsFieldEditor extends
 	private static final int SMTLIB_COL_BOUND = 70;
 	private static final int TIMEOUT_COL_BOUND = 70;
 	private static final int EDITABLE_COL_BOUND = 0;
+
+	/**
+	 * The button for duplicating an object of the table.
+	 */
+	protected Button duplicateButton;
 
 	/**
 	 * Column labels and bounds
@@ -267,21 +273,20 @@ class SolverConfigsFieldEditor extends
 				/**
 				 * When pushed, opens the solver configuration shell
 				 */
-				final String freshID = freshConfigID();
-				if (freshID == null) {
+				final ISolverConfig newConfig = newConfig();
+
+				if (newConfig == null) {
 					return;
 				}
 
 				final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-						buttonsGroup.getShell(), newConfig(freshID));
+						buttonsGroup.getShell(), newConfig);
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SolverConfiguration</code> object,
 					 * and adds it to the list.
 					 */
-					final ISolverConfig config = solverConfigDialog
-							.getSolverConfig();
-					smtPrefs.add(config);
+					smtPrefs.add(solverConfigDialog.getSolverConfig());
 
 					/**
 					 * Refreshes the table viewer.
@@ -353,6 +358,48 @@ class SolverConfigsFieldEditor extends
 		editButtonData.widthHint = convertHorizontalDLUsToPixels(editButton,
 				IDialogConstants.BUTTON_WIDTH);
 		editButton.setLayoutData(editButtonData);
+
+		/**
+		 * 'Duplicate...' button
+		 */
+		duplicateButton = new Button(buttonsGroup, SWT.PUSH);
+		duplicateButton.setText(DUPLICATE_LABEL);
+		duplicateButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent event) {
+				/**
+				 * When pushed, opens the solver configuration shell
+				 */
+				final String selectionID = configsTable.getSelection()[0]
+						.getText();
+				if (smtPrefs.getSolverConfigs().containsKey(selectionID)) {
+					final ISolverConfig configToDuplicate = smtPrefs
+							.getSolverConfigs().get(selectionID);
+					if (configToDuplicate != null) {
+						final ISolverConfig duplicatedConfig = SolverConfigFactory
+								.newConfig(configToDuplicate);
+						if (duplicatedConfig == null) {
+							return;
+						}
+
+						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
+								buttonsGroup.getShell(), duplicatedConfig);
+						if (solverConfigDialog.open() == Window.OK) {
+							smtPrefs.add(solverConfigDialog.getSolverConfig());
+							/**
+							 * Refreshes the table viewer.
+							 */
+							tableViewer.refresh();
+						}
+					}
+				}
+			}
+		});
+		final GridData duplicateButtonData = new GridData(
+				GridData.FILL_HORIZONTAL);
+		duplicateButtonData.widthHint = convertHorizontalDLUsToPixels(
+				duplicateButton, IDialogConstants.BUTTON_WIDTH);
+		duplicateButton.setLayoutData(duplicateButtonData);
 
 		/**
 		 * Packs everything.
