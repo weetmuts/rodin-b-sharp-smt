@@ -180,16 +180,17 @@ public class PreferenceManager {
 			SMTStatus.smtError("Too many items.", null);
 			return null;
 		}
-		int randomID = RANDOM.nextInt(IDS_UPPER_BOUND);
+		String randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
 		while (usedIDs.contains(randomID)) {
-			randomID = RANDOM.nextInt(IDS_UPPER_BOUND);
+			randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
 		}
-		return Integer.toString(randomID);
+		return randomID;
 	}
 
 	public static String freshConfigID() {
-		return freshID(SINGLETON.getSolverConfigsPrefs().getSolverConfigs()
-				.keySet());
+		final Set<String> usedIDs = SINGLETON.getSolverConfigsPrefs()
+				.getSolverConfigs().keySet();
+		return freshID(usedIDs);
 	}
 
 	public static String freshSolverID() {

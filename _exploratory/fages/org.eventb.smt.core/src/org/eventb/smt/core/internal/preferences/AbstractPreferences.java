@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
+import static java.lang.System.currentTimeMillis;
+
 import java.util.Random;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -24,7 +26,6 @@ import org.eventb.smt.core.preferences.PreferenceManager;
  */
 public abstract class AbstractPreferences implements IPreferences {
 	protected static final boolean USE_DEFAULT_SCOPE = true;
-	private static final long SEED = 20120327;
 
 	protected static final IEclipsePreferences SMT_PREFS_NODE = ConfigurationScope.INSTANCE
 			.getNode(SMTCore.PLUGIN_ID);
@@ -33,7 +34,7 @@ public abstract class AbstractPreferences implements IPreferences {
 
 	public static final boolean FORCE_RELOAD = true;
 	public static final boolean FORCE_REPLACE = true;
-	public static final Random RANDOM = new Random(SEED);
+	public static final Random RANDOM = new Random(currentTimeMillis());
 	public static final int IDS_UPPER_BOUND = 100000;
 
 	public static final String SEPARATOR = ";"; //$NON-NLS-1$
