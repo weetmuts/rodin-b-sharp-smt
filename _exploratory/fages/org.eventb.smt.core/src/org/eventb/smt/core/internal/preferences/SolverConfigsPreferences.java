@@ -42,8 +42,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		super(useDefaultScope);
 	}
 
-	private static void add(Map<String, ISolverConfig> solverConfigs,
-			final ISolverConfig solverConfig,
+	private void add(final ISolverConfig solverConfig,
 			final Map<String, ISMTSolver> solvers, final boolean replace)
 			throws IllegalArgumentException {
 		// FIXME exception thrown ?
@@ -51,7 +50,15 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		final ISMTSolver solver = solvers.get(solverId);
 		if (isPathValid(solver.getPath().toOSString())) {
 			final String id = solverConfig.getID();
-			if (replace || !solverConfigs.containsKey(id)) {
+			if (replace) {
+				solverConfigs.put(id, solverConfig);
+			} else if (!solverConfigs.containsKey(id)) {
+				try {
+					int numericID = Integer.parseInt(id);
+					idCounter = numericID;
+				} catch (NumberFormatException e) {
+					// do nothing
+				}
 				solverConfigs.put(id, solverConfig);
 			}
 		} else {
@@ -117,6 +124,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			return;
 		}
 		solverConfigs = parse(prefsNode.get(SOLVER_CONFIGS_ID, DEFAULT_CONFIGS));
+		idCounter = getHighestID(solverConfigs);
 		loaded = true;
 	}
 
@@ -147,12 +155,12 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 	}
 
 	@Override
-	public void add(final ISolverConfig solverConfig,
-			final boolean replace) throws IllegalArgumentException {
+	public void add(final ISolverConfig solverConfig, final boolean replace)
+			throws IllegalArgumentException {
 		// FIXME shall reload solvers ?
 		final Map<String, ISMTSolver> solvers = getPreferenceManager()
 				.getSMTSolversPrefs().getSolvers();
-		add(solverConfigs, solverConfig, solvers, replace);
+		add(solverConfig, solvers, replace);
 	}
 
 	@Override
@@ -184,5 +192,10 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			}
 		}
 		return enabledConfigs;
+	}
+
+	@Override
+	public String freshID() {
+		return freshID(solverConfigs);
 	}
 }

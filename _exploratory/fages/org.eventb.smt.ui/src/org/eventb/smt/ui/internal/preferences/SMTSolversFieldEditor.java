@@ -267,6 +267,7 @@ class SMTSolversFieldEditor extends
 							 * Refreshes the table viewer.
 							 */
 							tableViewer.refresh();
+							selectionChanged();
 						}
 					}
 				}

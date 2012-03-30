@@ -42,9 +42,7 @@ import static org.eventb.smt.core.performance.realprojects.ResourceUtils.simplif
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SELECTED_CONFIG;
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.PreferenceManager.SELECTED_CONFIG_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
@@ -368,7 +366,6 @@ public abstract class BuilderTest extends TestCase {
 		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
 				.getPreferenceStore();
 		store.setValue(SOLVER_CONFIGS_ID, preferencesBuilder.toString());
-		store.setValue(SELECTED_CONFIG_ID, DEFAULT_SELECTED_CONFIG);
 		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");
 		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}

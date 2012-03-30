@@ -10,6 +10,7 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SOLVER;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
@@ -22,6 +23,7 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.TIME_OUT_COL;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
 
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
@@ -39,8 +41,12 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 		case NAME_COL:
 			return config.getName();
 		case SOLVER_COL:
-			return getPreferenceManager().getSMTSolversPrefs()
-					.get(config.getSolverId()).getName();
+			final ISMTSolver solver = getPreferenceManager()
+					.getSMTSolversPrefs().get(config.getSolverId());
+			if (solver == null) {
+				return DEFAULT_SOLVER;
+			}
+			return solver.getName();
 		case ARGS_COL:
 			return config.getArgs();
 		case SMTLIB_COL:

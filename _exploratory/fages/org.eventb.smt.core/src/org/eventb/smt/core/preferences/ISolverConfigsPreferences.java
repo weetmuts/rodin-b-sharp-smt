@@ -14,25 +14,25 @@ import java.util.Map;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public interface ISolverConfigsPreferences extends IPreferences {
 	public boolean validId(final String id);
 
-	public abstract Map<String, ISolverConfig> getSolverConfigs();
+	public Map<String, ISolverConfig> getSolverConfigs();
 
-	public abstract List<ISolverConfig> getEnabledConfigs();
+	public List<ISolverConfig> getEnabledConfigs();
 
-	public abstract ISolverConfig getSolverConfig(final String configId);
+	public ISolverConfig getSolverConfig(final String configId);
 
-	public abstract void add(final ISolverConfig solverConfig);
+	public void add(final ISolverConfig solverConfig);
 
-	public abstract void add(final ISolverConfig solverConfig,
-	final boolean replace);
+	public void add(final ISolverConfig solverConfig, final boolean replace);
 
-	public abstract void setConfigEnabled(final String configID,
-	final boolean enabled);
+	public void setConfigEnabled(final String configID, final boolean enabled);
 
-	public abstract void removeSolverConfig(final String configID);
+	public void removeSolverConfig(final String configID);
+
+	public String freshID();
 
 }

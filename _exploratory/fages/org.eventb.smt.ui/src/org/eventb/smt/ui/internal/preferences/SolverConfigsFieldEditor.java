@@ -242,6 +242,7 @@ class SolverConfigsFieldEditor extends
 		if (selection.length == 0) {
 			removeButton.setEnabled(false);
 			editButton.setEnabled(false);
+			duplicateButton.setEnabled(false);
 		} else {
 			final TableItem firstItem = configsTable.getSelection()[0];
 			final String selectedConfigID = firstItem.getText();
@@ -253,6 +254,7 @@ class SolverConfigsFieldEditor extends
 					.get(selectedConfigID).isEditable() : false;
 			removeButton.setEnabled(validEditableSelection);
 			editButton.setEnabled(validEditableSelection);
+			duplicateButton.setEnabled(validSelection);
 		}
 	}
 
@@ -349,6 +351,7 @@ class SolverConfigsFieldEditor extends
 							 * Refreshes the table viewer.
 							 */
 							tableViewer.refresh();
+							selectionChanged();
 						}
 					}
 				}
@@ -363,6 +366,7 @@ class SolverConfigsFieldEditor extends
 		 * 'Duplicate...' button
 		 */
 		duplicateButton = new Button(buttonsGroup, SWT.PUSH);
+		duplicateButton.setEnabled(false);
 		duplicateButton.setText(DUPLICATE_LABEL);
 		duplicateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -390,6 +394,7 @@ class SolverConfigsFieldEditor extends
 							 * Refreshes the table viewer.
 							 */
 							tableViewer.refresh();
+							selectionChanged();
 						}
 					}
 				}

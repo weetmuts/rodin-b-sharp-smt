@@ -49,20 +49,6 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 		return DEFAULT_SOLVERS_PREFS;
 	}
 
-	private static void add(Map<String, ISMTSolver> solvers,
-			final ISMTSolver solver, final boolean replace)
-			throws IllegalArgumentException {
-		if (isPathValid(solver.getPath().toOSString())) {
-			final String id = solver.getID();
-			if (replace || !solvers.containsKey(id)) {
-				solvers.put(id, solver);
-			}
-		} else {
-			throw new IllegalArgumentException(
-					"Could not add the SMT-solver: invalid path."); //$NON-NLS-1$
-		}
-	}
-
 	/**
 	 * Creates a map with all solver elements from the preferences string
 	 * 
@@ -115,6 +101,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 			return;
 		}
 		solvers = parse(prefsNode.get(SOLVERS_ID, DEFAULT_SOLVERS));
+		idCounter = getHighestID(solvers);
 		loaded = true;
 	}
 
@@ -142,17 +129,37 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 	@Override
 	public void add(final ISMTSolver solver, final boolean replace)
 			throws IllegalArgumentException {
-		add(solvers, solver, replace);
+		if (isPathValid(solver.getPath().toOSString())) {
+			final String id = solver.getID();
+			if (replace) {
+				solvers.put(id, solver);
+			} else if (!solvers.containsKey(id)) {
+				try {
+					int numericID = Integer.parseInt(id);
+					idCounter = numericID;
+				} catch (NumberFormatException e) {
+					// do nothing
+				}
+				solvers.put(id, solver);
+			}
+		} else {
+			throw new IllegalArgumentException(
+					"Could not add the SMT-solver: invalid path."); //$NON-NLS-1$
+		}
 	}
 
 	@Override
-	public void add(final ISMTSolver solver)
-			throws IllegalArgumentException {
-		add(solvers, solver, !FORCE_REPLACE);
+	public void add(final ISMTSolver solver) throws IllegalArgumentException {
+		add(solver, !FORCE_REPLACE);
 	}
 
 	@Override
 	public void remove(final String solverID) {
 		solvers.remove(solverID);
+	}
+
+	@Override
+	public String freshID() {
+		return freshID(solvers);
 	}
 }

@@ -13,19 +13,19 @@ import java.util.Map;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public interface ISMTSolversPreferences extends IPreferences {
 
-	public abstract Map<String, ISMTSolver> getSolvers();
+	public Map<String, ISMTSolver> getSolvers();
 
-	public abstract ISMTSolver get(final String solverId);
+	public ISMTSolver get(final String solverId);
 
-	public abstract void add(final ISMTSolver solver);
+	public void add(final ISMTSolver solver);
 
-	public abstract void add(final ISMTSolver solver,
-	final boolean replace);
+	public void add(final ISMTSolver solver, final boolean replace);
 
-	public abstract void remove(final String solverToRemove);
+	public void remove(final String solverToRemove);
 
+	public String freshID();
 }

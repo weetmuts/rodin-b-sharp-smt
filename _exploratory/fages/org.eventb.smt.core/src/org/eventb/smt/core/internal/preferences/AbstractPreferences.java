@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static java.lang.System.currentTimeMillis;
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 
-import java.util.Random;
+import java.util.Map;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -34,16 +34,17 @@ public abstract class AbstractPreferences implements IPreferences {
 
 	public static final boolean FORCE_RELOAD = true;
 	public static final boolean FORCE_REPLACE = true;
-	public static final Random RANDOM = new Random(currentTimeMillis());
 	public static final int IDS_UPPER_BOUND = 100000;
 
 	public static final String SEPARATOR = ";"; //$NON-NLS-1$
 
 	protected final IEclipsePreferences prefsNode;
 	protected boolean loaded;
+	protected int idCounter;
 
 	protected AbstractPreferences(boolean useDefaultScope) {
 		loaded = false;
+		idCounter = 0;
 		if (useDefaultScope) {
 			prefsNode = DEFAULT_SMT_PREFS_NODE;
 		} else {
@@ -64,6 +65,41 @@ public abstract class AbstractPreferences implements IPreferences {
 
 	protected static boolean isPathValid(final String path) {
 		return PreferenceManager.isPathValid(path, new StringBuilder(0));
+	}
+
+	protected static <T> int getHighestID(final Map<String, T> map) {
+		int highestID = 0;
+		for (final String idStr : map.keySet()) {
+			try {
+				int id = Integer.parseInt(idStr);
+				if (id > highestID) {
+					highestID = id;
+				}
+			} catch (NumberFormatException e) {
+				// do nothing
+			}
+		}
+		return highestID;
+	}
+
+	protected <T> String freshID(final Map<String, T> map) {
+		if (map.size() == IDS_UPPER_BOUND) {
+			smtError("Too many items.", null);
+			return null;
+		}
+
+		int newID = idCounter + 1;
+		if (newID == IDS_UPPER_BOUND) {
+			newID = 0;
+			for (int i = 0; i < idCounter; i++) {
+				if (!map.containsKey(Integer.toString(i))) {
+					newID = i;
+					break;
+				}
+			}
+		}
+
+		return Integer.toString(newID);
 	}
 
 	abstract protected void load(final boolean reload);

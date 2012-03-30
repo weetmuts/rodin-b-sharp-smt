@@ -10,8 +10,6 @@
 package org.eventb.smt.core.preferences;
 
 import static java.lang.System.getProperty;
-import static org.eventb.smt.core.internal.preferences.AbstractPreferences.IDS_UPPER_BOUND;
-import static org.eventb.smt.core.internal.preferences.AbstractPreferences.RANDOM;
 import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_cannot_execute;
 import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_cannot_read;
 import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferencesError_invalid_file;
@@ -24,11 +22,10 @@ import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_T
 import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_VeriTPathNotSet;
 
 import java.io.File;
-import java.util.Map;
 
-import org.eventb.smt.core.internal.log.SMTStatus;
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
+import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.internal.preferences.SMTSolversPreferences;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.SolverConfigsPreferences;
@@ -43,12 +40,11 @@ public class PreferenceManager {
 	private static final PreferenceManager SINGLETON = new PreferenceManager();
 
 	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir"); //$NON-NLS-1$
-	public static final String DEFAULT_SELECTED_CONFIG = "";
 	public static final String TRANSLATION_PATH_ID = "translationpath"; //$NON-NLS-1$
 	public static final String VERIT_PATH_ID = "veritpath"; //$NON-NLS-1$
-	public static final String SELECTED_CONFIG_ID = "selectedconfig"; //$NON-NLS-1$
 	public static final String SOLVER_CONFIGS_ID = "solverconfigs"; //$NON-NLS-1$
 	public static final String SOLVERS_ID = "solvers"; //$NON-NLS-1$
+	public static final String DEFAULT_SOLVER = SMTSolver.DEFAULT_SOLVER_ID;
 	public static final boolean FORCE_REPLACE = AbstractPreferences.FORCE_REPLACE;
 	public static final boolean FORCE_RELOAD = AbstractPreferences.FORCE_RELOAD;
 
@@ -175,24 +171,12 @@ public class PreferenceManager {
 		return false;
 	}
 
-	public static <T> String freshID(final Map<String, T> map) {
-		if (map.size() == IDS_UPPER_BOUND) {
-			SMTStatus.smtError("Too many items.", null);
-			return null;
-		}
-		String randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
-		while (map.containsKey(randomID)) {
-			randomID = Integer.toString(RANDOM.nextInt(IDS_UPPER_BOUND));
-		}
-		return randomID;
-	}
-
 	public static String freshConfigID() {
-		return freshID(SINGLETON.getSolverConfigsPrefs().getSolverConfigs());
+		return SINGLETON.getSolverConfigsPrefs().freshID();
 	}
 
 	public static String freshSolverID() {
-		return freshID(SINGLETON.getSMTSolversPrefs().getSolvers());
+		return SINGLETON.getSMTSolversPrefs().freshID();
 	}
 
 	public static IRegistry<ISMTSolver> getBundledSolverRegistry() {
