@@ -14,7 +14,6 @@ import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess
 import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
@@ -42,14 +41,12 @@ public class SMTCore {
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
-	 * @param timeout
-	 *            delay before timeout in milliseconds
 	 * @param configId
 	 *            the selected solver id
 	 * @return the SMT tactic
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
-			long timeout, final String configId) {
+			final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
 			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
 					.getSolverConfigsPrefs().getEnabledConfigs();
@@ -57,18 +54,18 @@ public class SMTCore {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
 				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = reasonerTac(
-							new ExternalSMTThroughPP(),
-							new SMTInput(restricted, timeout, enabledConfigs
-									.get(i)));
+					smtTactics[i] = reasonerTac(new ExternalSMTThroughPP(),
+							new SMTInput(restricted, enabledConfigs.get(i)));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
 				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
 		} else {
+			final ISolverConfig config = getPreferenceManager()
+					.getSolverConfigsPrefs().getSolverConfig(configId);
 			return reasonerTac(new ExternalSMTThroughPP(), //
-					new SMTInput(restricted, timeout, configId));
+					new SMTInput(restricted, config));
 		}
 	}
 
@@ -90,8 +87,7 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughPP(final boolean restricted) {
-		return externalSMTThroughPP(restricted, DEFAULT_DELAY,
-				ALL_SOLVER_CONFIGURATIONS);
+		return externalSMTThroughPP(restricted, ALL_SOLVER_CONFIGURATIONS);
 	}
 
 	/**
@@ -100,14 +96,12 @@ public class SMTCore {
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
-	 * @param timeout
-	 *            delay before timeout in milliseconds
 	 * @param configId
 	 *            the selected solver id
 	 * @return the SMT tactic
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
-			long timeout, final String configId) {
+			final String configId) {
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
 			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
 					.getSolverConfigsPrefs().getEnabledConfigs();
@@ -115,18 +109,18 @@ public class SMTCore {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
 				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = reasonerTac(
-							new ExternalSMTThroughVeriT(),
-							new SMTInput(restricted, timeout, enabledConfigs
-									.get(i)));
+					smtTactics[i] = reasonerTac(new ExternalSMTThroughVeriT(),
+							new SMTInput(restricted, enabledConfigs.get(i)));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
 				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
 			}
 		} else {
+			final ISolverConfig config = getPreferenceManager()
+					.getSolverConfigsPrefs().getSolverConfig(configId);
 			return reasonerTac(new ExternalSMTThroughVeriT(), //
-					new SMTInput(restricted, timeout, configId));
+					new SMTInput(restricted, config));
 		}
 	}
 
@@ -148,7 +142,6 @@ public class SMTCore {
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
 	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
-		return externalSMTThroughVeriT(restricted, DEFAULT_DELAY,
-				ALL_SOLVER_CONFIGURATIONS);
+		return externalSMTThroughVeriT(restricted, ALL_SOLVER_CONFIGURATIONS);
 	}
 }

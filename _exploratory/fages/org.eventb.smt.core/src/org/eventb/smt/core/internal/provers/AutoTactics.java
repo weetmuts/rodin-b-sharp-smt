@@ -15,7 +15,6 @@ import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_DELAY;
 
 import java.util.List;
 
@@ -46,11 +45,6 @@ public class AutoTactics {
 	private static final String RESTRICTED = "restricted";
 
 	/**
-	 * label for the 'timeout' tactic parameter
-	 */
-	private static final String TIMEOUT = "timeout";
-
-	/**
 	 * label for the 'configId' tactic parameter
 	 */
 	private static final String CONFIG_ID = "configId";
@@ -68,8 +62,8 @@ public class AutoTactics {
 	public static class SMTPP implements ITactic {
 		@Override
 		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughPP(true, DEFAULT_DELAY,
-					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
+			return externalSMTThroughPP(true, ALL_SOLVER_CONFIGURATIONS).apply(
+					ptNode, pm);
 		}
 	}
 
@@ -77,11 +71,10 @@ public class AutoTactics {
 
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
-			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 			final String configId = parameters.getString(CONFIG_ID);
 
-			return externalSMTThroughPP(restricted, timeout, configId);
+			return externalSMTThroughPP(restricted, configId);
 		}
 
 	}
@@ -89,8 +82,8 @@ public class AutoTactics {
 	public static class SMTVeriT implements ITactic {
 		@Override
 		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughVeriT(true, DEFAULT_DELAY,
-					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
+			return externalSMTThroughVeriT(true, ALL_SOLVER_CONFIGURATIONS)
+					.apply(ptNode, pm);
 		}
 	}
 
@@ -98,12 +91,10 @@ public class AutoTactics {
 
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
-			final long timeout = parameters.getLong(TIMEOUT);
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
 			final String configId = parameters.getString(CONFIG_ID);
 
-			return SMTCore.externalSMTThroughVeriT(restricted, timeout,
-					configId);
+			return SMTCore.externalSMTThroughVeriT(restricted, configId);
 		}
 	}
 

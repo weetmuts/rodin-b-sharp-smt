@@ -61,42 +61,14 @@ public class SMTInput extends XProverInput {
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
-	 * @param timeOutDelay
-	 *            delay before timeout in milliseconds
 	 * @param solverConfig
-	 *            the solver configuration to set up
+	 *            the configuration to set up
 	 */
-	public SMTInput(final boolean restricted, final long timeOutDelay,
-			final ISolverConfig solverConfig) {
-		super(restricted, timeOutDelay);
+	public SMTInput(final boolean restricted, final ISolverConfig solverConfig) {
+		super(restricted, solverConfig.getTimeOut());
 		final ITranslationPreferences translationPrefs = getPreferenceManager()
 				.getTranslationPrefs();
 		this.solverConfig = solverConfig;
-		poName = RODIN_SEQUENT;
-		translationPath = translationPrefs.getTranslationPath();
-		veritPath = translationPrefs.getVeriTPath();
-		error = validate();
-	}
-
-	/**
-	 * Constructs an SMT input for the given solver configuration
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @param timeOutDelay
-	 *            delay before timeout in milliseconds
-	 * @param configId
-	 *            id of the solver configuration to set up
-	 */
-	public SMTInput(final boolean restricted, final long timeOutDelay,
-			final String configId) {
-		super(restricted, timeOutDelay);
-		final ISolverConfigsPreferences solverConfigPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		solverConfig = solverConfigPrefs.getSolverConfig(configId);
 		poName = RODIN_SEQUENT;
 		translationPath = translationPrefs.getTranslationPath();
 		veritPath = translationPrefs.getVeriTPath();
