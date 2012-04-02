@@ -35,15 +35,6 @@ public abstract class AbstractRegistry<T> implements IRegistry<T> {
 	}
 
 	@Override
-	public synchronized boolean isRegistered(String id)
-			throws ExtensionLoadingException, InvalidRegistryObjectException {
-		if (getRegistry() == null) {
-			loadRegistry();
-		}
-		return getRegistry().containsKey(id);
-	}
-
-	@Override
 	public T get(String id) {
 		if (getRegistry() == null) {
 			loadRegistry();

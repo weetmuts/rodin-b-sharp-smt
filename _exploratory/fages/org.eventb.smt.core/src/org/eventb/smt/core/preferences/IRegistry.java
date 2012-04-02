@@ -27,15 +27,6 @@ public interface IRegistry<T> {
 	public Set<String> getIDs();
 
 	/**
-	 * Test is this registry contains a element with the given ID.
-	 * 
-	 * @param id
-	 *            the given ID of which the registration must be tested
-	 * @return true if the given ID is registered
-	 */
-	public boolean isRegistered(String id);
-
-	/**
 	 * Returns the element associated with the given ID.
 	 * 
 	 * @param id
