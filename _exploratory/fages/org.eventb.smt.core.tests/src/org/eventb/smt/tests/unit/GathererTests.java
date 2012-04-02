@@ -111,6 +111,32 @@ public class GathererTests extends AbstractTests {
 	}
 
 	/**
+	 * Class created to handle the expected element Quantifier from the
+	 * Gatherer.
+	 **/
+	static class Quantifier extends Option {
+		static final Quantifier FOUND = new Quantifier(true);
+		static final Quantifier NOT_FOUND = new Quantifier(false);
+
+		private Quantifier(final boolean isTrue) {
+			super(isTrue);
+		}
+	}
+
+	/**
+	 * Class created to handle the expected element Uncovered Arith from the
+	 * Gatherer.
+	 **/
+	static class UncoveredArith extends Option {
+		static final UncoveredArith FOUND = new UncoveredArith(true);
+		static final UncoveredArith NOT_FOUND = new UncoveredArith(false);
+
+		private UncoveredArith(final boolean isTrue) {
+			super(isTrue);
+		}
+	}
+
+	/**
 	 * Executes tests in the Gatherer class. This method is similar to the other
 	 * doTest in this class, but it accepts no hypotheses.
 	 * 
@@ -133,9 +159,12 @@ public class GathererTests extends AbstractTests {
 			final AtomicBoolExp atomicBoolExp,
 			final AtomicIntegerExp atomicIntegerExp,
 			final BoolTheory boolTheory, final TruePredicate truePredicate,
-			final String[] expectedSpecialMSPredImages, final String goal) {
+			final String[] expectedSpecialMSPredImages,
+			final Quantifier quantifier, final UncoveredArith uncoveredArith,
+			final String goal) {
 		doTest(typenv, atomicBoolExp, atomicIntegerExp, boolTheory,
-				truePredicate, expectedSpecialMSPredImages, new String[0], goal);
+				truePredicate, expectedSpecialMSPredImages, quantifier,
+				uncoveredArith, new String[0], goal);
 	}
 
 	/**
@@ -163,6 +192,7 @@ public class GathererTests extends AbstractTests {
 			final AtomicIntegerExp atomicIntegerExp,
 			final BoolTheory boolTheory, final TruePredicate truePredicate,
 			final String[] expectedSpecialMSPredImages,
+			final Quantifier quantifier, final UncoveredArith uncoveredArith,
 			final String[] hypotheses, final String goal) {
 
 		final List<Predicate> preds = new ArrayList<Predicate>();
@@ -182,7 +212,7 @@ public class GathererTests extends AbstractTests {
 
 		final Gatherer actual = Gatherer.gatherFrom(sequent);
 		checkResult(atomicBoolExp, atomicIntegerExp, boolTheory, truePredicate,
-				expectedSpecialMSPreds, actual);
+				expectedSpecialMSPreds, quantifier, uncoveredArith, actual);
 	}
 
 	/**
@@ -216,11 +246,14 @@ public class GathererTests extends AbstractTests {
 			final AtomicIntegerExp atomicIntegerExp,
 			final BoolTheory boolTheory, final TruePredicate truePredicate,
 			final Set<FreeIdentifier> expectedSpecialMSPreds,
+			final Quantifier quantifier, final UncoveredArith uncoveredArith,
 			final Gatherer actual) {
 		atomicBoolExp.check(actual.foundAtomicBoolExp());
 		atomicIntegerExp.check(actual.foundAtomicIntegerExp());
 		boolTheory.check(actual.usesBoolTheory());
 		truePredicate.check(actual.usesTruePredicate());
+		quantifier.check(actual.foundQuantifier());
+		uncoveredArith.check(actual.foundUncoveredArith());
 		assertEquals(expectedSpecialMSPreds, actual.getSetsForSpecialMSPreds());
 	}
 
@@ -247,6 +280,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"(a↦ℤ ∈ X) ∨ (∃ T · (a↦ℤ ∈ T))");
 	}
 
@@ -262,6 +297,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				L("X"), //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"(a↦ℤ ∈ X) ∨ (∃ V · (a ∈ V))");
 	}
 
@@ -277,6 +314,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.NOT_FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"(a = b)");
 	}
 
@@ -293,6 +332,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				L("X"), //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"∃t · (t ∈ X)");
 	}
 
@@ -309,6 +350,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"∀H·((a↦b ∈ X) ∨ (c↦d ∈ H))");
 	}
 
@@ -325,6 +368,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"∃t⦂ℤ · (∀ X · (t ∈ X))");
 	}
 
@@ -340,6 +385,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.NOT_FOUND, //
 				TruePredicate.NOT_FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"(a = b)");
 	}
 
@@ -355,6 +402,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"a↦BOOL↦BOOL ∈ X ∧ (∃T · a↦BOOL↦BOOL ∈ T)");
 	}
 
@@ -370,6 +419,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				L("X"), //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"a↦BOOL↦BOOL ∈ X");
 	}
 
@@ -387,6 +438,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"∀H·((a↦b↦c ∈ X) ∨ (c↦d↦a ∈ H))");
 	}
 
@@ -402,7 +455,61 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				L("G", "X"), //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.NOT_FOUND, //
 				"(a↦ℤ ∈ X) ∧ (g ∈ G)");
+	}
+
+	@Test
+	public void testQuantifier() {
+		doTest(mTypeEnvironment(), //
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				NO_MS_SPECIAL_PREDS, //
+				Quantifier.FOUND, //
+				UncoveredArith.NOT_FOUND, //
+				"∀i · 1 + 1 = i");
+	}
+
+	@Test
+	public void testDiv() {
+		doTest(mTypeEnvironment(), //
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				NO_MS_SPECIAL_PREDS, //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.FOUND, //
+				"2 ÷ 2 = 1");
+	}
+
+	@Test
+	public void testMod() {
+		doTest(mTypeEnvironment(), //
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				NO_MS_SPECIAL_PREDS, //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.FOUND, //
+				"2 mod 2 = 0");
+	}
+
+	@Test
+	public void testExpn() {
+		doTest(mTypeEnvironment(), //
+				AtomicBoolExp.NOT_FOUND, //
+				AtomicIntegerExp.NOT_FOUND, //
+				BoolTheory.NOT_FOUND, //
+				TruePredicate.NOT_FOUND, //
+				NO_MS_SPECIAL_PREDS, //
+				Quantifier.NOT_FOUND, //
+				UncoveredArith.FOUND, //
+				"2 ^ 0 = 1");
 	}
 
 	/**
@@ -417,6 +524,8 @@ public class GathererTests extends AbstractTests {
 				BoolTheory.FOUND, //
 				TruePredicate.FOUND, //
 				L("X"), //
-				"(a↦BOOL↦ℤ ∈ X) ∧ (a = TRUE)");
+				Quantifier.FOUND, //
+				UncoveredArith.FOUND, //
+				"(a↦BOOL↦ℤ ∈ X) ∧ (a = TRUE) ∧ (∀i · 1 + 1 = i) ∧ (2 ^ 0 = 1)");
 	}
 }
