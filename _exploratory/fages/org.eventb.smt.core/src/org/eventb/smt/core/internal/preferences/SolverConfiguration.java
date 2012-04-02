@@ -106,6 +106,13 @@ public class SolverConfiguration implements ISolverConfig {
 				EDITABLE);
 	}
 
+	public SolverConfiguration(final String id, final boolean enabled,
+			final String name, final String solverId, final String args,
+			final SMTLIBVersion smtlibVersion, final int timeOut) {
+		this(id, enabled, name, solverId, args, smtlibVersion, timeOut,
+				EDITABLE);
+	}
+
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
 			final SMTLIBVersion smtlibVersion) {

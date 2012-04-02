@@ -55,6 +55,7 @@ public class SolverConfigDialog extends Dialog {
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
 	private static final String SMT_LIB_LABEL = "SMT-LIB";
 	private static final String TIME_OUT_LABEL = "Time Out (ms)";
+	private static final String ENABLE_LABEL = "Enable";
 
 	public static final boolean SHOW_ERRORS = true;
 
@@ -85,8 +86,18 @@ public class SolverConfigDialog extends Dialog {
 		final Text nameText = new Text(shell, SWT.BORDER);
 		nameText.setText(solverConfig.getName());
 		data = new GridData(FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
+		data.horizontalSpan = 2;
 		nameText.setLayoutData(data);
+
+		/**
+		 * Execution
+		 */
+		data = new GridData();
+		data.horizontalSpan = 1;
+		final Button executionCheckButton = new Button(shell, SWT.CHECK);
+		executionCheckButton.setText(ENABLE_LABEL);
+		executionCheckButton.setSelection(solverConfig.isEnabled());
+		executionCheckButton.setLayoutData(data);
 
 		/**
 		 * Solver
@@ -191,7 +202,8 @@ public class SolverConfigDialog extends Dialog {
 				if (errBuilder.length() != 0) {
 					UIUtils.showError(errBuilder.toString());
 				} else {
-					solverConfig = newConfig(solverConfig.getID(), name,
+					solverConfig = newConfig(solverConfig.getID(),
+							executionCheckButton.getSelection(), name,
 							nameToKey.get(solverCombo.getText()),
 							argsText.getText(),
 							parseVersion(smtlibCombo.getText()),

@@ -174,8 +174,6 @@ class SolverConfigsFieldEditor extends
 
 		CellEditor[] editors = new CellEditor[getColumnsLabel().length];
 
-		// editors[getEnabledColumnNumber()] = new CheckboxCellEditor(
-		// tableViewer.getTable());
 		editors[ENABLED_COL] = new ComboBoxCellEditor(tableViewer.getTable(),
 				ENABLED_COMBO_VALUES, SWT.READ_ONLY);
 
@@ -193,7 +191,6 @@ class SolverConfigsFieldEditor extends
 					final int comboIndex = (Integer) value;
 					final boolean enable = ENABLED_COMBO_VALUES[comboIndex]
 							.equals(ENABLED);
-					// config.setEnabled(enable);
 					smtPrefs.getSolverConfig(config.getID()).setEnabled(enable);
 					tableViewer.refresh();
 				}

@@ -45,10 +45,11 @@ public class SolverConfigFactory {
 	}
 
 	public static final ISolverConfig newConfig(final String id,
-			final String name, final String solverId, final String args,
-			final SMTLIBVersion smtlibVersion, final int timeOut) {
-		return new SolverConfiguration(id, name, solverId, args, smtlibVersion,
-				timeOut);
+			final boolean enabled, final String name, final String solverId,
+			final String args, final SMTLIBVersion smtlibVersion,
+			final int timeOut) {
+		return new SolverConfiguration(id, enabled, name, solverId, args,
+				smtlibVersion, timeOut);
 	}
 
 	public static ISolverConfig newConfig(final ISolverConfig configToDuplicate) {
