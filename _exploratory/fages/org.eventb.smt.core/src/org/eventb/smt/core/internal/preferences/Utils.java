@@ -15,6 +15,7 @@ import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeInvalidJavaIDException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNoSuchBundleException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullIDException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullNameException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -68,6 +69,12 @@ public class Utils {
 		}
 		if (!isJavaIdentifier(id)) {
 			throw makeInvalidJavaIDException(id);
+		}
+	}
+
+	public static void checkName(String name) throws ExtensionLoadingException {
+		if (name == null) {
+			throw makeNullNameException();
 		}
 	}
 

@@ -10,17 +10,18 @@
 package org.eventb.smt.core.internal.preferences;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullPathException;
 import static org.eventb.smt.core.internal.preferences.SMTSolver.EDITABLE;
 import static org.eventb.smt.core.internal.preferences.Utils.checkBundle;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
+import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
-import org.eventb.core.seqprover.xprover.BundledFileExtractor;
 import org.osgi.framework.Bundle;
 
 /**
@@ -59,6 +60,7 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 		id = nameSpace + "." + localId;
 
 		checkId(localId);
+		checkName(name);
 		final IPath path = makeSolverPath(nameSpace, localPathStr);
 		checkPath(path);
 
@@ -76,8 +78,7 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 		final Bundle bundle = getBundle(bundleName);
 		checkBundle(bundleName, bundle);
 		checkPath(localPathStr);
-		return BundledFileExtractor.extractFile(bundle, new Path(localPathStr),
-				true);
+		return extractFile(bundle, new Path(localPathStr), true);
 	}
 
 	private static void checkPath(final Object path)

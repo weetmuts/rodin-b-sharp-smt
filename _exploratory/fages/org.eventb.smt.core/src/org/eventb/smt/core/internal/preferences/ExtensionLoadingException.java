@@ -17,6 +17,10 @@ public class ExtensionLoadingException extends IllegalArgumentException {
 		return new ExtensionLoadingException("Invalid id: null pointer.");
 	}
 
+	public static final ExtensionLoadingException makeNullNameException() {
+		return new ExtensionLoadingException("Invalid name: null pointer.");
+	}
+
 	public static final ExtensionLoadingException makeNullBinaryNameException() {
 		return new ExtensionLoadingException(
 				"Invalid binary name: null pointer.");

@@ -10,6 +10,8 @@
 
 package org.eventb.smt.core.provers;
 
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+
 /**
  * This enum enumerates the solvers.
  * 
@@ -52,6 +54,9 @@ public enum SolverKind {
 					return solver;
 				}
 			}
+		} else {
+			smtError("Error while parsing the solver kind: null pointer.",
+					new NullPointerException());
 		}
 		return UNKNOWN;
 	}
