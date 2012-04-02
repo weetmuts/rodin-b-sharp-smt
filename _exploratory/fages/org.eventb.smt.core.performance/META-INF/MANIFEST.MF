@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Performance
 Bundle-SymbolicName: org.eventb.smt.core.performance
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Systerel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eventb.core;bundle-version="2.4.0",
