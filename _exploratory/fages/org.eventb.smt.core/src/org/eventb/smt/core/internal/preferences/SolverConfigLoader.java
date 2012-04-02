@@ -9,9 +9,12 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static java.lang.Integer.parseInt;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullArgsException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullSolverIdException;
 import static org.eventb.smt.core.internal.preferences.SolverConfiguration.EDITABLE;
+import static org.eventb.smt.core.internal.preferences.SolverConfiguration.parseTimeOut;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
+import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -56,8 +59,23 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		id = nameSpace + "." + localId;
 
 		checkId(localId);
-
+		checkName(name);
+		checkSolverId(solverId);
+		checkArgs(args);
 		return new SolverConfiguration(id, name, solverId, args,
-				parseVersion(smtlibVersion), parseInt(timeOut), !EDITABLE);
+				parseVersion(smtlibVersion), parseTimeOut(timeOut), !EDITABLE);
+	}
+
+	public static void checkSolverId(String solverId)
+			throws ExtensionLoadingException {
+		if (solverId == null) {
+			throw makeNullSolverIdException();
+		}
+	}
+
+	public static void checkArgs(String args) throws ExtensionLoadingException {
+		if (args == null) {
+			throw makeNullArgsException();
+		}
 	}
 }

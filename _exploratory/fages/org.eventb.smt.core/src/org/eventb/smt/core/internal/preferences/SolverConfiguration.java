@@ -45,7 +45,7 @@ public class SolverConfiguration implements ISolverConfig {
 	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
 	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
-	private static final int DEFAULT_TIME_OUT = 3000;
+	public static final int DEFAULT_TIME_OUT = 3000;
 
 	final private String id;
 

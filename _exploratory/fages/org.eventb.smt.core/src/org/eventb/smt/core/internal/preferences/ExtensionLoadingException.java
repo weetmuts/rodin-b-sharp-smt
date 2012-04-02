@@ -21,9 +21,16 @@ public class ExtensionLoadingException extends IllegalArgumentException {
 		return new ExtensionLoadingException("Invalid name: null pointer.");
 	}
 
-	public static final ExtensionLoadingException makeNullBinaryNameException() {
-		return new ExtensionLoadingException(
-				"Invalid binary name: null pointer.");
+	public static final ExtensionLoadingException makeEmptyNameException() {
+		return new ExtensionLoadingException("Invalid name: empty.");
+	}
+
+	public static final ExtensionLoadingException makeNullSolverIdException() {
+		return new ExtensionLoadingException("Invalid solver id: null pointer.");
+	}
+
+	public static final ExtensionLoadingException makeNullArgsException() {
+		return new ExtensionLoadingException("Invalid arguments: null pointer.");
 	}
 
 	public static final ExtensionLoadingException makeNoSuchBundleException(

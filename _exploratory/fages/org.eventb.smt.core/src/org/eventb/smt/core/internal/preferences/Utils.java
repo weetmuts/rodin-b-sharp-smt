@@ -12,6 +12,7 @@ package org.eventb.smt.core.internal.preferences;
 import static java.lang.Character.isJavaIdentifierPart;
 import static java.lang.Character.isJavaIdentifierStart;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeDotInIDException;
+import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeEmptyNameException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeInvalidJavaIDException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNoSuchBundleException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullIDException;
@@ -75,6 +76,8 @@ public class Utils {
 	public static void checkName(String name) throws ExtensionLoadingException {
 		if (name == null) {
 			throw makeNullNameException();
+		} else if (name.isEmpty()) {
+			throw makeEmptyNameException();
 		}
 	}
 
