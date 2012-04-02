@@ -568,6 +568,12 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	}
 
 	@Test
+	public void testNegative() {
+		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
+		testTranslateGoalPP(te, "n ≥ −1", "(not (<= (- 1) n))");
+	}
+
+	@Test
 	public void testQuantifier() {
 		final ITypeEnvironment te = ExtendedFactory.eff.makeTypeEnvironment();
 		testTranslateGoalPP(te, "∀ x · x + 1 ∈ S",
