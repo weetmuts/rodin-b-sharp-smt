@@ -88,18 +88,19 @@ public abstract class AbstractPreferences implements IPreferences {
 			return null;
 		}
 
-		int newID = idCounter + 1;
-		if (newID == IDS_UPPER_BOUND) {
-			newID = 0;
-			for (int i = 0; i < idCounter; i++) {
-				if (!map.containsKey(Integer.toString(i))) {
-					newID = i;
-					break;
-				}
+		for (int i = idCounter; i < IDS_UPPER_BOUND; i++) {
+			final String newID = Integer.toString(i);
+			if (!map.containsKey(newID)) {
+				return newID;
 			}
 		}
-
-		return Integer.toString(newID);
+		for (int i = 0; i < idCounter; i++) {
+			final String newID = Integer.toString(i);
+			if (!map.containsKey(newID)) {
+				return newID;
+			}
+		}
+		return null;
 	}
 
 	abstract protected void load(final boolean reload);

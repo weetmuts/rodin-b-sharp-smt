@@ -94,14 +94,14 @@ import org.eventb.smt.core.internal.ast.theories.IArithFuns;
 import org.eventb.smt.core.internal.ast.theories.IArithFunsExt;
 import org.eventb.smt.core.internal.ast.theories.IArithPreds;
 import org.eventb.smt.core.internal.ast.theories.Logic;
-import org.eventb.smt.core.internal.ast.theories.Theory;
-import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.Logic.AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.QF_UFv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTLogicPP;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
+import org.eventb.smt.core.internal.ast.theories.Theory;
+import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.TheoryV1_2.Booleans;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -1037,11 +1037,11 @@ public class SMTThroughPP extends Translator {
 					null).toString();
 			typeMap.put(integerType, signature.freshSort("Z"));
 			typeMap.put(powerSetIntegerType, signature.freshSort("PZ"));
-			varMap.put(integerStr, signature.freshConstant("INTS", // TODO could
-																	// it be
-																	// called
-																	// "Z" too ?
-					typeMap.get(powerSetIntegerType)));
+			// TODO could not it be called "Z" too ?
+			varMap.put(
+					integerStr,
+					signature.freshConstant("INTS",
+							typeMap.get(powerSetIntegerType)));
 		}
 
 		typeMap.put(booleanType, logic.getBooleanSort());
