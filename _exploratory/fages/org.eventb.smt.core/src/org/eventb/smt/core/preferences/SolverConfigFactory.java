@@ -10,6 +10,7 @@
 package org.eventb.smt.core.preferences;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
+import static org.eventb.smt.core.preferences.PreferenceManager.freshCopyName;
 
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -57,7 +58,13 @@ public class SolverConfigFactory {
 		if (freshID == null) {
 			return null;
 		}
-		return new SolverConfiguration(freshID, configToDuplicate.getName(),
+
+		final String freshCopyName = freshCopyName(configToDuplicate.getName());
+		if (freshCopyName == null) {
+			return null;
+		}
+
+		return new SolverConfiguration(freshID, freshCopyName,
 				configToDuplicate.getSolverId(), configToDuplicate.getArgs(),
 				configToDuplicate.getSmtlibVersion(),
 				configToDuplicate.getTimeOut());

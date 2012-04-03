@@ -13,7 +13,6 @@ package org.eventb.smt.ui.internal.preferences;
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
-import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.EDITABLE_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.ID_COL;
@@ -192,13 +191,14 @@ class SMTSolversFieldEditor extends
 				/**
 				 * When pushed, opens the solver configuration shell
 				 */
-				final String freshID = freshSolverID();
-				if (freshID == null) {
+				final ISMTSolver newSolver = newSolver();
+
+				if (newSolver == null) {
 					return;
 				}
 
 				final SMTSolverDialog solverDialog = new SMTSolverDialog(
-						buttonsGroup.getShell(), smtPrefs, newSolver(freshID));
+						buttonsGroup.getShell(), smtPrefs, newSolver());
 				if (solverDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolver</code> object, and adds it

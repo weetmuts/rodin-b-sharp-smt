@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
-import org.eventb.smt.core.preferences.SolverConfigFactory;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -377,8 +376,7 @@ class SolverConfigsFieldEditor extends
 					final ISolverConfig configToDuplicate = smtPrefs
 							.getSolverConfigs().get(selectionID);
 					if (configToDuplicate != null) {
-						final ISolverConfig duplicatedConfig = SolverConfigFactory
-								.newConfig(configToDuplicate);
+						final ISolverConfig duplicatedConfig = newConfig(configToDuplicate);
 						if (duplicatedConfig == null) {
 							return;
 						}

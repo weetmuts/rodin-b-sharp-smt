@@ -10,6 +10,7 @@
 package org.eventb.smt.core.internal.preferences;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;
@@ -197,5 +198,16 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 	@Override
 	public String freshID() {
 		return freshID(solverConfigs);
+	}
+
+	@Override
+	public String freshCopyName(final String originalName) {
+		int i = 1;
+		String copyName = originalName + " (copy" + i + ")";
+		while (configExists(copyName)) {
+			i++;
+			copyName = originalName + " (copy" + i + ")";
+		}
+		return copyName;
 	}
 }

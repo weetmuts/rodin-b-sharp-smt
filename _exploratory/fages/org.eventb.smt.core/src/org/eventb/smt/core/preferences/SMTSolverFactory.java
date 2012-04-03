@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.preferences;
 
+import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
+
 import org.eclipse.core.runtime.IPath;
 import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.provers.SolverKind;
@@ -25,8 +27,13 @@ public class SMTSolverFactory {
 	public static final int PATH_COL = SMTSolver.PATH_COL;
 	public static final int EDITABLE_COL = SMTSolver.EDITABLE_COL;
 
-	public static final ISMTSolver newSolver(String id) {
-		return new SMTSolver(id);
+	public static final ISMTSolver newSolver() {
+		final String freshID = freshSolverID();
+		if (freshID == null) {
+			return null;
+		}
+
+		return new SMTSolver(freshID);
 	}
 
 	public static final ISMTSolver newSolver(final String id,

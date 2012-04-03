@@ -175,6 +175,10 @@ public class PreferenceManager {
 		return SINGLETON.getSolverConfigsPrefs().freshID();
 	}
 
+	public static String freshCopyName(final String originalName) {
+		return SINGLETON.getSolverConfigsPrefs().freshCopyName(originalName);
+	}
+
 	public static String freshSolverID() {
 		return SINGLETON.getSMTSolversPrefs().freshID();
 	}
