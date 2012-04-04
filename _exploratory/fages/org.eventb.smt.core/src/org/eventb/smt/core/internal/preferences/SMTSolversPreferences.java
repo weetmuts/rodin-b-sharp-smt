@@ -129,7 +129,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 	@Override
 	public void add(final ISMTSolver solver, final boolean replace)
 			throws IllegalArgumentException {
-		if (!solver.isEditable() || isValidPath(solver.getPath().toOSString())) {
+		if (isValidPath(solver.getPath().toOSString())) {
 			final String id = solver.getID();
 			if (replace) {
 				solvers.put(id, solver);

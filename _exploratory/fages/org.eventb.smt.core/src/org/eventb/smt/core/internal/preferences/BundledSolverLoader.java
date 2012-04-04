@@ -19,6 +19,7 @@ import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
@@ -52,6 +53,7 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 		 * <code>org.eventb.smt.verit</code>.
 		 */
 		final String nameSpace = configurationElement.getNamespaceIdentifier();
+		final IContributor contributor = configurationElement.getContributor();
 		final String localPathStr = configurationElement
 				.getAttribute("localpath");
 		final String name = configurationElement.getAttribute("name");
@@ -61,7 +63,9 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 
 		checkId(localId);
 		checkName(name);
-		final IPath path = makeSolverPath(nameSpace, localPathStr);
+
+		final String bundleName = contributor.getName();
+		final IPath path = makeSolverPath(bundleName, localPathStr);
 		checkPath(path);
 
 		return new SMTSolver(id, name, parseKind(kindStr), path, !EDITABLE);

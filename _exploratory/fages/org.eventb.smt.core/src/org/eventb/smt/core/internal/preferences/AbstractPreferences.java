@@ -56,9 +56,6 @@ public abstract class AbstractPreferences implements IPreferences {
 	protected static final String getValidPath(final String currentPath,
 			final ISMTSolver solver, final String defaultPath) {
 		final String newPath = solver.getPath().toOSString();
-		if (!solver.isEditable()) {
-			return newPath;
-		}
 		if (isValidPath(newPath)) {
 			return newPath;
 		} else if (!isValidPath(currentPath)) {
