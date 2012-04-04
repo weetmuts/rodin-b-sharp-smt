@@ -4,7 +4,11 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="html/smt_plug_in.xml"
-            primary="true"/>
+            file="toc.xml">
+      </toc>
+      <toc
+            file="html/SMTToc.xml"
+            primary="true">
+      </toc>
    </extension>
 </plugin>
