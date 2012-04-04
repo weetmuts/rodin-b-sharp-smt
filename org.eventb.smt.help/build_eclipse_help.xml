@@ -5,7 +5,7 @@
        	 antfile="build_eclipse_help.xml" target="generate"
        	 inheritAll="false">
           <property name="dest.dir" value="${ant.file.sample-help}/../html"/>
-          <property name="wiki.url" value="http://wiki.event-b.org/index.php/SMT_Plug-in"/>
+          <property name="wiki.url" value="http://wiki.event-b.org/index.php/SMT_Solvers_Plug-in"/>
     	</ant>
    </target>
 </project>

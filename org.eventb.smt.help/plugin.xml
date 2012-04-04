@@ -7,7 +7,7 @@
             file="toc.xml">
       </toc>
       <toc
-            file="html/SMTToc.xml"
+            file="html/smt_solvers_plug_in.xml"
             primary="true">
       </toc>
    </extension>
