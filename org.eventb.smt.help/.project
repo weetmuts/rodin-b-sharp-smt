@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>fr.systerel.smt.provers.help</name>
+	<name>org.eventb.smt.help</name>
 	<comment></comment>
 	<projects>
 	</projects>
