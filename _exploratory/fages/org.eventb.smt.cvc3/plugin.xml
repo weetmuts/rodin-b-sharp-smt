@@ -7,7 +7,7 @@
             id="bundled_cvc3"
             kind="cvc3"
             localpath="$os$/cvc3"
-            name="bundled_cvc3">
+            name="Bundled CVC3">
       </solver>
    </extension>
    <extension

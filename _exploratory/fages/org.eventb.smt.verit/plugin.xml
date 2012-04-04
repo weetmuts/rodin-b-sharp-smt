@@ -7,7 +7,7 @@
             localpath="$os$/verit"
             id="bundled_verit"
             kind="verit"
-            name="bundled veriT">
+            name="Bundled veriT">
       </solver>
    </extension>
    <extension
