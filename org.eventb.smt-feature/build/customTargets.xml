@@ -98,8 +98,28 @@
 		</copy>
 
 		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.help">
+			<fileset dir="${builder}/../../org.eventb.smt.help" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
 		<copy todir="${buildDirectory}/plugins/org.eventb.smt.verit">
 			<fileset dir="${builder}/../../org.eventb.smt.verit" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.verit.linux">
+			<fileset dir="${builder}/../../org.eventb.smt.verit.linux" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.verit.macosx">
+			<fileset dir="${builder}/../../org.eventb.smt.verit.macosx" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.verit.win32">
+			<fileset dir="${builder}/../../org.eventb.smt.verit.win32" />
 		</copy>
 
 		<mkdir dir="${buildDirectory}/plugins" />
@@ -108,8 +128,18 @@
 		</copy>
 
 		<mkdir dir="${buildDirectory}/plugins" />
-		<copy todir="${buildDirectory}/plugins/org.eventb.smt.help">
-			<fileset dir="${builder}/../../org.eventb.smt.help" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.cvc3.linux">
+			<fileset dir="${builder}/../../org.eventb.smt.cvc3.linux" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.cvc3.macosx">
+			<fileset dir="${builder}/../../org.eventb.smt.cvc3.macosx" />
+		</copy>
+
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins/org.eventb.smt.cvc3.win32">
+			<fileset dir="${builder}/../../org.eventb.smt.cvc3.win32" />
 		</copy>
 	</target>
 
