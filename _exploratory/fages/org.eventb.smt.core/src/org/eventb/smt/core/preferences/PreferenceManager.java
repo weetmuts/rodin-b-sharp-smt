@@ -117,7 +117,7 @@ public class PreferenceManager {
 		return getDefaultTranslationPrefs(!FORCE_RELOAD);
 	}
 
-	public static boolean isPathValid(final String path,
+	public static boolean isValidPath(final String path,
 			final StringBuilder error) {
 		if (path == null) {
 			error.append(SMTPreferencesError_missing_path);

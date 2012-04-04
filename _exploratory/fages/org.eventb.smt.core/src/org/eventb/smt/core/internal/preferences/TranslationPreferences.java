@@ -13,6 +13,7 @@ import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLAT
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ITranslationPreferences;
 
 /**
@@ -86,18 +87,17 @@ public class TranslationPreferences extends AbstractPreferences implements
 	 * @param translationPath
 	 *            the translationPath to set
 	 */
+	// FOR TESTS ONLY
 	@Override
 	public void setTranslationPath(String translationPath) {
-		this.translationPath = getValidPath(this.translationPath,
-				translationPath, DEFAULT_TRANSLATION_PATH);
+		this.translationPath = translationPath;
 	}
 
 	/**
 	 * Sets veriT path to the path of the integrated veriT solver.
 	 */
 	@Override
-	public void setVeriTPath(final String veriTPath) {
-		this.veriTPath = getValidPath(this.veriTPath, veriTPath,
-				DEFAULT_VERIT_PATH);
+	public void setVeriTPath(final ISMTSolver veriT) {
+		veriTPath = getValidPath(veriTPath, veriT, DEFAULT_VERIT_PATH);
 	}
 }

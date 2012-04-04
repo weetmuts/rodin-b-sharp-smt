@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.IPreferences;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.PreferenceManager;
 
 /**
@@ -53,18 +54,22 @@ public abstract class AbstractPreferences implements IPreferences {
 	}
 
 	protected static final String getValidPath(final String currentPath,
-			final String newPath, final String defaultPath) {
-		if (isPathValid(newPath)) {
+			final ISMTSolver solver, final String defaultPath) {
+		final String newPath = solver.getPath().toOSString();
+		if (!solver.isEditable()) {
 			return newPath;
-		} else if (!isPathValid(currentPath)) {
+		}
+		if (isValidPath(newPath)) {
+			return newPath;
+		} else if (!isValidPath(currentPath)) {
 			return defaultPath;
 		} else {
 			return currentPath;
 		}
 	}
 
-	protected static boolean isPathValid(final String path) {
-		return PreferenceManager.isPathValid(path, new StringBuilder(0));
+	protected static boolean isValidPath(final String path) {
+		return PreferenceManager.isValidPath(path, new StringBuilder(0));
 	}
 
 	protected static <T> int getHighestID(final Map<String, T> map) {

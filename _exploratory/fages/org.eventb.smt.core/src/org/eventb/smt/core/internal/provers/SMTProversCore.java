@@ -14,6 +14,7 @@ import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
+import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
@@ -128,7 +129,7 @@ public class SMTProversCore extends Plugin {
 			for (final String solverId : registry.getIDs()) {
 				final ISMTSolver solver = registry.get(solverId);
 				try {
-					defaultSolversPrefs.add(solver);
+					defaultSolversPrefs.add(solver, FORCE_REPLACE);
 					defaultSolversPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
@@ -137,7 +138,7 @@ public class SMTProversCore extends Plugin {
 				}
 
 				try {
-					solversPrefs.add(solver);
+					solversPrefs.add(solver, FORCE_REPLACE);
 					solversPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
@@ -147,12 +148,10 @@ public class SMTProversCore extends Plugin {
 
 				// FIXME what if several veriT extensions are added
 				if (solver != null && solver.getKind().equals(VERIT)) {
-					final String veriTPath = solver.getPath().toOSString();
-
-					defaultTranslationPrefs.setVeriTPath(veriTPath);
+					defaultTranslationPrefs.setVeriTPath(solver);
 					defaultTranslationPrefs.save();
 
-					translationPrefs.setVeriTPath(veriTPath);
+					translationPrefs.setVeriTPath(solver);
 					translationPrefs.save();
 				}
 			}
@@ -175,7 +174,7 @@ public class SMTProversCore extends Plugin {
 			for (final String configId : registry.getIDs()) {
 				final ISolverConfig solverConfig = registry.get(configId);
 				try {
-					defaultConfigsPrefs.add(solverConfig);
+					defaultConfigsPrefs.add(solverConfig, FORCE_REPLACE);
 					defaultConfigsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(
@@ -183,7 +182,7 @@ public class SMTProversCore extends Plugin {
 							iae);
 				}
 				try {
-					configsPrefs.add(solverConfig);
+					configsPrefs.add(solverConfig, FORCE_REPLACE);
 					configsPrefs.save();
 				} catch (IllegalArgumentException iae) {
 					logError(

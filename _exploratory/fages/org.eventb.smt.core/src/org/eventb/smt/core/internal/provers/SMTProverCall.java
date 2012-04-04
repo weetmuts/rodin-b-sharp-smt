@@ -619,7 +619,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		if (benchmarkIsNull()) {
 			return "PP (trivial)";
 		} else {
-			return "SMT-" + solverConfig.getName();
+			return solverConfig.getName();
 		}
 	}
 

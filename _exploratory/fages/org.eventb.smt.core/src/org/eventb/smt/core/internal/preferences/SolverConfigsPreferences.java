@@ -49,7 +49,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		// FIXME exception thrown ?
 		final String solverId = solverConfig.getSolverId();
 		final ISMTSolver solver = solvers.get(solverId);
-		if (isPathValid(solver.getPath().toOSString())) {
+		if (!solver.isEditable() || isValidPath(solver.getPath().toOSString())) {
 			final String id = solverConfig.getID();
 			if (replace) {
 				solverConfigs.put(id, solverConfig);

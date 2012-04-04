@@ -221,7 +221,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				.getTranslationPrefs();
 		translationPrefs.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH
 				.toOSString());
-		translationPrefs.setVeriTPath(LAST_VERIT.getPath().toOSString());
+		translationPrefs.setVeriTPath(LAST_VERIT);
 		translationPrefs.save();
 	}
 

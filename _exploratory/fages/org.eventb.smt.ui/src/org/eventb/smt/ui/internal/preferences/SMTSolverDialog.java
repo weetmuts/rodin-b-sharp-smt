@@ -156,7 +156,7 @@ public class SMTSolverDialog extends Dialog {
 					errBuilder
 							.append("A unique non-empty solver name is required.\n");
 				}
-				if (!isValidPath(pathStr, !SHOW_ERRORS)) {
+				if (solver.isEditable() && !isValidPath(pathStr, !SHOW_ERRORS)) {
 					errBuilder.append("A valid solver path is required.\n");
 				}
 				if (errBuilder.length() != 0) {
@@ -195,7 +195,7 @@ public class SMTSolverDialog extends Dialog {
 			return false;
 		}
 		final StringBuilder error = new StringBuilder();
-		if (PreferenceManager.isPathValid(path, error)) {
+		if (PreferenceManager.isValidPath(path, error)) {
 			return true;
 		} else {
 			if (showErrors)

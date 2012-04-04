@@ -11,7 +11,7 @@ package org.eventb.smt.core.preferences;
 
 /**
  * @author Systerel (yguyot)
- *
+ * 
  */
 public interface ITranslationPreferences extends IPreferences {
 
@@ -21,6 +21,6 @@ public interface ITranslationPreferences extends IPreferences {
 
 	public abstract String getVeriTPath();
 
-	public abstract void setVeriTPath(final String path);
+	public abstract void setVeriTPath(final ISMTSolver solver);
 
 }

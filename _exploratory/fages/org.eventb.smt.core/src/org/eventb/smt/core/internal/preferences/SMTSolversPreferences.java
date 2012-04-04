@@ -74,7 +74,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 				 * plug-in, then if its path is not correct, it is not added to
 				 * the list.
 				 */
-				if (!solver.isEditable() || isPathValid(path)) {
+				if (!solver.isEditable() || isValidPath(path)) {
 					solvers.put(solver.getID(), solver);
 				}
 			}
@@ -129,7 +129,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 	@Override
 	public void add(final ISMTSolver solver, final boolean replace)
 			throws IllegalArgumentException {
-		if (isPathValid(solver.getPath().toOSString())) {
+		if (!solver.isEditable() || isValidPath(solver.getPath().toOSString())) {
 			final String id = solver.getID();
 			if (replace) {
 				solvers.put(id, solver);
