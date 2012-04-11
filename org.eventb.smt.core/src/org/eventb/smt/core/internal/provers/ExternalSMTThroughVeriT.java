@@ -12,6 +12,9 @@ package org.eventb.smt.core.internal.provers;
 
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;
+import org.eventb.core.seqprover.IReasonerInputReader;
+import org.eventb.core.seqprover.IReasonerInputWriter;
+import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.core.seqprover.xprover.XProverReasoner2;
@@ -40,5 +43,17 @@ public class ExternalSMTThroughVeriT extends XProverReasoner2 {
 		return new SMTVeriTCall(sequent, pm, smtInput.getSolverConfig(),
 				smtInput.getPOName(), smtInput.getTranslationPath(),
 				smtInput.getVeritPath());
+	}
+
+	@Override
+	public void serializeInput(IReasonerInput rInput,
+			IReasonerInputWriter writer) throws SerializeException {
+		((SMTInput) rInput).serialize(writer);
+	}
+
+	@Override
+	public IReasonerInput deserializeInput(IReasonerInputReader reader)
+			throws SerializeException {
+		return new SMTInput(reader);
 	}
 }

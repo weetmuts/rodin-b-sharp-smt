@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
+import org.eventb.smt.core.internal.log.SMTStatus;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
@@ -47,24 +48,28 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			final Map<String, ISMTSolver> solvers, final boolean replace)
 			throws IllegalArgumentException {
 		// FIXME exception thrown ?
-		final String solverId = solverConfig.getSolverId();
-		final ISMTSolver solver = solvers.get(solverId);
-		if (isValidPath(solver.getPath().toOSString())) {
-			final String id = solverConfig.getID();
-			if (replace) {
-				solverConfigs.put(id, solverConfig);
-			} else if (!solverConfigs.containsKey(id)) {
-				try {
-					int numericID = Integer.parseInt(id);
-					idCounter = numericID;
-				} catch (NumberFormatException e) {
-					// do nothing
+		try {
+			final String solverId = solverConfig.getSolverId();
+			final ISMTSolver solver = solvers.get(solverId);
+			if (isValidPath(solver.getPath().toOSString())) {
+				final String id = solverConfig.getID();
+				if (replace) {
+					solverConfigs.put(id, solverConfig);
+				} else if (!solverConfigs.containsKey(id)) {
+					try {
+						int numericID = Integer.parseInt(id);
+						idCounter = numericID;
+					} catch (NumberFormatException e) {
+						// do nothing
+					}
+					solverConfigs.put(id, solverConfig);
 				}
-				solverConfigs.put(id, solverConfig);
+			} else {
+				throw new IllegalArgumentException(
+						"Could not add the SMT-solver configuration: the solver path is invalid."); //$NON-NLS-1$
 			}
-		} else {
-			throw new IllegalArgumentException(
-					"Could not add the SMT-solver configuration: the solver path is invalid."); //$NON-NLS-1$
+		} catch (NullPointerException npe) {
+			SMTStatus.smtError("Null pointer exception thrown.", npe);
 		}
 	}
 
