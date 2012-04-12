@@ -499,7 +499,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 				benchmark = result.getSMTBenchmark();
 
 				/**
-				 * this case can occur if the user calls a configuration of a solver which has been removed 
+				 * this case can occur if the user calls a configuration of a
+				 * solver which has been removed
 				 */
 				if (solver == null) {
 					valid = false;
@@ -549,10 +550,10 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (isValid()) {
-					if ((solverConfig.getSolverId().equals(VERIT) //
+					if ((solver.getKind().equals(VERIT) //
 							&& solverConfig.getArgs().contains("--proof=")) //
 							|| (solverConfig.getSmtlibVersion().equals(V2_0) //
-							&& solverConfig.getSolverId().equals(Z3))) {
+							&& solver.getKind().equals(Z3))) {
 						// FIXME it is not possible to check z3 version, so make
 						// errors be catched if not a version capable of manage
 						// unsat-cores.
