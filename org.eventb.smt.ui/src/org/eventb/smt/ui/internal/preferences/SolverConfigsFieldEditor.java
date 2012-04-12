@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 
@@ -207,7 +208,10 @@ class SolverConfigsFieldEditor extends
 
 			@Override
 			public boolean canModify(Object element, String property) {
-				return property.equals(EXECUTION_LABEL);
+				final ISolverConfig config = (ISolverConfig) element;
+				final ISMTSolver solver = getPreferenceManager()
+						.getSMTSolversPrefs().get(config.getSolverId());
+				return property.equals(EXECUTION_LABEL) && solver != null;
 			}
 		});
 	}

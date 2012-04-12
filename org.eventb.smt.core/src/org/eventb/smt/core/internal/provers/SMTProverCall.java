@@ -146,7 +146,6 @@ public abstract class SMTProverCall extends XProverCall2 {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
-		// FIXME exception thrown ?
 		solver = getPreferenceManager().getSMTSolversPrefs().get(
 				solverConfig.getSolverId());
 		this.lemmaName = poName;
@@ -498,6 +497,14 @@ public abstract class SMTProverCall extends XProverCall2 {
 				 * !result.isTrivial(), an SMT-LIB benchmark was produced
 				 */
 				benchmark = result.getSMTBenchmark();
+
+				/**
+				 * this case can occur if the user calls a configuration of a solver which has been removed 
+				 */
+				if (solver == null) {
+					valid = false;
+					return;
+				}
 
 				translationPerformed = false;
 				try {
