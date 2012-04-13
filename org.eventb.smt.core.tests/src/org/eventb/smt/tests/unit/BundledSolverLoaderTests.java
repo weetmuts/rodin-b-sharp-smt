@@ -112,7 +112,13 @@ public class BundledSolverLoaderTests {
 
 		@Override
 		public IContributor getContributor() {
-			throw new UnsupportedOperationException();
+			return new IContributor() {
+				
+				@Override
+				public String getName() {
+					return bundleName;
+				}
+			};
 		}
 
 		@Override
@@ -174,7 +180,7 @@ public class BundledSolverLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void dotInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeBundledSolverLoader("bundled.solver", "", "", "", "");
+		makeBundledSolverLoader("bundled.solver", "", "", "");
 
 		bundledSolverLoader.load();
 	}
@@ -182,7 +188,7 @@ public class BundledSolverLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void whitespaceInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeBundledSolverLoader("bundled solver", "", "", "", "");
+		makeBundledSolverLoader("bundled solver", "", "", "");
 
 		bundledSolverLoader.load();
 	}
@@ -190,7 +196,7 @@ public class BundledSolverLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void colonInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeBundledSolverLoader("bundled:solver", "", "", "", "");
+		makeBundledSolverLoader("bundled:solver", "", "", "");
 
 		bundledSolverLoader.load();
 	}

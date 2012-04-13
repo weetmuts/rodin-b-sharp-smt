@@ -180,7 +180,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void nullID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader(null, "", "", "", "", "", "");
+		makeSolverConfigLoader(null, "", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -188,7 +188,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void dotInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled.solver", "", "", "", "", "", "");
+		makeSolverConfigLoader("bundled.solver", "", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -196,7 +196,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void whitespaceInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled solver", "", "", "", "", "", "");
+		makeSolverConfigLoader("bundled solver", "", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -204,7 +204,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void colonInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled:solver", "", "", "", "", "", "");
+		makeSolverConfigLoader("bundled:solver", "", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
