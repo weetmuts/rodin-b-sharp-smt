@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %fragmentName
+Bundle-Name: %CVC3LinuxFragmentName
 Bundle-SymbolicName: org.eventb.smt.cvc3.linux
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
