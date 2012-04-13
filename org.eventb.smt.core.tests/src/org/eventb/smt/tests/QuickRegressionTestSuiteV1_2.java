@@ -27,12 +27,20 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses(value = { TranslationTestsWithPPV1_2.class,
-		TranslationTestsWithVeriTV1_2.class, LogicTestsWithPPV1_2.class,
-		RunProverTestWithPPV1_2.class, RunProverTestWithVeriTV1_2.class,
-		AxiomsTestWithAltErgoPPV1_2.class, AxiomsTestWithCvc3PPV1_2.class,
-		AxiomsTestWithCvc4PPV1_2.class, AxiomsTestWithMathSat5PPV1_2.class,
-		AxiomsTestWithOpenSMTPPV1_2.class, AxiomsTestWithVeriTPPV1_2.class,
+@SuiteClasses(value = { TranslationTestsWithPPV1_2.class, //
+		TranslationTestsWithVeriTV1_2.class, //
+
+		LogicTestsWithPPV1_2.class, //
+
+		RunProverTestWithPPV1_2.class, //
+		RunProverTestWithVeriTV1_2.class, //
+
+		AxiomsTestWithAltErgoPPV1_2.class, //
+		AxiomsTestWithCvc3PPV1_2.class, //
+		AxiomsTestWithCvc4PPV1_2.class, //
+		AxiomsTestWithMathSat5PPV1_2.class, //
+		AxiomsTestWithOpenSMTPPV1_2.class, //
+		AxiomsTestWithVeriTPPV1_2.class, //
 		AxiomsTestWithZ3PPV1_2.class })
 public class QuickRegressionTestSuiteV1_2 {
 	// Just for tests

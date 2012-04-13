@@ -121,6 +121,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	private final List<SMTProverCall> smtProverCalls = new ArrayList<SMTProverCall>();
 
 	static File smtFolder;
+	protected static boolean PERFORMANCE = true;
 
 	/**
 	 * H /\ ¬ G is UNSAT, so H |- G is VALID
@@ -233,6 +234,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final SMTLIBVersion smtlibVersion) {
 		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
 				.getSolverConfigsPrefs();
+		configsPrefs.loadDefault();
 		switch (smtlibVersion) {
 		case V1_2:
 			switch (kind) {
@@ -664,10 +666,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
-			final boolean expectedGoalNeed) {
-		doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
+			final boolean expectedGoalNeed, final boolean perf) {
+		if (perf) {
+			doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
 				expectedSolverResult, expectedUnsatCoreStr, expectedGoalNeed,
 				new StringBuilder());
+		} else {
+			doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
+					expectedSolverResult, expectedUnsatCoreStr, expectedGoalNeed);
+		}
 	}
 
 	class SMTProverCallTestResult {
@@ -686,6 +693,53 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		public StringBuilder getErrorBuffer() {
 			return errorBuffer;
+		}
+	}
+
+	protected void doTest(final TranslationApproach translationApproach,
+			final String lemmaName, final List<String> inputHyps,
+			final String inputGoal, final ITypeEnvironment te,
+			final boolean expectedSolverResult,
+			final List<String> expectedUnsatCoreStr,
+			final boolean expectedGoalNeed) {
+		final StringBuilder debugBuilder = new StringBuilder();
+
+		final ISolverConfig solverConfig = getPreferenceManager()
+				.getSolverConfigsPrefs().getEnabledConfigs().iterator().next();
+
+		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
+		for (final String hyp : inputHyps) {
+			parsedHypotheses.add(parse(hyp, te));
+		}
+		final Predicate parsedGoal = parse(inputGoal, te);
+
+		final List<Predicate> expectedHypotheses = new ArrayList<Predicate>();
+		for (final String expectedHyp : expectedUnsatCoreStr) {
+			expectedHypotheses.add(parse(expectedHyp, te));
+		}
+
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		final String testedSolverConfigId = solverConfig.getID();
+		final SMTLIBVersion testedSmtlibVersion = solverConfig
+				.getSmtlibVersion();
+
+		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses, parsedGoal, ff);
+		final SMTProverCallTestResult iter2Result = smtProverCallTest("Unsat core extraction",
+				translationApproach, lemmaName, sequent, te,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				debugBuilder);
+		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
+		if (!iter2ErrorBuffer.isEmpty()) {
+			debugBuilder.append(iter2ErrorBuffer).append("\n");
+			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
+					testedSmtlibVersion, translationApproach,
+					iter2Result.getSmtProverCall());
+			fail(iter2ErrorBuffer);
 		}
 	}
 

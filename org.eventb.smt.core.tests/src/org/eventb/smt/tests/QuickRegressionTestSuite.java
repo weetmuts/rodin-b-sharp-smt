@@ -28,6 +28,8 @@ import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
 import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV2_0;
+import org.eventb.smt.tests.acceptance.UnsatCoreVeriTWithPP;
+import org.eventb.smt.tests.acceptance.UnsatCoreZ3WithPP;
 import org.eventb.smt.tests.unit.BundledSolverLoaderTests;
 import org.eventb.smt.tests.unit.GathererTests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
@@ -46,20 +48,44 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { GathererTests.class, TranslationTestsWithPPV1_2.class,
-		TranslationTestsWithVeriTV1_2.class, LogicTestsWithPPV1_2.class,
-		RunProverTestWithPPV1_2.class, RunProverTestWithVeriTV1_2.class,
-		AxiomsTestWithAltErgoPPV1_2.class, AxiomsTestWithCvc3PPV1_2.class,
-		AxiomsTestWithCvc4PPV1_2.class, AxiomsTestWithMathSat5PPV1_2.class,
-		AxiomsTestWithOpenSMTPPV1_2.class, AxiomsTestWithVeriTPPV1_2.class,
-		AxiomsTestWithZ3PPV1_2.class, TranslationTestsWithPPV2_0.class,
-		TranslationTestsWithVeriTV2_0.class, LogicTestsWithPPV2_0.class,
-		RunProverTestWithPPV2_0.class, RunProverTestWithVeriTV2_0.class,
-		AxiomsTestWithAltErgoPPV2_0.class, AxiomsTestWithCvc3PPV2_0.class,
-		AxiomsTestWithCvc4PPV2_0.class, AxiomsTestWithMathSat5PPV2_0.class,
-		AxiomsTestWithOpenSMTPPV2_0.class, AxiomsTestWithVeriTPPV2_0.class,
-		AxiomsTestWithZ3PPV2_0.class, BundledSolverLoaderTests.class,
-		SolverConfigLoaderTests.class })
+@SuiteClasses(value = { GathererTests.class, //
+		BundledSolverLoaderTests.class, //
+		SolverConfigLoaderTests.class, //
+
+		TranslationTestsWithPPV1_2.class, //
+		TranslationTestsWithVeriTV1_2.class, //
+
+		LogicTestsWithPPV1_2.class, //
+
+		RunProverTestWithPPV1_2.class, //
+		RunProverTestWithVeriTV1_2.class, //
+
+		AxiomsTestWithAltErgoPPV1_2.class, //
+		AxiomsTestWithCvc3PPV1_2.class, //
+		AxiomsTestWithCvc4PPV1_2.class, //
+		AxiomsTestWithMathSat5PPV1_2.class, //
+		AxiomsTestWithOpenSMTPPV1_2.class, //
+		AxiomsTestWithVeriTPPV1_2.class, //
+		AxiomsTestWithZ3PPV1_2.class, //
+
+		TranslationTestsWithPPV2_0.class, //
+		TranslationTestsWithVeriTV2_0.class, //
+
+		LogicTestsWithPPV2_0.class, //
+
+		RunProverTestWithPPV2_0.class, //
+		RunProverTestWithVeriTV2_0.class, //
+
+		AxiomsTestWithAltErgoPPV2_0.class, //
+		AxiomsTestWithCvc3PPV2_0.class, //
+		AxiomsTestWithCvc4PPV2_0.class, //
+		AxiomsTestWithMathSat5PPV2_0.class, //
+		AxiomsTestWithOpenSMTPPV2_0.class, //
+		AxiomsTestWithVeriTPPV2_0.class, //
+		AxiomsTestWithZ3PPV2_0.class, //
+
+		UnsatCoreVeriTWithPP.class, //
+		UnsatCoreZ3WithPP.class })
 public class QuickRegressionTestSuite {
 	// Just for tests
 }

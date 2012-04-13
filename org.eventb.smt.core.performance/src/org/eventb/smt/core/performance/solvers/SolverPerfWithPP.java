@@ -48,7 +48,7 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 			final List<String> expectedUnsatCore, final boolean expectedGoalNeed)
 			throws IllegalArgumentException {
 		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
-				expectedSolverResult, expectedUnsatCore, expectedGoalNeed);
+				expectedSolverResult, expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
 	}
 
 	@Test(timeout = 3000)
