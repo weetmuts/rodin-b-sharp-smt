@@ -15,6 +15,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -468,8 +469,17 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	@Override
 	public void run() {
+		/**
+		 * This statement was put inside a try...catch() block to handle a null
+		 * pointer exception when launching some tests
+		 */
 		try {
 			proofMonitor.setTask("Translating Event-B proof obligation");
+		} catch (NullPointerException npe) {
+			smtError("The proof monitor is not initialized", npe);
+		}
+
+		try {
 
 			/**
 			 * Translation of the event-b sequent

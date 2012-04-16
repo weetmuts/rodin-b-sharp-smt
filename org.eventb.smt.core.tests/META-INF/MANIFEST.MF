@@ -15,6 +15,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
 Import-Package: org.eclipse.osgi.util,
+ org.eventb.core.seqprover.reasonerExtentionTests,
+ org.eventb.core.seqprover.tests,
  org.eventb.pp
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.eventb.smt.tests,

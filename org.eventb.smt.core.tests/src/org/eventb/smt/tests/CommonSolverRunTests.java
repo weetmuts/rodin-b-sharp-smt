@@ -331,6 +331,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected static void setPreferencesForBundledCvc3() {
 		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
 				.getSolverConfigsPrefs();
+		configsPrefs.setConfigEnabled(BUNDLED_VERIT, !ENABLED);
 		configsPrefs.setConfigEnabled(BUNDLED_CVC3, ENABLED);
 		configsPrefs.save();
 	}
