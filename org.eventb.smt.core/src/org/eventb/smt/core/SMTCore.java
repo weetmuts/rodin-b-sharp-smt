@@ -10,20 +10,12 @@
 
 package org.eventb.smt.core;
 
-import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
-import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
-import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.NO_SOLVER_CONFIGURATION_ERROR;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-
-import java.util.List;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.externalSMT;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.core.internal.provers.ExternalSMTThroughPP;
-import org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT;
-import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * @author Systerel (yguyot)
@@ -47,26 +39,7 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
 			final String configId) {
-		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
-					.getSolverConfigsPrefs().getEnabledConfigs();
-			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
-				final int nbSolverConfigs = enabledConfigs.size();
-				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = reasonerTac(new ExternalSMTThroughPP(),
-							new SMTInput(restricted, enabledConfigs.get(i)));
-				}
-				return composeUntilSuccess(smtTactics);
-			} else {
-				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
-			}
-		} else {
-			final ISolverConfig config = getPreferenceManager()
-					.getSolverConfigsPrefs().getSolverConfig(configId);
-			return reasonerTac(new ExternalSMTThroughPP(), //
-					new SMTInput(restricted, config));
-		}
+		return externalSMT(USING_PP, restricted, configId);
 	}
 
 	/**
@@ -102,26 +75,7 @@ public class SMTCore {
 	 */
 	public static ITactic externalSMTThroughVeriT(boolean restricted,
 			final String configId) {
-		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
-					.getSolverConfigsPrefs().getEnabledConfigs();
-			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
-				final int nbSolverConfigs = enabledConfigs.size();
-				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				for (int i = 0; i < nbSolverConfigs; i++) {
-					smtTactics[i] = reasonerTac(new ExternalSMTThroughVeriT(),
-							new SMTInput(restricted, enabledConfigs.get(i)));
-				}
-				return composeUntilSuccess(smtTactics);
-			} else {
-				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
-			}
-		} else {
-			final ISolverConfig config = getPreferenceManager()
-					.getSolverConfigsPrefs().getSolverConfig(configId);
-			return reasonerTac(new ExternalSMTThroughVeriT(), //
-					new SMTInput(restricted, config));
-		}
+		return externalSMT(USING_VERIT, restricted, configId);
 	}
 
 	/**

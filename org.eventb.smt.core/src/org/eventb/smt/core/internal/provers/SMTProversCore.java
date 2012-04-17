@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
+import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
+import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
+import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
@@ -17,10 +20,15 @@ import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getS
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+
+import java.util.List;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eventb.core.seqprover.ITactic;
+import org.eventb.core.seqprover.xprover.XProverReasoner2;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
@@ -31,6 +39,7 @@ import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 import org.eventb.smt.core.preferences.ITranslationPreferences;
+import org.eventb.smt.core.translation.TranslationApproach;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -61,7 +70,10 @@ public class SMTProversCore extends Plugin {
 	 * sequentially.
 	 */
 	public static String ALL_SOLVER_CONFIGURATIONS = "all";
-	public static String NO_SOLVER_CONFIGURATION_ERROR = "No SMT solver configuration set";
+	public static String NO_SOLVER_CONFIGURATION_ERROR = "No SMT configuration set";
+	public static String DISABLED_SOLVER_CONFIGURATION_ERROR = "The indicated SMT configuration is disabled";
+	public static String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
+
 	/**
 	 * The shared instance.
 	 */
@@ -102,6 +114,45 @@ public class SMTProversCore extends Plugin {
 	 */
 	private void enableAssertions() {
 		getClass().getClassLoader().setDefaultAssertionStatus(true);
+	}
+
+	public static ITactic externalSMT(final TranslationApproach approach,
+			final boolean restricted, final String configId) {
+		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
+			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
+					.getSolverConfigsPrefs().getEnabledConfigs();
+			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
+				final int nbSolverConfigs = enabledConfigs.size();
+				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
+				for (int i = 0; i < nbSolverConfigs; i++) {
+					final XProverReasoner2 smtReasoner = approach
+							.equals(USING_PP) ? new ExternalSMTThroughPP()
+							: new ExternalSMTThroughVeriT();
+					smtTactics[i] = reasonerTac(smtReasoner, new SMTInput(
+							restricted, enabledConfigs.get(i)));
+				}
+				return composeUntilSuccess(smtTactics);
+			} else {
+				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
+			}
+		} else {
+			if (getPreferenceManager().getSolverConfigsPrefs()
+					.getSolverConfigs().containsKey(configId)) {
+				final ISolverConfig config = getPreferenceManager()
+						.getSolverConfigsPrefs().getSolverConfig(configId);
+				if (config.isEnabled()) {
+					final XProverReasoner2 smtReasoner = approach
+							.equals(USING_PP) ? new ExternalSMTThroughPP()
+							: new ExternalSMTThroughVeriT();
+					return reasonerTac(smtReasoner, new SMTInput(restricted,
+							config));
+				} else {
+					return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
+				}
+			} else {
+				return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
+			}
+		}
 	}
 
 	/**

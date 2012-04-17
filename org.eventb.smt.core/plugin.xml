@@ -29,7 +29,7 @@
                type="Boolean">
          </tacticParameter>
          <tacticParameter
-         	   default=""
+         	   default="all"
          	   description="%configIdDesc"
                label="configId"
                type="String">
@@ -46,7 +46,7 @@
                type="Boolean">
          </tacticParameter>
          <tacticParameter
-         	   default=""
+         	   default="all"
                description="%configIdDesc"
                label="configId"
                type="String">

@@ -12,6 +12,7 @@ package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SELECTED;
@@ -24,7 +25,6 @@ import java.util.regex.PatternSyntaxException;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.ui.prover.DefaultTacticProvider;
 import org.eventb.ui.prover.ITacticApplication;
 
@@ -35,7 +35,7 @@ public class SMTPP extends DefaultTacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				return SMTCore.externalSMTThroughPP(true);
+				return externalSMTThroughPP(true);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMT_SOLVER_CONFIG_ERROR;
