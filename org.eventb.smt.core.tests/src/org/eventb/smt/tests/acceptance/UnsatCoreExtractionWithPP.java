@@ -21,7 +21,7 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;
 
-public class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
+public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 	private static boolean GOAL_NEEDED = true;
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");

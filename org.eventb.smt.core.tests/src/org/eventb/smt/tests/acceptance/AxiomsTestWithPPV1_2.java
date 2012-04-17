@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author Yoann Guyot
  * 
  */
-public class AxiomsTestWithPPV1_2 extends CommonSolverRunTests {
+public abstract class AxiomsTestWithPPV1_2 extends CommonSolverRunTests {
 	static ITypeEnvironment simple_te = mTypeEnvironment(//
 			"PS", "ℙ(ℙ(ℤ))", "S", "ℙ(ℤ)", "x", "ℤ");
 
