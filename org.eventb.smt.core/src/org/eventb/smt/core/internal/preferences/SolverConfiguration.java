@@ -47,19 +47,19 @@ public class SolverConfiguration implements ISolverConfig {
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
 	public static final int DEFAULT_TIME_OUT = 3000;
 
-	final private String id;
+	private final String id;
 
-	final private String name;
+	private final String name;
 
-	final private String solverId;
+	private final String solverId;
 
-	final private String args;
+	private final String args;
 
-	final private SMTLIBVersion smtlibVersion;
+	private final SMTLIBVersion smtlibVersion;
 
-	final private int timeOut;
+	private final int timeOut;
 
-	final private boolean editable;
+	private final boolean editable;
 
 	private boolean enabled = true;
 
