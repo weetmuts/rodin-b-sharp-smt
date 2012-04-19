@@ -36,4 +36,6 @@ public interface ISolverConfigsPreferences extends IPreferences {
 	public String freshID();
 
 	public String freshCopyName(String originalName);
+
+	public String configNameToId(String configName);
 }

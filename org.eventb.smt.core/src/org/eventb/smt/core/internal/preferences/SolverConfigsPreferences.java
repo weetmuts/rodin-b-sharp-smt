@@ -125,6 +125,17 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 	}
 
 	@Override
+	public String configNameToId(final String name) {
+		for (Map.Entry<String, ISolverConfig> configEntry : solverConfigs
+				.entrySet()) {
+			if (configEntry.getValue().getName().equals(name)) {
+				return configEntry.getKey();
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public void load(boolean reload) {
 		if (loaded && !reload) {
 			return;

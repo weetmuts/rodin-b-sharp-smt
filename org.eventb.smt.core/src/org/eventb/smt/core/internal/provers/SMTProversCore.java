@@ -117,7 +117,11 @@ public class SMTProversCore extends Plugin {
 	}
 
 	public static ITactic externalSMT(final TranslationApproach approach,
-			final boolean restricted, final String configId) {
+			final boolean restricted, String configId) {
+		if (configId == null) {
+			configId = ALL_SOLVER_CONFIGURATIONS;
+		}
+
 		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
 			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
 					.getSolverConfigsPrefs().getEnabledConfigs();

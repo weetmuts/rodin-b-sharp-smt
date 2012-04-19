@@ -30,8 +30,8 @@
          </tacticParameter>
          <tacticParameter
          	   default="all"
-         	   description="%configIdDesc"
-               label="configId"
+         	   description="%configNameDesc"
+               label="configName"
                type="String">
          </tacticParameter>
       </parameterizer>
@@ -47,8 +47,8 @@
          </tacticParameter>
          <tacticParameter
          	   default="all"
-               description="%configIdDesc"
-               label="configId"
+               description="%configNameDesc"
+               label="configName"
                type="String">
          </tacticParameter>
       </parameterizer>

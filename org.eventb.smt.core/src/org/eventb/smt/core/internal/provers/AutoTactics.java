@@ -15,6 +15,7 @@ import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class AutoTactics {
 	/**
 	 * label for the 'configId' tactic parameter
 	 */
-	private static final String CONFIG_ID = "configId";
+	private static final String CONFIG_NAME = "configName";
 
 	private static final ITacticDescriptor smtPpTacticDescriptor = getAutoTacticRegistry()
 			.getTacticDescriptor(SMTCore.PLUGIN_ID + ".SMTPP");
@@ -72,11 +73,12 @@ public class AutoTactics {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
-			final String configId = parameters.getString(CONFIG_ID);
+			final String configId = getPreferenceManager()
+					.getSolverConfigsPrefs().configNameToId(
+							parameters.getString(CONFIG_NAME));
 
 			return externalSMTThroughPP(restricted, configId);
 		}
-
 	}
 
 	public static class SMTVeriT implements ITactic {
@@ -92,9 +94,11 @@ public class AutoTactics {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
-			final String configId = parameters.getString(CONFIG_ID);
+			final String configId = getPreferenceManager()
+					.getSolverConfigsPrefs().configNameToId(
+							parameters.getString(CONFIG_NAME));
 
-			return SMTCore.externalSMTThroughVeriT(restricted, configId);
+			return externalSMTThroughVeriT(restricted, configId);
 		}
 	}
 
