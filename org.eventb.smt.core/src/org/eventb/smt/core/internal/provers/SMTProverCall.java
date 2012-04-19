@@ -54,6 +54,7 @@ import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * 
@@ -77,6 +78,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 	protected SMTBenchmark benchmark;
 	// FIXME cannot this field be removed ? (used to check veriT pre-processing)
 	protected boolean translationPerformed = false;
+
+	protected File translationFolder = null;
 
 	/**
 	 * FOR PERFORMANCE TESTS ONLY
@@ -149,6 +152,22 @@ public abstract class SMTProverCall extends XProverCall2 {
 		this.solverConfig = solverConfig;
 		solver = getPreferenceManager().getSMTSolversPrefs().get(
 				solverConfig.getSolverId());
+		this.lemmaName = poName;
+		this.translationPath = translationPath;
+		this.translator = translator;
+	}
+
+	/**
+	 * FOR TESTS ONLY
+	 */
+	public SMTProverCall(final ISimpleSequent sequent, final IProofMonitor pm,
+			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
+			final ISMTSolver solver, final String poName,
+			final String translationPath, final Translator translator) {
+		super(sequent, pm);
+		this.debugBuilder = debugBuilder;
+		this.solverConfig = solverConfig;
+		this.solver = solver;
 		this.lemmaName = poName;
 		this.translationPath = translationPath;
 		this.translator = translator;
@@ -371,6 +390,38 @@ public abstract class SMTProverCall extends XProverCall2 {
 		showProcessOutput(builder, monitor, true);
 		builder.append("Exit code is: ").append(monitor.exitCode())
 				.append("\n");
+	}
+
+	protected void setTranslationPath(final TranslationApproach approach,
+			final String defaultApproachTranslationPath) {
+		if (this.translationPath != null && !this.translationPath.isEmpty()) {
+			this.translationPath = this.translationPath + File.separatorChar
+					+ approach.toString();
+		} else {
+			this.translationPath = defaultApproachTranslationPath;
+		}
+	}
+
+	protected void setTranslationDirectories(
+			final TranslationApproach approach, final StringBuilder debugBuilder) {
+		translationFolder = new File(translationPath);
+		if (!translationFolder.mkdirs()) {
+			// TODO handle the error
+		} else {
+			if (DEBUG) {
+				if (DEBUG_DETAILS) {
+					debugBuilder.append("Created temporary ");
+					debugBuilder.append(approach.toString());
+					debugBuilder.append(" translation folder '");
+					debugBuilder.append(translationFolder).append("'\n");
+				}
+			} else {
+				/**
+				 * The deletion will be done when exiting Rodin.
+				 */
+				translationFolder.deleteOnExit();
+			}
+		}
 	}
 
 	/**

@@ -23,6 +23,7 @@ import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLAT
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -41,6 +42,7 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -64,8 +66,6 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String OUTPUTSMT2 = "--output=smtlib2";
 
 	private String veritPath;
-
-	private File veriTTranslationFolder = null;
 
 	// FIXME: This is a mock.
 	private SMTLIBVersion sv;
@@ -107,31 +107,24 @@ public class SMTVeriTCall extends SMTProverCall {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
 
-		if (translationPath != null && !translationPath.isEmpty()) {
-			this.translationPath = translationPath + File.separatorChar
-					+ SolverKind.VERIT.toString();
-		} else {
-			this.translationPath = DEFAULT_VERIT_TRANSLATION_PATH;
-		}
+		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
+		setTranslationDirectories(USING_VERIT, debugBuilder);
+		this.veritPath = veritPath;
+	}
 
-		veriTTranslationFolder = new File(translationPath);
-		if (!veriTTranslationFolder.mkdirs()) {
-			// TODO handle the error
-		} else {
-			if (DEBUG) {
-				if (DEBUG_DETAILS) {
-					debugBuilder
-							.append("Created temporary veriT translation folder '");
-					debugBuilder.append(veriTTranslationFolder).append("'\n");
-				}
-			} else {
-				/**
-				 * The deletion will be done when exiting Rodin.
-				 */
-				veriTTranslationFolder.deleteOnExit();
-			}
-		}
-
+	/**
+	 * FOR TESTS ONLY
+	 */
+	protected SMTVeriTCall(final ISimpleSequent sequent,
+			final IProofMonitor pm, final StringBuilder debugBuilder,
+			final ISolverConfig solverConfig, final ISMTSolver solver,
+			final String poName, final String translationPath,
+			final String veritPath) {
+		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
+				translationPath, new SMTThroughVeriT(
+						solverConfig.getSmtlibVersion()));
+		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
+		setTranslationDirectories(USING_VERIT, debugBuilder);
 		this.veritPath = veritPath;
 	}
 

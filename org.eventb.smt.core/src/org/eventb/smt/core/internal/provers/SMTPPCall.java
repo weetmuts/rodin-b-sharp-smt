@@ -15,12 +15,11 @@ import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
-import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
-import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 
@@ -46,7 +46,6 @@ import org.eventb.smt.core.provers.SolverKind;
 public class SMTPPCall extends SMTProverCall {
 	private static final String DEFAULT_PP_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
 			+ File.separatorChar + "pp";
-	private File ppTranslationFolder = null;
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final ISolverConfig solverConfig, final String poName,
@@ -60,30 +59,22 @@ public class SMTPPCall extends SMTProverCall {
 			final String poName, final String translationPath) {
 		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
 				new SMTThroughPP(solverConfig.getSmtlibVersion()));
-		if (this.translationPath != null && !this.translationPath.isEmpty()) {
-			this.translationPath = this.translationPath + File.separatorChar
-					+ "pp";
-		} else {
-			this.translationPath = DEFAULT_PP_TRANSLATION_PATH;
-		}
+		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
+		setTranslationDirectories(USING_PP, debugBuilder);
+	}
 
-		ppTranslationFolder = new File(translationPath);
-		if (!ppTranslationFolder.mkdirs()) {
-			// TODO handle the error
-		} else {
-			if (DEBUG) {
-				if (DEBUG_DETAILS) {
-					debugBuilder
-							.append("Created temporary PP translation folder '");
-					debugBuilder.append(ppTranslationFolder).append("'\n");
-				}
-			} else {
-				/**
-				 * The deletion will be done when exiting Rodin.
-				 */
-				ppTranslationFolder.deleteOnExit();
-			}
-		}
+	/**
+	 * FOR TESTS ONLY
+	 */
+	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
+			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
+			final ISMTSolver solver, final String poName,
+			final String translationPath) {
+		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
+				translationPath, new SMTThroughPP(
+						solverConfig.getSmtlibVersion()));
+		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
+		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
 	/**
