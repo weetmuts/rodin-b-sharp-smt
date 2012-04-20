@@ -16,9 +16,8 @@
             id="cvc3_smt2"
             name="CVC3 SMT2"
             solverid="org.eventb.smt.cvc3.bundled_cvc3"
-            args="-lang smt2 -timeout 3"
-            smt-lib="V2.0"
-            time-out="3000">
+            args="-lang smt2 -timeout 1"
+            smt-lib="V2.0">
       </configuration>
    </extension>
 </plugin>

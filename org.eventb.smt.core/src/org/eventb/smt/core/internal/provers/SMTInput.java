@@ -57,11 +57,15 @@ public class SMTInput extends XProverInput {
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
+	 * @param timeOutDelay
+	 *            delay after which the reasoner is cancelled, must be
+	 *            non-negative. A zero value denotes an infinite delay
 	 * @param solverConfig
 	 *            the configuration to set up
 	 */
-	public SMTInput(final boolean restricted, final ISolverConfig solverConfig) {
-		super(restricted, solverConfig.getTimeOut());
+	public SMTInput(final boolean restricted, long timeOutDelay,
+			final ISolverConfig solverConfig) {
+		super(restricted, timeOutDelay);
 		final ISMTSolversPreferences smtSolversPrefs = getPreferenceManager()
 				.getSMTSolversPrefs();
 		this.solverConfig = solverConfig;

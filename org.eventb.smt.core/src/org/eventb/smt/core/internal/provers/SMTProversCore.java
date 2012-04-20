@@ -117,7 +117,7 @@ public class SMTProversCore extends Plugin {
 	}
 
 	public static ITactic externalSMT(final TranslationApproach approach,
-			final boolean restricted, String configId) {
+			final boolean restricted, final long timeOutDelay, String configId) {
 		if (configId == null) {
 			configId = ALL_SOLVER_CONFIGURATIONS;
 		}
@@ -133,7 +133,7 @@ public class SMTProversCore extends Plugin {
 							.equals(USING_PP) ? new ExternalSMTThroughPP()
 							: new ExternalSMTThroughVeriT();
 					smtTactics[i] = reasonerTac(smtReasoner, new SMTInput(
-							restricted, enabledConfigs.get(i)));
+							restricted, timeOutDelay, enabledConfigs.get(i)));
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
@@ -149,7 +149,7 @@ public class SMTProversCore extends Plugin {
 							.equals(USING_PP) ? new ExternalSMTThroughPP()
 							: new ExternalSMTThroughVeriT();
 					return reasonerTac(smtReasoner, new SMTInput(restricted,
-							config));
+							timeOutDelay, config));
 				} else {
 					return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
 				}

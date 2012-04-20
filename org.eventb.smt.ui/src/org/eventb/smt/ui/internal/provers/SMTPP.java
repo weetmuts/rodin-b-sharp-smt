@@ -12,6 +12,8 @@ package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
+import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
@@ -35,7 +37,8 @@ public class SMTPP extends DefaultTacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				return externalSMTThroughPP(true);
+				return externalSMTThroughPP(DEFAULT_RESTRICTED_VALUE,
+						DEFAULT_TIMEOUT_DELAY);
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMT_SOLVER_CONFIG_ERROR;

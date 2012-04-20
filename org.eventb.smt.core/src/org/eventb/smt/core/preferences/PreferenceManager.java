@@ -29,7 +29,6 @@ import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.internal.preferences.SMTSolversPreferences;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.SolverConfigsPreferences;
-import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.internal.preferences.TranslationPreferences;
 
 /**
@@ -147,10 +146,6 @@ public class PreferenceManager {
 			error.append(SMTPreferencesError_cannot_read);
 			return false;
 		}
-	}
-
-	public static final int parseTimeOut(final String timeOutStr) {
-		return SolverConfiguration.parseTimeOut(timeOutStr);
 	}
 
 	public static boolean configExists(final String name) {

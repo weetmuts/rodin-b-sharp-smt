@@ -27,6 +27,9 @@ public class SMTCore {
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.core";
 
+	public static final boolean DEFAULT_RESTRICTED_VALUE = true;
+	public static final long DEFAULT_TIMEOUT_DELAY = 1000;
+
 	/**
 	 * This tactic should be called by the parameterised auto tactic.
 	 * 
@@ -38,8 +41,8 @@ public class SMTCore {
 	 * @return the SMT tactic
 	 */
 	public static ITactic externalSMTThroughPP(boolean restricted,
-			final String configId) {
-		return externalSMT(USING_PP, restricted, configId);
+			long timeOutDelay, final String configId) {
+		return externalSMT(USING_PP, restricted, timeOutDelay, configId);
 	}
 
 	/**
@@ -59,8 +62,9 @@ public class SMTCore {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(final boolean restricted) {
-		return externalSMTThroughPP(restricted, ALL_SOLVER_CONFIGURATIONS);
+	public static ITactic externalSMTThroughPP(final boolean restricted,
+			long timeOutDelay) {
+		return externalSMTThroughPP(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
 	}
 
 	/**
@@ -73,9 +77,9 @@ public class SMTCore {
 	 *            the selected solver id
 	 * @return the SMT tactic
 	 */
-	public static ITactic externalSMTThroughVeriT(boolean restricted,
+	public static ITactic externalSMTThroughVeriT(boolean restricted, long timeOutDelay,
 			final String configId) {
-		return externalSMT(USING_VERIT, restricted, configId);
+		return externalSMT(USING_VERIT, restricted, timeOutDelay, configId);
 	}
 
 	/**
@@ -95,7 +99,8 @@ public class SMTCore {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughVeriT(final boolean restricted) {
-		return externalSMTThroughVeriT(restricted, ALL_SOLVER_CONFIGURATIONS);
+	public static ITactic externalSMTThroughVeriT(final boolean restricted,
+			long timeOutDelay) {
+		return externalSMTThroughVeriT(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
 	}
 }

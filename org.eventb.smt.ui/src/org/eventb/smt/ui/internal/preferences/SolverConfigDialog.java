@@ -20,7 +20,6 @@ import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
 import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.preferences.PreferenceManager.parseTimeOut;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 
@@ -54,7 +53,6 @@ public class SolverConfigDialog extends Dialog {
 	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
 	private static final String SMT_LIB_LABEL = "SMT-LIB";
-	private static final String TIME_OUT_LABEL = "Time Out (ms)";
 	private static final String ENABLE_LABEL = "Enable";
 
 	public static final boolean SHOW_ERRORS = true;
@@ -164,21 +162,6 @@ public class SolverConfigDialog extends Dialog {
 		smtlibCombo.setLayoutData(data);
 
 		/**
-		 * Time out
-		 */
-		final Label timeOutLabel = new Label(shell, SWT.NONE);
-		timeOutLabel.setText(TIME_OUT_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		timeOutLabel.setLayoutData(data);
-
-		final Text timeOutText = new Text(shell, SWT.BORDER);
-		timeOutText.setText(Integer.toString(solverConfig.getTimeOut()));
-		data = new GridData(FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		timeOutText.setLayoutData(data);
-
-		/**
 		 * OK Button
 		 */
 		final Button okButton = new Button(shell, SWT.PUSH);
@@ -206,8 +189,7 @@ public class SolverConfigDialog extends Dialog {
 							executionCheckButton.getSelection(), name,
 							nameToKey.get(solverCombo.getText()),
 							argsText.getText(),
-							parseVersion(smtlibCombo.getText()),
-							parseTimeOut(timeOutText.getText()));
+							parseVersion(smtlibCombo.getText()));
 					returnCode = OK;
 					shell.close();
 				}

@@ -64,14 +64,6 @@ public interface ISolverConfig {
 	public SMTLIBVersion getSmtlibVersion();
 
 	/**
-	 * Returns the time (in milliseconds) after which Rodin will terminate the
-	 * solver if it has not returned.
-	 * 
-	 * @return the time-out of this configuration
-	 */
-	public int getTimeOut();
-
-	/**
 	 * Tells whether this configuration is editable by the user (through the UI
 	 * of the SMT-Solvers Plug-in) or not.
 	 * 

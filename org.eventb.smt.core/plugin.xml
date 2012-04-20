@@ -29,6 +29,12 @@
                type="Boolean">
          </tacticParameter>
          <tacticParameter
+               default="1000"
+               description="%timeoutDesc"
+               label="timeout"
+               type="Long">
+         </tacticParameter>
+         <tacticParameter
          	   default="all"
          	   description="%configNameDesc"
                label="configName"
@@ -44,6 +50,12 @@
                description="%restrictedDesc"
                label="restricted"
                type="Boolean">
+         </tacticParameter>
+         <tacticParameter
+               default="1000"
+               description="%timeoutDesc"
+               label="timeout"
+               type="Long">
          </tacticParameter>
          <tacticParameter
          	   default="all"

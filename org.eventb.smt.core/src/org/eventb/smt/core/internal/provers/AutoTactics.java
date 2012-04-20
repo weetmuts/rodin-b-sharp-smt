@@ -12,6 +12,8 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
+import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
 import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
@@ -44,6 +46,7 @@ public class AutoTactics {
 	 * label for the 'restricted' tactic parameter
 	 */
 	private static final String RESTRICTED = "restricted";
+	private static final String TIMEOUT_DELAY = "timeOutDelay";
 
 	/**
 	 * label for the 'configId' tactic parameter
@@ -63,7 +66,8 @@ public class AutoTactics {
 	public static class SMTPP implements ITactic {
 		@Override
 		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughPP(true, ALL_SOLVER_CONFIGURATIONS).apply(
+			return externalSMTThroughPP(DEFAULT_RESTRICTED_VALUE,
+					DEFAULT_TIMEOUT_DELAY, ALL_SOLVER_CONFIGURATIONS).apply(
 					ptNode, pm);
 		}
 	}
@@ -73,19 +77,21 @@ public class AutoTactics {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
+			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY);
 			final String configId = getPreferenceManager()
 					.getSolverConfigsPrefs().configNameToId(
 							parameters.getString(CONFIG_NAME));
 
-			return externalSMTThroughPP(restricted, configId);
+			return externalSMTThroughPP(restricted, timeOutDelay, configId);
 		}
 	}
 
 	public static class SMTVeriT implements ITactic {
 		@Override
 		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughVeriT(true, ALL_SOLVER_CONFIGURATIONS)
-					.apply(ptNode, pm);
+			return externalSMTThroughVeriT(DEFAULT_RESTRICTED_VALUE,
+					DEFAULT_TIMEOUT_DELAY, ALL_SOLVER_CONFIGURATIONS).apply(
+					ptNode, pm);
 		}
 	}
 
@@ -94,11 +100,12 @@ public class AutoTactics {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
+			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY);
 			final String configId = getPreferenceManager()
 					.getSolverConfigsPrefs().configNameToId(
 							parameters.getString(CONFIG_NAME));
 
-			return externalSMTThroughVeriT(restricted, configId);
+			return externalSMTThroughVeriT(restricted, timeOutDelay, configId);
 		}
 	}
 

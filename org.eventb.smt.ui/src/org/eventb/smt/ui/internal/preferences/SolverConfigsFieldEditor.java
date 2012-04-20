@@ -21,7 +21,6 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.ID_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.TIME_OUT_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 
 import java.util.ArrayList;
@@ -78,7 +77,6 @@ class SolverConfigsFieldEditor extends
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String ARGS_LABEL = "Arguments";
 	private static final String SMTLIB_LABEL = "SMT-LIB";
-	private static final String TIMEOUT_LABEL = "Time Out";
 	private static final String EDITABLE_LABEL = "Editable";
 
 	private static final int ID_COL_BOUND = 0;
@@ -87,7 +85,6 @@ class SolverConfigsFieldEditor extends
 	private static final int SOLVER_COL_BOUND = 100;
 	private static final int ARGS_COL_BOUND = 200;
 	private static final int SMTLIB_COL_BOUND = 70;
-	private static final int TIMEOUT_COL_BOUND = 70;
 	private static final int EDITABLE_COL_BOUND = 0;
 
 	/**
@@ -107,7 +104,6 @@ class SolverConfigsFieldEditor extends
 		columnsLabels.add(SOLVER_COL, SOLVER_LABEL);
 		columnsLabels.add(ARGS_COL, ARGS_LABEL);
 		columnsLabels.add(SMTLIB_COL, SMTLIB_LABEL);
-		columnsLabels.add(TIME_OUT_COL, TIMEOUT_LABEL);
 		columnsLabels.add(EDITABLE_COL, EDITABLE_LABEL);
 		COLUMNS_LABELS = new String[columnsLabels.size()];
 		columnsLabels.toArray(COLUMNS_LABELS);
@@ -121,7 +117,6 @@ class SolverConfigsFieldEditor extends
 		columnsBounds.add(SOLVER_COL, SOLVER_COL_BOUND);
 		columnsBounds.add(ARGS_COL, ARGS_COL_BOUND);
 		columnsBounds.add(SMTLIB_COL, SMTLIB_COL_BOUND);
-		columnsBounds.add(TIME_OUT_COL, TIMEOUT_COL_BOUND);
 		columnsBounds.add(EDITABLE_COL, EDITABLE_COL_BOUND);
 		COLUMNS_BOUNDS = new Integer[columnsBounds.size()];
 		columnsBounds.toArray(COLUMNS_BOUNDS);

@@ -10,6 +10,8 @@
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
+import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
+import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.internal.provers.ExternalSMTThroughPP.REASONER_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3;
@@ -41,22 +43,27 @@ public class SMTPPReasonerTests extends AbstractReasonerTests {
 	public SuccessfullReasonerApplication[] getSuccessfulReasonerApplications() {
 		return new SuccessfullReasonerApplication[] {
 				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(true,
-								veriTConfig)), //
+						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(
+								DEFAULT_RESTRICTED_VALUE,
+								DEFAULT_TIMEOUT_DELAY, veriTConfig)), //
 				new SuccessfullReasonerApplication(
 						genSeq(" x < y ;; z = x + y ;; y < z |- x < z "),
-						new SMTInput(true, veriTConfig)), //
+						new SMTInput(DEFAULT_RESTRICTED_VALUE,
+								DEFAULT_TIMEOUT_DELAY, veriTConfig)), //
 				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(true,
-								cvc3Config)) };
+						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(
+								DEFAULT_RESTRICTED_VALUE,
+								DEFAULT_TIMEOUT_DELAY, cvc3Config)) };
 	}
 
 	@Override
 	public UnsuccessfullReasonerApplication[] getUnsuccessfullReasonerApplications() {
 		return new UnsuccessfullReasonerApplication[] {
 				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						new SMTInput(true, veriTConfig), "Failed"),
+						new SMTInput(DEFAULT_RESTRICTED_VALUE,
+								DEFAULT_TIMEOUT_DELAY, veriTConfig), "Failed"),
 				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						new SMTInput(true, cvc3Config), "Failed") };
+						new SMTInput(DEFAULT_RESTRICTED_VALUE,
+								DEFAULT_TIMEOUT_DELAY, cvc3Config), "Failed") };
 	}
 }

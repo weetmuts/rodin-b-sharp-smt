@@ -19,7 +19,6 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.ID_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.TIME_OUT_COL;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
 
@@ -54,8 +53,6 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 			return config.getArgs();
 		case SMTLIB_COL:
 			return config.getSmtlibVersion().toString();
-		case TIME_OUT_COL:
-			return Integer.toString(config.getTimeOut());
 		case EDITABLE_COL:
 			return Boolean.toString(config.isEditable());
 		}

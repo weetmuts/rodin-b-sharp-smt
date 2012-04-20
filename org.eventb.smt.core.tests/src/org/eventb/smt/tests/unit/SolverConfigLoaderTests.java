@@ -10,7 +10,6 @@
 package org.eventb.smt.tests.unit;
 
 import static junit.framework.Assert.assertTrue;
-import static org.eventb.smt.core.internal.preferences.SolverConfiguration.DEFAULT_TIME_OUT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,18 +29,10 @@ public class SolverConfigLoaderTests {
 
 	SolverConfigLoader solverConfigLoader;
 
-	public void makeSolverConfigLoader(final String bundle, final String id,
-			final String name, final String solverId, final String args,
-			final String smtlib, final String timeout) {
-		solverConfigLoader = new SolverConfigLoader(new SolverConfigElt(bundle,
-				id, name, solverId, args, smtlib, timeout));
-	}
-
 	public void makeSolverConfigLoader(final String id, final String name,
-			final String solverId, final String args, final String smtlib,
-			final String timeout) {
+			final String solverId, final String args, final String smtlib) {
 		solverConfigLoader = new SolverConfigLoader(new SolverConfigElt(id,
-				name, solverId, args, smtlib, timeout));
+				name, solverId, args, smtlib));
 	}
 
 	public static class SolverConfigElt implements IConfigurationElement {
@@ -53,25 +44,21 @@ public class SolverConfigLoaderTests {
 		String solverId = null;
 		String args = null;
 		String smtlib = null;
-		String timeout = null;
 
 		public SolverConfigElt(final String bundle, final String id,
 				final String name, final String solverId, final String args,
-				final String smtlib, final String timeout) {
+				final String smtlib) {
 			this.bundleName = bundle;
 			this.id = id;
 			this.name = name;
 			this.solverId = solverId;
 			this.args = args;
 			this.smtlib = smtlib;
-			this.timeout = timeout;
 		}
 
 		public SolverConfigElt(final String id, final String name,
-				final String solverId, final String args, final String smtlib,
-				final String timeout) {
-			this("org.eventb.smt.core.tests", id, name, solverId, args, smtlib,
-					timeout);
+				final String solverId, final String args, final String smtlib) {
+			this("org.eventb.smt.core.tests", id, name, solverId, args, smtlib);
 		}
 
 		@Override
@@ -91,8 +78,6 @@ public class SolverConfigLoaderTests {
 				return args;
 			} else if (attributeName.equals("smt-lib")) {
 				return smtlib;
-			} else if (attributeName.equals("time-out")) {
-				return timeout;
 			} else {
 				return null;
 			}
@@ -180,7 +165,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void nullID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader(null, "", "", "", "", "");
+		makeSolverConfigLoader(null, "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -188,7 +173,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void dotInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled.solver", "", "", "", "", "");
+		makeSolverConfigLoader("bundled.solver", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -196,7 +181,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void whitespaceInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled solver", "", "", "", "", "");
+		makeSolverConfigLoader("bundled solver", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -204,7 +189,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void colonInID() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("bundled:solver", "", "", "", "", "");
+		makeSolverConfigLoader("bundled:solver", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -212,7 +197,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void nullName() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("nullNameTest", null, "", "", "", "");
+		makeSolverConfigLoader("nullNameTest", null, "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -220,7 +205,7 @@ public class SolverConfigLoaderTests {
 	@Test(expected = ExtensionLoadingException.class)
 	public void emptyName() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
-		makeSolverConfigLoader("emptyNameTest", "", "", "", "", "");
+		makeSolverConfigLoader("emptyNameTest", "", "", "", "");
 
 		solverConfigLoader.load();
 	}
@@ -229,7 +214,7 @@ public class SolverConfigLoaderTests {
 	public void nullArgs() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
 		makeSolverConfigLoader("nullArgsTest", "nullArgsTest", "solver", null,
-				"", "");
+				"");
 
 		solverConfigLoader.load();
 	}
@@ -238,19 +223,9 @@ public class SolverConfigLoaderTests {
 	public void nullSmtLibVersion() throws InvalidRegistryObjectException,
 			ExtensionLoadingException {
 		makeSolverConfigLoader("nullSMTLIBVersion", "nullSMTLIBVersion",
-				"solver", "", null, "");
+				"solver", "", null);
 
 		final SolverConfiguration config = solverConfigLoader.load();
 		assertTrue(config.getSmtlibVersion().equals(LATEST));
-	}
-
-	@Test
-	public void nullTimeOut() throws InvalidRegistryObjectException,
-			ExtensionLoadingException {
-		makeSolverConfigLoader("nullTimeOut", "nullTimeOut", "solver", "", "",
-				null);
-
-		final SolverConfiguration config = solverConfigLoader.load();
-		assertTrue(config.getTimeOut() == DEFAULT_TIME_OUT);
 	}
 }

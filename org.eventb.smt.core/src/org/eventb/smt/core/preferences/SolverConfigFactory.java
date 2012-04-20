@@ -28,7 +28,6 @@ public class SolverConfigFactory {
 	public static final int SOLVER_COL = SolverConfiguration.SOLVER_ID_COL;
 	public static final int ARGS_COL = SolverConfiguration.ARGS_COL;
 	public static final int SMTLIB_COL = SolverConfiguration.SMTLIB_VERSION_COL;
-	public static final int TIME_OUT_COL = SolverConfiguration.TIME_OUT_COL;
 	public static final int EDITABLE_COL = SolverConfiguration.EDITABLE_COL;
 
 	public static final ISolverConfig newConfig() {
@@ -47,10 +46,9 @@ public class SolverConfigFactory {
 
 	public static final ISolverConfig newConfig(final String id,
 			final boolean enabled, final String name, final String solverId,
-			final String args, final SMTLIBVersion smtlibVersion,
-			final int timeOut) {
+			final String args, final SMTLIBVersion smtlibVersion) {
 		return new SolverConfiguration(id, enabled, name, solverId, args,
-				smtlibVersion, timeOut);
+				smtlibVersion);
 	}
 
 	public static ISolverConfig newConfig(final ISolverConfig configToDuplicate) {
@@ -66,7 +64,6 @@ public class SolverConfigFactory {
 
 		return new SolverConfiguration(freshID, freshCopyName,
 				configToDuplicate.getSolverId(), configToDuplicate.getArgs(),
-				configToDuplicate.getSmtlibVersion(),
-				configToDuplicate.getTimeOut());
+				configToDuplicate.getSmtlibVersion());
 	}
 }

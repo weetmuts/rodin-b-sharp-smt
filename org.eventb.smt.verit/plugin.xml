@@ -16,9 +16,8 @@
             id="verit_smt2"
             name="veriT SMT2"
             solverid="org.eventb.smt.verit.bundled_verit"
-            args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=3"
-            smt-lib="V2.0"
-            time-out="3000">
+            args="-i smtlib2 --disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e --max-time=1"
+            smt-lib="V2.0">
       </configuration>
    </extension>
 </plugin>

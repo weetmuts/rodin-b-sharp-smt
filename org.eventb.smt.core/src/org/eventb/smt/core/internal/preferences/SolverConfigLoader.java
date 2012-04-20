@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.preferences;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullArgsException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullSolverIdException;
 import static org.eventb.smt.core.internal.preferences.SolverConfiguration.EDITABLE;
-import static org.eventb.smt.core.internal.preferences.SolverConfiguration.parseTimeOut;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
 import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
@@ -54,7 +53,6 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		final String args = configurationElement.getAttribute("args");
 		final String smtlibVersion = configurationElement
 				.getAttribute("smt-lib");
-		final String timeOut = configurationElement.getAttribute("time-out");
 
 		id = nameSpace + "." + localId;
 
@@ -63,7 +61,7 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		checkSolverId(solverId);
 		checkArgs(args);
 		return new SolverConfiguration(id, name, solverId, args,
-				parseVersion(smtlibVersion), parseTimeOut(timeOut), !EDITABLE);
+				parseVersion(smtlibVersion), !EDITABLE);
 	}
 
 	public static void checkSolverId(String solverId)
