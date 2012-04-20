@@ -20,6 +20,7 @@ import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_f
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
@@ -41,9 +42,11 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.ITranslationPreferences;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -94,22 +97,18 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final ISolverConfig solverConfig,
-			final String poName, final String translationPath,
-			final String veritPath) {
-		this(sequent, pm, new StringBuilder(), solverConfig, poName,
-				translationPath, veritPath);
+			final ISMTSolver solver) {
+		this(sequent, pm, new StringBuilder(), solverConfig, solver);
 	}
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final String poName,
-			final String translationPath, final String veritPath) {
-		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
+			final ISolverConfig solverConfig, final ISMTSolver solver) {
+		super(sequent, pm, debugBuilder, solverConfig, solver,
 				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
-
+		setVeriTPath();
 		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
 		setTranslationDirectories(USING_VERIT, debugBuilder);
-		this.veritPath = veritPath;
 	}
 
 	/**
@@ -118,14 +117,18 @@ public class SMTVeriTCall extends SMTProverCall {
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final ISolverConfig solverConfig, final ISMTSolver solver,
-			final String poName, final String translationPath,
-			final String veritPath) {
+			final String poName) {
 		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
-				translationPath, new SMTThroughVeriT(
-						solverConfig.getSmtlibVersion()));
+				new SMTThroughPP(solverConfig.getSmtlibVersion()));
+		setVeriTPath();
 		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
 		setTranslationDirectories(USING_VERIT, debugBuilder);
-		this.veritPath = veritPath;
+	}
+
+	private void setVeriTPath() {
+		final ITranslationPreferences translationPrefs = getPreferenceManager()
+				.getTranslationPrefs();
+		this.veritPath = translationPrefs.getVeriTPath();
 	}
 
 	/**

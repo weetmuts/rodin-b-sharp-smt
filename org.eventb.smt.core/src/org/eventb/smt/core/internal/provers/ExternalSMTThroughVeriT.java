@@ -41,8 +41,7 @@ public class ExternalSMTThroughVeriT extends XProverReasoner2 {
 			final ISimpleSequent sequent, final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
 		return new SMTVeriTCall(sequent, pm, smtInput.getSolverConfig(),
-				smtInput.getPOName(), smtInput.getTranslationPath(),
-				smtInput.getVeritPath());
+				smtInput.getSolver());
 	}
 
 	@Override

@@ -52,6 +52,7 @@ import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.ITranslationPreferences;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -65,6 +66,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String NON_STANDARD_SMT_LIB2_FILE_EXTENSION = ".smt2";
+	private static final String RODIN_SEQUENT = "rodin_sequent";
 
 	/**
 	 * FOR DEBUG ONLY
@@ -132,29 +134,26 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            the sequent to discharge
 	 * @param pm
 	 *            proof monitor used for cancellation
-	 * @param poName
-	 *            name of the lemma to prove
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final ISolverConfig solverConfig,
-			final String poName, final String translationPath,
-			final Translator translator) {
-		this(sequent, pm, new StringBuilder(), solverConfig, poName,
-				translationPath, translator);
+			final ISMTSolver solver, final Translator translator) {
+		this(sequent, pm, new StringBuilder(), solverConfig, solver, translator);
 	}
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final String poName,
-			final String translationPath, final Translator translator) {
+			final ISolverConfig solverConfig, final ISMTSolver solver,
+			final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
-		solver = getPreferenceManager().getSMTSolversPrefs().get(
-				solverConfig.getSolverId());
-		this.lemmaName = poName;
-		this.translationPath = translationPath;
+		this.solver = solver;
+		final ITranslationPreferences translationPrefs = getPreferenceManager()
+				.getTranslationPrefs();
+		this.translationPath = translationPrefs.getTranslationPath();
 		this.translator = translator;
+		this.lemmaName = RODIN_SEQUENT;
 	}
 
 	/**
@@ -162,14 +161,15 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	public SMTProverCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final String poName,
-			final String translationPath, final Translator translator) {
+			final ISMTSolver solver, final String poName, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
 		this.solver = solver;
 		this.lemmaName = poName;
-		this.translationPath = translationPath;
+		final ITranslationPreferences translationPrefs = getPreferenceManager()
+				.getTranslationPrefs();
+		this.translationPath = translationPrefs.getTranslationPath();
 		this.translator = translator;
 	}
 

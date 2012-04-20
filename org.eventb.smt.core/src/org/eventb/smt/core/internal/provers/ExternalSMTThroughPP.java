@@ -40,8 +40,7 @@ public class ExternalSMTThroughPP extends XProverReasoner2 {
 	public XProverCall2 newProverCall(final IReasonerInput input,
 			final ISimpleSequent sequent, final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
-		return new SMTPPCall(sequent, pm, smtInput.getSolverConfig(),
-				smtInput.getPOName(), smtInput.getTranslationPath());
+		return new SMTPPCall(sequent, pm, smtInput.getSolverConfig(), smtInput.getSolver());
 	}
 
 	@Override

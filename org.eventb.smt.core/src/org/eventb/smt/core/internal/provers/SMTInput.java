@@ -16,20 +16,18 @@ import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
+import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
-import org.eventb.smt.core.preferences.ITranslationPreferences;
 
 public class SMTInput extends XProverInput {
 	private static final String CONFIG_ID = "config_id";
-	private static final String RODIN_SEQUENT = "rodin_sequent";
-	private static final String SEQUENT_NAME_ERROR = "Illegal sequent name";
 	private static final String SOLVER_CONFIG_ERROR = "Illegal solver configuration selected in the tactic";
+	private static final String SOLVER_ERROR = "Illegal solver selected in the tactic SMT configuration";
 
 	private final ISolverConfig solverConfig;
-	private final String poName;
-	private final String translationPath;
-	private final String veritPath;
+	private final ISMTSolver solver;
 	private final String error;
 
 	/**
@@ -46,12 +44,10 @@ public class SMTInput extends XProverInput {
 		final String configId = reader.getString(CONFIG_ID);
 		final ISolverConfigsPreferences solverConfigPrefs = getPreferenceManager()
 				.getSolverConfigsPrefs();
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
+		final ISMTSolversPreferences smtSolversPrefs = getPreferenceManager()
+				.getSMTSolversPrefs();
 		solverConfig = solverConfigPrefs.getSolverConfig(configId);
-		poName = RODIN_SEQUENT;
-		translationPath = translationPrefs.getTranslationPath();
-		veritPath = translationPrefs.getVeriTPath();
+		solver = smtSolversPrefs.get(solverConfig.getSolverId());
 		error = validate();
 	}
 
@@ -66,12 +62,10 @@ public class SMTInput extends XProverInput {
 	 */
 	public SMTInput(final boolean restricted, final ISolverConfig solverConfig) {
 		super(restricted, solverConfig.getTimeOut());
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
+		final ISMTSolversPreferences smtSolversPrefs = getPreferenceManager()
+				.getSMTSolversPrefs();
 		this.solverConfig = solverConfig;
-		poName = RODIN_SEQUENT;
-		translationPath = translationPrefs.getTranslationPath();
-		veritPath = translationPrefs.getVeriTPath();
+		solver = smtSolversPrefs.get(solverConfig.getSolverId());
 		error = validate();
 	}
 
@@ -84,15 +78,19 @@ public class SMTInput extends XProverInput {
 	private String validate() {
 		final StringBuilder errorBuilder = new StringBuilder();
 
-		if (poName == null || poName.equals("")) {
-			errorBuilder.append(SEQUENT_NAME_ERROR);
-		}
-
 		if (solverConfig == null) {
 			if (errorBuilder.length() > 0) {
 				errorBuilder.append("; ").append(SOLVER_CONFIG_ERROR);
 			} else {
 				errorBuilder.append(SOLVER_CONFIG_ERROR);
+			}
+		}
+
+		if (solver == null) {
+			if (errorBuilder.length() > 0) {
+				errorBuilder.append("; ").append(SOLVER_ERROR);
+			} else {
+				errorBuilder.append(SOLVER_ERROR);
 			}
 		}
 
@@ -107,16 +105,8 @@ public class SMTInput extends XProverInput {
 		return solverConfig;
 	}
 
-	public String getPOName() {
-		return poName;
-	}
-
-	public String getTranslationPath() {
-		return translationPath;
-	}
-
-	public String getVeritPath() {
-		return veritPath;
+	public ISMTSolver getSolver() {
+		return solver;
 	}
 
 	@Override

@@ -48,16 +48,14 @@ public class SMTPPCall extends SMTProverCall {
 			+ File.separatorChar + "pp";
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final ISolverConfig solverConfig, final String poName,
-			final String translationPath) {
-		this(sequent, pm, new StringBuilder(), solverConfig, poName,
-				translationPath);
+			final ISolverConfig solverConfig, final ISMTSolver solver) {
+		this(sequent, pm, new StringBuilder(), solverConfig, solver);
 	}
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final String poName, final String translationPath) {
-		super(sequent, pm, debugBuilder, solverConfig, poName, translationPath,
+			final ISMTSolver solver) {
+		super(sequent, pm, debugBuilder, solverConfig, solver,
 				new SMTThroughPP(solverConfig.getSmtlibVersion()));
 		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
 		setTranslationDirectories(USING_PP, debugBuilder);
@@ -68,11 +66,9 @@ public class SMTPPCall extends SMTProverCall {
 	 */
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final String poName,
-			final String translationPath) {
+			final ISMTSolver solver, final String poName) {
 		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
-				translationPath, new SMTThroughPP(
-						solverConfig.getSmtlibVersion()));
+				new SMTThroughPP(solverConfig.getSmtlibVersion()));
 		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
 		setTranslationDirectories(USING_PP, debugBuilder);
 	}
