@@ -32,14 +32,14 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 
 	public UnsatCoreExtractionPerfWithPP(final SolverKind solver,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, null, smtlibVersion, GET_UNSAT_CORE);
+		super(solver, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedTrivial, final boolean expectedSolverResult)
 			throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, expectedTrivial,
+		doTest(lemmaName, inputHyps, inputGoal, te, expectedTrivial,
 				expectedSolverResult);
 	}
 
@@ -48,8 +48,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCore, final boolean expectedGoalNeed)
 			throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
-				expectedSolverResult, expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
+		doTest(lemmaName, inputHyps, inputGoal, te, expectedSolverResult,
+				expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
 	}
 
 	@Test(timeout = 3000)

@@ -32,13 +32,13 @@ public abstract class AxiomsTestWithPPV2_0 extends CommonSolverRunTests {
 			"PS", "ℙ(ℙ(ℤ))", "S", "ℙ(ℤ)", "x", "ℤ");
 
 	public AxiomsTestWithPPV2_0(final SolverKind solver) {
-		super(solver, null, V2_0, !GET_UNSAT_CORE);
+		super(solver, null, USING_PP, V2_0, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
+		doTest(lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 

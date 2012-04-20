@@ -11,11 +11,9 @@
 package org.eventb.smt.core;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.externalSMT;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.internal.provers.SMTProversCore;
 
 /**
  * @author Systerel (yguyot)
@@ -36,25 +34,22 @@ public class SMTCore {
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
+	 * @param timeOutDelay
+	 *            amount of time in milliseconds after which the solver will be
+	 *            interrupted
 	 * @param configId
 	 *            the selected solver id
 	 * @return the SMT tactic
 	 */
-	public static ITactic externalSMTThroughPP(boolean restricted,
-			long timeOutDelay, final String configId) {
-		return externalSMT(USING_PP, restricted, timeOutDelay, configId);
+	public static ITactic externalSMT(final boolean restricted,
+			final long timeOutDelay, final String configId) {
+		return SMTProversCore.externalSMT(restricted, timeOutDelay, configId);
 	}
 
 	/**
 	 * <p>
 	 * Returns a tactic for applying the SMT prover to a proof tree node
-	 * (sequent), translated using ppTrans. This is a convenience method, fully
-	 * equivalent to:
-	 * 
-	 * <pre>
-	 * externalSMTThroughPP(forces, DEFAULT_DELAY)
-	 * </pre>
-	 * 
+	 * (sequent).
 	 * </p>
 	 * 
 	 * @param restricted
@@ -62,45 +57,8 @@ public class SMTCore {
 	 *            reasoner
 	 * @return a tactic for running SMTTacticProvider with the given forces
 	 */
-	public static ITactic externalSMTThroughPP(final boolean restricted,
-			long timeOutDelay) {
-		return externalSMTThroughPP(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
-	}
-
-	/**
-	 * This tactic should be called by the parameterised auto tactic.
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @param configId
-	 *            the selected solver id
-	 * @return the SMT tactic
-	 */
-	public static ITactic externalSMTThroughVeriT(boolean restricted, long timeOutDelay,
-			final String configId) {
-		return externalSMT(USING_VERIT, restricted, timeOutDelay, configId);
-	}
-
-	/**
-	 * <p>
-	 * Returns a tactic for applying the SMT prover to a proof tree node
-	 * (sequent), translated using veriT. This is a convenience method, fully
-	 * equivalent to:
-	 * 
-	 * <pre>
-	 * externalSMTThroughPP(forces, DEFAULT_DELAY)
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @return a tactic for running SMTTacticProvider with the given forces
-	 */
-	public static ITactic externalSMTThroughVeriT(final boolean restricted,
-			long timeOutDelay) {
-		return externalSMTThroughVeriT(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
+	public static ITactic externalSMT(final boolean restricted,
+			final long timeOutDelay) {
+		return externalSMT(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
 	}
 }

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,19 +44,23 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public RunProverTestWithVeriTV1_2() {
-		super(UNKNOWN, null, V1_2, !GET_UNSAT_CORE);
+		super(UNKNOWN, null, USING_VERIT, V1_2, !GET_UNSAT_CORE);
+	}
+
+	private void setSolverPreferences(final SolverKind kind) {
+		setSolverPreferences(kind, USING_VERIT, V1_2);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_VERIT, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
+		doTest(lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 
 	@Test
 	public void testUnsatAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -66,7 +71,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -77,7 +82,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testUnsatCvc3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -88,7 +93,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatCvc3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -100,7 +105,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("CVC4 needs a known logic to be set")
 	public void testUnsatCvc4Call() {
-		setSolverV1_2Preferences(CVC4);
+		setSolverPreferences(CVC4);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -111,7 +116,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatCvc4Call() {
-		setSolverV1_2Preferences(CVC4);
+		setSolverPreferences(CVC4);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -123,7 +128,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("MathSat5 is not well integrated because it can read on its input only")
 	public void testUnsatMathSat5Call() {
-		setSolverV1_2Preferences(MATHSAT5);
+		setSolverPreferences(MATHSAT5);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -134,7 +139,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatMathSat5Call() {
-		setSolverV1_2Preferences(MATHSAT5);
+		setSolverPreferences(MATHSAT5);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -146,7 +151,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("OpenSMT is not compatible with SMT-LIB 1.2")
 	public void testUnsatOpenSMTCall() {
-		setSolverV1_2Preferences(OPENSMT);
+		setSolverPreferences(OPENSMT);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -158,7 +163,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("OpenSMT is not compatible with SMT-LIB 1.2")
 	public void testSatOpenSMTCall() {
-		setSolverV1_2Preferences(OPENSMT);
+		setSolverPreferences(OPENSMT);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -169,7 +174,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testUnsatVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -180,7 +185,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatVeritCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -191,7 +196,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testUnsatZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -202,7 +207,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 
 	@Test
 	public void testSatZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final List<String> hyps = Arrays.asList( //
 				"x < y", //
@@ -214,7 +219,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testTRUEPredZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -226,7 +231,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("error during translation")
 	public void testTRUEPredCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -238,7 +243,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("error during translation")
 	public void testTRUEPredAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -251,7 +256,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Ignore("wrong result")
 	// FIXME
 	public void testTRUEPredVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final List<String> hyps = Arrays.asList( //
 				"b = TRUE", //
@@ -264,7 +269,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	// FIXME
 	@Ignore()
 	public void testBOOLSetZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c = TRUE↦FALSE");
@@ -276,7 +281,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Ignore()
 	// FIXME
 	public void testBOOLSetAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c = TRUE↦FALSE");
@@ -288,7 +293,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Ignore()
 	// FIXME
 	public void testBOOLSetVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c = TRUE↦FALSE");
@@ -300,7 +305,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Ignore()
 	// FIXME
 	public void testBOOLSetCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final List<String> hyps = Arrays.asList( //
 				"b↦c = TRUE↦FALSE");
@@ -311,7 +316,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testSetsEqualityZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -327,7 +332,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testSetsEqualityCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -343,7 +348,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testSetsEqualityAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -359,7 +364,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testSetsEqualityVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -375,7 +380,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Error during translation")
 	public void testDivisionZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -395,7 +400,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Error during translation")
 	public void testDivisionCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -415,7 +420,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Error during translation")
 	public void testDivisionAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -435,7 +440,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Error during translation")
 	public void testDivisionVeriT() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -455,7 +460,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testExponentiationZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -467,7 +472,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testExponentiationCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -479,7 +484,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testExponentiationAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -491,7 +496,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testExponentiationVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -503,7 +508,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testModZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -520,7 +525,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testModVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -537,7 +542,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testModAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -554,7 +559,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Implementation canceled")
 	public void testModForCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ");
@@ -571,7 +576,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testIntegerSetZ3Call() {
-		setSolverV1_2Preferences(Z3);
+		setSolverPreferences(Z3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
@@ -586,7 +591,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testIntegerSetVeriTCall() {
-		setSolverV1_2Preferences(VERIT);
+		setSolverPreferences(VERIT);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
@@ -601,7 +606,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testIntegerSetForCVC3Call() {
-		setSolverV1_2Preferences(CVC3);
+		setSolverPreferences(CVC3);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
@@ -616,7 +621,7 @@ public class RunProverTestWithVeriTV1_2 extends CommonSolverRunTests {
 	@Test
 	@Ignore("Fail")
 	public void testIntegerSetForAltErgoCall() {
-		setSolverV1_2Preferences(ALT_ERGO);
+		setSolverPreferences(ALT_ERGO);
 
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");

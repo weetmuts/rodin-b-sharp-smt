@@ -12,7 +12,7 @@ package org.eventb.smt.ui.internal.provers;
 
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.core.internal.provers.AutoTactics.makeSMTPPTactic;
+import static org.eventb.smt.core.internal.provers.AutoTactics.makeSMTTactic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.osgi.framework.BundleContext;
  */
 @SuppressWarnings("restriction")
 public class SmtProversUIPlugin extends AbstractUIPlugin {
-	private static final String AUTO_TACTIC_SMTPP_PROFILE_ID = "Default Auto Tactic with SMT Profile";
+	private static final String AUTO_TACTIC_SMT_PROFILE_ID = "Default Auto Tactic with SMT Profile";
 
 	/**
 	 * the shared instance
@@ -81,21 +81,20 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>(
 				defaultAutoDesc.getCombinedTactics());
 		/**
-		 * Adds the SMT PP tactic right after the
-		 * BoundedGoalWithFiniteHypotheses tactic. We used this position for
-		 * performance tests.
+		 * Adds the SMT tactic right after the BoundedGoalWithFiniteHypotheses
+		 * tactic. We used this position for performance tests.
 		 */
 		final int afterBoundedGoalWithFiniteHyps = 5;
-		combinedTactics.add(afterBoundedGoalWithFiniteHyps, makeSMTPPTactic());
+		combinedTactics.add(afterBoundedGoalWithFiniteHyps, makeSMTTactic());
 		final ICombinatorDescriptor combinator = getAutoTacticRegistry()
 				.getCombinatorDescriptor(combinatorId);
-		final ICombinedTacticDescriptor defaultAutoWithSMTPP = combinator
+		final ICombinedTacticDescriptor defaultAutoWithSMT = combinator
 				.combine(combinedTactics, "SMTTactic");
 		/**
 		 * If the SMT profile does not exist yet, stores it in the preferences.
 		 */
-		if (profiles.getEntry(AUTO_TACTIC_SMTPP_PROFILE_ID) == null) {
-			profiles.add(AUTO_TACTIC_SMTPP_PROFILE_ID, defaultAutoWithSMTPP);
+		if (profiles.getEntry(AUTO_TACTIC_SMT_PROFILE_ID) == null) {
+			profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
 			profiles.store();
 		}
 	}

@@ -35,13 +35,13 @@ public class SolverPerfWithVeriT extends CommonSolverRunTests {
 
 	public SolverPerfWithVeriT(final SolverKind solver,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, null, smtlibVersion, !GET_UNSAT_CORE);
+		super(solver, null, USING_VERIT, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_VERIT, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
+		doTest(lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 

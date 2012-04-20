@@ -14,8 +14,8 @@ import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
 import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
-import static org.eventb.smt.core.SMTCore.externalSMTThroughPP;
-import static org.eventb.smt.core.SMTCore.externalSMTThroughVeriT;
+import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
+import static org.eventb.smt.core.SMTCore.externalSMT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
@@ -30,7 +30,6 @@ import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.SequentProver;
-import org.eventb.smt.core.SMTCore;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
@@ -53,8 +52,8 @@ public class AutoTactics {
 	 */
 	private static final String CONFIG_NAME = "configName";
 
-	private static final ITacticDescriptor smtPpTacticDescriptor = getAutoTacticRegistry()
-			.getTacticDescriptor(SMTCore.PLUGIN_ID + ".SMTPP");
+	private static final ITacticDescriptor smtTacticDescriptor = getAutoTacticRegistry()
+			.getTacticDescriptor(PLUGIN_ID + ".SMT");
 
 	/**
 	 * This class is not meant to be instantiated
@@ -63,17 +62,15 @@ public class AutoTactics {
 		//
 	}
 
-	public static class SMTPP implements ITactic {
+	public static class SMT implements ITactic {
 		@Override
 		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughPP(DEFAULT_RESTRICTED_VALUE,
-					DEFAULT_TIMEOUT_DELAY, ALL_SOLVER_CONFIGURATIONS).apply(
-					ptNode, pm);
+			return externalSMT(DEFAULT_RESTRICTED_VALUE, DEFAULT_TIMEOUT_DELAY,
+					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
 		}
 	}
 
-	public static class SMTPPParameterizer implements ITacticParameterizer {
-
+	public static class SMTParameterizer implements ITacticParameterizer {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
 			final boolean restricted = parameters.getBoolean(RESTRICTED);
@@ -82,30 +79,7 @@ public class AutoTactics {
 					.getSolverConfigsPrefs().configNameToId(
 							parameters.getString(CONFIG_NAME));
 
-			return externalSMTThroughPP(restricted, timeOutDelay, configId);
-		}
-	}
-
-	public static class SMTVeriT implements ITactic {
-		@Override
-		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMTThroughVeriT(DEFAULT_RESTRICTED_VALUE,
-					DEFAULT_TIMEOUT_DELAY, ALL_SOLVER_CONFIGURATIONS).apply(
-					ptNode, pm);
-		}
-	}
-
-	public static class SMTVeriTParameterizer implements ITacticParameterizer {
-
-		@Override
-		public ITactic getTactic(IParameterValuation parameters) {
-			final boolean restricted = parameters.getBoolean(RESTRICTED);
-			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY);
-			final String configId = getPreferenceManager()
-					.getSolverConfigsPrefs().configNameToId(
-							parameters.getString(CONFIG_NAME));
-
-			return externalSMTThroughVeriT(restricted, timeOutDelay, configId);
+			return externalSMT(restricted, timeOutDelay, configId);
 		}
 	}
 
@@ -118,8 +92,8 @@ public class AutoTactics {
 		return comb.combine(descs, id);
 	}
 
-	public static ITacticDescriptor makeSMTPPTactic() {
-		return attemptAfterLasso(singletonList(smtPpTacticDescriptor),
+	public static ITacticDescriptor makeSMTTactic() {
+		return attemptAfterLasso(singletonList(smtTacticDescriptor),
 				"attemptAfterLassoId");
 	}
 }

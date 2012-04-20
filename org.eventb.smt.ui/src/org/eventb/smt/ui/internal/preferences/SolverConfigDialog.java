@@ -22,6 +22,7 @@ import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
+import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an
@@ -52,6 +54,7 @@ public class SolverConfigDialog extends Dialog {
 	private static final String CONFIG_NAME_LABEL = "Name";
 	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
+	private static final String TRANSLATOR_LABEL = "Translator";
 	private static final String SMT_LIB_LABEL = "SMT-LIB";
 	private static final String ENABLE_LABEL = "Enable";
 
@@ -143,6 +146,27 @@ public class SolverConfigDialog extends Dialog {
 		argsText.setLayoutData(data);
 
 		/**
+		 * Translation approach
+		 */
+		final Label translatorLabel = new Label(shell, SWT.NONE);
+		translatorLabel.setText(TRANSLATOR_LABEL);
+		data = new GridData();
+		data.horizontalSpan = 1;
+		translatorLabel.setLayoutData(data);
+
+		final Combo translatorCombo = new Combo(shell, getStyle() | DROP_DOWN
+				| READ_ONLY);
+		for (final TranslationApproach translationApproach : TranslationApproach
+				.values()) {
+			translatorCombo.add(translationApproach.toString());
+		}
+		translatorCombo.setText(solverConfig.getTranslationApproach()
+				.toString());
+		data = new GridData(FILL_HORIZONTAL);
+		data.horizontalSpan = 3;
+		translatorCombo.setLayoutData(data);
+
+		/**
 		 * SMT-LIB version
 		 */
 		final Label smtlibLabel = new Label(shell, SWT.NONE);
@@ -189,6 +213,7 @@ public class SolverConfigDialog extends Dialog {
 							executionCheckButton.getSelection(), name,
 							nameToKey.get(solverCombo.getText()),
 							argsText.getText(),
+							parseApproach(translatorCombo.getText()),
 							parseVersion(smtlibCombo.getText()));
 					returnCode = OK;
 					shell.close();

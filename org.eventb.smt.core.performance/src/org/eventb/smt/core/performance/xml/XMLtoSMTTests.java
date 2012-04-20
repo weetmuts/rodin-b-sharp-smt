@@ -10,12 +10,10 @@
 
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertTrue;
 
@@ -43,7 +41,6 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
 import org.eventb.smt.core.performance.xml.utils.LemmaParser;
-import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
@@ -95,8 +92,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SolverKind solver,
 			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		super(solver, Theory.fromNames(data.getTheories()), smtlibVersion,
-				getUnsatCore);
+		super(solver, Theory.fromNames(data.getTheories()), USING_VERIT,
+				smtlibVersion, getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
@@ -404,8 +401,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		if (getPreferenceManager().getSolverConfigsPrefs().getEnabledConfigs()
-				.iterator().next().getSmtlibVersion().equals(V2_0)) {
+		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
 					"SMT-LIB 2.0 is not handled by the veriT approach yet",
 					false);
@@ -420,8 +416,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 
 			name = name + "vt";
-			doTest(USING_VERIT, name, data.getHypotheses(), data.getGoal(),
-					data.getTe(), !TRIVIAL, VALID, debugBuilder);
+			doTest(name, data.getHypotheses(), data.getGoal(), data.getTe(),
+					!TRIVIAL, VALID, debugBuilder);
 		}
 	}
 
@@ -438,8 +434,8 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 		debugBuilder.append("Testing lemma (PP approach): ").append(name);
 		debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 
-		doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
-				data.getTe(), !TRIVIAL, VALID, debugBuilder);
+		doTest(name, data.getHypotheses(), data.getGoal(), data.getTe(),
+				!TRIVIAL, VALID, debugBuilder);
 	}
 
 	/**
@@ -447,8 +443,6 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		final ISolverConfig solverConfig = getPreferenceManager()
-				.getSolverConfigsPrefs().getEnabledConfigs().iterator().next();
 		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(
 					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",
@@ -464,7 +458,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 
 			if (solverConfig.getSolverId().equals(VERIT)
 					|| solverConfig.getSolverId().equals(Z3)) {
-				doTest(USING_PP, name, data.getHypotheses(), data.getGoal(),
+				doTest(name, data.getHypotheses(), data.getGoal(),
 						data.getTe(), VALID, data.getNeededHypotheses(),
 						data.isGoalNeeded(), debugBuilder);
 			} else {

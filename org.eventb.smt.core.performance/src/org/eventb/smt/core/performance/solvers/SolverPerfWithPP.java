@@ -32,13 +32,13 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public SolverPerfWithPP(SolverKind solverKind, SMTLIBVersion smtlibVersion) {
-		super(solverKind, null, smtlibVersion, !GET_UNSAT_CORE);
+		super(solverKind, null, USING_PP, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
+		doTest(lemmaName, inputHyps, inputGoal, te, !TRIVIAL,
 				expectedSolverResult);
 	}
 
@@ -47,8 +47,8 @@ public class SolverPerfWithPP extends CommonSolverRunTests {
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCore, final boolean expectedGoalNeed)
 			throws IllegalArgumentException {
-		doTest(USING_PP, lemmaName, inputHyps, inputGoal, te,
-				expectedSolverResult, expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
+		doTest(lemmaName, inputHyps, inputGoal, te, expectedSolverResult,
+				expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
 	}
 
 	@Test(timeout = 3000)

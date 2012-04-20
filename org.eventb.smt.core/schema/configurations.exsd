@@ -82,6 +82,14 @@ org.myplace.myplugin.configid where configid is the identifier of this configura
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="translator" type="string">
+            <annotation>
+               <documentation>
+                  The &quot;translator&quot; which will be used by this configuration to translate the event-B sequents into SMT-LIB benchmarks. This field is called &quot;translator&quot; for convenience, but it is a shortcut of &quot;translation approach built on [a specified] translator&quot;. There is two such translator available: &quot;PP&quot; or &quot;veriT&quot;.
+Default value: &quot;PP&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="smt-lib" type="string">
             <annotation>
                <documentation>

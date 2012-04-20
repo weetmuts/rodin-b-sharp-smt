@@ -22,6 +22,8 @@ import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -84,36 +86,68 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final ISMTSolver LAST_Z3 = newSolver(LAST_Z3_BIN,
 			LAST_Z3_BIN, Z3, makeSolverPath(LAST_Z3_BIN));
 
-	public static final ISolverConfig ALTERGO_SMT1 = makeConfig(
-			LAST_ALTERGO_BIN, LAST_ALTERGO, "", V1_2);
-	public static final ISolverConfig ALTERGO_SMT2 = makeConfig(
-			LAST_ALTERGO_BIN, LAST_ALTERGO, "", V2_0);
-	public static final ISolverConfig CVC3_SMT1 = makeConfig(LAST_CVC3_BIN,
-			LAST_CVC3, "-lang smt", V1_2);
-	public static final ISolverConfig CVC3_SMT2 = makeConfig(LAST_CVC3_BIN,
-			LAST_CVC3, "-lang smt2", V2_0);
-	public static final ISolverConfig CVC4_SMT1 = makeConfig(LAST_CVC4_BIN,
-			LAST_CVC4, "--lang smt", V1_2);
-	public static final ISolverConfig CVC4_SMT2 = makeConfig(LAST_CVC4_BIN,
-			LAST_CVC4, "--lang smt2", V2_0);
-	public static final ISolverConfig MATHSAT5_SMT1 = makeConfig(
-			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", V1_2);
-	public static final ISolverConfig MATHSAT5_SMT2 = makeConfig(
-			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", V2_0);
-	public static final ISolverConfig OPENSMT_SMT1 = makeConfig(
-			LAST_OPENSMT_BIN, LAST_OPENSMT, "", V1_2);
-	public static final ISolverConfig OPENSMT_SMT2 = makeConfig(
-			LAST_OPENSMT_BIN, LAST_OPENSMT, "", V2_0);
-	public static final ISolverConfig VERIT_SMT1 = makeConfig(LAST_VERIT_BIN,
-			LAST_VERIT, "--enable-e --max-time=2.9", V1_2);
-	public static final ISolverConfig VERIT_SMT2 = makeConfig(LAST_VERIT_BIN,
-			LAST_VERIT,
+	public static final ISolverConfig ALTERGO_PP_SMT1 = makeConfig(
+			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_PP, V1_2);
+	public static final ISolverConfig ALTERGO_VERIT_SMT1 = makeConfig(
+			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_VERIT, V1_2);
+	public static final ISolverConfig ALTERGO_PP_SMT2 = makeConfig(
+			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_PP, V2_0);
+	public static final ISolverConfig ALTERGO_VERIT_SMT2 = makeConfig(
+			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_VERIT, V2_0);
+	public static final ISolverConfig CVC3_PP_SMT1 = makeConfig(LAST_CVC3_BIN,
+			LAST_CVC3, "-lang smt", USING_PP, V1_2);
+	public static final ISolverConfig CVC3_VERIT_SMT1 = makeConfig(
+			LAST_CVC3_BIN, LAST_CVC3, "-lang smt", USING_VERIT, V1_2);
+	public static final ISolverConfig CVC3_PP_SMT2 = makeConfig(LAST_CVC3_BIN,
+			LAST_CVC3, "-lang smt2", USING_PP, V2_0);
+	public static final ISolverConfig CVC3_VERIT_SMT2 = makeConfig(
+			LAST_CVC3_BIN, LAST_CVC3, "-lang smt2", USING_VERIT, V2_0);
+	public static final ISolverConfig CVC4_PP_SMT1 = makeConfig(LAST_CVC4_BIN,
+			LAST_CVC4, "--lang smt", USING_PP, V1_2);
+	public static final ISolverConfig CVC4_VERIT_SMT1 = makeConfig(
+			LAST_CVC4_BIN, LAST_CVC4, "--lang smt", USING_VERIT, V1_2);
+	public static final ISolverConfig CVC4_PP_SMT2 = makeConfig(LAST_CVC4_BIN,
+			LAST_CVC4, "--lang smt2", USING_PP, V2_0);
+	public static final ISolverConfig CVC4_VERIT_SMT2 = makeConfig(
+			LAST_CVC4_BIN, LAST_CVC4, "--lang smt2", USING_VERIT, V2_0);
+	public static final ISolverConfig MATHSAT5_PP_SMT1 = makeConfig(
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_PP, V1_2);
+	public static final ISolverConfig MATHSAT5_VERIT_SMT1 = makeConfig(
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_VERIT, V1_2);
+	public static final ISolverConfig MATHSAT5_PP_SMT2 = makeConfig(
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_PP, V2_0);
+	public static final ISolverConfig MATHSAT5_VERIT_SMT2 = makeConfig(
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_VERIT, V2_0);
+	public static final ISolverConfig OPENSMT_PP_SMT1 = makeConfig(
+			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_PP, V1_2);
+	public static final ISolverConfig OPENSMT_VERIT_SMT1 = makeConfig(
+			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_VERIT, V1_2);
+	public static final ISolverConfig OPENSMT_PP_SMT2 = makeConfig(
+			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_PP, V2_0);
+	public static final ISolverConfig OPENSMT_VERIT_SMT2 = makeConfig(
+			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_VERIT, V2_0);
+	public static final ISolverConfig VERIT_PP_SMT1 = makeConfig(
+			LAST_VERIT_BIN, LAST_VERIT, "--enable-e --max-time=2.9", USING_PP,
+			V1_2);
+	public static final ISolverConfig VERIT_VERIT_SMT1 = makeConfig(
+			LAST_VERIT_BIN, LAST_VERIT, "--enable-e --max-time=2.9",
+			USING_VERIT, V1_2);
+	public static final ISolverConfig VERIT_PP_SMT2 = makeConfig(
+			LAST_VERIT_BIN, LAST_VERIT,
 			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
-			V2_0);
-	public static final ISolverConfig Z3_SMT1 = makeConfig(LAST_Z3_BIN,
-			LAST_Z3, "", V1_2);
-	public static final ISolverConfig Z3_SMT2 = makeConfig(LAST_Z3_BIN,
-			LAST_Z3, "-smt2", V2_0);
+			USING_PP, V2_0);
+	public static final ISolverConfig VERIT_VERIT_SMT2 = makeConfig(
+			LAST_VERIT_BIN, LAST_VERIT,
+			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
+			USING_VERIT, V2_0);
+	public static final ISolverConfig Z3_PP_SMT1 = makeConfig(LAST_Z3_BIN,
+			LAST_Z3, "", USING_PP, V1_2);
+	public static final ISolverConfig Z3_VERIT_SMT1 = makeConfig(LAST_Z3_BIN,
+			LAST_Z3, "", USING_VERIT, V1_2);
+	public static final ISolverConfig Z3_PP_SMT2 = makeConfig(LAST_Z3_BIN,
+			LAST_Z3, "-smt2", USING_PP, V2_0);
+	public static final ISolverConfig Z3_VERIT_SMT2 = makeConfig(LAST_Z3_BIN,
+			LAST_Z3, "-smt2", USING_VERIT, V2_0);
 
 	private static final NullProofMonitor MONITOR = new NullProofMonitor();
 
@@ -170,23 +204,26 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	public CommonSolverRunTests(final SolverKind solverKind,
-			final Set<Theory> theories, final SMTLIBVersion smtlibVersion,
-			final boolean getUnsatCore) {
+			final Set<Theory> theories,
+			final TranslationApproach translationApproach,
+			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
 		setTranslationPreferences();
 		this.theories = theories;
 		if (getUnsatCore && solverKind.equals(SolverKind.VERIT)) {
 			setPreferencesForBundledVeriT();
 		} else {
-			setSolverPreferences(solverKind, smtlibVersion);
+			setSolverPreferences(solverKind, translationApproach, smtlibVersion);
 		}
 	}
 
 	private static ISolverConfig makeConfig(final String id,
 			final ISMTSolver solver, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		final String newID = id
+		final String newID = id + "-" + translationApproach.toString()
 				+ (smtlibVersion.equals(V1_2) ? "-SMT1" : "-SMT2");
-		return newConfig(newID, newID, solver.getID(), args, smtlibVersion);
+		return newConfig(newID, newID, solver.getID(), args,
+				translationApproach, smtlibVersion);
 	}
 
 	private static IPath makeSolverPath(final String binaryName) {
@@ -209,7 +246,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				.getTranslationPrefs();
 		translationPrefs.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH
 				.toOSString());
-		translationPrefs.setVeriTPath(LAST_VERIT);
 		translationPrefs.save();
 	}
 
@@ -218,102 +254,183 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * 
 	 */
 	protected void setSolverPreferences(final SolverKind kind,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		switch (smtlibVersion) {
-		case V1_2:
-			switch (kind) {
-			case ALT_ERGO:
-				solverConfig = ALTERGO_SMT1;
-				solver = LAST_ALTERGO;
-				break;
+		if (translationApproach.equals(TranslationApproach.USING_VERIT)) {
+			if (smtlibVersion.equals(V1_2)) {
+				switch (kind) {
+				case ALT_ERGO:
+					solverConfig = ALTERGO_VERIT_SMT1;
+					solver = LAST_ALTERGO;
+					break;
 
-			case CVC3:
-				solverConfig = CVC3_SMT1;
-				solver = LAST_CVC3;
-				break;
+				case CVC3:
+					solverConfig = CVC3_VERIT_SMT1;
+					solver = LAST_CVC3;
+					break;
 
-			case CVC4:
-				solverConfig = CVC4_SMT1;
-				solver = LAST_CVC4;
-				break;
+				case CVC4:
+					solverConfig = CVC4_VERIT_SMT1;
+					solver = LAST_CVC4;
+					break;
 
-			case MATHSAT5:
-				solverConfig = MATHSAT5_SMT1;
-				solver = LAST_MATHSAT5;
-				break;
+				case MATHSAT5:
+					solverConfig = MATHSAT5_VERIT_SMT1;
+					solver = LAST_MATHSAT5;
+					break;
 
-			case OPENSMT:
-				solverConfig = OPENSMT_SMT1;
-				solver = LAST_OPENSMT;
-				break;
+				case OPENSMT:
+					solverConfig = OPENSMT_VERIT_SMT1;
+					solver = LAST_OPENSMT;
+					break;
 
-			case VERIT:
-				solverConfig = VERIT_SMT1;
-				solver = LAST_VERIT;
-				break;
+				case VERIT:
+					solverConfig = VERIT_VERIT_SMT1;
+					solver = LAST_VERIT;
+					break;
 
-			case Z3:
-				solverConfig = Z3_SMT1;
-				solver = LAST_Z3;
-				break;
+				case Z3:
+					solverConfig = Z3_VERIT_SMT1;
+					solver = LAST_Z3;
+					break;
 
-			default:
-				// TODO
-				break;
+				default:
+					// TODO
+					break;
+				}
+			} else {
+				/**
+				 * smtlibVersion.equals(V2_0)
+				 */
+				switch (kind) {
+				case ALT_ERGO:
+					solverConfig = ALTERGO_VERIT_SMT2;
+					solver = LAST_ALTERGO;
+					break;
+
+				case CVC3:
+					solverConfig = CVC3_VERIT_SMT2;
+					solver = LAST_CVC3;
+					break;
+
+				case CVC4:
+					solverConfig = CVC4_VERIT_SMT2;
+					solver = LAST_CVC4;
+					break;
+
+				case MATHSAT5:
+					solverConfig = MATHSAT5_VERIT_SMT2;
+					solver = LAST_MATHSAT5;
+					break;
+
+				case OPENSMT:
+					solverConfig = OPENSMT_VERIT_SMT2;
+					solver = LAST_OPENSMT;
+					break;
+
+				case VERIT:
+					solverConfig = VERIT_VERIT_SMT2;
+					solver = LAST_VERIT;
+					break;
+
+				case Z3:
+					solverConfig = Z3_VERIT_SMT2;
+					solver = LAST_Z3;
+					break;
+
+				default:
+					// TODO
+					break;
+				}
 			}
-			break;
+		} else {
+			if (smtlibVersion.equals(V1_2)) {
+				switch (kind) {
+				case ALT_ERGO:
+					solverConfig = ALTERGO_PP_SMT1;
+					solver = LAST_ALTERGO;
+					break;
 
-		default:
-			switch (kind) {
-			case ALT_ERGO:
-				solverConfig = ALTERGO_SMT2;
-				solver = LAST_ALTERGO;
-				break;
+				case CVC3:
+					solverConfig = CVC3_PP_SMT1;
+					solver = LAST_CVC3;
+					break;
 
-			case CVC3:
-				solverConfig = CVC3_SMT2;
-				solver = LAST_CVC3;
-				break;
+				case CVC4:
+					solverConfig = CVC4_PP_SMT1;
+					solver = LAST_CVC4;
+					break;
 
-			case CVC4:
-				solverConfig = CVC4_SMT2;
-				solver = LAST_CVC4;
-				break;
+				case MATHSAT5:
+					solverConfig = MATHSAT5_PP_SMT1;
+					solver = LAST_MATHSAT5;
+					break;
 
-			case MATHSAT5:
-				solverConfig = MATHSAT5_SMT2;
-				solver = LAST_MATHSAT5;
-				break;
+				case OPENSMT:
+					solverConfig = OPENSMT_PP_SMT1;
+					solver = LAST_OPENSMT;
+					break;
 
-			case OPENSMT:
-				solverConfig = OPENSMT_SMT2;
-				solver = LAST_OPENSMT;
-				break;
+				case VERIT:
+					solverConfig = VERIT_PP_SMT1;
+					solver = LAST_VERIT;
+					break;
 
-			case VERIT:
-				solverConfig = VERIT_SMT2;
-				solver = LAST_VERIT;
-				break;
+				case Z3:
+					solverConfig = Z3_PP_SMT1;
+					solver = LAST_Z3;
+					break;
 
-			case Z3:
-				solverConfig = Z3_SMT2;
-				solver = LAST_Z3;
-				break;
+				default:
+					// TODO
+					break;
+				}
+			} else {
+				/**
+				 * smtlibVersion.equals(V2_0)
+				 */
+				switch (kind) {
+				case ALT_ERGO:
+					solverConfig = ALTERGO_PP_SMT2;
+					solver = LAST_ALTERGO;
+					break;
 
-			default:
-				// TODO
-				break;
+				case CVC3:
+					solverConfig = CVC3_PP_SMT2;
+					solver = LAST_CVC3;
+					break;
+
+				case CVC4:
+					solverConfig = CVC4_PP_SMT2;
+					solver = LAST_CVC4;
+					break;
+
+				case MATHSAT5:
+					solverConfig = MATHSAT5_PP_SMT2;
+					solver = LAST_MATHSAT5;
+					break;
+
+				case OPENSMT:
+					solverConfig = OPENSMT_PP_SMT2;
+					solver = LAST_OPENSMT;
+					break;
+
+				case VERIT:
+					solverConfig = VERIT_PP_SMT2;
+					solver = LAST_VERIT;
+					break;
+
+				case Z3:
+					solverConfig = Z3_PP_SMT2;
+					solver = LAST_Z3;
+					break;
+
+				default:
+					// TODO
+					break;
+				}
 			}
-			break;
 		}
-	}
-
-	protected void setSolverV1_2Preferences(final SolverKind kind) {
-		setSolverPreferences(kind, V1_2);
-	}
-
-	protected void setSolverV2_0Preferences(final SolverKind kind) {
-		setSolverPreferences(kind, V2_0);
 	}
 
 	protected void setPreferencesForBundledVeriT() {
@@ -391,11 +508,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	private void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<Predicate> parsedHypotheses,
-			final Predicate parsedGoal, final boolean expectedTrivial,
-			final boolean expectedSolverResult, final StringBuilder debugBuilder)
-			throws IllegalArgumentException {
+	private void doTest(final String lemmaName,
+			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
+			final boolean expectedTrivial, final boolean expectedSolverResult,
+			final StringBuilder debugBuilder) throws IllegalArgumentException {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (final Predicate parsedHypothesis : parsedHypotheses) {
@@ -408,7 +524,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SMTProverCall smtProverCall;
 
 		try {
-			switch (translationApproach) {
+			switch (solverConfig.getTranslationApproach()) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
@@ -430,8 +546,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			smtProverCall.run();
 
 			printPerf(debugBuilder, lemmaName, solverConfig.getID(),
-					solverConfig.getSmtlibVersion(), translationApproach,
-					smtProverCall);
+					solverConfig.getSmtlibVersion(),
+					solverConfig.getTranslationApproach(), smtProverCall);
 
 			assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
 			assertEquals(
@@ -443,14 +559,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
-			final TranslationApproach translationApproach,
 			final String lemmaName, final ISimpleSequent sequent,
 			final boolean expectedSolverResult, final StringBuilder debugBuilder) {
 		SMTProverCall smtProverCall = null;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
 		try {
-			switch (translationApproach) {
+			switch (solverConfig.getTranslationApproach()) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
@@ -485,7 +600,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
-			final TranslationApproach translationApproach,
 			final String lemmaName, final ISimpleSequent sequent,
 			final ITypeEnvironment te, final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
@@ -494,7 +608,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final StringBuilder errorBuilder = new StringBuilder("");
 
 		try {
-			switch (translationApproach) {
+			switch (solverConfig.getTranslationApproach()) {
 			case USING_VERIT:
 				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
@@ -600,12 +714,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 
-	protected void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<String> inputHyps,
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedTrivial, final boolean expectedSolverResult) {
-		doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
-				expectedTrivial, expectedSolverResult, new StringBuilder());
+		doTest(lemmaName, inputHyps, inputGoal, te, expectedTrivial,
+				expectedSolverResult, new StringBuilder());
 	}
 
 	/**
@@ -621,8 +734,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	 * @param expectedSolverResult
 	 *            the result expected to be produced by the solver call
 	 */
-	protected void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<String> inputHyps,
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedTrivial, final boolean expectedSolverResult,
 			final StringBuilder debugBuilder) {
@@ -634,24 +746,21 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final Predicate goal = parse(inputGoal, te);
 
-		doTest(translationApproach, lemmaName, hypotheses, goal,
-				expectedTrivial, expectedSolverResult, debugBuilder);
+		doTest(lemmaName, hypotheses, goal, expectedTrivial,
+				expectedSolverResult, debugBuilder);
 	}
 
-	protected void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<String> inputHyps,
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed, final boolean perf) {
 		if (perf) {
-			doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
-					expectedSolverResult, expectedUnsatCoreStr,
-					expectedGoalNeed, new StringBuilder());
+			doTest(lemmaName, inputHyps, inputGoal, te, expectedSolverResult,
+					expectedUnsatCoreStr, expectedGoalNeed, new StringBuilder());
 		} else {
-			doTest(translationApproach, lemmaName, inputHyps, inputGoal, te,
-					expectedSolverResult, expectedUnsatCoreStr,
-					expectedGoalNeed);
+			doTest(lemmaName, inputHyps, inputGoal, te, expectedSolverResult,
+					expectedUnsatCoreStr, expectedGoalNeed);
 		}
 	}
 
@@ -674,8 +783,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	protected void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<String> inputHyps,
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
@@ -700,27 +808,28 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final String testedSolverConfigId = solverConfig.getID();
+		final TranslationApproach testedTranslationApproach = solverConfig
+				.getTranslationApproach();
 		final SMTLIBVersion testedSmtlibVersion = solverConfig
 				.getSmtlibVersion();
 
 		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, ff);
 		final SMTProverCallTestResult iter2Result = smtProverCallTest(
-				"Unsat core extraction", translationApproach, lemmaName,
-				sequent, te, expectedSolverResult, expectedHypotheses,
-				expectedGoalNeed, debugBuilder);
+				"Unsat core extraction", lemmaName, sequent, te,
+				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
+				debugBuilder);
 		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
 		if (!iter2ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter2ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-					testedSmtlibVersion, translationApproach,
+					testedSmtlibVersion, testedTranslationApproach,
 					iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
 	}
 
-	protected void doTest(final TranslationApproach translationApproach,
-			final String lemmaName, final List<String> inputHyps,
+	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
@@ -744,6 +853,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final String testedSolverConfigId = solverConfig.getID();
+		final TranslationApproach testedTranslationApproach = solverConfig
+				.getTranslationApproach();
 		final SMTLIBVersion testedSmtlibVersion = solverConfig
 				.getSmtlibVersion();
 
@@ -758,14 +869,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		ISimpleSequent sequent = SimpleSequents.make(expectedHypotheses,
 				goalXML, ff);
 		final SMTProverCallTestResult iter1Result = smtProverCallTest("Iter 1",
-				translationApproach, lemmaName, sequent, te,
-				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
-				debugBuilder);
+				lemmaName, sequent, te, expectedSolverResult,
+				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter1ErrorBuffer = iter1Result.getErrorBuffer().toString();
 		if (!iter1ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter1ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-					testedSmtlibVersion, translationApproach,
+					testedSmtlibVersion, testedTranslationApproach,
 					iter1Result.getSmtProverCall());
 			fail(iter1ErrorBuffer);
 		}
@@ -778,14 +888,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		debugBuilder.append("Iter 2\n");
 		sequent = SimpleSequents.make(parsedHypotheses, parsedGoal, ff);
 		final SMTProverCallTestResult iter2Result = smtProverCallTest("Iter 2",
-				translationApproach, lemmaName, sequent, te,
-				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
-				debugBuilder);
+				lemmaName, sequent, te, expectedSolverResult,
+				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
 		if (!iter2ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter2ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-					testedSmtlibVersion, translationApproach,
+					testedSmtlibVersion, testedTranslationApproach,
 					iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
@@ -808,9 +917,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				.isGoalNeeded() ? parsedGoal : parse("⊥", te));
 		sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 		final SMTProverCallTestResult iter3Result = smtProverCallTest("Iter 3",
-				translationApproach, lemmaName, sequent, te,
-				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
-				debugBuilder);
+				lemmaName, sequent, te, expectedSolverResult,
+				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter3ErrorBuffer = iter3Result.getErrorBuffer().toString();
 		if (!iter3ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter3ErrorBuffer).append("\n");
@@ -819,7 +927,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			 * we just want the unsat core to be refused
 			 */
 			printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-					testedSmtlibVersion, translationApproach,
+					testedSmtlibVersion, testedTranslationApproach,
 					iter2Result.getSmtProverCall());
 			fail(iter3ErrorBuffer);
 		}
@@ -835,11 +943,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		final String solverId = solverConfig.getSolverId();
 		if (!solverId.equals(LAST_Z3.getID())) {
-			setSolverPreferences(Z3, V2_0);
+			setSolverPreferences(Z3, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
-					"z3 unsat-core checking", translationApproach, lemmaName,
-					sequent, expectedSolverResult, debugBuilder);
+					"z3 unsat-core checking", lemmaName, sequent,
+					expectedSolverResult, debugBuilder);
 			final String z3UCCheckErrorBuffer = z3UCCheckResult
 					.getErrorBuffer().toString();
 			if (!z3UCCheckErrorBuffer.isEmpty()) {
@@ -849,17 +957,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-						testedSmtlibVersion, translationApproach,
+						testedSmtlibVersion, testedTranslationApproach,
 						iter3Result.getSmtProverCall());
 				fail(z3UCCheckErrorBuffer);
 			}
 		}
 		if (!solverId.equals(LAST_CVC3.getID())) {
-			setSolverPreferences(CVC3, V2_0);
+			setSolverPreferences(CVC3, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
-					"cvc3 unsat-core checking", translationApproach, lemmaName,
-					sequent, expectedSolverResult, debugBuilder);
+					"cvc3 unsat-core checking", lemmaName, sequent,
+					expectedSolverResult, debugBuilder);
 			final String cvc3UCCheckErrorBuffer = cvc3UCCheckResult
 					.getErrorBuffer().toString();
 			if (!cvc3UCCheckErrorBuffer.isEmpty()) {
@@ -869,17 +977,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-						testedSmtlibVersion, translationApproach,
+						testedSmtlibVersion, testedTranslationApproach,
 						iter3Result.getSmtProverCall());
 				fail(cvc3UCCheckErrorBuffer);
 			}
 		}
 		if (!solverId.equals(LAST_ALTERGO.getID())) {
-			setSolverPreferences(ALT_ERGO, V2_0);
+			setSolverPreferences(ALT_ERGO, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
-					"alt-ergo unsat-core checking", translationApproach,
-					lemmaName, sequent, expectedSolverResult, debugBuilder);
+					"alt-ergo unsat-core checking", lemmaName, sequent,
+					expectedSolverResult, debugBuilder);
 			final String altergoUCCheckErrorBuffer = altergoUCCheckResult
 					.getErrorBuffer().toString();
 			if (!altergoUCCheckErrorBuffer.isEmpty()) {
@@ -889,17 +997,17 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-						testedSmtlibVersion, translationApproach,
+						testedSmtlibVersion, testedTranslationApproach,
 						iter3Result.getSmtProverCall());
 				fail(altergoUCCheckErrorBuffer);
 			}
 		}
 		if (!solverId.equals(LAST_VERIT.getID())) {
-			setSolverPreferences(VERIT, V2_0);
+			setSolverPreferences(VERIT, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
-					"veriT unsat-core checking", translationApproach,
-					lemmaName, sequent, expectedSolverResult, debugBuilder);
+					"veriT unsat-core checking", lemmaName, sequent,
+					expectedSolverResult, debugBuilder);
 			final String veritUCCheckErrorBuffer = veritUCCheckResult
 					.getErrorBuffer().toString();
 			if (!veritUCCheckErrorBuffer.isEmpty()) {
@@ -909,7 +1017,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-						testedSmtlibVersion, translationApproach,
+						testedSmtlibVersion, testedTranslationApproach,
 						iter3Result.getSmtProverCall());
 				fail(veritUCCheckErrorBuffer);
 			}
@@ -918,7 +1026,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		unsatCoreChecked = true;
 
 		printPerf(debugBuilder, lemmaName, testedSolverConfigId,
-				testedSmtlibVersion, translationApproach,
+				testedSmtlibVersion, testedTranslationApproach,
 				iter3Result.getSmtProverCall());
 	}
 

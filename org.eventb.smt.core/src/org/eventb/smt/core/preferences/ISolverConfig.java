@@ -10,6 +10,7 @@
 package org.eventb.smt.core.preferences;
 
 import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * This interface represents a solver configuration for the SMT-Solver Plug-in.
@@ -55,6 +56,13 @@ public interface ISolverConfig {
 	 * @return the arguments of this configuration solver
 	 */
 	public String getArgs();
+
+	/**
+	 * Returns the SMT translation approach used by this configuration.
+	 * 
+	 * @return the translation approach of this configuration
+	 */
+	public TranslationApproach getTranslationApproach();
 
 	/**
 	 * Returns the version of SMT-LIB target by the SMT translation.

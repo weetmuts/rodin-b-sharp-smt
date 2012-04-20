@@ -20,15 +20,15 @@ import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getS
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.util.List;
 
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eventb.core.seqprover.IReasoner;
+import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.core.seqprover.xprover.XProverReasoner2;
 import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
@@ -39,7 +39,6 @@ import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 import org.eventb.smt.core.preferences.ITranslationPreferences;
-import org.eventb.smt.core.translation.TranslationApproach;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -116,8 +115,8 @@ public class SMTProversCore extends Plugin {
 		getClass().getClassLoader().setDefaultAssertionStatus(true);
 	}
 
-	public static ITactic externalSMT(final TranslationApproach approach,
-			final boolean restricted, final long timeOutDelay, String configId) {
+	public static ITactic externalSMT(final boolean restricted,
+			final long timeOutDelay, String configId) {
 		if (configId == null) {
 			configId = ALL_SOLVER_CONFIGURATIONS;
 		}
@@ -129,11 +128,10 @@ public class SMTProversCore extends Plugin {
 				final int nbSolverConfigs = enabledConfigs.size();
 				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
 				for (int i = 0; i < nbSolverConfigs; i++) {
-					final XProverReasoner2 smtReasoner = approach
-							.equals(USING_PP) ? new ExternalSMTThroughPP()
-							: new ExternalSMTThroughVeriT();
-					smtTactics[i] = reasonerTac(smtReasoner, new SMTInput(
-							restricted, timeOutDelay, enabledConfigs.get(i)));
+					final IReasoner smtReasoner = new ExternalSMT();
+					final IReasonerInput smtInput = new SMTInput(restricted,
+							timeOutDelay, enabledConfigs.get(i));
+					smtTactics[i] = reasonerTac(smtReasoner, smtInput);
 				}
 				return composeUntilSuccess(smtTactics);
 			} else {
@@ -145,11 +143,10 @@ public class SMTProversCore extends Plugin {
 				final ISolverConfig config = getPreferenceManager()
 						.getSolverConfigsPrefs().getSolverConfig(configId);
 				if (config.isEnabled()) {
-					final XProverReasoner2 smtReasoner = approach
-							.equals(USING_PP) ? new ExternalSMTThroughPP()
-							: new ExternalSMTThroughVeriT();
-					return reasonerTac(smtReasoner, new SMTInput(restricted,
-							timeOutDelay, config));
+					final IReasoner smtReasoner = new ExternalSMT();
+					final IReasonerInput smtInput = new SMTInput(restricted,
+							timeOutDelay, config);
+					return reasonerTac(smtReasoner, smtInput);
 				} else {
 					return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
 				}

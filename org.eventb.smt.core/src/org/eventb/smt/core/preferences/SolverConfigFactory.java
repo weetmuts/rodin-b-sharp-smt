@@ -14,6 +14,7 @@ import static org.eventb.smt.core.preferences.PreferenceManager.freshCopyName;
 
 import org.eventb.smt.core.internal.preferences.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * This factory provides method to construct solver configurations instances.
@@ -27,6 +28,7 @@ public class SolverConfigFactory {
 	public static final int NAME_COL = SolverConfiguration.NAME_COL;
 	public static final int SOLVER_COL = SolverConfiguration.SOLVER_ID_COL;
 	public static final int ARGS_COL = SolverConfiguration.ARGS_COL;
+	public static final int APPROACH_COL = SolverConfiguration.TRANSLATION_APPROACH_COL;
 	public static final int SMTLIB_COL = SolverConfiguration.SMTLIB_VERSION_COL;
 	public static final int EDITABLE_COL = SolverConfiguration.EDITABLE_COL;
 
@@ -40,15 +42,18 @@ public class SolverConfigFactory {
 
 	public static final ISolverConfig newConfig(final String id,
 			final String name, final String solverId, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		return new SolverConfiguration(id, name, solverId, args, smtlibVersion);
+		return new SolverConfiguration(id, name, solverId, args,
+				translationApproach, smtlibVersion);
 	}
 
 	public static final ISolverConfig newConfig(final String id,
 			final boolean enabled, final String name, final String solverId,
-			final String args, final SMTLIBVersion smtlibVersion) {
+			final String args, final TranslationApproach translationApproach,
+			final SMTLIBVersion smtlibVersion) {
 		return new SolverConfiguration(id, enabled, name, solverId, args,
-				smtlibVersion);
+				translationApproach, smtlibVersion);
 	}
 
 	public static ISolverConfig newConfig(final ISolverConfig configToDuplicate) {
@@ -64,6 +69,7 @@ public class SolverConfigFactory {
 
 		return new SolverConfiguration(freshID, freshCopyName,
 				configToDuplicate.getSolverId(), configToDuplicate.getArgs(),
+				configToDuplicate.getTranslationApproach(),
 				configToDuplicate.getSmtlibVersion());
 	}
 }

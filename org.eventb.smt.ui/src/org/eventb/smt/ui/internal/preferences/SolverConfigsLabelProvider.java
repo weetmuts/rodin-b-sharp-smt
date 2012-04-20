@@ -12,6 +12,7 @@ package org.eventb.smt.ui.internal.preferences;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SOLVER;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.APPROACH_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ENABLED_COL;
@@ -51,6 +52,8 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 			return solver.getName();
 		case ARGS_COL:
 			return config.getArgs();
+		case APPROACH_COL:
+			return config.getTranslationApproach().toString();
 		case SMTLIB_COL:
 			return config.getSmtlibVersion().toString();
 		case EDITABLE_COL:

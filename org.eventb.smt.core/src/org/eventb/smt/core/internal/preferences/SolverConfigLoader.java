@@ -15,6 +15,7 @@ import static org.eventb.smt.core.internal.preferences.SolverConfiguration.EDITA
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
 import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
+import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -51,6 +52,8 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		final String name = configurationElement.getAttribute("name");
 		final String solverId = configurationElement.getAttribute("solverid");
 		final String args = configurationElement.getAttribute("args");
+		final String translationApproach = configurationElement
+				.getAttribute("translator");
 		final String smtlibVersion = configurationElement
 				.getAttribute("smt-lib");
 
@@ -61,6 +64,7 @@ public class SolverConfigLoader extends AbstractLoader<SolverConfiguration> {
 		checkSolverId(solverId);
 		checkArgs(args);
 		return new SolverConfiguration(id, name, solverId, args,
+				parseApproach(translationApproach),
 				parseVersion(smtlibVersion), !EDITABLE);
 	}
 

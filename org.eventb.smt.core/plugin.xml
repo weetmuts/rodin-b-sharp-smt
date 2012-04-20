@@ -6,22 +6,17 @@
    <extension
          point="org.eventb.core.seqprover.reasoners">
       <reasoner
-            class="org.eventb.smt.core.internal.provers.ExternalSMTThroughPP"
-            id="externalSMTPP"
-            name="%externalSMTPP.name">
-      </reasoner>
-      <reasoner
-            class="org.eventb.smt.core.internal.provers.ExternalSMTThroughVeriT"
-            id="externalSMTVeriT"
-            name="%externalSMTVeriT.name">
+            class="org.eventb.smt.core.internal.provers.ExternalSMT"
+            id="externalSMT"
+            name="%externalSMT.name">
       </reasoner>
    </extension>
    <extension
          point="org.eventb.core.seqprover.tacticParameterizers">
       <parameterizer
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTPPParameterizer"
-            id="SMTPPParam"
-            name="%SMTPPParam.name">
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTParameterizer"
+            id="SMTParam"
+            name="%SMTParam.name">
          <tacticParameter
                default="true"
                description="%restrictedDesc"
@@ -41,44 +36,14 @@
                type="String">
          </tacticParameter>
       </parameterizer>
-      <parameterizer
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTVeriTParameterizer"
-            id="SMTVeriTParam"
-            name="%SMTVeriTParam.name">
-         <tacticParameter
-               default="true"
-               description="%restrictedDesc"
-               label="restricted"
-               type="Boolean">
-         </tacticParameter>
-         <tacticParameter
-               default="1000"
-               description="%timeoutDesc"
-               label="timeout"
-               type="Long">
-         </tacticParameter>
-         <tacticParameter
-         	   default="all"
-               description="%configNameDesc"
-               label="configName"
-               type="String">
-         </tacticParameter>
-      </parameterizer>
    </extension>
    <extension
          point="org.eventb.core.seqprover.autoTactics">
       <autoTactic
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTPP"
-            description="%SMTPP.description"
-            id="SMTPP"
-            name="%SMTPP.name">
-      </autoTactic>
-      <autoTactic
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTVeriT"
-            description="%SMTVeriT.description"
-            id="SMTVeriT"
-            name="%SMTVeriT.name">
+            class="org.eventb.smt.core.internal.provers.AutoTactics$SMT"
+            description="%SMT.description"
+            id="SMT"
+            name="%SMT.name">
       </autoTactic>
    </extension>
-
 </plugin>

@@ -31,6 +31,15 @@ public enum TranslationApproach {
 		this.name = name;
 	}
 
+	public static TranslationApproach parseApproach(final String value) {
+		if (value != null) {
+			if (value.equals(USING_VERIT.name)) {
+				return USING_VERIT;
+			}
+		}
+		return USING_PP;
+	}
+
 	@Override
 	public String toString() {
 		return name;

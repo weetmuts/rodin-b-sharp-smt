@@ -17,9 +17,12 @@ import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * This class describes an SMT solverId configuration.
@@ -34,13 +37,15 @@ public class SolverConfiguration implements ISolverConfig {
 	public static final int NAME_COL = 2;
 	public static final int SOLVER_ID_COL = 3;
 	public static final int ARGS_COL = 4;
-	public static final int SMTLIB_VERSION_COL = 5;
-	public static final int EDITABLE_COL = 6;
+	public static final int TRANSLATION_APPROACH_COL = 5;
+	public static final int SMTLIB_VERSION_COL = 6;
+	public static final int EDITABLE_COL = 7;
 
 	public static final String SEPARATOR = "|"; //$NON-NLS-1$
 
 	private static final String DEFAULT_CONFIG_NAME = ""; //$NON-NLS-1$
 	private static final String DEFAULT_SOLVER_ARGS = ""; //$NON-NLS-1$
+	private static final TranslationApproach DEFAULT_TRANSLATION_APPROACH = USING_PP;
 	private static final SMTLIBVersion DEFAULT_SMTLIB_VERSION = LATEST;
 
 	private final String id;
@@ -50,6 +55,8 @@ public class SolverConfiguration implements ISolverConfig {
 	private final String solverId;
 
 	private final String args;
+
+	private final TranslationApproach translationApproach;
 
 	private final SMTLIBVersion smtlibVersion;
 
@@ -73,37 +80,45 @@ public class SolverConfiguration implements ISolverConfig {
 	 */
 	public SolverConfiguration(final String id, final boolean enabled,
 			final String name, final String solverId, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion, final boolean editable) {
 		this.id = id;
 		this.enabled = enabled;
 		this.name = name;
 		this.solverId = solverId;
 		this.args = args;
+		this.translationApproach = translationApproach;
 		this.smtlibVersion = smtlibVersion;
 		this.editable = editable;
 	}
 
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion, final boolean editable) {
-		this(id, ENABLED, name, solverId, args, smtlibVersion, editable);
+		this(id, ENABLED, name, solverId, args, translationApproach,
+				smtlibVersion, editable);
 	}
 
 	public SolverConfiguration(final String id, final String name,
 			final String solverId, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, ENABLED, name, solverId, args, smtlibVersion, EDITABLE);
+		this(id, ENABLED, name, solverId, args, translationApproach,
+				smtlibVersion, EDITABLE);
 	}
 
 	public SolverConfiguration(final String id, final boolean enabled,
 			final String name, final String solverId, final String args,
+			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		this(id, enabled, name, solverId, args, smtlibVersion, EDITABLE);
+		this(id, enabled, name, solverId, args, translationApproach,
+				smtlibVersion, EDITABLE);
 	}
 
 	public SolverConfiguration(final String id) {
 		this(id, DEFAULT_CONFIG_NAME, DEFAULT_SOLVER_ID, DEFAULT_SOLVER_ARGS,
-				DEFAULT_SMTLIB_VERSION);
+				DEFAULT_TRANSLATION_APPROACH, DEFAULT_SMTLIB_VERSION);
 	}
 
 	/**
@@ -118,6 +133,7 @@ public class SolverConfiguration implements ISolverConfig {
 		return new SolverConfiguration(decode(columns[ID_COL]),
 				parseBoolean(columns[ENABLED_COL]), decode(columns[NAME_COL]),
 				decode(columns[SOLVER_ID_COL]), decode(columns[ARGS_COL]),
+				parseApproach(columns[TRANSLATION_APPROACH_COL]),
 				parseVersion(columns[SMTLIB_VERSION_COL]),
 				parseBoolean(columns[EDITABLE_COL]));
 	}
@@ -140,6 +156,11 @@ public class SolverConfiguration implements ISolverConfig {
 	@Override
 	public String getArgs() {
 		return args;
+	}
+
+	@Override
+	public TranslationApproach getTranslationApproach() {
+		return translationApproach;
 	}
 
 	@Override
@@ -169,6 +190,7 @@ public class SolverConfiguration implements ISolverConfig {
 		builder.append(encode(name)).append(SEPARATOR);
 		builder.append(solverId).append(SEPARATOR);
 		builder.append(encode(args)).append(SEPARATOR);
+		builder.append(translationApproach).append(SEPARATOR);
 		builder.append(smtlibVersion).append(SEPARATOR);
 		builder.append(editable);
 	}
@@ -182,6 +204,10 @@ public class SolverConfiguration implements ISolverConfig {
 		result = prime * result + (name == null ? 0 : name.hashCode());
 		result = prime * result + (solverId == null ? 0 : solverId.hashCode());
 		result = prime * result + (args == null ? 0 : args.hashCode());
+		result = prime
+				* result
+				+ (translationApproach == null ? 0 : translationApproach
+						.hashCode());
 		result = prime * result
 				+ (smtlibVersion == null ? 0 : smtlibVersion.hashCode());
 		result = prime * result + (editable ? 1 : 0);
@@ -233,6 +259,13 @@ public class SolverConfiguration implements ISolverConfig {
 				return false;
 			}
 		} else if (!args.equals(other.args)) {
+			return false;
+		}
+		if (translationApproach == null) {
+			if (other.translationApproach != null) {
+				return false;
+			}
+		} else if (!translationApproach.equals(other.translationApproach)) {
 			return false;
 		}
 		if (smtlibVersion == null) {

@@ -14,6 +14,7 @@ import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
+import static org.eventb.smt.core.preferences.SolverConfigFactory.APPROACH_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ARGS_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.EDITABLE_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.ENABLED_COL;
@@ -76,6 +77,7 @@ class SolverConfigsFieldEditor extends
 	private static final String NAME_LABEL = "Name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String ARGS_LABEL = "Arguments";
+	private static final String TRANSLATOR_LABEL = "Translator";
 	private static final String SMTLIB_LABEL = "SMT-LIB";
 	private static final String EDITABLE_LABEL = "Editable";
 
@@ -84,6 +86,7 @@ class SolverConfigsFieldEditor extends
 	private static final int NAME_COL_BOUND = 100;
 	private static final int SOLVER_COL_BOUND = 100;
 	private static final int ARGS_COL_BOUND = 200;
+	private static final int APPROACH_COL_BOUND = 100;
 	private static final int SMTLIB_COL_BOUND = 70;
 	private static final int EDITABLE_COL_BOUND = 0;
 
@@ -103,6 +106,7 @@ class SolverConfigsFieldEditor extends
 		columnsLabels.add(NAME_COL, NAME_LABEL);
 		columnsLabels.add(SOLVER_COL, SOLVER_LABEL);
 		columnsLabels.add(ARGS_COL, ARGS_LABEL);
+		columnsLabels.add(APPROACH_COL, TRANSLATOR_LABEL);
 		columnsLabels.add(SMTLIB_COL, SMTLIB_LABEL);
 		columnsLabels.add(EDITABLE_COL, EDITABLE_LABEL);
 		COLUMNS_LABELS = new String[columnsLabels.size()];
@@ -116,6 +120,7 @@ class SolverConfigsFieldEditor extends
 		columnsBounds.add(NAME_COL, NAME_COL_BOUND);
 		columnsBounds.add(SOLVER_COL, SOLVER_COL_BOUND);
 		columnsBounds.add(ARGS_COL, ARGS_COL_BOUND);
+		columnsBounds.add(APPROACH_COL, APPROACH_COL_BOUND);
 		columnsBounds.add(SMTLIB_COL, SMTLIB_COL_BOUND);
 		columnsBounds.add(EDITABLE_COL, EDITABLE_COL_BOUND);
 		COLUMNS_BOUNDS = new Integer[columnsBounds.size()];
