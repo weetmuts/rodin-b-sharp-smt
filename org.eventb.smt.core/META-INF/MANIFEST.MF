@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eventb.core.seqprover,
  org.eventb.pptrans,
  org.eventb.pp,
- org.eventb.core,
- org.eventb.smt.core
+ org.eventb.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
