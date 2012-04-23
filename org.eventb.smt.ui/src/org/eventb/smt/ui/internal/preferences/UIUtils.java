@@ -10,12 +10,19 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eclipse.jface.dialogs.IDialogConstants.CANCEL_LABEL;
+import static org.eclipse.jface.dialogs.IDialogConstants.NO_LABEL;
+import static org.eclipse.jface.dialogs.IDialogConstants.YES_LABEL;
+import static org.eclipse.jface.dialogs.MessageDialog.QUESTION_WITH_CANCEL;
+import static org.eclipse.jface.dialogs.MessageDialog.openError;
+import static org.eclipse.jface.dialogs.MessageDialog.openInformation;
+import static org.eclipse.jface.dialogs.MessageDialog.openWarning;
+import static org.eclipse.ui.PlatformUI.getWorkbench;
+import static org.eventb.smt.ui.internal.provers.SmtProversUIPlugin.getActiveWorkbenchShell;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eventb.smt.ui.internal.provers.SmtProversUIPlugin;
-
 
 /**
  * @author Fages-Tafanelli Yoann
@@ -24,16 +31,18 @@ import org.eventb.smt.ui.internal.provers.SmtProversUIPlugin;
  *         Event-B User interface plug-in.
  */
 public class UIUtils {
+	private static final String SMT_ERROR_TITLE = "SMT Error";
+	private static final String SMT_WARNING_TITLE = "SMT Warning";
+	private static final String SMT_SOLVER_REMOVAL = "SMT Solver Removal";
 
 	/**
 	 * Opens an error dialog to the user displaying the given message.
 	 */
 	public static void showError(final String message) {
-		final String title = "SMT error";
 		syncExec(new Runnable() {
 			@Override
 			public void run() {
-				MessageDialog.openError(getShell(), title, message);
+				openError(getShell(), SMT_ERROR_TITLE, message);
 			}
 		});
 	}
@@ -46,11 +55,10 @@ public class UIUtils {
 	 * 
 	 */
 	public static void showWarning(final String message) {
-		final String smtWarningTitle = "SMT warning";
 		syncExec(new Runnable() {
 			@Override
 			public void run() {
-				MessageDialog.openWarning(getShell(), smtWarningTitle, message);
+				openWarning(getShell(), SMT_WARNING_TITLE, message);
 			}
 		});
 	}
@@ -65,18 +73,26 @@ public class UIUtils {
 		syncExec(new Runnable() {
 			@Override
 			public void run() {
-				MessageDialog.openInformation(getShell(), null, message);
+				openInformation(getShell(), null, message);
 			}
 		});
 	}
 
+	// FIXME should be synchronised like other methods of this class ?
+	public static int showQuestionWithCancel(final String message) {
+		final MessageDialog dialog = new MessageDialog(getShell(),
+				SMT_SOLVER_REMOVAL, null, message, QUESTION_WITH_CANCEL,
+				new String[] { YES_LABEL, NO_LABEL, CANCEL_LABEL }, 0);
+		return dialog.open();
+	}
+
 	private static void syncExec(final Runnable runnable) {
-		final Display display = PlatformUI.getWorkbench().getDisplay();
+		final Display display = getWorkbench().getDisplay();
 		display.syncExec(runnable);
 	}
 
 	static Shell getShell() {
-		return SmtProversUIPlugin.getActiveWorkbenchShell();
+		return getActiveWorkbenchShell();
 	}
 
 }

@@ -33,19 +33,16 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 	@Override
 	public String getColumnText(final Object element, final int columnIndex) {
 		final ISolverConfig config = (ISolverConfig) element;
-		final ISMTSolver solver = getPreferenceManager().getSMTSolversPrefs()
-				.get(config.getSolverId());
 		switch (columnIndex) {
 		case ID_COL:
 			return config.getID();
 		case ENABLED_COL:
-			if (solver == null) {
-				return DISABLED;
-			}
 			return config.isEnabled() ? ENABLED : DISABLED;
 		case NAME_COL:
 			return config.getName();
 		case SOLVER_COL:
+			final ISMTSolver solver = getPreferenceManager()
+			.getSMTSolversPrefs().get(config.getSolverId());
 			if (solver == null) {
 				return DEFAULT_SOLVER;
 			}

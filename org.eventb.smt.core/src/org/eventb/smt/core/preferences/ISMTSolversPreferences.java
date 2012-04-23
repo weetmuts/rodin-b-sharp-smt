@@ -28,7 +28,8 @@ public interface ISMTSolversPreferences extends IPreferences {
 	 * 
 	 * @param solverId
 	 *            the ID of the wanted solver
-	 * @return the solver with the given ID
+	 * @return the solver with the given ID, or <code>null</code> if no solver
+	 *         is referenced with it.
 	 */
 	public ISMTSolver get(final String solverId);
 

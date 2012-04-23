@@ -15,11 +15,13 @@ import static java.util.regex.Pattern.quote;
 import static org.eventb.smt.core.internal.preferences.SMTSolver.DEFAULT_SOLVER_ID;
 import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
+import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
+import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -181,6 +183,13 @@ public class SolverConfiguration implements ISolverConfig {
 	@Override
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public boolean isBroken() {
+		final ISMTSolver solver = getPreferenceManager().getSMTSolversPrefs()
+				.get(solverId);
+		return solver == null;
 	}
 
 	@Override

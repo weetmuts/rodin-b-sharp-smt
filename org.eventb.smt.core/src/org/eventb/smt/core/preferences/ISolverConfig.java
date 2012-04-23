@@ -92,6 +92,15 @@ public interface ISolverConfig {
 	public void setEnabled(final boolean value);
 
 	/**
+	 * Tells whether this configuration solver id is correct, or not, which is,
+	 * whether the solver referenced by this id still exists, or not.
+	 * 
+	 * @return <code>true</code> if this configuration is broken, otherwise
+	 *         <code>false</code>
+	 */
+	public boolean isBroken();
+
+	/**
 	 * Appends the encoded string representation of this configuration into the
 	 * given buffer.
 	 * 

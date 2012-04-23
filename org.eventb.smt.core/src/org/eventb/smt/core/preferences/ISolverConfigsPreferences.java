@@ -11,6 +11,7 @@ package org.eventb.smt.core.preferences;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Systerel (yguyot)
@@ -38,4 +39,6 @@ public interface ISolverConfigsPreferences extends IPreferences {
 	public String freshCopyName(String originalName);
 
 	public String configNameToId(String configName);
+
+	public Set<ISolverConfig> relatedConfigs(final String solverId);
 }

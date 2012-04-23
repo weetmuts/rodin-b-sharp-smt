@@ -20,9 +20,11 @@ import static org.eventb.smt.core.preferences.SMTSolverFactory.KIND_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.PATH_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
+import static org.eventb.smt.ui.internal.preferences.UIUtils.showQuestionWithCancel;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TableViewer;
@@ -37,6 +39,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
+import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 
 /**
  * This class is used to build the solver table printed in the preferences page.
@@ -145,8 +149,45 @@ class SMTSolversFieldEditor extends
 	 */
 	@Override
 	void removeCurrentSelection(final Table elementsTable) {
+		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
+				.getSolverConfigsPrefs();
 		final String solverToRemove = elementsTable.getSelection()[0].getText();
-		smtPrefs.remove(solverToRemove);
+		final Set<ISolverConfig> relatedConfigs = configsPrefs
+				.relatedConfigs(solverToRemove);
+		if (!relatedConfigs.isEmpty()) {
+			final StringBuilder msgBuilder = new StringBuilder();
+			msgBuilder
+					.append("One or several configurations are linked to the solver you intend to remove:\n");
+			for (final ISolverConfig config : relatedConfigs) {
+				msgBuilder.append(config.getName() + "\n");
+			}
+			msgBuilder.append("Do you want to remove them as well?");
+			final int choice = showQuestionWithCancel(msgBuilder.toString());
+			switch (choice) {
+			case 0:
+				/**
+				 * Yes
+				 */
+				for (final ISolverConfig config : relatedConfigs) {
+					configsPrefs.removeSolverConfig(config.getID());
+					smtPrefs.remove(solverToRemove);
+				}
+				break;
+			case 1:
+				/**
+				 * No
+				 */
+				smtPrefs.remove(solverToRemove);
+				break;
+			case 2:
+				/**
+				 * Cancel
+				 */
+				return;
+			}
+		} else {
+			smtPrefs.remove(solverToRemove);
+		}
 		tableViewer.refresh();
 		selectionChanged();
 	}

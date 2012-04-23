@@ -160,7 +160,7 @@ public class SMTSolverDialog extends Dialog {
 					errBuilder.append("A valid solver path is required.\n");
 				}
 				if (errBuilder.length() != 0) {
-					UIUtils.showError(errBuilder.toString());
+					showError(errBuilder.toString());
 				} else {
 					final IPath path = new Path(pathStr);
 					solver = newSolver(solver.getID(), name,

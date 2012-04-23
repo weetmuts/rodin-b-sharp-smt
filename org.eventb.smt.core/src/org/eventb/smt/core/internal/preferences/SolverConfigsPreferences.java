@@ -14,10 +14,12 @@ import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.smt.core.internal.log.SMTStatus;
@@ -225,5 +227,16 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			copyName = originalName + " (copy" + i + ")";
 		}
 		return copyName;
+	}
+
+	@Override
+	public Set<ISolverConfig> relatedConfigs(String solverId) {
+		final Set<ISolverConfig> relatedConfigs = new HashSet<ISolverConfig>();
+		for (final ISolverConfig config : solverConfigs.values()) {
+			if (config.getSolverId().equals(solverId)) {
+				relatedConfigs.add(config);
+			}
+		}
+		return relatedConfigs;
 	}
 }
