@@ -28,7 +28,7 @@ import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;
 
 public class SolverPerfWithVeriT extends CommonSolverRunTests {
-	static ITypeEnvironment arith_te = mTypeEnvironment(//
+	protected static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");

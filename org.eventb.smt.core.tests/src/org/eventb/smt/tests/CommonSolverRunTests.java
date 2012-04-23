@@ -265,6 +265,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				case CVC3:
+					//FIXME use the bundled cvc3
 					solverConfig = CVC3_VERIT_SMT1;
 					solver = LAST_CVC3;
 					break;
@@ -285,6 +286,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				case VERIT:
+					//FIXME use the bundled veriT
 					solverConfig = VERIT_VERIT_SMT1;
 					solver = LAST_VERIT;
 					break;
@@ -309,8 +311,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				case CVC3:
-					solverConfig = CVC3_VERIT_SMT2;
-					solver = LAST_CVC3;
+					setPreferencesForBundledCvc3();
 					break;
 
 				case CVC4:
@@ -329,8 +330,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				case VERIT:
-					solverConfig = VERIT_VERIT_SMT2;
-					solver = LAST_VERIT;
+					setPreferencesForBundledVeriT();
 					break;
 
 				case Z3:

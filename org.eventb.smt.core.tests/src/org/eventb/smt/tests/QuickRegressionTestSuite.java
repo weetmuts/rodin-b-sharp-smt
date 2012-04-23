@@ -10,27 +10,16 @@
 
 package org.eventb.smt.tests;
 
-import org.eventb.smt.tests.acceptance.AxiomsTestWithAltErgoPPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithAltErgoPPV2_0;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV1_2;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc4PPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc4PPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithMathSat5PPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithMathSat5PPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithOpenSMTPPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithOpenSMTPPV2_0;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV1_2;
 import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithZ3PPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithZ3PPV2_0;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
 import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV1_2;
 import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV2_0;
 import org.eventb.smt.tests.acceptance.SMTPPReasonerTests;
 import org.eventb.smt.tests.acceptance.UnsatCoreVeriTWithPP;
-import org.eventb.smt.tests.acceptance.UnsatCoreZ3WithPP;
 import org.eventb.smt.tests.unit.BundledSolverLoaderTests;
 import org.eventb.smt.tests.unit.GathererTests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
@@ -61,13 +50,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		RunProverTestWithPPV1_2.class, //
 		RunProverTestWithVeriTV1_2.class, //
 
-		AxiomsTestWithAltErgoPPV1_2.class, //
 		AxiomsTestWithCvc3PPV1_2.class, //
-		AxiomsTestWithCvc4PPV1_2.class, //
-		AxiomsTestWithMathSat5PPV1_2.class, //
-		AxiomsTestWithOpenSMTPPV1_2.class, //
 		AxiomsTestWithVeriTPPV1_2.class, //
-		AxiomsTestWithZ3PPV1_2.class, //
 
 		TranslationTestsWithPPV2_0.class, //
 		TranslationTestsWithVeriTV2_0.class, //
@@ -77,16 +61,10 @@ import org.junit.runners.Suite.SuiteClasses;
 		RunProverTestWithPPV2_0.class, //
 		RunProverTestWithVeriTV2_0.class, //
 
-		AxiomsTestWithAltErgoPPV2_0.class, //
 		AxiomsTestWithCvc3PPV2_0.class, //
-		AxiomsTestWithCvc4PPV2_0.class, //
-		AxiomsTestWithMathSat5PPV2_0.class, //
-		AxiomsTestWithOpenSMTPPV2_0.class, //
 		AxiomsTestWithVeriTPPV2_0.class, //
-		AxiomsTestWithZ3PPV2_0.class, //
 
 		UnsatCoreVeriTWithPP.class, //
-		UnsatCoreZ3WithPP.class, //
 
 		SMTPPReasonerTests.class })
 public class QuickRegressionTestSuite {

@@ -10,20 +10,20 @@
 
 package org.eventb.smt.core.performance;
 
-import org.eventb.smt.core.performance.solvers.AltErgoPerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.AltErgoPerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.Cvc3PerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.Cvc3PerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.Cvc4PerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.Cvc4PerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.MathSat5PerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.MathSat5PerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.OpenSMTPerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.OpenSMTPerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.VeriTPerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.VeriTPerfWithVeriTV1_2;
-import org.eventb.smt.core.performance.solvers.Z3PerfWithPPV1_2;
-import org.eventb.smt.core.performance.solvers.Z3PerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.altergo.AltErgoPerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.altergo.AltErgoPerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.cvc3.Cvc3PerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.cvc3.Cvc3PerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.cvc4.Cvc4PerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.cvc4.Cvc4PerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.mathsat5.MathSat5PerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.mathsat5.MathSat5PerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.opensmt.OpenSMTPerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.opensmt.OpenSMTPerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.verit.VeriTPerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.verit.VeriTPerfWithVeriTV1_2;
+import org.eventb.smt.core.performance.solvers.z3.Z3PerfWithPPV1_2;
+import org.eventb.smt.core.performance.solvers.z3.Z3PerfWithVeriTV1_2;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

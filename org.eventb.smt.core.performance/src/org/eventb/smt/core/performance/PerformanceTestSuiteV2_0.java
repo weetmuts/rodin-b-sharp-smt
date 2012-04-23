@@ -10,13 +10,13 @@
 
 package org.eventb.smt.core.performance;
 
-import org.eventb.smt.core.performance.solvers.AltErgoPerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.Cvc3PerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.Cvc4PerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.MathSat5PerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.OpenSMTPerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.VeriTPerfWithPPV2_0;
-import org.eventb.smt.core.performance.solvers.Z3PerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.altergo.AltErgoPerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.cvc3.Cvc3PerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.cvc4.Cvc4PerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.mathsat5.MathSat5PerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.opensmt.OpenSMTPerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.verit.VeriTPerfWithPPV2_0;
+import org.eventb.smt.core.performance.solvers.z3.Z3PerfWithPPV2_0;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
