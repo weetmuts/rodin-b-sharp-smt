@@ -40,7 +40,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 		final List<String> hyps = Arrays.asList();
 		doTest("noHypothesisGoalNeeded", hyps,
 				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))", te, VALID, hyps,
-				GOAL_NEEDED, !PERFORMANCE);
+				GOAL_NEEDED);
 	}
 
 	@Test(timeout = 3000)
@@ -54,7 +54,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 
 		doTest("hypothesisNotNeededGoalNeeded", hyps,
 				"∀n· ((n ∈ {0, 2, 4, 5}) ⇒ (n ∉ {6, 8, 9}))", te, VALID, unsat,
-				GOAL_NEEDED, !PERFORMANCE);
+				GOAL_NEEDED);
 	}
 
 	@Test(timeout = 3000)
@@ -79,7 +79,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"q ≠ ∅");
 
 		doTest("someHypothesesNeededGoalNeeded", hyps, "p = q", te, VALID,
-				unsat, GOAL_NEEDED, !PERFORMANCE);
+				unsat, GOAL_NEEDED);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"y < x");
 
 		doTest("hypothesesNeededGoalNotNeeded", hyps, "x < z", arith_te, VALID,
-				hyps, !GOAL_NEEDED, !PERFORMANCE);
+				hyps, !GOAL_NEEDED);
 	}
 
 	@Test(timeout = 3000)
@@ -105,7 +105,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"y < x");
 
 		doTest("someHypothesesNeededGoalNotNeeded", hyps, "x < z", arith_te,
-				VALID, unsat, !GOAL_NEEDED, !PERFORMANCE);
+				VALID, unsat, !GOAL_NEEDED);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"¬ ((x ≥ k + 1) ∧ (x ≤ n − 1))");
 
 		doTest("quick_sort1UnsatCore", hyps, "x = k", te, VALID, unsat,
-				GOAL_NEEDED, !PERFORMANCE);
+				GOAL_NEEDED);
 	}
 
 	/**
@@ -155,6 +155,6 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"(i ≥ t0) ∧ (i ≤ t)");
 
 		doTest("bosch_switch1UnsatCore", hyps, "i ≥ 0", te, VALID, unsat,
-				GOAL_NEEDED, !PERFORMANCE);
+				GOAL_NEEDED);
 	}
 }

@@ -19,20 +19,22 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class SolverPerfWithPP extends CommonSolverRunTests {
+public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	protected static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithPP(SolverKind solverKind, SMTLIBVersion smtlibVersion) {
-		super(solverKind, null, USING_PP, smtlibVersion, !GET_UNSAT_CORE);
+	public SolverPerfWithPP(final SolverKind solverKind, final boolean bundled,
+			final SMTLIBVersion smtlibVersion) {
+		super(solverKind, bundled, null, USING_PP, smtlibVersion,
+				!GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

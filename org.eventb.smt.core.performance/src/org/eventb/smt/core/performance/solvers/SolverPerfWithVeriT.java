@@ -22,20 +22,21 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Test;
 
-public class SolverPerfWithVeriT extends CommonSolverRunTests {
+public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
 	protected static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithVeriT(final SolverKind solver,
+	public SolverPerfWithVeriT(final SolverKind solver, final boolean bundled,
 			final SMTLIBVersion smtlibVersion) {
-		super(solver, null, USING_VERIT, smtlibVersion, !GET_UNSAT_CORE);
+		super(solver, bundled, null, USING_VERIT, smtlibVersion,
+				!GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

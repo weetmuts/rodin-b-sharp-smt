@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class Z3PerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public Z3PerfWithVeriTV1_2() {
-		super(Z3, V1_2);
+		super(Z3, !BUNDLED, V1_2);
 	}
 
 	@Test

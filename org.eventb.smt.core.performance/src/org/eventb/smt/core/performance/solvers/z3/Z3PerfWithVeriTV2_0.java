@@ -11,7 +11,7 @@
 package org.eventb.smt.core.performance.solvers.z3;
 
 import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,10 +21,9 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 public class Z3PerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 	public Z3PerfWithVeriTV2_0() {
-		super(Z3, V1_2);
+		super(Z3, !BUNDLED, V2_0);
 	}
 
 	@Test

@@ -39,11 +39,11 @@ import junit.framework.Assert;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
 import org.eventb.smt.core.performance.xml.utils.LemmaParser;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.utils.Theory;
 import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.Test;
@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
  * @author vitor
  * 
  */
-public abstract class XMLtoSMTTests extends CommonSolverRunTests {
+public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	private final StringBuilder debugBuilder;
 	private static int round = 0;
 
@@ -92,7 +92,7 @@ public abstract class XMLtoSMTTests extends CommonSolverRunTests {
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SolverKind solver,
 			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		super(solver, Theory.fromNames(data.getTheories()), USING_VERIT,
+		super(solver, !BUNDLED, Theory.fromNames(data.getTheories()), USING_VERIT,
 				smtlibVersion, getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();

@@ -10,10 +10,12 @@
 
 package org.eventb.smt.tests;
 
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV1_2;
-import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
-import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV1_2;
+import org.eventb.smt.tests.acceptance.cvc3.AxiomsTestWithCvc3PPV1_2;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithPPV1_2Tests;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithVeriTV1_2Tests;
+import org.eventb.smt.tests.acceptance.verit.AxiomsTestWithVeriTPPV1_2;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithPPV1_2Tests;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithVeriTV1_2Tests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.TranslationTestsWithVeriTV1_2;
@@ -27,8 +29,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		LogicTestsWithPPV1_2.class, //
 
-		RunProverTestWithPPV1_2.class, //
-		RunProverTestWithVeriTV1_2.class, //
+		VeriTWithPPV1_2Tests.class, //
+		VeriTWithVeriTV1_2Tests.class, //
+		CVC3WithPPV1_2Tests.class, //
+		CVC3WithVeriTV1_2Tests.class, //
 
 		AxiomsTestWithCvc3PPV1_2.class, //
 		AxiomsTestWithVeriTPPV1_2.class })

@@ -14,8 +14,8 @@ import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
 import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3;
-import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT;
+import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3_PP_SMT2_ID;
+import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT_PP_SMT2_ID;
 
 import org.eventb.core.seqprover.reasonerExtentionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
@@ -27,8 +27,8 @@ public class SMTPPReasonerTests extends AbstractReasonerTests {
 	final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
 			.getSolverConfigsPrefs();
 	final ISolverConfig veriTConfig = configsPrefs
-			.getSolverConfig(BUNDLED_VERIT);
-	final ISolverConfig cvc3Config = configsPrefs.getSolverConfig(BUNDLED_CVC3);
+			.getSolverConfig(BUNDLED_VERIT_PP_SMT2_ID);
+	final ISolverConfig cvc3Config = configsPrefs.getSolverConfig(BUNDLED_CVC3_PP_SMT2_ID);
 
 	public SMTPPReasonerTests() {
 		configsPrefs.loadDefault();

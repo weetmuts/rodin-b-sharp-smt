@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class MathSat5PerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public MathSat5PerfWithVeriTV1_2() {
-		super(MATHSAT5, V1_2);
+		super(MATHSAT5, !BUNDLED, V1_2);
 	}
 
 	@Test

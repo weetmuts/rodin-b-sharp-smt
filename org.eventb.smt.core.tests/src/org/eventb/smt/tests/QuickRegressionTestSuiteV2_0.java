@@ -10,10 +10,13 @@
 
 package org.eventb.smt.tests;
 
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV2_0;
-import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
-import org.eventb.smt.tests.acceptance.UnsatCoreVeriTWithPP;
+import org.eventb.smt.tests.acceptance.cvc3.AxiomsTestWithCvc3PPV2_0;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithPPV2_0Tests;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithVeriTV2_0Tests;
+import org.eventb.smt.tests.acceptance.verit.AxiomsTestWithVeriTPPV2_0;
+import org.eventb.smt.tests.acceptance.verit.UnsatCoreVeriTWithPP;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithPPV2_0Tests;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithVeriTV2_0Tests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV2_0;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV2_0;
 import org.eventb.smt.tests.unit.TranslationTestsWithVeriTV2_0;
@@ -27,8 +30,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		LogicTestsWithPPV2_0.class, //
 
-		RunProverTestWithPPV2_0.class, //
-		// no run prover test for smt-lib 2.0 with veriT yet
+		VeriTWithPPV2_0Tests.class, //
+		VeriTWithVeriTV2_0Tests.class, //
+		CVC3WithPPV2_0Tests.class, //
+		CVC3WithVeriTV2_0Tests.class, //
 
 		AxiomsTestWithCvc3PPV2_0.class, //
 		AxiomsTestWithVeriTPPV2_0.class, //

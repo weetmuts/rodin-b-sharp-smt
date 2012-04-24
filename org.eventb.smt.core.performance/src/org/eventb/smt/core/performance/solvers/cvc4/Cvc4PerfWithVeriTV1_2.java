@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class Cvc4PerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public Cvc4PerfWithVeriTV1_2() {
-		super(CVC4, V1_2);
+		super(CVC4, !BUNDLED, V1_2);
 	}
 
 	@Test

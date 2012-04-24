@@ -16,7 +16,7 @@ import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 public class UnsatCoreVeriTPerfWithPP extends UnsatCoreExtractionPerfWithPP {
 
 	public UnsatCoreVeriTPerfWithPP() {
-		super(VERIT, V2_0);
+		super(VERIT, !BUNDLED, V2_0);
 	}
 
 }

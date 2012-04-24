@@ -14,7 +14,7 @@
          point="org.eventb.smt.core.configurations">
       <configuration
             args="-lang smt2 -timeout 1"
-            id="cvc3_smt2"
+            id="cvc3_pp_smt2"
             name="CVC3 SMT2"
             smt-lib="V2.0"
             solverid="org.eventb.smt.cvc3.bundled_cvc3"

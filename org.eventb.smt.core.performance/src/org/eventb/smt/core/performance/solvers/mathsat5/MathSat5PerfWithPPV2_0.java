@@ -23,7 +23,7 @@ import org.junit.Test;
 public class MathSat5PerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public MathSat5PerfWithPPV2_0() {
-		super(MATHSAT5, V2_0);
+		super(MATHSAT5, !BUNDLED, V2_0);
 	}
 
 	@Test

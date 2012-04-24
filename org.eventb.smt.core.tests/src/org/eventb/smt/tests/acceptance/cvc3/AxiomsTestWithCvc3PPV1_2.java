@@ -8,13 +8,15 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests.acceptance;
+package org.eventb.smt.tests.acceptance.cvc3;
 
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
 
-public class AxiomsTestWithCvc3PPV2_0 extends AxiomsTestWithPPV2_0 {
+import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
 
-	public AxiomsTestWithCvc3PPV2_0() {
+public class AxiomsTestWithCvc3PPV1_2 extends AxiomsTestWithPPV1_2 {
+
+	public AxiomsTestWithCvc3PPV1_2() {
 		super(CVC3);
 	}
 }

@@ -11,7 +11,7 @@
 package org.eventb.smt.core.performance.solvers.cvc4;
 
 import static org.eventb.smt.core.provers.SolverKind.CVC4;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +20,9 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 public class Cvc4PerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 	public Cvc4PerfWithVeriTV2_0() {
-		super(CVC4, V1_2);
+		super(CVC4, !BUNDLED, V2_0);
 	}
 
 	@Test

@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
+public class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTests {
 	private static boolean GOAL_NEEDED = true;
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
@@ -31,8 +31,8 @@ public class UnsatCoreExtractionPerfWithPP extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public UnsatCoreExtractionPerfWithPP(final SolverKind solver,
-			final SMTLIBVersion smtlibVersion) {
-		super(solver, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
+			final boolean bundled, final SMTLIBVersion smtlibVersion) {
+		super(solver, bundled, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

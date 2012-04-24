@@ -10,20 +10,25 @@
 
 package org.eventb.smt.tests;
 
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithCvc3PPV2_0;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV1_2;
-import org.eventb.smt.tests.acceptance.AxiomsTestWithVeriTPPV2_0;
-import org.eventb.smt.tests.acceptance.RunProverTestWithPPV1_2;
-import org.eventb.smt.tests.acceptance.RunProverTestWithPPV2_0;
-import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV1_2;
-import org.eventb.smt.tests.acceptance.RunProverTestWithVeriTV2_0;
 import org.eventb.smt.tests.acceptance.SMTPPReasonerTests;
-import org.eventb.smt.tests.acceptance.UnsatCoreVeriTWithPP;
+import org.eventb.smt.tests.acceptance.cvc3.AxiomsTestWithCvc3PPV1_2;
+import org.eventb.smt.tests.acceptance.cvc3.AxiomsTestWithCvc3PPV2_0;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithPPV1_2Tests;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithPPV2_0Tests;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithVeriTV1_2Tests;
+import org.eventb.smt.tests.acceptance.cvc3.CVC3WithVeriTV2_0Tests;
+import org.eventb.smt.tests.acceptance.verit.AxiomsTestWithVeriTPPV1_2;
+import org.eventb.smt.tests.acceptance.verit.AxiomsTestWithVeriTPPV2_0;
+import org.eventb.smt.tests.acceptance.verit.UnsatCoreVeriTWithPP;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithPPV1_2Tests;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithPPV2_0Tests;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithVeriTV1_2Tests;
+import org.eventb.smt.tests.acceptance.verit.VeriTWithVeriTV2_0Tests;
 import org.eventb.smt.tests.unit.BundledSolverLoaderTests;
 import org.eventb.smt.tests.unit.GathererTests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV2_0;
+import org.eventb.smt.tests.unit.PreferenceTests;
 import org.eventb.smt.tests.unit.SolverConfigLoaderTests;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV2_0;
@@ -47,8 +52,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		LogicTestsWithPPV1_2.class, //
 
-		RunProverTestWithPPV1_2.class, //
-		RunProverTestWithVeriTV1_2.class, //
+		VeriTWithPPV1_2Tests.class, //
+		VeriTWithVeriTV1_2Tests.class, //
+		CVC3WithPPV1_2Tests.class, //
+		CVC3WithVeriTV1_2Tests.class, //
 
 		AxiomsTestWithCvc3PPV1_2.class, //
 		AxiomsTestWithVeriTPPV1_2.class, //
@@ -58,15 +65,19 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		LogicTestsWithPPV2_0.class, //
 
-		RunProverTestWithPPV2_0.class, //
-		RunProverTestWithVeriTV2_0.class, //
+		VeriTWithPPV2_0Tests.class, //
+		VeriTWithVeriTV2_0Tests.class, //
+		CVC3WithPPV2_0Tests.class, //
+		CVC3WithVeriTV2_0Tests.class, //
 
 		AxiomsTestWithCvc3PPV2_0.class, //
 		AxiomsTestWithVeriTPPV2_0.class, //
 
 		UnsatCoreVeriTWithPP.class, //
 
-		SMTPPReasonerTests.class })
+		SMTPPReasonerTests.class, //
+
+		PreferenceTests.class })
 public class QuickRegressionTestSuite {
 	// Just for tests
 }

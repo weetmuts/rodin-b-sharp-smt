@@ -8,15 +8,16 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests.acceptance;
+package org.eventb.smt.core.performance.unsatcore;
 
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
-public class UnsatCoreVeriTWithPP extends UnsatCoreExtractionWithPP {
+public class UnsatCoreBundledVeriTPerfWithPP extends
+		UnsatCoreExtractionPerfWithPP {
 
-	public UnsatCoreVeriTWithPP() {
-		super(VERIT, V2_0);
+	public UnsatCoreBundledVeriTPerfWithPP() {
+		super(VERIT, BUNDLED, V2_0);
 	}
 
 }

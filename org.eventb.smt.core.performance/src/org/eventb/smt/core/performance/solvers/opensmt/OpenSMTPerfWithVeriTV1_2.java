@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class OpenSMTPerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public OpenSMTPerfWithVeriTV1_2() {
-		super(OPENSMT, V1_2);
+		super(OPENSMT, !BUNDLED, V1_2);
 	}
 
 	@Test

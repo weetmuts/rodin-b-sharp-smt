@@ -20,6 +20,7 @@ import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
+import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
@@ -54,7 +55,6 @@ import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ITranslationPreferences;
 import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
@@ -161,7 +161,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 */
 	public SMTProverCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final String poName, final Translator translator) {
+			final ISMTSolver solver, final String poName,
+			final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.solverConfig = solverConfig;
@@ -233,8 +234,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
 		 */
-		if (solverConfig.getSmtlibVersion().equals(SMTLIBVersion.V1_2)
-				&& solver.getKind().equals(SolverKind.Z3)) {
+		if (solverConfig.getSmtlibVersion().equals(V1_2)
+				&& solver.getKind().equals(Z3)) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
@@ -253,7 +254,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
-		if (solverConfig.getSolverId().equals(SolverKind.MATHSAT5)) {
+		if (solverConfig.getSolverId().equals(MATHSAT5)) {
 			commandLine.add("< " + smtBenchmarkFile.getAbsolutePath());
 		} else {
 			commandLine.add(smtBenchmarkFile.getAbsolutePath());

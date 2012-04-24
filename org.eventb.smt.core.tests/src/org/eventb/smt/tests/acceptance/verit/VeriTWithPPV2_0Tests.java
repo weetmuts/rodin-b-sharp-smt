@@ -8,13 +8,24 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests.acceptance;
+package org.eventb.smt.tests.acceptance.verit;
 
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
-public class AxiomsTestWithVeriTPPV1_2 extends AxiomsTestWithPPV1_2 {
+import org.eventb.smt.tests.acceptance.SolverRunWithPPV2_0Tests;
 
-	public AxiomsTestWithVeriTPPV1_2() {
+/**
+ * This class contains acceptance tests dedicated to solver runs, which are,
+ * tests to check that a solver is ran correctly on the entire chain call.
+ * 
+ * One shall put in this class such tests for the solver veriT on SMT-LIB 2.0
+ * benchmarks translated with PP.
+ * 
+ * @author Yoann Guyot
+ * 
+ */
+public class VeriTWithPPV2_0Tests extends SolverRunWithPPV2_0Tests {
+	public VeriTWithPPV2_0Tests() {
 		super(VERIT);
 	}
 }

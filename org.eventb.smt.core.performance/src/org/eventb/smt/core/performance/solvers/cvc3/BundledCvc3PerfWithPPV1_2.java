@@ -8,13 +8,18 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.tests.acceptance;
+package org.eventb.smt.core.performance.solvers.cvc3;
 
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.CVC3;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
-public class AxiomsTestWithVeriTPPV2_0 extends AxiomsTestWithPPV2_0 {
+import org.eventb.smt.core.performance.solvers.SolverPerfWithPP;
 
-	public AxiomsTestWithVeriTPPV2_0() {
-		super(VERIT);
+
+public class BundledCvc3PerfWithPPV1_2 extends SolverPerfWithPP {
+
+	public BundledCvc3PerfWithPPV1_2() {
+		super(CVC3, BUNDLED, V1_2);
 	}
+
 }
