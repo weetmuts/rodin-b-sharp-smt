@@ -30,8 +30,8 @@
                type="Long">
          </tacticParameter>
          <tacticParameter
-         	   default="all"
-         	   description="%configNameDesc"
+               default=""
+               description="%configNameDesc"
                label="configName"
                type="String">
          </tacticParameter>
