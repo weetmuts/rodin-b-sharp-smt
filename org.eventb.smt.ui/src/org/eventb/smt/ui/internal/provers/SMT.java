@@ -11,9 +11,8 @@ package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
-import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
-import static org.eventb.smt.core.SMTCore.externalSMT;
+import static org.eventb.smt.core.SMTCore.allSMTSolversTactic;
+import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
 import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SELECTED;
@@ -39,8 +38,8 @@ public class SMT extends DefaultTacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				return externalSMT(DEFAULT_RESTRICTED_VALUE,
-						DEFAULT_TIMEOUT_DELAY);
+				updateAllSMTSolversTactic();
+				return allSMTSolversTactic();
 			} catch (final PatternSyntaxException pse) {
 				pse.printStackTrace(System.err);
 				return SMT_SOLVER_CONFIG_ERROR;

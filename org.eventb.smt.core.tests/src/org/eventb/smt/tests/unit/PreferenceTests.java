@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eventb.smt.core.internal.preferences.SMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,6 +47,7 @@ public class PreferenceTests {
 	}
 
 	@Test
+	@Ignore("too long")
 	public void freshID() {
 		String freshID = "";
 		int i;

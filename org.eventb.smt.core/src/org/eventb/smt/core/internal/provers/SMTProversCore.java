@@ -10,22 +10,21 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
 import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.internal.preferences.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.preferences.SolverConfigRegistry.getSolverConfigRegistry;
+import static org.eventb.smt.core.internal.provers.AutoTactics.makeAllSMTSolversTactic;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IReasoner;
 import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
@@ -78,6 +77,8 @@ public class SMTProversCore extends Plugin {
 	 */
 	private static SMTProversCore plugin;
 
+	private static ITacticDescriptor allSMTSolversTacticDesc;
+
 	/**
 	 * Returns the single instance of the Smt Provers for Rodin core plug-in.
 	 * 
@@ -117,43 +118,31 @@ public class SMTProversCore extends Plugin {
 
 	public static ITactic externalSMT(final boolean restricted,
 			final long timeOutDelay, String configId) {
-		if (configId == null) {
-			configId = ALL_SOLVER_CONFIGURATIONS;
+		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
+				.getSolverConfigsPrefs();
+
+		if (configId == null
+				|| !configsPrefs.getSolverConfigs().containsKey(configId)) {
+			return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
 		}
 
-		if (configId.isEmpty() || configId.equals(ALL_SOLVER_CONFIGURATIONS)) {
-			final List<ISolverConfig> enabledConfigs = getPreferenceManager()
-					.getSolverConfigsPrefs().getEnabledConfigs();
-			if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
-				final int nbSolverConfigs = enabledConfigs.size();
-				final ITactic smtTactics[] = new ITactic[nbSolverConfigs];
-				for (int i = 0; i < nbSolverConfigs; i++) {
-					final IReasoner smtReasoner = new ExternalSMT();
-					final IReasonerInput smtInput = new SMTInput(restricted,
-							timeOutDelay, enabledConfigs.get(i));
-					smtTactics[i] = reasonerTac(smtReasoner, smtInput);
-				}
-				return composeUntilSuccess(smtTactics);
-			} else {
-				return failTac(NO_SOLVER_CONFIGURATION_ERROR);
-			}
+		final ISolverConfig config = configsPrefs.getSolverConfig(configId);
+		if (config.isEnabled()) {
+			final IReasoner smtReasoner = new ExternalSMT();
+			final IReasonerInput smtInput = new SMTInput(restricted,
+					timeOutDelay, config);
+			return reasonerTac(smtReasoner, smtInput);
 		} else {
-			if (getPreferenceManager().getSolverConfigsPrefs()
-					.getSolverConfigs().containsKey(configId)) {
-				final ISolverConfig config = getPreferenceManager()
-						.getSolverConfigsPrefs().getSolverConfig(configId);
-				if (config.isEnabled()) {
-					final IReasoner smtReasoner = new ExternalSMT();
-					final IReasonerInput smtInput = new SMTInput(restricted,
-							timeOutDelay, config);
-					return reasonerTac(smtReasoner, smtInput);
-				} else {
-					return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
-				}
-			} else {
-				return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
-			}
+			return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
 		}
+	}
+
+	public ITacticDescriptor getAllSMTSolversTactic() {
+		return allSMTSolversTacticDesc;
+	}
+
+	public void updateAllSMTSolversTactic() {
+		allSMTSolversTacticDesc = makeAllSMTSolversTactic();
 	}
 
 	/**
@@ -251,6 +240,8 @@ public class SMTProversCore extends Plugin {
 					"An error occured while loading the bundled solver registry.",
 					iroe);
 		}
+
+		updateAllSMTSolversTactic();
 	}
 
 	/**

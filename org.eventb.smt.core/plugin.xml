@@ -26,7 +26,7 @@
          <tacticParameter
                default="1000"
                description="%timeoutDesc"
-               label="timeout"
+               label="timeOutDelay"
                type="Long">
          </tacticParameter>
          <tacticParameter
@@ -36,14 +36,5 @@
                type="String">
          </tacticParameter>
       </parameterizer>
-   </extension>
-   <extension
-         point="org.eventb.core.seqprover.autoTactics">
-      <autoTactic
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMT"
-            description="%SMT.description"
-            id="SMT"
-            name="%SMT.name">
-      </autoTactic>
    </extension>
 </plugin>

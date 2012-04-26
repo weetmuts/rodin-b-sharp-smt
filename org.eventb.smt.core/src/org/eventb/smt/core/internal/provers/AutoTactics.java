@@ -12,24 +12,27 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.core.seqprover.eventbExtensions.TacticCombinators.ComposeUntilSuccess.COMBINATOR_ID;
 import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
 import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.externalSMT;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
+import org.eventb.core.seqprover.IParamTacticDescriptor;
+import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterValuation;
-import org.eventb.core.seqprover.IProofMonitor;
-import org.eventb.core.seqprover.IProofTreeNode;
+import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.core.seqprover.SequentProver;
+import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
@@ -40,20 +43,16 @@ import org.eventb.core.seqprover.SequentProver;
  * 
  */
 public class AutoTactics {
-
 	/**
 	 * label for the 'restricted' tactic parameter
 	 */
-	private static final String RESTRICTED = "restricted";
-	private static final String TIMEOUT_DELAY = "timeOutDelay";
+	private static final String RESTRICTED_LABEL = "restricted";
+	private static final String TIMEOUT_DELAY_LABEL = "timeOutDelay";
 
 	/**
 	 * label for the 'configId' tactic parameter
 	 */
-	private static final String CONFIG_NAME = "configName";
-
-	private static final ITacticDescriptor smtTacticDescriptor = getAutoTacticRegistry()
-			.getTacticDescriptor(PLUGIN_ID + ".SMT");
+	private static final String CONFIG_NAME_LABEL = "configName";
 
 	/**
 	 * This class is not meant to be instantiated
@@ -62,22 +61,14 @@ public class AutoTactics {
 		//
 	}
 
-	public static class SMT implements ITactic {
-		@Override
-		public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
-			return externalSMT(DEFAULT_RESTRICTED_VALUE, DEFAULT_TIMEOUT_DELAY,
-					ALL_SOLVER_CONFIGURATIONS).apply(ptNode, pm);
-		}
-	}
-
 	public static class SMTParameterizer implements ITacticParameterizer {
 		@Override
 		public ITactic getTactic(IParameterValuation parameters) {
-			final boolean restricted = parameters.getBoolean(RESTRICTED);
-			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY);
+			final boolean restricted = parameters.getBoolean(RESTRICTED_LABEL);
+			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY_LABEL);
 			final String configId = getPreferenceManager()
 					.getSolverConfigsPrefs().configNameToId(
-							parameters.getString(CONFIG_NAME));
+							parameters.getString(CONFIG_NAME_LABEL));
 
 			return externalSMT(restricted, timeOutDelay, configId);
 		}
@@ -92,8 +83,45 @@ public class AutoTactics {
 		return comb.combine(descs, id);
 	}
 
-	public static ITacticDescriptor makeSMTTactic() {
-		return attemptAfterLasso(singletonList(smtTacticDescriptor),
-				"attemptAfterLassoId");
+	/**
+	 * 
+	 * @return a tactic descriptor of all SMT solvers applied sequentially or
+	 *         <code>null</code> if no SMT configuration could be used as a
+	 *         tactic.
+	 */
+	public static ITacticDescriptor makeAllSMTSolversTactic() {
+		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>();
+		final List<ISolverConfig> enabledConfigs = getPreferenceManager()
+				.getSolverConfigsPrefs().getEnabledConfigs();
+		if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
+			for (final ISolverConfig enabledConfig : enabledConfigs) {
+				if (enabledConfig.isBroken()) {
+					continue;
+				}
+				final IParameterizerDescriptor smtParam = getAutoTacticRegistry()
+						.getParameterizerDescriptor(PLUGIN_ID + ".SMTParam");
+				final IParameterSetting params = smtParam
+						.makeParameterSetting();
+				params.setBoolean(RESTRICTED_LABEL, DEFAULT_RESTRICTED_VALUE);
+				params.setLong(TIMEOUT_DELAY_LABEL, DEFAULT_TIMEOUT_DELAY);
+				params.setString(CONFIG_NAME_LABEL, enabledConfig.getName());
+
+				final IParamTacticDescriptor smtTactic = smtParam.instantiate(
+						params, "SMTSolverTacticId");
+
+				combinedTactics.add(smtTactic);
+			}
+			if (combinedTactics.isEmpty()) {
+				return null;
+			}
+
+			final ICombinatorDescriptor compUntilSuccCombDesc = getAutoTacticRegistry()
+					.getCombinatorDescriptor(COMBINATOR_ID);
+			final ITacticDescriptor allSMTSolvers = compUntilSuccCombDesc
+					.combine(combinedTactics, "AllSMTSolversTactic");
+			return attemptAfterLasso(singletonList(allSMTSolvers),
+					"attemptAfterLassoId");
+		}
+		return null;
 	}
 }

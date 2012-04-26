@@ -27,4 +27,8 @@ public class SMTStatus extends Status {
 			final Throwable exception) {
 		return new SMTStatus(ERROR, PLUGIN_ID, message, exception);
 	}
+
+	public static SMTStatus smtWarning(final String message) {
+		return new SMTStatus(WARNING, PLUGIN_ID, message, null);
+	}
 }

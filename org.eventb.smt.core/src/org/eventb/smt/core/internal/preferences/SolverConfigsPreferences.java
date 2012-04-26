@@ -9,11 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
+import static org.eventb.smt.core.internal.log.SMTStatus.smtWarning;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -56,8 +58,10 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			if (isValidPath(solver.getPath().toOSString())) {
 				final String id = solverConfig.getID();
 				if (replace) {
+					removeConfigsWithNameOf(solverConfig);
 					solverConfigs.put(id, solverConfig);
-				} else if (!solverConfigs.containsKey(id)) {
+				} else if (!solverConfigs.containsKey(id)
+						&& !configExists(solverConfig.getName())) {
 					try {
 						int numericID = Integer.parseInt(id);
 						idCounter = numericID;
@@ -106,10 +110,35 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 				final ISolverConfig solverConfig = SolverConfiguration
 						.parseConfig(row);
 				// TODO if not editable check the solver exists
+				final String id = solverConfig.getID();
+				final String name = solverConfig.getName();
+				if (nameAlreadyInUse(solverConfigs.values(), name)) {
+					smtWarning("The configuration \'" + id
+							+ "\' was not added "
+							+ "because of its duplicated name \'" + name
+							+ "\'.");
+				} else {
+					if (solverConfigs.containsKey(id)) {
+						smtWarning("The configuration ID \'" + id
+								+ "\' (name:\'" + name + "\') already exists "
+								+ "and will be overwritten.");
+					}
+					solverConfigs.put(id, solverConfig);
+				}
 				solverConfigs.put(solverConfig.getID(), solverConfig);
 			}
 		}
 		return solverConfigs;
+	}
+
+	private static final boolean nameAlreadyInUse(
+			final Collection<ISolverConfig> configs, final String name) {
+		for (final ISolverConfig config : configs) {
+			if (config.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static final String toString(
@@ -124,6 +153,22 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		}
 
 		return sb.toString();
+	}
+
+	// FIXME same code as in SolverConfigsPreferences
+	private void removeConfigsWithNameOf(final ISolverConfig config) {
+		final String name = config.getName();
+		final Iterator<ISolverConfig> configsIterator = solverConfigs.values()
+				.iterator();
+		while (configsIterator.hasNext()) {
+			final ISolverConfig curConfig = configsIterator.next();
+			if (curConfig.getName().equals(name)) {
+				configsIterator.remove();
+				smtWarning("The configuration \'" + curConfig.getID()
+						+ "\' was removed "
+						+ "because of its duplicated name \'" + name + "\'.");
+			}
+		}
 	}
 
 	@Override

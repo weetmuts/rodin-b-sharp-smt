@@ -103,7 +103,7 @@ public abstract class AbstractPreferences implements IPreferences {
 			}
 		}
 		return null;
-	}
+	} 
 
 	abstract protected void load(final boolean reload);
 

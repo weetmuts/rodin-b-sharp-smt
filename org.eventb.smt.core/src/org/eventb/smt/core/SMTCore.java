@@ -11,6 +11,7 @@
 package org.eventb.smt.core;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.getDefault;
 
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.internal.provers.SMTProversCore;
@@ -20,6 +21,8 @@ import org.eventb.smt.core.internal.provers.SMTProversCore;
  * 
  */
 public class SMTCore {
+	public static final String AUTO_TACTIC_SMT_PROFILE_ID = "Default Auto Tactic with SMT Profile";
+	public static final String ALL_SMT_SOLVERS_PROFILE_ID = "All SMT Solvers Profile";
 	/**
 	 * The plug-in identifier
 	 */
@@ -27,6 +30,14 @@ public class SMTCore {
 
 	public static final boolean DEFAULT_RESTRICTED_VALUE = true;
 	public static final long DEFAULT_TIMEOUT_DELAY = 1000;
+
+	public static ITactic allSMTSolversTactic() {
+		return getDefault().getAllSMTSolversTactic().getTacticInstance();
+	}
+
+	public static void updateAllSMTSolversTactic() {
+		getDefault().updateAllSMTSolversTactic();
+	}
 
 	/**
 	 * This tactic should be called by the parameterised auto tactic.

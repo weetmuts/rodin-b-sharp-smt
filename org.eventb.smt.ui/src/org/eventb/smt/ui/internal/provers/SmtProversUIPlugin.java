@@ -12,7 +12,8 @@ package org.eventb.smt.ui.internal.provers;
 
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.core.internal.provers.AutoTactics.makeSMTTactic;
+import static org.eventb.smt.core.SMTCore.ALL_SMT_SOLVERS_PROFILE_ID;
+import static org.eventb.smt.core.SMTCore.AUTO_TACTIC_SMT_PROFILE_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.ICombinedTacticDescriptor;
 import org.eventb.internal.ui.preferences.tactics.TacticsProfilesCache;
+import org.eventb.smt.core.internal.provers.SMTProversCore;
 import org.eventb.ui.EventBUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -34,8 +36,6 @@ import org.osgi.framework.BundleContext;
  */
 @SuppressWarnings("restriction")
 public class SmtProversUIPlugin extends AbstractUIPlugin {
-	private static final String AUTO_TACTIC_SMT_PROFILE_ID = "Default Auto Tactic with SMT Profile";
-
 	/**
 	 * the shared instance
 	 */
@@ -66,6 +66,16 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		final TacticsProfilesCache profiles = new TacticsProfilesCache(
 				eventbUIPrefStore);
 		profiles.load();
+
+		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
+				.getDefault().getAllSMTSolversTactic();
+
+		if (allSMTSolversTactic != null
+				&& profiles.getEntry(ALL_SMT_SOLVERS_PROFILE_ID) == null) {
+			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
+			profiles.store();
+		}
+
 		/**
 		 * Gets the default auto tactics profile
 		 */
@@ -85,17 +95,25 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		 * tactic. We used this position for performance tests.
 		 */
 		final int afterBoundedGoalWithFiniteHyps = 5;
-		combinedTactics.add(afterBoundedGoalWithFiniteHyps, makeSMTTactic());
-		final ICombinatorDescriptor combinator = getAutoTacticRegistry()
-				.getCombinatorDescriptor(combinatorId);
-		final ICombinedTacticDescriptor defaultAutoWithSMT = combinator
-				.combine(combinedTactics, "SMTTactic");
-		/**
-		 * If the SMT profile does not exist yet, stores it in the preferences.
-		 */
-		if (profiles.getEntry(AUTO_TACTIC_SMT_PROFILE_ID) == null) {
-			profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
-			profiles.store();
+		final ITacticDescriptor allSMTTacticDescriptor = profiles.getEntry(
+				ALL_SMT_SOLVERS_PROFILE_ID).getReference();
+
+		if (allSMTTacticDescriptor != null) {
+			combinedTactics.add(afterBoundedGoalWithFiniteHyps,
+					allSMTTacticDescriptor);
+			final ICombinatorDescriptor combinator = getAutoTacticRegistry()
+					.getCombinatorDescriptor(combinatorId);
+			final ICombinedTacticDescriptor defaultAutoWithSMT = combinator
+					.combine(combinedTactics, "SMTTactic");
+
+			/**
+			 * If the SMT profile does not exist yet, stores it in the
+			 * preferences.
+			 */
+			if (profiles.getEntry(AUTO_TACTIC_SMT_PROFILE_ID) == null) {
+				profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
+				profiles.store();
+			}
 		}
 	}
 
