@@ -14,6 +14,7 @@ import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.core.SMTCore.ALL_SMT_SOLVERS_PROFILE_ID;
 import static org.eventb.smt.core.SMTCore.AUTO_TACTIC_SMT_PROFILE_ID;
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +96,14 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		 * tactic. We used this position for performance tests.
 		 */
 		final int afterBoundedGoalWithFiniteHyps = 5;
+
+		if (!profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
+			smtError("All SMT Solvers Profile not found.", null);
+			return;
+		}
+
 		final ITacticDescriptor allSMTTacticDescriptor = profiles.getEntry(
-				ALL_SMT_SOLVERS_PROFILE_ID).getReference();
+				ALL_SMT_SOLVERS_PROFILE_ID).getValue();
 
 		if (allSMTTacticDescriptor != null) {
 			combinedTactics.add(afterBoundedGoalWithFiniteHyps,

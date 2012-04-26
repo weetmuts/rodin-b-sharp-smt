@@ -17,6 +17,7 @@ import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
 import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.externalSMT;
+import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;
@@ -83,6 +84,45 @@ public class AutoTactics {
 		return comb.combine(descs, id);
 	}
 
+	private static IParamTacticDescriptor smtTactic(
+			final ISolverConfig solverConfig) {
+		final String configName = solverConfig.getName();
+
+		final IParameterizerDescriptor smtParam = getAutoTacticRegistry()
+				.getParameterizerDescriptor(PLUGIN_ID + ".SMTParam");
+
+		final IParameterSetting params = smtParam.makeParameterSetting();
+		params.setBoolean(RESTRICTED_LABEL, DEFAULT_RESTRICTED_VALUE);
+		params.setLong(TIMEOUT_DELAY_LABEL, DEFAULT_TIMEOUT_DELAY);
+		params.setString(CONFIG_NAME_LABEL, configName);
+
+		final String tacticID = freshTacticID(solverConfig.getID());
+		final String tacticName = configName;
+		final String tacticDescription = smtDescription(solverConfig);
+
+		return smtParam.instantiate(tacticID, tacticName, tacticDescription,
+				params);
+	}
+
+	private static String freshTacticID(final String originalID) {
+		String newID = originalID;
+		int i = 0;
+		while (getAutoTacticRegistry().isRegistered(newID)) {
+			newID = originalID + "_" + i;
+			i = i + 1;
+		}
+		return newID;
+	}
+
+	private static String smtDescription(final ISolverConfig solverConfig) {
+		final String solverName = getPreferenceManager().getSMTSolversPrefs()
+				.get(solverConfig.getSolverId()).getName();
+		return "Tries to discharge a given sequent with the SMT solver "
+				+ solverName + ". The sequent is translated into SMT-LIB "
+				+ solverConfig.getSmtlibVersion() + " by the "
+				+ solverConfig.getTranslationApproach() + " translator.";
+	}
+
 	/**
 	 * 
 	 * @return a tactic descriptor of all SMT solvers applied sequentially or
@@ -98,16 +138,16 @@ public class AutoTactics {
 				if (enabledConfig.isBroken()) {
 					continue;
 				}
-				final IParameterizerDescriptor smtParam = getAutoTacticRegistry()
-						.getParameterizerDescriptor(PLUGIN_ID + ".SMTParam");
-				final IParameterSetting params = smtParam
-						.makeParameterSetting();
-				params.setBoolean(RESTRICTED_LABEL, DEFAULT_RESTRICTED_VALUE);
-				params.setLong(TIMEOUT_DELAY_LABEL, DEFAULT_TIMEOUT_DELAY);
-				params.setString(CONFIG_NAME_LABEL, enabledConfig.getName());
 
-				final IParamTacticDescriptor smtTactic = smtParam.instantiate(
-						params, "SMTSolverTacticId");
+				final IParamTacticDescriptor smtTactic;
+				try {
+					smtTactic = smtTactic(enabledConfig);
+				} catch (IllegalArgumentException iae) {
+					smtError("An error occured while trying to "
+							+ "build a tactic with the SMT configuration "
+							+ enabledConfig.getName() + ".", iae);
+					continue;
+				}
 
 				combinedTactics.add(smtTactic);
 			}

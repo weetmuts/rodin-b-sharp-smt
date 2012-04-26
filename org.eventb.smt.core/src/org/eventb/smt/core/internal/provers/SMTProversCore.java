@@ -138,6 +138,10 @@ public class SMTProversCore extends Plugin {
 	}
 
 	public ITacticDescriptor getAllSMTSolversTactic() {
+		if (allSMTSolversTacticDesc == null) {
+			updateAllSMTSolversTactic();
+		}
+
 		return allSMTSolversTacticDesc;
 	}
 

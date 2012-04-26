@@ -180,6 +180,9 @@ class SolverConfigsFieldEditor extends
 
 		editors[ENABLED_COL] = new ComboBoxCellEditor(tableViewer.getTable(),
 				ENABLED_COMBO_VALUES, SWT.READ_ONLY);
+		// TODO replace with a checkboxcelleditor
+		// editors[ENABLED_COL] = new
+		// CheckboxCellEditor(tableViewer.getTable());
 
 		tableViewer.setCellEditors(editors);
 

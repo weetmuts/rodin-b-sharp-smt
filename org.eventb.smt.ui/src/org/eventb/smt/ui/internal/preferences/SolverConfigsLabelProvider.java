@@ -23,6 +23,7 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
 import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
 
+import org.eclipse.swt.graphics.Image;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 
@@ -38,6 +39,8 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 			return config.getID();
 		case ENABLED_COL:
 			return config.isEnabled() ? ENABLED : DISABLED;
+			// TODO
+			// return null
 		case NAME_COL:
 			return config.getName();
 		case SOLVER_COL:
@@ -57,5 +60,11 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 			return Boolean.toString(config.isEditable());
 		}
 		return null;
+	}
+
+	@Override
+	public Image getColumnImage(Object element, int columnIndex) {
+		// TODO Auto-generated method stub
+		return super.getColumnImage(element, columnIndex);
 	}
 }
