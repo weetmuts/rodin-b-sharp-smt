@@ -20,8 +20,9 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.ID_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
-import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.DISABLED;
-import static org.eventb.smt.ui.internal.preferences.SolverConfigsFieldEditor.ENABLED;
+import static org.eventb.smt.ui.internal.provers.SMTProversUI.DISABLE_CONFIG_IMG_ID;
+import static org.eventb.smt.ui.internal.provers.SMTProversUI.ENABLE_CONFIG_IMG_ID;
+import static org.eventb.smt.ui.internal.provers.SMTProversUI.getDefault;
 
 import org.eclipse.swt.graphics.Image;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -31,6 +32,7 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  * This class provides text for each column of a solvers table viewer.
  */
 class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
+
 	@Override
 	public String getColumnText(final Object element, final int columnIndex) {
 		final ISolverConfig config = (ISolverConfig) element;
@@ -38,14 +40,12 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 		case ID_COL:
 			return config.getID();
 		case ENABLED_COL:
-			return config.isEnabled() ? ENABLED : DISABLED;
-			// TODO
-			// return null
+			return null;
 		case NAME_COL:
 			return config.getName();
 		case SOLVER_COL:
 			final ISMTSolver solver = getPreferenceManager()
-			.getSMTSolversPrefs().get(config.getSolverId());
+					.getSMTSolversPrefs().get(config.getSolverId());
 			if (solver == null) {
 				return DEFAULT_SOLVER;
 			}
@@ -64,7 +64,17 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		// TODO Auto-generated method stub
-		return super.getColumnImage(element, columnIndex);
+		final ISolverConfig config = (ISolverConfig) element;
+		if (columnIndex == ENABLED_COL) {
+			if (config.isEnabled()) {
+				return getDefault().getImageRegistry()
+						.get(ENABLE_CONFIG_IMG_ID);
+			} else {
+				return getDefault().getImageRegistry().get(
+						DISABLE_CONFIG_IMG_ID);
+			}
+		} else {
+			return super.getColumnImage(element, columnIndex);
+		}
 	}
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
@@ -72,7 +72,7 @@ class SolverConfigsFieldEditor extends
 	 */
 	private static final String DUPLICATE_LABEL = "Duplicate...";
 	private static final String ID_LABEL = "ID";
-	private static final String EXECUTION_LABEL = "Execution";
+	private static final String ENABLED_LABEL = "Enabled";
 	private static final String NAME_LABEL = "Name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String ARGS_LABEL = "Arguments";
@@ -81,7 +81,7 @@ class SolverConfigsFieldEditor extends
 	private static final String EDITABLE_LABEL = "Editable";
 
 	private static final int ID_COL_BOUND = 0;
-	private static final int EXECUTION_COL_BOUND = 80;
+	private static final int ENABLED_COL_BOUND = 70;
 	private static final int NAME_COL_BOUND = 100;
 	private static final int SOLVER_COL_BOUND = 100;
 	private static final int ARGS_COL_BOUND = 200;
@@ -101,7 +101,7 @@ class SolverConfigsFieldEditor extends
 	static {
 		ArrayList<String> columnsLabels = new ArrayList<String>();
 		columnsLabels.add(ID_COL, ID_LABEL);
-		columnsLabels.add(ENABLED_COL, EXECUTION_LABEL);
+		columnsLabels.add(ENABLED_COL, ENABLED_LABEL);
 		columnsLabels.add(NAME_COL, NAME_LABEL);
 		columnsLabels.add(SOLVER_COL, SOLVER_LABEL);
 		columnsLabels.add(ARGS_COL, ARGS_LABEL);
@@ -115,7 +115,7 @@ class SolverConfigsFieldEditor extends
 	static {
 		ArrayList<Integer> columnsBounds = new ArrayList<Integer>();
 		columnsBounds.add(ID_COL, ID_COL_BOUND);
-		columnsBounds.add(ENABLED_COL, EXECUTION_COL_BOUND);
+		columnsBounds.add(ENABLED_COL, ENABLED_COL_BOUND);
 		columnsBounds.add(NAME_COL, NAME_COL_BOUND);
 		columnsBounds.add(SOLVER_COL, SOLVER_COL_BOUND);
 		columnsBounds.add(ARGS_COL, ARGS_COL_BOUND);
@@ -178,11 +178,7 @@ class SolverConfigsFieldEditor extends
 
 		CellEditor[] editors = new CellEditor[getColumnsLabel().length];
 
-		editors[ENABLED_COL] = new ComboBoxCellEditor(tableViewer.getTable(),
-				ENABLED_COMBO_VALUES, SWT.READ_ONLY);
-		// TODO replace with a checkboxcelleditor
-		// editors[ENABLED_COL] = new
-		// CheckboxCellEditor(tableViewer.getTable());
+		editors[ENABLED_COL] = new CheckboxCellEditor(tableViewer.getTable());
 
 		tableViewer.setCellEditors(editors);
 
@@ -194,20 +190,19 @@ class SolverConfigsFieldEditor extends
 					element = ((Item) element).getData();
 
 				final ISolverConfig config = (ISolverConfig) element;
-				if (property.equals(EXECUTION_LABEL)) {
-					final int comboIndex = (Integer) value;
-					final boolean enable = ENABLED_COMBO_VALUES[comboIndex]
-							.equals(ENABLED);
-					smtPrefs.getSolverConfig(config.getID()).setEnabled(enable);
+				if (property.equals(ENABLED_LABEL)) {
+					final boolean enabled = ((Boolean) value).booleanValue();
+					smtPrefs.getSolverConfig(config.getID())
+							.setEnabled(enabled);
 					tableViewer.refresh();
 				}
 			}
 
 			@Override
 			public Object getValue(Object element, String property) {
-				if (property.equals(EXECUTION_LABEL)) {
+				if (property.equals(ENABLED_LABEL)) {
 					final ISolverConfig config = (ISolverConfig) element;
-					return config.isEnabled() ? ENABLED_INDEX : DISABLED_INDEX;
+					return config.isEnabled();
 				}
 
 				return null;
@@ -215,7 +210,7 @@ class SolverConfigsFieldEditor extends
 
 			@Override
 			public boolean canModify(Object element, String property) {
-				return property.equals(EXECUTION_LABEL);
+				return property.equals(ENABLED_LABEL);
 			}
 		});
 	}

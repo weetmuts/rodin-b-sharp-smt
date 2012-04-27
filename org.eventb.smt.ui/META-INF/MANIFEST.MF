@@ -9,6 +9,6 @@ Require-Bundle: org.eventb.ui,
  org.eventb.smt.verit;bundle-version="0.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
-Bundle-Activator: org.eventb.smt.ui.internal.provers.SmtProversUIPlugin
+Bundle-Activator: org.eventb.smt.ui.internal.provers.SMTProversUI
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eventb.smt.ui.internal.provers;x-friends:="org.eventb.smt.core.performance"

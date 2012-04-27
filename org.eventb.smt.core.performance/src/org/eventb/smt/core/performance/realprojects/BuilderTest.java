@@ -86,7 +86,7 @@ import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.ui.internal.provers.SmtProversUIPlugin;
+import org.eventb.smt.ui.internal.provers.SMTProversUI;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
 import org.rodinp.core.IRodinProject;
@@ -127,7 +127,7 @@ public abstract class BuilderTest extends TestCase {
 	protected ITacticDescriptor makeSMTTactic(
 			final IParameterizerDescriptor smtParamTacticDescriptor,
 			final String configId) {
-		SmtProversUIPlugin.getDefault();
+		SMTProversUI.getDefault();
 		final IParameterSetting settings = smtParamTacticDescriptor
 				.makeParameterSetting();
 		settings.setBoolean("restricted", true);
@@ -363,7 +363,7 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("-smt,,");
 		preferencesBuilder.append("V1.2;");
 
-		final IPreferenceStore store = SmtProversUIPlugin.getDefault()
+		final IPreferenceStore store = SMTProversUI.getDefault()
 				.getPreferenceStore();
 		store.setValue(SOLVER_CONFIGS_ID, preferencesBuilder.toString());
 		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");

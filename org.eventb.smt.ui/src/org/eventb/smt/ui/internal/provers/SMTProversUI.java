@@ -11,6 +11,7 @@
 package org.eventb.smt.ui.internal.provers;
 
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.internal.ui.EventBImage.registerImage;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.core.SMTCore.ALL_SMT_SOLVERS_PROFILE_ID;
 import static org.eventb.smt.core.SMTCore.AUTO_TACTIC_SMT_PROFILE_ID;
@@ -19,7 +20,10 @@ import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -36,17 +40,36 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 @SuppressWarnings("restriction")
-public class SmtProversUIPlugin extends AbstractUIPlugin {
+public class SMTProversUI extends AbstractUIPlugin {
 	/**
 	 * the shared instance
 	 */
-	private static SmtProversUIPlugin plugin;
+	private static SMTProversUI plugin;
+	private static final IPath ENABLE_IMAGE_PATH = new Path(
+			"icons/enable_configuration.gif");
+	private static final IPath DISABLE_IMAGE_PATH = new Path(
+			"icons/disable_configuration.gif");
+
+	/**
+	 * The plug-in identifier
+	 */
+	public static final String PLUGIN_ID = "org.eventb.smt.ui";
+	public static final String ENABLE_CONFIG_IMG_ID = "enable_configuration";
+	public static final String DISABLE_CONFIG_IMG_ID = "disable_configuration";
 
 	/**
 	 * The constructor
 	 */
-	public SmtProversUIPlugin() {
+	public SMTProversUI() {
 		// Do nothing
+	}
+
+	private void registerImages() {
+		final ImageRegistry imageRegistry = getImageRegistry();
+		registerImage(imageRegistry, ENABLE_CONFIG_IMG_ID, PLUGIN_ID,
+				ENABLE_IMAGE_PATH.toOSString());
+		registerImage(imageRegistry, DISABLE_CONFIG_IMG_ID, PLUGIN_ID,
+				DISABLE_IMAGE_PATH.toOSString());
 	}
 
 	/**
@@ -157,6 +180,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		addSMTProfile();
+		registerImages();
 	}
 
 	/**
@@ -195,7 +219,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static SmtProversUIPlugin getDefault() {
+	public static SMTProversUI getDefault() {
 		return plugin;
 	}
 }
