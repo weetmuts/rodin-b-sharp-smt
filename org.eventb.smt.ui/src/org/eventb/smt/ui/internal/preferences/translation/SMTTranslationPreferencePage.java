@@ -8,15 +8,18 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.translation;
 
-import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
-import static org.eventb.smt.ui.internal.provers.SMTProversUI.updateAllSMTSolversProfile;
+import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -28,16 +31,33 @@ import org.eventb.smt.core.SMTCore;
  * support built into JFace that allows us to create a page that is small and
  * knows how to save, restore and apply itself.
  */
-public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
+public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
-	private static final String SMT_SOLVER_CONFIGS_LABEL = "";
-	private static final String SMT_SOLVER_CONFIGS_DESCRIPTION = "Customize SMT-solvers configurations...";
+	private static final String SMT_TRANSLATION_SETTINGS_LABEL = "SMT translation settings:";
+	private static final String VERIT_PATH_LABEL = "VeriT path";
+	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
 
-	private SolverConfigsFieldEditor configsFieldEditor;
-
-	public SolverConfigsPreferencePage() {
+	public SMTTranslationPreferencePage() {
 		super(FLAT);
-		setDescription(SMT_SOLVER_CONFIGS_DESCRIPTION);
+		setDescription(SMT_TRANSLATION_SETTINGS_LABEL);
+	}
+
+	/**
+	 * This class is a directory field editor set to validate on key stroke.
+	 * 
+	 * @author Systerel (yguyot)
+	 */
+	private class ValidatedOnKeyStrokeDirFieldEd extends DirectoryFieldEditor {
+		public ValidatedOnKeyStrokeDirFieldEd(String name, String label,
+				Composite parent) {
+			super();
+			init(name, label);
+			setErrorMessage(JFaceResources
+					.getString("DirectoryFieldEditor.errorMessage"));
+			setChangeButtonText(JFaceResources.getString("openBrowse"));
+			setValidateStrategy(VALIDATE_ON_KEY_STROKE);
+			createControl(parent);
+		}
 	}
 
 	/**
@@ -61,23 +81,13 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	protected void createFieldEditors() {
-		configsFieldEditor = new SolverConfigsFieldEditor(SOLVER_CONFIGS_ID,
-				SMT_SOLVER_CONFIGS_LABEL, getFieldEditorParent());
-		addField(configsFieldEditor);
-	}
+		final FileFieldEditor veriTBinaryBrowser = new FileFieldEditor(
+				VERIT_PATH_ID, VERIT_PATH_LABEL, true, getFieldEditorParent());
+		addField(veriTBinaryBrowser);
 
-	@Override
-	public void setVisible(boolean visible) {
-		if (visible && configsFieldEditor != null) {
-			configsFieldEditor.refresh();
-		}
-		super.setVisible(visible);
-	}
-
-	@Override
-	public boolean performOk() {
-		updateAllSMTSolversTactic();
-		updateAllSMTSolversProfile();
-		return super.performOk();
+		final ValidatedOnKeyStrokeDirFieldEd translationDirBrowser = new ValidatedOnKeyStrokeDirFieldEd(
+				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
+				getFieldEditorParent());
+		addField(translationDirBrowser);
 	}
 }

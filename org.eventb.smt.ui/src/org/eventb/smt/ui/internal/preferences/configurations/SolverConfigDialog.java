@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.swt.SWT.APPLICATION_MODAL;
@@ -43,6 +43,7 @@ import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.ui.internal.preferences.UIUtils;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an

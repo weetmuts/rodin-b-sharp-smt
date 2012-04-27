@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
@@ -41,6 +41,8 @@ import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
+import org.eventb.smt.ui.internal.preferences.ContentProvider;
 
 /**
  * This class is used to build the solver table printed in the preferences page.
@@ -148,7 +150,7 @@ class SMTSolversFieldEditor extends
 	 *            the table
 	 */
 	@Override
-	void removeCurrentSelection(final Table elementsTable) {
+	protected void removeCurrentSelection(final Table elementsTable) {
 		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
 				.getSolverConfigsPrefs();
 		final String solverToRemove = elementsTable.getSelection()[0].getText();
@@ -170,14 +172,14 @@ class SMTSolversFieldEditor extends
 				 */
 				for (final ISolverConfig config : relatedConfigs) {
 					configsPrefs.removeSolverConfig(config.getID());
-					smtPrefs.remove(solverToRemove);
+					getSMTPrefs().remove(solverToRemove);
 				}
 				break;
 			case 1:
 				/**
 				 * No
 				 */
-				smtPrefs.remove(solverToRemove);
+				getSMTPrefs().remove(solverToRemove);
 				break;
 			case 2:
 				/**
@@ -186,7 +188,7 @@ class SMTSolversFieldEditor extends
 				return;
 			}
 		} else {
-			smtPrefs.remove(solverToRemove);
+			getSMTPrefs().remove(solverToRemove);
 		}
 		tableViewer.refresh();
 		selectionChanged();
@@ -196,7 +198,7 @@ class SMTSolversFieldEditor extends
 	 * Sets the buttons statuses depending on the selection in the table.
 	 */
 	@Override
-	void selectionChanged() {
+	protected void selectionChanged() {
 		final Table solversTable = tableViewer.getTable();
 		final TableItem[] selection = solversTable.getSelection();
 		if (selection.length == 0) {
@@ -239,18 +241,19 @@ class SMTSolversFieldEditor extends
 				}
 
 				final SMTSolverDialog solverDialog = new SMTSolverDialog(
-						buttonsGroup.getShell(), smtPrefs, newSolver());
+						getButtonsGroup().getShell(), getSMTPrefs(),
+						newSolver());
 				if (solverDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolver</code> object, and adds it
 					 * to the list.
 					 */
-					smtPrefs.add(solverDialog.getSolver());
+					getSMTPrefs().add(solverDialog.getSolver());
 
 					/**
 					 * Refreshes the table viewer.
 					 */
-					tableViewer.refresh();
+					getTableViewer().refresh();
 					selectionChanged();
 				}
 			}
@@ -295,19 +298,20 @@ class SMTSolversFieldEditor extends
 				 */
 				final String selectionID = solversTable.getSelection()[0]
 						.getText();
-				if (smtPrefs.getSolvers().containsKey(selectionID)) {
-					final ISMTSolver solverToEdit = smtPrefs.getSolvers().get(
-							selectionID);
+				if (getSMTPrefs().getSolvers().containsKey(selectionID)) {
+					final ISMTSolver solverToEdit = getSMTPrefs().getSolvers()
+							.get(selectionID);
 					if (solverToEdit != null) {
 						final SMTSolverDialog solverDialog = new SMTSolverDialog(
-								buttonsGroup.getShell(), smtPrefs, solverToEdit);
+								getButtonsGroup().getShell(), getSMTPrefs(),
+								solverToEdit);
 						if (solverDialog.open() == Window.OK) {
-							smtPrefs.add(solverDialog.getSolver(),
+							getSMTPrefs().add(solverDialog.getSolver(),
 									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.
 							 */
-							tableViewer.refresh();
+							getTableViewer().refresh();
 							selectionChanged();
 						}
 					}

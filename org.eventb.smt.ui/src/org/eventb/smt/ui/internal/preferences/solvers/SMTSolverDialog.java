@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.swt.SWT.APPLICATION_MODAL;

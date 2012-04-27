@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eclipse.swt.SWT.FULL_SELECTION;
 import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_RELOAD;
@@ -44,6 +44,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
+import org.eventb.smt.ui.internal.preferences.ContentProvider;
 
 /**
  * This class is used to build the solver configurations table printed in the
@@ -192,9 +194,9 @@ class SolverConfigsFieldEditor extends
 				final ISolverConfig config = (ISolverConfig) element;
 				if (property.equals(ENABLED_LABEL)) {
 					final boolean enabled = ((Boolean) value).booleanValue();
-					smtPrefs.getSolverConfig(config.getID())
-							.setEnabled(enabled);
-					tableViewer.refresh();
+					getSMTPrefs().getSolverConfig(config.getID()).setEnabled(
+							enabled);
+					getTableViewer().refresh();
 				}
 			}
 
@@ -224,7 +226,7 @@ class SolverConfigsFieldEditor extends
 	 *            the solvers table
 	 */
 	@Override
-	void removeCurrentSelection(final Table solversTable) {
+	protected void removeCurrentSelection(final Table solversTable) {
 		final String configToRemove = solversTable.getSelection()[0].getText();
 		smtPrefs.removeSolverConfig(configToRemove);
 		tableViewer.refresh();
@@ -235,7 +237,7 @@ class SolverConfigsFieldEditor extends
 	 * Sets the buttons statuses depending on the selection in the table.
 	 */
 	@Override
-	void selectionChanged() {
+	protected void selectionChanged() {
 		final Table configsTable = tableViewer.getTable();
 		final TableItem[] selection = configsTable.getSelection();
 		if (selection.length == 0) {
@@ -281,18 +283,18 @@ class SolverConfigsFieldEditor extends
 				}
 
 				final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-						buttonsGroup.getShell(), newConfig);
+						getButtonsGroup().getShell(), newConfig);
 				if (solverConfigDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SolverConfiguration</code> object,
 					 * and adds it to the list.
 					 */
-					smtPrefs.add(solverConfigDialog.getSolverConfig());
+					getSMTPrefs().add(solverConfigDialog.getSolverConfig());
 
 					/**
 					 * Refreshes the table viewer.
 					 */
-					tableViewer.refresh();
+					getTableViewer().refresh();
 					selectionChanged();
 				}
 			}
@@ -337,19 +339,20 @@ class SolverConfigsFieldEditor extends
 				 */
 				final String selectionID = configsTable.getSelection()[0]
 						.getText();
-				if (smtPrefs.getSolverConfigs().containsKey(selectionID)) {
-					final ISolverConfig configToEdit = smtPrefs
+				if (getSMTPrefs().getSolverConfigs().containsKey(selectionID)) {
+					final ISolverConfig configToEdit = getSMTPrefs()
 							.getSolverConfigs().get(selectionID);
 					if (configToEdit != null) {
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-								buttonsGroup.getShell(), configToEdit);
+								getButtonsGroup().getShell(), configToEdit);
 						if (solverConfigDialog.open() == Window.OK) {
-							smtPrefs.add(solverConfigDialog.getSolverConfig(),
+							getSMTPrefs().add(
+									solverConfigDialog.getSolverConfig(),
 									FORCE_REPLACE);
 							/**
 							 * Refreshes the table viewer.
 							 */
-							tableViewer.refresh();
+							getTableViewer().refresh();
 							selectionChanged();
 						}
 					}
@@ -375,8 +378,8 @@ class SolverConfigsFieldEditor extends
 				 */
 				final String selectionID = configsTable.getSelection()[0]
 						.getText();
-				if (smtPrefs.getSolverConfigs().containsKey(selectionID)) {
-					final ISolverConfig configToDuplicate = smtPrefs
+				if (getSMTPrefs().getSolverConfigs().containsKey(selectionID)) {
+					final ISolverConfig configToDuplicate = getSMTPrefs()
 							.getSolverConfigs().get(selectionID);
 					if (configToDuplicate != null) {
 						final ISolverConfig duplicatedConfig = newConfig(configToDuplicate);
@@ -385,13 +388,14 @@ class SolverConfigsFieldEditor extends
 						}
 
 						final SolverConfigDialog solverConfigDialog = new SolverConfigDialog(
-								buttonsGroup.getShell(), duplicatedConfig);
+								getButtonsGroup().getShell(), duplicatedConfig);
 						if (solverConfigDialog.open() == Window.OK) {
-							smtPrefs.add(solverConfigDialog.getSolverConfig());
+							getSMTPrefs().add(
+									solverConfigDialog.getSolverConfig());
 							/**
 							 * Refreshes the table viewer.
 							 */
-							tableViewer.refresh();
+							getTableViewer().refresh();
 							selectionChanged();
 						}
 					}

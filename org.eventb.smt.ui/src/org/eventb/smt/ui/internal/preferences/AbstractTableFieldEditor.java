@@ -41,7 +41,7 @@ import org.eventb.smt.core.preferences.IPreferences;
  * 
  * @author guyot
  */
-abstract class AbstractTableFieldEditor<T extends IPreferences> extends
+public abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 		FieldEditor {
 	/**
 	 * Labels
@@ -72,9 +72,9 @@ abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 	/**
 	 * The table showing the list of objects
 	 */
-	TableViewer tableViewer;
+	protected TableViewer tableViewer;
 
-	T smtPrefs;
+	protected T smtPrefs;
 
 	/**
 	 * Creates a new table field editor.
@@ -93,16 +93,37 @@ abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 	}
 
 	/**
+	 * @return the buttonsGroup
+	 */
+	public Composite getButtonsGroup() {
+		return buttonsGroup;
+	}
+
+	/**
+	 * @return the tableViewer
+	 */
+	public TableViewer getTableViewer() {
+		return tableViewer;
+	}
+
+	/**
+	 * @return the smtPrefs
+	 */
+	public T getSMTPrefs() {
+		return smtPrefs;
+	}
+
+	/**
 	 * Creates a table viewer and configures it.
 	 * 
 	 * @param parent
 	 *            the parent of the table viewer's control
 	 */
-	abstract protected void createTableViewer(final Composite parent);
+	protected abstract void createTableViewer(final Composite parent);
 
-	abstract protected String[] getColumnsLabel();
+	protected abstract String[] getColumnsLabel();
 
-	abstract protected Integer[] getColumnsBounds();
+	protected abstract Integer[] getColumnsBounds();
 
 	/**
 	 * Creates the columns of the table viewer.
@@ -133,12 +154,12 @@ abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 	 * @param elementsTable
 	 *            the table
 	 */
-	abstract void removeCurrentSelection(final Table elementsTable);
+	protected abstract void removeCurrentSelection(final Table elementsTable);
 
 	/**
 	 * Sets the buttons statuses depending on the selection in the table.
 	 */
-	abstract void selectionChanged();
+	protected abstract void selectionChanged();
 
 	@Override
 	protected void adjustForNumColumns(int numColumns) {
@@ -195,10 +216,10 @@ abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 	}
 
 	@Override
-	abstract protected void doLoad();
+	protected abstract void doLoad();
 
 	@Override
-	abstract protected void doLoadDefault();
+	protected abstract void doLoadDefault();
 
 	/**
 	 * FIXME this should not need to be overriden

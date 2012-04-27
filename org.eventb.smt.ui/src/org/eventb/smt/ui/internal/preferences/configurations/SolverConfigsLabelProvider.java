@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SOLVER;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -27,6 +27,7 @@ import static org.eventb.smt.ui.internal.provers.SMTProversUI.getDefault;
 import org.eclipse.swt.graphics.Image;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.ui.internal.preferences.AbstractTableLabelProvider;
 
 /**
  * This class provides text for each column of a solvers table viewer.

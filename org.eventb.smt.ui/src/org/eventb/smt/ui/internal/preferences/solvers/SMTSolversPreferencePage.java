@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 

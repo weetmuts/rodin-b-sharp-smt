@@ -8,7 +8,7 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eventb.smt.core.preferences.SMTSolverFactory.EDITABLE_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.ID_COL;
@@ -17,6 +17,7 @@ import static org.eventb.smt.core.preferences.SMTSolverFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.PATH_COL;
 
 import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.ui.internal.preferences.AbstractTableLabelProvider;
 
 /**
  * This class provides text for each column of a solvers table viewer.
