@@ -45,6 +45,10 @@ import org.osgi.framework.BundleContext;
  */
 public class SMTProversCore extends Plugin {
 	/**
+	 * The shared instance.
+	 */
+	private static SMTProversCore plugin;
+	/**
 	 * Debug variables
 	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
@@ -72,12 +76,7 @@ public class SMTProversCore extends Plugin {
 	public static String DISABLED_SOLVER_CONFIGURATION_ERROR = "The indicated SMT configuration is disabled";
 	public static String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
 
-	/**
-	 * The shared instance.
-	 */
-	private static SMTProversCore plugin;
-
-	private static ITacticDescriptor allSMTSolversTacticDesc;
+	private ITacticDescriptor allSMTSolversTacticDesc;
 
 	/**
 	 * Returns the single instance of the Smt Provers for Rodin core plug-in.

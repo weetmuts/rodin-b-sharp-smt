@@ -71,8 +71,10 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
 				.getDefault().getAllSMTSolversTactic();
 
-		if (allSMTSolversTactic != null
-				&& profiles.getEntry(ALL_SMT_SOLVERS_PROFILE_ID) == null) {
+		if (allSMTSolversTactic != null) {
+			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
+				profiles.remove(ALL_SMT_SOLVERS_PROFILE_ID);
+			}
 			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
 			profiles.store();
 		}
@@ -103,7 +105,7 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 		}
 
 		final ITacticDescriptor allSMTTacticDescriptor = profiles.getEntry(
-				ALL_SMT_SOLVERS_PROFILE_ID).getValue();
+				ALL_SMT_SOLVERS_PROFILE_ID).getReference();
 
 		if (allSMTTacticDescriptor != null) {
 			combinedTactics.add(afterBoundedGoalWithFiniteHyps,
@@ -117,10 +119,36 @@ public class SmtProversUIPlugin extends AbstractUIPlugin {
 			 * If the SMT profile does not exist yet, stores it in the
 			 * preferences.
 			 */
-			if (profiles.getEntry(AUTO_TACTIC_SMT_PROFILE_ID) == null) {
-				profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
-				profiles.store();
+			if (profiles.exists(AUTO_TACTIC_SMT_PROFILE_ID)) {
+				profiles.remove(AUTO_TACTIC_SMT_PROFILE_ID);
 			}
+			profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
+			profiles.store();
+		}
+	}
+
+	public static void updateAllSMTSolversProfile() {
+		/**
+		 * Accesses the Event-B UI preferences
+		 */
+		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
+				.getPreferenceStore();
+		/**
+		 * Loads the list of tactics profiles
+		 */
+		final TacticsProfilesCache profiles = new TacticsProfilesCache(
+				eventbUIPrefStore);
+		profiles.load();
+
+		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
+				.getDefault().getAllSMTSolversTactic();
+
+		if (allSMTSolversTactic != null) {
+			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
+				profiles.remove(ALL_SMT_SOLVERS_PROFILE_ID);
+			}
+			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
+			profiles.store();
 		}
 	}
 

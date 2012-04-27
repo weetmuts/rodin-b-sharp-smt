@@ -10,7 +10,9 @@
 
 package org.eventb.smt.ui.internal.preferences;
 
+import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
+import static org.eventb.smt.ui.internal.provers.SmtProversUIPlugin.updateAllSMTSolversProfile;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -70,5 +72,12 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 			configsFieldEditor.refresh();
 		}
 		super.setVisible(visible);
+	}
+
+	@Override
+	public boolean performOk() {
+		updateAllSMTSolversTactic();
+		updateAllSMTSolversProfile();
+		return super.performOk();
 	}
 }

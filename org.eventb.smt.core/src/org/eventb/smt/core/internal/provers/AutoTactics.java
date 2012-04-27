@@ -158,7 +158,7 @@ public class AutoTactics {
 			final ICombinatorDescriptor compUntilSuccCombDesc = getAutoTacticRegistry()
 					.getCombinatorDescriptor(COMBINATOR_ID);
 			final ITacticDescriptor allSMTSolvers = compUntilSuccCombDesc
-					.combine(combinedTactics, "AllSMTSolversTactic");
+					.combine(combinedTactics, "composeUntilSuccessId");
 			return attemptAfterLasso(singletonList(allSMTSolvers),
 					"attemptAfterLassoId");
 		}

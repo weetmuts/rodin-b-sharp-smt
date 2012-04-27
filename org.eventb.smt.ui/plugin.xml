@@ -42,35 +42,6 @@
             tooltip="%SMTtactic.tooltip">
       </tactic>
    </extension>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="toolbar:org.eventb.ui.provingBar">
-            <command
-                  commandId="org.eventb.smt.ui.smtUpdateCommand"
-                  icon="icons/SMTupdate.GIF"
-                  id="smtupdate"
-                  label="%SMTupdatecmd.label"
-                  style="push"
-                  tooltip="%SMTupdatecmd.tooltip">
-            </command>
-      </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            description="%SMTupdatecmd.description"
-            id="org.eventb.smt.ui.smtUpdateCommand"
-            name="%SMTupdatecmd.name">
-      </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.eventb.smt.ui.internal.provers.SMTHandler"
-            commandId="org.eventb.smt.ui.smtUpdateCommand">
-      </handler>
-   </extension>
    
    
 </plugin>
