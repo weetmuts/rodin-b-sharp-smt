@@ -7,18 +7,20 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullArgsException;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullSolverIdException;
-import static org.eventb.smt.core.internal.preferences.SolverConfiguration.EDITABLE;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
 import static org.eventb.smt.core.internal.preferences.Utils.checkName;
+import static org.eventb.smt.core.internal.preferences.configurations.SolverConfiguration.EDITABLE;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eventb.smt.core.internal.preferences.AbstractLoader;
+import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 
 /**
  * Bridge class used by the solver configurations registry to store data about

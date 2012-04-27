@@ -7,7 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.solvers;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.quote;

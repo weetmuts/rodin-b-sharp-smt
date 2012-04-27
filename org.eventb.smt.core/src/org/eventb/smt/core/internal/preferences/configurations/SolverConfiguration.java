@@ -8,13 +8,13 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.configurations;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.quote;
-import static org.eventb.smt.core.internal.preferences.SMTSolver.DEFAULT_SOLVER_ID;
 import static org.eventb.smt.core.internal.preferences.Utils.decode;
 import static org.eventb.smt.core.internal.preferences.Utils.encode;
+import static org.eventb.smt.core.internal.preferences.solvers.SMTSolver.DEFAULT_SOLVER_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.translation.SMTLIBVersion.LATEST;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;

@@ -7,7 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eventb.smt.core.internal.log.SMTStatus.smtWarning;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.smt.core.internal.log.SMTStatus;
+import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
@@ -58,6 +59,15 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 			if (isValidPath(solver.getPath().toOSString())) {
 				final String id = solverConfig.getID();
 				if (replace) {
+					/**
+					 * As bundled configurations are forced replaced at start-up
+					 * for backward compatibility errors avoidance, the enabled
+					 * parameter is saved.
+					 */
+					if (solverConfigs.containsKey(id)) {
+						solverConfig.setEnabled(solverConfigs.get(id)
+								.isEnabled());
+					}
 					removeConfigsWithNameOf(solverConfig);
 					solverConfigs.put(id, solverConfig);
 				} else if (!solverConfigs.containsKey(id)

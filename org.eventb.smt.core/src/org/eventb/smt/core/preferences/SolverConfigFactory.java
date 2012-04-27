@@ -12,7 +12,7 @@ package org.eventb.smt.core.preferences;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshConfigID;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshCopyName;
 
-import org.eventb.smt.core.internal.preferences.SolverConfiguration;
+import org.eventb.smt.core.internal.preferences.configurations.SolverConfiguration;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 

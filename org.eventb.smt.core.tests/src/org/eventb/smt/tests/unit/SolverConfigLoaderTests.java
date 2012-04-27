@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
-import org.eventb.smt.core.internal.preferences.SolverConfigLoader;
-import org.eventb.smt.core.internal.preferences.SolverConfiguration;
+import org.eventb.smt.core.internal.preferences.configurations.SolverConfigLoader;
+import org.eventb.smt.core.internal.preferences.configurations.SolverConfiguration;
 import org.junit.Test;
 
 /**

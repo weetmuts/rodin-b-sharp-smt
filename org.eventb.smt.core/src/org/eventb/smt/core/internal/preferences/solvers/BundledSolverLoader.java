@@ -7,15 +7,15 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
 import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullPathException;
-import static org.eventb.smt.core.internal.preferences.SMTSolver.EDITABLE;
 import static org.eventb.smt.core.internal.preferences.Utils.checkBundle;
 import static org.eventb.smt.core.internal.preferences.Utils.checkId;
 import static org.eventb.smt.core.internal.preferences.Utils.checkName;
+import static org.eventb.smt.core.internal.preferences.solvers.SMTSolver.EDITABLE;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
+import org.eventb.smt.core.internal.preferences.AbstractLoader;
+import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.osgi.framework.Bundle;
 
 /**

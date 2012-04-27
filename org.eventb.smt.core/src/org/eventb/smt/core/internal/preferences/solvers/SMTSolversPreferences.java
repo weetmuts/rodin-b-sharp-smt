@@ -7,7 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eventb.smt.core.internal.log.SMTStatus.smtWarning;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
+import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 
@@ -123,7 +124,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 	}
 
 	// FIXME same code as in SolverConfigsPreferences
-	private void removeSolversWithNameOf(final ISMTSolver solver) {
+	private void removeSolversCalledAs(final ISMTSolver solver) {
 		final String name = solver.getName();
 		final Iterator<ISMTSolver> solversIterator = solvers.values()
 				.iterator();
@@ -175,7 +176,7 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 		if (isValidPath(solver.getPath().toOSString())) {
 			final String id = solver.getID();
 			if (replace) {
-				removeSolversWithNameOf(solver);
+				removeSolversCalledAs(solver);
 				solvers.put(id, solver);
 			} else if (!solvers.containsKey(id)
 					&& !solverExists(solver.getName())) {

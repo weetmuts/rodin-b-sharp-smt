@@ -11,7 +11,7 @@ package org.eventb.smt.tests.unit;
 
 import static junit.framework.Assert.assertEquals;
 import static org.eventb.smt.core.internal.preferences.AbstractPreferences.IDS_UPPER_BOUND;
-import static org.eventb.smt.core.internal.preferences.SMTSolversPreferences.getSMTSolversPrefs;
+import static org.eventb.smt.core.internal.preferences.solvers.SMTSolversPreferences.getSMTSolversPrefs;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
 import static org.junit.Assert.assertFalse;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.internal.preferences.SMTSolver;
+import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
 import org.junit.Ignore;

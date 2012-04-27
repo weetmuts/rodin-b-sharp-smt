@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eventb.smt.core.internal.preferences.BundledSolverLoader;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
-import org.eventb.smt.core.internal.preferences.SMTSolver;
+import org.eventb.smt.core.internal.preferences.solvers.BundledSolverLoader;
+import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
 import org.junit.Test;
 
 /**

@@ -7,7 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.core.internal.preferences.AbstractRegistry;
+import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**

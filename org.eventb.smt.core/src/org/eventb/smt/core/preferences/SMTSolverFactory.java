@@ -12,7 +12,7 @@ package org.eventb.smt.core.preferences;
 import static org.eventb.smt.core.preferences.PreferenceManager.freshSolverID;
 
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.internal.preferences.SMTSolver;
+import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**

@@ -24,12 +24,12 @@ import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_V
 import java.io.File;
 
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
-import org.eventb.smt.core.internal.preferences.BundledSolverRegistry;
-import org.eventb.smt.core.internal.preferences.SMTSolver;
-import org.eventb.smt.core.internal.preferences.SMTSolversPreferences;
-import org.eventb.smt.core.internal.preferences.SolverConfigRegistry;
-import org.eventb.smt.core.internal.preferences.SolverConfigsPreferences;
-import org.eventb.smt.core.internal.preferences.TranslationPreferences;
+import org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry;
+import org.eventb.smt.core.internal.preferences.configurations.SolverConfigsPreferences;
+import org.eventb.smt.core.internal.preferences.solvers.BundledSolverRegistry;
+import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
+import org.eventb.smt.core.internal.preferences.solvers.SMTSolversPreferences;
+import org.eventb.smt.core.internal.preferences.translation.TranslationPreferences;
 
 /**
  * @author Systerel (yguyot)
