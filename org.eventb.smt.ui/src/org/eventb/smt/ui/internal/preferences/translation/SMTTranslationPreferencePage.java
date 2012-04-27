@@ -34,7 +34,7 @@ import org.eventb.smt.core.SMTCore;
 public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 	private static final String SMT_TRANSLATION_SETTINGS_LABEL = "SMT translation settings:";
-	private static final String VERIT_PATH_LABEL = "VeriT path";
+	private static final String VERIT_PATH_LABEL = "veriT path";
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
 
 	public SMTTranslationPreferencePage() {
