@@ -74,7 +74,7 @@ class SolverConfigsFieldEditor extends
 	 */
 	private static final String DUPLICATE_LABEL = "Duplicate...";
 	private static final String ID_LABEL = "ID";
-	private static final String ENABLED_LABEL = "Enabled";
+	private static final String ENABLED_LABEL = "";
 	private static final String NAME_LABEL = "Name";
 	private static final String SOLVER_LABEL = "Solver";
 	private static final String ARGS_LABEL = "Arguments";
@@ -83,12 +83,12 @@ class SolverConfigsFieldEditor extends
 	private static final String EDITABLE_LABEL = "Editable";
 
 	private static final int ID_COL_BOUND = 0;
-	private static final int ENABLED_COL_BOUND = 70;
-	private static final int NAME_COL_BOUND = 100;
-	private static final int SOLVER_COL_BOUND = 100;
-	private static final int ARGS_COL_BOUND = 200;
-	private static final int APPROACH_COL_BOUND = 100;
-	private static final int SMTLIB_COL_BOUND = 70;
+	private static final int ENABLED_COL_BOUND = 20;
+	private static final int NAME_COL_BOUND = 105;
+	private static final int SOLVER_COL_BOUND = 105;
+	private static final int ARGS_COL_BOUND = 203;
+	private static final int APPROACH_COL_BOUND = 74;
+	private static final int SMTLIB_COL_BOUND = 43;
 	private static final int EDITABLE_COL_BOUND = 0;
 
 	/**
