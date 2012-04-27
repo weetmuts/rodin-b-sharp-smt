@@ -1,0 +1,16 @@
+The cvc3 binary has been compiled under Ubuntu 10.04.4 with package libgmp3-dev installed.
+
+The following commands have been used after downloading the CVC3-2.4.1 tarball.
+
+	tar zxf cvc3-2.4.1.tar.gz
+	cd cvc3-2.4.1
+	rm src/sat/xchaff_*
+	./configure --disable-zchaff
+	make
+
+The binary has been tested by issuing the following additional commands:
+
+	cd test
+	make
+	bin/test
+   
