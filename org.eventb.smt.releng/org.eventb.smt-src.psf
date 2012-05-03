@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="org.tigris.subversion.subclipse.core.svnnature">
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt,org.eventb.smt"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt-feature,org.eventb.smt-feature"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.core,org.eventb.smt.core"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3,org.eventb.smt.cvc3"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3.macosx,org.eventb.smt.cvc3.macosx"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3.win32,org.eventb.smt.cvc3.win32"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.help,org.eventb.smt.help"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.ui,org.eventb.smt.ui"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.verit,org.eventb.smt.verit"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.verit.linux,org.eventb.smt.verit.linux"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.verit.macosx,org.eventb.smt.verit.macosx"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.verit.win32,org.eventb.smt.verit.win32"/>
+</provider>
+</psf>
