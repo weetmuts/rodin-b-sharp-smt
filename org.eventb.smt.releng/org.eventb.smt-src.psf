@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <psf version="2.0">
 <provider id="org.tigris.subversion.subclipse.core.svnnature">
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.releng,org.eventb.smt.releng"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt,org.eventb.smt"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt-feature,org.eventb.smt-feature"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.core,org.eventb.smt.core"/>
