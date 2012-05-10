@@ -130,38 +130,33 @@ public class AutoTactics {
 	 *         tactic.
 	 */
 	public static ITacticDescriptor makeAllSMTSolversTactic() {
-		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>();
 		final List<ISolverConfig> enabledConfigs = getPreferenceManager()
 				.getSolverConfigsPrefs().getEnabledConfigs();
-		if (enabledConfigs != null && !enabledConfigs.isEmpty()) {
-			for (final ISolverConfig enabledConfig : enabledConfigs) {
-				if (enabledConfig.isBroken()) {
-					continue;
-				}
-
-				final IParamTacticDescriptor smtTactic;
-				try {
-					smtTactic = smtTactic(enabledConfig);
-				} catch (IllegalArgumentException iae) {
-					smtError("An error occured while trying to "
-							+ "build a tactic with the SMT configuration "
-							+ enabledConfig.getName() + ".", iae);
-					continue;
-				}
-
-				combinedTactics.add(smtTactic);
-			}
-			if (combinedTactics.isEmpty()) {
-				return null;
-			}
-
-			final ICombinatorDescriptor compUntilSuccCombDesc = getAutoTacticRegistry()
-					.getCombinatorDescriptor(COMBINATOR_ID);
-			final ITacticDescriptor allSMTSolvers = compUntilSuccCombDesc
-					.combine(combinedTactics, "composeUntilSuccessId");
-			return attemptAfterLasso(singletonList(allSMTSolvers),
-					"attemptAfterLassoId");
+		if (enabledConfigs == null || enabledConfigs.isEmpty()) {
+			return null;
 		}
-		return null;
+		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>();
+		for (final ISolverConfig enabledConfig : enabledConfigs) {
+			final IParamTacticDescriptor smtTactic;
+			try {
+				smtTactic = smtTactic(enabledConfig);
+			} catch (IllegalArgumentException iae) {
+				smtError("An error occured while trying to "
+						+ "build a tactic with the SMT configuration "
+						+ enabledConfig.getName() + ".", iae);
+				continue;
+			}
+			combinedTactics.add(smtTactic);
+		}
+		if (combinedTactics.isEmpty()) {
+			return null;
+		}
+
+		final ICombinatorDescriptor compUntilSuccCombDesc = getAutoTacticRegistry()
+				.getCombinatorDescriptor(COMBINATOR_ID);
+		final ITacticDescriptor allSMTSolvers = compUntilSuccCombDesc
+				.combine(combinedTactics, "composeUntilSuccessId");
+		return attemptAfterLasso(singletonList(allSMTSolvers),
+				"attemptAfterLassoId");
 	}
 }

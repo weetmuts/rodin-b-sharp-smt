@@ -253,15 +253,11 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 		solverConfigs.remove(configID);
 	}
 
-	// FIXME how to filter with efficiency ?
 	@Override
 	public List<ISolverConfig> getEnabledConfigs() {
 		final List<ISolverConfig> enabledConfigs = new ArrayList<ISolverConfig>();
-		final Iterator<ISolverConfig> configsIterator = solverConfigs.values()
-				.iterator();
-		while (configsIterator.hasNext()) {
-			final ISolverConfig config = configsIterator.next();
-			if (config.isEnabled()) {
+		for (ISolverConfig config: solverConfigs.values()) {
+			if (!config.isBroken() && config.isEnabled()) {
 				enabledConfigs.add(config);
 			}
 		}

@@ -22,6 +22,12 @@ public interface ISolverConfigsPreferences extends IPreferences {
 
 	public Map<String, ISolverConfig> getSolverConfigs();
 
+	/**
+	 * Returns all SMT solver configurations that have been enabled by the user
+	 * and that are not broken.
+	 *
+	 * @return all enabled SMT solver configurations
+	 */
 	public List<ISolverConfig> getEnabledConfigs();
 
 	public ISolverConfig getSolverConfig(final String configId);
