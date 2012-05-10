@@ -1,0 +1,42 @@
+Procedure for building a new version of the SMT feature
+-------------------------------------------------------
+
+This build procedure assumes that the build happens on a Linux platform.
+Nevertheless, the feature will be built for all target platforms
+supported by Rodin.
+
+1. Copy the Eclipse SDK distribution and delta pack in directory "archives".
+
+   Example:
+
+	archives/eclipse-SDK-3.7.2-linux-gtk.tar.gz
+	archives/eclipse-3.7.2-delta-pack.zip
+
+2. Copy the target Rodin platform in directory "archives".
+
+   Example:
+
+	archives/rodin-2.5-dev.zip
+
+3. Update the header of file config.sh with the necessary information.
+
+4. Fetch the sources from Subversion on SourceForge by running script
+   "fetch.sh" from the current directory.  The sources are fetched and
+   stored in directory "src". In addition, an archive of the sources is
+   stored in directory "result".
+
+   It happens frequently that Subversion fails at downloading some
+   projects with a "Connection reset" error.  In this case, just rerun
+   the fetch script with the project name as argument to repair.
+
+   Example:
+	./fetch.sh
+	./fetch.sh org.eventb.smt.core
+
+5. Run the build script from the current directory.
+
+   Example:
+	./build.sh
+
+6. A Zipped p2 repository containing the feature and plug-ins is
+   available in directory "result".
