@@ -6,6 +6,7 @@
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt-feature,org.eventb.smt-feature"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.core,org.eventb.smt.core"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3,org.eventb.smt.cvc3"/>
+<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3.linux,org.eventb.smt.cvc3.linux"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3.macosx,org.eventb.smt.cvc3.macosx"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.cvc3.win32,org.eventb.smt.cvc3.win32"/>
 <project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.help,org.eventb.smt.help"/>
