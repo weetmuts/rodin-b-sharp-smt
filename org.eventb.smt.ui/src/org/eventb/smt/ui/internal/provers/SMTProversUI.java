@@ -15,7 +15,7 @@ import static org.eventb.internal.ui.EventBImage.registerImage;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.core.SMTCore.ALL_SMT_SOLVERS_PROFILE_ID;
 import static org.eventb.smt.core.SMTCore.AUTO_TACTIC_SMT_PROFILE_ID;
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +121,7 @@ public class SMTProversUI extends AbstractUIPlugin {
 		final int afterBoundedGoalWithFiniteHyps = 5;
 
 		if (!profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
-			smtError("All SMT Solvers Profile not found.", null);
+			showError("All SMT Solvers Profile not found.");
 			return;
 		}
 

@@ -4,7 +4,7 @@
    <extension
          point="org.eventb.smt.core.solvers">
       <solver
-            id="bundled_cvc3"
+            id="bundled"
             name="Bundled CVC3"
             kind="cvc3"
             localpath="$os$/cvc3">
@@ -17,7 +17,7 @@
             id="cvc3_pp_smt2"
             name="CVC3 SMT2"
             smt-lib="V2.0"
-            solverid="org.eventb.smt.cvc3.bundled_cvc3"
+            solverid="org.eventb.smt.cvc3.bundled"
             translator="PP">
       </configuration>
    </extension>

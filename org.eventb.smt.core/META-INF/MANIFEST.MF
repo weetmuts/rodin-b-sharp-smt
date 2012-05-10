@@ -8,25 +8,21 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eventb.core.seqprover,
- org.eventb.pptrans,
- org.eventb.pp,
- org.eventb.core
+ org.eventb.pptrans
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
- org.eventb.smt.core;uses:="org.eventb.core.seqprover",
+ org.eventb.smt.core,
+ org.eventb.smt.core.preferences,
+ org.eventb.smt.core.provers,
+ org.eventb.smt.core.translation,
  org.eventb.smt.core.internal.ast;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.ast.macros;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.ast.symbols;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.ast.theories;x-friends:="org.eventb.smt.core.tests",
- org.eventb.smt.core.internal.log;x-friends:="org.eventb.smt.ui",
  org.eventb.smt.core.internal.preferences;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.preferences.configurations;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.preferences.solvers;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.preferences.translation;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.provers;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.core.performance",
- org.eventb.smt.core.internal.translation;x-friends:="org.eventb.smt.core.tests",
- org.eventb.smt.core.preferences,
- org.eventb.smt.core.provers,
- org.eventb.smt.core.translation
-Import-Package: org.eclipse.core.commands
+ org.eventb.smt.core.internal.translation;x-friends:="org.eventb.smt.core.tests"

@@ -53,8 +53,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	/**
 	 * bundled solvers ids
 	 */
-	public static final String BUNDLED_VERIT_ID = "org.eventb.smt.verit.bundled_verit";
-	public static final String BUNDLED_CVC3_ID = "org.eventb.smt.cvc3.bundled_cvc3";
+	public static final String BUNDLED_VERIT_ID = "org.eventb.smt.verit.bundled";
+	public static final String BUNDLED_CVC3_ID = "org.eventb.smt.cvc3.bundled";
 	/**
 	 * bundled configs ids
 	 */

@@ -4,7 +4,4 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eventb.smt.verit;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
-Require-Bundle: org.eventb.smt.core;bundle-version="0.1.0",
- org.eventb.core;bundle-version="2.4.0"

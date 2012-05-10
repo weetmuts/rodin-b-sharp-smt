@@ -5,5 +5,4 @@ Bundle-SymbolicName: org.eventb.smt.verit.linux
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
 Fragment-Host: org.eventb.smt.verit;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin

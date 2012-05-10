@@ -7,18 +7,14 @@ Require-Bundle: org.junit,
  org.eventb.smt.core,
  org.eventb.core.seqprover,
  org.eventb.pptrans,
- org.eventb.core.ast.tests;bundle-version="2.1.0",
- org.eventb.smt.verit;bundle-version="0.8.0",
- org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eventb.smt.cvc3;bundle-version="0.8.0"
+ org.eventb.core.seqprover.tests,
+ org.eventb.core.ast.tests,
+ org.eventb.smt.verit,
+ org.eventb.smt.cvc3
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
-Import-Package: org.eclipse.osgi.util,
- org.eventb.core.seqprover.reasonerExtentionTests,
- org.eventb.core.seqprover.tests,
- org.eventb.pp
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.eventb.smt.tests,
- org.eventb.smt.tests.acceptance,
- org.eventb.smt.utils
+Export-Package: org.eventb.smt.tests;x-friends:="org.eventb.smt.core.performance",
+ org.eventb.smt.tests.acceptance;x-friends:="org.eventb.smt.core.performance",
+ org.eventb.smt.utils;x-friends:="org.eventb.smt.core.performance"
