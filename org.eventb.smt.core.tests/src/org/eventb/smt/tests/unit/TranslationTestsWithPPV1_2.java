@@ -14,7 +14,6 @@ package org.eventb.smt.tests.unit;
 import static org.eventb.pptrans.Translator.isInGoal;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.tests.unit.Messages.SMTLIB_Translation_Failed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -54,12 +53,6 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		defaultLogic = new Logic.SMTLogicPP(Logic.UNKNOWN,
 				TheoryV1_2.Ints.getInstance(),
 				TheoryV1_2.Booleans.getInstance());
-	}
-
-	private void testTranslationV1_2(final ITypeEnvironment te,
-			final String ppPredStr, final String expectedSMTNode) {
-		testTranslationV1_2(te, ppPredStr, expectedSMTNode,
-				SMTLIB_Translation_Failed);
 	}
 
 	private void testTranslateGoalPP(final ITypeEnvironment te,
@@ -109,8 +102,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 	private static void testTranslationV1_2Default(final String ppPredStr,
 			final String expectedSMTNode) {
-		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode,
-				SMTLIB_Translation_Failed);
+		testTranslationV1_2(defaultTe, ppPredStr, expectedSMTNode);
 	}
 
 	public static void testTypeEnvironmentFuns(final Logic logic,
@@ -162,12 +154,9 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	 *            String representation of the input predicate
 	 * @param expectedSMTNode
 	 *            String representation of the expected node
-	 * @param failMessage
-	 *            Human readable error message
 	 */
 	private static void testTranslationV1_2(final ITypeEnvironment iTypeEnv,
-			final String ppPredStr, final String expectedSMTNode,
-			final String failMessage) throws AssertionError {
+			final String ppPredStr, final String expectedSMTNode) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
 
 		final ISimpleSequent sequent = SimpleSequents.make(
@@ -175,8 +164,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 
 		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
-		testTranslationV1_2(ppPred, expectedSMTNode, failMessage,
-				VERIT.toString());
+		testTranslationV1_2(ppPred, expectedSMTNode, VERIT.toString());
 	}
 
 	/**
@@ -186,19 +174,17 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 	 *            Input Predicate Calculus formula
 	 * @param expectedSMTNode
 	 *            String representation of the expected node
-	 * @param failMessage
-	 *            Human readable error message
 	 */
 	private static void testTranslationV1_2(final Predicate ppPred,
-			final String expectedSMTNode, final String failMessage,
-			final String solver) {
-		final StringBuilder actualSMTNode = new StringBuilder();
-		SMTThroughPP.translate(ppPred, V1_2, ff).toString(actualSMTNode, -1,
+			final String expectedSMTNode, final String solver) {
+		final StringBuilder sb = new StringBuilder();
+		SMTThroughPP.translate(ppPred, V1_2, ff).toString(sb, -1,
 				false);
-
-		System.out
-				.println(translationMessage(ppPred, actualSMTNode.toString()));
-		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
+		final String actualSMTNode = sb.toString();
+		if (!expectedSMTNode.equals(actualSMTNode)) {
+			System.out.println(translationMessage(ppPred, actualSMTNode));
+		}
+		assertEquals(expectedSMTNode, actualSMTNode);
 	}
 
 	private static final String translationMessage(final Predicate ppPred,
@@ -206,7 +192,7 @@ public class TranslationTestsWithPPV1_2 extends AbstractTests {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("\'");
 		sb.append(ppPred.toString());
-		sb.append("\' was translated in \'");
+		sb.append("\' was translated to \'");
 		sb.append(smtNode);
 		sb.append("\'");
 		return sb.toString();
