@@ -21,8 +21,7 @@ import org.eventb.smt.core.internal.provers.SMTProversCore;
  * 
  */
 public class SMTCore {
-	public static final String AUTO_TACTIC_SMT_PROFILE_ID = "Default Auto Tactic with SMT Profile";
-	public static final String ALL_SMT_SOLVERS_PROFILE_ID = "All SMT Solvers Profile";
+
 	/**
 	 * The plug-in identifier
 	 */

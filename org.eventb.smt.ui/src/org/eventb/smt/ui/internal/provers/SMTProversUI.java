@@ -13,8 +13,6 @@ package org.eventb.smt.ui.internal.provers;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.EventBImage.registerImage;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.core.SMTCore.ALL_SMT_SOLVERS_PROFILE_ID;
-import static org.eventb.smt.core.SMTCore.AUTO_TACTIC_SMT_PROFILE_ID;
 import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 
 import java.util.ArrayList;
@@ -39,6 +37,10 @@ import org.osgi.framework.BundleContext;
  */
 @SuppressWarnings("restriction")
 public class SMTProversUI extends AbstractUIPlugin {
+
+	private static final String AUTO_TACTIC_SMT_PROFILE_ID = "Default Auto Tactic with SMT";
+	private static final String ALL_SMT_SOLVERS_PROFILE_ID = "All SMT Solvers";
+
 	/**
 	 * the shared instance
 	 */
