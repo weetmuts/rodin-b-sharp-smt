@@ -18,10 +18,9 @@ import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eventb.core.preferences.IPrefMapEntry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
@@ -45,17 +44,36 @@ public class SMTProversUI extends AbstractUIPlugin {
 	 * the shared instance
 	 */
 	private static SMTProversUI plugin;
-	private static final IPath ENABLE_IMAGE_PATH = new Path(
-			"icons/enable_configuration.gif");
-	private static final IPath DISABLE_IMAGE_PATH = new Path(
-			"icons/disable_configuration.gif");
 
 	/**
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.ui";
+
+	/*
+	 * Internal name of images used by this plug-in.
+	 */
 	public static final String ENABLE_CONFIG_IMG_ID = "enable_configuration";
 	public static final String DISABLE_CONFIG_IMG_ID = "disable_configuration";
+
+	public static void updateAllSMTSolversProfile() {
+		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
+				.getPreferenceStore();
+		final TacticsProfilesCache profiles = new TacticsProfilesCache(
+				eventbUIPrefStore);
+		profiles.load();
+
+		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
+				.getDefault().getAllSMTSolversTactic();
+
+		if (allSMTSolversTactic != null) {
+			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
+				profiles.remove(ALL_SMT_SOLVERS_PROFILE_ID);
+			}
+			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
+			profiles.store();
+		}
+	}
 
 	/**
 	 * The constructor
@@ -64,21 +82,36 @@ public class SMTProversUI extends AbstractUIPlugin {
 		// Do nothing
 	}
 
-	private void registerImages() {
-		final ImageRegistry imageRegistry = getImageRegistry();
-		registerImage(imageRegistry, ENABLE_CONFIG_IMG_ID, PLUGIN_ID,
-				ENABLE_IMAGE_PATH.toOSString());
-		registerImage(imageRegistry, DISABLE_CONFIG_IMG_ID, PLUGIN_ID,
-				DISABLE_IMAGE_PATH.toOSString());
+	@Override
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+		addSMTProfile();
+		registerImages();
+	}
+
+	@Override
+	public void stop(final BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
 	}
 
 	/**
-	 * Adds a new tactics profile in the Rodin platform preferences which is the
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
+	 */
+	public static SMTProversUI getDefault() {
+		return plugin;
+	}
+
+	// FIXME update doc.
+	/**
+	 * Adds a new tactics profile to the Event-B UI preferences which is the
 	 * default auto tactics profile plus the SMT tactic inserted right after the
 	 * BoundedGoalWithFiniteHyps tactic.
-	 * 
 	 */
-	private static void addSMTProfile() {
+	private void addSMTProfile() {
 		/**
 		 * Accesses the Event-B UI preferences
 		 */
@@ -150,51 +183,17 @@ public class SMTProversUI extends AbstractUIPlugin {
 		}
 	}
 
-	public static void updateAllSMTSolversProfile() {
-		/**
-		 * Accesses the Event-B UI preferences
-		 */
-		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
-				.getPreferenceStore();
-		/**
-		 * Loads the list of tactics profiles
-		 */
-		final TacticsProfilesCache profiles = new TacticsProfilesCache(
-				eventbUIPrefStore);
-		profiles.load();
-
-		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
-				.getDefault().getAllSMTSolversTactic();
-
-		if (allSMTSolversTactic != null) {
-			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
-				profiles.remove(ALL_SMT_SOLVERS_PROFILE_ID);
-			}
-			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
-			profiles.store();
-		}
+	private void registerImages() {
+		final ImageRegistry imageRegistry = getImageRegistry();
+		registerImage(imageRegistry, ENABLE_CONFIG_IMG_ID, PLUGIN_ID,
+				"icons/enable_configuration.gif");
+		registerImage(imageRegistry, DISABLE_CONFIG_IMG_ID, PLUGIN_ID,
+				"icons/disable_configuration.gif");
 	}
 
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-		addSMTProfile();
-		registerImages();
+	public static Image getRegisteredImage(String key) {
+		final ImageRegistry imageRegistry = getDefault().getImageRegistry();
+		return imageRegistry.get(key);
 	}
 
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static SMTProversUI getDefault() {
-		return plugin;
-	}
 }

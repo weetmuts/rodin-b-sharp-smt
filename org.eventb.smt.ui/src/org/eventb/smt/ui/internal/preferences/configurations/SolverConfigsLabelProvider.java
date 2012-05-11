@@ -22,7 +22,7 @@ import static org.eventb.smt.core.preferences.SolverConfigFactory.SMTLIB_COL;
 import static org.eventb.smt.core.preferences.SolverConfigFactory.SOLVER_COL;
 import static org.eventb.smt.ui.internal.provers.SMTProversUI.DISABLE_CONFIG_IMG_ID;
 import static org.eventb.smt.ui.internal.provers.SMTProversUI.ENABLE_CONFIG_IMG_ID;
-import static org.eventb.smt.ui.internal.provers.SMTProversUI.getDefault;
+import static org.eventb.smt.ui.internal.provers.SMTProversUI.getRegisteredImage;
 
 import org.eclipse.swt.graphics.Image;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -67,15 +67,19 @@ class SolverConfigsLabelProvider extends AbstractTableLabelProvider {
 	public Image getColumnImage(Object element, int columnIndex) {
 		final ISolverConfig config = (ISolverConfig) element;
 		if (columnIndex == ENABLED_COL) {
-			if (config.isEnabled()) {
-				return getDefault().getImageRegistry()
-						.get(ENABLE_CONFIG_IMG_ID);
-			} else {
-				return getDefault().getImageRegistry().get(
-						DISABLE_CONFIG_IMG_ID);
-			}
+			final String imageKey = getImageKey(config);
+			return getRegisteredImage(imageKey);
 		} else {
 			return super.getColumnImage(element, columnIndex);
 		}
 	}
+
+	private String getImageKey(final ISolverConfig config) {
+		if (config.isEnabled()) {
+			return ENABLE_CONFIG_IMG_ID;
+		} else {
+			return DISABLE_CONFIG_IMG_ID;
+		}
+	}
+
 }
