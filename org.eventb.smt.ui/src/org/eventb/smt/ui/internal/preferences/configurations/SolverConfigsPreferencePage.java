@@ -35,18 +35,8 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 
 	private SolverConfigsFieldEditor configsFieldEditor;
 
-	public SolverConfigsPreferencePage() {
-		super(FLAT);
-		setDescription(SMT_SOLVER_CONFIGS_DESCRIPTION);
-	}
-
-	/**
-	 * Sets the preference store of this preference page. It is called when the
-	 * preference store is currently <code>null</code>. The returned preference
-	 * store is built over the core plug-in node (its ID) of the configuration
-	 * scope, as in the <code>SMTPreference</code> class.
-	 * 
-	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
+	/*
+	 * The preferences are actually stored in the SMT core plug-in.
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -56,7 +46,7 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	public void init(final IWorkbench workbench) {
-		setPreferenceStore(doGetPreferenceStore());
+		setDescription(SMT_SOLVER_CONFIGS_DESCRIPTION);
 	}
 
 	@Override

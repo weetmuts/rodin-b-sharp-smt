@@ -39,11 +39,6 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 	private static final String VERIT_PATH_LABEL = "veriT path";
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
 
-	public SMTTranslationPreferencePage() {
-		super(FLAT);
-		setDescription(SMT_TRANSLATION_SETTINGS_LABEL);
-	}
-
 	/*
 	 * We want a directory field editor that validates the user input on every
 	 * keystroke, because, otherwise, the "Apply" and "OK" button are not
@@ -66,13 +61,8 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		}
 	}
 
-	/**
-	 * Sets the preference store of this preference page. It is called when the
-	 * preference store is currently <code>null</code>. The returned preference
-	 * store is built over the core plug-in node (its ID) of the configuration
-	 * scope, as in the <code>SMTPreference</code> class.
-	 * 
-	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
+	/*
+	 * The preferences are actually stored in the SMT core plug-in.
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -82,7 +72,7 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	public void init(final IWorkbench workbench) {
-		setPreferenceStore(doGetPreferenceStore());
+		setDescription(SMT_TRANSLATION_SETTINGS_LABEL);
 	}
 
 	/*

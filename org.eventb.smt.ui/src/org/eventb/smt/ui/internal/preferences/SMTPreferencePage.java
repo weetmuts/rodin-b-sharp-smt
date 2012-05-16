@@ -19,34 +19,13 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	/**
-	 * Constructor.
-	 */
-	public SMTPreferencePage() {
-		super(FLAT);
-		setDescription("Settings for the SMT-Solvers Plug-in");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors
-	 * ()
-	 */
 	@Override
 	public void createFieldEditors() {
 		// Do nothing at the moment.
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
 	@Override
 	public void init(IWorkbench workbench) {
-		// Do nothing at the moment.
+		setDescription("Settings for the SMT-Solvers Plug-in");
 	}
 }
