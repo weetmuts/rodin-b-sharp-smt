@@ -10,15 +10,16 @@
 
 package org.eventb.smt.ui.internal.preferences.translation;
 
+import static org.eclipse.jface.resource.JFaceResources.getString;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -43,19 +44,23 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		setDescription(SMT_TRANSLATION_SETTINGS_LABEL);
 	}
 
-	/**
-	 * This class is a directory field editor set to validate on key stroke.
+	/*
+	 * We want a directory field editor that validates the user input on every
+	 * keystroke, because, otherwise, the "Apply" and "OK" button are not
+	 * disabled when the field is edited directly by the user and is incorrect.
 	 * 
-	 * @author Systerel (yguyot)
+	 * However, the DirectoryFieldEditor does not allow this, unless we call the
+	 * default constructor and provide all information afterwards. We therefore
+	 * sub-class DirectoryFieldEditor, copy its constructor, just changing one
+	 * line to set the validation strategy we want. This is a pity.
 	 */
-	private class ValidatedOnKeyStrokeDirFieldEd extends DirectoryFieldEditor {
-		public ValidatedOnKeyStrokeDirFieldEd(String name, String label,
+	private static class TranslationDirectoryEditor extends
+			DirectoryFieldEditor {
+		public TranslationDirectoryEditor(String name, String label,
 				Composite parent) {
-			super();
 			init(name, label);
-			setErrorMessage(JFaceResources
-					.getString("DirectoryFieldEditor.errorMessage"));
-			setChangeButtonText(JFaceResources.getString("openBrowse"));
+			setErrorMessage(getString("DirectoryFieldEditor.errorMessage"));
+			setChangeButtonText(getString("openBrowse"));
 			setValidateStrategy(VALIDATE_ON_KEY_STROKE);
 			createControl(parent);
 		}
@@ -80,15 +85,20 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		setPreferenceStore(doGetPreferenceStore());
 	}
 
+	/*
+	 * It is on purpose that getFieldEditorParent() is called for each field, it
+	 * is mandated by the FieldEditor API. Do not share this code.
+	 */
 	@Override
 	protected void createFieldEditors() {
-		final FileFieldEditor veriTBinaryBrowser = new FileFieldEditor(
+		final FieldEditor veriTBinaryBrowser = new FileFieldEditor(
 				VERIT_PATH_ID, VERIT_PATH_LABEL, true, getFieldEditorParent());
 		addField(veriTBinaryBrowser);
 
-		final ValidatedOnKeyStrokeDirFieldEd translationDirBrowser = new ValidatedOnKeyStrokeDirFieldEd(
+		final FieldEditor translationDirBrowser = new TranslationDirectoryEditor(
 				TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL,
 				getFieldEditorParent());
 		addField(translationDirBrowser);
 	}
+
 }
