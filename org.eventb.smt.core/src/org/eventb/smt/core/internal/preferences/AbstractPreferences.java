@@ -13,9 +13,9 @@ import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.preferences.IPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -28,7 +28,7 @@ import org.eventb.smt.core.preferences.PreferenceManager;
 public abstract class AbstractPreferences implements IPreferences {
 	protected static final boolean USE_DEFAULT_SCOPE = true;
 
-	protected static final IEclipsePreferences SMT_PREFS_NODE = ConfigurationScope.INSTANCE
+	protected static final IEclipsePreferences SMT_PREFS_NODE = InstanceScope.INSTANCE
 			.getNode(SMTCore.PLUGIN_ID);
 	protected static final IEclipsePreferences DEFAULT_SMT_PREFS_NODE = DefaultScope.INSTANCE
 			.getNode(SMTCore.PLUGIN_ID);

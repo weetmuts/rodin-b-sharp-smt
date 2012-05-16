@@ -12,7 +12,7 @@ package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,6 +29,7 @@ import org.eventb.smt.core.SMTCore;
  */
 public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
+
 	private static final String SMT_SOLVERS_LABEL = "";
 	private static final String SMT_SOLVERS_DESCRIPTION = "Connect SMT-solvers to the platform...";
 
@@ -47,7 +48,7 @@ public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		return new ScopedPreferenceStore(ConfigurationScope.INSTANCE,
+		return new ScopedPreferenceStore(InstanceScope.INSTANCE,
 				SMTCore.PLUGIN_ID);
 	}
 

@@ -14,7 +14,7 @@ import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.ui.internal.provers.SMTProversUI.updateAllSMTSolversProfile;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
@@ -50,7 +50,7 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		return new ScopedPreferenceStore(ConfigurationScope.INSTANCE,
+		return new ScopedPreferenceStore(InstanceScope.INSTANCE,
 				SMTCore.PLUGIN_ID);
 	}
 

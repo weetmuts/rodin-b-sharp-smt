@@ -13,7 +13,7 @@ package org.eventb.smt.ui.internal.preferences.translation;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -33,6 +33,7 @@ import org.eventb.smt.core.SMTCore;
  */
 public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
+
 	private static final String SMT_TRANSLATION_SETTINGS_LABEL = "SMT translation settings:";
 	private static final String VERIT_PATH_LABEL = "veriT path";
 	private static final String TRANSLATION_PATH_LABEL = "Temporary translation files path";
@@ -70,7 +71,7 @@ public class SMTTranslationPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		return new ScopedPreferenceStore(ConfigurationScope.INSTANCE,
+		return new ScopedPreferenceStore(InstanceScope.INSTANCE,
 				SMTCore.PLUGIN_ID);
 	}
 
