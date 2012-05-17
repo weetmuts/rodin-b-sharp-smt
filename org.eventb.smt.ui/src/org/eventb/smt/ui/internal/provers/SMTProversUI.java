@@ -13,7 +13,7 @@ package org.eventb.smt.ui.internal.provers;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.EventBImage.registerImage;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
+import static org.eventb.smt.ui.internal.UIUtils.showError;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,7 +21,7 @@ import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
 import static org.eventb.smt.core.preferences.PreferenceManager.solverExists;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
-import static org.eventb.smt.ui.internal.preferences.UIUtils.showError;
+import static org.eventb.smt.ui.internal.UIUtils.showError;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

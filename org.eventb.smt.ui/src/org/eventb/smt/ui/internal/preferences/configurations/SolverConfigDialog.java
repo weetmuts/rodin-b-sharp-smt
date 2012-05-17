@@ -43,7 +43,7 @@ import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
-import org.eventb.smt.ui.internal.preferences.UIUtils;
+import org.eventb.smt.ui.internal.UIUtils;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an

@@ -3,12 +3,12 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 
-package org.eventb.smt.ui.internal.preferences;
+package org.eventb.smt.ui.internal;
 
 import static org.eclipse.jface.dialogs.IDialogConstants.CANCEL_LABEL;
 import static org.eclipse.jface.dialogs.IDialogConstants.NO_LABEL;
@@ -48,10 +48,10 @@ public class UIUtils {
 
 	/**
 	 * Opens a warning dialog to the user displaying the given message.
-	 * 
+	 *
 	 * @param message
 	 *            The dialog message displayed
-	 * 
+	 *
 	 */
 	public static void showWarning(final String message) {
 		syncExec(new Runnable() {
@@ -64,7 +64,7 @@ public class UIUtils {
 
 	/**
 	 * Opens an information dialog to the user displaying the given message.
-	 * 
+	 *
 	 * @param message
 	 *            The dialog message
 	 */

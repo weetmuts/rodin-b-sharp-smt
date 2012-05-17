@@ -20,7 +20,7 @@ import static org.eventb.smt.core.preferences.SMTSolverFactory.KIND_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.NAME_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.PATH_COL;
 import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
-import static org.eventb.smt.ui.internal.preferences.UIUtils.showQuestionWithCancel;
+import static org.eventb.smt.ui.internal.UIUtils.showQuestionWithCancel;
 
 import java.util.ArrayList;
 import java.util.Map;
