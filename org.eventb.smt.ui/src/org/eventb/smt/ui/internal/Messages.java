@@ -28,6 +28,17 @@ public class Messages extends NLS {
 	public static String MainPrefPage_veriTPathLabel;
 	public static String MainPrefPage_veriTPathTooltip;
 
+	// Solver edition dialog
+	public static String SolverDialog_kindLabel;
+	public static String SolverDialog_kindToolTip;
+	public static String SolverDialog_nameDuplicate;
+	public static String SolverDialog_nameLabel;
+	public static String SolverDialog_nameMissing;
+	public static String SolverDialog_nameToolTip;
+	public static String SolverDialog_pathLabel;
+	public static String SolverDialog_pathToolTip;
+	public static String SolverDialog_title;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

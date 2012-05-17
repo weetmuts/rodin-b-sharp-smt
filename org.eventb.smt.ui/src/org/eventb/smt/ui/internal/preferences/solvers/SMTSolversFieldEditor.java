@@ -23,6 +23,7 @@ import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 import static org.eventb.smt.ui.internal.UIUtils.showQuestionWithCancel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -240,9 +241,8 @@ class SMTSolversFieldEditor extends
 					return;
 				}
 
-				final SMTSolverDialog solverDialog = new SMTSolverDialog(
-						getButtonsGroup().getShell(), getSMTPrefs(),
-						newSolver());
+				final SolverDialog solverDialog = new SolverDialog(
+						getButtonsGroup().getShell(), newSolver, usedNames());
 				if (solverDialog.open() == Window.OK) {
 					/**
 					 * Creates a new <code>SMTSolver</code> object, and adds it
@@ -301,19 +301,20 @@ class SMTSolversFieldEditor extends
 				if (getSMTPrefs().getSolvers().containsKey(selectionID)) {
 					final ISMTSolver solverToEdit = getSMTPrefs().getSolvers()
 							.get(selectionID);
-					if (solverToEdit != null) {
-						final SMTSolverDialog solverDialog = new SMTSolverDialog(
-								getButtonsGroup().getShell(), getSMTPrefs(),
-								solverToEdit);
-						if (solverDialog.open() == Window.OK) {
-							getSMTPrefs().add(solverDialog.getSolver(),
-									FORCE_REPLACE);
-							/**
-							 * Refreshes the table viewer.
-							 */
-							getTableViewer().refresh();
-							selectionChanged();
-						}
+					if (solverToEdit == null) {
+						return;
+					}
+					final SolverDialog solverDialog = new SolverDialog(
+							getButtonsGroup().getShell(),
+							solverToEdit, usedNames());
+					if (solverDialog.open() == Window.OK) {
+						getSMTPrefs().add(solverDialog.getSolver(),
+								FORCE_REPLACE);
+						/**
+						 * Refreshes the table viewer.
+						 */
+						getTableViewer().refresh();
+						selectionChanged();
 					}
 				}
 			}
@@ -343,4 +344,16 @@ class SMTSolversFieldEditor extends
 		tableViewer.setInput(smtPrefs.getSolvers());
 		tableViewer.refresh();
 	}
+
+	Set<String> usedNames() {
+
+		// FIXME Will be wrong when edition has taken place.
+
+		final Set<String> result = new HashSet<String>();
+		for (final ISMTSolver solver : getSMTPrefs().getSolvers().values()) {
+			result.add(solver.getName());
+		}
+		return result;
+	}
+
 }
