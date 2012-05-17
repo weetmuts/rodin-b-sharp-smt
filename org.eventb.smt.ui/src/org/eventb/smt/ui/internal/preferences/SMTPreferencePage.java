@@ -12,6 +12,17 @@ package org.eventb.smt.ui.internal.preferences;
 import static org.eclipse.jface.resource.JFaceResources.getString;
 import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_description;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_missingValue;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notADirectory;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notAFile;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notAbsolute;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notExecutableFile;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notWritableDir;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_tmpDirLabel;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_tmpDirTooltip;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_veriTPathLabel;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_veriTPathTooltip;
 
 import java.io.File;
 
@@ -35,15 +46,9 @@ import org.eventb.smt.core.SMTCore;
 public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private static final String SMT_TRANSLATION_SETTINGS_LABEL = "SMT translation settings:";
-	private static final String VERIT_PATH_LABEL = "veriT path";
-	private static final String VERIT_PATH_TOOLTIP = "Absolute path of the binary to use when translating through veriT";
-	private static final String TRANSLATION_PATH_LABEL = "Temporary directory";
-	private static final String TRANSLATION_PATH_TOOLTIP = "Absolute path of a directory where the plug-in will store its temporary files";
-
 	@Override
 	public void init(final IWorkbench workbench) {
-		setDescription(SMT_TRANSLATION_SETTINGS_LABEL);
+		setDescription(MainPrefPage_description);
 	}
 
 	/*
@@ -82,13 +87,13 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static class TempDirectoryEditor extends DirectoryFieldEditor {
 
 		public TempDirectoryEditor(Composite parent) {
-			init(TRANSLATION_PATH_ID, TRANSLATION_PATH_LABEL);
-			setErrorMessage(getString("DirectoryFieldEditor.errorMessage"));
-			setChangeButtonText(getString("openBrowse"));
+			init(TRANSLATION_PATH_ID, MainPrefPage_tmpDirLabel);
+			setErrorMessage(getString("DirectoryFieldEditor.errorMessage")); //$NON-NLS-1$
+			setChangeButtonText(getString("openBrowse")); //$NON-NLS-1$
 			setEmptyStringAllowed(false);
 			setValidateStrategy(VALIDATE_ON_KEY_STROKE);
 			createControl(parent);
-			getLabelControl().setToolTipText(TRANSLATION_PATH_TOOLTIP);
+			getLabelControl().setToolTipText(MainPrefPage_tmpDirTooltip);
 		}
 
 		/*
@@ -109,17 +114,17 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 
 		private String checkWritableDirectory(String path) {
 			if (path.length() == 0) {
-				return "Value must be provided";
+				return MainPrefPage_missingValue;
 			}
 			final File file = new File(path);
 			if (!file.isDirectory()) {
-				return "Value must be an existing directory";
+				return MainPrefPage_notADirectory;
 			}
 			if (!file.isAbsolute()) {
-				return "Value must be an absolute path";
+				return MainPrefPage_notAbsolute;
 			}
 			if (!file.canWrite()) {
-				return "Directory must be writable";
+				return MainPrefPage_notWritableDir;
 			}
 			return null;
 		}
@@ -129,9 +134,10 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static class VeriTEditor extends FileFieldEditor {
 
 		public VeriTEditor(Composite parent) {
-			super(VERIT_PATH_ID, VERIT_PATH_LABEL, true,
+			super(VERIT_PATH_ID, MainPrefPage_veriTPathLabel, true,
 					VALIDATE_ON_KEY_STROKE, parent);
-			getLabelControl().setToolTipText(VERIT_PATH_TOOLTIP);
+			getLabelControl()
+					.setToolTipText(MainPrefPage_veriTPathTooltip);
 		}
 
 		/*
@@ -157,13 +163,13 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 			}
 			final File file = new File(path);
 			if (!file.isFile()) {
-				return "Value must be an existing file";
+				return MainPrefPage_notAFile;
 			}
 			if (!file.isAbsolute()) {
-				return "Value must be an absolute path";
+				return MainPrefPage_notAbsolute;
 			}
 			if (!file.canExecute()) {
-				return "File must be executable";
+				return MainPrefPage_notExecutableFile;
 			}
 			return null;
 		}
