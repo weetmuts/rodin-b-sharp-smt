@@ -11,7 +11,6 @@
 package org.eventb.smt.ui.internal.provers;
 
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
-import static org.eventb.internal.ui.EventBImage.registerImage;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.ui.internal.UIUtils.showError;
 
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eventb.core.preferences.IPrefMapEntry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
@@ -49,12 +46,6 @@ public class SMTProversUI extends AbstractUIPlugin {
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.ui";
-
-	/*
-	 * Internal name of images used by this plug-in.
-	 */
-	public static final String ENABLE_CONFIG_IMG_ID = "enable_configuration";
-	public static final String DISABLE_CONFIG_IMG_ID = "disable_configuration";
 
 	public static void updateAllSMTSolversProfile() {
 		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
@@ -87,7 +78,6 @@ public class SMTProversUI extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		addSMTProfile();
-		registerImages();
 	}
 
 	@Override
@@ -181,19 +171,6 @@ public class SMTProversUI extends AbstractUIPlugin {
 			profiles.add(AUTO_TACTIC_SMT_PROFILE_ID, defaultAutoWithSMT);
 			profiles.store();
 		}
-	}
-
-	private void registerImages() {
-		final ImageRegistry imageRegistry = getImageRegistry();
-		registerImage(imageRegistry, ENABLE_CONFIG_IMG_ID, PLUGIN_ID,
-				"icons/enable_configuration.gif");
-		registerImage(imageRegistry, DISABLE_CONFIG_IMG_ID, PLUGIN_ID,
-				"icons/disable_configuration.gif");
-	}
-
-	public static Image getRegisteredImage(String key) {
-		final ImageRegistry imageRegistry = getDefault().getImageRegistry();
-		return imageRegistry.get(key);
 	}
 
 }

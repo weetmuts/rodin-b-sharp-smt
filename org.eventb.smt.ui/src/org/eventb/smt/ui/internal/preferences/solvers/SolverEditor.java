@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.solvers;
 
-import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
 import static org.eventb.smt.ui.internal.Messages.SolverDialog_kindLabel;
 import static org.eventb.smt.ui.internal.Messages.SolverDialog_kindToolTip;
 import static org.eventb.smt.ui.internal.Messages.SolverDialog_nameDuplicate;
@@ -34,7 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.ui.internal.preferences.ExecutableFileEditor;
 
@@ -57,7 +55,6 @@ import org.eventb.smt.ui.internal.preferences.ExecutableFileEditor;
 public class SolverEditor extends FieldEditorPreferencePage {
 
 	// Keys in the internal preference store
-	private static final String ID = "id"; //$NON-NLS-1$
 	private static final String NAME = "name"; //$NON-NLS-1$
 	private static final String KIND = "kind"; //$NON-NLS-1$
 	private static final String PATH = "path"; //$NON-NLS-1$
@@ -65,19 +62,19 @@ public class SolverEditor extends FieldEditorPreferencePage {
 	// A store for exchanging information with the field editors
 	private final IPreferenceStore store;
 
-	private final Set<String> usedNames;
+	private final SolverModel model;
+	private final SolverElement solver;
 
-	public SolverEditor(final Shell parentShell, final ISMTSolver solver,
-			final Set<String> usedNames) {
+	public SolverEditor(final Shell parentShell, final SolverModel model,
+			final SolverElement solver) {
 		super(SolverDialog_title, FLAT);
 		noDefaultAndApplyButton();
+		this.model = model;
+		this.solver = solver;
 		store = new PreferenceStore();
-		store.setValue(ID, solver.getID());
-		store.setValue(NAME, solver.getName());
-		store.setValue(KIND, solver.getKind().name());
-		store.setValue(PATH, solver.getPath().toOSString());
-		this.usedNames = usedNames;
-		usedNames.remove(solver.getName());
+		store.setValue(NAME, solver.name);
+		store.setValue(KIND, solver.kind.name());
+		store.setValue(PATH, solver.path.toOSString());
 	}
 
 	public static String[][] kindNamesAndValues() {
@@ -90,12 +87,14 @@ public class SolverEditor extends FieldEditorPreferencePage {
 		return namesAndValues;
 	}
 
-	public ISMTSolver getSolver() {
-		final String id = store.getString(ID);
-		final String name = store.getString(NAME);
-		final SolverKind kind = SolverKind.valueOf(store.getString(KIND));
-		final Path path = new Path(store.getString(PATH));
-		return newSolver(id, name, kind, path);
+	@Override
+	public boolean performOk() {
+		super.performOk();
+		solver.name = store.getString(NAME);
+		solver.kind = SolverKind.valueOf(store.getString(KIND));
+		solver.path = new Path(store.getString(PATH));
+		model.update(solver);
+		return true;
 	}
 
 	@Override
@@ -117,6 +116,7 @@ public class SolverEditor extends FieldEditorPreferencePage {
 
 	@Override
 	protected void createFieldEditors() {
+		final Set<String> usedNames = model.usedNames(solver);
 		addField(new NameEditor(usedNames, getFieldEditorParent()));
 		addField(new KindEditor(getFieldEditorParent()));
 		addField(new PathEditor(getFieldEditorParent()));

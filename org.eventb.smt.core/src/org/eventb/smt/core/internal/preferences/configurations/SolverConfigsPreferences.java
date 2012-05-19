@@ -29,6 +29,7 @@ import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author Systerel (yguyot)
@@ -211,6 +212,12 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 	@Override
 	public void save() {
 		prefsNode.put(SOLVER_CONFIGS_ID, toString(solverConfigs));
+		try {
+			prefsNode.flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

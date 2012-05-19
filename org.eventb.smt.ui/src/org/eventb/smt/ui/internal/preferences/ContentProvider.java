@@ -7,35 +7,31 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.ui.internal.preferences;
-
-import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * This is a content provider for the Solvers' details viewer.
+ * Content provider from a UI model.
  */
-public class ContentProvider<T> implements IStructuredContentProvider {
+public class ContentProvider<T extends AbstractModel<?, ?>> implements
+		IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
+	@Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		assert (false);
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
-	@Override
-	public Object[] getElements(final Object inputElement) {
-		return ((Map<String, T>) inputElement).values().toArray();
+	public Object[] getElements(Object inputElement) {
+		return ((T) inputElement).elements.toArray();
 	}
 
-	@Override
-	public void inputChanged(final Viewer viewer, final Object oldInput,
-			final Object newInput) {
-		// TODO Auto-generated method stub
-
-	}
 }

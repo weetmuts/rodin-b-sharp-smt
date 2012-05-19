@@ -22,6 +22,7 @@ import java.util.regex.PatternSyntaxException;
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISMTSolversPreferences;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author Systerel (yguyot)
@@ -158,6 +159,12 @@ public class SMTSolversPreferences extends AbstractPreferences implements
 	@Override
 	public void save() {
 		prefsNode.put(SOLVERS_ID, toString(solvers));
+		try {
+			prefsNode.flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

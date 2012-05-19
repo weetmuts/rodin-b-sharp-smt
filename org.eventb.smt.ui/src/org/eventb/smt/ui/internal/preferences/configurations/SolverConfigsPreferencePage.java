@@ -11,7 +11,6 @@
 package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.ui.internal.provers.SMTProversUI.updateAllSMTSolversProfile;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -30,10 +29,6 @@ import org.eventb.smt.core.SMTCore;
  */
 public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
-	private static final String SMT_SOLVER_CONFIGS_LABEL = "";
-	private static final String SMT_SOLVER_CONFIGS_DESCRIPTION = "Customize SMT-solvers configurations...";
-
-	private SolverConfigsFieldEditor configsFieldEditor;
 
 	/*
 	 * The preferences are actually stored in the SMT core plug-in.
@@ -46,22 +41,12 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	public void init(final IWorkbench workbench) {
-		setDescription(SMT_SOLVER_CONFIGS_DESCRIPTION);
+		// Nothing to do
 	}
 
 	@Override
 	protected void createFieldEditors() {
-		configsFieldEditor = new SolverConfigsFieldEditor(SOLVER_CONFIGS_ID,
-				SMT_SOLVER_CONFIGS_LABEL, getFieldEditorParent());
-		addField(configsFieldEditor);
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		if (visible && configsFieldEditor != null) {
-			configsFieldEditor.refresh();
-		}
-		super.setVisible(visible);
+		addField(new SolverConfigsFieldEditor(getFieldEditorParent()));
 	}
 
 	@Override
@@ -70,4 +55,5 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 		updateAllSMTSolversProfile();
 		return super.performOk();
 	}
+
 }

@@ -11,8 +11,6 @@ package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eventb.smt.ui.internal.Messages.SolverDialog_title;
 
-import java.util.Set;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.StatusDialog;
@@ -22,7 +20,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eventb.smt.core.preferences.ISMTSolver;
 
 /**
  * Implement a dialog for editing an SMT solver definition (name, kind and
@@ -38,14 +35,14 @@ public class SolverDialog extends StatusDialog implements
 
 	private SolverEditor editor;
 
-	public SolverDialog(final Shell parentShell, final ISMTSolver solver,
-			final Set<String> usedNames) {
+	public SolverDialog(final Shell parentShell, final SolverModel model,
+			final SolverElement solver) {
 		super(parentShell);
 		setTitle(SolverDialog_title);
 		setImage(parentShell.getDisplay().getSystemImage(SWT.ICON_QUESTION));
 		setHelpAvailable(false);
 
-		this.editor = new SolverEditor(parentShell, solver, usedNames);
+		this.editor = new SolverEditor(parentShell, model, solver);
 		editor.setContainer(this);
 	}
 
@@ -100,10 +97,6 @@ public class SolverDialog extends StatusDialog implements
 			status = new Status(IStatus.ERROR, "dummy", msg); //$NON-NLS-1$
 		}
 		updateStatus(status);
-	}
-
-	public ISMTSolver getSolver() {
-		return editor.getSolver();
 	}
 
 }

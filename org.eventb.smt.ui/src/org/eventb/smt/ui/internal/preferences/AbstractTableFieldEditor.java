@@ -7,29 +7,28 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.ui.internal.preferences;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eventb.smt.core.preferences.IPreferences;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * This class is used to build the tables printed in the preference pages. This
- * class also defines three buttons which interact with the table:
+ * class also defines four buttons which interact with the table:
  * <ul>
  * <li>The 'Add' button to add a new object into the table.</li>
  * <li>The 'Edit' button to modify a previously added object.</li>
+ * <li>The 'Duplicate' button to duplicate an existing object.</li>
  * <li>The 'Remove' button to remove an existing object.</li>
  * </ul>
  * The table is represented by a <code>Table</code>, contained in a
@@ -41,40 +40,39 @@ import org.eventb.smt.core.preferences.IPreferences;
  * 
  * @author guyot
  */
-public abstract class AbstractTableFieldEditor<T extends IPreferences> extends
-		FieldEditor {
-	/**
-	 * Labels
-	 */
-	protected static final String ADD_LABEL = "Add...";
-	protected static final String REMOVE_LABEL = "Remove";
-	protected static final String EDIT_LABEL = "Edit...";
-
-	protected Composite buttonsGroup;
+public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, M extends AbstractModel<U, T>>
+		extends FieldEditor {
 
 	/**
-	 * The button for adding a new object to the table.
+	 * Button labels
 	 */
-	protected Button addButton;
-	/**
-	 * The button for removing the currently selected object from the table.
-	 */
-	protected Button removeButton;
-	/**
-	 * The button for editing the currently selected object.
-	 */
-	protected Button editButton;
+	private static final String ADD_LABEL = "Add...";
+	private static final String EDIT_LABEL = "Edit...";
+	private static final String DUPLICATE_LABEL = "Duplicate...";
+	private static final String REMOVE_LABEL = "Remove";
 
 	/**
-	 * The top-level control for the field editor.
+	 * Column descriptors
 	 */
-	protected Composite top;
-	/**
-	 * The table showing the list of objects
-	 */
-	protected TableViewer tableViewer;
+	protected static interface ColumnDescriptor<C> {
 
-	protected T smtPrefs;
+		String name();
+
+		String title();
+
+		int width();
+
+		String getLabel(C element);
+
+	}
+
+	protected final M model;
+
+	// Main composite grouping the controls of the field editor
+	private Composite main;
+
+	// Table displaying the elements to edit
+	private TableViewer tableViewer;
 
 	/**
 	 * Creates a new table field editor.
@@ -87,167 +85,229 @@ public abstract class AbstractTableFieldEditor<T extends IPreferences> extends
 	 *            the parent of the field editor's control
 	 */
 	public AbstractTableFieldEditor(final String name, final String labelText,
-			final Composite parent, final T smtPrefs) {
+			final Composite parent, final M model) {
 		super(name, labelText, parent);
-		this.smtPrefs = smtPrefs;
-	}
-
-	/**
-	 * @return the buttonsGroup
-	 */
-	public Composite getButtonsGroup() {
-		return buttonsGroup;
+		this.model = model;
 	}
 
 	/**
 	 * @return the tableViewer
 	 */
-	public TableViewer getTableViewer() {
+	protected final TableViewer getTableViewer() {
 		return tableViewer;
 	}
 
 	/**
-	 * @return the smtPrefs
+	 * @return a shell for parenting dialogs
 	 */
-	public T getSMTPrefs() {
-		return smtPrefs;
+	protected final Shell getShell() {
+		return main.getShell();
 	}
-
-	/**
-	 * Creates a table viewer and configures it.
-	 * 
-	 * @param parent
-	 *            the parent of the table viewer's control
-	 */
-	protected abstract void createTableViewer(final Composite parent);
-
-	protected abstract String[] getColumnsLabel();
-
-	protected abstract Integer[] getColumnsBounds();
-
-	/**
-	 * Creates the columns of the table viewer.
-	 * 
-	 * @param viewer
-	 *            the table viewer
-	 */
-	protected void createColumns(final TableViewer viewer) {
-		for (int i = 0; i < getColumnsLabel().length; i++) {
-			final TableViewerColumn column = new TableViewerColumn(viewer,
-					SWT.NONE);
-			column.getColumn().setText(getColumnsLabel()[i]);
-			column.getColumn().setWidth(getColumnsBounds()[i]);
-			column.getColumn().setResizable(true);
-			column.getColumn().setMoveable(true);
-		}
-
-		final Table table = viewer.getTable();
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-	}
-
-	/**
-	 * Remove the currently selected element from the list, refresh the table
-	 * viewer, updates the index of the selected element and refresh the button
-	 * states.
-	 * 
-	 * @param elementsTable
-	 *            the table
-	 */
-	protected abstract void removeCurrentSelection(final Table elementsTable);
-
-	/**
-	 * Sets the buttons statuses depending on the selection in the table.
-	 */
-	protected abstract void selectionChanged();
 
 	@Override
 	protected void adjustForNumColumns(int numColumns) {
-		((GridData) top.getLayoutData()).horizontalSpan = numColumns;
+		final GridData layoutData = (GridData) main.getLayoutData();
+		layoutData.horizontalSpan = numColumns;
 	}
 
 	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
-		top = parent;
+	public final int getNumberOfControls() {
+		return 1; // Only the main composite
+	}
 
-		/**
-		 * Sets the parent's layout data
+	@Override
+	protected final void doFillIntoGrid(Composite parent, int numColumns) {
+		/*
+		 * By default, the parent expands only horizontally, but we also want to
+		 * expand vertically, because of the table.
 		 */
-		top.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		main = createMainComposite(parent, numColumns);
+		createLabel(main);
+		createTable(main);
+		createButtons(main);
+	}
 
-		/**
-		 * Sets the label
-		 */
-		final Label label = getLabelControl(top);
-		final GridData labelData = new GridData();
-		labelData.horizontalSpan = numColumns;
+	/*
+	 * The purpose of the main composite is to layout other controls in exactly
+	 * two columns, whatever the number of columns in the original field editor.
+	 */
+	private Composite createMainComposite(Composite parent, int numColumns) {
+		final Composite result = new Composite(parent, SWT.NONE);
+		result.setLayout(new GridLayout(2, false));
+		final GridData layoutData = new GridData(GridData.FILL_BOTH);
+		layoutData.horizontalSpan = numColumns;
+		result.setLayoutData(layoutData);
+		return result;
+	}
+
+	private void createLabel(final Composite parent) {
+		final Label label = getLabelControl(parent);
+		final GridData labelData = new GridData(SWT.FILL, SWT.TOP, true, false);
+		labelData.horizontalSpan = 2;
 		label.setLayoutData(labelData);
+	}
 
-		/**
-		 * Creates the table viewer
-		 */
-		createTableViewer(top);
+	private void createTable(final Composite parent) {
+		tableViewer = createTableViewer(parent);
+		tableViewer.setContentProvider(new ContentProvider<M>());
 
-		/**
-		 * Configures the table
-		 */
 		final Table table = tableViewer.getTable();
+		createTableColumns(table);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		table.addSelectionListener(new SelectionAdapter() {
+	}
+
+	protected abstract TableViewer createTableViewer(Composite parent);
+
+	private void createTableColumns(final Table table) {
+		final ColumnDescriptor<T>[] columnDescs = getColumnDescriptors();
+		for (final ColumnDescriptor<T> cd : columnDescs) {
+			final TableColumn tc = new TableColumn(table, SWT.NONE);
+			tc.setText(cd.title());
+			tc.setWidth(cd.width());
+			tc.setResizable(true);
+			tc.setMoveable(true);
+			new TableViewerColumn(tableViewer, tc);
+		}
+		final TableLabelProvider<T> labelProvider = new TableLabelProvider<T>(
+				columnDescs);
+		tableViewer.setLabelProvider(labelProvider);
+		tableViewer.setColumnProperties(labelProvider.getColumnProperties());
+	}
+
+	protected abstract ColumnDescriptor<T>[] getColumnDescriptors();
+
+	private void createButtons(final Composite parent) {
+		final Composite buttonsGroup = new Composite(parent, SWT.NONE);
+		final GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+		buttonsGroup.setLayoutData(data);
+		buttonsGroup.setLayout(new FillLayout(SWT.VERTICAL));
+
+		new TableButtonController<T>(buttonsGroup, ADD_LABEL, tableViewer) {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectionChanged();
+			protected boolean isEnabled() {
+				return true;
 			}
-		});
 
-		/**
-		 * Create a Composite for the buttons
-		 */
-		buttonsGroup = new Composite(top, SWT.NONE);
-		buttonsGroup
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			@Override
+			public void perform() {
+				doAdd();
+			}
+		};
+		final TableButtonController<T> edit = new TableButtonController<T>(
+				buttonsGroup, EDIT_LABEL, tableViewer) {
+			@Override
+			protected boolean isEnabled() {
+				return isEditable(selectedElement);
+			}
 
-		final GridLayout buttonsLayout = new GridLayout(1, false);
-		buttonsLayout.marginHeight = 0;
-		buttonsLayout.marginWidth = 0;
-		buttonsGroup.setLayout(buttonsLayout);
+			@Override
+			public void perform() {
+				doEdit(selectedElement);
+			}
+		};
+		tableViewer.addDoubleClickListener(edit);
+
+		if (canDuplicate()) {
+			new TableButtonController<T>(buttonsGroup, DUPLICATE_LABEL,
+					tableViewer) {
+				@Override
+				protected boolean isEnabled() {
+					return selectedElement != null;
+				}
+
+				@Override
+				public void perform() {
+					doDuplicate(selectedElement);
+				}
+			};
+		}
+		new TableButtonController<T>(buttonsGroup, REMOVE_LABEL, tableViewer) {
+			@Override
+			protected boolean isEnabled() {
+				return isEditable(selectedElement);
+			}
+
+			@Override
+			public void perform() {
+				doRemove(selectedElement);
+			}
+		};
+	}
+
+	protected abstract boolean canDuplicate();
+
+	protected final boolean isEditable(T element) {
+		return element != null && element.editable;
 	}
 
 	@Override
-	protected abstract void doLoad();
+	protected final void doLoad() {
+		/*
+		 * The model was not yet available when creating the viewer (because the
+		 * control is created by the constructor of the abstraction). We thus
+		 * link the model and the viewer here.
+		 */
+		model.setViewer(getTableViewer());
+		getTableViewer().setInput(model);
+		model.load();
+	}
 
 	@Override
-	protected abstract void doLoadDefault();
+	protected final void doLoadDefault() {
+		model.loadDefault();
+	}
 
-	/**
-	 * FIXME this should not need to be overriden
-	 * 
-	 * Overriden because when called after performDefault, the following
-	 * statement was executed :</ br>
-	 * <code>preferenceStore.setToDefault(preferenceName);</code> which was
-	 * causing the values of this field editor not to be saved.
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#store()
+	// Action for Add button
+	protected final void doAdd() {
+		openEditor(model.newElement());
+	}
+
+	// Action for Edit button
+	protected final void doEdit(final T element) {
+		if (!isEditable(element)) {
+			return;
+		}
+		openEditor(element);
+	}
+
+	// Action for Duplicate button
+	protected final void doDuplicate(final T element) {
+		if (element == null || !canDuplicate()) {
+			return;
+		}
+		openEditor(model.clone(element));
+	}
+
+	// Action for Remove button
+	protected final void doRemove(final T element) {
+		if (!isEditable(element)) {
+			return;
+		}
+		if (checkRemovePrecondition(element)) {
+			model.remove(element);
+		}
+	}
+
+	protected abstract void openEditor(T element);
+
+	protected abstract boolean checkRemovePrecondition(T element);
+
+	/*
+	 * We need to override this method, because we do not handle defaults value
+	 * in the same manner as the abstraction: we need to tell the core plug-in
+	 * to forget about everything contributed by users.
 	 */
 	@Override
-	public void store() {
+	public final void store() {
 		doStore();
 	}
 
 	@Override
-	protected void doStore() {
-		smtPrefs.save();
+	protected final void doStore() {
+		model.store();
 	}
 
-	@Override
-	public int getNumberOfControls() {
-		/**
-		 * 1 - The table of solver configurations
-		 * 
-		 * 2 - The button composite
-		 */
-		return 2;
-	}
 }

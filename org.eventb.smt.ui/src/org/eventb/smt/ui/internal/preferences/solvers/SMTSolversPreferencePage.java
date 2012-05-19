@@ -10,10 +10,8 @@
 
 package org.eventb.smt.ui.internal.preferences.solvers;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
@@ -30,9 +28,6 @@ import org.eventb.smt.core.SMTCore;
 public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
-	private static final String SMT_SOLVERS_LABEL = "";
-	private static final String SMT_SOLVERS_DESCRIPTION = "Connect SMT-solvers to the platform...";
-
 	/*
 	 * The preferences are actually stored in the SMT core plug-in.
 	 */
@@ -44,13 +39,12 @@ public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	public void init(final IWorkbench workbench) {
-		setDescription(SMT_SOLVERS_DESCRIPTION);
+		// Nothing to do
 	}
 
 	@Override
 	protected void createFieldEditors() {
-		final FieldEditor solversFieldEditor = new SMTSolversFieldEditor(
-				SOLVERS_ID, SMT_SOLVERS_LABEL, getFieldEditorParent());
-		addField(solversFieldEditor);
+		addField(new SMTSolversFieldEditor(getFieldEditorParent()));
 	}
+
 }

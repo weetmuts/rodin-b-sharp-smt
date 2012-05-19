@@ -20,7 +20,6 @@ import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
 import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
@@ -40,7 +39,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 import org.eventb.smt.ui.internal.UIUtils;
@@ -63,13 +61,16 @@ public class SolverConfigDialog extends Dialog {
 
 	int returnCode = 0;
 
-	ISolverConfig solverConfig;
+	final ConfigModel model;
+	final ConfigElement config;
 
 	public SolverConfigDialog(final Shell parentShell,
-			final ISolverConfig solverConfig) {
+			final ConfigModel model,
+			final ConfigElement config) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
-		this.solverConfig = solverConfig;
 		setText("Solver configuration");
+		this.model = model;
+		this.config = config;
 	}
 
 	private void createContents(final Shell shell) {
@@ -86,7 +87,7 @@ public class SolverConfigDialog extends Dialog {
 		nameLabel.setLayoutData(data);
 
 		final Text nameText = new Text(shell, SWT.BORDER);
-		nameText.setText(solverConfig.getName());
+		nameText.setText(config.name);
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		nameText.setLayoutData(data);
@@ -98,7 +99,7 @@ public class SolverConfigDialog extends Dialog {
 		data.horizontalSpan = 1;
 		final Button executionCheckButton = new Button(shell, SWT.CHECK);
 		executionCheckButton.setText(ENABLE_LABEL);
-		executionCheckButton.setSelection(solverConfig.isEnabled());
+		executionCheckButton.setSelection(config.enabled);
 		executionCheckButton.setLayoutData(data);
 
 		/**
@@ -121,11 +122,11 @@ public class SolverConfigDialog extends Dialog {
 			solverCombo.add(name);
 		}
 		final ISMTSolver solver = getPreferenceManager().getSMTSolversPrefs()
-				.get(solverConfig.getSolverId());
+				.get(config.solverId);
 		if (solver != null) {
 			solverCombo.setText(solver.getName());
 		} else {
-			solverCombo.setText(solverConfig.getSolverId());
+			solverCombo.setText(config.solverId);
 		}
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
@@ -141,7 +142,7 @@ public class SolverConfigDialog extends Dialog {
 		argsLabel.setLayoutData(data);
 
 		final Text argsText = new Text(shell, SWT.BORDER);
-		argsText.setText(solverConfig.getArgs());
+		argsText.setText(config.args);
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		argsText.setLayoutData(data);
@@ -161,8 +162,7 @@ public class SolverConfigDialog extends Dialog {
 				.values()) {
 			translatorCombo.add(translationApproach.toString());
 		}
-		translatorCombo.setText(solverConfig.getTranslationApproach()
-				.toString());
+		translatorCombo.setText(config.approach.toString());
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		translatorCombo.setLayoutData(data);
@@ -181,7 +181,7 @@ public class SolverConfigDialog extends Dialog {
 		for (final SMTLIBVersion smtlibVersion : SMTLIBVersion.values()) {
 			smtlibCombo.add(smtlibVersion.toString());
 		}
-		smtlibCombo.setText(solverConfig.getSmtlibVersion().toString());
+		smtlibCombo.setText(config.version.toString());
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		smtlibCombo.setLayoutData(data);
@@ -200,7 +200,7 @@ public class SolverConfigDialog extends Dialog {
 				final String solverStr = solverCombo.getText();
 				final StringBuilder errBuilder = new StringBuilder();
 				if (name.isEmpty()
-						|| (!name.equals(solverConfig.getName()) && configExists(name))) {
+						|| (!name.equals(config.name) && configExists(name))) {
 					errBuilder
 							.append("A unique non-empty config name is required.\n");
 				}
@@ -210,12 +210,13 @@ public class SolverConfigDialog extends Dialog {
 				if (errBuilder.length() != 0) {
 					UIUtils.showError(errBuilder.toString());
 				} else {
-					solverConfig = newConfig(solverConfig.getID(),
-							executionCheckButton.getSelection(), name,
-							nameToKey.get(solverCombo.getText()),
-							argsText.getText(),
-							parseApproach(translatorCombo.getText()),
-							parseVersion(smtlibCombo.getText()));
+					config.name = name;
+					config.enabled = executionCheckButton.getSelection();
+					config.solverId = nameToKey.get(solverCombo.getText());
+					config.args = argsText.getText();
+					config.approach = parseApproach(translatorCombo.getText());
+					config.version = parseVersion(smtlibCombo.getText());
+					model.update(config);
 					returnCode = OK;
 					shell.close();
 				}
@@ -238,10 +239,6 @@ public class SolverConfigDialog extends Dialog {
 		});
 
 		shell.setDefaultButton(okButton);
-	}
-
-	public ISolverConfig getSolverConfig() {
-		return solverConfig;
 	}
 
 	public int open() {
