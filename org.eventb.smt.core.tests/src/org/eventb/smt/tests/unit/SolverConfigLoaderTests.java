@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfigLoader;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfiguration;
+import org.eventb.smt.tests.SMTCoreTests;
 import org.junit.Test;
 
 /**
@@ -58,7 +59,7 @@ public class SolverConfigLoaderTests {
 
 		public SolverConfigElt(final String id, final String name,
 				final String solverId, final String args, final String smtlib) {
-			this("org.eventb.smt.core.tests", id, name, solverId, args, smtlib);
+			this(SMTCoreTests.PLUGIN_ID, id, name, solverId, args, smtlib);
 		}
 
 		@Override

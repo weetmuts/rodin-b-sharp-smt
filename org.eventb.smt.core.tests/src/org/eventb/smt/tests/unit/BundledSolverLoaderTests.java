@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.internal.preferences.solvers.BundledSolverLoader;
 import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
+import org.eventb.smt.tests.SMTCoreTests;
 import org.junit.Test;
 
 /**
@@ -61,7 +62,7 @@ public class BundledSolverLoaderTests {
 
 		public BundledSolverElt(final String id, final String name,
 				final String kind, final String localPath) {
-			this("org.eventb.smt.core.tests", id, name, kind, localPath);
+			this(SMTCoreTests.PLUGIN_ID, id, name, kind, localPath);
 		}
 
 		@Override
