@@ -44,10 +44,12 @@ import org.osgi.framework.BundleContext;
  * This is the main class of the SMT solvers plugin.
  */
 public class SMTProversCore extends Plugin {
+
 	/**
 	 * The shared instance.
 	 */
 	private static SMTProversCore plugin;
+
 	/**
 	 * Debug variables
 	 */
@@ -67,6 +69,7 @@ public class SMTProversCore extends Plugin {
 	 */
 	public static long DEFAULT_DELAY = 3 * 1000;
 	public static long NO_DELAY = 0;
+
 	/**
 	 * Configuration ID value used when all configurations should be applied
 	 * sequentially.
@@ -75,6 +78,9 @@ public class SMTProversCore extends Plugin {
 	public static String NO_SOLVER_CONFIGURATION_ERROR = "No SMT configuration set";
 	public static String DISABLED_SOLVER_CONFIGURATION_ERROR = "The indicated SMT configuration is disabled";
 	public static String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
+
+	public static final long DEFAULT_TIMEOUT_DELAY = 1000;
+	public static final boolean DEFAULT_RESTRICTED_VALUE = true;
 
 	private ITacticDescriptor allSMTSolversTacticDesc;
 

@@ -13,11 +13,11 @@ package org.eventb.smt.core.internal.provers;
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.core.seqprover.eventbExtensions.TacticCombinators.ComposeUntilSuccess.COMBINATOR_ID;
-import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
-import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.externalSMT;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_RESTRICTED_VALUE;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;

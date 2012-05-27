@@ -10,9 +10,9 @@
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
-import static org.eventb.smt.core.SMTCore.DEFAULT_RESTRICTED_VALUE;
-import static org.eventb.smt.core.SMTCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_RESTRICTED_VALUE;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3_PP_SMT2_ID;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT_PP_SMT2_ID;

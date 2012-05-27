@@ -27,9 +27,6 @@ public class SMTCore {
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.core";
 
-	public static final boolean DEFAULT_RESTRICTED_VALUE = true;
-	public static final long DEFAULT_TIMEOUT_DELAY = 1000;
-
 	public static ITactic allSMTSolversTactic() {
 		return getDefault().getAllSMTSolversTactic().getTacticInstance();
 	}
