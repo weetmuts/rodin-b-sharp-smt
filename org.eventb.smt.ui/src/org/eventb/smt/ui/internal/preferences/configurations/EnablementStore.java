@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.ui.internal.provers.SMTProversUI;
 import org.osgi.service.prefs.Preferences;
 
@@ -43,12 +43,16 @@ public class EnablementStore {
 	}
 
 	public static void load(Iterable<ConfigElement> elements) {
-		final String serialized = store.getString(ENABLED_CONFIGS);
-		final List<String> names = StringListSerializer.deserialize(serialized);
+		final List<String> names = getEnabledConfigNames();
 		for (final ConfigElement element : elements) {
 			final String name = element.name;
 			element.enabled = names.contains(name);
 		}
+	}
+
+	public static List<String> getEnabledConfigNames() {
+		final String serialized = store.getString(ENABLED_CONFIGS);
+		return StringListSerializer.deserialize(serialized);
 	}
 
 	public static void store(Iterable<ConfigElement> elements) {
@@ -66,9 +70,9 @@ public class EnablementStore {
 	}
 
 	private static String getDefaultValue() {
-		final ISolverConfig[] configs = SMTCore.getBundledConfigs();
+		final IConfigDescriptor[] configs = SMTCore.getBundledConfigs2();
 		final List<String> names = new ArrayList<String>(configs.length);
-		for (final ISolverConfig config : configs) {
+		for (final IConfigDescriptor config : configs) {
 			names.add(config.getName());
 		}
 		return serialize(names);

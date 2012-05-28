@@ -3,16 +3,11 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.ui.internal.preferences.configurations;
-
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_SOLVER;
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -22,8 +17,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
 
 /**
@@ -37,11 +31,11 @@ import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
  * <code>tableViewer</code> each time the list <code>solverConfigs</code> is
  * modified, by calling the <code>refresh</code> method.
  * </p>
- * 
+ *
  * @author guyot
  */
-class SolverConfigsFieldEditor extends
-		AbstractTableFieldEditor<ISolverConfig, ConfigElement, ConfigModel> {
+public class ConfigFieldEditor extends
+		AbstractTableFieldEditor<IConfigDescriptor, ConfigElement, ConfigModel> {
 
 	private static final String SMT_CONFIGS_LABEL = "SMT solver configurations:";
 
@@ -56,12 +50,7 @@ class SolverConfigsFieldEditor extends
 		SOLVER("Solver", 105) {
 			@Override
 			public String getLabel(ConfigElement element) {
-				final ISMTSolver solver = getPreferenceManager()
-						.getSMTSolversPrefs().get(element.solverId);
-				if (solver == null) {
-					return DEFAULT_SOLVER;
-				}
-				return solver.getName();
+				return element.solverName;
 			}
 		},
 		ARGS("Arguments", 203) {
@@ -103,14 +92,8 @@ class SolverConfigsFieldEditor extends
 
 	}
 
-	/**
-	 * Creates a new solver configurations field editor.
-	 * 
-	 * @param parent
-	 *            the parent of the field editor's control
-	 */
-	public SolverConfigsFieldEditor(final Composite parent) {
-		super(SOLVER_CONFIGS_ID, SMT_CONFIGS_LABEL, parent, new ConfigModel());
+	public ConfigFieldEditor(ConfigModel configModel, Composite parent) {
+		super("configs", SMT_CONFIGS_LABEL, parent, configModel);
 	}
 
 	@Override
@@ -153,7 +136,7 @@ class SolverConfigsFieldEditor extends
 
 	@Override
 	protected void openEditor(final ConfigElement config) {
-		new SolverConfigDialog(getShell(), model, config).open();
+		new ConfigDialog(getShell(), model, config).open();
 	}
 
 	@Override

@@ -3,13 +3,13 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
+package org.eventb.smt.ui.internal.preferences;
 
-package org.eventb.smt.ui.internal.preferences.solvers;
-
+import static org.eventb.smt.ui.internal.provers.SMTProversUI.updateAllSMTSolversProfile;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -17,7 +17,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.ui.internal.preferences.configurations.ConfigFieldEditor;
+import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
+import org.eventb.smt.ui.internal.preferences.solvers.SolverFieldEditor;
+import org.eventb.smt.ui.internal.preferences.solvers.SolverModel;
+import org.eventb.smt.ui.internal.provers.SMTProversUI;
 
 /**
  * This class contributes a preference page to the Preference dialog. By
@@ -25,7 +29,7 @@ import org.eventb.smt.core.SMTCore;
  * support built into JFace that allows us to create a page that is small and
  * knows how to save, restore and apply itself.
  */
-public class SMTSolversPreferencePage extends FieldEditorPreferencePage
+public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
 	/*
@@ -34,7 +38,7 @@ public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				SMTCore.PLUGIN_ID);
+				SMTProversUI.PLUGIN_ID);
 	}
 
 	@Override
@@ -44,7 +48,18 @@ public class SMTSolversPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	protected void createFieldEditors() {
-		addField(new SMTSolversFieldEditor(getFieldEditorParent()));
+		final SolverModel solverModel = new SolverModel();
+		final ConfigModel configModel = new ConfigModel(solverModel);
+		solverModel.setConfigModel(configModel);
+		addField(new SolverFieldEditor(solverModel, getFieldEditorParent()));
+		addField(new ConfigFieldEditor(configModel, getFieldEditorParent()));
+	}
+
+	@Override
+	public boolean performOk() {
+		final boolean result= super.performOk();
+		updateAllSMTSolversProfile();
+		return result;
 	}
 
 }

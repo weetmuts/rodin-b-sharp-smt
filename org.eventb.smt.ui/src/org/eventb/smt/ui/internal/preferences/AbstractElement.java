@@ -20,12 +20,10 @@ package org.eventb.smt.ui.internal.preferences;
 public abstract class AbstractElement<T> implements Cloneable {
 
 	public final boolean editable;
-	public String id;
 	public String name;
 
-	public AbstractElement(boolean editable, String id, String name) {
+	public AbstractElement(boolean editable, String name) {
 		this.editable = editable;
-		this.id = id;
 		this.name = name;
 	}
 
@@ -35,7 +33,7 @@ public abstract class AbstractElement<T> implements Cloneable {
 			return super.clone();
 		} catch (CloneNotSupportedException e) {
 			// Cannot happen as we implement Cloneable
-			assert (false);
+			assert false;
 			return null;
 		}
 	}

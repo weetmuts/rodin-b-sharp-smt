@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Implement a dialog for editing an SMT solver definition (name, kind and
+ * Implements a dialog for editing an SMT solver definition (name, kind and
  * path). This class is responsible for displaying a dialog to the user together
  * with error messages. However, the bulk of editing the solver definition is
  * delegated to the @link {@link SolverEditor} class.

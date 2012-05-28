@@ -3,11 +3,10 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eclipse.jface.window.Window.OK;
@@ -18,13 +17,8 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
-import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -38,18 +32,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 import org.eventb.smt.ui.internal.UIUtils;
+import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
 
 /**
  * This class is the dialog opened when the user wants to add or edit an
  * SMT-solver configuration.
- * 
+ *
  * @author guyot
  */
-public class SolverConfigDialog extends Dialog {
+public class ConfigDialog extends Dialog {
+
 	private static final String CONFIG_NAME_LABEL = "Name";
 	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
@@ -64,8 +59,7 @@ public class SolverConfigDialog extends Dialog {
 	final ConfigModel model;
 	final ConfigElement config;
 
-	public SolverConfigDialog(final Shell parentShell,
-			final ConfigModel model,
+	public ConfigDialog(final Shell parentShell, final ConfigModel model,
 			final ConfigElement config) {
 		super(parentShell, APPLICATION_MODAL | DIALOG_TRIM | RESIZE);
 		setText("Solver configuration");
@@ -113,21 +107,10 @@ public class SolverConfigDialog extends Dialog {
 
 		final Combo solverCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
-		final Map<String, String> nameToKey = new HashMap<String, String>();
-		for (final String key : getPreferenceManager().getSMTSolversPrefs()
-				.getSolvers().keySet()) {
-			final String name = getPreferenceManager().getSMTSolversPrefs()
-					.get(key).getName();
-			nameToKey.put(name, key);
-			solverCombo.add(name);
+		for (final SolverElement solver : model.getSolverElements()) {
+			solverCombo.add(solver.name);
 		}
-		final ISMTSolver solver = getPreferenceManager().getSMTSolversPrefs()
-				.get(config.solverId);
-		if (solver != null) {
-			solverCombo.setText(solver.getName());
-		} else {
-			solverCombo.setText(config.solverId);
-		}
+		solverCombo.setText(config.solverName);
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		solverCombo.setLayoutData(data);
@@ -199,8 +182,7 @@ public class SolverConfigDialog extends Dialog {
 				final String name = nameText.getText();
 				final String solverStr = solverCombo.getText();
 				final StringBuilder errBuilder = new StringBuilder();
-				if (name.isEmpty()
-						|| (!name.equals(config.name) && configExists(name))) {
+				if (name.isEmpty() || model.usedNames(config).contains(name)) {
 					errBuilder
 							.append("A unique non-empty config name is required.\n");
 				}
@@ -212,7 +194,7 @@ public class SolverConfigDialog extends Dialog {
 				} else {
 					config.name = name;
 					config.enabled = executionCheckButton.getSelection();
-					config.solverId = nameToKey.get(solverCombo.getText());
+					config.solverName = solverCombo.getText();
 					config.args = argsText.getText();
 					config.approach = parseApproach(translatorCombo.getText());
 					config.version = parseVersion(smtlibCombo.getText());

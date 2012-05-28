@@ -9,27 +9,32 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.solvers;
 
-import static org.eventb.smt.core.SMTCore.getBundledSolvers;
-import static org.eventb.smt.core.SMTCore.getUserSolvers;
-import static org.eventb.smt.core.SMTCore.setUserSolvers;
+import static org.eventb.smt.core.SMTCore.getBundledSolvers2;
+import static org.eventb.smt.core.SMTCore.getUserSolvers2;
+import static org.eventb.smt.core.SMTCore.setUserSolvers2;
 
-import org.eventb.smt.core.preferences.ISMTSolver;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractModel;
+import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
 
 /**
  * Model backing the SMT solver table in the corresponding preference page.
  *
  * @author Laurent Voisin
  */
-public class SolverModel extends AbstractModel<ISMTSolver, SolverElement> {
+public class SolverModel extends
+		AbstractModel<ISolverDescriptor, SolverElement> {
+
+	// Is final in principle
+	private ConfigModel configModel;
 
 	public SolverModel() {
-		super(getBundledSolvers());
+		super(getBundledSolvers2());
 	}
 
 	@Override
 	protected void doLoad() {
-		addElements(getUserSolvers(), true);
+		addElements(getUserSolvers2(), true);
 	}
 
 	@Override
@@ -38,7 +43,7 @@ public class SolverModel extends AbstractModel<ISMTSolver, SolverElement> {
 	}
 
 	@Override
-	protected SolverElement convert(ISMTSolver origin, boolean editable) {
+	protected SolverElement convert(ISolverDescriptor origin, boolean editable) {
 		return new SolverElement(origin, editable);
 	}
 
@@ -48,13 +53,21 @@ public class SolverModel extends AbstractModel<ISMTSolver, SolverElement> {
 	}
 
 	@Override
-	public void doStore(ISMTSolver[] solvers) {
-		setUserSolvers(solvers);
+	public void doStore(ISolverDescriptor[] solvers) {
+		setUserSolvers2(solvers);
 	}
 
 	@Override
-	protected ISMTSolver[] newArray(int length) {
-		return new ISMTSolver[length];
+	protected ISolverDescriptor[] newArray(int length) {
+		return new ISolverDescriptor[length];
+	}
+
+	public void setConfigModel(ConfigModel configModel) {
+		this.configModel = configModel;
+	}
+
+	public ConfigModel getConfigModel() {
+		return configModel;
 	}
 
 }

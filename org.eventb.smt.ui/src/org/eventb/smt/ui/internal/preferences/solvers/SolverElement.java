@@ -13,8 +13,8 @@ import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.SMTSolverFactory;
+import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.ui.internal.preferences.AbstractElement;
 
@@ -24,26 +24,26 @@ import org.eventb.smt.ui.internal.preferences.AbstractElement;
  * @see SolverModel
  * @author Laurent Voisin
  */
-public class SolverElement extends AbstractElement<ISMTSolver> {
+public class SolverElement extends AbstractElement<ISolverDescriptor> {
 
 	SolverKind kind;
 	IPath path;
 
 	public SolverElement() {
-		super(true, "", ""); // FIXME wrong
+		super(true, "");
 		this.kind = UNKNOWN;
 		this.path = new Path("");
 	}
 
-	public SolverElement(ISMTSolver origin, boolean editable) {
-		super(editable, origin.getID(), origin.getName());
+	public SolverElement(ISolverDescriptor origin, boolean editable) {
+		super(editable, origin.getName());
 		this.kind = origin.getKind();
 		this.path = origin.getPath();
 	}
 
 	@Override
-	public ISMTSolver toCore() {
-		return SMTSolverFactory.newSolver(id, name, kind, path);
+	public ISolverDescriptor toCore() {
+		return SMTCore.newSolverDescriptor(name, kind, path);
 	}
 
 }

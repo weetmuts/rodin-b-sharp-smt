@@ -57,7 +57,7 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	 */
 	public final void load() {
 		doLoad();
-		viewer.refresh(true);  // Enablement might have changed
+		viewer.refresh(true); // Enablement might have changed
 	}
 
 	protected abstract void doLoad();
@@ -82,8 +82,9 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	public abstract T newElement();
 
 	/**
-	 * Returns a freshly created copy of the given element, but do not store it in this model
-	 * yet. One needs to call <code>update</code> to enter it into this model.
+	 * Returns a freshly created copy of the given element, but do not store it
+	 * in this model yet. One needs to call <code>update</code> to enter it into
+	 * this model.
 	 *
 	 * @return a freshly created copy of the given element
 	 */
@@ -143,7 +144,7 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 		final List<T> userElements = userElements();
 		final U[] coreElements = newArray(userElements.size());
 		int count = 0;
-		for (final T element: userElements) {
+		for (final T element : userElements) {
 			coreElements[count++] = element.toCore();
 		}
 		doStore(coreElements);

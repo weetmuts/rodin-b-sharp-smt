@@ -3,11 +3,10 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.ui.internal.preferences.solvers;
 
 import static org.eclipse.jface.dialogs.IDialogConstants.CANCEL_LABEL;
@@ -15,18 +14,16 @@ import static org.eclipse.jface.dialogs.IDialogConstants.NO_LABEL;
 import static org.eclipse.jface.dialogs.IDialogConstants.YES_LABEL;
 import static org.eclipse.jface.dialogs.MessageDialog.QUESTION_WITH_CANCEL;
 import static org.eclipse.swt.SWT.FULL_SELECTION;
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVERS_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
+import org.eventb.smt.ui.internal.preferences.configurations.ConfigElement;
+import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
 
 /**
  * This class is used to build the solver table printed in the preferences page.
@@ -39,11 +36,11 @@ import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
  * <code>tableViewer</code> each time the list <code>solvers</code> is modified,
  * by calling the <code>refresh</code> method.
  * </p>
- * 
+ *
  * @author guyot
  */
-class SMTSolversFieldEditor extends
-		AbstractTableFieldEditor<ISMTSolver, SolverElement, SolverModel> {
+public class SolverFieldEditor extends
+		AbstractTableFieldEditor<ISolverDescriptor, SolverElement, SolverModel> {
 
 	private static final String SMT_SOLVERS_LABEL = "Known SMT solvers:";
 	private static final String SMT_SOLVER_REMOVAL = "SMT Solver Removal";
@@ -89,14 +86,8 @@ class SMTSolversFieldEditor extends
 
 	}
 
-	/**
-	 * Creates a new solvers field editor.
-	 * 
-	 * @param parent
-	 *            the parent of the field editor's control
-	 */
-	public SMTSolversFieldEditor(final Composite parent) {
-		super(SOLVERS_ID, SMT_SOLVERS_LABEL, parent, new SolverModel());
+	public SolverFieldEditor(SolverModel solverModel, Composite parent) {
+		super("solvers", SMT_SOLVERS_LABEL, parent, solverModel);
 	}
 
 	@Override
@@ -121,30 +112,27 @@ class SMTSolversFieldEditor extends
 
 	@Override
 	protected boolean checkRemovePrecondition(final SolverElement solver) {
-		final String solverId = solver.id;
-		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		final Set<ISolverConfig> relatedConfigs = configsPrefs
-				.relatedConfigs(solverId);
-		if (relatedConfigs.isEmpty()) {
+		final ConfigModel configModel = model.getConfigModel();
+		final Set<ConfigElement> configs = configModel.using(solver);
+		if (configs.isEmpty()) {
 			return true;
 		}
 		final StringBuilder msgBuilder = new StringBuilder();
-		msgBuilder
-				.append("One or several configurations are linked to the solver you intend to remove:\n");
-		for (final ISolverConfig config : relatedConfigs) {
-			msgBuilder.append(config.getName());
-			msgBuilder.append('\n');
+		msgBuilder.append("One or several configurations use "
+				+ "the solver you intend to remove:");
+		for (final ConfigElement config : configs) {
+			msgBuilder.append("\n\t");
+			msgBuilder.append(config.name);
 		}
-		msgBuilder.append("Do you want to remove them as well?");
+		msgBuilder.append("\nDo you want to remove them as well?");
 		final MessageDialog dialog = new MessageDialog(getShell(),
 				SMT_SOLVER_REMOVAL, null, msgBuilder.toString(),
 				QUESTION_WITH_CANCEL, new String[] { YES_LABEL, NO_LABEL,
 						CANCEL_LABEL }, 0);
 		final int choice = dialog.open();
 		if (choice == 0) { // Yes
-			for (final ISolverConfig config : relatedConfigs) {
-				configsPrefs.removeSolverConfig(config.getID());
+			for (final ConfigElement config : configs) {
+				configModel.remove(config);
 			}
 		}
 		return choice != 2; // Not Cancel

@@ -10,8 +10,8 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.jface.resource.JFaceResources.getString;
-import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
+import static org.eventb.smt.core.SMTCore.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.SMTCore.VERIT_PATH_ID;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_description;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_missingValue;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notADirectory;
