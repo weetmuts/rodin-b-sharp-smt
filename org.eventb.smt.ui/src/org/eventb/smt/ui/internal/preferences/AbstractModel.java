@@ -57,7 +57,7 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	 */
 	public final void load() {
 		doLoad();
-		viewer.refresh(false);
+		viewer.refresh(true);  // Enablement might have changed
 	}
 
 	protected abstract void doLoad();

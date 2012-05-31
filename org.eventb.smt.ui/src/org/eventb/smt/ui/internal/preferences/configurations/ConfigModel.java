@@ -36,14 +36,12 @@ public class ConfigModel extends AbstractModel<ISolverConfig, ConfigElement> {
 	@Override
 	protected void doLoad() {
 		addElements(getUserConfigs(), true);
-		// FIXME missing enabledness initialisation
+		EnablementStore.load(elements);
 	}
 
 	@Override
 	protected void doLoadDefaults() {
-		for (final ConfigElement element : bundledElements()) {
-			element.enabled = true;
-		}
+		EnablementStore.setToDefault();
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class ConfigModel extends AbstractModel<ISolverConfig, ConfigElement> {
 	@Override
 	public void doStore(ISolverConfig[] coreElements) {
 		setUserConfigs(coreElements);
-		// FIXME missing persistence of enabledness
+		EnablementStore.store(elements);
 	}
 
 	@Override

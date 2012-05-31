@@ -36,6 +36,12 @@
             tooltip="%SMTtactic.tooltip">
       </tactic>
    </extension>
-   
-   
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eventb.smt.ui.internal.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+
 </plugin>
