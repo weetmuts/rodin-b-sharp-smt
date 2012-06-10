@@ -24,6 +24,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
+import org.eventb.smt.core.internal.prefs.ConfigPreferences;
+import org.eventb.smt.core.internal.prefs.SolverDescriptor;
+import org.eventb.smt.core.internal.prefs.SolverPreferences;
 import org.eventb.smt.core.internal.provers.SMTProversCore;
 import org.eventb.smt.core.preferences.IRegistry;
 import org.eventb.smt.core.preferences.ISMTSolver;
@@ -32,6 +36,8 @@ import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
 import org.eventb.smt.core.preferences.PreferenceManager;
 import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 
@@ -45,6 +51,18 @@ public class SMTCore {
 	 * The plug-in identifier
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.core";
+
+	/**
+	 * Name of the preference that contains the path to a temporary directory
+	 * for storing intermediate files.
+	 */
+	public static final String TRANSLATION_PATH_ID = "translationPath"; //$NON-NLS-1$
+
+	/**
+	 * Name of the preference that contains the path to a veriT binary which
+	 * will be used to expand the macros produced by the veriT translation.
+	 */
+	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
 
 	public static ITactic allSMTSolversTactic() {
 		return getDefault().getAllSMTSolversTactic().getTacticInstance();
@@ -106,6 +124,10 @@ public class SMTCore {
 		return result;
 	}
 
+	public static IConfigDescriptor[] getBundledConfigs2() {
+		return ConfigPreferences.getBundledConfigs();
+	}
+
 	/**
 	 * Returns an array of all user-defined configurations.
 	 *
@@ -114,14 +136,41 @@ public class SMTCore {
 	public static ISolverConfig[] getUserConfigs() {
 		final PreferenceManager prefMng = getPreferenceManager();
 		final ISolverConfigsPreferences prefs = prefMng.getSolverConfigsPrefs();
-		final Collection<ISolverConfig> configs = prefs.getSolverConfigs().values();
-		final List<ISolverConfig> list = new ArrayList<ISolverConfig>(configs.size());
+		final Collection<ISolverConfig> configs = prefs.getSolverConfigs()
+				.values();
+		final List<ISolverConfig> list = new ArrayList<ISolverConfig>(
+				configs.size());
 		for (ISolverConfig config : configs) {
 			if (config.isEditable()) {
 				list.add(config);
 			}
 		}
 		return list.toArray(new ISolverConfig[list.size()]);
+	}
+
+	public static IConfigDescriptor[] getUserConfigs2() {
+		return ConfigPreferences.getUserConfigs();
+	}
+
+	/**
+	 * Creates a new configuration descriptor from the given parameters.
+	 *
+	 * @param name
+	 *            name of the configuration
+	 * @param solverName
+	 *            name of the solver
+	 * @param args
+	 *            arguments to pass to the solver
+	 * @param approach
+	 *            translation approach
+	 * @param version
+	 *            SMT-LIB version
+	 * @return a configuration descriptor
+	 */
+	public static IConfigDescriptor newConfigDescriptor(String name,
+			String solverName, String args, TranslationApproach approach,
+			SMTLIBVersion version) {
+		return new ConfigDescriptor(name, solverName, args, approach, version);
 	}
 
 	/**
@@ -156,6 +205,10 @@ public class SMTCore {
 		return newConfig(id, name, solverId, args, approach, version);
 	}
 
+	public static void setUserConfigs2(IConfigDescriptor[] configs) {
+		ConfigPreferences.setUserConfigs(configs);
+	}
+
 	/**
 	 * Returns an array of all bundled solvers. Bundled solvers are solvers that
 	 * are contributed by plug-ins, rather than the end-user.
@@ -171,6 +224,10 @@ public class SMTCore {
 			result[count++] = registry.get(id);
 		}
 		return result;
+	}
+
+	public static ISolverDescriptor[] getBundledSolvers2() {
+		return SolverPreferences.getBundledSolvers();
 	}
 
 	/**
@@ -189,6 +246,26 @@ public class SMTCore {
 			}
 		}
 		return list.toArray(new ISMTSolver[list.size()]);
+	}
+
+	public static ISolverDescriptor[] getUserSolvers2() {
+		return SolverPreferences.getUserSolvers();
+	}
+
+	/**
+	 * Creates a new solver descriptor from the given parameters.
+	 *
+	 * @param name
+	 *            name of the solver
+	 * @param kind
+	 *            kind of the solver
+	 * @param path
+	 *            path to the solver binary
+	 * @return a solver descriptor
+	 */
+	public static ISolverDescriptor newSolverDescriptor(String name,
+			SolverKind kind, IPath path) {
+		return new SolverDescriptor(name, kind, path);
 	}
 
 	/**
@@ -219,6 +296,10 @@ public class SMTCore {
 		final SolverKind kind = solver.getKind();
 		final IPath path = solver.getPath();
 		return newSolver(id, name, kind, path);
+	}
+
+	public static void setUserSolvers2(ISolverDescriptor[] newSolvers) {
+		SolverPreferences.setUserSolvers(newSolvers);
 	}
 
 }

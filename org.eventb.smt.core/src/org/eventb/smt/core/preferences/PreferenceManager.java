@@ -23,6 +23,7 @@ import static org.eventb.smt.core.internal.preferences.Messages.SMTPreferences_V
 
 import java.io.File;
 
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfigsPreferences;
@@ -39,8 +40,8 @@ public class PreferenceManager {
 	private static final PreferenceManager SINGLETON = new PreferenceManager();
 
 	public static final String DEFAULT_TRANSLATION_PATH = getProperty("java.io.tmpdir"); //$NON-NLS-1$
-	public static final String TRANSLATION_PATH_ID = "translationpath"; //$NON-NLS-1$
-	public static final String VERIT_PATH_ID = "veritpath"; //$NON-NLS-1$
+	public static final String TRANSLATION_PATH_ID = SMTCore.TRANSLATION_PATH_ID;
+	public static final String VERIT_PATH_ID = SMTCore.VERIT_PATH_ID;
 	public static final String SOLVER_CONFIGS_ID = "solverconfigs"; //$NON-NLS-1$
 	public static final String SOLVERS_ID = "solvers"; //$NON-NLS-1$
 	public static final String DEFAULT_SOLVER = SMTSolver.DEFAULT_SOLVER_ID;

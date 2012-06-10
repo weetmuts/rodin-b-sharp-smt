@@ -37,4 +37,10 @@
          </tacticParameter>
       </parameterizer>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eventb.smt.core.internal.prefs.SimplePreferences$DefaultInitializer">
+      </initializer>
+   </extension>
 </plugin>

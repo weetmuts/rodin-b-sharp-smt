@@ -14,6 +14,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
  org.eventb.smt.core,
  org.eventb.smt.core.preferences,
+ org.eventb.smt.core.prefs,
  org.eventb.smt.core.provers,
  org.eventb.smt.core.translation,
  org.eventb.smt.core.internal.ast;x-friends:="org.eventb.smt.core.tests",
@@ -24,5 +25,6 @@ Export-Package:
  org.eventb.smt.core.internal.preferences.configurations;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.preferences.solvers;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.preferences.translation;x-friends:="org.eventb.smt.core.tests",
+ org.eventb.smt.core.internal.prefs;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.provers;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.core.performance",
  org.eventb.smt.core.internal.translation;x-friends:="org.eventb.smt.core.tests"
