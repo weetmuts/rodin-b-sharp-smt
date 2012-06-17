@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import org.eventb.smt.core.internal.preferences.solvers.BundledSolverList;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
@@ -39,7 +39,7 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 		public boolean isValid(ISolverDescriptor desc) {
 			final String name = desc.getName();
 			if (doGet(name) != null) {
-				smtError("Duplicate solver name " + name + " ignored", null);
+				logError("Duplicate solver name " + name + " ignored", null);
 				return false;
 			}
 			return true;

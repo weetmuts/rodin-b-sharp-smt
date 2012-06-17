@@ -10,7 +10,7 @@
 package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.internal.preferences.AbstractLoader.error;
 import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_RegistrationError;
 import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_SuccessfullRegistration;
@@ -81,7 +81,7 @@ public class BundledSolverRegistry extends AbstractRegistry<ISMTSolver> {
 					final ISMTSolver oldSolver = registry.put(solverId, solver);
 					if (oldSolver != null) {
 						registry.put(solverId, oldSolver);
-						smtError(BundledSolverRegistry_RegistrationError,
+						logError(BundledSolverRegistry_RegistrationError,
 								error("Duplicated extension " + solverId + " ignored."));
 					} else {
 						if (DEBUG_DETAILS)
@@ -90,11 +90,11 @@ public class BundledSolverRegistry extends AbstractRegistry<ISMTSolver> {
 											+ solverId);
 					}
 				} catch (Exception e) {
-					smtError(BundledSolverRegistry_RegistrationError, e);
+					logError(BundledSolverRegistry_RegistrationError, e);
 				}
 			}
 		} catch (Exception e) {
-			smtError(BundledSolverRegistry_RegistrationError, e);
+			logError(BundledSolverRegistry_RegistrationError, e);
 		}
 	}
 }

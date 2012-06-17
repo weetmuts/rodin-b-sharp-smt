@@ -10,7 +10,7 @@
 package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.internal.preferences.AbstractLoader.error;
 import static org.eventb.smt.core.internal.preferences.Messages.SolverConfigRegistry_RegistrationError;
 import static org.eventb.smt.core.internal.preferences.Messages.SolverConfigRegistry_SuccessfullRegistration;
@@ -84,7 +84,7 @@ public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 							config);
 					if (oldConfig != null) {
 						registry.put(configId, oldConfig);
-						smtError(SolverConfigRegistry_RegistrationError,
+						logError(SolverConfigRegistry_RegistrationError,
 								error("Duplicated extension " + configId + " ignored."));
 					} else {
 						if (DEBUG_DETAILS)
@@ -93,11 +93,11 @@ public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 											+ configId);
 					}
 				} catch (Exception e) {
-					smtError(SolverConfigRegistry_RegistrationError, e);
+					logError(SolverConfigRegistry_RegistrationError, e);
 				}
 			}
 		} catch (Exception e) {
-			smtError(SolverConfigRegistry_RegistrationError, e);
+			logError(SolverConfigRegistry_RegistrationError, e);
 		}
 	}
 }

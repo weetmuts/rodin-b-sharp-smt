@@ -110,7 +110,15 @@ public class SMTProversCore extends Plugin {
 		SMTThroughPP.SET_THEORY_AXIOMS_ON = parseOption(DEBUG_PP_SET_THEORY_AXIOMS_ON);
 	}
 
-	private void logError(final String message, final Throwable exception) {
+	/**
+	 * Stores an error in the plug-in log.
+	 *
+	 * @param message
+	 *            some message describing the error
+	 * @param exception
+	 *            the exception that caused the error or <code>null</code>
+	 */
+	public static void logError(final String message, final Throwable exception) {
 		plugin.getLog().log(smtError(message, exception));
 	}
 

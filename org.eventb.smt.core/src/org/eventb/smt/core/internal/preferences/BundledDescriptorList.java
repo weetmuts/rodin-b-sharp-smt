@@ -10,7 +10,7 @@
 package org.eventb.smt.core.internal.preferences;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_RegistrationError;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -34,7 +34,7 @@ public abstract class BundledDescriptorList<T extends IDescriptor> extends
 		try {
 			loadRegistry();
 		} catch (Exception e) {
-			smtError(BundledSolverRegistry_RegistrationError, e);
+			logError(BundledSolverRegistry_RegistrationError, e);
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class BundledDescriptorList<T extends IDescriptor> extends
 			try {
 				loadElement(element);
 			} catch (Exception e) {
-				smtError(BundledSolverRegistry_RegistrationError, e);
+				logError(BundledSolverRegistry_RegistrationError, e);
 			}
 		}
 	}
@@ -61,7 +61,7 @@ public abstract class BundledDescriptorList<T extends IDescriptor> extends
 	public final boolean isValid(T desc) {
 		final String name = desc.getName();
 		if (get(name) != null) {
-			smtError("Duplicate bundled name " + name + " ignored", null);
+			logError("Duplicate bundled name " + name + " ignored", null);
 			return false;
 		}
 		return true;

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import java.util.Map;
 
@@ -86,7 +86,7 @@ public abstract class AbstractPreferences implements IPreferences {
 
 	protected <T> String freshID(final Map<String, T> map) {
 		if (map.size() == IDS_UPPER_BOUND) {
-			smtError("Too many items.", null);
+			logError("Too many items.", null);
 			return null;
 		}
 

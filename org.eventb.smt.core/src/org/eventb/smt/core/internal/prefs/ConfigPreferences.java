@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import org.eventb.smt.core.internal.preferences.configurations.BundledConfigList;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
@@ -29,7 +29,7 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		public boolean isValid(IConfigDescriptor desc) {
 			final String name = desc.getName();
 			if (doGet(name) != null) {
-				smtError("Duplicate config name " + name + " ignored", null);
+				logError("Duplicate config name " + name + " ignored", null);
 				return false;
 			}
 			return true;

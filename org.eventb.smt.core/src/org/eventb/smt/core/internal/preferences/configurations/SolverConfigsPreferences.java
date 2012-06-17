@@ -10,6 +10,7 @@
 package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eventb.smt.core.internal.log.SMTStatus.smtWarning;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
 import static org.eventb.smt.core.preferences.PreferenceManager.configExists;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
+import org.eventb.smt.core.internal.provers.SMTProversCore;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
@@ -85,7 +87,7 @@ public class SolverConfigsPreferences extends AbstractPreferences implements
 						"Could not add the SMT-solver configuration: the solver path is invalid."); //$NON-NLS-1$
 			}
 		} catch (NullPointerException npe) {
-			SMTStatus.smtError("Null pointer exception thrown.", npe);
+			logError("Null pointer exception thrown.", npe);
 		}
 	}
 

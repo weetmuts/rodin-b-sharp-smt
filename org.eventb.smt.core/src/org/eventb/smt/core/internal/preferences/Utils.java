@@ -9,11 +9,11 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-
-import org.eventb.smt.core.internal.log.SMTStatus;
 
 /**
  * @author Systerel (yguyot)
@@ -26,7 +26,7 @@ public class Utils {
 		try {
 			return URLEncoder.encode(s, UTF8);
 		} catch (UnsupportedEncodingException e) {
-			SMTStatus.smtError("Error while encoding.", e);
+			logError("Error while encoding.", e);
 			return "";
 		}
 	}
@@ -35,7 +35,7 @@ public class Utils {
 		try {
 			return URLDecoder.decode(s, UTF8);
 		} catch (UnsupportedEncodingException e) {
-			SMTStatus.smtError("Error while decoding.", e);
+			logError("Error while decoding.", e);
 			return "";
 		}
 	}

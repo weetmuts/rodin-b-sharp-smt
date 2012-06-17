@@ -15,7 +15,7 @@ import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.core.seqprover.eventbExtensions.TacticCombinators.ComposeUntilSuccess.COMBINATOR_ID;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.externalSMT;
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_RESTRICTED_VALUE;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
@@ -141,7 +141,7 @@ public class AutoTactics {
 			try {
 				smtTactic = smtTactic(enabledConfig);
 			} catch (IllegalArgumentException iae) {
-				smtError("An error occured while trying to "
+				logError("An error occured while trying to "
 						+ "build a tactic with the SMT configuration "
 						+ enabledConfig.getName() + ".", iae);
 				continue;

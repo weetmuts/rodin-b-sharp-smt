@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -45,7 +45,7 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 				loadFromNode(root.node(nodeName), result);
 			}
 		} catch (BackingStoreException e) {
-			smtError("loading preferences from " + root + "/" + nodeName, e);
+			logError("loading preferences from " + root + "/" + nodeName, e);
 		}
 		return result;
 	}
@@ -58,7 +58,7 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 			try {
 				result.add(loadFromNode(node.node(childName)));
 			} catch (IllegalArgumentException e) {
-				smtError("loading preference " + node.absolutePath(), e);
+				logError("loading preference " + node.absolutePath(), e);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		try {
 			doSave();
 		} catch (BackingStoreException e) {
-			smtError("saving preferences to " + root + "/" + nodeName, e);
+			logError("saving preferences to " + root + "/" + nodeName, e);
 		}
 	}
 
