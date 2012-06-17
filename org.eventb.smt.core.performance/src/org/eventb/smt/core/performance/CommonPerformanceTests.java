@@ -9,7 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance;
 
-import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
+import static org.eventb.smt.core.SMTCore.newSMTConfiguration;
+import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
 import static org.eventb.smt.core.provers.SolverKind.CVC4;
@@ -36,8 +37,8 @@ import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -60,95 +61,95 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	/**
 	 * External solvers
 	 */
-	public static final ISMTSolver LAST_ALTERGO = newSolver(LAST_ALTERGO_BIN,
+	public static final ISolverDescriptor LAST_ALTERGO = newSolverDescriptor(
 			LAST_ALTERGO_BIN, ALT_ERGO, makeSolverPath(LAST_ALTERGO_BIN));
-	public static final ISMTSolver LAST_CVC3 = newSolver(LAST_CVC3_BIN,
+	public static final ISolverDescriptor LAST_CVC3 = newSolverDescriptor(
 			LAST_CVC3_BIN, CVC3, makeSolverPath(LAST_CVC3_BIN));
-	public static final ISMTSolver LAST_CVC4 = newSolver(LAST_CVC4_BIN,
+	public static final ISolverDescriptor LAST_CVC4 = newSolverDescriptor(
 			LAST_CVC4_BIN, CVC4, makeSolverPath(LAST_CVC4_BIN));
-	public static final ISMTSolver LAST_MATHSAT5 = newSolver(LAST_MATHSAT5_BIN,
+	public static final ISolverDescriptor LAST_MATHSAT5 = newSolverDescriptor(
 			LAST_MATHSAT5_BIN, MATHSAT5, makeSolverPath(LAST_MATHSAT5_BIN));
-	public static final ISMTSolver LAST_OPENSMT = newSolver(LAST_OPENSMT_BIN,
+	public static final ISolverDescriptor LAST_OPENSMT = newSolverDescriptor(
 			LAST_OPENSMT_BIN, OPENSMT, makeSolverPath(LAST_OPENSMT_BIN));
-	public static final ISMTSolver LAST_VERIT = newSolver(LAST_VERIT_BIN,
+	public static final ISolverDescriptor LAST_VERIT = newSolverDescriptor(
 			LAST_VERIT_BIN, VERIT, makeSolverPath(LAST_VERIT_BIN));
-	public static final ISMTSolver LAST_Z3 = newSolver(LAST_Z3_BIN,
+	public static final ISolverDescriptor LAST_Z3 = newSolverDescriptor(
 			LAST_Z3_BIN, Z3, makeSolverPath(LAST_Z3_BIN));
 
 	/**
 	 * External Alt-Ergo configurations
 	 */
-	public static final ISolverConfig ALTERGO_PP_SMT1 = makeConfig(
+	public static final IConfigDescriptor ALTERGO_PP_SMT1 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_PP, V1_2);
-	public static final ISolverConfig ALTERGO_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor ALTERGO_VERIT_SMT1 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_VERIT, V1_2);
-	public static final ISolverConfig ALTERGO_PP_SMT2 = makeConfig(
+	public static final IConfigDescriptor ALTERGO_PP_SMT2 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_PP, V2_0);
-	public static final ISolverConfig ALTERGO_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor ALTERGO_VERIT_SMT2 = makeConfig(
 			LAST_ALTERGO_BIN, LAST_ALTERGO, "", USING_VERIT, V2_0);
 
 	/**
 	 * External CVC3 configurations
 	 */
-	public static final ISolverConfig CVC3_PP_SMT1 = makeConfig(LAST_CVC3_BIN,
+	public static final IConfigDescriptor CVC3_PP_SMT1 = makeConfig(LAST_CVC3_BIN,
 			LAST_CVC3, "-lang smt", USING_PP, V1_2);
-	public static final ISolverConfig CVC3_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor CVC3_VERIT_SMT1 = makeConfig(
 			LAST_CVC3_BIN, LAST_CVC3, "-lang smt", USING_VERIT, V1_2);
-	public static final ISolverConfig CVC3_PP_SMT2 = makeConfig(LAST_CVC3_BIN,
+	public static final IConfigDescriptor CVC3_PP_SMT2 = makeConfig(LAST_CVC3_BIN,
 			LAST_CVC3, "-lang smt2", USING_PP, V2_0);
-	public static final ISolverConfig CVC3_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor CVC3_VERIT_SMT2 = makeConfig(
 			LAST_CVC3_BIN, LAST_CVC3, "-lang smt2", USING_VERIT, V2_0);
 
 	/**
 	 * External CVC4 configurations
 	 */
-	public static final ISolverConfig CVC4_PP_SMT1 = makeConfig(LAST_CVC4_BIN,
+	public static final IConfigDescriptor CVC4_PP_SMT1 = makeConfig(LAST_CVC4_BIN,
 			LAST_CVC4, "--lang smt", USING_PP, V1_2);
-	public static final ISolverConfig CVC4_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor CVC4_VERIT_SMT1 = makeConfig(
 			LAST_CVC4_BIN, LAST_CVC4, "--lang smt", USING_VERIT, V1_2);
-	public static final ISolverConfig CVC4_PP_SMT2 = makeConfig(LAST_CVC4_BIN,
+	public static final IConfigDescriptor CVC4_PP_SMT2 = makeConfig(LAST_CVC4_BIN,
 			LAST_CVC4, "--lang smt2", USING_PP, V2_0);
-	public static final ISolverConfig CVC4_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor CVC4_VERIT_SMT2 = makeConfig(
 			LAST_CVC4_BIN, LAST_CVC4, "--lang smt2", USING_VERIT, V2_0);
 
 	/**
 	 * External MathSAT5 configurations
 	 */
-	public static final ISolverConfig MATHSAT5_PP_SMT1 = makeConfig(
+	public static final IConfigDescriptor MATHSAT5_PP_SMT1 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_PP, V1_2);
-	public static final ISolverConfig MATHSAT5_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor MATHSAT5_VERIT_SMT1 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_VERIT, V1_2);
-	public static final ISolverConfig MATHSAT5_PP_SMT2 = makeConfig(
+	public static final IConfigDescriptor MATHSAT5_PP_SMT2 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_PP, V2_0);
-	public static final ISolverConfig MATHSAT5_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor MATHSAT5_VERIT_SMT2 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_VERIT, V2_0);
 
 	/**
 	 * External OpenSMT configurations
 	 */
-	public static final ISolverConfig OPENSMT_PP_SMT1 = makeConfig(
+	public static final IConfigDescriptor OPENSMT_PP_SMT1 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_PP, V1_2);
-	public static final ISolverConfig OPENSMT_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor OPENSMT_VERIT_SMT1 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_VERIT, V1_2);
-	public static final ISolverConfig OPENSMT_PP_SMT2 = makeConfig(
+	public static final IConfigDescriptor OPENSMT_PP_SMT2 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_PP, V2_0);
-	public static final ISolverConfig OPENSMT_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor OPENSMT_VERIT_SMT2 = makeConfig(
 			LAST_OPENSMT_BIN, LAST_OPENSMT, "", USING_VERIT, V2_0);
 
 	/**
 	 * External veriT configurations
 	 */
-	public static final ISolverConfig VERIT_PP_SMT1 = makeConfig(
+	public static final IConfigDescriptor VERIT_PP_SMT1 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT, "--enable-e --max-time=2.9", USING_PP,
 			V1_2);
-	public static final ISolverConfig VERIT_VERIT_SMT1 = makeConfig(
+	public static final IConfigDescriptor VERIT_VERIT_SMT1 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT, "--enable-e --max-time=2.9",
 			USING_VERIT, V1_2);
-	public static final ISolverConfig VERIT_PP_SMT2 = makeConfig(
+	public static final IConfigDescriptor VERIT_PP_SMT2 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT,
 			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
 			USING_PP, V2_0);
-	public static final ISolverConfig VERIT_VERIT_SMT2 = makeConfig(
+	public static final IConfigDescriptor VERIT_VERIT_SMT2 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT,
 			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
 			USING_VERIT, V2_0);
@@ -156,13 +157,13 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	/**
 	 * External Z3 configurations
 	 */
-	public static final ISolverConfig Z3_PP_SMT1 = makeConfig(LAST_Z3_BIN,
+	public static final IConfigDescriptor Z3_PP_SMT1 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "", USING_PP, V1_2);
-	public static final ISolverConfig Z3_VERIT_SMT1 = makeConfig(LAST_Z3_BIN,
+	public static final IConfigDescriptor Z3_VERIT_SMT1 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "", USING_VERIT, V1_2);
-	public static final ISolverConfig Z3_PP_SMT2 = makeConfig(LAST_Z3_BIN,
+	public static final IConfigDescriptor Z3_PP_SMT2 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "-smt2", USING_PP, V2_0);
-	public static final ISolverConfig Z3_VERIT_SMT2 = makeConfig(LAST_Z3_BIN,
+	public static final IConfigDescriptor Z3_VERIT_SMT2 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "-smt2", USING_VERIT, V2_0);
 
 	public CommonPerformanceTests(SolverKind solverKind, boolean bundled,
@@ -201,38 +202,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			if (smtlibVersion.equals(V1_2)) {
 				switch (kind) {
 				case ALT_ERGO:
-					solverConfig = ALTERGO_VERIT_SMT1;
-					solver = LAST_ALTERGO;
+					configuration = newSMTConfiguration(ALTERGO_VERIT_SMT1, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					solverConfig = CVC3_VERIT_SMT1;
-					solver = LAST_CVC3;
+					configuration = newSMTConfiguration(CVC3_VERIT_SMT1, LAST_CVC3);
 					break;
 
 				case CVC4:
-					solverConfig = CVC4_VERIT_SMT1;
-					solver = LAST_CVC4;
+					configuration = newSMTConfiguration(CVC4_VERIT_SMT1, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					solverConfig = MATHSAT5_VERIT_SMT1;
-					solver = LAST_MATHSAT5;
+					configuration = newSMTConfiguration(MATHSAT5_VERIT_SMT1, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					solverConfig = OPENSMT_VERIT_SMT1;
-					solver = LAST_OPENSMT;
+					configuration = newSMTConfiguration(OPENSMT_VERIT_SMT1, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					solverConfig = VERIT_VERIT_SMT1;
-					solver = LAST_VERIT;
+					configuration = newSMTConfiguration(VERIT_VERIT_SMT1, LAST_VERIT);
 					break;
 
 				case Z3:
-					solverConfig = Z3_VERIT_SMT1;
-					solver = LAST_Z3;
+					configuration = newSMTConfiguration(Z3_VERIT_SMT1, LAST_Z3);
 					break;
 
 				default:
@@ -245,38 +239,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 */
 				switch (kind) {
 				case ALT_ERGO:
-					solverConfig = ALTERGO_VERIT_SMT2;
-					solver = LAST_ALTERGO;
+					configuration = newSMTConfiguration(ALTERGO_VERIT_SMT2, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					solverConfig = CVC3_VERIT_SMT2;
-					solver = LAST_CVC3;
+					configuration = newSMTConfiguration(CVC3_VERIT_SMT2, LAST_CVC3);
 					break;
 
 				case CVC4:
-					solverConfig = CVC4_VERIT_SMT2;
-					solver = LAST_CVC4;
+					configuration = newSMTConfiguration(CVC4_VERIT_SMT2, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					solverConfig = MATHSAT5_VERIT_SMT2;
-					solver = LAST_MATHSAT5;
+					configuration = newSMTConfiguration(MATHSAT5_VERIT_SMT2, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					solverConfig = OPENSMT_VERIT_SMT2;
-					solver = LAST_OPENSMT;
+					configuration = newSMTConfiguration(OPENSMT_VERIT_SMT2, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					solverConfig = VERIT_VERIT_SMT2;
-					solver = LAST_VERIT;
+					configuration = newSMTConfiguration(VERIT_VERIT_SMT2, LAST_VERIT);
 					break;
 
 				case Z3:
-					solverConfig = Z3_VERIT_SMT2;
-					solver = LAST_Z3;
+					configuration = newSMTConfiguration(Z3_VERIT_SMT2, LAST_Z3);
 					break;
 
 				default:
@@ -288,38 +275,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			if (smtlibVersion.equals(V1_2)) {
 				switch (kind) {
 				case ALT_ERGO:
-					solverConfig = ALTERGO_PP_SMT1;
-					solver = LAST_ALTERGO;
+					configuration = newSMTConfiguration(ALTERGO_PP_SMT1, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					solverConfig = CVC3_PP_SMT1;
-					solver = LAST_CVC3;
+					configuration = newSMTConfiguration(CVC3_PP_SMT1, LAST_CVC3);
 					break;
 
 				case CVC4:
-					solverConfig = CVC4_PP_SMT1;
-					solver = LAST_CVC4;
+					configuration = newSMTConfiguration(CVC4_PP_SMT1, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					solverConfig = MATHSAT5_PP_SMT1;
-					solver = LAST_MATHSAT5;
+					configuration = newSMTConfiguration(MATHSAT5_PP_SMT1, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					solverConfig = OPENSMT_PP_SMT1;
-					solver = LAST_OPENSMT;
+					configuration = newSMTConfiguration(OPENSMT_PP_SMT1, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					solverConfig = VERIT_PP_SMT1;
-					solver = LAST_VERIT;
+					configuration = newSMTConfiguration(VERIT_PP_SMT1, LAST_VERIT);
 					break;
 
 				case Z3:
-					solverConfig = Z3_PP_SMT1;
-					solver = LAST_Z3;
+					configuration = newSMTConfiguration(Z3_PP_SMT1, LAST_Z3);
 					break;
 
 				default:
@@ -332,38 +312,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 */
 				switch (kind) {
 				case ALT_ERGO:
-					solverConfig = ALTERGO_PP_SMT2;
-					solver = LAST_ALTERGO;
+					configuration = newSMTConfiguration(ALTERGO_PP_SMT2, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					solverConfig = CVC3_PP_SMT2;
-					solver = LAST_CVC3;
+					configuration = newSMTConfiguration(CVC3_PP_SMT2, LAST_CVC3);
 					break;
 
 				case CVC4:
-					solverConfig = CVC4_PP_SMT2;
-					solver = LAST_CVC4;
+					configuration = newSMTConfiguration(CVC4_PP_SMT2, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					solverConfig = MATHSAT5_PP_SMT2;
-					solver = LAST_MATHSAT5;
+					configuration = newSMTConfiguration(MATHSAT5_PP_SMT2, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					solverConfig = OPENSMT_PP_SMT2;
-					solver = LAST_OPENSMT;
+					configuration = newSMTConfiguration(OPENSMT_PP_SMT2, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					solverConfig = VERIT_PP_SMT2;
-					solver = LAST_VERIT;
+					configuration = newSMTConfiguration(VERIT_PP_SMT2, LAST_VERIT);
 					break;
 
 				case Z3:
-					solverConfig = Z3_PP_SMT2;
-					solver = LAST_Z3;
+					configuration = newSMTConfiguration(Z3_PP_SMT2, LAST_Z3);
 					break;
 
 				default:
@@ -381,21 +354,15 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		final StringBuilder errorBuilder = new StringBuilder("");
 
 		try {
-			switch (solverConfig.getTranslationApproach()) {
+			switch (configuration.getTranslationApproach()) {
 			case USING_VERIT:
-				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						debugBuilder, configuration, lemmaName);
 				break;
 
 			default: // USING_PP
-				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						configuration, lemmaName);
 				break;
 			}
 
@@ -452,10 +419,10 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
-		final String testedSolverName = solver.getName();
-		final TranslationApproach testedTranslationApproach = solverConfig
+		final String testedSolverName = configuration.getSolverName();
+		final TranslationApproach testedTranslationApproach = configuration
 				.getTranslationApproach();
-		final SMTLIBVersion testedSmtlibVersion = solverConfig
+		final SMTLIBVersion testedSmtlibVersion = configuration
 				.getSmtlibVersion();
 
 		/**
@@ -541,8 +508,8 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		 */
 		debugBuilder.append("unsat-core checking\n");
 
-		final String solverId = solverConfig.getSolverId();
-		if (!solverId.equals(LAST_Z3.getID())) {
+		final String solverName = configuration.getSolverName();
+		if (!solverName.equals(LAST_Z3.getName())) {
 			setSolverPreferences(Z3, !BUNDLED, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
@@ -562,7 +529,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				fail(z3UCCheckErrorBuffer);
 			}
 		}
-		if (!solverId.equals(LAST_CVC3.getID())) {
+		if (!solverName.equals(LAST_CVC3.getName())) {
 			setSolverPreferences(CVC3, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
@@ -582,7 +549,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				fail(cvc3UCCheckErrorBuffer);
 			}
 		}
-		if (!solverId.equals(LAST_ALTERGO.getID())) {
+		if (!solverName.equals(LAST_ALTERGO.getName())) {
 			setSolverPreferences(ALT_ERGO, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
@@ -602,7 +569,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				fail(altergoUCCheckErrorBuffer);
 			}
 		}
-		if (!solverId.equals(LAST_VERIT.getID())) {
+		if (!solverName.equals(LAST_VERIT.getName())) {
 			setSolverPreferences(VERIT, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(

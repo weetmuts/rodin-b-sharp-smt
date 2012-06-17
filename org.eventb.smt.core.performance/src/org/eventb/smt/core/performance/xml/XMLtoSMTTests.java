@@ -10,8 +10,6 @@
 
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
@@ -401,7 +399,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		if (solverConfig.getSmtlibVersion().equals(V2_0)) {
+		if (configuration.getSmtlibVersion().equals(V2_0)) {
 			Assert.assertTrue(
 					"SMT-LIB 2.0 is not handled by the veriT approach yet",
 					false);
@@ -443,7 +441,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		if (solverConfig.getSmtlibVersion().equals(V1_2)) {
+		if (configuration.getSmtlibVersion().equals(V1_2)) {
 			Assert.assertTrue(
 					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",
 					false);
@@ -456,14 +454,14 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 			debugBuilder.append("Testing lemma (PP approach): ").append(name);
 			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 
-			if (solverConfig.getSolverId().equals(VERIT)
-					|| solverConfig.getSolverId().equals(Z3)) {
+			final SolverKind kind = configuration.getKind();
+			if (kind == SolverKind.VERIT || kind == SolverKind.Z3) {
 				doTest(name, data.getHypotheses(), data.getGoal(),
 						data.getTe(), VALID, data.getNeededHypotheses(),
 						data.isGoalNeeded(), debugBuilder);
 			} else {
 				Assert.assertTrue("Unsat core extraction is not handled with "
-						+ solverConfig.getSolverId().toString() + " yet", false);
+						+ configuration.getSolverName() + " yet", false);
 			}
 		}
 	}

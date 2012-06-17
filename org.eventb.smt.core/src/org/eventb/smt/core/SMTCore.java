@@ -9,18 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core;
 
-import static org.eventb.smt.core.internal.provers.SMTProversCore.ALL_SOLVER_CONFIGURATIONS;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.getDefault;
-import static org.eventb.smt.core.preferences.PreferenceManager.getBundledSolverRegistry;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.preferences.PreferenceManager.getSolverConfigRegistry;
-import static org.eventb.smt.core.preferences.SMTSolverFactory.newSolver;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.seqprover.ITactic;
@@ -28,22 +17,19 @@ import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
+import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.provers.SMTProversCore;
-import org.eventb.smt.core.preferences.IRegistry;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISMTSolversPreferences;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
-import org.eventb.smt.core.preferences.PreferenceManager;
-import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.eventb.smt.core.provers.ISMTConfiguration;
+import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
+ * Facade class providing the interface to the SMT core plug-in functionality.
+ *
  * @author Systerel (yguyot)
- * 
  */
 public class SMTCore {
 
@@ -73,6 +59,9 @@ public class SMTCore {
 	}
 
 	/**
+	 * Returns a tactic that will apply the given SMT solver configuration with
+	 * the given parameters.
+	 *
 	 * This tactic should be called by the parameterised auto tactic.
 	 * 
 	 * @param restricted
@@ -91,39 +80,12 @@ public class SMTCore {
 	}
 
 	/**
-	 * <p>
-	 * Returns a tactic for applying the SMT prover to a proof tree node
-	 * (sequent).
-	 * </p>
-	 * 
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @return a tactic for running SMTTacticProvider with the given forces
-	 */
-	public static ITactic externalSMT(final boolean restricted,
-			final long timeOutDelay) {
-		return externalSMT(restricted, timeOutDelay, ALL_SOLVER_CONFIGURATIONS);
-	}
-
-	/**
 	 * Returns an array of all bundled configurations. Bundled configurations
 	 * are configurations that are contributed by plug-ins, rather than the
 	 * end-user.
 	 *
 	 * @return an array of all bundled configurations
 	 */
-	public static ISolverConfig[] getBundledConfigs() {
-		final IRegistry<ISolverConfig> registry = getSolverConfigRegistry();
-		final Set<String> ids = registry.getIDs();
-		final ISolverConfig[] result = new ISolverConfig[ids.size()];
-		int count = 0;
-		for (String id : ids) {
-			result[count++] = registry.get(id);
-		}
-		return result;
-	}
-
 	public static IConfigDescriptor[] getBundledConfigs2() {
 		return ConfigPreferences.getBundledConfigs();
 	}
@@ -133,21 +95,6 @@ public class SMTCore {
 	 *
 	 * @return an array of all user-defined configurations
 	 */
-	public static ISolverConfig[] getUserConfigs() {
-		final PreferenceManager prefMng = getPreferenceManager();
-		final ISolverConfigsPreferences prefs = prefMng.getSolverConfigsPrefs();
-		final Collection<ISolverConfig> configs = prefs.getSolverConfigs()
-				.values();
-		final List<ISolverConfig> list = new ArrayList<ISolverConfig>(
-				configs.size());
-		for (ISolverConfig config : configs) {
-			if (config.isEditable()) {
-				list.add(config);
-			}
-		}
-		return list.toArray(new ISolverConfig[list.size()]);
-	}
-
 	public static IConfigDescriptor[] getUserConfigs2() {
 		return ConfigPreferences.getUserConfigs();
 	}
@@ -177,34 +124,6 @@ public class SMTCore {
 	 * Sets the user-defined configurations. This replaces the list of
 	 * user-defined configurations with the given ones.
 	 */
-	public static void setUserConfigs(ISolverConfig[] configs) {
-		final PreferenceManager prefMng = getPreferenceManager();
-		final ISolverConfigsPreferences prefs = prefMng.getSolverConfigsPrefs();
-		prefs.loadDefault();
-		for (ISolverConfig config : configs) {
-			if (config.getID().length() != 0) {
-				prefs.add(config);
-			}
-		}
-		for (ISolverConfig config : configs) {
-			if (config.getID().length() == 0) {
-				prefs.add(computeId(prefs, config));
-			}
-		}
-		prefs.save();
-	}
-
-	private static ISolverConfig computeId(ISolverConfigsPreferences prefs,
-			ISolverConfig config) {
-		final String id = prefs.freshID();
-		final String name = config.getName();
-		final String solverId = config.getSolverId();
-		final String args = config.getArgs();
-		final TranslationApproach approach = config.getTranslationApproach();
-		final SMTLIBVersion version = config.getSmtlibVersion();
-		return newConfig(id, name, solverId, args, approach, version);
-	}
-
 	public static void setUserConfigs2(IConfigDescriptor[] configs) {
 		ConfigPreferences.setUserConfigs(configs);
 	}
@@ -215,17 +134,6 @@ public class SMTCore {
 	 *
 	 * @return an array of all bundled solvers
 	 */
-	public static ISMTSolver[] getBundledSolvers() {
-		final IRegistry<ISMTSolver> registry = getBundledSolverRegistry();
-		final Set<String> ids = registry.getIDs();
-		final ISMTSolver[] result = new ISMTSolver[ids.size()];
-		int count = 0;
-		for (String id : ids) {
-			result[count++] = registry.get(id);
-		}
-		return result;
-	}
-
 	public static ISolverDescriptor[] getBundledSolvers2() {
 		return SolverPreferences.getBundledSolvers();
 	}
@@ -235,19 +143,6 @@ public class SMTCore {
 	 *
 	 * @return an array of all user-defined solvers
 	 */
-	public static ISMTSolver[] getUserSolvers() {
-		final PreferenceManager prefMng = getPreferenceManager();
-		final ISMTSolversPreferences prefs = prefMng.getSMTSolversPrefs();
-		final Collection<ISMTSolver> solvers = prefs.getSolvers().values();
-		final List<ISMTSolver> list = new ArrayList<ISMTSolver>(solvers.size());
-		for (ISMTSolver solver : solvers) {
-			if (solver.isEditable()) {
-				list.add(solver);
-			}
-		}
-		return list.toArray(new ISMTSolver[list.size()]);
-	}
-
 	public static ISolverDescriptor[] getUserSolvers2() {
 		return SolverPreferences.getUserSolvers();
 	}
@@ -272,34 +167,35 @@ public class SMTCore {
 	 * Sets the user-defined solvers. This replaces the list of user-defined
 	 * solvers with the given ones.
 	 */
-	public static void setUserSolvers(ISMTSolver[] solvers) {
-		final PreferenceManager prefMng = getPreferenceManager();
-		final ISMTSolversPreferences prefs = prefMng.getSMTSolversPrefs();
-		prefs.loadDefault();
-		for (ISMTSolver solver : solvers) {
-			if (solver.getID().length() != 0) {
-				prefs.add(solver);
-			}
-		}
-		for (ISMTSolver solver : solvers) {
-			if (solver.getID().length() == 0) {
-				prefs.add(computeId(prefs, solver));
-			}
-		}
-		prefs.save();
-	}
-
-	private static ISMTSolver computeId(ISMTSolversPreferences prefs,
-			ISMTSolver solver) {
-		final String id = prefs.freshID();
-		final String name = solver.getName();
-		final SolverKind kind = solver.getKind();
-		final IPath path = solver.getPath();
-		return newSolver(id, name, kind, path);
-	}
-
 	public static void setUserSolvers2(ISolverDescriptor[] newSolvers) {
 		SolverPreferences.setUserSolvers(newSolvers);
+	}
+
+	/**
+	 * Returns the SMT configuration with the given name, or <code>null</code>
+	 * if unknown or if it references an unknown solver.
+	 *
+	 * @param name
+	 *            configuration name
+	 * @return the SMT configuration with the given name, or <code>null</code>
+	 */
+	public static ISMTConfiguration getSMTConfiguration(String name) {
+		final IConfigDescriptor config = ConfigPreferences.get(name);
+		if (config == null) {
+			return null;
+		}
+		final String solverName = config.getSolverName();
+		final ISolverDescriptor solver = SolverPreferences.get(solverName);
+		if (solver == null) {
+			return null;
+		}
+		return newSMTConfiguration(config, solver);
+	}
+
+	// For testing purposes
+	public static ISMTConfiguration newSMTConfiguration(
+			final IConfigDescriptor config, final ISolverDescriptor solver) {
+		return new SMTConfiguration(config, solver);
 	}
 
 }

@@ -14,17 +14,21 @@ import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.SMTCore.VERIT_PATH_ID;
 import static org.eventb.smt.core.SMTCore.getBundledSolvers2;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /**
@@ -72,11 +76,28 @@ public class SimplePreferences {
 	}
 
 	public static final IPath getTranslationPath() {
-		return new Path(NODE.get(TRANSLATION_PATH_ID, ""));
+		final String value = getPreference(TRANSLATION_PATH_ID);
+		return new Path(value);
 	}
 
 	public static final IPath getVeriTPath() {
-		return new Path(NODE.get(VERIT_PATH_ID, ""));
+		final String value = getPreference(VERIT_PATH_ID);
+		return new Path(value);
+	}
+
+	private static String getPreference(final String key) {
+		final IPreferencesService svc = Platform.getPreferencesService();
+		final String value = svc.getString(PLUGIN_ID, key, "", null);
+		return value;
+	}
+
+	public static void setTranslationPath(IPath path) {
+		NODE.put(TRANSLATION_PATH_ID, path.toPortableString());
+		try {
+			NODE.flush();
+		} catch (BackingStoreException e) {
+			logError("Flushing preferences", e);
+		}
 	}
 
 }

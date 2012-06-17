@@ -10,8 +10,9 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.preferences.SolverConfigFactory.newConfig;
+import static org.eventb.smt.core.SMTCore.getBundledSolvers2;
+import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
+import static org.eventb.smt.core.SMTCore.newSMTConfiguration;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
@@ -32,17 +33,17 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTSignature;
+import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISMTSolversPreferences;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
-import org.eventb.smt.core.preferences.ITranslationPreferences;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -50,18 +51,15 @@ import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
-	/**
-	 * bundled solvers ids
-	 */
-	public static final String BUNDLED_VERIT_ID = "org.eventb.smt.verit.bundled";
-	public static final String BUNDLED_CVC3_ID = "org.eventb.smt.cvc3.bundled";
+
 	/**
 	 * bundled configs ids
 	 */
-	public static final String BUNDLED_VERIT_ID_PREF = "bundled_veriT";
-	public static final String BUNDLED_CVC3_ID_PREF = "bundled_CVC3";
-	public static final String BUNDLED_VERIT_PP_SMT2_ID = "org.eventb.smt.verit.verit_pp_smt2";
-	public static final String BUNDLED_CVC3_PP_SMT2_ID = "org.eventb.smt.cvc3.cvc3_pp_smt2";
+	public static final String BUNDLED_VERIT_ID_PREFIX = "bundled_veriT";
+	public static final String BUNDLED_CVC3_ID_PREFIX = "bundled_CVC3";
+
+	public static final String BUNDLED_VERIT_PP_SMT2_ID = "veriT SMT2";
+	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3 SMT2";
 
 	public static final IPath DEFAULT_TEST_TRANSLATION_PATH = new Path(
 			System.getProperty("user.home") + File.separatorChar
@@ -70,42 +68,34 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	/**
 	 * bundled solvers (used to make new configurations)
 	 */
-	public static final ISMTSolver BUNDLED_VERIT;
-	public static final ISMTSolver BUNDLED_CVC3;
-	static {
-		getPreferenceManager().getSMTSolversPrefs().loadDefault();
-		getPreferenceManager().getSMTSolversPrefs().save();
-		getPreferenceManager().getSolverConfigsPrefs().loadDefault();
-		getPreferenceManager().getSolverConfigsPrefs().save();
-		BUNDLED_VERIT = getPreferenceManager().getSMTSolversPrefs().get(
-				BUNDLED_VERIT_ID);
-		BUNDLED_CVC3 = getPreferenceManager().getSMTSolversPrefs().get(
-				BUNDLED_CVC3_ID);
-	}
+	public static final ISolverDescriptor BUNDLED_VERIT = findBundledSolverByName("veriT (bundled)");
+	public static final ISolverDescriptor BUNDLED_CVC3 = findBundledSolverByName("CVC3 (bundled)");
 
 	/**
 	 * Bundled veriT configurations
 	 */
-	public static final ISolverConfig BUNDLED_VERIT_PP_SMT1 = makeConfig(
-			BUNDLED_VERIT_ID_PREF, BUNDLED_VERIT, "--enable-e --max-time=2.9",
-			USING_PP, V1_2);
-	public static final ISolverConfig BUNDLED_VERIT_VT_SMT1 = makeConfig(
-			BUNDLED_VERIT_ID_PREF, BUNDLED_VERIT, "--enable-e --max-time=2.9",
-			USING_VERIT, V1_2);
-	public static final ISolverConfig BUNDLED_VERIT_VT_SMT2 = makeConfig(
-			BUNDLED_VERIT_ID_PREF, BUNDLED_VERIT,
+	public static final IConfigDescriptor BUNDLED_VERIT_PP_SMT1 = makeConfig(
+			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
+			"--enable-e --max-time=2.9", USING_PP, V1_2);
+	public static final IConfigDescriptor BUNDLED_VERIT_VT_SMT1 = makeConfig(
+			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
+			"--enable-e --max-time=2.9", USING_VERIT, V1_2);
+	public static final IConfigDescriptor BUNDLED_VERIT_VT_SMT2 = makeConfig(
+			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
 			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
 			USING_VERIT, V2_0);
 
 	/**
 	 * Bundled CVC3 configurations
 	 */
-	public static final ISolverConfig BUNDLED_CVC3_PP_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREF, BUNDLED_CVC3, "-lang smt", USING_PP, V1_2);
-	public static final ISolverConfig BUNDLED_CVC3_VT_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREF, BUNDLED_CVC3, "-lang smt", USING_VERIT, V1_2);
-	public static final ISolverConfig BUNDLED_CVC3_VT_SMT2 = makeConfig(
-			BUNDLED_CVC3_ID_PREF, BUNDLED_CVC3, "-lang smt2", USING_VERIT, V2_0);
+	public static final IConfigDescriptor BUNDLED_CVC3_PP_SMT1 = makeConfig(
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt", USING_PP, V1_2);
+	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT1 = makeConfig(
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt", USING_VERIT,
+			V1_2);
+	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT2 = makeConfig(
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt2", USING_VERIT,
+			V2_0);
 
 	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
 
@@ -125,8 +115,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	protected Set<org.eventb.smt.utils.Theory> theories;
 	protected String poName;
-	protected ISolverConfig solverConfig;
-	protected ISMTSolver solver;
+
+	protected ISMTConfiguration configuration;
 
 	/**
 	 * True if the extracted unsat-core is the same (or smaller) than the
@@ -168,6 +158,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setTranslationPreferences();
 	}
 
+	private static ISolverDescriptor findBundledSolverByName(String name) {
+		final ISolverDescriptor[] solvers = getBundledSolvers2();
+		for (ISolverDescriptor solver : solvers) {
+			if (name.equals(solver.getName())) {
+				return solver;
+			}
+		}
+		throw new IllegalArgumentException("No bundled solver named " + name);
+	}
+
 	public CommonSolverRunTests(final SolverKind solverKind,
 			final Set<Theory> theories,
 			final TranslationApproach translationApproach,
@@ -177,22 +177,18 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setSolverPreferences(solverKind, translationApproach, smtlibVersion);
 	}
 
-	protected static ISolverConfig makeConfig(final String id,
-			final ISMTSolver solver, final String args,
+	protected static IConfigDescriptor makeConfig(final String id,
+			final ISolverDescriptor solver, final String args,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
 		final String newID = id + "_" + translationApproach.toString()
 				+ (smtlibVersion.equals(V1_2) ? "_SMT1" : "_SMT2");
-		return newConfig(newID, newID, solver.getID(), args,
+		return newConfigDescriptor(newID, solver.getName(), args,
 				translationApproach, smtlibVersion);
 	}
 
 	protected static void setTranslationPreferences() {
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		translationPrefs.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH
-				.toOSString());
-		translationPrefs.save();
+		SimplePreferences.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH);
 	}
 
 	/**
@@ -207,13 +203,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				switch (kind) {
 
 				case CVC3:
-					solverConfig = BUNDLED_CVC3_VT_SMT1;
-					solver = BUNDLED_CVC3;
+					configuration = newSMTConfiguration(BUNDLED_CVC3_VT_SMT1,
+							BUNDLED_CVC3);
 					break;
 
 				case VERIT:
-					solverConfig = BUNDLED_VERIT_VT_SMT1;
-					solver = BUNDLED_VERIT;
+					configuration = newSMTConfiguration(BUNDLED_VERIT_VT_SMT1,
+							BUNDLED_VERIT);
 					break;
 
 				default:
@@ -227,13 +223,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				switch (kind) {
 
 				case CVC3:
-					solverConfig = BUNDLED_CVC3_VT_SMT2;
-					solver = BUNDLED_CVC3;
+					configuration = newSMTConfiguration(BUNDLED_CVC3_VT_SMT2,
+							BUNDLED_CVC3);
 					break;
 
 				case VERIT:
-					solverConfig = BUNDLED_VERIT_VT_SMT2;
-					solver = BUNDLED_VERIT;
+					configuration = newSMTConfiguration(BUNDLED_VERIT_VT_SMT2,
+							BUNDLED_VERIT);
 					break;
 
 				default:
@@ -246,13 +242,13 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				switch (kind) {
 
 				case CVC3:
-					solverConfig = BUNDLED_CVC3_PP_SMT1;
-					solver = BUNDLED_CVC3;
+					configuration = newSMTConfiguration(BUNDLED_CVC3_PP_SMT1,
+							BUNDLED_CVC3);
 					break;
 
 				case VERIT:
-					solverConfig = BUNDLED_VERIT_PP_SMT1;
-					solver = BUNDLED_VERIT;
+					configuration = newSMTConfiguration(BUNDLED_VERIT_PP_SMT1,
+							BUNDLED_VERIT);
 					break;
 
 				default:
@@ -266,11 +262,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				switch (kind) {
 
 				case CVC3:
-					setPreferencesForBundledCvc3();
+					configuration = SMTCore.getSMTConfiguration("CVC3 SMT2");
 					break;
 
 				case VERIT:
-					setPreferencesForBundledVeriT();
+					configuration = SMTCore.getSMTConfiguration("veriT SMT2");
 					break;
 
 				default:
@@ -279,25 +275,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				}
 			}
 		}
-	}
-
-	protected void setPreferencesForBundledVeriT() {
-		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		configsPrefs.loadDefault();
-		solverConfig = configsPrefs.getSolverConfig(BUNDLED_VERIT_PP_SMT2_ID);
-		final ISMTSolversPreferences solversPrefs = getPreferenceManager()
-				.getSMTSolversPrefs();
-		solver = solversPrefs.get(solverConfig.getSolverId());
-	}
-
-	protected void setPreferencesForBundledCvc3() {
-		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		solverConfig = configsPrefs.getSolverConfig(BUNDLED_CVC3_PP_SMT2_ID);
-		final ISMTSolversPreferences solversPrefs = getPreferenceManager()
-				.getSMTSolversPrefs();
-		solver = solversPrefs.get(solverConfig.getSolverId());
 	}
 
 	protected void printPerf(final StringBuilder debugBuilder,
@@ -372,30 +349,24 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final SMTProverCall smtProverCall;
 
 		try {
-			switch (solverConfig.getTranslationApproach()) {
+			switch (configuration.getTranslationApproach()) {
 			case USING_VERIT:
-				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						debugBuilder, configuration, lemmaName);
 				break;
 
 			default: // USING_PP
-				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						configuration, lemmaName);
 				break;
 			}
 
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();
 
-			printPerf(debugBuilder, lemmaName, solver.getName(),
-					solverConfig.getSmtlibVersion(),
-					solverConfig.getTranslationApproach(), smtProverCall);
+			printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
+					configuration.getSmtlibVersion(),
+					configuration.getTranslationApproach(), smtProverCall);
 
 			assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
 			assertEquals(
@@ -416,21 +387,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final StringBuilder errorBuilder = new StringBuilder("");
 
 		try {
-			switch (solverConfig.getTranslationApproach()) {
+			switch (configuration.getTranslationApproach()) {
 			case USING_VERIT:
-				// Create an instance of SmtVeriTCall
 				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						debugBuilder, configuration, lemmaName);
 				break;
 
 			default: // USING_PP
-				// Create an instance of SmtPPCall
 				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						solverConfig, solver, lemmaName) {
-					// nothing to do
-				};
+						configuration, lemmaName);
 				break;
 			}
 
@@ -468,7 +433,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			} else if (expectedContainsExtracted) {
 				errorBuilder.append(callMessage);
 				errorBuilder.append(" (").append(lemmaName).append(") ");
-				errorBuilder.append(solverConfig.getName());
+				errorBuilder.append(configuration.getName());
 				errorBuilder
 						.append(" unsat-core is smaller than the expected one.");
 				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
@@ -512,7 +477,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 		// FIXME should not be PP because could this is used by veriT tests
 		final SMTThroughPP translator = new SMTThroughPP(
-				solverConfig.getSmtlibVersion());
+				configuration.getSmtlibVersion());
 		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
 
 		final SMTSignature signature = benchmark.getSignature();
@@ -601,10 +566,10 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			assertTypeChecked(parsedHypothesis);
 		}
 
-		final String testedSolverName = solver.getName();
-		final TranslationApproach testedTranslationApproach = solverConfig
+		final String testedSolverName = configuration.getSolverName();
+		final TranslationApproach testedTranslationApproach = configuration
 				.getTranslationApproach();
-		final SMTLIBVersion testedSmtlibVersion = solverConfig
+		final SMTLIBVersion testedSmtlibVersion = configuration
 				.getSmtlibVersion();
 
 		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,

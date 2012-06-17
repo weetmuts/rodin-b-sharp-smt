@@ -14,30 +14,18 @@ import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
-import static org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry.getSolverConfigRegistry;
-import static org.eventb.smt.core.internal.preferences.solvers.BundledSolverRegistry.getBundledSolverRegistry;
 import static org.eventb.smt.core.internal.provers.AutoTactics.makeAllSMTSolversTactic;
-import static org.eventb.smt.core.preferences.PreferenceManager.FORCE_REPLACE;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IReasoner;
 import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.core.internal.preferences.AbstractLoader.LoadingException;
-import org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry;
-import org.eventb.smt.core.internal.preferences.solvers.BundledSolverRegistry;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISMTSolversPreferences;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
-import org.eventb.smt.core.preferences.ITranslationPreferences;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -74,7 +62,6 @@ public class SMTProversCore extends Plugin {
 	 * Configuration ID value used when all configurations should be applied
 	 * sequentially.
 	 */
-	public static String ALL_SOLVER_CONFIGURATIONS = "all";
 	public static String NO_SOLVER_CONFIGURATION_ERROR = "No SMT configuration set";
 	public static String DISABLED_SOLVER_CONFIGURATION_ERROR = "The indicated SMT configuration is disabled";
 	public static String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
@@ -131,23 +118,14 @@ public class SMTProversCore extends Plugin {
 
 	public static ITactic externalSMT(final boolean restricted,
 			final long timeOutDelay, String configId) {
-		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-
-		if (configId == null
-				|| !configsPrefs.getSolverConfigs().containsKey(configId)) {
+		final ISMTConfiguration config = SMTCore.getSMTConfiguration(configId);
+		if (config == null) {
 			return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
 		}
-
-		final ISolverConfig config = configsPrefs.getSolverConfig(configId);
-		if (config.isEnabled()) {
-			final IReasoner smtReasoner = new ExternalSMT();
-			final IReasonerInput smtInput = new SMTInput(restricted,
-					timeOutDelay, config);
-			return reasonerTac(smtReasoner, smtInput);
-		} else {
-			return failTac(DISABLED_SOLVER_CONFIGURATION_ERROR);
-		}
+		final IReasoner smtReasoner = new ExternalSMT();
+		final IReasonerInput smtInput = new SMTInput(restricted, timeOutDelay,
+				config);
+		return reasonerTac(smtReasoner, smtInput);
 	}
 
 	public ITacticDescriptor getAllSMTSolversTactic() {
@@ -173,91 +151,6 @@ public class SMTProversCore extends Plugin {
 		if (isDebugging()) {
 			configureDebugOptions();
 		}
-
-		final ISMTSolversPreferences solversPrefs = getPreferenceManager()
-				.getSMTSolversPrefs();
-		final ISMTSolversPreferences defaultSolversPrefs = getPreferenceManager()
-				.getDefaultSMTSolversPrefs();
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		final ITranslationPreferences defaultTranslationPrefs = getPreferenceManager()
-				.getDefaultTranslationPrefs();
-		try {
-			final BundledSolverRegistry registry = getBundledSolverRegistry();
-			for (final String solverId : registry.getIDs()) {
-				final ISMTSolver solver = registry.get(solverId);
-				try {
-					defaultSolversPrefs.add(solver, FORCE_REPLACE);
-					defaultSolversPrefs.save();
-				} catch (IllegalArgumentException iae) {
-					logError(
-							"An error occured while adding a bundled solver to the default preferences.",
-							iae);
-				}
-
-				try {
-					solversPrefs.add(solver, FORCE_REPLACE);
-					solversPrefs.save();
-				} catch (IllegalArgumentException iae) {
-					logError(
-							"An error occured while adding a bundled solver to the preferences.",
-							iae);
-				}
-
-				// FIXME what if several veriT extensions are added
-				if (solver != null && solver.getKind().equals(VERIT)) {
-					defaultTranslationPrefs.setVeriTPath(solver);
-					defaultTranslationPrefs.save();
-
-					translationPrefs.setVeriTPath(solver);
-					translationPrefs.save();
-				}
-			}
-		} catch (LoadingException ele) {
-			logError(
-					"An error occured while loading the bundled solver registry.",
-					ele);
-		} catch (InvalidRegistryObjectException iroe) {
-			logError(
-					"An error occured while loading the bundled solver registry.",
-					iroe);
-		}
-
-		final ISolverConfigsPreferences configsPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		final ISolverConfigsPreferences defaultConfigsPrefs = getPreferenceManager()
-				.getDefaultSolverConfigsPrefs();
-		try {
-			final SolverConfigRegistry registry = getSolverConfigRegistry();
-			for (final String configId : registry.getIDs()) {
-				final ISolverConfig solverConfig = registry.get(configId);
-				try {
-					defaultConfigsPrefs.add(solverConfig, FORCE_REPLACE);
-					defaultConfigsPrefs.save();
-				} catch (IllegalArgumentException iae) {
-					logError(
-							"An error occured while adding an SMT-solver configuration to the default preferences.",
-							iae);
-				}
-				try {
-					configsPrefs.add(solverConfig, FORCE_REPLACE);
-					configsPrefs.save();
-				} catch (IllegalArgumentException iae) {
-					logError(
-							"An error occured while adding an SMT-solver configuration to the preferences.",
-							iae);
-				}
-			}
-		} catch (LoadingException ele) {
-			logError(
-					"An error occured while loading the bundled solver registry.",
-					ele);
-		} catch (InvalidRegistryObjectException iroe) {
-			logError(
-					"An error occured while loading the bundled solver registry.",
-					iroe);
-		}
-
 		updateAllSMTSolversTactic();
 	}
 

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences.configurations;
 
-import static org.eventb.smt.core.internal.preferences.configurations.SolverConfiguration.EDITABLE;
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
@@ -49,18 +48,6 @@ public class BundledConfigLoader extends AbstractLoader<SolverConfiguration> {
 	public SMTLIBVersion getVersion() {
 		final String value = ce.getAttribute("smt-lib");
 		return parseVersion(value);
-	}
-
-	@Override
-	public SolverConfiguration load() {
-		final String id = getId();
-		final String name = getName();
-		final String solverId = getSolverId();
-		final String args = getArgs();
-		final TranslationApproach approach = getTranslationApproach();
-		final SMTLIBVersion version = getVersion();
-		return new SolverConfiguration(id, name, solverId, args, approach,
-				version, !EDITABLE);
 	}
 
 }

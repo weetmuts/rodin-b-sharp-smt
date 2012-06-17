@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
-import org.eventb.smt.core.internal.provers.SMTProversCore;
 import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.preferences.ISolverConfigsPreferences;

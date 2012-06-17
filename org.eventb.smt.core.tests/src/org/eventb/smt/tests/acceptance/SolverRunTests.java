@@ -50,7 +50,7 @@ public abstract class SolverRunTests extends CommonSolverRunTests {
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(solverConfig.getID() + "_" + lemmaName, inputHyps, inputGoal, te,
+		doTest(configuration.getName() + "_" + lemmaName, inputHyps, inputGoal, te,
 				!TRIVIAL, expectedSolverResult);
 	}
 

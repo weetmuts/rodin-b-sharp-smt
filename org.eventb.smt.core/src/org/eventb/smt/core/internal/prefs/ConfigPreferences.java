@@ -74,4 +74,8 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		INSTANCE.setUser(newConfigs);
 	}
 
+	public static IConfigDescriptor get(String name) {
+		return INSTANCE.doGet(name);
+	}
+
 }

@@ -19,8 +19,6 @@ import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
@@ -36,17 +34,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ITranslationPreferences;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -57,8 +55,7 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
  * and some selected SMT solver to discharge it.
  */
 public class SMTVeriTCall extends SMTProverCall {
-	private static final String DEFAULT_VERIT_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
-			+ File.separatorChar + VERIT.toString();
+
 	private static final String TEMP_FILE = "_prep";
 	private static final String SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String PRINT_FLAT = "--print-flat";
@@ -68,7 +65,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String INPUTSMT2 = "--input=smtlib2";
 	private static final String OUTPUTSMT2 = "--output=smtlib2";
 
-	private String veritPath;
+	private IPath veritPath;
 
 	// FIXME: This is a mock.
 	private SMTLIBVersion sv;
@@ -96,39 +93,35 @@ public class SMTVeriTCall extends SMTProverCall {
 	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISolverConfig solverConfig,
-			final ISMTSolver solver) {
-		this(sequent, pm, new StringBuilder(), solverConfig, solver);
+			final IProofMonitor pm, final ISMTConfiguration config) {
+		this(sequent, pm, new StringBuilder(), config);
 	}
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final ISMTSolver solver) {
-		super(sequent, pm, debugBuilder, solverConfig, solver,
-				new SMTThroughVeriT(solverConfig.getSmtlibVersion()));
+			final ISMTConfiguration config) {
+		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT(
+				config.getSmtlibVersion()));
 		setVeriTPath();
-		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
+		setTranslationPath(USING_VERIT);
 		setTranslationDirectories(USING_VERIT, debugBuilder);
 	}
 
 	/**
 	 * FOR TESTS ONLY
 	 */
-	protected SMTVeriTCall(final ISimpleSequent sequent,
+	public SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final ISMTSolver solver,
-			final String poName) {
-		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
-				new SMTThroughPP(solverConfig.getSmtlibVersion()));
+			final ISMTConfiguration config, final String poName) {
+		super(sequent, pm, debugBuilder, config, poName, new SMTThroughPP(
+				config.getSmtlibVersion()));
 		setVeriTPath();
-		setTranslationPath(USING_VERIT, DEFAULT_VERIT_TRANSLATION_PATH);
+		setTranslationPath(USING_VERIT);
 		setTranslationDirectories(USING_VERIT, debugBuilder);
 	}
 
 	private void setVeriTPath() {
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		this.veritPath = translationPrefs.getVeriTPath();
+		this.veritPath = SimplePreferences.getVeriTPath();
 	}
 
 	/**
@@ -163,7 +156,7 @@ public class SMTVeriTCall extends SMTProverCall {
 					Messages.SmtProversCall_veriT_path_not_defined);
 		}
 
-		cmd.add(veritPath);
+		cmd.add(veritPath.toOSString());
 		cmd.add(DISABLE_BANNER);
 		cmd.add(DISABLE_PRINT_SUCCESS);
 		cmd.add(INPUTSMT2);
@@ -216,7 +209,7 @@ public class SMTVeriTCall extends SMTProverCall {
 					Messages.SmtProversCall_veriT_path_not_defined);
 		}
 
-		cmd.add(veritPath);
+		cmd.add(veritPath.toOSString());
 		cmd.add(SIMPLIFY_ARGUMENT_STRING);
 		cmd.add(PRINT_FLAT);
 		cmd.add(DISABLE_BANNER);
@@ -366,7 +359,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			final FileWriter smtBenchmarkWriter = new FileWriter(
 					smtBenchmarkFile);
 			// FIXME this bug will be fixed in veriT
-			if (solver.getKind().equals(VERIT)) {
+			if (config.getKind().equals(VERIT)) {
 				veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
 				veriTResult = veriTResult.replace(":extrasorts ()", "");
 			}

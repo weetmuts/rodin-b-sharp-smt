@@ -15,10 +15,8 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
@@ -42,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -49,11 +48,10 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ITranslationPreferences;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.TranslationApproach;
 
@@ -107,11 +105,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	ISolverConfig solverConfig;
+	ISMTConfiguration config;
 
-	ISMTSolver solver;
-
-	String translationPath = null;
+	IPath translationPath = null;
 
 	/**
 	 * Name of the lemma to prove
@@ -136,22 +132,18 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            proof monitor used for cancellation
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final Translator translator) {
-		this(sequent, pm, new StringBuilder(), solverConfig, solver, translator);
+			final IProofMonitor pm, final ISMTConfiguration config,
+			final Translator translator) {
+		this(sequent, pm, new StringBuilder(), config, translator);
 	}
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISolverConfig solverConfig, final ISMTSolver solver,
-			final Translator translator) {
+			final ISMTConfiguration config, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
-		this.solverConfig = solverConfig;
-		this.solver = solver;
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		this.translationPath = translationPrefs.getTranslationPath();
+		this.config = config;
+		this.translationPath = SimplePreferences.getTranslationPath();
 		this.translator = translator;
 		this.lemmaName = RODIN_SEQUENT;
 	}
@@ -160,17 +152,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 * FOR TESTS ONLY
 	 */
 	public SMTProverCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final String poName,
-			final Translator translator) {
+			final StringBuilder debugBuilder, final ISMTConfiguration config,
+			final String poName, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
-		this.solverConfig = solverConfig;
-		this.solver = solver;
+		this.config = config;
 		this.lemmaName = poName;
-		final ITranslationPreferences translationPrefs = getPreferenceManager()
-				.getTranslationPrefs();
-		this.translationPath = translationPrefs.getTranslationPath();
+		this.translationPath = SimplePreferences.getTranslationPath();
 		this.translator = translator;
 	}
 
@@ -229,13 +217,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Selected solver binary path
 		 */
-		commandLine.add(solver.getPath().toOSString());
+		commandLine.add(config.getSolverPath().toOSString());
 
 		/**
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
 		 */
-		if (solverConfig.getSmtlibVersion().equals(V1_2)
-				&& solver.getKind().equals(Z3)) {
+		if (config.getSmtlibVersion().equals(V1_2)
+				&& config.getKind().equals(Z3)) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
@@ -243,7 +231,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Selected solver parameters
 		 */
-		final String args = solverConfig.getArgs();
+		final String args = config.getArgs();
 		if (!args.isEmpty()) {
 			final String[] argumentsString = args.split(" ");
 			for (final String argString : argumentsString) {
@@ -254,7 +242,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * Benchmark file produced by translating the Event-B sequent
 		 */
-		if (solverConfig.getSolverId().equals(MATHSAT5)) {
+		if (config.getKind() == MATHSAT5) {
 			commandLine.add("< " + smtBenchmarkFile.getAbsolutePath());
 		} else {
 			commandLine.add(smtBenchmarkFile.getAbsolutePath());
@@ -329,7 +317,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 			return false;
 		} else {
 			throw new IllegalArgumentException("Unexpected response of "
-					+ solverConfig.getSolverId().toString() + ". See "
+					+ config.getSolverName() + ". See "
 					+ lemmaName + ".res for more details.");
 		}
 	}
@@ -393,19 +381,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 				.append("\n");
 	}
 
-	protected void setTranslationPath(final TranslationApproach approach,
-			final String defaultApproachTranslationPath) {
-		if (this.translationPath != null && !this.translationPath.isEmpty()) {
-			this.translationPath = this.translationPath + File.separatorChar
-					+ approach.toString();
-		} else {
-			this.translationPath = defaultApproachTranslationPath;
-		}
+	protected void setTranslationPath(final TranslationApproach approach) {
+		this.translationPath = this.translationPath.append(approach.toString());
 	}
 
 	protected void setTranslationDirectories(
 			final TranslationApproach approach, final StringBuilder debugBuilder) {
-		translationFolder = new File(translationPath);
+		translationFolder = new File(translationPath.toOSString());
 		if (!translationFolder.mkdirs()) {
 			// TODO handle the error
 		} else {
@@ -429,11 +411,10 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 * Makes temporary files in the given path
 	 */
 	protected synchronized void makeTempFileNames() throws IOException {
-		final String benchmarkTargetPath = translationPath + File.separatorChar
-				+ lemmaName;
+		final IPath benchmarkTargetPath = translationPath.append(lemmaName);
 
 		if (smtTranslationDir == null) {
-			smtTranslationDir = new File(benchmarkTargetPath);
+			smtTranslationDir = new File(benchmarkTargetPath.toOSString());
 			if (!smtTranslationDir.mkdirs()) {
 				if (smtTranslationDir.exists()) {
 					if (DEBUG) {
@@ -462,8 +443,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 			}
 		}
 
-		final SolverKind solverKind = solver.getKind();
-		if (solverConfig.getSmtlibVersion().equals(V2_0)
+		final SolverKind solverKind = config.getKind();
+		if (config.getSmtlibVersion().equals(V2_0)
 				&& (solverKind.equals(ALT_ERGO) || solverKind.equals(OPENSMT))) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					NON_STANDARD_SMT_LIB2_FILE_EXTENSION, smtTranslationDir);
@@ -525,10 +506,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 		 * This statement was put inside a try...catch() block to handle a null
 		 * pointer exception when launching some tests
 		 */
-		try {
+		if (proofMonitor != null) {
 			proofMonitor.setTask("Translating Event-B proof obligation");
-		} catch (NullPointerException npe) {
-			logError("The proof monitor is not initialized", npe);
 		}
 
 		try {
@@ -560,18 +539,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 				 */
 				benchmark = result.getSMTBenchmark();
 
-				/**
-				 * this case can occur if the user calls a configuration of a
-				 * solver which has been removed
-				 */
-				if (solver == null) {
-					valid = false;
-					return;
-				}
-
 				translationPerformed = false;
 				try {
-					if (solverConfig.getSmtlibVersion().equals(V1_2)) {
+					if (config.getSmtlibVersion().equals(V1_2)) {
 						makeSMTBenchmarkFileV1_2();
 					} else {
 						/**
@@ -589,7 +559,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (translationPerformed) {
-					final String solverName = solver.getName();
+					final String solverName = config.getSolverName();
 					if (DEBUG_DETAILS) {
 						debugBuilder.append("Launching ").append(solverName);
 						debugBuilder.append(" with input:\n\n");
@@ -612,10 +582,10 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (isValid()) {
-					if ((solver.getKind().equals(VERIT) //
-							&& solverConfig.getArgs().contains("--proof=")) //
-							|| (solverConfig.getSmtlibVersion().equals(V2_0) //
-							&& solver.getKind().equals(Z3))) {
+					if ((config.getKind().equals(VERIT) //
+							&& config.getArgs().contains("--proof=")) //
+							|| (config.getSmtlibVersion().equals(V2_0) //
+							&& config.getKind().equals(Z3))) {
 						// FIXME it is not possible to check z3 version, so make
 						// errors be catched if not a version capable of manage
 						// unsat-cores.
@@ -689,7 +659,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		if (benchmarkIsNull()) {
 			return "PP (trivial)";
 		} else {
-			return solverConfig.getName();
+			return config.getName();
 		}
 	}
 

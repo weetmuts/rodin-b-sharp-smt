@@ -11,7 +11,6 @@ package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
-import static org.eventb.smt.core.internal.preferences.solvers.SMTSolver.EDITABLE;
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
@@ -56,19 +55,6 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 			throw error("Invalid local path " + localPathStr);
 		}
 		return path;
-	}
-
-	/**
-	 * Quickly loads the configuration element attributes, then checks the
-	 * values and builds the <code>SMTSolver</code> instance to return.
-	 */
-	@Override
-	public SMTSolver load() {
-		final String id = getId();
-		final String name = getName();
-		final SolverKind kind = getKind();
-		final IPath path = getPath();
-		return new SMTSolver(id, name, kind, path, !EDITABLE);
 	}
 
 }

@@ -20,7 +20,7 @@ import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.core.seqprover.xprover.XProverReasoner2;
-import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 
 /**
  * Runs an external SMT prover as a reasoner.
@@ -42,12 +42,11 @@ public class ExternalSMT extends XProverReasoner2 {
 	public XProverCall2 newProverCall(final IReasonerInput input,
 			final ISimpleSequent sequent, final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
-		final ISolverConfig solverConfig = smtInput.getSolverConfig();
-		if (solverConfig.getTranslationApproach().equals(USING_VERIT)) {
-			return new SMTVeriTCall(sequent, pm, solverConfig,
-					smtInput.getSolver());
+		final ISMTConfiguration config = smtInput.getConfiguration();
+		if (config.getTranslationApproach() == USING_VERIT) {
+			return new SMTVeriTCall(sequent, pm, config);
 		}
-		return new SMTPPCall(sequent, pm, solverConfig, smtInput.getSolver());
+		return new SMTPPCall(sequent, pm, config);
 	}
 
 	@Override

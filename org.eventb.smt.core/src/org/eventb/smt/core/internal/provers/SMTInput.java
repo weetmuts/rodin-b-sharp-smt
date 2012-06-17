@@ -10,24 +10,18 @@
 
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
-
 import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISMTSolversPreferences;
-import org.eventb.smt.core.preferences.ISolverConfig;
-import org.eventb.smt.core.preferences.ISolverConfigsPreferences;
+import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 
 public class SMTInput extends XProverInput {
 	private static final String CONFIG_ID = "config_id";
 	private static final String SOLVER_CONFIG_ERROR = "Illegal solver configuration selected in the tactic";
-	private static final String SOLVER_ERROR = "Illegal solver selected in the tactic SMT configuration";
 
-	private final ISolverConfig solverConfig;
-	private final ISMTSolver solver;
+	private final ISMTConfiguration config;
 	private final String error;
 
 	/**
@@ -41,13 +35,7 @@ public class SMTInput extends XProverInput {
 	protected SMTInput(final IReasonerInputReader reader)
 			throws SerializeException {
 		super(reader);
-		final String configId = reader.getString(CONFIG_ID);
-		final ISolverConfigsPreferences solverConfigPrefs = getPreferenceManager()
-				.getSolverConfigsPrefs();
-		final ISMTSolversPreferences smtSolversPrefs = getPreferenceManager()
-				.getSMTSolversPrefs();
-		solverConfig = solverConfigPrefs.getSolverConfig(configId);
-		solver = smtSolversPrefs.get(solverConfig.getSolverId());
+		config = SMTCore.getSMTConfiguration(reader.getString(CONFIG_ID));  // FIXME
 		error = validate();
 	}
 
@@ -60,16 +48,13 @@ public class SMTInput extends XProverInput {
 	 * @param timeOutDelay
 	 *            delay after which the reasoner is cancelled, must be
 	 *            non-negative. A zero value denotes an infinite delay
-	 * @param solverConfig
-	 *            the configuration to set up
+	 * @param config
+	 *            the configuration to use
 	 */
 	public SMTInput(final boolean restricted, long timeOutDelay,
-			final ISolverConfig solverConfig) {
+			final ISMTConfiguration config) {
 		super(restricted, timeOutDelay);
-		final ISMTSolversPreferences smtSolversPrefs = getPreferenceManager()
-				.getSMTSolversPrefs();
-		this.solverConfig = solverConfig;
-		solver = smtSolversPrefs.get(solverConfig.getSolverId());
+		this.config = config;
 		error = validate();
 	}
 
@@ -82,19 +67,11 @@ public class SMTInput extends XProverInput {
 	private String validate() {
 		final StringBuilder errorBuilder = new StringBuilder();
 
-		if (solverConfig == null) {
+		if (config == null) {
 			if (errorBuilder.length() > 0) {
 				errorBuilder.append("; ").append(SOLVER_CONFIG_ERROR);
 			} else {
 				errorBuilder.append(SOLVER_CONFIG_ERROR);
-			}
-		}
-
-		if (solver == null) {
-			if (errorBuilder.length() > 0) {
-				errorBuilder.append("; ").append(SOLVER_ERROR);
-			} else {
-				errorBuilder.append(SOLVER_ERROR);
 			}
 		}
 
@@ -105,12 +82,8 @@ public class SMTInput extends XProverInput {
 		}
 	}
 
-	public ISolverConfig getSolverConfig() {
-		return solverConfig;
-	}
-
-	public ISMTSolver getSolver() {
-		return solver;
+	public ISMTConfiguration getConfiguration() {
+		return config;
 	}
 
 	@Override
@@ -127,7 +100,6 @@ public class SMTInput extends XProverInput {
 	protected void serialize(IReasonerInputWriter writer)
 			throws SerializeException {
 		super.serialize(writer);
-
-		writer.putString(CONFIG_ID, solverConfig.getID());
+		writer.putString(CONFIG_ID, config.getName());
 	}
 }

@@ -84,4 +84,8 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 		INSTANCE.setUser(newSolvers);
 	}
 
+	public static ISolverDescriptor get(String name) {
+		return INSTANCE.doGet(name);
+	}
+
 }

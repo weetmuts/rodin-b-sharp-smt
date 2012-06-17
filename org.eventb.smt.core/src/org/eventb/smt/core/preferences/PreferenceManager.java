@@ -25,12 +25,9 @@ import java.io.File;
 
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.preferences.AbstractPreferences;
-import org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfigsPreferences;
-import org.eventb.smt.core.internal.preferences.solvers.BundledSolverRegistry;
 import org.eventb.smt.core.internal.preferences.solvers.SMTSolver;
 import org.eventb.smt.core.internal.preferences.solvers.SMTSolversPreferences;
-import org.eventb.smt.core.internal.preferences.translation.TranslationPreferences;
 
 /**
  * @author Systerel (yguyot)
@@ -100,23 +97,6 @@ public class PreferenceManager {
 		return getDefaultSolverConfigsPrefs(!FORCE_RELOAD);
 	}
 
-	public ITranslationPreferences getTranslationPrefs(final boolean reload) {
-		return TranslationPreferences.getTranslationPrefs(reload);
-	}
-
-	public ITranslationPreferences getDefaultTranslationPrefs(
-			final boolean reload) {
-		return TranslationPreferences.getDefaultTranslationPrefs(reload);
-	}
-
-	public ITranslationPreferences getTranslationPrefs() {
-		return getTranslationPrefs(!FORCE_RELOAD);
-	}
-
-	public ITranslationPreferences getDefaultTranslationPrefs() {
-		return getDefaultTranslationPrefs(!FORCE_RELOAD);
-	}
-
 	public static boolean isValidPath(final String path,
 			final StringBuilder error) {
 		if (path == null) {
@@ -177,13 +157,5 @@ public class PreferenceManager {
 
 	public static String freshSolverID() {
 		return SINGLETON.getSMTSolversPrefs().freshID();
-	}
-
-	public static IRegistry<ISMTSolver> getBundledSolverRegistry() {
-		return BundledSolverRegistry.getBundledSolverRegistry();
-	}
-
-	public static IRegistry<ISolverConfig> getSolverConfigRegistry() {
-		return SolverConfigRegistry.getSolverConfigRegistry();
 	}
 }

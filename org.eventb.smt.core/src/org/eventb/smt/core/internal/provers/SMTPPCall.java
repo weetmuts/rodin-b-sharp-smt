@@ -15,13 +15,11 @@ import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -33,8 +31,7 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.preferences.ISMTSolver;
-import org.eventb.smt.core.preferences.ISolverConfig;
+import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
@@ -44,32 +41,28 @@ import org.eventb.smt.core.provers.SolverKind;
  * some selected SMT solver to discharge it.
  */
 public class SMTPPCall extends SMTProverCall {
-	private static final String DEFAULT_PP_TRANSLATION_PATH = DEFAULT_TRANSLATION_PATH
-			+ File.separatorChar + "pp";
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final ISolverConfig solverConfig, final ISMTSolver solver) {
-		this(sequent, pm, new StringBuilder(), solverConfig, solver);
+			final ISMTConfiguration config) {
+		this(sequent, pm, new StringBuilder(), config);
 	}
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver) {
-		super(sequent, pm, debugBuilder, solverConfig, solver,
-				new SMTThroughPP(solverConfig.getSmtlibVersion()));
-		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
+			final StringBuilder debugBuilder, final ISMTConfiguration config) {
+		super(sequent, pm, debugBuilder, config,
+				new SMTThroughPP(config.getSmtlibVersion()));
+		setTranslationPath(USING_PP);
 		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
 	/**
 	 * FOR TESTS ONLY
 	 */
-	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISolverConfig solverConfig,
-			final ISMTSolver solver, final String poName) {
-		super(sequent, pm, debugBuilder, solverConfig, solver, poName,
-				new SMTThroughPP(solverConfig.getSmtlibVersion()));
-		setTranslationPath(USING_PP, DEFAULT_PP_TRANSLATION_PATH);
+	public SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
+			final StringBuilder debugBuilder, final ISMTConfiguration config, final String poName) {
+		super(sequent, pm, debugBuilder, config, poName,
+				new SMTThroughPP(config.getSmtlibVersion()));
+		setTranslationPath(USING_PP);
 		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
@@ -125,7 +118,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		final SolverKind solverKind = solver.getKind();
+		final SolverKind solverKind = config.getKind();
 		if (solverKind.equals(Z3)) { // FIXME Add Z3 version checking
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
 					PRINT_GET_UNSAT_CORE_COMMANDS, PRINT_Z3_SPECIFIC_COMMANDS);

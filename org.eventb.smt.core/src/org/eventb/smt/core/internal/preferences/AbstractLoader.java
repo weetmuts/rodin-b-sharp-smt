@@ -72,8 +72,6 @@ public abstract class AbstractLoader<T> {
 		return value;
 	}
 
-	public abstract T load();
-
 	/**
 	 * Checks if a string is a legal Java identifier
 	 *
