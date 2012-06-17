@@ -9,14 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.preferences;
 
-import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNoExtensionException;
+import static org.eventb.smt.core.internal.preferences.AbstractLoader.error;
 
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eventb.smt.core.preferences.IRegistry;
 
 /**
@@ -44,29 +43,18 @@ public abstract class AbstractRegistry<T> implements IRegistry<T> {
 
 	/**
 	 * Initializes the registry using extensions to the extension point.
-	 * 
-	 * @throws ExtensionLoadingException
 	 */
-	protected abstract void loadRegistry() throws ExtensionLoadingException,
-			InvalidRegistryObjectException;
+	protected abstract void loadRegistry();
 
-	/**
-	 * @param point
-	 * @throws ExtensionLoadingException
-	 */
 	protected static void checkPoint(final IExtensionPoint point,
-			final String id) throws ExtensionLoadingException {
+			final String id) {
 		if (point == null)
-			throw makeNoExtensionException(id);
+			throw error("Invalid extension point id: " + id
+					+ " (no such extension point was found).");
 	}
 
-	/**
-	 * @param registry
-	 * @throws ExtensionLoadingException
-	 */
-	protected static void checkRegistry(final IExtensionRegistry registry)
-			throws ExtensionLoadingException {
+	protected static void checkRegistry(final IExtensionRegistry registry) {
 		if (registry == null)
-			throw ExtensionLoadingException.makeNullRegistryException();
+			throw error("Invalid extension registry: null pointer.");
 	}
 }

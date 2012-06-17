@@ -11,7 +11,7 @@ package org.eventb.smt.core.internal.preferences.configurations;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
-import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeIllegalExtensionException;
+import static org.eventb.smt.core.internal.preferences.AbstractLoader.error;
 import static org.eventb.smt.core.internal.preferences.Messages.SolverConfigRegistry_RegistrationError;
 import static org.eventb.smt.core.internal.preferences.Messages.SolverConfigRegistry_SuccessfullRegistration;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.preferences.AbstractRegistry;
-import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
 import org.eventb.smt.core.preferences.ISolverConfig;
 
 /**
@@ -59,8 +58,6 @@ public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 	/**
 	 * Initializes the registry using extensions to the solver configurations
 	 * extension point.
-	 * 
-	 * @throws ExtensionLoadingException
 	 */
 	@Override
 	protected synchronized void loadRegistry() {
@@ -77,10 +74,10 @@ public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 			checkPoint(point, SOLVER_CONFIGS_ID);
 			for (IConfigurationElement element : point
 					.getConfigurationElements()) {
-				final SolverConfigLoader solverConfigLoader = new SolverConfigLoader(
+				final BundledConfigLoader bundledConfigLoader = new BundledConfigLoader(
 						element);
 				try {
-					final SolverConfiguration config = solverConfigLoader
+					final SolverConfiguration config = bundledConfigLoader
 							.load();
 					final String configId = config.getID();
 					final ISolverConfig oldConfig = registry.put(configId,
@@ -88,7 +85,7 @@ public class SolverConfigRegistry extends AbstractRegistry<ISolverConfig> {
 					if (oldConfig != null) {
 						registry.put(configId, oldConfig);
 						smtError(SolverConfigRegistry_RegistrationError,
-								makeIllegalExtensionException(configId));
+								error("Duplicated extension " + configId + " ignored."));
 					} else {
 						if (DEBUG_DETAILS)
 							System.out

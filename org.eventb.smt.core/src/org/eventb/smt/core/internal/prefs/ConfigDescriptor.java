@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import org.eventb.smt.core.preferences.ISolverConfig;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -47,10 +46,6 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		this.version = VERSION.load(node);
 	}
 
-	// FIXME to remove
-	public ConfigDescriptor(ISolverConfig config) {
-		this(config.getName(), config.getSolverId(), config.getArgs(), config
-				.getTranslationApproach(), config.getSmtlibVersion());
 	@Override
 	public void serialize(Preferences node) {
 		super.serialize(node);

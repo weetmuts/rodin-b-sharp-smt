@@ -14,6 +14,8 @@ import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.preferences.BundledDescriptorList;
 import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * @author Systerel (yguyot)
@@ -30,9 +32,13 @@ public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> 
 
 	@Override
 	protected void loadElement(IConfigurationElement element) {
-		final SolverConfigLoader loader = new SolverConfigLoader(element);
-		final SolverConfiguration config = loader.load();
-		add(new ConfigDescriptor(config));
+		final BundledConfigLoader loader = new BundledConfigLoader(element);
+		final String name = loader.getName();
+		final String solverName = loader.getSolverName();
+		final String args = loader.getArgs();
+		final TranslationApproach approach = loader.getTranslationApproach();
+		final SMTLIBVersion version = loader.getVersion();
+		add(new ConfigDescriptor(name, solverName, args, approach, version));
 	}
 
 	@Override

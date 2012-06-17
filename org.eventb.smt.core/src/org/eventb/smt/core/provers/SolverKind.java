@@ -10,7 +10,6 @@
 
 package org.eventb.smt.core.provers;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 
 /**
  * This enum enumerates the solvers.
@@ -48,15 +47,10 @@ public enum SolverKind {
 	 * @return the solver which name is the given name, or UNKNOWN
 	 */
 	public static SolverKind parseKind(final String name) {
-		if (name != null) {
-			for (final SolverKind solver : SolverKind.values()) {
-				if (solver.solverName.equals(name)) {
-					return solver;
-				}
+		for (final SolverKind solver : SolverKind.values()) {
+			if (solver.solverName.equals(name)) {
+				return solver;
 			}
-		} else {
-			smtError("Error while parsing the solver kind: null pointer.",
-					new NullPointerException());
 		}
 		return UNKNOWN;
 	}

@@ -32,10 +32,8 @@ public enum TranslationApproach {
 	}
 
 	public static TranslationApproach parseApproach(final String value) {
-		if (value != null) {
-			if (value.equals(USING_VERIT.name)) {
-				return USING_VERIT;
-			}
+		if (USING_VERIT.name.equals(value)) {
+			return USING_VERIT;
 		}
 		return USING_PP;
 	}

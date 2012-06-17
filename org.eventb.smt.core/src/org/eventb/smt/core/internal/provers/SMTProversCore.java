@@ -28,7 +28,7 @@ import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IReasoner;
 import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
-import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.internal.preferences.AbstractLoader.LoadingException;
 import org.eventb.smt.core.internal.preferences.configurations.SolverConfigRegistry;
 import org.eventb.smt.core.internal.preferences.solvers.BundledSolverRegistry;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
@@ -205,7 +205,7 @@ public class SMTProversCore extends Plugin {
 					translationPrefs.save();
 				}
 			}
-		} catch (ExtensionLoadingException ele) {
+		} catch (LoadingException ele) {
 			logError(
 					"An error occured while loading the bundled solver registry.",
 					ele);
@@ -240,7 +240,7 @@ public class SMTProversCore extends Plugin {
 							iae);
 				}
 			}
-		} catch (ExtensionLoadingException ele) {
+		} catch (LoadingException ele) {
 			logError(
 					"An error occured while loading the bundled solver registry.",
 					ele);

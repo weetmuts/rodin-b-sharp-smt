@@ -10,7 +10,6 @@
 package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.preferences.ISMTSolver;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.SolverKind;
 import org.osgi.service.prefs.Preferences;
@@ -34,11 +33,6 @@ public class SolverDescriptor extends Descriptor implements ISolverDescriptor {
 		super(node);
 		this.kind = KIND.load(node);
 		this.path = PATH.load(node);
-	}
-
-	// FIXME to remove
-	public SolverDescriptor(ISMTSolver alien) {
-		this(alien.getName(), alien.getKind(), alien.getPath());
 	}
 
 	@Override

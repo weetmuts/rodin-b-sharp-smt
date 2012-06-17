@@ -29,7 +29,7 @@ public enum SMTLIBVersion {
 	/**
 	 * The latest language version supported by the AST library.
 	 */
-	public static SMTLIBVersion LATEST = latest();
+	public static final SMTLIBVersion LATEST = latest();
 
 	private static SMTLIBVersion latest() {
 		final SMTLIBVersion[] values = values();
@@ -41,10 +41,8 @@ public enum SMTLIBVersion {
 	}
 
 	public static SMTLIBVersion parseVersion(final String value) {
-		if (value != null) {
-			if (value.equals(V1_2.value)) {
-				return V1_2;
-			}
+		if (V1_2.value.equals(value)) {
+			return V1_2;
 		}
 		return LATEST;
 	}

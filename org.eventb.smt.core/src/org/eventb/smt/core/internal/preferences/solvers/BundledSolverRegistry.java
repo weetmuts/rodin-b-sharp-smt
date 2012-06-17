@@ -11,7 +11,7 @@ package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
-import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeIllegalExtensionException;
+import static org.eventb.smt.core.internal.preferences.AbstractLoader.error;
 import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_RegistrationError;
 import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_SuccessfullRegistration;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
@@ -82,7 +82,7 @@ public class BundledSolverRegistry extends AbstractRegistry<ISMTSolver> {
 					if (oldSolver != null) {
 						registry.put(solverId, oldSolver);
 						smtError(BundledSolverRegistry_RegistrationError,
-								makeIllegalExtensionException(solverId));
+								error("Duplicated extension " + solverId + " ignored."));
 					} else {
 						if (DEBUG_DETAILS)
 							System.out

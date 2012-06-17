@@ -11,32 +11,51 @@ package org.eventb.smt.core.internal.preferences.solvers;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
-import static org.eventb.smt.core.internal.preferences.ExtensionLoadingException.makeNullPathException;
-import static org.eventb.smt.core.internal.preferences.Utils.checkBundle;
-import static org.eventb.smt.core.internal.preferences.Utils.checkId;
-import static org.eventb.smt.core.internal.preferences.Utils.checkName;
 import static org.eventb.smt.core.internal.preferences.solvers.SMTSolver.EDITABLE;
+import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
 import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eventb.smt.core.internal.preferences.AbstractLoader;
-import org.eventb.smt.core.internal.preferences.ExtensionLoadingException;
+import org.eventb.smt.core.provers.SolverKind;
 import org.osgi.framework.Bundle;
 
 /**
- * Bridge class used by the bundled solver registry to store data about bundled
- * solvers.
+ * Implements loading configuration details from an extension to point "solver".
  * 
- * @author Systerel (yguyot)
- * 
+ * @author Yoann Guyot
  */
 public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
+
 	public BundledSolverLoader(IConfigurationElement configurationElement) {
 		super(configurationElement);
+	}
+
+	public SolverKind getKind() {
+		final String kindStr = ce.getAttribute("kind");
+		if (kindStr == null) {
+			return UNKNOWN;
+		}
+		return parseKind(kindStr);
+	}
+
+	public IPath getPath() {
+		final String localPathStr = ce.getAttribute("localpath");
+		if (localPathStr == null) {
+			throw error("Missing path in extension named " + getName());
+		}
+		final String bundleName = ce.getContributor().getName();
+		final Bundle bundle = getBundle(bundleName);
+		if (bundle == null) {
+			throw error("Unknown bundle " + bundleName);
+		}
+		final IPath path = extractFile(bundle, new Path(localPathStr), true);
+		if (path == null) {
+			throw error("Invalid local path " + localPathStr);
+		}
+		return path;
 	}
 
 	/**
@@ -44,52 +63,12 @@ public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
 	 * values and builds the <code>SMTSolver</code> instance to return.
 	 */
 	@Override
-	public SMTSolver load() throws ExtensionLoadingException,
-			InvalidRegistryObjectException {
-		/**
-		 * The ID of the extension. Example: <code>bundled_verit</code>.
-		 */
-		final String localId = configurationElement.getAttribute("id");
-		/**
-		 * The bundle name of the extension. Example
-		 * <code>org.eventb.smt.verit</code>.
-		 */
-		final String nameSpace = configurationElement.getNamespaceIdentifier();
-		final IContributor contributor = configurationElement.getContributor();
-		final String localPathStr = configurationElement
-				.getAttribute("localpath");
-		final String name = configurationElement.getAttribute("name");
-		final String kindStr = configurationElement.getAttribute("kind");
-
-		id = nameSpace + "." + localId;
-
-		checkId(localId);
-		checkName(name);
-
-		final String bundleName = contributor.getName();
-		final IPath path = makeSolverPath(bundleName, localPathStr);
-		checkPath(path);
-
-		return new SMTSolver(id, name, parseKind(kindStr), path, !EDITABLE);
+	public SMTSolver load() {
+		final String id = getId();
+		final String name = getName();
+		final SolverKind kind = getKind();
+		final IPath path = getPath();
+		return new SMTSolver(id, name, kind, path, !EDITABLE);
 	}
 
-	/**
-	 * 
-	 * @param bundleName
-	 *            FIXME isn't it available another way ?
-	 * @throws ExtensionLoadingException
-	 */
-	private static IPath makeSolverPath(final String bundleName,
-			final String localPathStr) throws ExtensionLoadingException {
-		final Bundle bundle = getBundle(bundleName);
-		checkBundle(bundleName, bundle);
-		checkPath(localPathStr);
-		return extractFile(bundle, new Path(localPathStr), true);
-	}
-
-	private static void checkPath(final Object path)
-			throws ExtensionLoadingException {
-		if (path == null)
-			throw makeNullPathException();
-	}
 }

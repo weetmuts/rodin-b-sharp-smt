@@ -68,12 +68,30 @@ org.myplace.myplugin.solverid where solverid is the identifier of this configura
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="kind" type="string">
+         <attribute name="kind">
             <annotation>
                <documentation>
-                  The kind of this bundled solver. One of the following values: &quot;alt-ergo&quot;, &quot;cvc3&quot;, &quot;cvc4&quot;, &quot;mathsat5&quot;, &quot;opensmt&quot;, &quot;verit&quot;, &quot;z3&quot;. Any other value will be treated as the default value: UNKNOWN.
+                  The kind of this bundled solver, if one of the supported solver kinds.
                </documentation>
             </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="alt-ergo">
+                  </enumeration>
+                  <enumeration value="cvc3">
+                  </enumeration>
+                  <enumeration value="cvc4">
+                  </enumeration>
+                  <enumeration value="mathsat5">
+                  </enumeration>
+                  <enumeration value="opensmt">
+                  </enumeration>
+                  <enumeration value="verit">
+                  </enumeration>
+                  <enumeration value="z3">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
          <attribute name="localpath" type="string" use="required">
             <annotation>

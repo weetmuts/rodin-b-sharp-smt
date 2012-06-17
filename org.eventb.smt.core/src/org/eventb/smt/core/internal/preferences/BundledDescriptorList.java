@@ -20,8 +20,9 @@ import org.eventb.smt.core.internal.prefs.DescriptorList;
 import org.eventb.smt.core.prefs.IDescriptor;
 
 /**
- * @author Systerel (yguyot)
+ * Common protocol for a list of descriptors contributed by an extension point.
  *
+ * @author Laurent Voisin
  */
 public abstract class BundledDescriptorList<T extends IDescriptor> extends
 		DescriptorList<T> {
