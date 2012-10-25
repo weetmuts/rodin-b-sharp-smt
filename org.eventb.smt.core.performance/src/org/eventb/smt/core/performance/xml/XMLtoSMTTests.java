@@ -80,7 +80,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	public final static String SMTFolder = DEFAULT_TEST_TRANSLATION_PATH
 			.toOSString();
-	public final static String DTDFolder = "src/org/eventb/smt/utils";
+	public final static String DTDFolder = "src/org/eventb/smt/core/performance/xml/utils";
 
 	private final LemmaData data;
 
