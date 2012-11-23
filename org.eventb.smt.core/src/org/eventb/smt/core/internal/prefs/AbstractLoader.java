@@ -3,24 +3,21 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
-
-import static java.lang.Character.isJavaIdentifierPart;
-import static java.lang.Character.isJavaIdentifierStart;
+package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
  * Common implementation for loading configuration details from an extension
  * point.
- * 
+ *
  * @author Yoann Guyot
  */
-public abstract class AbstractLoader<T> {
+public abstract class AbstractLoader {
 
 	public static class LoadingException extends RuntimeException {
 
@@ -42,19 +39,6 @@ public abstract class AbstractLoader<T> {
 		this.ce = configurationElement;
 	}
 
-	public String getId() {
-		final String nameSpace = ce.getNamespaceIdentifier();
-		final String localId = getRequiredAttribute("id");
-		if (localId.indexOf('.') != -1) {
-			throw error("Invalid id: " + localId + " (must not contain a dot).");
-		}
-		if (!isJavaIdentifier(localId)) {
-			throw error("Invalid id: " + localId
-					+ " (must be a valid Java identifier).");
-		}
-		return nameSpace + "." + localId;
-	}
-
 	public String getName() {
 		final String name = getRequiredAttribute("name");
 		if (name.isEmpty()) {
@@ -71,24 +55,4 @@ public abstract class AbstractLoader<T> {
 		}
 		return value;
 	}
-
-	/**
-	 * Checks if a string is a legal Java identifier
-	 *
-	 * @param s
-	 *            the string to check
-	 * @return true if the string is a legal Java identifier
-	 */
-	private static boolean isJavaIdentifier(String s) {
-		if (s.length() == 0 || !isJavaIdentifierStart(s.charAt(0))) {
-			return false;
-		}
-		for (int i = 1; i < s.length(); i++) {
-			if (!isJavaIdentifierPart(s.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 }

@@ -12,8 +12,8 @@ package org.eventb.smt.tests.unit;
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
 import static org.junit.Assert.assertEquals;
 
-import org.eventb.smt.core.internal.preferences.AbstractLoader.LoadingException;
-import org.eventb.smt.core.internal.preferences.solvers.BundledSolverLoader;
+import org.eventb.smt.core.internal.prefs.BundledSolverLoader;
+import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
 import org.eventb.smt.core.provers.SolverKind;
 import org.junit.Test;
 
@@ -29,37 +29,12 @@ public class BundledSolverLoaderTests {
 	private final BundledSolverLoader loader = new BundledSolverLoader(ce);
 
 	@Test(expected = LoadingException.class)
-	public void missingID() {
-		loader.getId();
-	}
-
-	@Test(expected = LoadingException.class)
-	public void dotInID() {
-		ce.add("id", "bundled.solver");
-		loader.getId();
-	}
-
-	@Test(expected = LoadingException.class)
-	public void whitespaceInID() {
-		ce.add("id", "bundled solver");
-		loader.getId();
-	}
-
-	@Test(expected = LoadingException.class)
-	public void colonInID() {
-		ce.add("id", "bundled:solver");
-		loader.getId();
-	}
-
-	@Test(expected = LoadingException.class)
 	public void missingName() {
-		ce.add("id", "foo");
 		loader.getName();
 	}
 
 	@Test(expected = LoadingException.class)
 	public void emptyName() {
-		ce.add("id", "foo");
 		ce.add("name", "");
 		loader.getName();
 	}
@@ -84,14 +59,12 @@ public class BundledSolverLoaderTests {
 
 	@Test(expected = LoadingException.class)
 	public void missingPath() {
-		ce.add("id", "foo");
 		ce.add("name", "foo");
 		loader.getPath();
 	}
 
 	@Test(expected = LoadingException.class)
 	public void invalidPath() {
-		ce.add("id", "foo");
 		ce.add("name", "foo");
 		ce.add("localpath", "path/to/invalid/file");
 		loader.getPath();

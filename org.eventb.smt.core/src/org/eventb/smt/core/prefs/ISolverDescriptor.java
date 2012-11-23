@@ -25,7 +25,7 @@ import org.eventb.smt.core.provers.SolverKind;
 public interface ISolverDescriptor extends IDescriptor {
 
 	/**
-	 * Returns the kind of this solver. This field tells what kind of solver is
+	 * Returns the kind of this solver. This field tells which kind of solver is
 	 * described, e.g., veriT, Z3, etc.
 	 *
 	 * @return the kind of this solver

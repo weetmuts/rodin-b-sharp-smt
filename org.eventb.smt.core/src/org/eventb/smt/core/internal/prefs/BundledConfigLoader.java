@@ -7,13 +7,12 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences.configurations;
+package org.eventb.smt.core.internal.prefs;
 
 import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eventb.smt.core.internal.preferences.AbstractLoader;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
 
@@ -22,7 +21,7 @@ import org.eventb.smt.core.translation.TranslationApproach;
  *
  * @author Yoann Guyot
  */
-public class BundledConfigLoader extends AbstractLoader<SolverConfiguration> {
+public class BundledConfigLoader extends AbstractLoader {
 
 	public BundledConfigLoader(final IConfigurationElement configurationElement) {
 		super(configurationElement);

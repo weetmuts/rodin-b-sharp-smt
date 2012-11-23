@@ -11,7 +11,6 @@ package org.eventb.smt.core.internal.prefs;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
-import org.eventb.smt.core.internal.preferences.configurations.BundledConfigList;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.osgi.service.prefs.Preferences;
 

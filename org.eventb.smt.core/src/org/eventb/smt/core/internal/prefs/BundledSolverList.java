@@ -7,13 +7,11 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences.solvers;
+package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.internal.preferences.BundledDescriptorList;
-import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.SolverKind;
 
@@ -36,12 +34,12 @@ public class BundledSolverList extends BundledDescriptorList<ISolverDescriptor> 
 	}
 
 	@Override
-	protected void loadElement(IConfigurationElement element) {
+	protected ISolverDescriptor loadElement(IConfigurationElement element) {
 		final BundledSolverLoader loader = new BundledSolverLoader(element);
 		final String name = loader.getName();
 		final SolverKind kind = loader.getKind();
 		final IPath path = loader.getPath();
-		add(new SolverDescriptor(name, kind, path));
+		return new SolverDescriptor(name, kind, path);
 	}
 
 }

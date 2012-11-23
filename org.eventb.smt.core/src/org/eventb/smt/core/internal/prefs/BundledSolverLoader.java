@@ -3,11 +3,11 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences.solvers;
+package org.eventb.smt.core.internal.prefs;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
@@ -17,16 +17,15 @@ import static org.eventb.smt.core.provers.SolverKind.parseKind;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.internal.preferences.AbstractLoader;
 import org.eventb.smt.core.provers.SolverKind;
 import org.osgi.framework.Bundle;
 
 /**
  * Implements loading configuration details from an extension to point "solver".
- * 
+ *
  * @author Yoann Guyot
  */
-public class BundledSolverLoader extends AbstractLoader<SMTSolver> {
+public class BundledSolverLoader extends AbstractLoader {
 
 	public BundledSolverLoader(IConfigurationElement configurationElement) {
 		super(configurationElement);

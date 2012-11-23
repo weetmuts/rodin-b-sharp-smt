@@ -29,7 +29,6 @@ import org.eventb.smt.tests.unit.BundledSolverLoaderTests;
 import org.eventb.smt.tests.unit.GathererTests;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.LogicTestsWithPPV2_0;
-import org.eventb.smt.tests.unit.PreferenceTests;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV1_2;
 import org.eventb.smt.tests.unit.TranslationTestsWithPPV2_0;
 import org.eventb.smt.tests.unit.TranslationTestsWithVeriTV1_2;
@@ -43,7 +42,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { GathererTests.class, //
+@SuiteClasses(value = {
+		GathererTests.class, //
 		BundledSolverLoaderTests.class, //
 		BundledConfigLoaderTests.class, //
 
@@ -76,8 +76,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		UnsatCoreVeriTWithPP.class, //
 
 		SMTPPReasonerTests.class, //
-
-		PreferenceTests.class })
+		})
 public class QuickRegressionTestSuite {
 	// Just for tests
 }

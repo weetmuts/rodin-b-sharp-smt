@@ -38,8 +38,8 @@ import org.osgi.service.prefs.Preferences;
  * <li>veriT path to use for translation</li>
  * </ul>
  *
- * This preferences are not exposed to the UI plug-in through a specialized API,
- * but rather by using the preference mechanism of Eclipse.
+ * These preferences are not exposed to the UI plug-in through a specialized
+ * API, but rather by using the preference mechanism of Eclipse.
  *
  * @author Laurent Voisin
  */

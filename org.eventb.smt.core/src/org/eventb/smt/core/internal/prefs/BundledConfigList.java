@@ -7,12 +7,10 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences.configurations;
+package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.internal.preferences.BundledDescriptorList;
-import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -31,14 +29,14 @@ public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> 
 	}
 
 	@Override
-	protected void loadElement(IConfigurationElement element) {
+	protected IConfigDescriptor loadElement(IConfigurationElement element) {
 		final BundledConfigLoader loader = new BundledConfigLoader(element);
 		final String name = loader.getName();
 		final String solverName = loader.getSolverName();
 		final String args = loader.getArgs();
 		final TranslationApproach approach = loader.getTranslationApproach();
 		final SMTLIBVersion version = loader.getVersion();
-		add(new ConfigDescriptor(name, solverName, args, approach, version));
+		return new ConfigDescriptor(name, solverName, args, approach, version);
 	}
 
 	@Override

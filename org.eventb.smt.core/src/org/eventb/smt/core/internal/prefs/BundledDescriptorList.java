@@ -7,16 +7,14 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.internal.preferences;
+package org.eventb.smt.core.internal.prefs;
 
 import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
-import static org.eventb.smt.core.internal.preferences.Messages.BundledSolverRegistry_RegistrationError;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eventb.smt.core.internal.prefs.DescriptorList;
 import org.eventb.smt.core.prefs.IDescriptor;
 
 /**
@@ -34,7 +32,7 @@ public abstract class BundledDescriptorList<T extends IDescriptor> extends
 		try {
 			loadRegistry();
 		} catch (Exception e) {
-			logError(BundledSolverRegistry_RegistrationError, e);
+			logError("Error loading extension point " + pointId, e);
 		}
 	}
 
@@ -48,14 +46,16 @@ public abstract class BundledDescriptorList<T extends IDescriptor> extends
 				.getConfigurationElements();
 		for (IConfigurationElement element : elements) {
 			try {
-				loadElement(element);
+				final T desc = loadElement(element);
+				add(desc);
 			} catch (Exception e) {
-				logError(BundledSolverRegistry_RegistrationError, e);
+				logError("Error loading extension to point " + pointId
+						+ " contributed by " + element.getContributor(), e);
 			}
 		}
 	}
 
-	protected abstract void loadElement(IConfigurationElement element);
+	protected abstract T loadElement(IConfigurationElement element);
 
 	@Override
 	public final boolean isValid(T desc) {

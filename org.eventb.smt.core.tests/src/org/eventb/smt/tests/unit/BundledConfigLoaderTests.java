@@ -13,8 +13,8 @@ import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
 
-import org.eventb.smt.core.internal.preferences.AbstractLoader.LoadingException;
-import org.eventb.smt.core.internal.preferences.configurations.BundledConfigLoader;
+import org.eventb.smt.core.internal.prefs.BundledConfigLoader;
+import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Test;
 
