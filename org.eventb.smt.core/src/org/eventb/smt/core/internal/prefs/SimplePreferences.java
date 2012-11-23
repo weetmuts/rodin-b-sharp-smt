@@ -13,7 +13,7 @@ import static java.lang.System.getProperty;
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.SMTCore.VERIT_PATH_ID;
-import static org.eventb.smt.core.SMTCore.getBundledSolvers2;
+import static org.eventb.smt.core.SMTCore.getBundledSolvers;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
@@ -57,7 +57,7 @@ public class SimplePreferences {
 		}
 
 		private String bundledVeriTPath() {
-			for (final ISolverDescriptor desc : getBundledSolvers2()) {
+			for (final ISolverDescriptor desc : getBundledSolvers()) {
 				if (VERIT == desc.getKind()) {
 					return desc.getPath().toString();
 				}

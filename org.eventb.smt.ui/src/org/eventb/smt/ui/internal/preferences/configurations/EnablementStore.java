@@ -70,7 +70,7 @@ public class EnablementStore {
 	}
 
 	private static String getDefaultValue() {
-		final IConfigDescriptor[] configs = SMTCore.getBundledConfigs2();
+		final IConfigDescriptor[] configs = SMTCore.getBundledConfigs();
 		final List<String> names = new ArrayList<String>(configs.length);
 		for (final IConfigDescriptor config : configs) {
 			names.add(config.getName());

@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.core.SMTCore.getBundledSolvers2;
+import static org.eventb.smt.core.SMTCore.getBundledSolvers;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTCore.newSMTConfiguration;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
@@ -159,7 +159,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	private static ISolverDescriptor findBundledSolverByName(String name) {
-		final ISolverDescriptor[] solvers = getBundledSolvers2();
+		final ISolverDescriptor[] solvers = getBundledSolvers();
 		for (ISolverDescriptor solver : solvers) {
 			if (name.equals(solver.getName())) {
 				return solver;

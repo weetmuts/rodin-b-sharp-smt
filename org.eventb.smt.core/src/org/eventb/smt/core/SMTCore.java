@@ -95,7 +95,7 @@ public class SMTCore {
 	 *
 	 * @return an array of all bundled configurations
 	 */
-	public static IConfigDescriptor[] getBundledConfigs2() {
+	public static IConfigDescriptor[] getBundledConfigs() {
 		return ConfigPreferences.getBundledConfigs();
 	}
 
@@ -104,7 +104,7 @@ public class SMTCore {
 	 *
 	 * @return an array of all user-defined configurations
 	 */
-	public static IConfigDescriptor[] getUserConfigs2() {
+	public static IConfigDescriptor[] getUserConfigs() {
 		return ConfigPreferences.getUserConfigs();
 	}
 
@@ -133,7 +133,7 @@ public class SMTCore {
 	 * Sets the user-defined configurations. This replaces the list of
 	 * user-defined configurations with the given ones.
 	 */
-	public static void setUserConfigs2(IConfigDescriptor[] configs) {
+	public static void setUserConfigs(IConfigDescriptor[] configs) {
 		ConfigPreferences.setUserConfigs(configs);
 	}
 
@@ -143,7 +143,7 @@ public class SMTCore {
 	 *
 	 * @return an array of all bundled solvers
 	 */
-	public static ISolverDescriptor[] getBundledSolvers2() {
+	public static ISolverDescriptor[] getBundledSolvers() {
 		return SolverPreferences.getBundledSolvers();
 	}
 
@@ -152,7 +152,7 @@ public class SMTCore {
 	 *
 	 * @return an array of all user-defined solvers
 	 */
-	public static ISolverDescriptor[] getUserSolvers2() {
+	public static ISolverDescriptor[] getUserSolvers() {
 		return SolverPreferences.getUserSolvers();
 	}
 
@@ -176,7 +176,7 @@ public class SMTCore {
 	 * Sets the user-defined solvers. This replaces the list of user-defined
 	 * solvers with the given ones.
 	 */
-	public static void setUserSolvers2(ISolverDescriptor[] newSolvers) {
+	public static void setUserSolvers(ISolverDescriptor[] newSolvers) {
 		SolverPreferences.setUserSolvers(newSolvers);
 	}
 
