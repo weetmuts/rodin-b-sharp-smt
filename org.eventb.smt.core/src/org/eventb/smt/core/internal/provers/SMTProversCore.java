@@ -66,9 +66,6 @@ public class SMTProversCore extends Plugin {
 	public static String DISABLED_SOLVER_CONFIGURATION_ERROR = "The indicated SMT configuration is disabled";
 	public static String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
 
-	public static final long DEFAULT_TIMEOUT_DELAY = 1000;
-	public static final boolean DEFAULT_RESTRICTED_VALUE = true;
-
 	private ITacticDescriptor allSMTSolversTacticDesc;
 
 	/**

@@ -16,8 +16,6 @@ import static org.eventb.core.seqprover.eventbExtensions.TacticCombinators.Compo
 import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.SMTCore.externalSMT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_RESTRICTED_VALUE;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.core.preferences.PreferenceManager.getPreferenceManager;
 
 import java.util.ArrayList;
@@ -44,6 +42,10 @@ import org.eventb.smt.core.preferences.ISolverConfig;
  * 
  */
 public class AutoTactics {
+
+	private static final long DEFAULT_TIMEOUT_DELAY = 1000;
+	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
+
 	/**
 	 * label for the 'restricted' tactic parameter
 	 */

@@ -12,8 +12,6 @@ package org.eventb.smt.tests.acceptance;
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.SMTCore.getSMTConfiguration;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_RESTRICTED_VALUE;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.DEFAULT_TIMEOUT_DELAY;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3_PP_SMT2_ID;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT_PP_SMT2_ID;
 
@@ -22,6 +20,9 @@ import org.eventb.smt.core.internal.provers.SMTInput;
 import org.eventb.smt.core.provers.ISMTConfiguration;
 
 public class SMTPPReasonerTests extends AbstractReasonerTests {
+
+	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
+	private static final long DEFAULT_TIMEOUT_DELAY = 1000;
 
 	final ISMTConfiguration veriTConfig = getSMTConfiguration(BUNDLED_VERIT_PP_SMT2_ID);
 	final ISMTConfiguration cvc3Config = getSMTConfiguration(BUNDLED_CVC3_PP_SMT2_ID);
