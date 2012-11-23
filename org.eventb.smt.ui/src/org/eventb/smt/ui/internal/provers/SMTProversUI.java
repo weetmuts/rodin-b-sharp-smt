@@ -13,6 +13,7 @@ package org.eventb.smt.ui.internal.provers;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
 import static org.eventb.smt.ui.internal.UIUtils.showError;
+import static org.eventb.smt.ui.internal.provers.AutoTactics.makeAllSMTSolversTactic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,6 @@ import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.ICombinedTacticDescriptor;
 import org.eventb.internal.ui.preferences.tactics.TacticsProfilesCache;
-import org.eventb.smt.core.internal.provers.SMTProversCore;
 import org.eventb.ui.EventBUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -47,6 +47,20 @@ public class SMTProversUI extends AbstractUIPlugin {
 	 */
 	public static final String PLUGIN_ID = "org.eventb.smt.ui";
 
+	private ITacticDescriptor allSMTSolversTacticDesc;
+
+	public ITacticDescriptor getAllSMTSolversTactic() {
+		if (allSMTSolversTacticDesc == null) {
+			updateAllSMTSolversTactic();
+		}
+
+		return allSMTSolversTacticDesc;
+	}
+
+	public void updateAllSMTSolversTactic() {
+		allSMTSolversTacticDesc = makeAllSMTSolversTactic();
+	}
+
 	public static void updateAllSMTSolversProfile() {
 		final IPreferenceStore eventbUIPrefStore = EventBUIPlugin.getDefault()
 				.getPreferenceStore();
@@ -54,8 +68,9 @@ public class SMTProversUI extends AbstractUIPlugin {
 				eventbUIPrefStore);
 		profiles.load();
 
-		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
-				.getDefault().getAllSMTSolversTactic();
+		plugin.updateAllSMTSolversTactic();
+		final ITacticDescriptor allSMTSolversTactic = plugin
+				.getAllSMTSolversTactic();
 
 		if (allSMTSolversTactic != null) {
 			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
@@ -77,7 +92,17 @@ public class SMTProversUI extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		addSMTProfile();
+		/*
+		 * This cannot be done at initialization, because the prover UI might
+		 * not be fully initialized yet, and therefore our parameterized tactic
+		 * not fully registered, nor accessible.
+		 */
+		try {
+			updateAllSMTSolversTactic();
+			addSMTProfile();
+		} catch (Exception e) {
+			e.printStackTrace();// FIXME error handling
+		}
 	}
 
 	@Override
@@ -114,14 +139,11 @@ public class SMTProversUI extends AbstractUIPlugin {
 				eventbUIPrefStore);
 		profiles.load();
 
-		final ITacticDescriptor allSMTSolversTactic = SMTProversCore
-				.getDefault().getAllSMTSolversTactic();
-
-		if (allSMTSolversTactic != null) {
+		if (allSMTSolversTacticDesc != null) {
 			if (profiles.exists(ALL_SMT_SOLVERS_PROFILE_ID)) {
 				profiles.remove(ALL_SMT_SOLVERS_PROFILE_ID);
 			}
-			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTactic);
+			profiles.add(ALL_SMT_SOLVERS_PROFILE_ID, allSMTSolversTacticDesc);
 			profiles.store();
 		}
 

@@ -11,16 +11,9 @@ package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.eventb.smt.core.SMTCore.allSMTSolversTactic;
-import static org.eventb.smt.core.SMTCore.updateAllSMTSolversTactic;
-import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSelectedException;
-import static org.eventb.smt.core.preferences.PreferenceManager.NoSMTSolverSetException;
-import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SELECTED;
-import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.NO_SMT_SOLVER_SET;
 import static org.eventb.smt.ui.internal.provers.SMTFailureTactic.SMT_SOLVER_CONFIG_ERROR;
 
 import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofTreeNode;
@@ -38,19 +31,10 @@ public class SMT extends DefaultTacticProvider {
 		@Override
 		public ITactic getTactic(final String[] inputs, final String globalInput) {
 			try {
-				updateAllSMTSolversTactic();
-				return allSMTSolversTactic();
-			} catch (final PatternSyntaxException pse) {
-				pse.printStackTrace(System.err);
-				return SMT_SOLVER_CONFIG_ERROR;
+				return SMTProversUI.getDefault().getAllSMTSolversTactic()
+						.getTacticInstance();
 			} catch (final IllegalArgumentException iae) {
-				if (iae.equals(NoSMTSolverSelectedException)) {
-					return NO_SMT_SOLVER_SELECTED;
-				} else if (iae.equals(NoSMTSolverSetException)) {
-					return NO_SMT_SOLVER_SET;
-				} else {
-					return SMT_SOLVER_CONFIG_ERROR;
-				}
+				return SMT_SOLVER_CONFIG_ERROR;
 			}
 		}
 	}

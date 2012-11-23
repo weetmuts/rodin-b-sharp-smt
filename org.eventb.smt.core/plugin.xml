@@ -12,32 +12,6 @@
       </reasoner>
    </extension>
    <extension
-         point="org.eventb.core.seqprover.tacticParameterizers">
-      <parameterizer
-            class="org.eventb.smt.core.internal.provers.AutoTactics$SMTParameterizer"
-            id="SMTParam"
-            name="%SMTParam.name">
-         <tacticParameter
-               default="true"
-               description="%restrictedDesc"
-               label="restricted"
-               type="Boolean">
-         </tacticParameter>
-         <tacticParameter
-               default="1000"
-               description="%timeoutDesc"
-               label="timeOutDelay"
-               type="Long">
-         </tacticParameter>
-         <tacticParameter
-               default=""
-               description="%configNameDesc"
-               label="configName"
-               type="String">
-         </tacticParameter>
-      </parameterizer>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.eventb.smt.core.internal.prefs.SimplePreferences$DefaultInitializer">

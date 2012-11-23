@@ -9,16 +9,20 @@
  *******************************************************************************/
 package org.eventb.smt.core;
 
-import static org.eventb.smt.core.internal.provers.SMTProversCore.getDefault;
+import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
+import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
 
 import org.eclipse.core.runtime.IPath;
+import org.eventb.core.seqprover.IReasoner;
+import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
+import org.eventb.smt.core.internal.provers.ExternalSMT;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
-import org.eventb.smt.core.internal.provers.SMTProversCore;
+import org.eventb.smt.core.internal.provers.SMTInput;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.ISMTConfiguration;
@@ -50,20 +54,18 @@ public class SMTCore {
 	 */
 	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
 
-	public static ITactic allSMTSolversTactic() {
-		return getDefault().getAllSMTSolversTactic().getTacticInstance();
-	}
-
-	public static void updateAllSMTSolversTactic() {
-		getDefault().updateAllSMTSolversTactic();
-	}
+	/**
+	 * Configuration ID value used when all configurations should be applied
+	 * sequentially.
+	 */
+	public static final String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
 
 	/**
 	 * Returns a tactic that will apply the given SMT solver configuration with
 	 * the given parameters.
 	 *
-	 * This tactic should be called by the parameterised auto tactic.
-	 * 
+	 * This tactic should be called by the parameterized auto tactic.
+	 *
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
@@ -71,12 +73,19 @@ public class SMTCore {
 	 *            amount of time in milliseconds after which the solver will be
 	 *            interrupted
 	 * @param configId
-	 *            the selected solver id
+	 *            the selected solver configuration id
 	 * @return the SMT tactic
 	 */
 	public static ITactic externalSMT(final boolean restricted,
 			final long timeOutDelay, final String configId) {
-		return SMTProversCore.externalSMT(restricted, timeOutDelay, configId);
+		final ISMTConfiguration config = getSMTConfiguration(configId);
+		if (config == null) {
+			return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
+		}
+		final IReasoner smtReasoner = new ExternalSMT();
+		final IReasonerInput smtInput = new SMTInput(restricted, timeOutDelay,
+				config);
+		return reasonerTac(smtReasoner, smtInput);
 	}
 
 	/**
