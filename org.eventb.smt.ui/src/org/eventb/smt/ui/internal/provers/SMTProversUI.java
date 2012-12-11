@@ -24,8 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eventb.core.preferences.IPrefMapEntry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
@@ -181,31 +179,6 @@ public class SMTProversUI extends AbstractUIPlugin {
 		plugin = this;
 		addSMTProfile();
 		registerImages();
-	}
-
-	/**
-	 * Getting the workbench shell
-	 * <p>
-	 * 
-	 * @return the shell associated with the active workbench window or null if
-	 *         there is no active workbench window
-	 */
-	public static Shell getActiveWorkbenchShell() {
-		final IWorkbenchWindow window = getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getShell();
-		}
-		return null;
-	}
-
-	/**
-	 * Return the active workbench window
-	 * <p>
-	 * 
-	 * @return the active workbench window
-	 */
-	public static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 
 	@Override
