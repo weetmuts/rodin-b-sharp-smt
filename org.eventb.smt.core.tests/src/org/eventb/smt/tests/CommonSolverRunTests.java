@@ -213,7 +213,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				default:
-					throw new IllegalArgumentException("Unexpected solver kind"
+					throw new IllegalArgumentException("Unexpected solver kind "
 							+ kind.name());
 				}
 			} else {
@@ -233,7 +233,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				default:
-					throw new IllegalArgumentException("Unexpected solver kind"
+					throw new IllegalArgumentException("Unexpected solver kind "
 							+ kind.name());
 				}
 			}
@@ -252,7 +252,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				default:
-					throw new IllegalArgumentException("Unexpected solver kind"
+					throw new IllegalArgumentException("Unexpected solver kind "
 							+ kind.name());
 				}
 			} else {
@@ -270,7 +270,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					break;
 
 				default:
-					throw new IllegalArgumentException("Unexpected solver kind"
+					throw new IllegalArgumentException("Unexpected solver kind "
 							+ kind.name());
 				}
 			}
