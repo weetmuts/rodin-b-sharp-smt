@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
 import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
 
 import org.eclipse.core.runtime.Platform;
@@ -23,6 +22,11 @@ import org.osgi.framework.BundleContext;
  * This is the main class of the SMT solvers plugin.
  */
 public class SMTProversCore extends Plugin {
+	
+	/**
+	 * This plug-in identifier.
+	 */
+	public static final String PLUGIN_ID = "org.eventb.smt.core"; //$NON-NLS-1$
 
 	/**
 	 * The shared instance.

@@ -9,8 +9,9 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
+import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
+
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -21,8 +22,7 @@ import org.eventb.smt.core.translation.TranslationApproach;
  */
 public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> {
 
-	public static String SOLVER_CONFIGS_ID = SMTCore.PLUGIN_ID
-			+ ".configurations"; //$NON-NLS-1$
+	public static String SOLVER_CONFIGS_ID = PLUGIN_ID + ".configurations"; //$NON-NLS-1$
 
 	public BundledConfigList() {
 		super(SOLVER_CONFIGS_ID);

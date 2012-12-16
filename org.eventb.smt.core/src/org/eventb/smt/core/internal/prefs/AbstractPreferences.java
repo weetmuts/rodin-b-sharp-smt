@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
+import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import java.util.Comparator;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.IDescriptor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -24,7 +24,7 @@ import org.osgi.service.prefs.Preferences;
 public abstract class AbstractPreferences<T extends IDescriptor> {
 
 	private static final IEclipsePreferences root = InstanceScope.INSTANCE
-			.getNode(SMTCore.PLUGIN_ID);
+			.getNode(PREF_NODE_NAME);
 
 	private final String nodeName;
 	protected final DescriptorList<T> bundled;

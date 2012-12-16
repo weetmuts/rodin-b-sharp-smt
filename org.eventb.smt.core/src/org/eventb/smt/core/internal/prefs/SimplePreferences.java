@@ -10,10 +10,10 @@
 package org.eventb.smt.core.internal.prefs;
 
 import static java.lang.System.getProperty;
-import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
-import static org.eventb.smt.core.SMTCore.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.SMTCore.VERIT_PATH_ID;
 import static org.eventb.smt.core.SMTCore.getBundledSolvers;
+import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
+import static org.eventb.smt.core.SMTPreferences.TRANSLATION_PATH_ID;
+import static org.eventb.smt.core.SMTPreferences.VERIT_PATH_ID;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -51,7 +50,7 @@ public class SimplePreferences {
 		@Override
 		public void initializeDefaultPreferences() {
 			final IScopeContext scope = DefaultScope.INSTANCE;
-			final Preferences node = scope.getNode(SMTCore.PLUGIN_ID);
+			final Preferences node = scope.getNode(PREF_NODE_NAME);
 			node.put(TRANSLATION_PATH_ID, getProperty("java.io.tmpdir"));
 			node.put(VERIT_PATH_ID, bundledVeriTPath());
 		}
@@ -68,7 +67,7 @@ public class SimplePreferences {
 	}
 
 	private static final IEclipsePreferences NODE = InstanceScope.INSTANCE
-			.getNode(PLUGIN_ID);
+			.getNode(PREF_NODE_NAME);
 
 	// Not instantiable class
 	private SimplePreferences() {
@@ -87,7 +86,7 @@ public class SimplePreferences {
 
 	private static String getPreference(final String key) {
 		final IPreferencesService svc = Platform.getPreferencesService();
-		final String value = svc.getString(PLUGIN_ID, key, "", null);
+		final String value = svc.getString(PREF_NODE_NAME, key, "", null);
 		return value;
 	}
 

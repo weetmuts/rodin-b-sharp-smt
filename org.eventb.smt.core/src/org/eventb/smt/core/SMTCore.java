@@ -39,23 +39,6 @@ import org.eventb.smt.core.translation.TranslationApproach;
 public class SMTCore {
 
 	/**
-	 * The plug-in identifier
-	 */
-	public static final String PLUGIN_ID = "org.eventb.smt.core";
-
-	/**
-	 * Name of the preference that contains the path to a temporary directory
-	 * for storing intermediate files.
-	 */
-	public static final String TRANSLATION_PATH_ID = "translationPath"; //$NON-NLS-1$
-
-	/**
-	 * Name of the preference that contains the path to a veriT binary which
-	 * will be used to expand the macros produced by the veriT translation.
-	 */
-	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
-
-	/**
 	 * Returns a tactic that will apply the given SMT solver configuration with
 	 * the given parameters. If there is no configuration with the given name,
 	 * returns a tactic that always fails.

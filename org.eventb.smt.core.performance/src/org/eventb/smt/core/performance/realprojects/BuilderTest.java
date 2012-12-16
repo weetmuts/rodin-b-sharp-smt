@@ -80,7 +80,6 @@ import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
-import org.eventb.smt.core.SMTCore;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
 import org.rodinp.core.IRodinProject;
@@ -95,6 +94,9 @@ import org.rodinp.internal.core.debug.DebugHelpers;
  * @author Laurent Voisin
  */
 public abstract class BuilderTest extends TestCase {
+	
+	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
+
 	protected IRodinProject rodinProject;
 	protected IEventBProject eventBProject;
 	protected Map<String, Integer> results = new HashMap<String, Integer>();
@@ -103,12 +105,10 @@ public abstract class BuilderTest extends TestCase {
 
 	protected static final IParameterizerDescriptor smtPpParamTacticDescriptor = SequentProver
 			.getAutoTacticRegistry().getParameterizerDescriptor(
-					SMTCore.PLUGIN_ID + ".SMTPPParam");
+					PLUGIN_ID + ".SMTPPParam");
 	protected static final IParameterizerDescriptor smtVeritParamTacticDescriptor = SequentProver
 			.getAutoTacticRegistry().getParameterizerDescriptor(
-					SMTCore.PLUGIN_ID + ".SMTVeriTParam");
-
-	public static final String PLUGIN_ID = "org.eventb.smt.core.performance";
+					PLUGIN_ID + ".SMTVeriTParam");
 
 	public BuilderTest() {
 		super();

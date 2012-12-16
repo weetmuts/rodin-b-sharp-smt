@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.log;
 
-import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 
 import org.eclipse.core.runtime.Status;
 

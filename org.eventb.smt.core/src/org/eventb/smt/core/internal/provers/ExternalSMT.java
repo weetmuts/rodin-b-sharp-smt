@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.SMTCore.PLUGIN_ID;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import org.eventb.core.seqprover.IProofMonitor;
@@ -28,6 +28,7 @@ import org.eventb.smt.core.provers.ISMTConfiguration;
  * @author Systerel (yguyot)
  */
 public class ExternalSMT extends XProverReasoner2 {
+
 	public static String REASONER_ID = PLUGIN_ID + ".externalSMT";
 
 	public ExternalSMT() {

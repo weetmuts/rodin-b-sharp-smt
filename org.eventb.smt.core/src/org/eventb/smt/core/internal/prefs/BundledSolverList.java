@@ -9,9 +9,10 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
+import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.SolverKind;
 
@@ -21,8 +22,7 @@ import org.eventb.smt.core.provers.SolverKind;
  */
 public class BundledSolverList extends BundledDescriptorList<ISolverDescriptor> {
 
-	public static final String BUNDLED_SOLVERS_ID = SMTCore.PLUGIN_ID
-			+ ".solvers"; //$NON-NLS-1$
+	public static final String BUNDLED_SOLVERS_ID = PLUGIN_ID + ".solvers"; //$NON-NLS-1$
 
 	public BundledSolverList() {
 		super(BUNDLED_SOLVERS_ID);

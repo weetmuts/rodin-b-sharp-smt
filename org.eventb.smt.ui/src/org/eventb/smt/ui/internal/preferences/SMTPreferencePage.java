@@ -10,8 +10,6 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.jface.resource.JFaceResources.getString;
-import static org.eventb.smt.core.SMTCore.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.SMTCore.VERIT_PATH_ID;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_description;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_missingValue;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notADirectory;
@@ -32,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.core.SMTPreferences;
 
 /**
  * Main preference page of the SMT core plug-in.
@@ -54,7 +52,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				SMTCore.PLUGIN_ID);
+				SMTPreferences.PREF_NODE_NAME);
 	}
 
 	/*
@@ -84,7 +82,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static class TempDirectoryEditor extends DirectoryFieldEditor {
 
 		public TempDirectoryEditor(Composite parent) {
-			init(TRANSLATION_PATH_ID, MainPrefPage_tmpDirLabel);
+			init(SMTPreferences.TRANSLATION_PATH_ID, MainPrefPage_tmpDirLabel);
 			setErrorMessage(getString("DirectoryFieldEditor.errorMessage")); //$NON-NLS-1$
 			setChangeButtonText(getString("openBrowse")); //$NON-NLS-1$
 			setEmptyStringAllowed(false);
@@ -137,7 +135,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	private static class VeriTEditor extends ExecutableFileEditor {
 
 		public VeriTEditor(Composite parent) {
-			super(VERIT_PATH_ID, MainPrefPage_veriTPathLabel,
+			super(SMTPreferences.VERIT_PATH_ID, MainPrefPage_veriTPathLabel,
 					MainPrefPage_veriTPathTooltip, parent);
 			setEmptyStringAllowed(true);
 		}
