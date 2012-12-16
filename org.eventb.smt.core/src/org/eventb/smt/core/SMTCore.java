@@ -11,6 +11,7 @@ package org.eventb.smt.core;
 
 import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
+import static org.eventb.smt.core.internal.provers.Messages.unknownSMTConfigurationError;
 
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.seqprover.IReasoner;
@@ -55,17 +56,12 @@ public class SMTCore {
 	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
 
 	/**
-	 * Configuration ID value used when all configurations should be applied
-	 * sequentially.
-	 */
-	public static final String NO_SUCH_SOLVER_CONFIGURATION_ERROR = "No such SMT configuration";
-
-	/**
 	 * Returns a tactic that will apply the given SMT solver configuration with
-	 * the given parameters.
-	 *
+	 * the given parameters. If there is no configuration with the given name,
+	 * returns a tactic that always fails.
+	 * 
 	 * This tactic should be called by the parameterized auto tactic.
-	 *
+	 * 
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
@@ -80,7 +76,7 @@ public class SMTCore {
 			final long timeOutDelay, final String configId) {
 		final ISMTConfiguration config = getSMTConfiguration(configId);
 		if (config == null) {
-			return failTac(NO_SUCH_SOLVER_CONFIGURATION_ERROR);
+			return failTac(unknownSMTConfigurationError + ": " + configId);
 		}
 		final IReasoner smtReasoner = new ExternalSMT();
 		final IReasonerInput smtInput = new SMTInput(restricted, timeOutDelay,

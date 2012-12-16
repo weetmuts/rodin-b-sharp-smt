@@ -14,6 +14,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eventb.smt.core.internal.provers.messages"; //$NON-NLS-1$
+	public static String unknownSMTConfigurationError;
 	public static String SmtProversCall_veriT_path_not_defined;
 	public static String SmtProversCall_SMT_file_does_not_exist;
 	public static String force_error_invalid_forces;
