@@ -45,18 +45,19 @@ public class SMTCore {
 	 * 
 	 * This tactic should be called by the parameterized auto tactic.
 	 * 
+	 * @param configId
+	 *            the selected solver configuration id
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
 	 * @param timeOutDelay
 	 *            amount of time in milliseconds after which the solver will be
 	 *            interrupted
-	 * @param configId
-	 *            the selected solver configuration id
-	 * @return the SMT tactic
+	 * 
+	 * @return an SMT tactic that will run the given configuration
 	 */
-	public static ITactic externalSMT(final boolean restricted,
-			final long timeOutDelay, final String configId) {
+	public static ITactic externalSMT(final String configId,
+			final boolean restricted, final long timeOutDelay) {
 		final ISMTConfiguration config = getSMTConfiguration(configId);
 		if (config == null) {
 			return failTac(unknownSMTConfigurationError + ": " + configId);

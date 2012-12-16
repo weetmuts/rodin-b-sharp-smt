@@ -78,7 +78,7 @@ public class AutoTactics {
 			final boolean restricted = parameters.getBoolean(RESTRICTED_LABEL);
 			final long timeOutDelay = parameters.getLong(TIMEOUT_DELAY_LABEL);
 			final String configName = parameters.getString(CONFIG_NAME_LABEL);
-			return externalSMT(restricted, timeOutDelay, configName);
+			return externalSMT(configName, restricted, timeOutDelay);
 		}
 	}
 
