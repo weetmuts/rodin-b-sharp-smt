@@ -42,10 +42,6 @@ import static org.eventb.smt.core.performance.realprojects.ResourceUtils.simplif
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.trueGoal;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.typeRewriter;
 import static org.eventb.smt.core.performance.realprojects.ResourceUtils.useEqualsHypotheses;
-import static org.eventb.smt.core.preferences.PreferenceManager.DEFAULT_TRANSLATION_PATH;
-import static org.eventb.smt.core.preferences.PreferenceManager.SOLVER_CONFIGS_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.preferences.PreferenceManager.VERIT_PATH_ID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,7 +65,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eventb.core.EventBPlugin;
 import org.eventb.core.IContextRoot;
 import org.eventb.core.IEventBProject;
@@ -86,7 +81,6 @@ import org.eventb.core.seqprover.IParameterizerDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.ui.internal.provers.SMTProversUI;
 import org.rodinp.core.IInternalElement;
 import org.rodinp.core.IRodinDB;
 import org.rodinp.core.IRodinProject;
@@ -127,7 +121,6 @@ public abstract class BuilderTest extends TestCase {
 	protected ITacticDescriptor makeSMTTactic(
 			final IParameterizerDescriptor smtParamTacticDescriptor,
 			final String configId) {
-		SMTProversUI.getDefault();
 		final IParameterSetting settings = smtParamTacticDescriptor
 				.makeParameterSetting();
 		settings.setBoolean("restricted", true);
@@ -292,6 +285,7 @@ public abstract class BuilderTest extends TestCase {
 		}
 	}
 
+	// FIXME this is the wrong manner for setting configurations
 	private void initializePreferences() {
 		final StringBuilder preferencesBuilder = new StringBuilder();
 
@@ -363,11 +357,11 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("-smt,,");
 		preferencesBuilder.append("V1.2;");
 
-		final IPreferenceStore store = SMTProversUI.getDefault()
-				.getPreferenceStore();
-		store.setValue(SOLVER_CONFIGS_ID, preferencesBuilder.toString());
-		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");
-		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
+//		final IPreferenceStore store = SMTProversUI.getDefault()
+//				.getPreferenceStore();
+//		store.setValue(SOLVER_CONFIGS_ID, preferencesBuilder.toString());
+//		store.setValue(VERIT_PATH_ID, "/home/guyot/bin/verit");
+//		store.setValue(TRANSLATION_PATH_ID, DEFAULT_TRANSLATION_PATH);
 	}
 
 	protected void archiveFiles(String... params) throws Exception {
