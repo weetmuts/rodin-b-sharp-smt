@@ -13,7 +13,9 @@ package org.eventb.smt.core.performance.solvers.mathsat5;
 import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV2_0;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class AxiomsTestWithMathSat5PPV2_0 extends AxiomsTestWithPPV2_0 {
 
 	public AxiomsTestWithMathSat5PPV2_0() {

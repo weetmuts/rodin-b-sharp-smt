@@ -166,6 +166,10 @@ public class RealProjectTests extends BuilderTest {
 
 	public final void testProjects() throws Exception {
 		final URL entry = ResourceUtils.getProjectsURL();
+		if (entry == null) {
+			// There is no "projects" directory, don't go further
+			return;
+		}
 		final URL projectsURL = FileLocator.toFileURL(entry);
 		final File projectsDir = new File(projectsURL.toURI());
 		for (final File project : projectsDir.listFiles()) {

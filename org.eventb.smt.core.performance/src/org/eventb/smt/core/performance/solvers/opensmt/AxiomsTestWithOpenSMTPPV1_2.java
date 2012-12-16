@@ -13,7 +13,9 @@ package org.eventb.smt.core.performance.solvers.opensmt;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class AxiomsTestWithOpenSMTPPV1_2 extends AxiomsTestWithPPV1_2 {
 
 	public AxiomsTestWithOpenSMTPPV1_2() {

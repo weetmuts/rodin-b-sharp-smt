@@ -23,7 +23,7 @@ import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTests {
+public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTests {
 	private static boolean GOAL_NEEDED = true;
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");

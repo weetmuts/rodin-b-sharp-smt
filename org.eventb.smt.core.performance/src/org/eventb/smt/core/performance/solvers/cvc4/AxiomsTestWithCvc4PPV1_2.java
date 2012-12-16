@@ -13,7 +13,9 @@ package org.eventb.smt.core.performance.solvers.cvc4;
 import static org.eventb.smt.core.provers.SolverKind.CVC4;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class AxiomsTestWithCvc4PPV1_2 extends AxiomsTestWithPPV1_2 {
 
 	public AxiomsTestWithCvc4PPV1_2() {

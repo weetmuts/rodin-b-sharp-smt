@@ -14,7 +14,9 @@ import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import org.eventb.smt.tests.acceptance.UnsatCoreExtractionWithPP;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class UnsatCoreZ3WithPP extends UnsatCoreExtractionWithPP {
 
 	public UnsatCoreZ3WithPP() {

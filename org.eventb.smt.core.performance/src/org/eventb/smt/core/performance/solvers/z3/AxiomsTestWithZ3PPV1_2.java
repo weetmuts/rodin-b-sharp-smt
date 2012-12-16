@@ -13,7 +13,9 @@ package org.eventb.smt.core.performance.solvers.z3;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class AxiomsTestWithZ3PPV1_2 extends AxiomsTestWithPPV1_2 {
 
 	public AxiomsTestWithZ3PPV1_2() {

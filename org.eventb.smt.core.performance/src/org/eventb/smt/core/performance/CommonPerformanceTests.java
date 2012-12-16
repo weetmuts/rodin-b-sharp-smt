@@ -23,6 +23,7 @@ import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -169,25 +171,18 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	public CommonPerformanceTests(SolverKind solverKind, boolean bundled,
 			Set<Theory> theories, TranslationApproach translationApproach,
 			SMTLIBVersion smtlibVersion, boolean getUnsatCore) {
-		super();
 		this.theories = theories;
 		setSolverPreferences(solverKind, bundled, translationApproach,
 				smtlibVersion);
 	}
 
 	private static IPath makeSolverPath(final String binaryName) {
-		final StringBuilder solverPathBuilder = new StringBuilder();
-		solverPathBuilder.append(System.getProperty("user.home"));
-		solverPathBuilder.append(System.getProperty("file.separator"));
-		solverPathBuilder.append("bin");
-		solverPathBuilder.append(System.getProperty("file.separator"));
-		solverPathBuilder.append(binaryName);
-
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			solverPathBuilder.append(".exe");
+		final IPath home = Path.fromOSString(System.getProperty("user.home"));
+		final IPath solverPath = home.append("bin").append(binaryName);
+		if (Platform.getOS() == Platform.OS_WIN32) {
+			solverPath.addFileExtension("exe");
 		}
-
-		return new Path(solverPathBuilder.toString());
+		return solverPath;
 	}
 
 	/**
@@ -345,6 +340,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				}
 			}
 		}
+		assumeTrue(configuration.getSolverPath().toFile().canExecute());
 	}
 
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,

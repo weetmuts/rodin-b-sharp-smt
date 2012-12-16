@@ -13,7 +13,9 @@ package org.eventb.smt.core.performance.solvers.altergo;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV2_0;
+import org.junit.Ignore;
 
+@Ignore("Cannot run acceptance tests with non-bundled solver")
 public class AxiomsTestWithAltErgoPPV2_0 extends AxiomsTestWithPPV2_0 {
 
 	public AxiomsTestWithAltErgoPPV2_0() {
