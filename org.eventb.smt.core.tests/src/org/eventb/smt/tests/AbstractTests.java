@@ -11,7 +11,6 @@
 package org.eventb.smt.tests;
 
 import static org.eventb.core.ast.LanguageVersion.V2;
-import static org.eventb.core.ast.tests.AbstractTests.parseType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +49,9 @@ public abstract class AbstractTests {
 		final ITypeEnvironment te = ff.makeTypeEnvironment();
 		for (int i = 0; i < strs.length; i += 2) {
 			final String name = strs[i];
-			final Type type = parseType(strs[i + 1]);
+			final IParseResult parseResult = ff.parseType(strs[i + 1], V2);
+			assertFalse(parseResult.hasProblem());
+			final Type type = parseResult.getParsedType();
 			te.addName(name, type);
 		}
 		return te;
