@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance;
 
-import static org.eventb.smt.core.SMTCore.newSMTConfiguration;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.CVC3;
@@ -36,6 +35,7 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
+import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.core.internal.provers.SMTVeriTCall;
@@ -197,31 +197,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			if (smtlibVersion.equals(V1_2)) {
 				switch (kind) {
 				case ALT_ERGO:
-					configuration = newSMTConfiguration(ALTERGO_VERIT_SMT1, LAST_ALTERGO);
+					configuration = new SMTConfiguration(ALTERGO_VERIT_SMT1, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					configuration = newSMTConfiguration(CVC3_VERIT_SMT1, LAST_CVC3);
+					configuration = new SMTConfiguration(CVC3_VERIT_SMT1, LAST_CVC3);
 					break;
 
 				case CVC4:
-					configuration = newSMTConfiguration(CVC4_VERIT_SMT1, LAST_CVC4);
+					configuration = new SMTConfiguration(CVC4_VERIT_SMT1, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					configuration = newSMTConfiguration(MATHSAT5_VERIT_SMT1, LAST_MATHSAT5);
+					configuration = new SMTConfiguration(MATHSAT5_VERIT_SMT1, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					configuration = newSMTConfiguration(OPENSMT_VERIT_SMT1, LAST_OPENSMT);
+					configuration = new SMTConfiguration(OPENSMT_VERIT_SMT1, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					configuration = newSMTConfiguration(VERIT_VERIT_SMT1, LAST_VERIT);
+					configuration = new SMTConfiguration(VERIT_VERIT_SMT1, LAST_VERIT);
 					break;
 
 				case Z3:
-					configuration = newSMTConfiguration(Z3_VERIT_SMT1, LAST_Z3);
+					configuration = new SMTConfiguration(Z3_VERIT_SMT1, LAST_Z3);
 					break;
 
 				default:
@@ -234,31 +234,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 */
 				switch (kind) {
 				case ALT_ERGO:
-					configuration = newSMTConfiguration(ALTERGO_VERIT_SMT2, LAST_ALTERGO);
+					configuration = new SMTConfiguration(ALTERGO_VERIT_SMT2, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					configuration = newSMTConfiguration(CVC3_VERIT_SMT2, LAST_CVC3);
+					configuration = new SMTConfiguration(CVC3_VERIT_SMT2, LAST_CVC3);
 					break;
 
 				case CVC4:
-					configuration = newSMTConfiguration(CVC4_VERIT_SMT2, LAST_CVC4);
+					configuration = new SMTConfiguration(CVC4_VERIT_SMT2, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					configuration = newSMTConfiguration(MATHSAT5_VERIT_SMT2, LAST_MATHSAT5);
+					configuration = new SMTConfiguration(MATHSAT5_VERIT_SMT2, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					configuration = newSMTConfiguration(OPENSMT_VERIT_SMT2, LAST_OPENSMT);
+					configuration = new SMTConfiguration(OPENSMT_VERIT_SMT2, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					configuration = newSMTConfiguration(VERIT_VERIT_SMT2, LAST_VERIT);
+					configuration = new SMTConfiguration(VERIT_VERIT_SMT2, LAST_VERIT);
 					break;
 
 				case Z3:
-					configuration = newSMTConfiguration(Z3_VERIT_SMT2, LAST_Z3);
+					configuration = new SMTConfiguration(Z3_VERIT_SMT2, LAST_Z3);
 					break;
 
 				default:
@@ -270,31 +270,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			if (smtlibVersion.equals(V1_2)) {
 				switch (kind) {
 				case ALT_ERGO:
-					configuration = newSMTConfiguration(ALTERGO_PP_SMT1, LAST_ALTERGO);
+					configuration = new SMTConfiguration(ALTERGO_PP_SMT1, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					configuration = newSMTConfiguration(CVC3_PP_SMT1, LAST_CVC3);
+					configuration = new SMTConfiguration(CVC3_PP_SMT1, LAST_CVC3);
 					break;
 
 				case CVC4:
-					configuration = newSMTConfiguration(CVC4_PP_SMT1, LAST_CVC4);
+					configuration = new SMTConfiguration(CVC4_PP_SMT1, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					configuration = newSMTConfiguration(MATHSAT5_PP_SMT1, LAST_MATHSAT5);
+					configuration = new SMTConfiguration(MATHSAT5_PP_SMT1, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					configuration = newSMTConfiguration(OPENSMT_PP_SMT1, LAST_OPENSMT);
+					configuration = new SMTConfiguration(OPENSMT_PP_SMT1, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					configuration = newSMTConfiguration(VERIT_PP_SMT1, LAST_VERIT);
+					configuration = new SMTConfiguration(VERIT_PP_SMT1, LAST_VERIT);
 					break;
 
 				case Z3:
-					configuration = newSMTConfiguration(Z3_PP_SMT1, LAST_Z3);
+					configuration = new SMTConfiguration(Z3_PP_SMT1, LAST_Z3);
 					break;
 
 				default:
@@ -307,31 +307,31 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 */
 				switch (kind) {
 				case ALT_ERGO:
-					configuration = newSMTConfiguration(ALTERGO_PP_SMT2, LAST_ALTERGO);
+					configuration = new SMTConfiguration(ALTERGO_PP_SMT2, LAST_ALTERGO);
 					break;
 
 				case CVC3:
-					configuration = newSMTConfiguration(CVC3_PP_SMT2, LAST_CVC3);
+					configuration = new SMTConfiguration(CVC3_PP_SMT2, LAST_CVC3);
 					break;
 
 				case CVC4:
-					configuration = newSMTConfiguration(CVC4_PP_SMT2, LAST_CVC4);
+					configuration = new SMTConfiguration(CVC4_PP_SMT2, LAST_CVC4);
 					break;
 
 				case MATHSAT5:
-					configuration = newSMTConfiguration(MATHSAT5_PP_SMT2, LAST_MATHSAT5);
+					configuration = new SMTConfiguration(MATHSAT5_PP_SMT2, LAST_MATHSAT5);
 					break;
 
 				case OPENSMT:
-					configuration = newSMTConfiguration(OPENSMT_PP_SMT2, LAST_OPENSMT);
+					configuration = new SMTConfiguration(OPENSMT_PP_SMT2, LAST_OPENSMT);
 					break;
 
 				case VERIT:
-					configuration = newSMTConfiguration(VERIT_PP_SMT2, LAST_VERIT);
+					configuration = new SMTConfiguration(VERIT_PP_SMT2, LAST_VERIT);
 					break;
 
 				case Z3:
-					configuration = newSMTConfiguration(Z3_PP_SMT2, LAST_Z3);
+					configuration = new SMTConfiguration(Z3_PP_SMT2, LAST_Z3);
 					break;
 
 				default:

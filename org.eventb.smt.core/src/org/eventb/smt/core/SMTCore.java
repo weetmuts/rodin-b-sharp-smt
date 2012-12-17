@@ -178,12 +178,6 @@ public class SMTCore {
 		if (solver == null) {
 			return null;
 		}
-		return newSMTConfiguration(config, solver);
-	}
-
-	// For testing purposes
-	public static ISMTConfiguration newSMTConfiguration(
-			final IConfigDescriptor config, final ISolverDescriptor solver) {
 		return new SMTConfiguration(config, solver);
 	}
 
