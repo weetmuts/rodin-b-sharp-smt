@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.internal.log.SMTStatus.smtError;
+import static org.eclipse.core.runtime.IStatus.ERROR;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.osgi.framework.BundleContext;
@@ -74,7 +75,7 @@ public class SMTProversCore extends Plugin {
 	}
 
 	/**
-	 * Stores an error in the plug-in log.
+	 * Adds an error in the plug-in log.
 	 *
 	 * @param message
 	 *            some message describing the error
@@ -82,7 +83,7 @@ public class SMTProversCore extends Plugin {
 	 *            the exception that caused the error or <code>null</code>
 	 */
 	public static void logError(final String message, final Throwable exception) {
-		plugin.getLog().log(smtError(message, exception));
+		plugin.getLog().log(new Status(ERROR, PLUGIN_ID, message, exception));
 	}
 
 	/**
