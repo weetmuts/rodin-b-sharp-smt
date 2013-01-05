@@ -345,33 +345,44 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, ff);
 
-		final SMTProverCall smtProverCall;
-		final TranslationApproach approach = configuration.getTranslationApproach();
-		switch (approach) {
-		case USING_VERIT:
-			smtProverCall = new SMTVeriTCall(sequent, MONITOR, debugBuilder,
-					configuration, lemmaName);
-			break;
-
-		case USING_PP:
-			smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-					configuration, lemmaName);
-			break;
-		default:
-			fail("unknown translation approach: " + approach);
-			return;
-		}
-
-		smtProverCalls.add(smtProverCall);
-		smtProverCall.run();
+		final SMTProverCall smtProverCall = callSolver(lemmaName, sequent,
+				debugBuilder);
 
 		printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
 				configuration.getSmtlibVersion(),
-				approach, smtProverCall);
+				configuration.getTranslationApproach(), smtProverCall);
 
 		assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
 		assertEquals("The result of the SMT prover wasn't the expected one.",
 				expectedSolverResult, smtProverCall.isValid());
+	}
+
+	/*
+	 * Calls the SMT solver, ensuring that it will be cleaned up eventually.
+	 */
+	private SMTProverCall callSolver(String lemmaName, ISimpleSequent sequent,
+			StringBuilder debugBuilder) {
+		final SMTProverCall result = getCall(lemmaName, sequent, debugBuilder);
+		smtProverCalls.add(result);
+		result.run();
+		return result;
+	}
+
+	private SMTProverCall getCall(String lemmaName, ISimpleSequent sequent,
+			StringBuilder debugBuilder) {
+		final TranslationApproach approach = configuration
+				.getTranslationApproach();
+		switch (approach) {
+		case USING_VERIT:
+			return new SMTVeriTCall(sequent, MONITOR, debugBuilder,
+					configuration, lemmaName);
+		case USING_PP:
+			return new SMTPPCall(sequent, MONITOR, debugBuilder, configuration,
+					lemmaName);
+		default:
+			fail("unknown translation approach: " + approach);
+			return null;
+		}
 	}
 
 	protected SMTProverCallTestResult smtProverCallTest(
@@ -380,23 +391,9 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
-		final SMTProverCall smtProverCall;
 		final StringBuilder errorBuilder = new StringBuilder("");
-
-		switch (configuration.getTranslationApproach()) {
-		case USING_VERIT:
-			smtProverCall = new SMTVeriTCall(sequent, MONITOR, debugBuilder,
-					configuration, lemmaName);
-			break;
-
-		default: // USING_PP
-			smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-					configuration, lemmaName);
-			break;
-		}
-
-		smtProverCalls.add(smtProverCall);
-		smtProverCall.run();
+		final SMTProverCall smtProverCall = callSolver(lemmaName, sequent,
+				debugBuilder);
 
 		if (smtProverCall.isValid() != expectedSolverResult) {
 			errorBuilder.append(callMessage).append(" (");
