@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -62,8 +62,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3 SMT2";
 
 	public static final IPath DEFAULT_TEST_TRANSLATION_PATH = new Path(
-			System.getProperty("user.home") + File.separatorChar
-					+ "rodin_smtlib_temp_files");
+			System.getProperty("user.home")).append("rodin_smtlib_temp_files");
 
 	/**
 	 * bundled solvers (used to make new configurations)
@@ -336,7 +335,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	private void doTest(final String lemmaName,
 			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
 			final boolean expectedTrivial, final boolean expectedSolverResult,
-			final StringBuilder debugBuilder) throws IllegalArgumentException {
+			final StringBuilder debugBuilder) {
 		// Type check goal and hypotheses
 		assertTypeChecked(parsedGoal);
 		for (final Predicate parsedHypothesis : parsedHypotheses) {
@@ -347,34 +346,32 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				parsedGoal, ff);
 
 		final SMTProverCall smtProverCall;
+		final TranslationApproach approach = configuration.getTranslationApproach();
+		switch (approach) {
+		case USING_VERIT:
+			smtProverCall = new SMTVeriTCall(sequent, MONITOR, debugBuilder,
+					configuration, lemmaName);
+			break;
 
-		try {
-			switch (configuration.getTranslationApproach()) {
-			case USING_VERIT:
-				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, configuration, lemmaName);
-				break;
-
-			default: // USING_PP
-				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						configuration, lemmaName);
-				break;
-			}
-
-			smtProverCalls.add(smtProverCall);
-			smtProverCall.run();
-
-			printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
-					configuration.getSmtlibVersion(),
-					configuration.getTranslationApproach(), smtProverCall);
-
-			assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
-			assertEquals(
-					"The result of the SMT prover wasn't the expected one.",
-					expectedSolverResult, smtProverCall.isValid());
-		} catch (final IllegalArgumentException iae) {
-			fail(iae.getMessage());
+		case USING_PP:
+			smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
+					configuration, lemmaName);
+			break;
+		default:
+			fail("unknown translation approach: " + approach);
+			return;
 		}
+
+		smtProverCalls.add(smtProverCall);
+		smtProverCall.run();
+
+		printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
+				configuration.getSmtlibVersion(),
+				approach, smtProverCall);
+
+		assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
+		assertEquals("The result of the SMT prover wasn't the expected one.",
+				expectedSolverResult, smtProverCall.isValid());
 	}
 
 	protected SMTProverCallTestResult smtProverCallTest(
@@ -383,80 +380,73 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean expectedSolverResult,
 			final List<Predicate> expectedUnsatCore,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
-		SMTProverCall smtProverCall = null;
+		final SMTProverCall smtProverCall;
 		final StringBuilder errorBuilder = new StringBuilder("");
 
-		try {
-			switch (configuration.getTranslationApproach()) {
-			case USING_VERIT:
-				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, configuration, lemmaName);
-				break;
+		switch (configuration.getTranslationApproach()) {
+		case USING_VERIT:
+			smtProverCall = new SMTVeriTCall(sequent, MONITOR, debugBuilder,
+					configuration, lemmaName);
+			break;
 
-			default: // USING_PP
-				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						configuration, lemmaName);
-				break;
-			}
+		default: // USING_PP
+			smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
+					configuration, lemmaName);
+			break;
+		}
 
-			smtProverCalls.add(smtProverCall);
-			smtProverCall.run();
+		smtProverCalls.add(smtProverCall);
+		smtProverCall.run();
 
-			if (smtProverCall.isValid() != expectedSolverResult) {
-				errorBuilder.append(callMessage).append(" (");
-				errorBuilder.append(lemmaName);
-				errorBuilder
-						.append(") The result of the SMT prover wasn't the expected one.");
-				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
-			}
+		if (smtProverCall.isValid() != expectedSolverResult) {
+			errorBuilder.append(callMessage).append(" (");
+			errorBuilder.append(lemmaName);
+			errorBuilder
+					.append(") The result of the SMT prover wasn't the expected one.");
+			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+		}
 
-			final Set<Predicate> neededHypotheses = smtProverCall
-					.neededHypotheses();
-			final boolean extractedContainsExpected = neededHypotheses == null
-					|| (expectedUnsatCore != null && neededHypotheses
-							.containsAll(expectedUnsatCore));
-			final boolean expectedContainsExtracted = expectedUnsatCore == null
-					|| (neededHypotheses != null && expectedUnsatCore
-							.containsAll(neededHypotheses));
-			if (extractedContainsExpected) {
-				if (!expectedContainsExtracted) {
-					/*
-					 * errorBuilder.append(callMessage);
-					 * errorBuilder.append(" (").append(lemmaName); errorBuilder
-					 * .
-					 * append(") The expected unsat-core is smaller than the ");
-					 * errorBuilder
-					 * .append(solverConfig.getId()).append(" one."); return new
-					 * SMTProverCallTestResult(smtProverCall, errorBuilder);
-					 */
-				}
-			} else if (expectedContainsExtracted) {
-				errorBuilder.append(callMessage);
-				errorBuilder.append(" (").append(lemmaName).append(") ");
-				errorBuilder.append(configuration.getName());
-				errorBuilder
-						.append(" unsat-core is smaller than the expected one.");
-				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
-			} else {
+		final Set<Predicate> neededHypotheses = smtProverCall
+				.neededHypotheses();
+		final boolean extractedContainsExpected = neededHypotheses == null
+				|| (expectedUnsatCore != null && neededHypotheses
+						.containsAll(expectedUnsatCore));
+		final boolean expectedContainsExtracted = expectedUnsatCore == null
+				|| (neededHypotheses != null && expectedUnsatCore
+						.containsAll(neededHypotheses));
+		if (extractedContainsExpected) {
+			if (!expectedContainsExtracted) {
 				/*
 				 * errorBuilder.append(callMessage);
-				 * errorBuilder.append(" (").append(lemmaName).append(") ");
-				 * errorBuilder.append(solverConfig.getId());
-				 * errorBuilder.append(
-				 * " unsat-core and the expected one are different and mutualy not included."
-				 * ); return new SMTProverCallTestResult(smtProverCall,
+				 * errorBuilder.append(" (").append(lemmaName); errorBuilder .
+				 * append(") The expected unsat-core is smaller than the ");
+				 * errorBuilder .append(solverConfig.getId()).append(" one.");
+				 * return new SMTProverCallTestResult(smtProverCall,
 				 * errorBuilder);
 				 */
 			}
-			if (smtProverCall.isGoalNeeded() != expectedGoalNeed) {
-				errorBuilder.append(callMessage);
-				errorBuilder.append(" (").append(lemmaName);
-				errorBuilder
-						.append(") The extracted goal need wasn't the expected one.");
-				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
-			}
-		} catch (final IllegalArgumentException iae) {
-			errorBuilder.append(iae.getMessage());
+		} else if (expectedContainsExtracted) {
+			errorBuilder.append(callMessage);
+			errorBuilder.append(" (").append(lemmaName).append(") ");
+			errorBuilder.append(configuration.getName());
+			errorBuilder
+					.append(" unsat-core is smaller than the expected one.");
+			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+		} else {
+			/*
+			 * errorBuilder.append(callMessage);
+			 * errorBuilder.append(" (").append(lemmaName).append(") ");
+			 * errorBuilder.append(solverConfig.getId()); errorBuilder.append(
+			 * " unsat-core and the expected one are different and mutualy not included."
+			 * ); return new SMTProverCallTestResult(smtProverCall,
+			 * errorBuilder);
+			 */
+		}
+		if (smtProverCall.isGoalNeeded() != expectedGoalNeed) {
+			errorBuilder.append(callMessage);
+			errorBuilder.append(" (").append(lemmaName);
+			errorBuilder
+					.append(") The extracted goal need wasn't the expected one.");
 			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
 		return new SMTProverCallTestResult(smtProverCall, errorBuilder);
