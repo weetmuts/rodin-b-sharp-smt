@@ -37,8 +37,6 @@ public class SMTCore {
 	 * been registered. The tactic is configured with the default values for the
 	 * time out and restricted parameters.
 	 * 
-	 * FIXME  The descriptor is not yet registered 
-	 * 
 	 * @param configName
 	 *            the name of an SMT configuration
 	 * @return a tactic descriptor for running the given configuration

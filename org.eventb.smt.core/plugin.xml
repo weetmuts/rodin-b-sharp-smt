@@ -43,4 +43,11 @@
          </tacticParameter>
       </parameterizer>
    </extension>
+   <extension
+         point="org.eventb.core.seqprover.autoTactics">
+      <dynTacticProvider
+            class="org.eventb.smt.core.internal.tactics.SMTDynTacticProvider"
+            id="smtDynTacticProvider">
+      </dynTacticProvider>
+   </extension>
 </plugin>
