@@ -9,21 +9,14 @@
  *******************************************************************************/
 package org.eventb.smt.core;
 
-import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
-import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
-import static org.eventb.smt.core.internal.provers.Messages.unknownSMTConfigurationError;
-
 import org.eclipse.core.runtime.IPath;
-import org.eventb.core.seqprover.IReasoner;
-import org.eventb.core.seqprover.IReasonerInput;
-import org.eventb.core.seqprover.ITactic;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
-import org.eventb.smt.core.internal.provers.ExternalSMT;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
-import org.eventb.smt.core.internal.provers.SMTInput;
+import org.eventb.smt.core.internal.tactics.SMTTacticDescriptors;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.core.provers.ISMTConfiguration;
@@ -39,33 +32,19 @@ import org.eventb.smt.core.translation.TranslationApproach;
 public class SMTCore {
 
 	/**
-	 * Returns a tactic that will apply the given SMT solver configuration with
-	 * the given parameters. If there is no configuration with the given name,
-	 * returns a tactic that always fails.
+	 * Returns a tactic descriptor for running the given SMT solver
+	 * configuration. This method does not verify that the configuration has
+	 * been registered. The tactic is configured with the default values for the
+	 * time out and restricted parameters.
 	 * 
-	 * This tactic should be called by the parameterized auto tactic.
+	 * FIXME  The descriptor is not yet registered 
 	 * 
-	 * @param configId
-	 *            the selected solver configuration id
-	 * @param restricted
-	 *            true iff only selected hypotheses should be considered by the
-	 *            reasoner
-	 * @param timeOutDelay
-	 *            amount of time in milliseconds after which the solver will be
-	 *            interrupted
-	 * 
-	 * @return an SMT tactic that will run the given configuration
+	 * @param configName
+	 *            the name of an SMT configuration
+	 * @return a tactic descriptor for running the given configuration
 	 */
-	public static ITactic externalSMT(final String configId,
-			final boolean restricted, final long timeOutDelay) {
-		final ISMTConfiguration config = getSMTConfiguration(configId);
-		if (config == null) {
-			return failTac(unknownSMTConfigurationError + ": " + configId);
-		}
-		final IReasoner smtReasoner = new ExternalSMT();
-		final IReasonerInput smtInput = new SMTInput(restricted, timeOutDelay,
-				config);
-		return reasonerTac(smtReasoner, smtInput);
+	public static ITacticDescriptor getTacticDescriptor(String configName) {
+		return SMTTacticDescriptors.getTacticDescriptor(configName);
 	}
 
 	/**

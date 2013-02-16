@@ -1,0 +1,107 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Systerel. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * 	Systerel - initial API and implementation
+ *******************************************************************************/
+package org.eventb.smt.core.tests.tactics;
+
+import static org.eventb.core.seqprover.ProverFactory.makeProofTree;
+import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.core.seqprover.tests.TestLib.genSeq;
+import static org.eventb.smt.core.SMTCore.getBundledConfigs;
+import static org.eventb.smt.core.SMTCore.getTacticDescriptor;
+import static org.eventb.smt.core.internal.tactics.SMTParameterizer.CONFIG_NAME_LABEL;
+import static org.eventb.smt.core.internal.tactics.SMTParameterizer.RESTRICTED_LABEL;
+import static org.eventb.smt.core.internal.tactics.SMTParameterizer.TIMEOUT_DELAY_LABEL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.eventb.core.seqprover.IAutoTacticRegistry;
+import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
+import org.eventb.core.seqprover.IParamTacticDescriptor;
+import org.eventb.core.seqprover.IParameterValuation;
+import org.eventb.core.seqprover.IProofTree;
+import org.eventb.core.seqprover.IProofTreeNode;
+import org.eventb.core.seqprover.IProverSequent;
+import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.junit.Test;
+
+/**
+ * Acceptance tests about creation of parameterized tactics for running SMT
+ * configurations.
+ * 
+ * @author Laurent Voisin
+ */
+public class SMTTacticDescriptorTests {
+
+	private static final IAutoTacticRegistry REGISTRY = getAutoTacticRegistry();
+
+	/**
+	 * Ensures that creating a parameterized tactic does not register it with
+	 * the auto-tactic registry.
+	 */
+	@Test
+	public void tacticIsNotRegistered() {
+		final ITacticDescriptor desc = getTacticDescriptor("foo");
+		assertFalse(REGISTRY.isRegistered(desc.getTacticID()));
+	}
+
+	/**
+	 * Ensures that the tactic parameters are the given configuration and
+	 * default values for the other parameters.
+	 */
+	@Test
+	public void correctParameters() {
+		final String configName = "foo";
+		final ITacticDescriptor desc = getTacticDescriptor(configName);
+		assertTrue(desc instanceof IParamTacticDescriptor);
+		final IParamTacticDescriptor pDesc = (IParamTacticDescriptor) desc;
+		final IParameterValuation valuation = pDesc.getValuation();
+		assertEquals(configName, valuation.getString(CONFIG_NAME_LABEL));
+		assertEquals(1000, valuation.getLong(TIMEOUT_DELAY_LABEL));
+		assertEquals(true, valuation.getBoolean(RESTRICTED_LABEL));
+	}
+
+	/**
+	 * Ensure that a tactic descriptor returned by the core plug-in can be used
+	 * to discharge a sequent.
+	 */
+	@Test
+	public void descriptorIsUsable() {
+		final IProofTreeNode node = makeSimpleProofTreeNode();
+		assertFalse(node.isClosed());
+
+		final ITacticDescriptor desc = getTacticDescriptorForBundledConfig();
+		final ITactic tactic = desc.getTacticInstance();
+		tactic.apply(node, null);
+		assertTrue(node.isClosed());
+	}
+
+	/*
+	 * Returns a proof tree node with a very simple sequent that should be
+	 * discharged by any SMT solver.
+	 */
+	private IProofTreeNode makeSimpleProofTreeNode() {
+		final IProverSequent sequent = genSeq("|- 1+1 = 2");
+		final IProofTree proofTree = makeProofTree(sequent, null);
+		return proofTree.getRoot();
+	}
+
+	/*
+	 * Returns a tactic descriptor for running an arbitrary bundled SMT
+	 * configuration.
+	 */
+	private ITacticDescriptor getTacticDescriptorForBundledConfig() {
+		final IConfigDescriptor[] configs = getBundledConfigs();
+		assertTrue(configs.length != 0);
+		final String configName = configs[0].getName();
+		return getTacticDescriptor(configName);
+	}
+
+}

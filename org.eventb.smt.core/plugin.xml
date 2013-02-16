@@ -17,4 +17,30 @@
             class="org.eventb.smt.core.internal.prefs.SimplePreferences$DefaultInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eventb.core.seqprover.tacticParameterizers">
+      <parameterizer
+            class="org.eventb.smt.core.internal.tactics.SMTParameterizer"
+            id="SMTParam"
+            name="%SMTParam.name">
+         <tacticParameter
+               default=""
+               description="%configNameDesc"
+               label="configName"
+               type="String">
+         </tacticParameter>
+         <tacticParameter
+               default="true"
+               description="%restrictedDesc"
+               label="restricted"
+               type="Boolean">
+         </tacticParameter>
+         <tacticParameter
+               default="1000"
+               description="%timeoutDesc"
+               label="timeOutDelay"
+               type="Long">
+         </tacticParameter>
+      </parameterizer>
+   </extension>
 </plugin>
