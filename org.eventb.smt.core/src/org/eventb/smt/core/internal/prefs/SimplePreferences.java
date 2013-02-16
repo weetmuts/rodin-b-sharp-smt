@@ -10,10 +10,10 @@
 package org.eventb.smt.core.internal.prefs;
 
 import static java.lang.System.getProperty;
-import static org.eventb.smt.core.SMTCore.getBundledSolvers;
 import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
