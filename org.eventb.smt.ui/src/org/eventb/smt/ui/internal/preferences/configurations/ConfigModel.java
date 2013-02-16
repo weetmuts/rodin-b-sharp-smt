@@ -9,9 +9,6 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.configurations;
 
-import static org.eventb.smt.core.SMTCore.getUserConfigs;
-import static org.eventb.smt.core.SMTCore.setUserConfigs;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,18 +31,17 @@ public class ConfigModel extends
 	private final SolverModel solverModel;
 
 	public ConfigModel(SolverModel solverModel) {
-		super(SMTCore.getBundledConfigs());
 		this.solverModel = solverModel;
 	}
 
 	@Override
-	protected ConfigElement convert(IConfigDescriptor origin, boolean editable) {
-		return new ConfigElement(origin, editable);
+	protected ConfigElement convert(IConfigDescriptor origin) {
+		return new ConfigElement(origin);
 	}
 
 	@Override
 	protected void doLoad() {
-		addElements(getUserConfigs(), true);
+		addElements(SMTCore.getConfigurations());
 		EnablementStore.load(elements);
 	}
 
@@ -61,7 +57,7 @@ public class ConfigModel extends
 
 	@Override
 	public void doStore(IConfigDescriptor[] coreElements) {
-		setUserConfigs(coreElements);
+		SMTCore.setConfigurations(coreElements);
 		EnablementStore.store(elements);
 	}
 

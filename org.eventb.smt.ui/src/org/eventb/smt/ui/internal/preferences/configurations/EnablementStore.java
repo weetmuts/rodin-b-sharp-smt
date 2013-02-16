@@ -69,8 +69,11 @@ public class EnablementStore {
 		node.put(ENABLED_CONFIGS, getDefaultValue());
 	}
 
+	/*
+	 * By default, all known configurations are enabled.
+	 */
 	private static String getDefaultValue() {
-		final IConfigDescriptor[] configs = SMTCore.getBundledConfigs();
+		final IConfigDescriptor[] configs = SMTCore.getConfigurations();
 		final List<String> names = new ArrayList<String>(configs.length);
 		for (final IConfigDescriptor config : configs) {
 			names.add(config.getName());

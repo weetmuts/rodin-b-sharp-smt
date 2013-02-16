@@ -26,7 +26,11 @@ import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * Facade class providing the interface to the SMT core plug-in functionality.
- *
+ * <p>
+ * This plug-in maintains two list of descriptors: one for all known solver
+ * descriptors and one for all known configuration descriptors.
+ * </p>
+ * 
  * @author Systerel (yguyot)
  */
 public class SMTCore {
@@ -46,23 +50,12 @@ public class SMTCore {
 	}
 
 	/**
-	 * Returns an array of all bundled configurations. Bundled configurations
-	 * are configurations that are contributed by plug-ins, rather than the
-	 * end-user.
+	 * Returns an array of all known SMT configuration descriptors.
 	 *
-	 * @return an array of all bundled configurations
+	 * @return an array of all known SMT configurations
 	 */
-	public static IConfigDescriptor[] getBundledConfigs() {
-		return ConfigPreferences.getBundledConfigs();
-	}
-
-	/**
-	 * Returns an array of all user-defined configurations.
-	 *
-	 * @return an array of all user-defined configurations
-	 */
-	public static IConfigDescriptor[] getUserConfigs() {
-		return ConfigPreferences.getUserConfigs();
+	public static IConfigDescriptor[] getConfigurations() {
+		return ConfigPreferences.getConfigs();
 	}
 
 	/**
@@ -88,30 +81,23 @@ public class SMTCore {
 	}
 
 	/**
-	 * Sets the user-defined configurations. This replaces the list of
-	 * user-defined configurations with the given ones.
+	 * Sets the list of known SMT configurations. This replaces the list of SMT
+	 * configurations with the given ones. However, bundled configurations
+	 * cannot be removed nor changed by this method. If a bundled configuration
+	 * is not present in the list, it will nevertheless automatically be added
+	 * to the list of configurations.
 	 */
-	public static void setUserConfigs(IConfigDescriptor[] configs) {
-		ConfigPreferences.setUserConfigs(configs);
+	public static void setConfigurations(IConfigDescriptor[] configs) {
+		ConfigPreferences.setConfigs(configs);
 	}
 
 	/**
-	 * Returns an array of all bundled solvers. Bundled solvers are solvers that
-	 * are contributed by plug-ins, rather than the end-user.
+	 * Returns an array of all known SMT solver descriptors.
 	 *
-	 * @return an array of all bundled solvers
+	 * @return an array of all known SMT solvers
 	 */
-	public static ISolverDescriptor[] getBundledSolvers() {
-		return SolverPreferences.getBundledSolvers();
-	}
-
-	/**
-	 * Returns an array of all user-defined solvers.
-	 *
-	 * @return an array of all user-defined solvers
-	 */
-	public static ISolverDescriptor[] getUserSolvers() {
-		return SolverPreferences.getUserSolvers();
+	public static ISolverDescriptor[] getSolvers() {
+		return SolverPreferences.getSolvers();
 	}
 
 	/**
@@ -131,11 +117,14 @@ public class SMTCore {
 	}
 
 	/**
-	 * Sets the user-defined solvers. This replaces the list of user-defined
-	 * solvers with the given ones.
+	 * Sets the list of known SMT solvers. This replaces the list of known SMT
+	 * solver descriptors with the given ones. However, bundled solvers cannot
+	 * be removed nor changed by this method. If a bundled solver is not present
+	 * in the list, it will nevertheless automatically be added to the list of
+	 * known SMT solver descriptors.
 	 */
-	public static void setUserSolvers(ISolverDescriptor[] newSolvers) {
-		SolverPreferences.setUserSolvers(newSolvers);
+	public static void setSolvers(ISolverDescriptor[] newSolvers) {
+		SolverPreferences.setSolvers(newSolvers);
 	}
 
 	/**

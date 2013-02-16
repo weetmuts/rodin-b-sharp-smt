@@ -10,7 +10,7 @@
 
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.core.SMTCore.getBundledSolvers;
+import static org.eventb.smt.core.SMTCore.getSolvers;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
@@ -67,8 +67,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	/**
 	 * bundled solvers (used to make new configurations)
 	 */
-	public static final ISolverDescriptor BUNDLED_VERIT = findBundledSolverByName("veriT (bundled)");
-	public static final ISolverDescriptor BUNDLED_CVC3 = findBundledSolverByName("CVC3 (bundled)");
+	public static final ISolverDescriptor BUNDLED_VERIT = findSolverByName("veriT (bundled)");
+	public static final ISolverDescriptor BUNDLED_CVC3 = findSolverByName("CVC3 (bundled)");
 
 	/**
 	 * Bundled veriT configurations
@@ -157,14 +157,14 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		setTranslationPreferences();
 	}
 
-	private static ISolverDescriptor findBundledSolverByName(String name) {
-		final ISolverDescriptor[] solvers = getBundledSolvers();
+	private static ISolverDescriptor findSolverByName(String name) {
+		final ISolverDescriptor[] solvers = getSolvers();
 		for (ISolverDescriptor solver : solvers) {
 			if (name.equals(solver.getName())) {
 				return solver;
 			}
 		}
-		throw new IllegalArgumentException("No bundled solver named " + name);
+		throw new IllegalArgumentException("No solver named " + name);
 	}
 
 	public CommonSolverRunTests(final SolverKind solverKind,

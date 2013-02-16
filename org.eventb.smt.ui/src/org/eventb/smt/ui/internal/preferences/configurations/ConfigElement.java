@@ -40,8 +40,8 @@ public class ConfigElement extends AbstractElement<IConfigDescriptor> {
 		this.enabled = true;
 	}
 
-	public ConfigElement(IConfigDescriptor origin, boolean editable) {
-		super(editable, origin.getName());
+	public ConfigElement(IConfigDescriptor origin) {
+		super(!origin.isBundled(), origin.getName());
 		this.solverName = origin.getSolverName();
 		this.args = origin.getArgs();
 		this.approach = origin.getTranslationApproach();

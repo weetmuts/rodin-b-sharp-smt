@@ -9,9 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.tactics;
 
-import static org.eventb.smt.core.SMTCore.getBundledConfigs;
-import static org.eventb.smt.core.SMTCore.getUserConfigs;
 import static org.eventb.smt.core.SMTCore.getTacticDescriptor;
+import static org.eventb.smt.core.SMTCore.getConfigurations;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,8 +30,7 @@ public class SMTDynTacticProvider implements IDynTacticProvider {
 	@Override
 	public Collection<ITacticDescriptor> getDynTactics() {
 		final List<ITacticDescriptor> result = new ArrayList<ITacticDescriptor>();
-		addConfigDescriptors(result, getBundledConfigs());
-		addConfigDescriptors(result, getUserConfigs());
+		addConfigDescriptors(result, getConfigurations());
 		return result;
 	}
 

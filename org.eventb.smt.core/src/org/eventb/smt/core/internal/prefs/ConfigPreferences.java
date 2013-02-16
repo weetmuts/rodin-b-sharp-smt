@@ -27,7 +27,7 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		@Override
 		public boolean isValid(IConfigDescriptor desc) {
 			final String name = desc.getName();
-			if (doGet(name) != null) {
+			if (get(name) != null) {
 				logError("Duplicate config name " + name + " ignored", null);
 				return false;
 			}
@@ -61,16 +61,26 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		return new ConfigDescriptor(node);
 	}
 
+	@Override
+	protected IConfigDescriptor getRealDescriptor(IConfigDescriptor desc) {
+		final String name = desc.getName();
+		final IConfigDescriptor bundledDesc = doGetBundled(name);
+		if (bundledDesc != null) {
+			return bundledDesc;
+		}
+		return desc;
+	}
+
 	public static IConfigDescriptor[] getBundledConfigs() {
 		return INSTANCE.doGetBundled();
 	}
 
-	public static IConfigDescriptor[] getUserConfigs() {
-		return INSTANCE.doGetUser();
+	public static IConfigDescriptor[] getConfigs() {
+		return INSTANCE.doGetKnown();
 	}
 
-	public static void setUserConfigs(IConfigDescriptor[] newConfigs) {
-		INSTANCE.setUser(newConfigs);
+	public static void setConfigs(IConfigDescriptor[] newConfigs) {
+		INSTANCE.setKnown(newConfigs);
 	}
 
 	public static IConfigDescriptor get(String name) {

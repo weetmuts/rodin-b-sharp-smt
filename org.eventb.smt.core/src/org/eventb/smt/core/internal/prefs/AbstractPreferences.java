@@ -12,8 +12,10 @@ package org.eventb.smt.core.internal.prefs;
 import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -28,18 +30,21 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 
 	private final String nodeName;
 	protected final DescriptorList<T> bundled;
-	protected final DescriptorList<T> userDefined;
+	protected final DescriptorList<T> known;
 
 	protected AbstractPreferences(String nodeName) {
 		this.nodeName = nodeName;
 		this.bundled = loadBundledDescriptors();
-		this.userDefined = loadUserDescriptors();
+		this.known = newDescriptorList();
+		doSetKnown(loadKnownDescriptors());
 	}
 
 	protected abstract DescriptorList<T> loadBundledDescriptors();
 
-	private DescriptorList<T> loadUserDescriptors() {
-		final DescriptorList<T> result = newDescriptorList();
+	protected abstract DescriptorList<T> newDescriptorList();
+
+	private List<T> loadKnownDescriptors() {
+		final List<T> result = new ArrayList<T>();
 		try {
 			if (root.nodeExists(nodeName)) {
 				loadFromNode(root.node(nodeName), result);
@@ -50,21 +55,27 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		return result;
 	}
 
-	protected abstract DescriptorList<T> newDescriptorList();
-
-	private void loadFromNode(Preferences node,
-			DescriptorList<T> result) throws BackingStoreException {
+	private void loadFromNode(Preferences node, List<T> result)
+			throws BackingStoreException {
 		for (final String childName : sortedChildrenNames(node)) {
 			try {
-				result.add(loadFromNode(node.node(childName)));
+				final T desc = loadFromNode(node.node(childName));
+				result.add(desc);
 			} catch (IllegalArgumentException e) {
 				logError("loading preference " + node.absolutePath(), e);
 			}
 		}
 	}
 
+	/**
+	 * Returns the descriptor stored in the given preference node.
+	 * 
+	 * @param node
+	 *            some preference node containing a serialized descriptor
+	 * @return the descriptor in the given preference
+	 */
 	protected abstract T loadFromNode(Preferences node);
-
+	
 	private String[] sortedChildrenNames(final Preferences node)
 			throws BackingStoreException {
 		final String[] childrenNames = node.childrenNames();
@@ -79,8 +90,8 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		return childrenNames;
 	}
 
-	public void setUser(T[] newSolvers) {
-		doSetUser(newSolvers);
+	public void setKnown(T[] newDescs) {
+		doSetKnown(Arrays.asList(newDescs));
 		try {
 			doSave();
 		} catch (BackingStoreException e) {
@@ -88,32 +99,47 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		}
 	}
 
-	protected void doSetUser(T[] newSolvers) {
-		userDefined.clear();
-		userDefined.addAll(newSolvers);
+	protected void doSetKnown(List<T> newDescs) {
+		known.clear();
+		for (T desc : newDescs) {
+			final T real = getRealDescriptor(desc);
+			known.add(real);
+		}
+		known.addIfNotPresent(bundled);
+	}
+
+	/**
+	 * Returns the descriptor to store based on the given descriptor.
+	 * Basically, this method should return a bundled descriptor with the same
+	 * name, if there is any. Otherwise, it should return its parameter.
+	 * 
+	 * @param desc
+	 *            some descriptor
+	 * @return a bundled descriptor or the given descriptor
+	 */
+	protected abstract T getRealDescriptor(T desc);
+
+	public T doGetBundled(String name) {
+		return bundled.get(name);
 	}
 
 	public T[] doGetBundled() {
 		return bundled.toArray();
 	}
 
-	public T[] doGetUser() {
-		return userDefined.toArray();
+	public T[] doGetKnown() {
+		return known.toArray();
 	}
 
 	protected T doGet(String name) {
-		final T desc = bundled.get(name);
-		if (desc != null) {
-			return desc;
-		}
-		return userDefined != null ? userDefined.get(name) : null;
+		return known.get(name);
 	}
 
 	public void doSave() throws BackingStoreException {
 		root.node(nodeName).removeNode();
 		final Preferences node = root.node(nodeName);
 		int count = 1;
-		for (final T desc : userDefined) {
+		for (final T desc : known) {
 			final Preferences childNode = node.node(Integer.toString(count++));
 			((Descriptor) desc).serialize(childNode);
 		}

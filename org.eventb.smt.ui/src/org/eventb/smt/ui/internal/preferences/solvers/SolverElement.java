@@ -35,8 +35,8 @@ public class SolverElement extends AbstractElement<ISolverDescriptor> {
 		this.path = new Path("");
 	}
 
-	public SolverElement(ISolverDescriptor origin, boolean editable) {
-		super(editable, origin.getName());
+	public SolverElement(ISolverDescriptor origin) {
+		super(!origin.isBundled(), origin.getName());
 		this.kind = origin.getKind();
 		this.path = origin.getPath();
 	}

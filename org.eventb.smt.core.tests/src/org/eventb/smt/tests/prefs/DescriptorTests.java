@@ -9,19 +9,23 @@
  *******************************************************************************/
 package org.eventb.smt.tests.prefs;
 
+import static java.util.Arrays.asList;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
+import static org.eventb.smt.core.internal.prefs.ConfigPreferences.getBundledConfigs;
+import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
 import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.internal.prefs.ConfigPreferences;
-import org.eventb.smt.core.internal.prefs.SolverPreferences;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.IDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
@@ -75,11 +79,14 @@ public class DescriptorTests {
 	}
 
 	/**
-	 * Ensures that bundled solver descriptors say they are bundled.
+	 * Ensures that bundled solver descriptors say they are bundled and are
+	 * parts of the known solvers.
 	 */
 	@Test
 	public void bundledSolverDescriptor() {
-		assertAreBundled(SolverPreferences.getBundledSolvers());
+		final ISolverDescriptor[] bundled = getBundledSolvers();
+		assertAreBundled(bundled);
+		assertContainsAll(SMTCore.getSolvers(), bundled);
 	}
 
 	/**
@@ -87,7 +94,9 @@ public class DescriptorTests {
 	 */
 	@Test
 	public void bundledConfigDescriptor() {
-		assertAreBundled(ConfigPreferences.getBundledConfigs());
+		final IConfigDescriptor[] bundled = getBundledConfigs();
+		assertAreBundled(bundled);
+		assertContainsAll(SMTCore.getConfigurations(), bundled);
 	}
 
 	private void assertAreBundled(IDescriptor[] descs) {
@@ -95,4 +104,58 @@ public class DescriptorTests {
 			assertTrue(desc.isBundled());
 		}
 	}
+
+	private void assertContainsAll(IDescriptor[] list, IDescriptor... subList) {
+		assertTrue(asList(list).containsAll(asList(subList)));
+
+	}
+
+	/**
+	 * Ensures that bundled solvers cannot be removed from the list of known
+	 * solvers.
+	 */
+	@Test
+	public void bundledSolverCannotBeRemoved() {
+		SMTCore.setSolvers(new ISolverDescriptor[0]);
+		assertContainsAll(SMTCore.getSolvers(), getBundledSolvers());
+	}
+
+	/**
+	 * Ensures that bundled configurations cannot be removed from the list of
+	 * known configurations.
+	 */
+	@Test
+	public void bundledConfigCannotBeRemoved() {
+		SMTCore.setConfigurations(new IConfigDescriptor[0]);
+		assertContainsAll(SMTCore.getConfigurations(), getBundledConfigs());
+	}
+
+	/**
+	 * Ensures that a bundled solver cannot be changed. To check this, we create
+	 * a fake solver with the same name as a bundled solver, and we verify that
+	 * its descriptor does not change.
+	 */
+	@Test
+	public void bundledSolverCannotChange() {
+		final ISolverDescriptor[] solvers = SMTCore.getSolvers();
+		int index = findBundledVeriTSolver(solvers);
+		final ISolverDescriptor bundled = solvers[index];
+		final ISolverDescriptor fake = newSolverDescriptor(bundled.getName(),
+				Z3, bundled.getPath());
+		solvers[index] = fake;
+		SMTCore.setSolvers(solvers);
+		assertContainsAll(SMTCore.getSolvers(), bundled);
+	}
+
+	private int findBundledVeriTSolver(ISolverDescriptor[] solvers) {
+		for (int i = 0; i < solvers.length; i++) {
+			final ISolverDescriptor desc = solvers[i];
+			if (desc.isBundled() && desc.getKind() == VERIT) {
+				return i;
+			}
+		}
+		fail("Can't find bundled veriT solver");
+		return -1;
+	}
+
 }

@@ -9,10 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.solvers;
 
-import static org.eventb.smt.core.SMTCore.getBundledSolvers;
-import static org.eventb.smt.core.SMTCore.getUserSolvers;
-import static org.eventb.smt.core.SMTCore.setUserSolvers;
-
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractModel;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
@@ -29,12 +26,12 @@ public class SolverModel extends
 	private ConfigModel configModel;
 
 	public SolverModel() {
-		super(getBundledSolvers());
+		super();
 	}
 
 	@Override
 	protected void doLoad() {
-		addElements(getUserSolvers(), true);
+		addElements(SMTCore.getSolvers());
 	}
 
 	@Override
@@ -43,8 +40,8 @@ public class SolverModel extends
 	}
 
 	@Override
-	protected SolverElement convert(ISolverDescriptor origin, boolean editable) {
-		return new SolverElement(origin, editable);
+	protected SolverElement convert(ISolverDescriptor origin) {
+		return new SolverElement(origin);
 	}
 
 	@Override
@@ -54,7 +51,7 @@ public class SolverModel extends
 
 	@Override
 	public void doStore(ISolverDescriptor[] solvers) {
-		setUserSolvers(solvers);
+		SMTCore.setSolvers(solvers);
 	}
 
 	@Override

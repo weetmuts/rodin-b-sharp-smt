@@ -37,7 +37,7 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 		@Override
 		public boolean isValid(ISolverDescriptor desc) {
 			final String name = desc.getName();
-			if (doGet(name) != null) {
+			if (get(name) != null) {
 				logError("Duplicate solver name " + name + " ignored", null);
 				return false;
 			}
@@ -71,16 +71,26 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 		return new SolverDescriptor(node);
 	}
 
+	@Override
+	protected ISolverDescriptor getRealDescriptor(ISolverDescriptor desc) {
+		final String name = desc.getName();
+		final ISolverDescriptor bundledDesc = doGetBundled(name);
+		if (bundledDesc != null) {
+			return bundledDesc;
+		}
+		return desc;
+	}
+
 	public static ISolverDescriptor[] getBundledSolvers() {
 		return INSTANCE.doGetBundled();
 	}
 
-	public static ISolverDescriptor[] getUserSolvers() {
-		return INSTANCE.doGetUser();
+	public static ISolverDescriptor[] getSolvers() {
+		return INSTANCE.doGetKnown();
 	}
 
-	public static void setUserSolvers(ISolverDescriptor[] newSolvers) {
-		INSTANCE.setUser(newSolvers);
+	public static void setSolvers(ISolverDescriptor[] newSolvers) {
+		INSTANCE.setKnown(newSolvers);
 	}
 
 	public static ISolverDescriptor get(String name) {

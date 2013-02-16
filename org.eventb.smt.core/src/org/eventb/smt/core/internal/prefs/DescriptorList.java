@@ -40,6 +40,19 @@ public abstract class DescriptorList<T extends IDescriptor> implements
 		}
 	}
 
+	/*
+	 * Adds all descriptors of the given list which name is not already present
+	 * in this list.
+	 */
+	public void addIfNotPresent(DescriptorList<T> newDescs) {
+		for (final T newDesc : newDescs) {
+			final String name = newDesc.getName();
+			if (get(name) == null) {
+				add(newDesc);
+			}
+		}
+	}
+
 	public void addAll(Collection<T> newDescs) {
 		for (final T newDesc : newDescs) {
 			add(newDesc);

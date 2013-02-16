@@ -10,9 +10,7 @@
 package org.eventb.smt.core.tests.tactics;
 
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
-import static org.eventb.smt.core.SMTCore.getBundledConfigs;
 import static org.eventb.smt.core.SMTCore.getTacticDescriptor;
-import static org.eventb.smt.core.SMTCore.getUserConfigs;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.junit.Test;
 
@@ -37,8 +36,7 @@ public class SMTDynTacticProviderTests {
 	 */
 	@Test
 	public void allConfigsAreDynamicallyRegistered() {
-		assertAreDynamicallyRegistered(getBundledConfigs());
-		assertAreDynamicallyRegistered(getUserConfigs());
+		assertAreDynamicallyRegistered(SMTCore.getConfigurations());
 	}
 
 	private void assertAreDynamicallyRegistered(IConfigDescriptor[] configs) {

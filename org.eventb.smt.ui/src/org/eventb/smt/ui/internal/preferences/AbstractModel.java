@@ -11,6 +11,7 @@ package org.eventb.smt.ui.internal.preferences;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,40 +21,29 @@ import org.eclipse.jface.viewers.TableViewer;
  * Abstract model backing a preference table in a preference page. This class
  * serves as a bridge between the UI table viewers and the core SMT plug-in
  * preferences.
- * <p>
- * The first elements are always the bundled ones and are initialized at
- * instance creation, while the user-defined models are only loaded during the
- * <code>load()</code> call.
- * </p>
  *
  * @author Laurent Voisin
  */
 public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 
 	public final List<T> elements = new ArrayList<T>();
-	protected final int nbBundled;
 	private TableViewer viewer;
 
-	public AbstractModel(U[] bundled) {
-		addElements(bundled, false);
-		this.nbBundled = elements.size();
-	}
-
-	protected final void addElements(U[] coreElements, boolean editable) {
+	protected final void addElements(U[] coreElements) {
 		for (final U coreElement : coreElements) {
-			final T element = convert(coreElement, editable);
+			final T element = convert(coreElement);
 			elements.add(element);
 		}
 	}
 
-	protected abstract T convert(U coreElement, boolean editable);
+	protected abstract T convert(U coreElement);
 
 	public final void setViewer(TableViewer tableViewer) {
 		viewer = tableViewer;
 	}
 
 	/**
-	 * Load user-defined elements from the core plug-in.
+	 * Load elements from the core plug-in.
 	 */
 	public final void load() {
 		doLoad();
@@ -66,7 +56,13 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	 * Remove all user-defined elements.
 	 */
 	public final void loadDefault() {
-		bundledElements().clear();
+		final Iterator<T> iter = elements.iterator();
+		while (iter.hasNext()) {
+			final T desc = iter.next();
+			if (desc.editable) {
+				iter.remove();
+			}
+		}
 		doLoadDefaults();
 		viewer.refresh(false);
 	}
@@ -138,13 +134,12 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	}
 
 	/**
-	 * Store all user-defined solvers into the core plug-in.
+	 * Store all solvers into the core plug-in.
 	 */
 	public final void store() {
-		final List<T> userElements = userElements();
-		final U[] coreElements = newArray(userElements.size());
+		final U[] coreElements = newArray(elements.size());
 		int count = 0;
-		for (final T element : userElements) {
+		for (final T element : elements) {
 			coreElements[count++] = element.toCore();
 		}
 		doStore(coreElements);
@@ -153,31 +148,5 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	protected abstract U[] newArray(int length);
 
 	protected abstract void doStore(U[] coreElements);
-
-	/**
-	 * Returns a sublist of <code>elements</code> that contains all bundled
-	 * elements.
-	 * <p>
-	 * <em>Caution</em>: this is an alias to the main list.
-	 * </p>
-	 *
-	 * @return a sublist of bundled elements
-	 */
-	protected final List<T> bundledElements() {
-		return elements.subList(nbBundled, elements.size());
-	}
-
-	/**
-	 * Returns a sublist of <code>elements</code> that contains all user-defined
-	 * elements.
-	 * <p>
-	 * <em>Caution</em>: this is an alias to the main list.
-	 * </p>
-	 *
-	 * @return a sublist of user-defined elements
-	 */
-	protected final List<T> userElements() {
-		return elements.subList(nbBundled, elements.size());
-	}
 
 }
