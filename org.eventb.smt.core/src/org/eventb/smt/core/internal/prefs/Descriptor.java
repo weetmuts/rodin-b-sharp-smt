@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
+import org.eventb.smt.core.prefs.IDescriptor;
 import org.osgi.service.prefs.Preferences;
 
 /**
@@ -17,26 +18,35 @@ import org.osgi.service.prefs.Preferences;
  *
  * @author Laurent Voisin
  */
-public abstract class Descriptor {
+public abstract class Descriptor implements IDescriptor {
 
 	private static final StringSerializer NAME = new StringSerializer("name"); //$NON-NLS-1$
 
 	private final String name;
+	private final boolean bundled;
 
-	public Descriptor(String name) {
+	public Descriptor(String name, boolean bundled) {
 		this.name = name;
+		this.bundled = bundled;
 	}
 
 	public Descriptor(Preferences node) {
 		this.name = NAME.load(node);
+		this.bundled = false;
 	}
 
 	public void serialize(Preferences node) {
 		NAME.store(node, name);
 	}
 
-	public String getName() {
+	@Override
+	public final String getName() {
 		return name;
+	}
+
+	@Override
+	public final boolean isBundled() {
+		return bundled;
 	}
 
 }

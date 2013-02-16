@@ -36,7 +36,8 @@ public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> 
 		final String args = loader.getArgs();
 		final TranslationApproach approach = loader.getTranslationApproach();
 		final SMTLIBVersion version = loader.getVersion();
-		return new ConfigDescriptor(name, solverName, args, approach, version);
+		return new ConfigDescriptor(name, true, solverName, args, approach,
+				version);
 	}
 
 	@Override

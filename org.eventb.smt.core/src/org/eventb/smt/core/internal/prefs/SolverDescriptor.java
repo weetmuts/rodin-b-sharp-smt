@@ -23,8 +23,9 @@ public class SolverDescriptor extends Descriptor implements ISolverDescriptor {
 	private final SolverKind kind;
 	private final IPath path;
 
-	public SolverDescriptor(String name, SolverKind kind, IPath path) {
-		super(name);
+	public SolverDescriptor(String name, boolean bundled, SolverKind kind,
+			IPath path) {
+		super(name, bundled);
 		this.kind = kind;
 		this.path = path;
 	}

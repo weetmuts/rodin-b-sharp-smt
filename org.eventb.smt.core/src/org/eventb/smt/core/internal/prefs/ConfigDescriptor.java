@@ -29,9 +29,9 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 	private final TranslationApproach approach;
 	private final SMTLIBVersion version;
 
-	public ConfigDescriptor(String name, String solverName, String args,
-			TranslationApproach approach, SMTLIBVersion version) {
-		super(name);
+	public ConfigDescriptor(String name, boolean bundled, String solverName,
+			String args, TranslationApproach approach, SMTLIBVersion version) {
+		super(name, bundled);
 		this.solverName = solverName;
 		this.args = args;
 		this.approach = approach;

@@ -83,7 +83,8 @@ public class SMTCore {
 	public static IConfigDescriptor newConfigDescriptor(String name,
 			String solverName, String args, TranslationApproach approach,
 			SMTLIBVersion version) {
-		return new ConfigDescriptor(name, solverName, args, approach, version);
+		return new ConfigDescriptor(name, false, solverName, args, approach,
+				version);
 	}
 
 	/**
@@ -126,7 +127,7 @@ public class SMTCore {
 	 */
 	public static ISolverDescriptor newSolverDescriptor(String name,
 			SolverKind kind, IPath path) {
-		return new SolverDescriptor(name, kind, path);
+		return new SolverDescriptor(name, false, kind, path);
 	}
 
 	/**
