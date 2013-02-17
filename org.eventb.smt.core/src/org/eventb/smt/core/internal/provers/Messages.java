@@ -7,19 +7,23 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.provers;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "org.eventb.smt.core.internal.provers.messages"; //$NON-NLS-1$
-	public static String unknownSMTConfigurationError;
+
+	public static String nullSMTConfigurationError;
 	public static String SmtProversCall_veriT_path_not_defined;
 	public static String SmtProversCall_SMT_file_does_not_exist;
 	public static String force_error_invalid_forces;
 	public static String SmtProversCall_Check_Smt_Preferences;
 	public static String SMTVeriTCall_SMTLIBV2_0_deactivated;
+
+	// Pattern for messages with argument (see corresponding method below)
+	public static String unknownSMTConfigurationError_pattern;
 
 	static {
 		// initialize resource bundle
@@ -29,4 +33,9 @@ public class Messages extends NLS {
 	private Messages() {
 		// do not instantiate
 	}
+
+	public static String unknownSMTConfigurationError(String configName) {
+		return bind(unknownSMTConfigurationError_pattern, configName);
+	}
+
 }

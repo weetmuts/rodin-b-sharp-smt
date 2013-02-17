@@ -10,22 +10,31 @@
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
-import static org.eventb.smt.core.SMTCore.getSMTConfiguration;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3_PP_SMT2_ID;
 import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT_PP_SMT2_ID;
 
 import org.eventb.core.seqprover.reasonerExtentionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 
+/**
+ * Acceptance tests for the SMT reasoner. We use the bundled configurations to
+ * perform the tests.
+ * 
+ * @author Yoann Guyot
+ */
 public class SMTPPReasonerTests extends AbstractReasonerTests {
 
 	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
 	private static final long DEFAULT_TIMEOUT_DELAY = 1000;
 
-	final ISMTConfiguration veriTConfig = getSMTConfiguration(BUNDLED_VERIT_PP_SMT2_ID);
-	final ISMTConfiguration cvc3Config = getSMTConfiguration(BUNDLED_CVC3_PP_SMT2_ID);
+	private static final SMTInput CVC3_INPUT = new SMTInput(
+			BUNDLED_CVC3_PP_SMT2_ID, DEFAULT_RESTRICTED_VALUE,
+			DEFAULT_TIMEOUT_DELAY);
+
+	private static final SMTInput VERIT_INPUT = new SMTInput(
+			BUNDLED_VERIT_PP_SMT2_ID, DEFAULT_RESTRICTED_VALUE,
+			DEFAULT_TIMEOUT_DELAY);
 
 	@Override
 	public String getReasonerID() {
@@ -36,27 +45,20 @@ public class SMTPPReasonerTests extends AbstractReasonerTests {
 	public SuccessfullReasonerApplication[] getSuccessfulReasonerApplications() {
 		return new SuccessfullReasonerApplication[] {
 				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(
-								DEFAULT_RESTRICTED_VALUE,
-								DEFAULT_TIMEOUT_DELAY, veriTConfig)), //
+						genSeq(" x < y ;; y < z |- x < z "), VERIT_INPUT),
 				new SuccessfullReasonerApplication(
 						genSeq(" x < y ;; z = x + y ;; y < z |- x < z "),
-						new SMTInput(DEFAULT_RESTRICTED_VALUE,
-								DEFAULT_TIMEOUT_DELAY, veriTConfig)), //
+						VERIT_INPUT), //
 				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), new SMTInput(
-								DEFAULT_RESTRICTED_VALUE,
-								DEFAULT_TIMEOUT_DELAY, cvc3Config)) };
+						genSeq(" x < y ;; y < z |- x < z "), CVC3_INPUT) };
 	}
 
 	@Override
 	public UnsuccessfullReasonerApplication[] getUnsuccessfullReasonerApplications() {
 		return new UnsuccessfullReasonerApplication[] {
 				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						new SMTInput(DEFAULT_RESTRICTED_VALUE,
-								DEFAULT_TIMEOUT_DELAY, veriTConfig), "Failed"),
+						VERIT_INPUT, "Failed"),
 				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						new SMTInput(DEFAULT_RESTRICTED_VALUE,
-								DEFAULT_TIMEOUT_DELAY, cvc3Config), "Failed") };
+						CVC3_INPUT, "Failed") };
 	}
 }

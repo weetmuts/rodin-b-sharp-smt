@@ -9,20 +9,15 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.tactics;
 
-import static org.eventb.core.seqprover.tactics.BasicTactics.failTac;
 import static org.eventb.core.seqprover.tactics.BasicTactics.reasonerTac;
-import static org.eventb.smt.core.SMTCore.getSMTConfiguration;
-import static org.eventb.smt.core.internal.provers.Messages.unknownSMTConfigurationError;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 
 import org.eventb.core.seqprover.IParameterValuation;
 import org.eventb.core.seqprover.IReasoner;
-import org.eventb.core.seqprover.IReasonerInput;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.core.seqprover.ITacticParameterizer;
 import org.eventb.smt.core.internal.provers.ExternalSMT;
 import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 
 /**
  * Creates parameterized tactics for running an SMT solver configuration. This
@@ -74,14 +69,15 @@ public class SMTParameterizer implements ITacticParameterizer {
 	}
 
 	/**
-	 * Returns a tactic that will apply the given SMT solver configuration with
-	 * the given parameters. If there is no configuration with the given name,
-	 * returns a tactic that always fails.
+	 * Returns a tactic that will apply the given SMT configuration with the
+	 * given parameters. This method does not check that there exists a
+	 * configuration with the given name. This will be checked later when the
+	 * reasoner is run.
 	 * 
 	 * This tactic should be called by the parameterized auto tactic.
 	 * 
-	 * @param configId
-	 *            the selected solver configuration id
+	 * @param configName
+	 *            the name of some SMT configuration
 	 * @param restricted
 	 *            true iff only selected hypotheses should be considered by the
 	 *            reasoner
@@ -91,17 +87,12 @@ public class SMTParameterizer implements ITacticParameterizer {
 	 * 
 	 * @return an SMT tactic that will run the given configuration
 	 */
-	// FIXME the configuration should be checked later in the reasoner.
-	private ITactic externalSMT(final String configId,
-			final boolean restricted, final long timeOutDelay) {
-		final ISMTConfiguration config = getSMTConfiguration(configId);
-		if (config == null) {
-			return failTac(unknownSMTConfigurationError + ": " + configId);
-		}
+	private ITactic externalSMT(String configName, boolean restricted,
+			long timeOutDelay) {
 		final IReasoner smtReasoner = new ExternalSMT();
-		final IReasonerInput smtInput = new SMTInput(restricted, timeOutDelay,
-				config);
-		return reasonerTac(smtReasoner, smtInput);
+		final SMTInput input = new SMTInput(configName, restricted,
+				timeOutDelay);
+		return reasonerTac(smtReasoner, input);
 	}
 
 }
