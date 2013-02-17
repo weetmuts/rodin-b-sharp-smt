@@ -42,12 +42,16 @@ public class ConfigModel extends
 	@Override
 	protected void doLoad() {
 		addElements(SMTCore.getConfigurations());
-		EnablementStore.load(elements);
 	}
 
+	/*
+	 * Make all configurations enabled by default
+	 */
 	@Override
 	protected void doLoadDefaults() {
-		EnablementStore.setToDefault();
+		for (ConfigElement element: elements) {
+			element.enabled = true;
+		}
 	}
 
 	@Override
@@ -58,7 +62,6 @@ public class ConfigModel extends
 	@Override
 	public void doStore(IConfigDescriptor[] coreElements) {
 		SMTCore.setConfigurations(coreElements);
-		EnablementStore.store(elements);
 	}
 
 	@Override

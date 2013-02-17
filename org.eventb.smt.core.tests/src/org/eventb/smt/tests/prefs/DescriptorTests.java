@@ -69,13 +69,14 @@ public class DescriptorTests {
 		final TranslationApproach approach = USING_PP;
 		final SMTLIBVersion version = V2_0;
 		final IConfigDescriptor desc = newConfigDescriptor(name, solverName,
-				args, approach, version);
+				args, approach, version, true);
 		assertSame(name, desc.getName());
 		assertFalse(desc.isBundled());
 		assertSame(solverName, desc.getSolverName());
 		assertSame(args, desc.getArgs());
 		assertSame(approach, desc.getTranslationApproach());
 		assertSame(version, desc.getSmtlibVersion());
+		assertTrue(desc.isEnabled());
 	}
 
 	/**

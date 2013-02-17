@@ -46,11 +46,13 @@ public class ConfigElement extends AbstractElement<IConfigDescriptor> {
 		this.args = origin.getArgs();
 		this.approach = origin.getTranslationApproach();
 		this.version = origin.getSmtlibVersion();
+		this.enabled = origin.isEnabled();
 	}
 
 	@Override
 	public IConfigDescriptor toCore() {
-		return newConfigDescriptor(name, solverName, args, approach, version);
+		return newConfigDescriptor(name, solverName, args, approach, version,
+				enabled);
 	}
 
 }

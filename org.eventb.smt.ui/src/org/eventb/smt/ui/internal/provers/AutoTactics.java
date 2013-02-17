@@ -21,7 +21,8 @@ import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.SequentProver;
-import org.eventb.smt.ui.internal.preferences.configurations.EnablementStore;
+import org.eventb.smt.core.SMTCore;
+import org.eventb.smt.core.prefs.IConfigDescriptor;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
@@ -56,11 +57,14 @@ public class AutoTactics {
 	 *         tactic.
 	 */
 	public static ITacticDescriptor makeAllSMTSolversTactic() {
-		final List<String> configNames = EnablementStore.getEnabledConfigNames();
+		final IConfigDescriptor[] configs = SMTCore.getConfigurations();
 		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>();
-		for (final String configName : configNames) {
-			final ITacticDescriptor smtTactic = getTacticDescriptor(configName);
-			combinedTactics.add(smtTactic);
+		for (final IConfigDescriptor config : configs) {
+			if (config.isEnabled()) {
+				final String configName = config.getName();
+				final ITacticDescriptor smtTactic = getTacticDescriptor(configName);
+				combinedTactics.add(smtTactic);
+			}
 		}
 		if (combinedTactics.isEmpty()) {
 			return null;

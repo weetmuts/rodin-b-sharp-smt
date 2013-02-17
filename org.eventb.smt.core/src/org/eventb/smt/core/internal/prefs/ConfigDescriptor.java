@@ -23,19 +23,26 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 			"approach"); //$NON-NLS-1$
 	private static final SMTLIBVersionSerializer VERSION = new SMTLIBVersionSerializer(
 			"version"); //$NON-NLS-1$
+	private static final BooleanSerializer ENABLED = new BooleanSerializer(
+			"enabled"); //$NON-NLS-1$
 
 	private final String solverName;
 	private final String args;
 	private final TranslationApproach approach;
 	private final SMTLIBVersion version;
+	
+	// This field is the only one that can mutate
+	private boolean enabled;
 
 	public ConfigDescriptor(String name, boolean bundled, String solverName,
-			String args, TranslationApproach approach, SMTLIBVersion version) {
+			String args, TranslationApproach approach, SMTLIBVersion version,
+			boolean enabled) {
 		super(name, bundled);
 		this.solverName = solverName;
 		this.args = args;
 		this.approach = approach;
 		this.version = version;
+		this.enabled = enabled;
 	}
 
 	public ConfigDescriptor(Preferences node) {
@@ -44,6 +51,7 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		this.args = ARGS.load(node);
 		this.approach = APPROACH.load(node);
 		this.version = VERSION.load(node);
+		this.enabled = ENABLED.load(node);
 	}
 
 	@Override
@@ -53,6 +61,7 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		ARGS.store(node, args);
 		APPROACH.store(node, approach);
 		VERSION.store(node, version);
+		ENABLED.store(node, enabled);
 	}
 
 	@Override
@@ -73,6 +82,15 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 	@Override
 	public SMTLIBVersion getSmtlibVersion() {
 		return version;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

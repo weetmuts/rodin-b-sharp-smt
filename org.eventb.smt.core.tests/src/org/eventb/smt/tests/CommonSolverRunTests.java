@@ -183,7 +183,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final String newID = id + "_" + translationApproach.toString()
 				+ (smtlibVersion.equals(V1_2) ? "_SMT1" : "_SMT2");
 		return newConfigDescriptor(newID, solver.getName(), args,
-				translationApproach, smtlibVersion);
+				translationApproach, smtlibVersion, true);
 	}
 
 	protected static void setTranslationPreferences() {

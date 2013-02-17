@@ -53,4 +53,13 @@ public interface IConfigDescriptor extends IDescriptor {
 	 */
 	SMTLIBVersion getSmtlibVersion();
 
+	/**
+	 * Tells whether this configuration shall be run within the default SMT
+	 * auto-tactic.
+	 * 
+	 * @return <code>true</code> if this configuration is part of the default
+	 *         SMT auto-tactic
+	 */
+	boolean isEnabled();
+
 }

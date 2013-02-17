@@ -60,7 +60,7 @@ public class SMTCore {
 
 	/**
 	 * Creates a new configuration descriptor from the given parameters.
-	 *
+	 * 
 	 * @param name
 	 *            name of the configuration
 	 * @param solverName
@@ -71,21 +71,24 @@ public class SMTCore {
 	 *            translation approach
 	 * @param version
 	 *            SMT-LIB version
+	 * @param enabled
+	 *            whether this configuration shall be part of the default SMT
+	 *            auto-tactic
 	 * @return a configuration descriptor
 	 */
 	public static IConfigDescriptor newConfigDescriptor(String name,
 			String solverName, String args, TranslationApproach approach,
-			SMTLIBVersion version) {
+			SMTLIBVersion version, boolean enabled) {
 		return new ConfigDescriptor(name, false, solverName, args, approach,
-				version);
+				version, enabled);
 	}
 
 	/**
 	 * Sets the list of known SMT configurations. This replaces the list of SMT
 	 * configurations with the given ones. However, bundled configurations
-	 * cannot be removed nor changed by this method. If a bundled configuration
-	 * is not present in the list, it will nevertheless automatically be added
-	 * to the list of configurations.
+	 * cannot be removed nor changed by this method (except for enablement). If
+	 * a bundled configuration is not present in the list, it will nevertheless
+	 * automatically be added to the list of configurations.
 	 */
 	public static void setConfigurations(IConfigDescriptor[] configs) {
 		ConfigPreferences.setConfigs(configs);

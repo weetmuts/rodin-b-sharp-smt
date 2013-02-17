@@ -66,6 +66,8 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		final String name = desc.getName();
 		final IConfigDescriptor bundledDesc = doGetBundled(name);
 		if (bundledDesc != null) {
+			// Copy enabled attribute
+			((ConfigDescriptor) bundledDesc).setEnabled(desc.isEnabled());
 			return bundledDesc;
 		}
 		return desc;
