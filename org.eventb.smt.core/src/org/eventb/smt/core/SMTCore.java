@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.eventb.smt.core;
 
+import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
+import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
+
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
@@ -34,6 +37,13 @@ import org.eventb.smt.core.translation.TranslationApproach;
  * @author Systerel (yguyot)
  */
 public class SMTCore {
+
+	/**
+	 * Descriptor of the auto-tactic that runs each enabled solver on the
+	 * current sequent until it is discharged.
+	 */
+	public static final ITacticDescriptor smtAutoTactic = getAutoTacticRegistry()
+			.getTacticDescriptor(PLUGIN_ID + ".autoTactic");
 
 	/**
 	 * Returns a tactic descriptor for running the given SMT solver

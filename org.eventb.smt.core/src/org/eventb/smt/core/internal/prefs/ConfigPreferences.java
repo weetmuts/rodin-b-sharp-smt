@@ -11,6 +11,9 @@ package org.eventb.smt.core.internal.prefs;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
+import java.util.List;
+
+import org.eventb.smt.core.internal.tactics.SMTAutoTactic;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.osgi.service.prefs.Preferences;
 
@@ -73,6 +76,15 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		return desc;
 	}
 
+	/*
+	 * Update the cache of the SMT auto-tactic.
+	 */
+	@Override
+	protected void doSetKnown(List<IConfigDescriptor> newDescs) {
+		super.doSetKnown(newDescs);
+		SMTAutoTactic.updateTactics(newDescs);
+	}
+
 	public static IConfigDescriptor[] getBundledConfigs() {
 		return INSTANCE.doGetBundled();
 	}
@@ -87,6 +99,16 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 
 	public static IConfigDescriptor get(String name) {
 		return INSTANCE.doGet(name);
+	}
+
+	/**
+	 * Initializes configuration preferences.
+	 */
+	public static void init() {
+		/*
+		 * Actually, this method does nothing, but calling it forces loading of
+		 * this class by the JVM which does the appropriate initialization.
+		 */
 	}
 
 }

@@ -49,5 +49,11 @@
             class="org.eventb.smt.core.internal.tactics.SMTDynTacticProvider"
             id="smtDynTacticProvider">
       </dynTacticProvider>
+      <autoTactic
+            class="org.eventb.smt.core.internal.tactics.SMTAutoTactic"
+            description="%SMTAuto.description"
+            id="autoTactic"
+            name="%SMTAuto.name">
+      </autoTactic>
    </extension>
 </plugin>

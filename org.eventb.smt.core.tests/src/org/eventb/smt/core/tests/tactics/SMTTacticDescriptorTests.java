@@ -9,9 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.tests.tactics;
 
-import static org.eventb.core.seqprover.ProverFactory.makeProofTree;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
-import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.SMTCore.getTacticDescriptor;
 import static org.eventb.smt.core.internal.prefs.ConfigPreferences.getBundledConfigs;
 import static org.eventb.smt.core.internal.tactics.SMTParameterizer.CONFIG_NAME_LABEL;
@@ -25,10 +23,6 @@ import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParamTacticDescriptor;
 import org.eventb.core.seqprover.IParameterValuation;
-import org.eventb.core.seqprover.IProofTree;
-import org.eventb.core.seqprover.IProofTreeNode;
-import org.eventb.core.seqprover.IProverSequent;
-import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.junit.Test;
 
@@ -38,7 +32,7 @@ import org.junit.Test;
  * 
  * @author Laurent Voisin
  */
-public class SMTTacticDescriptorTests {
+public class SMTTacticDescriptorTests extends TacticTests {
 
 	private static final IAutoTacticRegistry REGISTRY = getAutoTacticRegistry();
 
@@ -74,23 +68,7 @@ public class SMTTacticDescriptorTests {
 	 */
 	@Test
 	public void descriptorIsUsable() {
-		final IProofTreeNode node = makeSimpleProofTreeNode();
-		assertFalse(node.isClosed());
-
-		final ITacticDescriptor desc = getTacticDescriptorForBundledConfig();
-		final ITactic tactic = desc.getTacticInstance();
-		tactic.apply(node, null);
-		assertTrue(node.isClosed());
-	}
-
-	/*
-	 * Returns a proof tree node with a very simple sequent that should be
-	 * discharged by any SMT solver.
-	 */
-	private IProofTreeNode makeSimpleProofTreeNode() {
-		final IProverSequent sequent = genSeq("|- 1+1 = 2");
-		final IProofTree proofTree = makeProofTree(sequent, null);
-		return proofTree.getRoot();
+		assertDischarges(getTacticDescriptorForBundledConfig());
 	}
 
 	/*

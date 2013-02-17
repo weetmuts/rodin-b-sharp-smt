@@ -10,11 +10,7 @@
 package org.eventb.smt.ui.internal.provers;
 
 import static java.util.Collections.singletonList;
-import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
-import static org.eventb.core.seqprover.eventbExtensions.TacticCombinators.ComposeUntilSuccess.COMBINATOR_ID;
-import static org.eventb.smt.core.SMTCore.getTacticDescriptor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
@@ -22,15 +18,12 @@ import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.SequentProver;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 
 /**
  * This class file contains static classes that extend the autoTactics extension
  * point in the sequent prover
- *
- *
+ * 
  * @author YFT
- *
  */
 public class AutoTactics {
 
@@ -39,6 +32,18 @@ public class AutoTactics {
 	 */
 	private AutoTactics() {
 		//
+	}
+
+	/**
+	 * Returns a tactic descriptor that runs all enabled SMT configurations
+	 * after a lasso. The lasso is undone if no solver succeeds.
+	 * 
+	 * @return a tactic descriptor of all enabled SMT configurations applied
+	 *         sequentially
+	 */
+	public static ITacticDescriptor makeAllSMTSolversTactic() {
+		return attemptAfterLasso(singletonList(SMTCore.smtAutoTactic),
+				"attemptAfterLassoId");
 	}
 
 	private static ITacticDescriptor attemptAfterLasso(
@@ -50,31 +55,4 @@ public class AutoTactics {
 		return comb.combine(descs, id);
 	}
 
-	/**
-	 *
-	 * @return a tactic descriptor of all SMT solvers applied sequentially or
-	 *         <code>null</code> if no SMT configuration could be used as a
-	 *         tactic.
-	 */
-	public static ITacticDescriptor makeAllSMTSolversTactic() {
-		final IConfigDescriptor[] configs = SMTCore.getConfigurations();
-		final List<ITacticDescriptor> combinedTactics = new ArrayList<ITacticDescriptor>();
-		for (final IConfigDescriptor config : configs) {
-			if (config.isEnabled()) {
-				final String configName = config.getName();
-				final ITacticDescriptor smtTactic = getTacticDescriptor(configName);
-				combinedTactics.add(smtTactic);
-			}
-		}
-		if (combinedTactics.isEmpty()) {
-			return null;
-		}
-
-		final ICombinatorDescriptor compUntilSuccCombDesc = getAutoTacticRegistry()
-				.getCombinatorDescriptor(COMBINATOR_ID);
-		final ITacticDescriptor allSMTSolvers = compUntilSuccCombDesc
-				.combine(combinedTactics, "composeUntilSuccessId");
-		return attemptAfterLasso(singletonList(allSMTSolvers),
-				"attemptAfterLassoId");
-	}
 }
