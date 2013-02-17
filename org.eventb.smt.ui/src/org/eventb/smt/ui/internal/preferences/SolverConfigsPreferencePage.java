@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,8 +8,6 @@
  * 	Systerel - initial API and implementation
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences;
-
-import static org.eventb.smt.ui.internal.provers.SMTProversUI.updateAllSMTSolversProfile;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -53,13 +51,6 @@ public class SolverConfigsPreferencePage extends FieldEditorPreferencePage
 		solverModel.setConfigModel(configModel);
 		addField(new SolverFieldEditor(solverModel, getFieldEditorParent()));
 		addField(new ConfigFieldEditor(configModel, getFieldEditorParent()));
-	}
-
-	@Override
-	public boolean performOk() {
-		final boolean result= super.performOk();
-		updateAllSMTSolversProfile();
-		return result;
 	}
 
 }

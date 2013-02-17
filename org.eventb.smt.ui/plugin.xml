@@ -24,7 +24,7 @@
             name="%SMTtactic.name"
             priority="0"
             skipPostTactic="false"
-            tacticProvider="org.eventb.smt.ui.internal.provers.SMT"
+            tacticProvider="org.eventb.smt.ui.internal.provers.SMTTacticProvider"
             target="global"
             toolbar="org.eventb.ui.sequentToolbar"
             tooltip="%SMTtactic.tooltip">
