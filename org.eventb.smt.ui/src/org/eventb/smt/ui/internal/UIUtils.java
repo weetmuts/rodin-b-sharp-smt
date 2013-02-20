@@ -14,13 +14,12 @@ import static org.eclipse.jface.dialogs.MessageDialog.openError;
 import static org.eclipse.jface.dialogs.MessageDialog.openInformation;
 import static org.eclipse.jface.dialogs.MessageDialog.openWarning;
 import static org.eclipse.ui.PlatformUI.getWorkbench;
-import static org.eventb.smt.ui.internal.provers.SMTProversUI.PLUGIN_ID;
+import static org.eventb.smt.ui.internal.SMTProversUI.PLUGIN_ID;
 
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eventb.smt.ui.internal.provers.SMTProversUI;
 
 /**
  * @author Fages-Tafanelli Yoann

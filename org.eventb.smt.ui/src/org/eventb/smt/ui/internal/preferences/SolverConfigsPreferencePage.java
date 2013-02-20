@@ -15,11 +15,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.eventb.smt.ui.internal.SMTProversUI;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigFieldEditor;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverFieldEditor;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverModel;
-import org.eventb.smt.ui.internal.provers.SMTProversUI;
 
 /**
  * This class contributes a preference page to the Preference dialog. By

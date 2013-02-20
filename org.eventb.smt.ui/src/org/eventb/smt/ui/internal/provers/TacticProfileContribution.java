@@ -12,7 +12,7 @@ package org.eventb.smt.ui.internal.provers;
 import static java.util.Collections.singletonList;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.ui.internal.provers.SMTProversUI.PLUGIN_ID;
+import static org.eventb.smt.ui.internal.SMTProversUI.PLUGIN_ID;
 
 import java.util.ArrayList;
 import java.util.List;
