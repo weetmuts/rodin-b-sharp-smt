@@ -19,6 +19,7 @@ import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
+import org.eventb.smt.core.internal.tactics.DefaultAutoWithSMT;
 import org.eventb.smt.core.internal.tactics.SMTTacticDescriptors;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
@@ -57,6 +58,21 @@ public class SMTCore {
 	 */
 	public static ITacticDescriptor getTacticDescriptor(String configName) {
 		return SMTTacticDescriptors.getTacticDescriptor(configName);
+	}
+
+	/**
+	 * Returns a tactic descriptor for running the "Default Auto Tactic" with
+	 * the SMT solvers inserted. The SMT solvers are run within a lasso.
+	 * <p>
+	 * This tactic descriptor is meant to be installed by the UI plug-in as a
+	 * tactic profile in the proving UI, as tactic profile cannot yet be
+	 * contributed through extension points.
+	 * </p>
+	 * 
+	 * @return a tactic descriptor for "Default Auto Tactic with SMT"
+	 */
+	public static ITacticDescriptor getDefaultAutoWithSMT() {
+		return DefaultAutoWithSMT.getTacticDescriptor();
 	}
 
 	/**

@@ -9,19 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.provers;
 
-import static java.util.Collections.singletonList;
-import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
-import static org.eventb.internal.ui.preferences.tactics.TacticPreferenceUtils.getDefaultAutoTactics;
-import static org.eventb.smt.ui.internal.SMTProversUI.PLUGIN_ID;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
-import org.eventb.core.seqprover.ICombinatorDescriptor;
-import org.eventb.core.seqprover.ICombinedTacticDescriptor;
 import org.eventb.internal.ui.preferences.tactics.TacticsProfilesCache;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.ui.EventBUIPlugin;
@@ -41,33 +30,6 @@ public class TacticProfileContribution {
 	 */
 	private static final String PROFILE_NAME = "Default Auto Tactic with SMT (do not edit)";
 
-	/**
-	 * Id for the tactic descriptor which constitutes the added profile.
-	 */
-	private static final String TACTIC_ID = PLUGIN_ID + ".default";
-
-	/**
-	 * Id of the tactic after which we want to insert the SMT solvers.
-	 */
-	private static final String BEFORE_TACTIC_ID = "org.eventb.core.seqprover.partitionRewriteTac";
-
-	/**
-	 * Id for the tactic descriptor which contains the SMT auto-tactic embedded
-	 * in an attempt after lasso.
-	 */
-	private static final String LASSO_ID = PLUGIN_ID + ".lasso";
-
-	/**
-	 * Auto-tactic registry
-	 */
-	private static final IAutoTacticRegistry REGISTRY = getAutoTacticRegistry();
-
-	/**
-	 * Tactic combinator for running a tactic within an attempt after lasso.
-	 */
-	private static final ICombinatorDescriptor ATTEMPT_AFTER_LASSO = REGISTRY
-			.getCombinatorDescriptor("org.eventb.core.seqprover.attemptAfterLasso");
-
 	public TacticProfileContribution() {
 		// Do nothing
 	}
@@ -77,9 +39,9 @@ public class TacticProfileContribution {
 	 */
 	public void contribute() {
 		final TacticsProfilesCache profiles = loadProfileCache();
-		final ICombinedTacticDescriptor defaultAutoDesc = getDefaultAutoProfile(profiles);
-		final ITacticDescriptor smtAutoDesc = makeSMTAutoTactic(defaultAutoDesc);
+		final ITacticDescriptor smtAutoDesc = SMTCore.getDefaultAutoWithSMT();
 		addContribution(profiles, smtAutoDesc);
+		profiles.store();
 	}
 
 	/**
@@ -94,51 +56,7 @@ public class TacticProfileContribution {
 	}
 
 	/**
-	 * Retrieves the "Default Auto Tactic Profile".
-	 */
-	private ICombinedTacticDescriptor getDefaultAutoProfile(
-			TacticsProfilesCache profiles) {
-		final String profileName = getDefaultAutoTactics();
-		final ITacticDescriptor desc = profiles.getEntry(profileName)
-				.getValue();
-		return (ICombinedTacticDescriptor) desc;
-	}
-
-	/**
-	 * Creates a new tactic descriptor from the given one, by inserting the SMT
-	 * auto tactic just before the partition rewrite tactic.
-	 */
-	private ITacticDescriptor makeSMTAutoTactic(ICombinedTacticDescriptor base) {
-		final String combinatorId = base.getCombinatorId();
-		final List<ITacticDescriptor> baseTactics = base.getCombinedTactics();
-		final List<ITacticDescriptor> newTactics = insertIntoList(baseTactics);
-		final ICombinatorDescriptor combinator = REGISTRY
-				.getCombinatorDescriptor(combinatorId);
-		return combinator.combine(newTactics, TACTIC_ID);
-	}
-
-	private List<ITacticDescriptor> insertIntoList(
-			List<ITacticDescriptor> baseTactics) {
-		final List<ITacticDescriptor> newTactics;
-		newTactics = new ArrayList<ITacticDescriptor>(baseTactics);
-		final ITacticDescriptor partDesc = REGISTRY
-				.getTacticDescriptor(BEFORE_TACTIC_ID);
-		final int index = newTactics.indexOf(partDesc);
-		newTactics.add(index, makeSMTAutoInLasso());
-		return newTactics;
-	}
-
-	/**
-	 * Returns a tactic descriptor for running the SMT auto-tactic embedded
-	 * within an attempt after lasso.
-	 */
-	private ITacticDescriptor makeSMTAutoInLasso() {
-		return ATTEMPT_AFTER_LASSO.combine(
-				singletonList(SMTCore.smtAutoTactic), LASSO_ID);
-	}
-
-	/**
-	 * Adds our contribution to the list of profiles and persist the list.
+	 * Adds our contribution to the list of profiles.
 	 */
 	private void addContribution(TacticsProfilesCache profiles,
 			ITacticDescriptor smtAutoDesc) {
@@ -146,7 +64,6 @@ public class TacticProfileContribution {
 			profiles.remove(PROFILE_NAME);
 		}
 		profiles.add(PROFILE_NAME, smtAutoDesc);
-		profiles.store();
 	}
 
 }
