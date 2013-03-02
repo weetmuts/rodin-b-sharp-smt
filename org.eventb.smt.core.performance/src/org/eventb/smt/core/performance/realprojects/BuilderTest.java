@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 ETH Zurich and others. All rights reserved.
+ * Copyright (c) 2006, 2013 ETH Zurich and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,7 +9,6 @@
  *  Systerel - separation of file and root element
  *  Systerel - added cleanup of attempted proofs
  *******************************************************************************/
-
 package org.eventb.smt.core.performance.realprojects;
 
 import static org.eventb.core.EventBPlugin.getProofManager;
@@ -293,7 +292,7 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib2 --disable-print-success --disable-banner ");
+				.append("--disable-print-success --disable-banner ");
 		preferencesBuilder
 				.append("--proof=- --proof-version=1 --proof-prune --disable-e,,");
 		preferencesBuilder.append("V2.0;");
@@ -302,7 +301,7 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib2 --disable-print-success --disable-banner ");
+				.append("--disable-print-success --disable-banner ");
 		preferencesBuilder
 				.append("--proof=- --proof-version=1 --proof-prune --enable-e --max-time=3,,");
 		preferencesBuilder.append("V2.0;");
@@ -310,7 +309,7 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("cvc3-2011-11-21,,");
 		preferencesBuilder.append("cvc3,,");
 		preferencesBuilder.append("/home/guyot/bin/cvc3-2011-11-21,,");
-		preferencesBuilder.append("-lang smt2 -timeout 3,,");
+		preferencesBuilder.append("-timeout 3,,");
 		preferencesBuilder.append("V2.0;");
 
 		preferencesBuilder.append("alt-ergo-r217,,");
@@ -322,27 +321,27 @@ public abstract class BuilderTest extends TestCase {
 		preferencesBuilder.append("z3-3.2,,");
 		preferencesBuilder.append("z3,,");
 		preferencesBuilder.append("/home/guyot/bin/z3-3.2,,");
-		preferencesBuilder.append("-smt2,,");
+		preferencesBuilder.append(",,");
 		preferencesBuilder.append("V2.0;");
 
 		preferencesBuilder.append("veriT-dev-r2863-SMT1,,");
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib1 --disable-print-success --disable-banner --disable-e,,");
+				.append("--disable-print-success --disable-banner --disable-e,,");
 		preferencesBuilder.append("V1.2;");
 
 		preferencesBuilder.append("veriT+e-prover-SMT1,,");
 		preferencesBuilder.append("verit,,");
 		preferencesBuilder.append("/home/guyot/bin/veriT-dev-r2863,,");
 		preferencesBuilder
-				.append("-i smtlib1 --disable-print-success --disable-banner --enable-e --max-time=3,,");
+				.append("--disable-print-success --disable-banner --enable-e --max-time=3,,");
 		preferencesBuilder.append("V1.2;");
 
 		preferencesBuilder.append("cvc3-2011-11-21-SMT1,,");
 		preferencesBuilder.append("cvc3,,");
 		preferencesBuilder.append("/home/guyot/bin/cvc3-2011-11-21,,");
-		preferencesBuilder.append("-lang smt -timeout 3,,");
+		preferencesBuilder.append("-timeout 3,,");
 		preferencesBuilder.append("V1.2;");
 
 		preferencesBuilder.append("alt-ergo-r217-SMT1,,");

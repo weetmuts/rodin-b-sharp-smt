@@ -94,33 +94,33 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	 * External CVC3 configurations
 	 */
 	public static final IConfigDescriptor CVC3_PP_SMT1 = makeConfig(LAST_CVC3_BIN,
-			LAST_CVC3, "-lang smt", USING_PP, V1_2);
+			LAST_CVC3, "", USING_PP, V1_2);
 	public static final IConfigDescriptor CVC3_VERIT_SMT1 = makeConfig(
-			LAST_CVC3_BIN, LAST_CVC3, "-lang smt", USING_VERIT, V1_2);
+			LAST_CVC3_BIN, LAST_CVC3, "", USING_VERIT, V1_2);
 	public static final IConfigDescriptor CVC3_PP_SMT2 = makeConfig(LAST_CVC3_BIN,
-			LAST_CVC3, "-lang smt2", USING_PP, V2_0);
+			LAST_CVC3, "", USING_PP, V2_0);
 	public static final IConfigDescriptor CVC3_VERIT_SMT2 = makeConfig(
-			LAST_CVC3_BIN, LAST_CVC3, "-lang smt2", USING_VERIT, V2_0);
+			LAST_CVC3_BIN, LAST_CVC3, "", USING_VERIT, V2_0);
 
 	/**
 	 * External CVC4 configurations
 	 */
 	public static final IConfigDescriptor CVC4_PP_SMT1 = makeConfig(LAST_CVC4_BIN,
-			LAST_CVC4, "--lang smt", USING_PP, V1_2);
+			LAST_CVC4, "", USING_PP, V1_2);
 	public static final IConfigDescriptor CVC4_VERIT_SMT1 = makeConfig(
-			LAST_CVC4_BIN, LAST_CVC4, "--lang smt", USING_VERIT, V1_2);
+			LAST_CVC4_BIN, LAST_CVC4, "", USING_VERIT, V1_2);
 	public static final IConfigDescriptor CVC4_PP_SMT2 = makeConfig(LAST_CVC4_BIN,
-			LAST_CVC4, "--lang smt2", USING_PP, V2_0);
+			LAST_CVC4, "", USING_PP, V2_0);
 	public static final IConfigDescriptor CVC4_VERIT_SMT2 = makeConfig(
-			LAST_CVC4_BIN, LAST_CVC4, "--lang smt2", USING_VERIT, V2_0);
+			LAST_CVC4_BIN, LAST_CVC4, "", USING_VERIT, V2_0);
 
 	/**
 	 * External MathSAT5 configurations
 	 */
 	public static final IConfigDescriptor MATHSAT5_PP_SMT1 = makeConfig(
-			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_PP, V1_2);
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_PP, V1_2);
 	public static final IConfigDescriptor MATHSAT5_VERIT_SMT1 = makeConfig(
-			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "-input=smt", USING_VERIT, V1_2);
+			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_VERIT, V1_2);
 	public static final IConfigDescriptor MATHSAT5_PP_SMT2 = makeConfig(
 			LAST_MATHSAT5_BIN, LAST_MATHSAT5, "", USING_PP, V2_0);
 	public static final IConfigDescriptor MATHSAT5_VERIT_SMT2 = makeConfig(
@@ -149,11 +149,11 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			USING_VERIT, V1_2);
 	public static final IConfigDescriptor VERIT_PP_SMT2 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT,
-			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
+			"--disable-print-success --enable-e --max-time=2.9",
 			USING_PP, V2_0);
 	public static final IConfigDescriptor VERIT_VERIT_SMT2 = makeConfig(
 			LAST_VERIT_BIN, LAST_VERIT,
-			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
+			"--disable-print-success --enable-e --max-time=2.9",
 			USING_VERIT, V2_0);
 
 	/**
@@ -164,9 +164,9 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	public static final IConfigDescriptor Z3_VERIT_SMT1 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "", USING_VERIT, V1_2);
 	public static final IConfigDescriptor Z3_PP_SMT2 = makeConfig(LAST_Z3_BIN,
-			LAST_Z3, "-smt2", USING_PP, V2_0);
+			LAST_Z3, "", USING_PP, V2_0);
 	public static final IConfigDescriptor Z3_VERIT_SMT2 = makeConfig(LAST_Z3_BIN,
-			LAST_Z3, "-smt2", USING_VERIT, V2_0);
+			LAST_Z3, "", USING_VERIT, V2_0);
 
 	public CommonPerformanceTests(SolverKind solverKind, boolean bundled,
 			Set<Theory> theories, TranslationApproach translationApproach,

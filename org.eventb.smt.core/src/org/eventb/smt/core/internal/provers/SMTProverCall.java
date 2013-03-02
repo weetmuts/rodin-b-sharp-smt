@@ -211,22 +211,19 @@ public abstract class SMTProverCall extends XProverCall2 {
 	private synchronized List<String> solverCommandLine() {
 		final List<String> commandLine = new ArrayList<String>();
 
-		/**
-		 * Selected solver binary path
-		 */
+		// Selected solver binary path
 		commandLine.add(config.getSolverPath().toOSString());
 
-		/**
-		 * This is a patch to deactivate the z3 MBQI module which is buggy.
-		 */
+		// Add special arguments specifying benchmark language version
+		commandLine.addAll(SMTVersionArgs.getArgs(config));
+
+		// Patch to deactivate the z3 MBQI module which is buggy.
 		if (config.getSmtlibVersion() == V1_2 && config.getKind() == Z3) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
 
-		/**
-		 * Selected solver parameters
-		 */
+		// Selected solver parameters
 		final String args = config.getArgs();
 		if (!args.isEmpty()) {
 			final String[] argumentsString = args.split(" ");
@@ -235,9 +232,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 			}
 		}
 
-		/**
-		 * Benchmark file produced by translating the Event-B sequent
-		 */
+		// Benchmark file produced by translating the Event-B sequent
 		if (config.getKind() == MATHSAT5) {
 			commandLine.add("< " + smtBenchmarkFile.getAbsolutePath());
 		} else {

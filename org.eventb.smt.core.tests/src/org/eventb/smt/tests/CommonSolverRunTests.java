@@ -78,19 +78,19 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			"--enable-e --max-time=2.9", USING_VERIT, V1_2);
 	public static final IConfigDescriptor BUNDLED_VERIT_VT_SMT2 = makeConfig(
 			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
-			"-i smtlib2 --disable-print-success --enable-e --max-time=2.9",
+			"--disable-print-success --enable-e --max-time=2.9",
 			USING_VERIT, V2_0);
 
 	/**
 	 * Bundled CVC3 configurations
 	 */
 	public static final IConfigDescriptor BUNDLED_CVC3_PP_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt", USING_PP, V1_2);
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_PP, V1_2);
 	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt", USING_VERIT,
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_VERIT,
 			V1_2);
 	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT2 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "-lang smt2", USING_VERIT,
+			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_VERIT,
 			V2_0);
 
 	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
