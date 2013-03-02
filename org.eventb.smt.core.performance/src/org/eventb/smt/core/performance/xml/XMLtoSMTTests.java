@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,9 +7,10 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.performance.xml;
 
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
@@ -399,7 +400,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		if (configuration.getSmtlibVersion().equals(V2_0)) {
+		if (configuration.getSmtlibVersion() == V2_0) {
 			Assert.assertTrue(
 					"SMT-LIB 2.0 is not handled by the veriT approach yet",
 					false);
@@ -441,7 +442,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		if (configuration.getSmtlibVersion().equals(V1_2)) {
+		if (configuration.getSmtlibVersion() == V1_2) {
 			Assert.assertTrue(
 					"Unsat core extraction in SMT-LIB v1.2 is not handled yet",
 					false);
@@ -455,7 +456,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
 
 			final SolverKind kind = configuration.getKind();
-			if (kind == SolverKind.VERIT || kind == SolverKind.Z3) {
+			if (kind == VERIT || kind == Z3) {
 				doTest(name, data.getHypotheses(), data.getGoal(),
 						data.getTe(), VALID, data.getNeededHypotheses(),
 						data.isGoalNeeded(), debugBuilder);

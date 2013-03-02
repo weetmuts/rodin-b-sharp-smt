@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.ast;
 
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.MAPSTO;
@@ -286,7 +285,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	public static SMTSortSymbol makePairSortSymbol(SMTLIBVersion smtlibVersion,
 			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
-		// if (smtlibVersion.equals(SMTLIBVersion.V1_2)) {
+		// if (smtlibVersion == V1_2) {
 		final StringBuffer sb = new StringBuffer();
 		sb.append("(Pair ");
 		sb.append(sourceSymbol.toString());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.performance.realprojects;
 
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
@@ -57,7 +56,7 @@ public class RealProjectTests extends BuilderTest {
 	private final void setSMTTactic(final TranslationApproach approach,
 			final String solverConfigId) {
 		final IParameterizerDescriptor tacticDescriptor;
-		if (approach.equals(TranslationApproach.USING_PP)) {
+		if (approach == USING_PP) {
 			tacticDescriptor = smtPpParamTacticDescriptor;
 		} else {
 			tacticDescriptor = smtVeritParamTacticDescriptor;

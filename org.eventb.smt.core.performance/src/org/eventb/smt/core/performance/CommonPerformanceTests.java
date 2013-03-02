@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -193,8 +193,8 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			final boolean bundled,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		if (translationApproach.equals(TranslationApproach.USING_VERIT)) {
-			if (smtlibVersion.equals(V1_2)) {
+		if (translationApproach == USING_VERIT) {
+			if (smtlibVersion == V1_2) {
 				switch (kind) {
 				case ALT_ERGO:
 					configuration = new SMTConfiguration(ALTERGO_VERIT_SMT1, LAST_ALTERGO);
@@ -229,9 +229,6 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 							+ kind.name());
 				}
 			} else {
-				/**
-				 * smtlibVersion.equals(V2_0)
-				 */
 				switch (kind) {
 				case ALT_ERGO:
 					configuration = new SMTConfiguration(ALTERGO_VERIT_SMT2, LAST_ALTERGO);
@@ -267,7 +264,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				}
 			}
 		} else {
-			if (smtlibVersion.equals(V1_2)) {
+			if (smtlibVersion == V1_2) {
 				switch (kind) {
 				case ALT_ERGO:
 					configuration = new SMTConfiguration(ALTERGO_PP_SMT1, LAST_ALTERGO);
@@ -302,9 +299,6 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 							+ kind.name());
 				}
 			} else {
-				/**
-				 * smtlibVersion.equals(V2_0)
-				 */
 				switch (kind) {
 				case ALT_ERGO:
 					configuration = new SMTConfiguration(ALTERGO_PP_SMT2, LAST_ALTERGO);

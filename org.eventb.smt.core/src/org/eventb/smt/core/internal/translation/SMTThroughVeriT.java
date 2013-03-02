@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - Code refactoring and SMT-LIB 2.0 implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.translation;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeEqual;
@@ -314,7 +313,7 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	protected Logic determineLogic(final ISimpleSequent sequent) {
 		final Gatherer gatherer = Gatherer.gatherFrom(sequent);
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			if (gatherer.usesBoolTheory()) {
 				return new Logic.SMTLogicVeriT(Logic.UNKNOWN,
 						VeritPredefinedTheoryV1_2.getInstance(),
@@ -425,7 +424,7 @@ public class SMTThroughVeriT extends Translator {
 	@Override
 	public void translateSignature(final Logic logic,
 			final ISimpleSequent sequent) {
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			if (logic instanceof SMTLogicVeriT) {
 				signature = new SMTSignatureV1_2Verit(logic);
 			} else {

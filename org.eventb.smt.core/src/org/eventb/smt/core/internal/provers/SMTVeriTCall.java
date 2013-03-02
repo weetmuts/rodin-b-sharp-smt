@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - SMT-LIB 2.0 implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
@@ -44,7 +43,6 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
-import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
@@ -139,7 +137,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	private void callVeriT(SMTBenchmark smtBenchmark) throws IOException {
-		if (sv.equals(V1_2)) {
+		if (sv == V1_2) {
 			callVeriT1_2();
 		} else {
 			callVeriT2_0();
@@ -262,7 +260,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 *             folders
 	 */
 	private boolean checkVeriTResult() throws IOException {
-		if (sv.equals(V1_2)) {
+		if (sv == V1_2) {
 			if (veriTResult.contains("(benchmark")) {
 				veriTResult = veriTResult.substring(veriTResult
 						.indexOf("(benchmark"));
@@ -284,7 +282,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	public synchronized void makeTempFileNames() throws IOException {
 		super.makeTempFileNames();
 		String fileExtension = SMT_LIB_FILE_EXTENSION;
-		if (sv.equals(V2_0)) {
+		if (sv == V2_0) {
 			fileExtension = NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
 		}
 
@@ -339,7 +337,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Calls veriT to process the macros of the benchmark
 		 */
 		if (DEBUG_DETAILS) {
-			debugBuilder.append("Launching ").append(SolverKind.VERIT)
+			debugBuilder.append("Launching ").append(VERIT)
 					.append(" with input:\n\n");
 			showVeriTBenchmarkFile();
 		}
@@ -358,7 +356,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			final FileWriter smtBenchmarkWriter = new FileWriter(
 					smtBenchmarkFile);
 			// FIXME this bug will be fixed in veriT
-			if (config.getKind().equals(VERIT)) {
+			if (config.getKind() == VERIT) {
 				veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
 				veriTResult = veriTResult.replace(":extrasorts ()", "");
 			}
@@ -406,7 +404,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			 * Calls veriT to process the macros of the benchmark
 			 */
 			if (DEBUG_DETAILS) {
-				debugBuilder.append("Launching ").append(SolverKind.VERIT)
+				debugBuilder.append("Launching ").append(VERIT)
 						.append(" with input:\n\n");
 				showVeriTBenchmarkFile();
 			}

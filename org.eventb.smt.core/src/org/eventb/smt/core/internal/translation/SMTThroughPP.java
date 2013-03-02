@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.translation;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.simplify;
@@ -307,7 +306,7 @@ public class SMTThroughPP extends Translator {
 	protected Logic determineLogic(final ISimpleSequent sequent) {
 		gatherer = Gatherer.gatherFrom(sequent);
 
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			if (gatherer.usesBoolTheory()) {
 				return new Logic.SMTLogicPP(Logic.UNKNOWN,
 						TheoryV1_2.Ints.getInstance(),
@@ -315,9 +314,6 @@ public class SMTThroughPP extends Translator {
 			}
 			return SMTLIBUnderlyingLogicV1_2.getInstance();
 		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
 			if (gatherer.foundQuantifier()) {
 				return AUFLIAv2_0.getInstance();
 			} else {
@@ -608,7 +604,7 @@ public class SMTThroughPP extends Translator {
 	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
 		if (!gatherer.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
-				if (smtlibVersion.equals(V1_2)) {
+				if (smtlibVersion == V1_2) {
 					for (final Theory theories : signature.getLogic()
 							.getTheories()) {
 						if (theories instanceof Booleans) {
@@ -616,9 +612,6 @@ public class SMTThroughPP extends Translator {
 						}
 					}
 				} else {
-					/**
-					 * smtlibVersion.equals(V2_0)
-					 */
 					return true;
 				}
 			}
@@ -682,7 +675,7 @@ public class SMTThroughPP extends Translator {
 		} else {
 			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
-				if (smtlibVersion.equals(V1_2)) {
+				if (smtlibVersion == V1_2) {
 					return SMTFactory.makeAtom(signature.getLogic().getTrue(),
 							new SMTTerm[] { term }, signature);
 				} else {
@@ -1017,7 +1010,7 @@ public class SMTThroughPP extends Translator {
 	 */
 	private void linkLogicSymbols(final FormulaFactory ff) {
 		final SMTLogicPP logic;
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			logic = ((SMTSignatureV1_2PP) signature).getLogic();
 		} else {
 			logic = ((SMTSignatureV2_0PP) signature).getLogic();
@@ -1208,7 +1201,7 @@ public class SMTThroughPP extends Translator {
 			if (trackedPredicate.isHypothesis()) {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
-					if (smtlibVersion.equals(V2_0)) {
+					if (smtlibVersion == V2_0) {
 						final Label label = ((SMTSignatureV2_0) signature)
 								.freshLabel(!GOAL_LABEL);
 						assumption.addAnnotation(label);
@@ -1225,7 +1218,7 @@ public class SMTThroughPP extends Translator {
 				smtFormula = SMTFactory.makeNot(
 						new SMTFormula[] { translate(predicate, IN_GOAL) },
 						smtlibVersion);
-				if (smtlibVersion.equals(V2_0)) {
+				if (smtlibVersion == V2_0) {
 					final Label label = ((SMTSignatureV2_0) signature)
 							.freshLabel(GOAL_LABEL);
 					smtFormula.addAnnotation(label);
@@ -1297,7 +1290,7 @@ public class SMTThroughPP extends Translator {
 	protected void translateSignature(final Logic logic,
 			final ISimpleSequent sequent) {
 		if (logic instanceof SMTLogicPP) {
-			if (smtlibVersion.equals(V1_2)) {
+			if (smtlibVersion == V1_2) {
 				signature = new SMTSignatureV1_2PP((SMTLogicPP) logic);
 			} else {
 				signature = new SMTSignatureV2_0PP(logic);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - code refactoring
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.Collections.emptySet;
@@ -20,7 +19,6 @@ import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_AUTO_CONFIG;
 import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_MBQI;
@@ -221,8 +219,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		/**
 		 * This is a patch to deactivate the z3 MBQI module which is buggy.
 		 */
-		if (config.getSmtlibVersion().equals(V1_2)
-				&& config.getKind().equals(Z3)) {
+		if (config.getSmtlibVersion() == V1_2 && config.getKind() == Z3) {
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
 			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
 		}
@@ -443,8 +440,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 		}
 
 		final SolverKind solverKind = config.getKind();
-		if (config.getSmtlibVersion().equals(V2_0)
-				&& (solverKind.equals(ALT_ERGO) || solverKind.equals(OPENSMT))) {
+		if (config.getSmtlibVersion() == V2_0
+				&& (solverKind == ALT_ERGO || solverKind == OPENSMT)) {
 			smtBenchmarkFile = File.createTempFile(lemmaName,
 					NON_STANDARD_SMT_LIB2_FILE_EXTENSION, smtTranslationDir);
 		} else {
@@ -540,12 +537,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 				translationPerformed = false;
 				try {
-					if (config.getSmtlibVersion().equals(V1_2)) {
+					if (config.getSmtlibVersion() == V1_2) {
 						makeSMTBenchmarkFileV1_2();
 					} else {
-						/**
-						 * smtlibVersion.equals(V2_0)
-						 */
 						makeSMTBenchmarkFileV2_0();
 					}
 					translationPerformed = true;
@@ -581,10 +575,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				}
 
 				if (isValid()) {
-					if ((config.getKind().equals(VERIT) //
-							&& config.getArgs().contains("--proof=")) //
-							|| (config.getSmtlibVersion().equals(V2_0) //
-							&& config.getKind().equals(Z3))) {
+					if (canExtractUnsatCore()) {
 						// FIXME it is not possible to check z3 version, so make
 						// errors be catched if not a version capable of manage
 						// unsat-cores.
@@ -603,6 +594,17 @@ public abstract class SMTProverCall extends XProverCall2 {
 				debugBuilder.append("End of prover call.\n");
 				System.out.print(debugBuilder);
 			}
+		}
+	}
+
+	private boolean canExtractUnsatCore() {
+		switch (config.getKind()) {
+		case VERIT:
+			return config.getArgs().contains("--proof=");
+		case Z3:
+			return config.getSmtlibVersion() == V2_0;
+		default:
+			return false;
 		}
 	}
 

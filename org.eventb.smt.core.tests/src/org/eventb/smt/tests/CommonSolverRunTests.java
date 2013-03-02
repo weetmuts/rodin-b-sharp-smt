@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.tests;
 
 import static org.eventb.smt.core.SMTCore.getSolvers;
@@ -179,7 +178,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
 		final String newID = id + "_" + translationApproach.toString()
-				+ (smtlibVersion.equals(V1_2) ? "_SMT1" : "_SMT2");
+				+ (smtlibVersion == V1_2 ? "_SMT1" : "_SMT2");
 		return newConfigDescriptor(newID, solver.getName(), args,
 				translationApproach, smtlibVersion, true);
 	}
@@ -195,8 +194,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected void setSolverPreferences(final SolverKind kind,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		if (translationApproach.equals(TranslationApproach.USING_VERIT)) {
-			if (smtlibVersion.equals(V1_2)) {
+		if (translationApproach == USING_VERIT) {
+			if (smtlibVersion == V1_2) {
 				switch (kind) {
 
 				case CVC3:
@@ -214,9 +213,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 							+ kind.name());
 				}
 			} else {
-				/**
-				 * smtlibVersion.equals(V2_0)
-				 */
 				switch (kind) {
 
 				case CVC3:
@@ -235,7 +231,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				}
 			}
 		} else {
-			if (smtlibVersion.equals(V1_2)) {
+			if (smtlibVersion == V1_2) {
 				switch (kind) {
 
 				case CVC3:
@@ -253,9 +249,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 							+ kind.name());
 				}
 			} else {
-				/**
-				 * smtlibVersion.equals(V2_0)
-				 */
 				switch (kind) {
 
 				case CVC3:

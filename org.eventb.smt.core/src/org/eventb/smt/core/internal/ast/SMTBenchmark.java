@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 UFRN. All rights reserved.
+ * Copyright (c) 2010, 2013 UFRN. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	UFRN - initial API and implementation
  * 	Systerel - full code refactoring 
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.ast;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
@@ -138,13 +137,10 @@ public class SMTBenchmark {
 			final boolean printAnnotations) {
 		for (final SMTFormula assumption : assumptions) {
 			assumption.printComment(builder);
-			if (signature.getSMTLIBVersion().equals(V1_2)) {
+			if (signature.getSMTLIBVersion() == V1_2) {
 				builder.append(" :assumption ");
 				assumption.toString(builder, 13, false);
 			} else {
-				/**
-				 * signature.getSMTLIBVersion().equals(V2_0)
-				 */
 				final AssertCommand assertCommand = new AssertCommand(
 						assumption);
 				assertCommand.toString(builder, printAnnotations);
@@ -162,14 +158,11 @@ public class SMTBenchmark {
 	 */
 	protected void formulaSection(final StringBuilder builder,
 			final boolean printAnnotations) {
-		if (signature.getSMTLIBVersion().equals(V1_2)) {
+		if (signature.getSMTLIBVersion() == V1_2) {
 			builder.append(" :formula ");
 			formula.toString(builder, 15, false);
 			builder.append("\n");
 		} else {
-			/**
-			 * signature.getSMTLIBVersion().equals(V2_0)
-			 */
 			final AssertCommand assertCommand = new AssertCommand(formula);
 			assertCommand.toString(builder, printAnnotations);
 			builder.append("\n");
@@ -273,14 +266,11 @@ public class SMTBenchmark {
 			final boolean printGetUnsatCoreCommands,
 			final boolean printZ3SpecificCommands) {
 		final StringBuilder builder = new StringBuilder();
-		if (signature.getSMTLIBVersion().equals(V1_2)) {
+		if (signature.getSMTLIBVersion() == V1_2) {
 			smtCmdOpening(builder, BENCHMARK, name);
 			benchmarkContent(builder, !PRINT_ANNOTATIONS);
 			builder.append(CPAR);
 		} else {
-			/**
-			 * signature.getSMTLIBVersion().equals(V2_0)
-			 */
 			appendComments(builder);
 			builder.append("\n");
 			if (printZ3SpecificCommands) {

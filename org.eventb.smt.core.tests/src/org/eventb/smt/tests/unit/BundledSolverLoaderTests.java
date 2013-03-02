@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -10,11 +10,11 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.provers.SolverKind.VERIT;
 import static org.junit.Assert.assertEquals;
 
-import org.eventb.smt.core.internal.prefs.BundledSolverLoader;
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.internal.prefs.BundledSolverLoader;
 import org.junit.Test;
 
 /**
@@ -54,7 +54,7 @@ public class BundledSolverLoaderTests {
 	@Test
 	public void validKind() {
 		ce.add("kind", "verit");
-		assertEquals(SolverKind.VERIT, loader.getKind());
+		assertEquals(VERIT, loader.getKind());
 	}
 
 	@Test(expected = LoadingException.class)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.ast;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
@@ -45,7 +44,7 @@ public final class SMTNumeral extends SMTTerm {
 
 	@Override
 	public SMTSortSymbol getSort() {
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			return TheoryV1_2.Ints.getInstance().getIntegerSort();
 		} else {
 			return TheoryV2_0.Ints.getInstance().getIntegerSort();
@@ -56,7 +55,7 @@ public final class SMTNumeral extends SMTTerm {
 	public void toString(final StringBuilder builder, final int offset) {
 		if (value.signum() < 0) {
 			builder.append(OPAR);
-			if (smtlibVersion.equals(V1_2)) {
+			if (smtlibVersion == V1_2) {
 				builder.append(TheoryV1_2.Ints.getInstance().getUMinus()
 						.getName());
 			} else {

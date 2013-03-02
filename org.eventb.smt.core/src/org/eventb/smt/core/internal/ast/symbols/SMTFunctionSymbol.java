@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.ast.symbols;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
@@ -107,7 +106,7 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder buffer) {
-		if (smtlibVersion.equals(V1_2)) {
+		if (smtlibVersion == V1_2) {
 			buffer.append(OPAR);
 			buffer.append(name);
 			for (final SMTSortSymbol sort : argSorts) {
@@ -118,9 +117,6 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 			buffer.append(resultSort);
 			buffer.append(CPAR);
 		} else {
-			/**
-			 * smtlibVersion.equals(V2_0)
-			 */
 			String separator = "";
 			buffer.append(name);
 			buffer.append(SPACE);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,13 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
+import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
 
-import org.eventb.smt.core.internal.prefs.BundledConfigLoader;
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.internal.prefs.BundledConfigLoader;
 import org.junit.Test;
 
 /**
@@ -72,7 +72,7 @@ public class BundledConfigLoaderTests {
 	@Test
 	public void validVersion() {
 		ce.add("smt-lib", "V1.2");
-		assertEquals(SMTLIBVersion.V1_2, loader.getVersion());
+		assertEquals(V1_2, loader.getVersion());
 	}
 
 }

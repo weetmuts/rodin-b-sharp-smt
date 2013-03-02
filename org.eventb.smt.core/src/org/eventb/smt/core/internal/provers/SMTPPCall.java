@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
@@ -15,9 +14,6 @@ import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
-import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.io.IOException;
@@ -31,7 +27,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.provers.SolverKind;
 
 /**
  * This class represents a call to an SMT solver using the PP approach. More
@@ -117,20 +112,25 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		final SolverKind solverKind = config.getKind();
-		if (solverKind.equals(Z3)) { // FIXME Add Z3 version checking
+		switch (config.getKind()) {
+		case Z3:
+			// FIXME Add Z3 version checking
 			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
 					PRINT_GET_UNSAT_CORE_COMMANDS, PRINT_Z3_SPECIFIC_COMMANDS);
-		} else if (solverKind.equals(ALT_ERGO) || solverKind.equals(VERIT)) {
+			break;
+		case ALT_ERGO:
+		case VERIT:
 			benchmark
 					.print(smtFileWriter, PRINT_ANNOTATIONS,
 							!PRINT_GET_UNSAT_CORE_COMMANDS,
 							!PRINT_Z3_SPECIFIC_COMMANDS);
-		} else {
+			break;
+		default:
 			benchmark
 					.print(smtFileWriter, !PRINT_ANNOTATIONS,
 							!PRINT_GET_UNSAT_CORE_COMMANDS,
 							!PRINT_Z3_SPECIFIC_COMMANDS);
+			break;
 		}
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
