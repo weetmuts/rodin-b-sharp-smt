@@ -16,8 +16,6 @@ import org.eventb.core.seqprover.IReasonerInputReader;
 import org.eventb.core.seqprover.IReasonerInputWriter;
 import org.eventb.core.seqprover.SerializeException;
 import org.eventb.core.seqprover.xprover.XProverInput;
-import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 
 /**
  * Input to the reasoner that can run an external SMT solver. This is the same
@@ -73,7 +71,7 @@ public class SMTInput extends XProverInput {
 		return configName;
 	}
 
-	public ISMTConfiguration getConfiguration() {
+	public SMTConfiguration getConfiguration() {
 		maybeValidate();
 		return validator.configuration;
 	}
@@ -121,7 +119,7 @@ public class SMTInput extends XProverInput {
 	 */
 	private static class Validator {
 
-		public final ISMTConfiguration configuration;
+		public final SMTConfiguration configuration;
 		public final String error;
 
 		public Validator(String configName, String knownErrors) {
@@ -130,7 +128,7 @@ public class SMTInput extends XProverInput {
 				appendErrorMessage(errorBuilder, nullSMTConfigurationError);
 				configuration = null;
 			} else {
-				configuration = SMTCore.getSMTConfiguration(configName);
+				configuration = SMTConfiguration.valueOf(configName);
 				if (configuration == null) {
 					appendErrorMessage(errorBuilder,
 							unknownSMTConfigurationError(configName));

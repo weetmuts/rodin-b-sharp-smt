@@ -18,12 +18,10 @@ import org.eventb.smt.core.internal.prefs.ConfigDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
-import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.tactics.DefaultAutoWithSMT;
 import org.eventb.smt.core.internal.tactics.SMTTacticDescriptors;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -154,27 +152,6 @@ public class SMTCore {
 	 */
 	public static void setSolvers(ISolverDescriptor[] newSolvers) {
 		SolverPreferences.setSolvers(newSolvers);
-	}
-
-	/**
-	 * Returns the SMT configuration with the given name, or <code>null</code>
-	 * if unknown or if it references an unknown solver.
-	 *
-	 * @param name
-	 *            configuration name
-	 * @return the SMT configuration with the given name, or <code>null</code>
-	 */
-	public static ISMTConfiguration getSMTConfiguration(String name) {
-		final IConfigDescriptor config = ConfigPreferences.get(name);
-		if (config == null) {
-			return null;
-		}
-		final String solverName = config.getSolverName();
-		final ISolverDescriptor solver = SolverPreferences.get(solverName);
-		if (solver == null) {
-			return null;
-		}
-		return new SMTConfiguration(config, solver);
 	}
 
 }

@@ -32,7 +32,6 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
@@ -43,7 +42,6 @@ import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -115,7 +113,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	protected Set<org.eventb.smt.utils.Theory> theories;
 	protected String poName;
 
-	protected ISMTConfiguration configuration;
+	protected SMTConfiguration configuration;
 
 	/**
 	 * True if the extracted unsat-core is the same (or smaller) than the
@@ -261,11 +259,11 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				switch (kind) {
 
 				case CVC3:
-					configuration = SMTCore.getSMTConfiguration("CVC3 SMT2");
+					configuration = SMTConfiguration.valueOf("CVC3 SMT2");
 					break;
 
 				case VERIT:
-					configuration = SMTCore.getSMTConfiguration("veriT SMT2");
+					configuration = SMTConfiguration.valueOf("veriT SMT2");
 					break;
 
 				default:

@@ -31,7 +31,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 
 /**
@@ -43,12 +42,12 @@ import org.eventb.smt.core.provers.SolverKind;
 public class SMTPPCall extends SMTProverCall {
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final ISMTConfiguration config) {
+			final SMTConfiguration config) {
 		this(sequent, pm, new StringBuilder(), config);
 	}
 
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISMTConfiguration config) {
+			final StringBuilder debugBuilder, final SMTConfiguration config) {
 		super(sequent, pm, debugBuilder, config,
 				new SMTThroughPP(config.getSmtlibVersion()));
 		setTranslationPath(USING_PP);
@@ -59,7 +58,7 @@ public class SMTPPCall extends SMTProverCall {
 	 * FOR TESTS ONLY
 	 */
 	public SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISMTConfiguration config, final String poName) {
+			final StringBuilder debugBuilder, final SMTConfiguration config, final String poName) {
 		super(sequent, pm, debugBuilder, config, poName,
 				new SMTThroughPP(config.getSmtlibVersion()));
 		setTranslationPath(USING_PP);

@@ -51,7 +51,6 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.TranslationApproach;
 
@@ -105,7 +104,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	final List<Process> activeProcesses = new ArrayList<Process>();
 
-	ISMTConfiguration config;
+	SMTConfiguration config;
 
 	IPath translationPath = null;
 
@@ -132,14 +131,14 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            proof monitor used for cancellation
 	 */
 	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISMTConfiguration config,
+			final IProofMonitor pm, final SMTConfiguration config,
 			final Translator translator) {
 		this(sequent, pm, new StringBuilder(), config, translator);
 	}
 
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISMTConfiguration config, final Translator translator) {
+			final SMTConfiguration config, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.config = config;
@@ -152,7 +151,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 * FOR TESTS ONLY
 	 */
 	public SMTProverCall(final ISimpleSequent sequent, final IProofMonitor pm,
-			final StringBuilder debugBuilder, final ISMTConfiguration config,
+			final StringBuilder debugBuilder, final SMTConfiguration config,
 			final String poName, final Translator translator) {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;

@@ -11,9 +11,10 @@
 package org.eventb.smt.core.internal.provers;
 
 import org.eclipse.core.runtime.IPath;
+import org.eventb.smt.core.internal.prefs.ConfigPreferences;
+import org.eventb.smt.core.internal.prefs.SolverPreferences;
 import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.core.translation.TranslationApproach;
@@ -22,7 +23,31 @@ import org.eventb.smt.core.translation.TranslationApproach;
  * Implementation of an SMT solver configuration. Instances are immutable and
  * stand-alone (they do not depend on any registry).
  */
-public class SMTConfiguration implements ISMTConfiguration {
+public class SMTConfiguration {
+
+	/**
+	 * Returns an SMT configuration with the given name. The characteristics of
+	 * the configuration are fetched from the plug-in preferences (configuration
+	 * and solver preferences). If there is no configuration with the given
+	 * name, or if the referenced solver does not exist, <code>null</code> is
+	 * returned.
+	 * 
+	 * @param name
+	 *            configuration name
+	 * @return the SMT configuration with the given name, or <code>null</code>
+	 */
+	public static SMTConfiguration valueOf(String name) {
+		final IConfigDescriptor config = ConfigPreferences.get(name);
+		if (config == null) {
+			return null;
+		}
+		final String solverName = config.getSolverName();
+		final ISolverDescriptor solver = SolverPreferences.get(solverName);
+		if (solver == null) {
+			return null;
+		}
+		return new SMTConfiguration(config, solver);
+	}
 
 	private final String name;
 
@@ -59,37 +84,30 @@ public class SMTConfiguration implements ISMTConfiguration {
 		this.smtlibVersion = config.getSmtlibVersion();
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public String getSolverName() {
 		return solverName;
 	}
 
-	@Override
 	public SolverKind getKind() {
 		return kind;
 	}
 
-	@Override
 	public IPath getSolverPath() {
 		return solverPath;
 	}
 
-	@Override
 	public String getArgs() {
 		return args;
 	}
 
-	@Override
 	public TranslationApproach getTranslationApproach() {
 		return translationApproach;
 	}
 
-	@Override
 	public SMTLIBVersion getSmtlibVersion() {
 		return smtlibVersion;
 	}

@@ -44,7 +44,6 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
-import org.eventb.smt.core.provers.ISMTConfiguration;
 import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.core.translation.SMTLIBVersion;
 
@@ -93,13 +92,13 @@ public class SMTVeriTCall extends SMTProverCall {
 	private boolean macrosTranslated = false;
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final ISMTConfiguration config) {
+			final IProofMonitor pm, final SMTConfiguration config) {
 		this(sequent, pm, new StringBuilder(), config);
 	}
 
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISMTConfiguration config) {
+			final SMTConfiguration config) {
 		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT(
 				config.getSmtlibVersion()));
 		setVeriTPath();
@@ -112,7 +111,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 */
 	public SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final ISMTConfiguration config, final String poName) {
+			final SMTConfiguration config, final String poName) {
 		super(sequent, pm, debugBuilder, config, poName, new SMTThroughPP(
 				config.getSmtlibVersion()));
 		setVeriTPath();
