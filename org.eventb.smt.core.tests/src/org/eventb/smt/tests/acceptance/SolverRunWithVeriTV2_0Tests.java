@@ -29,7 +29,7 @@ import org.junit.Test;
  * One shall put in this class such tests, whatever is the solver, but with
  * SMT-LIB 2.0 benchmarks translated with veriT.
  * 
- * @author Vitor Alcantara
+ * @author Vitor Alcantara de Almeida
  * 
  *         TODO: To check if each test is according to SMT 2.0
  * 

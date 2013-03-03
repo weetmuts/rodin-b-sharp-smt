@@ -20,7 +20,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 /**
  * This class represents function application.
  * 
- * @author guyot
+ * @author Yoann Guyot
  * 
  */
 public class SMTFunApplication extends SMTTerm {

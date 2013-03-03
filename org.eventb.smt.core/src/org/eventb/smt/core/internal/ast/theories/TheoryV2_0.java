@@ -22,7 +22,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class TheoryV2_0 extends Theory {

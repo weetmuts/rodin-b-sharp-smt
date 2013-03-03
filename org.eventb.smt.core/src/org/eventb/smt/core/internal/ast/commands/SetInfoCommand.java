@@ -19,7 +19,7 @@ import java.util.List;
 import org.eventb.smt.core.internal.ast.attributes.Attribute;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class SetInfoCommand extends Command {

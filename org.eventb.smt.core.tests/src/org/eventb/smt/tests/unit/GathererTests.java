@@ -37,7 +37,7 @@ import org.junit.Test;
  * 
  * @see Gatherer
  * @author Laurent Voisin
- * @author Vitor Almeida
+ * @author Vitor Alcantara de Almeida
  */
 public class GathererTests extends AbstractTests {
 

@@ -38,7 +38,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 @RunWith(Suite.class)

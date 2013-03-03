@@ -20,7 +20,7 @@ import java.util.Set;
  * from DEHARBE, David, and are predefined macros, like IN, EMPTY, SUBSET and
  * others.
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTPredefinedMacro extends SMTMacro {

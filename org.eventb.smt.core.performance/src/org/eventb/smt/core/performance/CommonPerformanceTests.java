@@ -48,7 +48,7 @@ import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.utils.Theory;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public abstract class CommonPerformanceTests extends CommonSolverRunTests {

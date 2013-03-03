@@ -51,9 +51,9 @@ import org.junit.Test;
 /**
  * Ensure that translation to veriT extended version of SMT-LIB is correct
  * 
- * @author Vitor Alcantara de Almeida TODO: Create a test to check the
- *         declarations of the macro.
+ * @author Vitor Alcantara de Almeida
  * 
+ * TODO: Create a test to check the declarations of the macro.
  */
 public class TranslationTestsWithVeriTV1_2 extends AbstractTests {
 	protected static final ITypeEnvironment defaultTe, simpleTe, cdisTe,

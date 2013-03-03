@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author Fages-Tafanelli Yoann
+ * @author Yoann Fages-Tafanelli
  *         <p>
  *         This class contains some utility static methods that are used in this
  *         Event-B User interface plug-in.

@@ -53,7 +53,7 @@ public abstract class Translator implements ISimpleVisitor {
 	 * This class is used to store the type of all the BoundIdentDecls from the
 	 * predicate
 	 * 
-	 * @author vitor
+	 * @author Vitor Alcantara de Almeida
 	 * 
 	 */
 	protected static class BidTypeInspector extends DefaultInspector<Type> {

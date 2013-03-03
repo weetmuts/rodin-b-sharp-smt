@@ -22,7 +22,7 @@ import org.eventb.smt.tests.acceptance.SolverRunWithVeriTV2_0Tests;
  * One shall put in this class such tests for the solver veriT on SMT-LIB 2.0
  * benchmarks translated with veriT.
  * 
- * @author Vitor Alcantara
+ * @author Vitor Alcantara de Almeida
  * 
  *         TODO: To check if each test is according to SMT 2.0
  * 

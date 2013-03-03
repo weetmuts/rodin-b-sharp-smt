@@ -390,7 +390,7 @@ public class Logic {
 	 * Unquantified formulas built over a signature of uninterpreted (i.e.,
 	 * free) sort and function symbols.
 	 * 
-	 * @author Systerel (yguyot)
+	 * @author Yoann Guyot
 	 * 
 	 */
 	public static class QF_UFv2_0 extends SMTLogicPP {
@@ -413,7 +413,7 @@ public class Logic {
 	 * Closed quantifier-free linear formulas over the theory of integer arrays
 	 * extended with free sort and function symbols.
 	 * 
-	 * @author Systerel (yguyot)
+	 * @author Yoann Guyot
 	 * 
 	 */
 	public static class QF_AUFLIAv2_0 extends SMTLogicPP {
@@ -438,7 +438,7 @@ public class Logic {
 	 * extended with free sort and function symbols but restricted to arrays
 	 * with integer indices and values.
 	 * 
-	 * @author Systerel (yguyot)
+	 * @author Yoann Guyot
 	 * 
 	 */
 	public static class AUFLIAv2_0 extends SMTLogicPP {

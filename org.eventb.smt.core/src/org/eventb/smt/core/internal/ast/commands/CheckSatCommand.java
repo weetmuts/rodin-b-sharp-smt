@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.commands;
 import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.CHECK_SAT;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class CheckSatCommand extends Command {

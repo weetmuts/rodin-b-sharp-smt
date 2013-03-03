@@ -25,7 +25,7 @@ import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
  * can be used as arguments to the macros, this class was created to solve this
  * problem, providing predicate symbols inside terms.
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTVeriTTerm extends SMTTerm {

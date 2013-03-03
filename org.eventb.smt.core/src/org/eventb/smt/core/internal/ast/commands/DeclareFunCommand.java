@@ -17,7 +17,7 @@ import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.D
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class DeclareFunCommand extends Command {

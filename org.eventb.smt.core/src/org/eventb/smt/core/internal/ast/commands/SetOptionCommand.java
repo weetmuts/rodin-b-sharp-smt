@@ -18,7 +18,7 @@ import org.eventb.smt.core.internal.ast.attributes.Option;
 import org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class SetOptionCommand extends Command {

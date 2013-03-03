@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.attributes;
 import java.util.Arrays;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class Option extends Attribute<String> {

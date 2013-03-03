@@ -64,7 +64,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * <li>smtU = smt(U)</li>
  * </ul>
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTSetComprehensionMacro extends SMTMacro {

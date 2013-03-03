@@ -60,7 +60,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * <li>Y1 = smt(y1), Y2 = smt(y2) … , Yn = smt(yn)</li>
  * </ul>
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  */
 public class SMTPairEnumMacro extends SMTMacro {
 

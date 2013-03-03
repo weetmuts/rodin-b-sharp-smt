@@ -17,7 +17,7 @@ import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  *
  */
 public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> {

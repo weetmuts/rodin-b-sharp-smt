@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.TableColumn;
  * update the <code>tableViewer</code> each time the list is modified, by
  * calling the <code>refresh</code> method.
  * 
- * @author guyot
+ * @author Yoann Guyot
  */
 public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, M extends AbstractModel<U, T>>
 		extends FieldEditor {

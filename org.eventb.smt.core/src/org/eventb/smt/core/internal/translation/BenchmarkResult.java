@@ -18,7 +18,7 @@ import org.eventb.smt.core.internal.translation.TranslationResult;
  * Encapsulates the SMT-LIB benchmark produced during the translation of an
  * Event-B sequent.
  * 
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  */
 public class BenchmarkResult extends TranslationResult {
 	/**

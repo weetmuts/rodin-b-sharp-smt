@@ -19,7 +19,7 @@ import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTNode;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class AssertCommand extends Command {

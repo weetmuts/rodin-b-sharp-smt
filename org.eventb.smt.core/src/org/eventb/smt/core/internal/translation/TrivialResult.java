@@ -17,7 +17,7 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
  * Encapsulates the trivial predicate produced during the translation of an
  * Event-B sequent.
  * 
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  */
 public class TrivialResult extends TranslationResult {
 	/**

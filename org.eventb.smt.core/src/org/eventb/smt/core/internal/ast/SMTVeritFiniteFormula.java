@@ -33,7 +33,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
  * a predicate symbol, and t, f and k are functions and t are terms.
  * 
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTVeritFiniteFormula extends SMTFormula {

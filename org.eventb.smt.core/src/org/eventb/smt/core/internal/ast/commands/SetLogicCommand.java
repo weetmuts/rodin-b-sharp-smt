@@ -15,7 +15,7 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.SET_LOGIC;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class SetLogicCommand extends Command {

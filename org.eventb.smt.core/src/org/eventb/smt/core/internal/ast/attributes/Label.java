@@ -15,7 +15,7 @@ import java.util.Arrays;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class Label extends Attribute<SMTSymbol> {

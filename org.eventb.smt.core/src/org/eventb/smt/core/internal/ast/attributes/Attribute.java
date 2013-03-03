@@ -15,7 +15,7 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import java.util.List;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class Attribute<T> {

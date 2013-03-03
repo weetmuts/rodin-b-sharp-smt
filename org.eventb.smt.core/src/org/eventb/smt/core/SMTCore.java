@@ -28,7 +28,7 @@ import org.eventb.smt.core.internal.tactics.SMTTacticDescriptors;
  * descriptors and one for all known configuration descriptors.
  * </p>
  * 
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  */
 public class SMTCore {
 

@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
  * This class is used to make tests with XML files. It's a parameterized tests
  * class.
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public abstract class XMLtoSMTTests extends CommonPerformanceTests {

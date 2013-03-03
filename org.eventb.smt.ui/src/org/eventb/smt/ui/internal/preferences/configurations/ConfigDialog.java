@@ -41,7 +41,7 @@ import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
  * This class is the dialog opened when the user wants to add or edit an
  * SMT-solver configuration.
  *
- * @author guyot
+ * @author Yoann Guyot
  */
 public class ConfigDialog extends Dialog {
 

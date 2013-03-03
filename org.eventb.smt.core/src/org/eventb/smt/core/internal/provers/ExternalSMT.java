@@ -24,7 +24,7 @@ import org.eventb.core.seqprover.xprover.XProverReasoner2;
 /**
  * Runs an external SMT prover as a reasoner.
  * 
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  */
 public class ExternalSMT extends XProverReasoner2 {
 

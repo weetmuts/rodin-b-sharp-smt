@@ -22,7 +22,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
  * extended SMT-LIB, like macro names.
  * 
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTMacroSymbol extends SMTSymbol {

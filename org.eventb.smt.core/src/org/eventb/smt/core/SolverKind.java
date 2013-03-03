@@ -12,7 +12,7 @@ package org.eventb.smt.core;
 /**
  * Enumeration of the kind of solvers known to this plug-in.
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  */
 public enum SolverKind {
 

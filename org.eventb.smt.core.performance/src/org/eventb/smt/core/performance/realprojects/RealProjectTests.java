@@ -26,7 +26,7 @@ import org.eventb.smt.core.TranslationApproach;
 import org.rodinp.core.RodinDBException;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class RealProjectTests extends BuilderTest {

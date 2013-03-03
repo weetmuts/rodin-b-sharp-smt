@@ -22,7 +22,7 @@ package org.eventb.smt.core.internal.ast.macros;
  * macros
  * </p>
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public abstract class SMTMacro implements Comparable<SMTMacro> {

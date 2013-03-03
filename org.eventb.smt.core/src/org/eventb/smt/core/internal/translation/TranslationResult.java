@@ -17,7 +17,7 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
  * Abstract method for encapsulating the translation result of an Event-B
  * sequent to SMT-LIB.
  * 
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  */
 public abstract class TranslationResult {
 	/**

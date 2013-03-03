@@ -19,7 +19,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * This class handles terms created from Bound Identifier Declarations in
  * Event-B
  * 
- * @author guyot
+ * @author Yoann Guyot
  **/
 public class SMTVar extends SMTTerm {
 	final SMTLIBVersion smtlibVersion;

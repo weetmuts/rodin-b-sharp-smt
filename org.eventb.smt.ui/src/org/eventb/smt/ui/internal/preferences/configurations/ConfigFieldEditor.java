@@ -32,7 +32,7 @@ import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
  * modified, by calling the <code>refresh</code> method.
  * </p>
  *
- * @author guyot
+ * @author Yoann Guyot
  */
 public class ConfigFieldEditor extends
 		AbstractTableFieldEditor<IConfigDescriptor, ConfigElement, ConfigModel> {

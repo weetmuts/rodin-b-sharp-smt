@@ -81,7 +81,7 @@ import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
  * VeriT. It stores macro expressions, Macro Symbols and creates macro
  * enumerations, which are used to translate in extension.
  * 
- * @author vitor almeida
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public abstract class SMTMacroFactory {

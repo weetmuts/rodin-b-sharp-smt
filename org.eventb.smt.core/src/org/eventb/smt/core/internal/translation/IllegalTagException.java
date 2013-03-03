@@ -11,7 +11,7 @@
 package org.eventb.smt.core.internal.translation;
 
 /**
- * @author guyot
+ * @author Yoann Guyot
  * 
  */
 public class IllegalTagException extends IllegalArgumentException {

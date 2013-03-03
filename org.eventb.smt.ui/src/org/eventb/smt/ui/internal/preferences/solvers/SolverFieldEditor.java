@@ -37,7 +37,7 @@ import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
  * by calling the <code>refresh</code> method.
  * </p>
  *
- * @author guyot
+ * @author Yoann Guyot
  */
 public class SolverFieldEditor extends
 		AbstractTableFieldEditor<ISolverDescriptor, SolverElement, SolverModel> {

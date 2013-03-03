@@ -19,7 +19,7 @@ import org.eventb.smt.core.SMTLIBVersion;
 /**
  * This class represents SMT Connectives.
  * 
- * @author guyot
+ * @author Yoann Guyot
  * 
  */
 public enum SMTConnective {

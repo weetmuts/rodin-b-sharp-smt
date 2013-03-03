@@ -22,7 +22,7 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * translates sets defined in extension. But this macro is specific for
  * enumerations of single values, not maplets.
  * 
- * @author vitor
+ * @author Vitor Alcantara de Almeida
  * 
  */
 public class SMTEnumMacro extends SMTMacro {

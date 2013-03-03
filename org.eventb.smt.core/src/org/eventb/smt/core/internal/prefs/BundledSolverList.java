@@ -17,7 +17,7 @@ import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SolverKind;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  *
  */
 public class BundledSolverList extends BundledDescriptorList<ISolverDescriptor> {

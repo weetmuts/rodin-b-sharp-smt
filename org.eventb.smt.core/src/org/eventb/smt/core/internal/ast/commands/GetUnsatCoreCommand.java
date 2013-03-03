@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.commands;
 import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.GET_UNSAT_CORE;
 
 /**
- * @author Systerel (yguyot)
+ * @author Yoann Guyot
  * 
  */
 public class GetUnsatCoreCommand extends Command {
