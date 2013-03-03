@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -27,9 +27,6 @@ public enum SolverKind {
 	Z3("z3"), //
 	UNKNOWN;
 
-	public static final String Z3_PARAM_AUTO_CONFIG = "AUTO_CONFIG";
-	public static final String Z3_PARAM_MBQI = "MBQI";
-
 	private final String solverName;
 
 	private SolverKind(final String name) {
@@ -53,10 +50,6 @@ public enum SolverKind {
 			}
 		}
 		return UNKNOWN;
-	}
-
-	public static String setZ3ParameterToFalse(final String paramName) {
-		return paramName + "=false";
 	}
 
 	@Override

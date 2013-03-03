@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
@@ -20,9 +21,6 @@ import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
 import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_AUTO_CONFIG;
-import static org.eventb.smt.core.provers.SolverKind.Z3_PARAM_MBQI;
-import static org.eventb.smt.core.provers.SolverKind.setZ3ParameterToFalse;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
@@ -58,11 +56,11 @@ import org.eventb.smt.core.translation.TranslationApproach;
  * 
  */
 public abstract class SMTProverCall extends XProverCall2 {
+
 	protected static final String RES_FILE_EXTENSION = ".res";
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String NON_STANDARD_SMT_LIB2_FILE_EXTENSION = ".smt2";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
-
 	/**
 	 * FOR DEBUG ONLY
 	 */
@@ -219,17 +217,14 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 		// Patch to deactivate the z3 MBQI module which is buggy.
 		if (config.getSmtlibVersion() == V1_2 && config.getKind() == Z3) {
-			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_AUTO_CONFIG));
-			commandLine.add(setZ3ParameterToFalse(Z3_PARAM_MBQI));
+			commandLine.add("AUTO_CONFIG=false");
+			commandLine.add("MBQI=false");
 		}
 
-		// Selected solver parameters
+		// Selected solver arguments
 		final String args = config.getArgs();
 		if (!args.isEmpty()) {
-			final String[] argumentsString = args.split(" ");
-			for (final String argString : argumentsString) {
-				commandLine.add(argString);
-			}
+			commandLine.addAll(asList(args.split(" ")));
 		}
 
 		// Benchmark file produced by translating the Event-B sequent
