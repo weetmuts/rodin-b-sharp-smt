@@ -11,8 +11,8 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.translation.SMTThroughPP.determineLogic;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

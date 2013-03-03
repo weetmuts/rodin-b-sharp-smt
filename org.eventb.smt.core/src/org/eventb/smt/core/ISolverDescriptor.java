@@ -7,10 +7,9 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.prefs;
+package org.eventb.smt.core;
 
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.provers.SolverKind;
 
 /**
  * Common protocol for describing an SMT solver connected to the Rodin platform.

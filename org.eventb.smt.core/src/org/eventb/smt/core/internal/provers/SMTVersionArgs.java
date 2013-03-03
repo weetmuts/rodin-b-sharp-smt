@@ -11,22 +11,22 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
-import static org.eventb.smt.core.provers.SolverKind.CVC3;
-import static org.eventb.smt.core.provers.SolverKind.CVC4;
-import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
-import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
-import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.ALT_ERGO;
+import static org.eventb.smt.core.SolverKind.CVC3;
+import static org.eventb.smt.core.SolverKind.CVC4;
+import static org.eventb.smt.core.SolverKind.MATHSAT5;
+import static org.eventb.smt.core.SolverKind.OPENSMT;
+import static org.eventb.smt.core.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.SolverKind.VERIT;
+import static org.eventb.smt.core.SolverKind.Z3;
 
 import java.util.EnumMap;
 import java.util.List;
 
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
 
 /**
  * Represents the arguments that must be passed to a given solver to tell it the

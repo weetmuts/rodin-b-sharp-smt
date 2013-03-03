@@ -10,9 +10,9 @@
 
 package org.eventb.smt.core.internal.ast.theories;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;

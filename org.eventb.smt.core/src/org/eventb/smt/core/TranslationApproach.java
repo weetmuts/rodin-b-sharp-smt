@@ -7,32 +7,25 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.translation;
+package org.eventb.smt.core;
 
 /**
- * Known SMT-LIB language versions.
+ * Enumeration describing which translation approach to use.
  */
-public enum SMTLIBVersion {
+public enum TranslationApproach {
 
-	/**
-	 * The original SMT-LIB language used by the SMT Plug-in
-	 */
-	V1_2("V1.2"),
-	/**
-	 * The current SMT-LIB language used by the SMT Plug-in
-	 */
-	V2_0("V2.0");
+	USING_PP("PP"), USING_VERIT("veriT");
 
-	public static SMTLIBVersion parseVersion(String name) {
-		if (V1_2.name.equals(name)) {
-			return V1_2;
+	public static TranslationApproach parseApproach(final String value) {
+		if (USING_VERIT.name.equals(value)) {
+			return USING_VERIT;
 		}
-		return V2_0;
+		return USING_PP;
 	}
 
 	private final String name;
 
-	private SMTLIBVersion(String name) {
+	private TranslationApproach(final String name) {
 		this.name = name;
 	}
 

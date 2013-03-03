@@ -11,7 +11,7 @@
 
 package org.eventb.smt.tests.acceptance.cvc3;
 
-import static org.eventb.smt.core.provers.SolverKind.CVC3;
+import static org.eventb.smt.core.SolverKind.CVC3;
 
 import org.eventb.smt.tests.acceptance.SolverRunWithPPV1_2Tests;
 

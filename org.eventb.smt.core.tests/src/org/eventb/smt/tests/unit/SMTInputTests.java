@@ -17,9 +17,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.provers.SMTInput;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.junit.Test;
 
 /**

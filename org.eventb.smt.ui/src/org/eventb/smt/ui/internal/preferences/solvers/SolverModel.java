@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.solvers;
 
+import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractModel;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;
 

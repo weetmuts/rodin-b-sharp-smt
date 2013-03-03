@@ -10,12 +10,12 @@
 package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
-import org.eventb.smt.core.prefs.IConfigDescriptor;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.IConfigDescriptor;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.ui.internal.preferences.AbstractElement;
 
 /**

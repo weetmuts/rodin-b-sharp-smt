@@ -12,9 +12,9 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.pptrans.Translator.isInGoal;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.internal.translation.SMTThroughPP.translateTE;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

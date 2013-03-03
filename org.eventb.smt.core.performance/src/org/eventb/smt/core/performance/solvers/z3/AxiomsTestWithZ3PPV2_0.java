@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers.z3;
 
-import static org.eventb.smt.core.provers.SolverKind.Z3;
+import static org.eventb.smt.core.SolverKind.Z3;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV2_0;
 import org.junit.Ignore;

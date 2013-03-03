@@ -10,11 +10,11 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import java.io.IOException;
 import java.io.PrintWriter;

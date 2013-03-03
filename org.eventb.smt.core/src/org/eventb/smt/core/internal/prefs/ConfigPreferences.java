@@ -13,8 +13,8 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import java.util.List;
 
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.internal.tactics.SMTAutoTactic;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.osgi.service.prefs.Preferences;
 
 public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {

@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.opensmt;
 
-import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.OPENSMT;
 
 import java.util.Arrays;
 import java.util.List;

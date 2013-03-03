@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
 
 /**

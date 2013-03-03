@@ -7,10 +7,8 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.prefs;
+package org.eventb.smt.core;
 
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * Common protocol for describing how to run an SMT solver connected to the

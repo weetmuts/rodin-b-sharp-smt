@@ -9,11 +9,11 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.VERIT;
+import static org.eventb.smt.core.SolverKind.Z3;
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -38,11 +38,11 @@ import junit.framework.Assert;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
 import org.eventb.smt.core.performance.xml.utils.LemmaParser;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.eventb.smt.utils.Theory;
 import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.Test;

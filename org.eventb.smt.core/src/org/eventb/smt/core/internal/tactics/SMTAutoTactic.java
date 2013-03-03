@@ -19,8 +19,8 @@ import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 
 /**
  * An automated tactic that runs successively all enabled SMT configurations

@@ -7,27 +7,32 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.provers;
+package org.eventb.smt.core;
 
 /**
- * Enumeration of the kind of solvers known to this plug-in.
- * 
- * @author vitor
+ * Known SMT-LIB language versions.
  */
-public enum SolverKind {
+public enum SMTLIBVersion {
 
-	ALT_ERGO("alt-ergo"), //
-	CVC3("cvc3"), //
-	CVC4("cvc4"), //
-	MATHSAT5("mathsat5"), //
-	OPENSMT("opensmt"), //
-	VERIT("verit"), //
-	Z3("z3"), //
-	UNKNOWN("unknown");
+	/**
+	 * The original SMT-LIB language used by the SMT Plug-in
+	 */
+	V1_2("V1.2"),
+	/**
+	 * The current SMT-LIB language used by the SMT Plug-in
+	 */
+	V2_0("V2.0");
+
+	public static SMTLIBVersion parseVersion(String name) {
+		if (V1_2.name.equals(name)) {
+			return V1_2;
+		}
+		return V2_0;
+	}
 
 	private final String name;
 
-	private SolverKind(final String name) {
+	private SMTLIBVersion(String name) {
 		this.name = name;
 	}
 

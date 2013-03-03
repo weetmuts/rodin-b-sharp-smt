@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eventb.smt.core.prefs.IDescriptor;
+import org.eventb.smt.core.IDescriptor;
 
 /**
  * Common implementation for storing a list of descriptor while enforcing some

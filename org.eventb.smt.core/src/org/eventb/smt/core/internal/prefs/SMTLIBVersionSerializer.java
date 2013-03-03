@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.SMTLIBVersion;
 
 /**
  * We use the regular mechanism provided by Java for translating an enumerated

@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.cvc3;
 
-import static org.eventb.smt.core.provers.SolverKind.CVC3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.CVC3;
 
 import org.eventb.smt.core.performance.solvers.SolverPerfWithPP;
 

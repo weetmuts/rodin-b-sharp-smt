@@ -9,13 +9,13 @@
  *******************************************************************************/
 package org.eventb.smt.ui.internal.preferences.solvers;
 
-import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.SolverKind.UNKNOWN;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.ui.internal.preferences.AbstractElement;
 
 /**

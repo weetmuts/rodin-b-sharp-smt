@@ -15,7 +15,7 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eventb.smt.core.prefs.IDescriptor;
+import org.eventb.smt.core.IDescriptor;
 
 /**
  * Common protocol for a list of descriptors contributed by an extension point.

@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.cvc4;
 
-import static org.eventb.smt.core.provers.SolverKind.CVC4;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.CVC4;
 
 import java.util.Arrays;
 import java.util.List;

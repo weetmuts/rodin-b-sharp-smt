@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,9 +22,9 @@ import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Test;
 
 public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {

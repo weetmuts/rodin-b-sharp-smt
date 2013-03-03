@@ -11,7 +11,7 @@ package org.eventb.smt.core.internal.prefs;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
-import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.eventb.smt.core.ISolverDescriptor;
 import org.osgi.service.prefs.Preferences;
 
 /**

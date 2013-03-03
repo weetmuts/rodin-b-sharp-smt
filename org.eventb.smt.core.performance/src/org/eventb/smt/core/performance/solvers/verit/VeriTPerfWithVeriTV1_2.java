@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.verit;
 
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.VERIT;
 
 import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 

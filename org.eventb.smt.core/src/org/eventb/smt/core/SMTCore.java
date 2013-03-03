@@ -20,11 +20,6 @@ import org.eventb.smt.core.internal.prefs.SolverDescriptor;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
 import org.eventb.smt.core.internal.tactics.DefaultAutoWithSMT;
 import org.eventb.smt.core.internal.tactics.SMTTacticDescriptors;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * Facade class providing the interface to the SMT core plug-in functionality.

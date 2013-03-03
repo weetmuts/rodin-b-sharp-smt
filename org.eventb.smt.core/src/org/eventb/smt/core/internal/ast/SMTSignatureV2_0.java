@@ -11,9 +11,9 @@
 
 package org.eventb.smt.core.internal.ast;
 
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_GOAL_LABEL;
 import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_HYPOTHESIS_LABEL;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.Arrays;

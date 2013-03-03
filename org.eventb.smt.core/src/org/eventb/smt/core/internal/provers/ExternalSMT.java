@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IReasonerInput;

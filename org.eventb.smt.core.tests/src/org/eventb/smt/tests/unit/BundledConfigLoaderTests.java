@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
 
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;

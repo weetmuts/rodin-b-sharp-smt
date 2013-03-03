@@ -12,12 +12,12 @@ package org.eventb.smt.tests.prefs;
 import static java.util.Arrays.asList;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.VERIT;
+import static org.eventb.smt.core.SolverKind.Z3;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.internal.prefs.ConfigPreferences.getBundledConfigs;
 import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -25,13 +25,13 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eventb.smt.core.IConfigDescriptor;
+import org.eventb.smt.core.IDescriptor;
+import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
-import org.eventb.smt.core.prefs.IDescriptor;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.core.TranslationApproach;
 import org.junit.Test;
 
 /**

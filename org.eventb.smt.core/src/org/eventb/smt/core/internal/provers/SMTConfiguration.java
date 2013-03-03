@@ -11,13 +11,13 @@
 package org.eventb.smt.core.internal.provers;
 
 import org.eclipse.core.runtime.IPath;
+import org.eventb.smt.core.IConfigDescriptor;
+import org.eventb.smt.core.ISolverDescriptor;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * Implementation of an SMT solver configuration. Instances are immutable and

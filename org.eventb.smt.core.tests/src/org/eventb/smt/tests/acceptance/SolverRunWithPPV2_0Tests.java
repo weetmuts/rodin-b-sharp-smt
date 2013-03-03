@@ -10,14 +10,14 @@
 
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.SolverKind;
 import org.junit.Test;
 
 /**

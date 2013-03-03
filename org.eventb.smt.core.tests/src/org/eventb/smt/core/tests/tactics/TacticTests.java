@@ -22,8 +22,8 @@ import org.eventb.core.seqprover.IProofTree;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.IProverSequent;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.junit.AfterClass;
 
 /**

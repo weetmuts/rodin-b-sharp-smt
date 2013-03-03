@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.mathsat5;
 
-import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.MATHSAT5;
 
 import java.util.Arrays;
 import java.util.List;

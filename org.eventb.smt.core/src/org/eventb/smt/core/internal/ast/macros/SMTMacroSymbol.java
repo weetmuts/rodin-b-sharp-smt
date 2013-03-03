@@ -10,9 +10,9 @@
 
 package org.eventb.smt.core.internal.ast.macros;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is used to store the symbols that represent the macros. They

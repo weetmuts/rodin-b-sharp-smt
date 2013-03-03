@@ -11,7 +11,7 @@
 
 package org.eventb.smt.tests.acceptance.verit;
 
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.SolverKind.VERIT;
 
 import org.eventb.smt.tests.acceptance.SolverRunWithPPV1_2Tests;
 

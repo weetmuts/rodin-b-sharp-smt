@@ -13,6 +13,8 @@ import static org.eventb.core.seqprover.transformer.SimpleSequents.simplify;
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
 import static org.eventb.pptrans.Translator.reduceToPredicateCalulus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeBool;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeInteger;
 import static org.eventb.smt.core.internal.ast.attributes.Label.GOAL_LABEL;
@@ -28,8 +30,6 @@ import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.MOD;
 import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.MUL;
 import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.PLUS;
 import static org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator.UMINUS;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +72,7 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTBenchmarkPP;
 import org.eventb.smt.core.internal.ast.SMTFactory;
@@ -102,7 +103,6 @@ import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
 import org.eventb.smt.core.internal.ast.theories.Theory;
 import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.TheoryV1_2.Booleans;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class does the SMT translation through ppTrans. ppTrans is called first,

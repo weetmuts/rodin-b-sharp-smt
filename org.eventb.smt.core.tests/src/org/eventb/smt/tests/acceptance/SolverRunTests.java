@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.junit.Ignore;
 import org.junit.Test;

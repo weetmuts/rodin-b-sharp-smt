@@ -10,8 +10,8 @@
 package org.eventb.smt.core.performance.realprojects;
 
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 
 import java.io.File;
 import java.net.URL;
@@ -22,7 +22,7 @@ import org.eventb.core.IPSRoot;
 import org.eventb.core.IPSStatus;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.TranslationApproach;
 import org.rodinp.core.RodinDBException;
 
 /**

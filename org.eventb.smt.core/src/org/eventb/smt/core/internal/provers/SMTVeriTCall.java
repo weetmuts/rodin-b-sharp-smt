@@ -11,6 +11,10 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.VERIT;
+import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
 import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
@@ -18,10 +22,6 @@ import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -39,11 +39,11 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class represents a call to an SMT solver using the veriT approach. More

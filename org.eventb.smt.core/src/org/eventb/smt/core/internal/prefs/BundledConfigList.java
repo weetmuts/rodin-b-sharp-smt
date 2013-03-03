@@ -12,9 +12,9 @@ package org.eventb.smt.core.internal.prefs;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.IConfigDescriptor;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.TranslationApproach;
 
 /**
  * @author Systerel (yguyot)

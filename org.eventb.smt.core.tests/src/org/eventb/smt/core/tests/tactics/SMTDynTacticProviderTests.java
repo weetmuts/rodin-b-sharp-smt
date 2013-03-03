@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.junit.Test;
 
 /**

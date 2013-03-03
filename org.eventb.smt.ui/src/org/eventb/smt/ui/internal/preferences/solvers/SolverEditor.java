@@ -33,7 +33,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.ui.internal.preferences.ExecutableFileEditor;
 
 /**

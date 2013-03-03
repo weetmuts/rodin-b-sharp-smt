@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
+import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 import org.junit.Ignore;
 import org.junit.Test;
 

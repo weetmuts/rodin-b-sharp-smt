@@ -10,8 +10,8 @@
 
 package org.eventb.smt.core.performance.solvers.z3;
 
-import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.Z3;
 
 import java.util.Arrays;
 import java.util.List;

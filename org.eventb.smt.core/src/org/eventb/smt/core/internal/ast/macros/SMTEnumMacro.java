@@ -9,11 +9,11 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.macros;
 
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is used to create macros that are enumerations. These macros are

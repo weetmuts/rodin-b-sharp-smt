@@ -9,15 +9,15 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.POINT;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is used to represent formulas which the operator is {@code FORALL}

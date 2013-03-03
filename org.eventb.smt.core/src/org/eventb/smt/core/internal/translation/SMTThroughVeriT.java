@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.translation;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeEqual;
 import static org.eventb.smt.core.internal.ast.SMTFactoryVeriT.makeITE;
 import static org.eventb.smt.core.internal.ast.SMTFactoryVeriT.makeMacroTerm;
@@ -59,8 +61,6 @@ import static org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV1_2.SMTVer
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_SURJECTION_OP;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV1_2.SMTVeriTOperatorV1_2.TOTAL_SURJECTIVE_RELATION_OP;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -98,6 +98,7 @@ import org.eventb.core.ast.expanders.Expanders;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmarkVeriT;
 import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFactoryPP;
@@ -136,7 +137,6 @@ import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0VeriT;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTLogicVeriT;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class implements the translation from Event-B predicates to Extended

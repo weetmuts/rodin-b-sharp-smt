@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import org.eventb.smt.core.prefs.IDescriptor;
+import org.eventb.smt.core.IDescriptor;
 import org.osgi.service.prefs.Preferences;
 
 /**

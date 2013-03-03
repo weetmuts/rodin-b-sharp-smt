@@ -13,9 +13,9 @@ import static java.lang.System.getProperty;
 import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.SMTPreferences.TRANSLATION_PATH_ID;
 import static org.eventb.smt.core.SMTPreferences.VERIT_PATH_ID;
+import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.eventb.smt.core.ISolverDescriptor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 

@@ -7,7 +7,7 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.prefs;
+package org.eventb.smt.core;
 
 /**
  * Common protocol of solver and configuration descriptors. Every descriptor has

@@ -7,25 +7,27 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.translation;
+package org.eventb.smt.core;
 
 /**
- * Enumeration describing which translation approach to use.
+ * Enumeration of the kind of solvers known to this plug-in.
+ * 
+ * @author vitor
  */
-public enum TranslationApproach {
+public enum SolverKind {
 
-	USING_PP("PP"), USING_VERIT("veriT");
-
-	public static TranslationApproach parseApproach(final String value) {
-		if (USING_VERIT.name.equals(value)) {
-			return USING_VERIT;
-		}
-		return USING_PP;
-	}
+	ALT_ERGO("alt-ergo"), //
+	CVC3("cvc3"), //
+	CVC4("cvc4"), //
+	MATHSAT5("mathsat5"), //
+	OPENSMT("opensmt"), //
+	VERIT("verit"), //
+	Z3("z3"), //
+	UNKNOWN("unknown");
 
 	private final String name;
 
-	private TranslationApproach(final String name) {
+	private SolverKind(final String name) {
 		this.name = name;
 	}
 

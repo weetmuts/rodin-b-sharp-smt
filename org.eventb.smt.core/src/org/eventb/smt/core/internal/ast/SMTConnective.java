@@ -9,12 +9,12 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.SMTLIBVersion;
 
 /**
  * This class represents SMT Connectives.

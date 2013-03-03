@@ -17,8 +17,8 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
-import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
-import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
+import static org.eventb.smt.core.SMTLIBVersion.parseVersion;
+import static org.eventb.smt.core.TranslationApproach.parseApproach;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.translation.SMTLIBVersion;
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.SMTLIBVersion;
+import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.ui.internal.UIUtils;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
 

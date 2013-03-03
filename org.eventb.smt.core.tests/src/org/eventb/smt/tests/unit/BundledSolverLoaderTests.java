@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
+import static org.eventb.smt.core.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.junit.Assert.assertEquals;
 
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;

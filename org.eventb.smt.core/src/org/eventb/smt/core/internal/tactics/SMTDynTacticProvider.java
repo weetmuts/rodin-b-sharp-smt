@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IDynTacticProvider;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.IConfigDescriptor;
 
 /**
  * Provides one tactic descriptor per registered SMT configuration.

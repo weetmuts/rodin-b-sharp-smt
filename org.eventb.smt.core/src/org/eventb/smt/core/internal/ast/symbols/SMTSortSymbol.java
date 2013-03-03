@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.SMTLIBVersion;
 
 /**
  * The SMT sorts.

@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.internal.prefs.AttributeSerializer;
 import org.eventb.smt.core.internal.prefs.PathSerializer;
 import org.eventb.smt.core.internal.prefs.SolverKindSerializer;
 import org.eventb.smt.core.internal.prefs.StringSerializer;
-import org.eventb.smt.core.provers.SolverKind;
 import org.eventb.smt.tests.SMTCoreTests;
 import org.junit.After;
 import org.junit.Test;

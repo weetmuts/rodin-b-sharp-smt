@@ -15,14 +15,14 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.SolverKind.ALT_ERGO;
+import static org.eventb.smt.core.SolverKind.MATHSAT5;
+import static org.eventb.smt.core.SolverKind.OPENSMT;
+import static org.eventb.smt.core.SolverKind.Z3;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
-import static org.eventb.smt.core.provers.SolverKind.ALT_ERGO;
-import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
-import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
-import static org.eventb.smt.core.provers.SolverKind.Z3;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,12 +43,12 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
+import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
-import org.eventb.smt.core.provers.SolverKind;
-import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * 

@@ -13,8 +13,8 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.ISolverDescriptor;
+import org.eventb.smt.core.SolverKind;
 
 /**
  * @author Systerel (yguyot)

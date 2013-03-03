@@ -9,17 +9,17 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import java.math.BigInteger;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class represents a numeral in SMT-LIB grammar.

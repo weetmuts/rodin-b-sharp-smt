@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers.mathsat5;
 
-import static org.eventb.smt.core.provers.SolverKind.MATHSAT5;
+import static org.eventb.smt.core.SolverKind.MATHSAT5;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
 import org.junit.Ignore;

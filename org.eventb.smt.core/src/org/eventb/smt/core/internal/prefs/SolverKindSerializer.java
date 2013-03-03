@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.SolverKind;
 
 /**
  * We use the regular mechanism provided by Java for translating an enumerated

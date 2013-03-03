@@ -12,7 +12,7 @@ package org.eventb.smt.core.internal.ast.symbols;
 
 import static org.eventb.smt.core.internal.ast.Messages.SMTSymbol_NullNameException;
 
-import org.eventb.smt.core.translation.SMTLIBVersion;
+import org.eventb.smt.core.SMTLIBVersion;
 
 /**
  * This class stores predefined SMT Symbols

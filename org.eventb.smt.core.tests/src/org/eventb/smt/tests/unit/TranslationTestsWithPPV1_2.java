@@ -12,8 +12,8 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.pptrans.Translator.isInGoal;
-import static org.eventb.smt.core.provers.SolverKind.VERIT;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

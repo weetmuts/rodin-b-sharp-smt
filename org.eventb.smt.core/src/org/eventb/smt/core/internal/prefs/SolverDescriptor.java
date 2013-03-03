@@ -10,8 +10,8 @@
 package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IPath;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.ISolverDescriptor;
+import org.eventb.smt.core.SolverKind;
 import org.osgi.service.prefs.Preferences;
 
 public class SolverDescriptor extends Descriptor implements ISolverDescriptor {

@@ -23,7 +23,7 @@ import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParamTacticDescriptor;
 import org.eventb.core.seqprover.IParameterValuation;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
+import org.eventb.smt.core.IConfigDescriptor;
 import org.junit.Test;
 
 /**

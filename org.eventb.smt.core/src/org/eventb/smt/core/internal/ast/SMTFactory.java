@@ -11,19 +11,19 @@
 
 package org.eventb.smt.core.internal.ast;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroFactory.POLYMORPHICS;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import java.math.BigInteger;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is the factory class for all the AST nodes of an SMT-LIB formula.

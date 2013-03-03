@@ -34,6 +34,7 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTNode;
@@ -42,7 +43,6 @@ import org.eventb.smt.core.internal.ast.SMTVar;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.theories.Logic;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class is a translator from Event-B syntax to SMT-LIB syntax.

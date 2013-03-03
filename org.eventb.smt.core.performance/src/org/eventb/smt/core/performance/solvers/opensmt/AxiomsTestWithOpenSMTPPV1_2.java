@@ -10,7 +10,7 @@
 
 package org.eventb.smt.core.performance.solvers.opensmt;
 
-import static org.eventb.smt.core.provers.SolverKind.OPENSMT;
+import static org.eventb.smt.core.SolverKind.OPENSMT;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV1_2;
 import org.junit.Ignore;

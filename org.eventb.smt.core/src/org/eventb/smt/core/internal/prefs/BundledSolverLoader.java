@@ -11,12 +11,12 @@ package org.eventb.smt.core.internal.prefs;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
-import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
+import static org.eventb.smt.core.SolverKind.UNKNOWN;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eventb.smt.core.provers.SolverKind;
+import org.eventb.smt.core.SolverKind;
 import org.osgi.framework.Bundle;
 
 /**

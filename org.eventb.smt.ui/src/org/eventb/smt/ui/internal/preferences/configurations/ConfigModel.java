@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.prefs.IConfigDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractModel;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverModel;

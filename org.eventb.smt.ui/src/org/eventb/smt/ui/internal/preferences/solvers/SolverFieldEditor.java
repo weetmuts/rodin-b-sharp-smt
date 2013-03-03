@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eventb.smt.core.prefs.ISolverDescriptor;
+import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.ui.internal.preferences.AbstractTableFieldEditor;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigElement;
 import org.eventb.smt.ui.internal.preferences.configurations.ConfigModel;

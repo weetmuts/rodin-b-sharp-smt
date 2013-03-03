@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import org.eventb.smt.core.translation.TranslationApproach;
+import org.eventb.smt.core.TranslationApproach;
 
 /**
  * We use the regular mechanism provided by Java for translating an enumerated

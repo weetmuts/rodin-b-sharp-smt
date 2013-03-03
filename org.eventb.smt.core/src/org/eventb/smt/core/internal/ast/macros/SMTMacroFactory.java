@@ -10,6 +10,7 @@
 
 package org.eventb.smt.core.internal.ast.macros;
 
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.BCOMP;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.BINTER;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.BUNION;
@@ -55,11 +56,11 @@ import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.BOOLS;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.INT;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
 import static org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2.POLYMORPHIC;
-import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.ast.SMTSignatureV1_2Verit;
@@ -74,7 +75,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
 import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
-import org.eventb.smt.core.translation.SMTLIBVersion;
 
 /**
  * This class handles macros defined in the extended version of the SMT-LIB for
