@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel. All rights reserved.
+ * Copyright (c) 2012, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.prefs;
 import static org.eclipse.core.runtime.Platform.getBundle;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
 import static org.eventb.smt.core.provers.SolverKind.UNKNOWN;
-import static org.eventb.smt.core.provers.SolverKind.parseKind;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
@@ -32,11 +31,7 @@ public class BundledSolverLoader extends AbstractLoader {
 	}
 
 	public SolverKind getKind() {
-		final String kindStr = ce.getAttribute("kind");
-		if (kindStr == null) {
-			return UNKNOWN;
-		}
-		return parseKind(kindStr);
+		return getEnumAttribute("kind", UNKNOWN);
 	}
 
 	public IPath getPath() {

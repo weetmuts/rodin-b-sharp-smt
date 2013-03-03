@@ -10,6 +10,7 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.smt.core.translation.SMTLIBVersion.V1_2;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.translation.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
@@ -19,9 +20,9 @@ import org.eventb.smt.core.internal.prefs.BundledConfigLoader;
 import org.junit.Test;
 
 /**
- * Unit tests for parsing a configuration element contributing to the "config"
- * extension point.
- *
+ * Unit tests for parsing a configuration element contributing to the
+ * "configurations" extension point.
+ * 
  * @author Yoann Guyot
  */
 public class BundledConfigLoaderTests {
@@ -43,9 +44,9 @@ public class BundledConfigLoaderTests {
 		assertEquals(value, loader.getSolverName());
 	}
 
-	@Test(expected = LoadingException.class)
+	@Test
 	public void missingArgs() {
-		loader.getArgs();
+		assertEquals("", loader.getArgs());
 	}
 
 	@Test
@@ -55,6 +56,7 @@ public class BundledConfigLoaderTests {
 		assertEquals(value, loader.getArgs());
 	}
 
+	@Test
 	public void missingApproach() {
 		assertEquals(USING_PP, loader.getTranslationApproach());
 	}
@@ -65,14 +67,27 @@ public class BundledConfigLoaderTests {
 		assertEquals(USING_VERIT, loader.getTranslationApproach());
 	}
 
+	@Test(expected = LoadingException.class)
+	public void invalidApproach() {
+		ce.add("translator", "unknown approach");
+		loader.getTranslationApproach();
+	}
+
+	@Test
 	public void missingVersion() {
-		loader.getVersion();
+		assertEquals(V2_0, loader.getVersion());
 	}
 
 	@Test
 	public void validVersion() {
 		ce.add("smt-lib", "V1.2");
 		assertEquals(V1_2, loader.getVersion());
+	}
+
+	@Test(expected = LoadingException.class)
+	public void invalidVersion() {
+		ce.add("smt-lib", "unknown version");
+		loader.getVersion();
 	}
 
 }

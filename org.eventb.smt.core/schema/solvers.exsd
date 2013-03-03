@@ -3,10 +3,10 @@
 <schema targetNamespace="org.eventb.smt.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eventb.smt.core" id="bundledsolvers" name="%point.bundledsolvers"/>
+         <meta.schema plugin="org.eventb.smt.core" id="solvers" name="%point.solvers"/>
       </appinfo>
       <documentation>
-         This extension point accepts definition of bundled solvers.
+         This extension point allows to define some SMT solvers which are bundled in the client plug-in.
       </documentation>
    </annotation>
 
@@ -49,15 +49,6 @@
 
    <element name="solver">
       <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The identifier for this bundled solver (simple id token). The token cannot contain a dot (.) or whitespace.
-For example :
-org.myplace.myplugin.solverid where solverid is the identifier of this configuration.
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
@@ -118,7 +109,7 @@ Example: &quot;$os$/binary&quot;.
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         See plug-ins org.eventb.smt.cvc3 and org.eventb.smt.verit.
       </documentation>
    </annotation>
 
@@ -127,7 +118,7 @@ Example: &quot;$os$/binary&quot;.
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         No API, purely descriptive extension point.
       </documentation>
    </annotation>
 
@@ -136,7 +127,7 @@ Example: &quot;$os$/binary&quot;.
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         See plug-ins org.eventb.smt.cvc3 and org.eventb.smt.verit.
       </documentation>
    </annotation>
 
@@ -145,8 +136,14 @@ Example: &quot;$os$/binary&quot;.
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         Copyright (c) 2012 Systerel. All rights reserved.
-This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+         Copyright (c) 2012, 2013 Systerel. All rights reserved.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+
+Contributors:
+    Systerel - initial API and implementation
       </documentation>
    </annotation>
 

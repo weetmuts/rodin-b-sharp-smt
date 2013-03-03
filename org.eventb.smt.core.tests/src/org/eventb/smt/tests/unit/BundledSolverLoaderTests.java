@@ -58,14 +58,18 @@ public class BundledSolverLoaderTests {
 	}
 
 	@Test(expected = LoadingException.class)
+	public void invalidKind() {
+		ce.add("kind", "something strange");
+		loader.getPath();
+	}
+
+	@Test(expected = LoadingException.class)
 	public void missingPath() {
-		ce.add("name", "foo");
 		loader.getPath();
 	}
 
 	@Test(expected = LoadingException.class)
 	public void invalidPath() {
-		ce.add("name", "foo");
 		ce.add("localpath", "path/to/invalid/file");
 		loader.getPath();
 	}

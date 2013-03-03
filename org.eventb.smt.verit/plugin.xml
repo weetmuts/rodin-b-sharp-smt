@@ -4,7 +4,6 @@
    <extension
          point="org.eventb.smt.core.solvers">
       <solver
-            id="bundled"
             name="veriT (bundled)"
             kind="verit"
             localpath="$os$/verit">
@@ -14,10 +13,8 @@
          point="org.eventb.smt.core.configurations">
       <configuration
             args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e"
-            id="verit_pp_smt2"
             name="veriT SMT2"
             smt-lib="V2.0"
-            solverid="org.eventb.smt.verit.bundled"
             solverName="veriT (bundled)"
             translator="PP">
       </configuration>

@@ -55,4 +55,27 @@ public abstract class AbstractLoader {
 		}
 		return value;
 	}
+
+	protected String getOptionalAttribute(String name) {
+		final String value = ce.getAttribute(name);
+		if (value == null) {
+			return "";
+		}
+		return value;
+	}
+
+	protected <E extends Enum<E>> E getEnumAttribute(String name, E defaultValue) {
+		final String image = ce.getAttribute(name);
+		if (image == null) {
+			return defaultValue;
+		}
+		final Class<E> type = defaultValue.getDeclaringClass();
+		for (final E value : type.getEnumConstants()) {
+			if (image.equals(value.toString())) {
+				return value;
+			}
+		}
+		throw error("Invalid " + name + ": " + image);
+	}
+
 }

@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.translation.SMTLIBVersion.parseVersion;
-import static org.eventb.smt.core.translation.TranslationApproach.parseApproach;
+import static org.eventb.smt.core.translation.SMTLIBVersion.V2_0;
+import static org.eventb.smt.core.translation.TranslationApproach.USING_PP;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eventb.smt.core.translation.SMTLIBVersion;
@@ -18,7 +18,7 @@ import org.eventb.smt.core.translation.TranslationApproach;
 
 /**
  * Implements loading configuration details from an extension to point "config".
- *
+ * 
  * @author Yoann Guyot
  */
 public class BundledConfigLoader extends AbstractLoader {
@@ -31,22 +31,16 @@ public class BundledConfigLoader extends AbstractLoader {
 		return getRequiredAttribute("solverName");
 	}
 
-	public String getSolverId() {
-		return getRequiredAttribute("solverid");
-	}
-
 	public String getArgs() {
-		return getRequiredAttribute("args");
+		return getOptionalAttribute("args");
 	}
 
 	public TranslationApproach getTranslationApproach() {
-		final String value = ce.getAttribute("translator");
-		return parseApproach(value);
+		return getEnumAttribute("translator", USING_PP);
 	}
 
 	public SMTLIBVersion getVersion() {
-		final String value = ce.getAttribute("smt-lib");
-		return parseVersion(value);
+		return getEnumAttribute("smt-lib", V2_0);
 	}
 
 }
