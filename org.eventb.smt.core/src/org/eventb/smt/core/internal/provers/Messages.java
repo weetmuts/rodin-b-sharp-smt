@@ -17,9 +17,6 @@ public class Messages extends NLS {
 
 	public static String nullSMTConfigurationError;
 	public static String SmtProversCall_veriT_path_not_defined;
-	public static String SmtProversCall_SMT_file_does_not_exist;
-	public static String force_error_invalid_forces;
-	public static String SmtProversCall_Check_Smt_Preferences;
 	public static String SMTVeriTCall_SMTLIBV2_0_deactivated;
 
 	// Pattern for messages with argument (see corresponding method below)
