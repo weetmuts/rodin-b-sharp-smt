@@ -10,6 +10,7 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
+import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 
@@ -58,13 +59,8 @@ public class SMTPPCall extends SMTProverCall {
 		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
-	/**
-	 * Executes the translation of the Event-B sequent using the PP approach.
-	 * 
-	 * @throws IOException
-	 */
 	@Override
-	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException {
+	protected void makeSMTBenchmarkFile() throws IOException {
 		/**
 		 * Updates the name of the benchmark (the name originally given could
 		 * have been changed by the translator if it was a reserved symbol)
@@ -80,43 +76,26 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		benchmark.print(smtFileWriter, new SMTPrintOptions());
+		final SMTPrintOptions options = getPrintingOptions();
+		benchmark.print(smtFileWriter, options);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(SmtProversCall_SMT_file_does_not_exist);
 		}
 	}
 
-	/**
-	 * Executes the translation of the Event-B sequent using the PP approach.
-	 * 
-	 * @throws IOException
-	 */
-	@Override
-	public synchronized void makeSMTBenchmarkFileV2_0() throws IOException {
-		/**
-		 * Updates the name of the benchmark (the name originally given could
-		 * have been changed by the translator if it was a reserved symbol)
-		 */
-		lemmaName = benchmark.getName();
-
-		/**
-		 * Makes temporary files
-		 */
-		makeTempFileNames();
-
-		/**
-		 * Prints the SMT-LIB benchmark in a file
-		 */
-		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
+	private SMTPrintOptions getPrintingOptions() {
 		final SMTPrintOptions options = new SMTPrintOptions();
+		if (config.getSmtlibVersion() == V1_2) {
+			// No option to set
+			return options;
+		}
 		switch (config.getKind()) {
 		case Z3:
 			// FIXME Add Z3 version checking
 			options.printAnnotations = true;
 			options.printGetUnsatCoreCommands = true;
 			options.printZ3SpecificCommands = true;
-			
 			break;
 		case ALT_ERGO:
 		case VERIT:
@@ -126,11 +105,7 @@ public class SMTPPCall extends SMTProverCall {
 			// Nothing to set
 			break;
 		}
-		benchmark.print(smtFileWriter, options);
-		smtFileWriter.close();
-		if (!smtBenchmarkFile.exists()) {
-			System.out.println(SmtProversCall_SMT_file_does_not_exist);
-		}
+		return options;
 	}
 
 	/**

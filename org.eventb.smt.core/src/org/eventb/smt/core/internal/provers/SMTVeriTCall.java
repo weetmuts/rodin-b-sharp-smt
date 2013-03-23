@@ -299,14 +299,22 @@ public class SMTVeriTCall extends SMTProverCall {
 		}
 	}
 
-	/**
-	 * Executes the translation of the Event-B sequent using the VeriT approach.
-	 * 
-	 * @throws IOException
-	 */
 	@Override
-	public synchronized void makeSMTBenchmarkFileV1_2() throws IOException,
-			IllegalArgumentException {
+	public synchronized void makeSMTBenchmarkFile() throws IOException {
+		switch (config.getSmtlibVersion()) {
+		case V1_2:
+			makeSMTBenchmarkFileV1_2();
+			break;
+		case V2_0:
+			makeSMTBenchmarkFileV2_0();
+			break;
+		default:
+			assert false;
+			break;
+		}
+	}
+
+	private void makeSMTBenchmarkFileV1_2() throws IOException {
 		sv = V1_2;
 
 		/**
@@ -367,8 +375,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		}
 	}
 
-	@Override
-	protected void makeSMTBenchmarkFileV2_0() throws IOException {
+	private void makeSMTBenchmarkFileV2_0() throws IOException {
 		if (DEBUG) {
 			sv = V2_0;
 

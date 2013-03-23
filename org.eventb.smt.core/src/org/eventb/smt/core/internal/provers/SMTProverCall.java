@@ -466,20 +466,12 @@ public abstract class SMTProverCall extends XProverCall2 {
 	}
 
 	/**
-	 * Translates the sequent in SMT-LIB V1.2 language and sets the benchmark
-	 * file with the result.
+	 * Translates the sequent to SMT-LIB language and sets the benchmark file
+	 * with the result.
 	 * 
 	 * @throws IOException
 	 */
-	abstract protected void makeSMTBenchmarkFileV1_2() throws IOException;
-
-	/**
-	 * Translates the sequent in SMT-LIB V2.0 language and sets the benchmark
-	 * file with the result.
-	 * 
-	 * @throws IOException
-	 */
-	abstract protected void makeSMTBenchmarkFileV2_0() throws IOException;
+	abstract protected void makeSMTBenchmarkFile() throws IOException;
 
 	abstract protected void extractUnsatCore();
 
@@ -527,11 +519,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 				translationPerformed = false;
 				try {
-					if (config.getSmtlibVersion() == V1_2) {
-						makeSMTBenchmarkFileV1_2();
-					} else {
-						makeSMTBenchmarkFileV2_0();
-					}
+					makeSMTBenchmarkFile();
 					translationPerformed = true;
 				} catch (IllegalArgumentException e) {
 					if (DEBUG) {
