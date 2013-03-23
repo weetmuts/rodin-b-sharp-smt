@@ -10,8 +10,6 @@
 
 package org.eventb.smt.core.internal.ast.symbols;
 
-import static org.eventb.smt.core.internal.ast.Messages.SMTSymbol_NullNameException;
-
 import org.eventb.smt.core.SMTLIBVersion;
 
 /**
@@ -60,13 +58,10 @@ public abstract class SMTSymbol {
 	 */
 	protected SMTSymbol(final String symbolName, final boolean predefined,
 			final SMTLIBVersion smtlibVersion) {
-		if (symbolName != null) {
-			name = symbolName;
-			this.predefined = predefined;
-			this.smtlibVersion = smtlibVersion;
-		} else {
-			throw new IllegalArgumentException(SMTSymbol_NullNameException);
-		}
+		assert symbolName != null;
+		this.name = symbolName;
+		this.predefined = predefined;
+		this.smtlibVersion = smtlibVersion;
 	}
 
 	/**

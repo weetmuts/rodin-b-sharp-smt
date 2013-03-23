@@ -461,10 +461,7 @@ public abstract class SMTSignature {
 		final SMTFunctionSymbol freshSymbol = new SMTFunctionSymbol(freshName,
 				argSorts, returnSort, associative, !PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = funs.add(freshSymbol);
-		if (!successfullyAdded) {
-			throw new IllegalArgumentException(
-					Messages.FreshSymbolCreationFailed + freshSymbol.toString());
-		}
+		assert successfullyAdded;
 		return freshSymbol;
 	}
 
@@ -493,10 +490,7 @@ public abstract class SMTSignature {
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
 				!SMTSymbol.PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = sorts.add(freshSort);
-		if (!successfullyAdded) {
-			throw new IllegalArgumentException(
-					Messages.FreshSymbolCreationFailed + freshSort.toString());
-		}
+		assert successfullyAdded;
 		return freshSort;
 	}
 
@@ -515,11 +509,7 @@ public abstract class SMTSignature {
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
 				freshName, argSorts, !SMTSymbol.PREDEFINED, smtlibVersion);
 		final boolean successfullyAdded = preds.add(freshPredicate);
-		if (!successfullyAdded) {
-			throw new IllegalArgumentException(
-					Messages.FreshSymbolCreationFailed
-							+ freshPredicate.toString());
-		}
+		assert successfullyAdded;
 		return freshPredicate;
 	}
 
