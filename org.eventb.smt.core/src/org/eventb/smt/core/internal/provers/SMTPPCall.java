@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.provers;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -79,9 +78,6 @@ public class SMTPPCall extends SMTProverCall {
 		final SMTPrintOptions options = getPrintingOptions();
 		benchmark.print(smtFileWriter, options);
 		smtFileWriter.close();
-		if (!smtBenchmarkFile.exists()) {
-			System.out.println(SmtProversCall_SMT_file_does_not_exist);
-		}
 	}
 
 	private SMTPrintOptions getPrintingOptions() {

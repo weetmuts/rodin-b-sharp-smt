@@ -16,7 +16,6 @@ import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
-import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 
@@ -334,9 +333,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
 		benchmark.print(veriTBenchmarkWriter, new SMTPrintOptions());
 		veriTBenchmarkWriter.close();
-		if (!veriTBenchmarkFile.exists()) {
-			System.out.println(SmtProversCall_SMT_file_does_not_exist);
-		}
 
 		/**
 		 * Calls veriT to process the macros of the benchmark
@@ -370,9 +366,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		} else {
 			throw new IllegalArgumentException(veriTResult);
 		}
-		if (!smtBenchmarkFile.exists()) {
-			System.out.println(SmtProversCall_SMT_file_does_not_exist);
-		}
 	}
 
 	private void makeSMTBenchmarkFileV2_0() throws IOException {
@@ -399,9 +392,6 @@ public class SMTVeriTCall extends SMTProverCall {
 			options.printAnnotations = true;
 			benchmark.print(veriTBenchmarkWriter, options);
 			veriTBenchmarkWriter.close();
-			if (!veriTBenchmarkFile.exists()) {
-				System.out.println(SmtProversCall_SMT_file_does_not_exist);
-			}
 
 			/**
 			 * Calls veriT to process the macros of the benchmark
@@ -424,9 +414,6 @@ public class SMTVeriTCall extends SMTProverCall {
 				smtBenchmarkWriter.close();
 			} else {
 				throw new IllegalArgumentException(veriTResult);
-			}
-			if (!smtBenchmarkFile.exists()) {
-				System.out.println(SmtProversCall_SMT_file_does_not_exist);
 			}
 		} else {
 			throw new IllegalArgumentException(
