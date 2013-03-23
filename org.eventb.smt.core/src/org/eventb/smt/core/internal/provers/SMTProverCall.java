@@ -44,7 +44,6 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.SolverKind;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
@@ -61,6 +60,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	protected static final String SMT_LIB_FILE_EXTENSION = ".smt";
 	protected static final String NON_STANDARD_SMT_LIB2_FILE_EXTENSION = ".smt2";
 	private static final String RODIN_SEQUENT = "rodin_sequent";
+
 	/**
 	 * FOR DEBUG ONLY
 	 */
@@ -365,32 +365,6 @@ public abstract class SMTProverCall extends XProverCall2 {
 		showProcessOutput(builder, monitor, true);
 		builder.append("Exit code is: ").append(monitor.exitCode())
 				.append("\n");
-	}
-
-	protected void setTranslationPath(final TranslationApproach approach) {
-		this.translationPath = this.translationPath.append(approach.toString());
-	}
-
-	protected void setTranslationDirectories(
-			final TranslationApproach approach, final StringBuilder debugBuilder) {
-		translationFolder = new File(translationPath.toOSString());
-		if (!translationFolder.mkdirs()) {
-			// TODO handle the error
-		} else {
-			if (DEBUG) {
-				if (DEBUG_DETAILS) {
-					debugBuilder.append("Created temporary ");
-					debugBuilder.append(approach.toString());
-					debugBuilder.append(" translation folder '");
-					debugBuilder.append(translationFolder).append("'\n");
-				}
-			} else {
-				/**
-				 * The deletion will be done when exiting Rodin.
-				 */
-				translationFolder.deleteOnExit();
-			}
-		}
 	}
 
 	/**

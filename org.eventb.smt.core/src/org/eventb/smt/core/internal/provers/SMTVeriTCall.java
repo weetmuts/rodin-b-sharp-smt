@@ -14,7 +14,6 @@ import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
-import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
@@ -97,8 +96,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT(
 				config.getSmtlibVersion()));
 		setVeriTPath();
-		setTranslationPath(USING_VERIT);
-		setTranslationDirectories(USING_VERIT, debugBuilder);
 	}
 
 	/**
@@ -110,8 +107,6 @@ public class SMTVeriTCall extends SMTProverCall {
 		super(sequent, pm, debugBuilder, config, poName, new SMTThroughPP(
 				config.getSmtlibVersion()));
 		setVeriTPath();
-		setTranslationPath(USING_VERIT);
-		setTranslationDirectories(USING_VERIT, debugBuilder);
 	}
 
 	private void setVeriTPath() {

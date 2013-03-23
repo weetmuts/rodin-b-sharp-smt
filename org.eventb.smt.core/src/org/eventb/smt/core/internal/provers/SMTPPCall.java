@@ -11,7 +11,6 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -43,8 +42,6 @@ public class SMTPPCall extends SMTProverCall {
 			final StringBuilder debugBuilder, final SMTConfiguration config) {
 		super(sequent, pm, debugBuilder, config,
 				new SMTThroughPP(config.getSmtlibVersion()));
-		setTranslationPath(USING_PP);
-		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
 	/**
@@ -54,8 +51,6 @@ public class SMTPPCall extends SMTProverCall {
 			final StringBuilder debugBuilder, final SMTConfiguration config, final String poName) {
 		super(sequent, pm, debugBuilder, config, poName,
 				new SMTThroughPP(config.getSmtlibVersion()));
-		setTranslationPath(USING_PP);
-		setTranslationDirectories(USING_PP, debugBuilder);
 	}
 
 	@Override
