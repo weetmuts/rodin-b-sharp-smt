@@ -23,7 +23,7 @@ import org.junit.Test;
 public class Cvc4PerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public Cvc4PerfWithPPV2_0() {
-		super(CVC4, !BUNDLED, V2_0);
+		super(CVC4, V2_0);
 	}
 
 	@Test

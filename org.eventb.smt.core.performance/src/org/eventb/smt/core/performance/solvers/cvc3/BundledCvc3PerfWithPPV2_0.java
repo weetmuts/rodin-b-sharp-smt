@@ -19,7 +19,7 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithPP;
 public class BundledCvc3PerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public BundledCvc3PerfWithPPV2_0() {
-		super(CVC3, BUNDLED, V2_0);
+		super(CVC3, V2_0);
 	}
 
 }

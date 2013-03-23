@@ -91,8 +91,8 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	public XMLtoSMTTests(final LemmaData data, final SolverKind solver,
 			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		super(solver, !BUNDLED, Theory.fromNames(data.getTheories()), USING_VERIT,
-				smtlibVersion, getUnsatCore);
+		super(solver, Theory.fromNames(data.getTheories()), USING_VERIT, smtlibVersion,
+				getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");

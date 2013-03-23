@@ -31,10 +31,8 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithPP(final SolverKind solverKind, final boolean bundled,
-			final SMTLIBVersion smtlibVersion) {
-		super(solverKind, bundled, null, USING_PP, smtlibVersion,
-				!GET_UNSAT_CORE);
+	public SolverPerfWithPP(final SolverKind solverKind, final SMTLIBVersion smtlibVersion) {
+		super(solverKind, null, USING_PP, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

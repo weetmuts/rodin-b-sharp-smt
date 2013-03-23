@@ -31,8 +31,8 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public UnsatCoreExtractionPerfWithPP(final SolverKind solver,
-			final boolean bundled, final SMTLIBVersion smtlibVersion) {
-		super(solver, bundled, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
+			final SMTLIBVersion smtlibVersion) {
+		super(solver, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

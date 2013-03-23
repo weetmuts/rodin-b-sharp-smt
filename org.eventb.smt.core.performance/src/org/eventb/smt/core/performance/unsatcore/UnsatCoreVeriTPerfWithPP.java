@@ -16,7 +16,7 @@ import static org.eventb.smt.core.SolverKind.VERIT;
 public class UnsatCoreVeriTPerfWithPP extends UnsatCoreExtractionPerfWithPP {
 
 	public UnsatCoreVeriTPerfWithPP() {
-		super(VERIT, !BUNDLED, V2_0);
+		super(VERIT, V2_0);
 	}
 
 }

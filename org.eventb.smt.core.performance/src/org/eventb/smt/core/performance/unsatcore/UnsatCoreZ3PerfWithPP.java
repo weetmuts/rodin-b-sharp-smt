@@ -16,7 +16,7 @@ import static org.eventb.smt.core.SolverKind.Z3;
 public class UnsatCoreZ3PerfWithPP extends UnsatCoreExtractionPerfWithPP {
 
 	public UnsatCoreZ3PerfWithPP() {
-		super(Z3, !BUNDLED, V2_0);
+		super(Z3, V2_0);
 	}
 
 }

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class AltErgoPerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public AltErgoPerfWithVeriTV1_2() {
-		super(ALT_ERGO, !BUNDLED, V1_2);
+		super(ALT_ERGO, V1_2);
 	}
 
 	@Test

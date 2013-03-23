@@ -168,12 +168,11 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	public static final IConfigDescriptor Z3_VERIT_SMT2 = makeConfig(LAST_Z3_BIN,
 			LAST_Z3, "", USING_VERIT, V2_0);
 
-	public CommonPerformanceTests(SolverKind solverKind, boolean bundled,
-			Set<Theory> theories, TranslationApproach translationApproach,
-			SMTLIBVersion smtlibVersion, boolean getUnsatCore) {
+	public CommonPerformanceTests(SolverKind solverKind, Set<Theory> theories,
+			TranslationApproach translationApproach, SMTLIBVersion smtlibVersion,
+			boolean getUnsatCore) {
 		this.theories = theories;
-		setSolverPreferences(solverKind, bundled, translationApproach,
-				smtlibVersion);
+		setSolverPreferences(solverKind, translationApproach, smtlibVersion);
 	}
 
 	private static IPath makeSolverPath(final String binaryName) {
@@ -190,7 +189,6 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 	 * 
 	 */
 	protected void setSolverPreferences(final SolverKind kind,
-			final boolean bundled,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
 		if (translationApproach == USING_VERIT) {
@@ -500,7 +498,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 
 		final String solverName = configuration.getSolverName();
 		if (!solverName.equals(LAST_Z3.getName())) {
-			setSolverPreferences(Z3, !BUNDLED, testedTranslationApproach, V2_0);
+			setSolverPreferences(Z3, testedTranslationApproach, V2_0);
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
 					"z3 unsat-core checking", lemmaName, sequent,

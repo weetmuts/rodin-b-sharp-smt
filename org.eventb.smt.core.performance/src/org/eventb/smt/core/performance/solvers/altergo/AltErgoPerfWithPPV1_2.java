@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class AltErgoPerfWithPPV1_2 extends SolverPerfWithPP {
 	public AltErgoPerfWithPPV1_2() {
-		super(ALT_ERGO, !BUNDLED, V1_2);
+		super(ALT_ERGO, V1_2);
 	}
 
 	@Test

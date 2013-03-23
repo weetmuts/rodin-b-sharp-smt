@@ -18,6 +18,6 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 
 public class BundledVeriTPerfWithVeriTV1_2 extends SolverPerfWithVeriT {
 	public BundledVeriTPerfWithVeriTV1_2() {
-		super(VERIT, BUNDLED, V1_2);
+		super(VERIT, V1_2);
 	}
 }

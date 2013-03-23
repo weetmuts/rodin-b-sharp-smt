@@ -17,7 +17,7 @@ public class UnsatCoreBundledVeriTPerfWithPP extends
 		UnsatCoreExtractionPerfWithPP {
 
 	public UnsatCoreBundledVeriTPerfWithPP() {
-		super(VERIT, BUNDLED, V2_0);
+		super(VERIT, V2_0);
 	}
 
 }

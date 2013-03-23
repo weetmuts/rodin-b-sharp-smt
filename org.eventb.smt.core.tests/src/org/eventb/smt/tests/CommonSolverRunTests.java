@@ -101,7 +101,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	protected static final boolean GET_UNSAT_CORE = true;
 	protected static final boolean PERFORMANCE = true;
-	protected static final boolean BUNDLED = true;
 
 	/**
 	 * H /\ ¬ G is UNSAT, so H |- G is VALID

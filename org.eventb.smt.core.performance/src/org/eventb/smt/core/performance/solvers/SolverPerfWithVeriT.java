@@ -33,10 +33,8 @@ public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithVeriT(final SolverKind solver, final boolean bundled,
-			final SMTLIBVersion smtlibVersion) {
-		super(solver, bundled, null, USING_VERIT, smtlibVersion,
-				!GET_UNSAT_CORE);
+	public SolverPerfWithVeriT(final SolverKind solver, final SMTLIBVersion smtlibVersion) {
+		super(solver, null, USING_VERIT, smtlibVersion, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

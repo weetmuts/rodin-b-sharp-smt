@@ -23,7 +23,7 @@ import org.junit.Test;
 public class OpenSMTPerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public OpenSMTPerfWithPPV2_0() {
-		super(OPENSMT, !BUNDLED, V2_0);
+		super(OPENSMT, V2_0);
 	}
 
 	@Test
