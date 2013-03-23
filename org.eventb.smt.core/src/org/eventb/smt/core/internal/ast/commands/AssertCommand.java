@@ -10,7 +10,6 @@
 
 package org.eventb.smt.core.internal.ast.commands;
 
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import static org.eventb.smt.core.internal.ast.commands.Command.SMTCommandName.ASSERT;
@@ -33,7 +32,7 @@ public class AssertCommand extends Command {
 
 	@Override
 	public void toString(final StringBuilder builder) {
-		toString(builder, !PRINT_ANNOTATIONS);
+		toString(builder, false);
 	}
 
 	public void toString(final StringBuilder builder,

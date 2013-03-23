@@ -15,9 +15,6 @@ import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
@@ -41,6 +38,7 @@ import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
+import org.eventb.smt.core.internal.ast.SMTPrintOptions;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
@@ -326,8 +324,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		 * Prints the benchmark with macros in a file
 		 */
 		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-		benchmark.print(veriTBenchmarkWriter, !PRINT_ANNOTATIONS,
-				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
+		benchmark.print(veriTBenchmarkWriter, new SMTPrintOptions());
 		veriTBenchmarkWriter.close();
 		if (!veriTBenchmarkFile.exists()) {
 			System.out.println(SmtProversCall_SMT_file_does_not_exist);
@@ -391,10 +388,9 @@ public class SMTVeriTCall extends SMTProverCall {
 			 * Prints the benchmark with macros in a file
 			 */
 			final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-			benchmark
-					.print(veriTBenchmarkWriter, PRINT_ANNOTATIONS,
-							!PRINT_GET_UNSAT_CORE_COMMANDS,
-							!PRINT_Z3_SPECIFIC_COMMANDS);
+			final SMTPrintOptions options = new SMTPrintOptions();
+			options.printAnnotations = true;
+			benchmark.print(veriTBenchmarkWriter, options);
 			veriTBenchmarkWriter.close();
 			if (!veriTBenchmarkFile.exists()) {
 				System.out.println(SmtProversCall_SMT_file_does_not_exist);

@@ -40,12 +40,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
  * 
  */
 public class SMTBenchmark {
-	/**
-	 * Printing parameter constants
-	 */
-	public static final boolean PRINT_ANNOTATIONS = true;
-	public static final boolean PRINT_GET_UNSAT_CORE_COMMANDS = true;
-	public static final boolean PRINT_Z3_SPECIFIC_COMMANDS = true;
 
 	/**
 	 * Name of the benchmark
@@ -252,43 +246,34 @@ public class SMTBenchmark {
 	 * @param pw
 	 *            the print writer that will receive the string representation
 	 *            of the benchmark
-	 * @param printAnnotations
-	 *            true if SMT-LIB annotations and labels should be printed in
-	 *            the benchmark
-	 * @param printGetUnsatCoreCommands
-	 *            true if commands to activate the unsat core extraction should
-	 *            be printed in the benchmark
-	 * @param printZ3SpecificCommands
-	 *            true if specific z3 commands to activate the unsat core
-	 *            extraction should be printed in the benchmark
+	 * @param options
+	 *            options for tailoring the print
 	 */
-	public void print(final PrintWriter pw, final boolean printAnnotations,
-			final boolean printGetUnsatCoreCommands,
-			final boolean printZ3SpecificCommands) {
+	public void print(final PrintWriter pw, final SMTPrintOptions options) {
 		final StringBuilder builder = new StringBuilder();
 		if (signature.getSMTLIBVersion() == V1_2) {
 			smtCmdOpening(builder, BENCHMARK, name);
-			benchmarkContent(builder, !PRINT_ANNOTATIONS);
+			benchmarkContent(builder, options.printAnnotations);
 			builder.append(CPAR);
 		} else {
 			appendComments(builder);
 			builder.append("\n");
-			if (printZ3SpecificCommands) {
+			if (options.printZ3SpecificCommands) {
 				setFalse(Z3_AUTO_CONFIG).toString(builder);
 				builder.append("\n");
 				setFalse(Z3_MBQI).toString(builder);
 				builder.append("\n");
 			}
-			if (printGetUnsatCoreCommands) {
+			if (options.printGetUnsatCoreCommands) {
 				setTrue(PRODUCE_UNSAT_CORE).toString(builder);
 				builder.append("\n");
 			}
 			setStatusUnsat().toString(builder);
 			builder.append("\n");
-			benchmarkContent(builder, printAnnotations);
+			benchmarkContent(builder, options.printAnnotations);
 			getCheckSatCommand().toString(builder);
 			builder.append("\n");
-			if (printGetUnsatCoreCommands) {
+			if (options.printGetUnsatCoreCommands) {
 				getGetUnsatCoreCommand().toString(builder);
 				builder.append("\n");
 			}

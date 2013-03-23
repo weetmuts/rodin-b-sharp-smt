@@ -11,9 +11,6 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_ANNOTATIONS;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_GET_UNSAT_CORE_COMMANDS;
-import static org.eventb.smt.core.internal.ast.SMTBenchmark.PRINT_Z3_SPECIFIC_COMMANDS;
 import static org.eventb.smt.core.internal.provers.Messages.SmtProversCall_SMT_file_does_not_exist;
 
 import java.io.IOException;
@@ -26,6 +23,7 @@ import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
+import org.eventb.smt.core.internal.ast.SMTPrintOptions;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 
 /**
@@ -82,8 +80,7 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
-		benchmark.print(smtFileWriter, !PRINT_ANNOTATIONS,
-				!PRINT_GET_UNSAT_CORE_COMMANDS, !PRINT_Z3_SPECIFIC_COMMANDS);
+		benchmark.print(smtFileWriter, new SMTPrintOptions());
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(SmtProversCall_SMT_file_does_not_exist);
@@ -112,26 +109,24 @@ public class SMTPPCall extends SMTProverCall {
 		 * Prints the SMT-LIB benchmark in a file
 		 */
 		final PrintWriter smtFileWriter = openSMTFileWriter(smtBenchmarkFile);
+		final SMTPrintOptions options = new SMTPrintOptions();
 		switch (config.getKind()) {
 		case Z3:
 			// FIXME Add Z3 version checking
-			benchmark.print(smtFileWriter, PRINT_ANNOTATIONS,
-					PRINT_GET_UNSAT_CORE_COMMANDS, PRINT_Z3_SPECIFIC_COMMANDS);
+			options.printAnnotations = true;
+			options.printGetUnsatCoreCommands = true;
+			options.printZ3SpecificCommands = true;
+			
 			break;
 		case ALT_ERGO:
 		case VERIT:
-			benchmark
-					.print(smtFileWriter, PRINT_ANNOTATIONS,
-							!PRINT_GET_UNSAT_CORE_COMMANDS,
-							!PRINT_Z3_SPECIFIC_COMMANDS);
+			options.printAnnotations = true;
 			break;
 		default:
-			benchmark
-					.print(smtFileWriter, !PRINT_ANNOTATIONS,
-							!PRINT_GET_UNSAT_CORE_COMMANDS,
-							!PRINT_Z3_SPECIFIC_COMMANDS);
+			// Nothing to set
 			break;
 		}
+		benchmark.print(smtFileWriter, options);
 		smtFileWriter.close();
 		if (!smtBenchmarkFile.exists()) {
 			System.out.println(SmtProversCall_SMT_file_does_not_exist);
