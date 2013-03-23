@@ -49,7 +49,6 @@ import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
  */
 public class SMTVeriTCall extends SMTProverCall {
 
-	private static final String TEMP_FILE = "_prep";
 	private static final String SIMPLIFY_ARGUMENT_STRING = "--print-simp-and-exit";
 	private static final String PRINT_FLAT = "--print-flat";
 	private static final String DISABLE_BANNER = "--disable-banner";
@@ -117,7 +116,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * FOR DEBUG ONLY: prints the temporary benchmark (containing macros) on the
 	 * standard output.
 	 */
-	private synchronized void showVeriTBenchmarkFile() {
+	private void showVeriTBenchmarkFile() {
 		showFile(debugBuilder, veriTBenchmarkFile);
 	}
 
@@ -271,30 +270,24 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * Makes temporary files in the given path
 	 */
 	@Override
-	public synchronized void makeTempFileNames() throws IOException {
-		super.makeTempFileNames();
+	public void makeTempFiles() throws IOException {
+		super.makeTempFiles();
 		String fileExtension = SMT_LIB_FILE_EXTENSION;
 		if (sv == V2_0) {
 			fileExtension = NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
 		}
 
-		veriTBenchmarkFile = File.createTempFile(lemmaName + TEMP_FILE,
-				fileExtension, smtTranslationDir);
+		veriTBenchmarkFile = tempFiles.create("smt_mac", fileExtension);
 		if (DEBUG) {
 			if (DEBUG_DETAILS) {
 				debugBuilder.append("Created temporary veriT benchmark file '");
 				debugBuilder.append(veriTBenchmarkFile).append("'\n");
 			}
-		} else {
-			/**
-			 * The deletion will be done when exiting Rodin.
-			 */
-			veriTBenchmarkFile.deleteOnExit();
 		}
 	}
 
 	@Override
-	public synchronized void makeSMTBenchmarkFile() throws IOException {
+	public void makeSMTBenchmarkFile() throws IOException {
 		switch (config.getSmtlibVersion()) {
 		case V1_2:
 			makeSMTBenchmarkFileV1_2();
@@ -320,7 +313,7 @@ public class SMTVeriTCall extends SMTProverCall {
 		/**
 		 * Makes temporary files
 		 */
-		makeTempFileNames();
+		makeTempFiles();
 
 		/**
 		 * Prints the benchmark with macros in a file
@@ -377,7 +370,7 @@ public class SMTVeriTCall extends SMTProverCall {
 			/**
 			 * Makes temporary files
 			 */
-			makeTempFileNames();
+			makeTempFiles();
 
 			/**
 			 * Prints the benchmark with macros in a file

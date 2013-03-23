@@ -21,6 +21,7 @@ import static org.eventb.smt.core.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.SolverKind.OPENSMT;
 import static org.eventb.smt.core.SolverKind.Z3;
+import static org.eventb.smt.core.internal.prefs.SimplePreferences.getTranslationPath;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
 
@@ -30,13 +31,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -45,7 +44,6 @@ import org.eventb.core.seqprover.xprover.ProcessMonitor;
 import org.eventb.core.seqprover.xprover.XProverCall2;
 import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
-import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.TranslationResult;
 import org.eventb.smt.core.internal.translation.Translator;
 
@@ -102,21 +100,15 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 	SMTConfiguration config;
 
-	IPath translationPath = null;
-
 	/**
 	 * Name of the lemma to prove
 	 */
 	String lemmaName;
 
-	/**
-	 * Access to these files must be synchronized. smtBenchmarkFile contains the
-	 * sequent to discharge translated to SMT-LIB language, smtResultFile
-	 * contains the result of the solver
-	 */
-	File smtTranslationDir = null;
-	File smtBenchmarkFile;
-	File smtResultFile;
+	protected final TemporaryFiles tempFiles;
+
+	// Contains the sequent to discharge translated to SMT-LIB language
+	protected File smtBenchmarkFile;
 
 	/**
 	 * Creates an instance of this class.
@@ -138,9 +130,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 		super(sequent, pm);
 		this.debugBuilder = debugBuilder;
 		this.config = config;
-		this.translationPath = SimplePreferences.getTranslationPath();
 		this.translator = translator;
 		this.lemmaName = RODIN_SEQUENT;
+		this.tempFiles = new TemporaryFiles(getTranslationPath());
 	}
 
 	/**
@@ -153,8 +145,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 		this.debugBuilder = debugBuilder;
 		this.config = config;
 		this.lemmaName = poName;
-		this.translationPath = SimplePreferences.getTranslationPath();
 		this.translator = translator;
+		this.tempFiles = new TemporaryFiles(getTranslationPath());
 	}
 
 	/**
@@ -181,32 +173,14 @@ public abstract class SMTProverCall extends XProverCall2 {
 	/**
 	 * FOR DEBUG ONLY
 	 */
-	private synchronized void showSMTBenchmarkFile() {
+	private void showSMTBenchmarkFile() {
 		showFile(debugBuilder, smtBenchmarkFile);
-	}
-
-	/**
-	 * FOR DEBUG ONLY
-	 */
-	private synchronized void showSMTResultFile() {
-		showFile(debugBuilder, smtResultFile);
-	}
-
-	/**
-	 * FOR DEBUG ONLY: print the SMT solver result into a file
-	 * 
-	 * @throws IOException
-	 */
-	private synchronized void printSMTResultFile() throws IOException {
-		final FileWriter fileWriter = new FileWriter(smtResultFile);
-		fileWriter.write(solverResult);
-		fileWriter.close();
 	}
 
 	/**
 	 * Sets up input arguments for solver.
 	 */
-	private synchronized List<String> solverCommandLine() {
+	private List<String> solverCommandLine() {
 		final List<String> commandLine = new ArrayList<String>();
 
 		// Selected solver binary path
@@ -269,12 +243,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 				showProcessOutcome(debugBuilder, monitor);
 
 			solverResult = new String(monitor.output());
-			if (DEBUG) {
-				printSMTResultFile();
-			}
 			if (DEBUG_DETAILS) {
-				debugBuilder.append("Result file contains:\n");
-				showSMTResultFile();
+				debugBuilder.append("Result is:\n");
+				debugBuilder.append(solverResult);
 			}
 
 			valid = checkResult();
@@ -370,73 +341,30 @@ public abstract class SMTProverCall extends XProverCall2 {
 	/**
 	 * Makes temporary files in the given path
 	 */
-	protected synchronized void makeTempFileNames() throws IOException {
-		final IPath benchmarkTargetPath = translationPath.append(lemmaName);
-
-		if (smtTranslationDir == null) {
-			smtTranslationDir = new File(benchmarkTargetPath.toOSString());
-			if (!smtTranslationDir.mkdirs()) {
-				if (smtTranslationDir.exists()) {
-					if (DEBUG) {
-						if (DEBUG_DETAILS) {
-							debugBuilder
-									.append("The directory already exists.");
-						}
-					}
-				} else {
-					throw new IOException(
-							"An error occured while trying to make the temporary SMT translation directory.");
-				}
-			} else {
-				if (DEBUG) {
-					if (DEBUG_DETAILS) {
-						debugBuilder
-								.append("Made temporary SMT translation directory '");
-						debugBuilder.append(smtTranslationDir).append("'\n");
-					}
-				} else {
-					/**
-					 * The deletion will be done when exiting Rodin.
-					 */
-					smtTranslationDir.deleteOnExit();
-				}
-			}
-		}
-
-		final SolverKind solverKind = config.getKind();
-		if (config.getSmtlibVersion() == V2_0
-				&& (solverKind == ALT_ERGO || solverKind == OPENSMT)) {
-			smtBenchmarkFile = File.createTempFile(lemmaName,
-					NON_STANDARD_SMT_LIB2_FILE_EXTENSION, smtTranslationDir);
-		} else {
-			smtBenchmarkFile = File.createTempFile(lemmaName,
-					SMT_LIB_FILE_EXTENSION, smtTranslationDir);
-		}
+	protected void makeTempFiles() throws IOException {
+		smtBenchmarkFile = tempFiles.create("smt", getFileExtension());
 		if (DEBUG) {
 			if (DEBUG_DETAILS) {
 				debugBuilder.append("Created temporary SMT benchmark file '");
 				debugBuilder.append(smtBenchmarkFile).append("'\n");
 			}
-		} else {
-			/**
-			 * The deletion will be done when exiting Rodin.
-			 */
-			smtBenchmarkFile.deleteOnExit();
 		}
+	}
 
-		if (DEBUG) {
-			smtResultFile = File.createTempFile(
-					lemmaName + "_" + solverKind.toString(),
-					RES_FILE_EXTENSION, smtTranslationDir);
-			if (DEBUG_DETAILS) {
-				debugBuilder.append("Created temporary SMT result file '");
-				debugBuilder.append(smtResultFile).append("'\n");
+	/**
+	 * Returns the file extension to use for the benchmark file that will be
+	 * submitted to the SMT solver.
+	 * 
+	 * @return the file extension
+	 */
+	private String getFileExtension() {
+		if (config.getSmtlibVersion() == V2_0) {
+			final SolverKind solverKind = config.getKind();
+			if (solverKind == ALT_ERGO || solverKind == OPENSMT) {
+				return NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
 			}
-
-			final PrintStream stream = new PrintStream(smtResultFile);
-			stream.println("FAILED");
-			stream.close();
 		}
+		return SMT_LIB_FILE_EXTENSION;
 	}
 
 	/**
@@ -620,9 +548,10 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 * Cleans up this prover call: destroys processes.
 	 */
 	@Override
-	public synchronized void cleanup() {
+	public void cleanup() {
 		for (final Process p : activeProcesses) {
 			p.destroy();
 		}
+		tempFiles.cleanup();
 	}
 }
