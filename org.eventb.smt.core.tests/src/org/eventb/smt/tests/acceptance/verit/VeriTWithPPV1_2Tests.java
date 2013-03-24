@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,10 +8,9 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - portability of paths
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance.verit;
 
-import static org.eventb.smt.core.SolverKind.VERIT;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_VERIT;
 
 import org.eventb.smt.tests.acceptance.SolverRunWithPPV1_2Tests;
 
@@ -26,7 +25,9 @@ import org.eventb.smt.tests.acceptance.SolverRunWithPPV1_2Tests;
  * 
  */
 public class VeriTWithPPV1_2Tests extends SolverRunWithPPV1_2Tests {
+
 	public VeriTWithPPV1_2Tests() {
-		super(VERIT);
+		super(BUNDLED_VERIT);
 	}
+
 }

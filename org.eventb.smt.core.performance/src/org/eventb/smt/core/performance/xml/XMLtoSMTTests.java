@@ -35,6 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.Assert;
 
+import org.eclipse.core.runtime.Path;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
@@ -43,6 +44,7 @@ import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
 import org.eventb.smt.core.performance.xml.utils.LemmaParser;
+import org.eventb.smt.tests.ConfigProvider;
 import org.eventb.smt.utils.Theory;
 import org.eventb.smt.utils.Theory.TheoryLevel;
 import org.junit.Test;
@@ -77,7 +79,8 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	/**
 	 * The path of the output folder where to store the generated SMT files.
 	 */
-	public final static String SMTFolder = DEFAULT_TEST_TRANSLATION_PATH
+	public final static String SMTFolder = new Path(
+			System.getProperty("user.home")).append("rodin_smtlib_temp_files")
 			.toOSString();
 	public final static String DTDFolder = "src/org/eventb/smt/core/performance/xml/utils";
 
@@ -89,10 +92,10 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 * @param data
 	 *            the parameter of one test.
 	 */
-	public XMLtoSMTTests(final LemmaData data, final SolverKind solver,
-			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		super(solver, Theory.fromNames(data.getTheories()), USING_VERIT, smtlibVersion,
-				getUnsatCore);
+	public XMLtoSMTTests(LemmaData data, ConfigProvider provider,
+			SMTLIBVersion version, boolean getUnsatCore) {
+		super(provider, Theory.fromNames(data.getTheories()), USING_VERIT,
+				version, getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
@@ -105,9 +108,9 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 * @param data
 	 *            the parameter of one test.
 	 */
-	public XMLtoSMTTests(final LemmaData data, final SolverKind solver,
-			final SMTLIBVersion smtlibVersion) {
-		this(data, solver, smtlibVersion, !GET_UNSAT_CORE);
+	public XMLtoSMTTests(LemmaData data, ConfigProvider provider,
+			SMTLIBVersion version) {
+		this(data, provider, version, !GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(

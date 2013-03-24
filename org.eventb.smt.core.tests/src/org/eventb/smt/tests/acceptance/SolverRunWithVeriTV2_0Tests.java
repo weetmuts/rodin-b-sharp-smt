@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 UFRN. All rights reserved.
+ * Copyright (c) 2011, 2013 UFRN. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  *  UFRN - additional tests
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -35,8 +34,9 @@ import org.junit.Test;
  * 
  */
 public abstract class SolverRunWithVeriTV2_0Tests extends SolverRunTests {
-	public SolverRunWithVeriTV2_0Tests(final SolverKind solverKind) {
-		super(solverKind, USING_VERIT, V2_0);
+
+	public SolverRunWithVeriTV2_0Tests(ConfigProvider provider) {
+		super(provider, USING_VERIT, V2_0);
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
@@ -17,8 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
 
 /**
@@ -31,8 +30,8 @@ public abstract class AxiomsTestWithPPV2_0 extends CommonSolverRunTests {
 	static ITypeEnvironment simple_te = mTypeEnvironment(//
 			"PS", "ℙ(ℙ(ℤ))", "S", "ℙ(ℤ)", "x", "ℤ");
 
-	public AxiomsTestWithPPV2_0(final SolverKind solver) {
-		super(solver, null, USING_PP, V2_0, !GET_UNSAT_CORE);
+	public AxiomsTestWithPPV2_0(ConfigProvider provider) {
+		super(provider, null, USING_PP, V2_0, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

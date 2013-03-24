@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,11 +7,10 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.core.performance.solvers.mathsat5;
 
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.SolverKind.MATHSAT5;
+import static org.eventb.smt.tests.ConfigProvider.LAST_MATHSAT5;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +22,7 @@ import org.junit.Test;
 public class MathSat5PerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public MathSat5PerfWithPPV2_0() {
-		super(MATHSAT5, V2_0);
+		super(LAST_MATHSAT5, V2_0);
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -11,8 +11,6 @@ package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
-import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_CVC3_PP_SMT2_ID;
-import static org.eventb.smt.tests.CommonSolverRunTests.BUNDLED_VERIT_PP_SMT2_ID;
 
 import org.eventb.core.seqprover.reasonerExtentionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
@@ -24,6 +22,9 @@ import org.eventb.smt.core.internal.provers.SMTInput;
  * @author Yoann Guyot
  */
 public class SMTPPReasonerTests extends AbstractReasonerTests {
+
+	public static final String BUNDLED_VERIT_PP_SMT2_ID = "veriT SMT2";
+	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3 SMT2";
 
 	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
 	private static final long DEFAULT_TIMEOUT_DELAY = 1000;

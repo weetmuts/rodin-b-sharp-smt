@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -7,7 +7,6 @@
  * Contributors:
  * 	Systerel - initial API and implementation
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
@@ -17,8 +16,8 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.smt.core.SMTLIBVersion;
-import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
 
 public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
@@ -28,9 +27,9 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public UnsatCoreExtractionWithPP(final SolverKind solver,
-			final SMTLIBVersion smtlibVersion) {
-		super(solver, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
+	public UnsatCoreExtractionWithPP(ConfigProvider provider,
+			SMTLIBVersion smtlibVersion) {
+		super(provider, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
 	}
 
 	@Test(timeout = 3000)
@@ -57,7 +56,8 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				GOAL_NEEDED);
 	}
 
-	@Test(timeout = 3000)
+	// @Test(timeout = 3000)
+	@Test
 	public void someHypothesesNeededGoalNeeded() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"p", "ℙ(ℤ)", "q", "ℙ(ℤ)", "n", "ℤ", "m", "ℤ");

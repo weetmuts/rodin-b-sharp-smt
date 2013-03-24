@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2011, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -23,8 +23,8 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.smt.core.SMTLIBVersion;
-import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
 
 public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
@@ -33,8 +33,8 @@ public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithVeriT(final SolverKind solver, final SMTLIBVersion smtlibVersion) {
-		super(solver, null, USING_VERIT, smtlibVersion, !GET_UNSAT_CORE);
+	public SolverPerfWithVeriT(ConfigProvider provider, SMTLIBVersion version) {
+		super(provider, null, USING_VERIT, version, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

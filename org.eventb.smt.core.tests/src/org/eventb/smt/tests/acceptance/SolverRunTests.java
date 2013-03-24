@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - portability of paths
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance;
 
 import java.util.Arrays;
@@ -16,9 +15,9 @@ import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.smt.core.SMTLIBVersion;
-import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.tests.CommonSolverRunTests;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -40,18 +39,29 @@ public abstract class SolverRunTests extends CommonSolverRunTests {
 	protected static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverRunTests(final SolverKind solverKind,
+	public SolverRunTests(ConfigProvider provider,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		super(solverKind, null, translationApproach, smtlibVersion,
+		super(provider, null, translationApproach, smtlibVersion,
 				!GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedSolverResult) throws IllegalArgumentException {
-		doTest(configuration.getName() + "_" + lemmaName, inputHyps, inputGoal, te,
+		doTest(configLemmaName(lemmaName), inputHyps, inputGoal, te,
 				!TRIVIAL, expectedSolverResult);
+	}
+
+	/**
+	 * Returns a name made of the name of this configuration and the given lemma
+	 * name and which is a valid SMT identifier.
+	 */
+	private String configLemmaName(String lemmaName) {
+		String result = configuration.getName() + "_" + lemmaName;
+		result = result.replace(' ', '_');
+		result = result.replaceAll("[()]", "");
+		return result;
 	}
 
 	@Test

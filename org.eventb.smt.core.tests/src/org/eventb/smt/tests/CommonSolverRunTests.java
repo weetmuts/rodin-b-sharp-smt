@@ -9,12 +9,8 @@
  *******************************************************************************/
 package org.eventb.smt.tests;
 
-import static org.eventb.smt.core.SMTCore.getSolvers;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.utils.Theory.getComboLevel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -24,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
@@ -34,11 +28,9 @@ import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTLIBVersion;
-import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTSignature;
-import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
@@ -48,50 +40,6 @@ import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
 public abstract class CommonSolverRunTests extends AbstractTests {
-
-	/**
-	 * bundled configs ids
-	 */
-	public static final String BUNDLED_VERIT_ID_PREFIX = "bundled_veriT";
-	public static final String BUNDLED_CVC3_ID_PREFIX = "bundled_CVC3";
-
-	public static final String BUNDLED_VERIT_PP_SMT2_ID = "veriT SMT2";
-	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3 SMT2";
-
-	public static final IPath DEFAULT_TEST_TRANSLATION_PATH = new Path(
-			System.getProperty("user.home")).append("rodin_smtlib_temp_files");
-
-	/**
-	 * bundled solvers (used to make new configurations)
-	 */
-	public static final ISolverDescriptor BUNDLED_VERIT = findSolverByName("veriT (bundled)");
-	public static final ISolverDescriptor BUNDLED_CVC3 = findSolverByName("CVC3 (bundled)");
-
-	/**
-	 * Bundled veriT configurations
-	 */
-	public static final IConfigDescriptor BUNDLED_VERIT_PP_SMT1 = makeConfig(
-			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
-			"--enable-e --max-time=2.9", USING_PP, V1_2);
-	public static final IConfigDescriptor BUNDLED_VERIT_VT_SMT1 = makeConfig(
-			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
-			"--enable-e --max-time=2.9", USING_VERIT, V1_2);
-	public static final IConfigDescriptor BUNDLED_VERIT_VT_SMT2 = makeConfig(
-			BUNDLED_VERIT_ID_PREFIX, BUNDLED_VERIT,
-			"--disable-print-success --enable-e --max-time=2.9",
-			USING_VERIT, V2_0);
-
-	/**
-	 * Bundled CVC3 configurations
-	 */
-	public static final IConfigDescriptor BUNDLED_CVC3_PP_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_PP, V1_2);
-	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT1 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_VERIT,
-			V1_2);
-	public static final IConfigDescriptor BUNDLED_CVC3_VT_SMT2 = makeConfig(
-			BUNDLED_CVC3_ID_PREFIX, BUNDLED_CVC3, "", USING_VERIT,
-			V2_0);
 
 	protected static final NullProofMonitor MONITOR = new NullProofMonitor();
 
@@ -149,30 +97,21 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	public CommonSolverRunTests() {
-		setTranslationPreferences();
-	}
-
-	private static ISolverDescriptor findSolverByName(String name) {
-		final ISolverDescriptor[] solvers = getSolvers();
-		for (ISolverDescriptor solver : solvers) {
-			if (name.equals(solver.getName())) {
-				return solver;
-			}
-		}
-		throw new IllegalArgumentException("No solver named " + name);
-	}
-
-	public CommonSolverRunTests(final SolverKind solverKind,
-			final Set<Theory> theories,
-			final TranslationApproach translationApproach,
-			final SMTLIBVersion smtlibVersion, final boolean getUnsatCore) {
-		this();
+	public CommonSolverRunTests(ConfigProvider provider, Set<Theory> theories,
+			TranslationApproach approach, SMTLIBVersion version,
+			boolean getUnsatCore) {
 		this.theories = theories;
-		setSolverPreferences(solverKind, translationApproach, smtlibVersion);
+		this.configuration = provider.config(approach, version);
 	}
 
-	protected static IConfigDescriptor makeConfig(final String id,
+	public static IConfigDescriptor makeConfig(final ISolverDescriptor solver,
+			final String args, final TranslationApproach translationApproach,
+			final SMTLIBVersion smtlibVersion) {
+		return makeConfig(solver.getName(), solver, args, translationApproach,
+				smtlibVersion);
+	}
+
+	public static IConfigDescriptor makeConfig(final String id,
 			final ISolverDescriptor solver, final String args,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
@@ -180,90 +119,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				+ (smtlibVersion == V1_2 ? "_SMT1" : "_SMT2");
 		return newConfigDescriptor(newID, solver.getName(), args,
 				translationApproach, smtlibVersion, true);
-	}
-
-	protected static void setTranslationPreferences() {
-		SimplePreferences.setTranslationPath(DEFAULT_TEST_TRANSLATION_PATH);
-	}
-
-	/**
-	 * Sets plugin preferences with the given solver preferences
-	 * 
-	 */
-	protected void setSolverPreferences(final SolverKind kind,
-			final TranslationApproach translationApproach,
-			final SMTLIBVersion smtlibVersion) {
-		if (translationApproach == USING_VERIT) {
-			if (smtlibVersion == V1_2) {
-				switch (kind) {
-
-				case CVC3:
-					configuration = new SMTConfiguration(BUNDLED_CVC3_VT_SMT1,
-							BUNDLED_CVC3);
-					break;
-
-				case VERIT:
-					configuration = new SMTConfiguration(BUNDLED_VERIT_VT_SMT1,
-							BUNDLED_VERIT);
-					break;
-
-				default:
-					throw new IllegalArgumentException("Unexpected solver kind "
-							+ kind.name());
-				}
-			} else {
-				switch (kind) {
-
-				case CVC3:
-					configuration = new SMTConfiguration(BUNDLED_CVC3_VT_SMT2,
-							BUNDLED_CVC3);
-					break;
-
-				case VERIT:
-					configuration = new SMTConfiguration(BUNDLED_VERIT_VT_SMT2,
-							BUNDLED_VERIT);
-					break;
-
-				default:
-					throw new IllegalArgumentException("Unexpected solver kind "
-							+ kind.name());
-				}
-			}
-		} else {
-			if (smtlibVersion == V1_2) {
-				switch (kind) {
-
-				case CVC3:
-					configuration = new SMTConfiguration(BUNDLED_CVC3_PP_SMT1,
-							BUNDLED_CVC3);
-					break;
-
-				case VERIT:
-					configuration = new SMTConfiguration(BUNDLED_VERIT_PP_SMT1,
-							BUNDLED_VERIT);
-					break;
-
-				default:
-					throw new IllegalArgumentException("Unexpected solver kind "
-							+ kind.name());
-				}
-			} else {
-				switch (kind) {
-
-				case CVC3:
-					configuration = SMTConfiguration.valueOf("CVC3 SMT2");
-					break;
-
-				case VERIT:
-					configuration = SMTConfiguration.valueOf("veriT SMT2");
-					break;
-
-				default:
-					throw new IllegalArgumentException("Unexpected solver kind "
-							+ kind.name());
-				}
-			}
-		}
 	}
 
 	protected void printPerf(final StringBuilder debugBuilder,

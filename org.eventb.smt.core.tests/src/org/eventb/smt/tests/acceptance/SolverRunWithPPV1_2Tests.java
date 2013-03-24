@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel. All rights reserved.
+ * Copyright (c) 2010, 2013 Systerel. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,6 @@
  * 	Systerel - initial API and implementation
  * 	UFRN - portability of paths
  *******************************************************************************/
-
 package org.eventb.smt.tests.acceptance;
 
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.SolverKind;
+import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
 
 /**
@@ -32,8 +31,9 @@ import org.junit.Test;
  * 
  */
 public abstract class SolverRunWithPPV1_2Tests extends SolverRunTests {
-	public SolverRunWithPPV1_2Tests(final SolverKind solverKind) {
-		super(solverKind, USING_PP, V1_2);
+
+	public SolverRunWithPPV1_2Tests(ConfigProvider provider) {
+		super(provider, USING_PP, V1_2);
 	}
 
 	@Test
