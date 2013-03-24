@@ -8,7 +8,6 @@
  * Contributors:
  *     Systerel - initial API and implementation
  *******************************************************************************/
-
 package fr.systerel.decert.tests.smt;
 
 import static org.junit.Assert.assertEquals;
