@@ -4,10 +4,11 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="toc.xml">
+            file="html/smt_solvers_plug_in.xml"
+            primary="true">
       </toc>
       <toc
-            file="html/smt_solvers_plug_in.xml"
+            file="html/smt_solvers_plug_in_developer_support.xml"
             primary="true">
       </toc>
    </extension>
