@@ -21,7 +21,7 @@ import org.eventb.smt.core.SolverKind;
 import org.osgi.framework.Bundle;
 
 /**
- * Implements loading configuration details from an extension to point "solver".
+ * Implements loading configuration details from a "solver" element.
  *
  * @author Yoann Guyot
  */

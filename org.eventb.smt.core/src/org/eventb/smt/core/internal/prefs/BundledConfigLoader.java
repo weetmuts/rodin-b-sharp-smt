@@ -18,7 +18,7 @@ import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 
 /**
- * Implements loading configuration details from an extension to point "config".
+ * Implements loading configuration details from a "configuration" element.
  * 
  * @author Yoann Guyot
  */
