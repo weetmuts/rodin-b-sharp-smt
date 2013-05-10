@@ -3,10 +3,10 @@
 <schema targetNamespace="org.eventb.smt.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eventb.smt.core" id="solvers" name="%point.solvers"/>
+         <meta.schema plugin="org.eventb.smt.core" id="bundles" name="Bundled SMT Solver Configurations"/>
       </appinfo>
       <documentation>
-         This extension point allows to define some SMT solvers which are bundled in the client plug-in.
+         This extension point allows to statically define some SMT configurations.
       </documentation>
    </annotation>
 
@@ -15,10 +15,16 @@
          <appinfo>
             <meta.element />
          </appinfo>
+         <documentation>
+            This extension point allows to declare SMT configurations and solvers that are conrtibuted by some plug-in.
+         </documentation>
       </annotation>
       <complexType>
          <sequence>
-            <element ref="solver" minOccurs="1" maxOccurs="unbounded"/>
+            <choice minOccurs="1" maxOccurs="unbounded">
+               <element ref="configuration"/>
+               <element ref="solver"/>
+            </choice>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +53,82 @@
       </complexType>
    </element>
 
+   <element name="configuration">
+      <annotation>
+         <documentation>
+            An SMT configuration describes how to run an SMT solver.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The human-readable name of this SMT-solver configuration.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="solverName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the solver of this configuration.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="args" type="string">
+            <annotation>
+               <documentation>
+                  The arguments to use with this configuration.
+Default value: &quot;&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="translator">
+            <annotation>
+               <documentation>
+                  The &quot;translator&quot; which will be used by this configuration to translate the event-B sequents into SMT-LIB benchmarks. This field is called &quot;translator&quot; for convenience, but it is a shortcut of &quot;translation approach built on [a specified] translator&quot;.
+Default value: &quot;PP&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="PP">
+                  </enumeration>
+                  <enumeration value="veriT">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="smt-lib">
+            <annotation>
+               <documentation>
+                  The version of the SMT-LIB language which must be used as the target of the translation.
+Default value: &quot;V2.0&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="V1.2">
+                  </enumeration>
+                  <enumeration value="V2.0">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
    <element name="solver">
+      <annotation>
+         <documentation>
+            Describes an SMT solver binary.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="name" type="string" use="required">
             <annotation>

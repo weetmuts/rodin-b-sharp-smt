@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2013 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,24 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SolverKind;
 
 /**
+ * List of "solver" descriptors contributed to the extension point.
+ * 
  * @author Yoann Guyot
- *
  */
 public class BundledSolverList extends BundledDescriptorList<ISolverDescriptor> {
 
-	public static final String BUNDLED_SOLVERS_ID = PLUGIN_ID + ".solvers"; //$NON-NLS-1$
-
 	public BundledSolverList() {
-		super(BUNDLED_SOLVERS_ID);
+		super("solver");
 	}
 
 	@Override
-	public ISolverDescriptor[] newArray(int length) {
+	protected ISolverDescriptor[] newArray(int length) {
 		return new ISolverDescriptor[length];
 	}
 

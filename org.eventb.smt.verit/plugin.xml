@@ -2,15 +2,12 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eventb.smt.core.solvers">
+         point="org.eventb.smt.core.bundles">
       <solver
             name="veriT (bundled)"
             kind="verit"
             localpath="$os$/verit">
       </solver>
-   </extension>
-   <extension
-         point="org.eventb.smt.core.configurations">
       <configuration
             args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e"
             name="veriT SMT2"

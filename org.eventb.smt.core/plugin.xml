@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="configurations" name="%point.configurations" schema="schema/configurations.exsd"/>
-   <extension-point id="solvers" name="%point.solvers" schema="schema/solvers.exsd"/>
+   <extension-point id="bundles" name="%point.bundles" schema="schema/bundles.exsd"/>
    <extension
          point="org.eventb.core.seqprover.reasoners">
       <reasoner

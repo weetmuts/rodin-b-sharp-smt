@@ -2,15 +2,12 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eventb.smt.core.solvers">
+         point="org.eventb.smt.core.bundles">
       <solver
             name="CVC3 (bundled)"
             kind="cvc3"
             localpath="$os$/cvc3">
       </solver>
-   </extension>
-   <extension
-         point="org.eventb.smt.core.configurations">
       <configuration
             args=""
             name="CVC3 SMT2"
