@@ -645,4 +645,16 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 				"∀z⦂ℙ(A),c⦂A·(c ∈ a)∧(c ∈ z)",
 				"(not (and (forall ((z PA) (c A)) (MS c a)) (forall ((z0 PA) (c0 A)) (MS c0 z0))))");
 	}
+
+	/**
+	 * Ensures that a set which occurs in a simple manner is simplified into a
+	 * predicate, rather than using the general encoding of membership.
+	 */
+	@Test
+	public void testSetAsPredicate() {
+		final ITypeEnvironment te = mTypeEnvironment("a", "S");
+		testTranslateGoalPP(te, "A ∪ {a} = A",
+				"(not (forall ((x S)) (= (or (A x) (= x a)) (A x))))");
+	}
+
 }
