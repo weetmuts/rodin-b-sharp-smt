@@ -26,6 +26,8 @@ import org.osgi.service.prefs.Preferences;
 
 public abstract class AbstractPreferences<T extends IDescriptor> {
 
+	public static boolean DEBUG = false;
+
 	private static final IEclipsePreferences root = InstanceScope.INSTANCE
 			.getNode(PREF_NODE_NAME);
 
@@ -38,6 +40,9 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		this.bundled = loadBundledDescriptors();
 		this.known = newDescriptorList();
 		doSetKnown(loadKnownDescriptors());
+		if (DEBUG) {
+			trace("Initialized preferences for ");
+		}
 	}
 
 	protected abstract DescriptorList<T> loadBundledDescriptors();
@@ -145,6 +150,16 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 			((Descriptor) desc).serialize(childNode);
 		}
 		node.flush();
+		if (DEBUG) {
+			trace("Saved preferences for ");
+		}
+	}
+
+	private void trace(final String msg) {
+		System.out.println(msg + nodeName + ":");
+		for (final T desc : this.known) {
+			System.out.println("\t" + desc);
+		}
 	}
 
 	// TODO Listen to preference changes

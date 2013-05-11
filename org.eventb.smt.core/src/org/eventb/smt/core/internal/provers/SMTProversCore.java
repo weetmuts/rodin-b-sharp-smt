@@ -16,6 +16,7 @@ import static org.eclipse.core.runtime.IStatus.ERROR;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eventb.smt.core.internal.prefs.AbstractPreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.core.internal.translation.Translator;
 import org.osgi.framework.BundleContext;
@@ -39,6 +40,7 @@ public class SMTProversCore extends Plugin {
 	 * Debug variables
 	 */
 	private static final String DEBUG = PLUGIN_ID + "/debug/";
+	private static final String DEBUG_PREFS = DEBUG + "prefs";
 	private static final String DEBUG_TRANSLATOR = DEBUG + "translator";
 	private static final String DEBUG_TRANSLATOR_DETAILS = DEBUG_TRANSLATOR
 			+ "_details";
@@ -67,6 +69,7 @@ public class SMTProversCore extends Plugin {
 	 * Process debugging/tracing options coming from Eclipse.
 	 */
 	private void configureDebugOptions() {
+		AbstractPreferences.DEBUG = parseOption(DEBUG_PREFS);
 		Translator.DEBUG = parseOption(DEBUG_TRANSLATOR);
 		Translator.DEBUG_DETAILS = parseOption(DEBUG_TRANSLATOR_DETAILS);
 		SMTThroughPP.GATHER_SPECIAL_MS_PREDS = parseOption(DEBUG_PP_GATHER_SPECIAL_MS_PREDS);
