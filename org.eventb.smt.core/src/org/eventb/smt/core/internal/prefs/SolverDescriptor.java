@@ -54,4 +54,12 @@ public class SolverDescriptor extends Descriptor implements ISolverDescriptor {
 		return path;
 	}
 
+	@Override
+	protected void toString(StringBuilder sb) {
+		toStringSep(sb);
+		sb.append(kind);
+		toStringSep(sb);
+		toStringQuoted(sb, path.toPortableString());
+	}
+
 }

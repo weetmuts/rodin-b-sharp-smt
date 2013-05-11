@@ -50,4 +50,26 @@ public abstract class Descriptor implements IDescriptor {
 		return bundled;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		toStringQuoted(sb, name);
+		toStringSep(sb);
+		sb.append(bundled ? "bundled" : "user");
+		toString(sb);
+		return sb.toString();
+	}
+
+	protected abstract void toString(StringBuilder sb);
+
+	protected static void toStringSep(StringBuilder sb) {
+		sb.append(' ');
+	}
+
+	protected static void toStringQuoted(StringBuilder sb, String value) {
+		sb.append('"');
+		sb.append(value);
+		sb.append('"');
+	}
+
 }

@@ -94,4 +94,18 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		this.enabled = enabled;
 	}
 
+	@Override
+	protected void toString(StringBuilder sb) {
+		toStringSep(sb);
+		toStringQuoted(sb, solverName);
+		toStringSep(sb);
+		toStringQuoted(sb, args);
+		toStringSep(sb);
+		sb.append(approach);
+		toStringSep(sb);
+		sb.append(version);
+		toStringSep(sb);
+		sb.append(enabled ? "enabled" : "disabled");
+	}
+
 }
