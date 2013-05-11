@@ -107,16 +107,16 @@ public abstract class SMTMacroFactory {
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
 			SND_PAIR_SORT_NAME, V1_2);
 
-	public static SMTSortSymbol PAIR_SORT = makePolymorphicSortSymbol(
+	private static SMTSortSymbol PAIR_SORT = makePolymorphicSortSymbol(
 			"(Pair 's 't)", V1_2);
 
-	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
+	private static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL = new SMTFunctionSymbol(
 			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT, false, !PREDEFINED, V1_2);
 
-	public static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
+	private static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT };
 
 	public static final SMTFunctionSymbol FST_SYMBOL = new SMTFunctionSymbol(
 			"fst", PAIR_SORTS, FST_RETURN_SORT, false, !PREDEFINED, V1_2);
@@ -133,18 +133,18 @@ public abstract class SMTMacroFactory {
 	 */
 	protected final Set<String> qSymbols = new HashSet<String>();
 
-	protected static SMTPredefinedMacro[] EMPTY_MACROS = {};
+	protected static final SMTPredefinedMacro[] EMPTY_MACROS = {};
 
-	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
+	private static final SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
 			POLYMORPHIC };
-	public static SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
-	private static SMTSortSymbol[] ISMIN_MAX_SORTS = {
+	public static final SMTPolymorphicSortSymbol[] POLYMORPHICS = { POLYMORPHIC };
+	private static final SMTSortSymbol[] ISMIN_MAX_SORTS = {
 			TheoryV1_2.Ints.getInt(), POLYMORPHIC };
-	private static SMTSortSymbol[] FINITE_SORTS = {
+	private static final SMTSortSymbol[] FINITE_SORTS = {
 			VeriTBooleansV1_2.getInstance().getBooleanSort(), POLYMORPHIC,
 			TheoryV1_2.Ints.getInt(), TheoryV1_2.Ints.getInt() };
 
-	private static SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC,
+	private static final SMTSortSymbol[] CARD_SORTS = { POLYMORPHIC,
 			TheoryV1_2.Ints.getInt(), TheoryV1_2.Ints.getInt() };
 
 	protected static final SMTMacroSymbol RANGE_SYMBOL = new SMTMacroSymbol(
@@ -154,93 +154,93 @@ public abstract class SMTMacroFactory {
 			BOOLS, EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
 	protected static final SMTMacroSymbol INTEGER_SYMBOL = new SMTMacroSymbol(
 			INT, EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
+	protected static final SMTMacroSymbol CARD_SYMBOL = new SMTMacroSymbol(CARD,
 			CARD_SORTS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(FINITE,
+	protected static final SMTMacroSymbol FINITE_SYMBOL = new SMTMacroSymbol(FINITE,
 			FINITE_SORTS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol ISMAX_SYMBOL = new SMTMacroSymbol(ISMAX,
+	protected static final SMTMacroSymbol ISMAX_SYMBOL = new SMTMacroSymbol(ISMAX,
 			ISMIN_MAX_SORTS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol ISMIN_SYMBOL = new SMTMacroSymbol(ISMIN,
+	public static final SMTMacroSymbol ISMIN_SYMBOL = new SMTMacroSymbol(ISMIN,
 			ISMIN_MAX_SORTS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(SETMINUS,
+	public static final SMTMacroSymbol SETMINUS_SYMBOL = new SMTMacroSymbol(SETMINUS,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol RELATIONAL_IMAGE_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol RELATIONAL_IMAGE_SYMBOL = new SMTMacroSymbol(
 			RELATIONAL_IMAGE, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol DOMAIN_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol DOMAIN_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
 			DOMAIN_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	public static SMTMacroSymbol DOMAIN_RESTRICTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol DOMAIN_RESTRICTION_SYMBOL = new SMTMacroSymbol(
 			DOMAIN_RESTRICTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	public static SMTMacroSymbol CARTESIAN_PRODUCT_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol CARTESIAN_PRODUCT_SYMBOL = new SMTMacroSymbol(
 			CARTESIAN_PRODUCT, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	public static SMTMacroSymbol TOTAL_BIJECTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol TOTAL_BIJECTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_BIJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol TOTAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol TOTAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_SURJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	public static SMTMacroSymbol PARTIAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol PARTIAL_SURJECTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_SURJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	public static SMTMacroSymbol TOTAL_INJECTION_SYMBOL = new SMTMacroSymbol(
+	public static final SMTMacroSymbol TOTAL_INJECTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_INJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol PARTIAL_INJECTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_INJECTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	protected static SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
+	protected static final SMTMacroSymbol DOM_SYMBOL = new SMTMacroSymbol(DOM,
 			POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
+	protected static final SMTMacroSymbol INVERSE_SYMBOL = new SMTMacroSymbol(INV,
 			POLYMORPHICS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
+	protected static final SMTMacroSymbol NAT1_SYMBOL = new SMTMacroSymbol(NAT1,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
+	protected static final SMTMacroSymbol NAT_SYMBOL = new SMTMacroSymbol(NAT,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(ID,
+	protected static final SMTMacroSymbol ID_SYMBOL = new SMTMacroSymbol(ID,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol TOTAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_FUNCTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol PARTIAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol PARTIAL_FUNCTION_SYMBOL = new SMTMacroSymbol(
 			PARTIAL_FUNCTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol TOTAL_SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol TOTAL_SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC,
 			!PREDEFINED, V1_2);
-	protected static SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol SURJECTIVE_RELATION_SYMBOL = new SMTMacroSymbol(
 			SURJECTIVE_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	protected static SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol TOTAL_RELATION_SYMBOL = new SMTMacroSymbol(
 			TOTAL_RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol RELATION_SYMBOL = new SMTMacroSymbol(
 			RELATION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol RANGE_RESTRICTION_SYMBOL = new SMTMacroSymbol(
 			RANGE_RESTRICTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	protected static SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol RANGE_SUBSTRACTION_SYMBOL = new SMTMacroSymbol(
 			RANGE_SUBSTRACTION, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED,
 			V1_2);
-	protected static SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol INTEGER_RANGE_SYMBOL = new SMTMacroSymbol(
 			RANGE_INTEGER, VeritPredefinedTheoryV1_2.getIntIntTab(),
 			POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
+	protected static final SMTMacroSymbol SUBSETEQ_SYMBOL = new SMTMacroSymbol(
 			SUBSETEQ, POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
+	protected static final SMTMacroSymbol SUBSET_SYMBOL = new SMTMacroSymbol(SUBSET,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(IN,
+	protected static final SMTMacroSymbol IN_SYMBOL = new SMTMacroSymbol(IN,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(BUNION,
+	protected static final SMTMacroSymbol BUNION_SYMBOL = new SMTMacroSymbol(BUNION,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(BINTER,
+	protected static final SMTMacroSymbol BINTER_SYMBOL = new SMTMacroSymbol(BINTER,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(FCOMP,
+	protected static final SMTMacroSymbol FCOMP_SYMBOL = new SMTMacroSymbol(FCOMP,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(BCOMP,
+	protected static final SMTMacroSymbol BCOMP_SYMBOL = new SMTMacroSymbol(BCOMP,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(OVR,
+	protected static final SMTMacroSymbol REL_OVR_SYMBOL = new SMTMacroSymbol(OVR,
 			POLYMORPHIC_PAIRS, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
+	protected static final SMTMacroSymbol EMPTYSET_SYMBOL = new SMTMacroSymbol(EMPTY,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
+	protected static final SMTMacroSymbol SUCC_SYMBOL = new SMTMacroSymbol(SUCC,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
-	protected static SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
+	protected static final SMTMacroSymbol PRED_SYMBOL = new SMTMacroSymbol(PRED,
 			EMPTY_SORT, POLYMORPHIC, !PREDEFINED, V1_2);
 
 	/**

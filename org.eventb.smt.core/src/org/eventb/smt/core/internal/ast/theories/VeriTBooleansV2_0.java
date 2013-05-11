@@ -25,22 +25,23 @@ public class VeriTBooleansV2_0 extends Theory implements IBoolSort {
 	public final static SMTSortSymbol[] EMPTY_SORT = {};
 
 	private static final String BOOLS_THEORY_NAME = "Bools";
-	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
+
+	public static final SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			V2_0);
 
-	private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
+	private static final SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
 			SMTSymbol.BOOL, !PREDEFINED, V2_0);
 	private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
 
-	private final static SMTFunctionSymbol TRUE = new SMTFunctionSymbol("TRUE",
+	private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol("TRUE",
 			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
 
-	private final static SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
+	private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
 			"FALSE", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
 
-	private final static SMTPredicateSymbol[] PREDICATES = {};
+	private static final SMTPredicateSymbol[] PREDICATES = {};
 
-	private static SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
+	private static final SMTFunctionSymbol[] FUNCTIONS = { TRUE, FALSE };
 
 	private static final VeriTBooleansV2_0 INSTANCE = new VeriTBooleansV2_0();
 

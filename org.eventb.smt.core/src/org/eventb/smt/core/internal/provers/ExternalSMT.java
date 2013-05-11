@@ -29,7 +29,7 @@ import org.eventb.core.seqprover.xprover.XProverReasoner2;
  */
 public class ExternalSMT extends XProverReasoner2 {
 
-	public static String REASONER_ID = PLUGIN_ID + ".externalSMT";
+	public static final String REASONER_ID = PLUGIN_ID + ".externalSMT";
 
 	public ExternalSMT() {
 	}

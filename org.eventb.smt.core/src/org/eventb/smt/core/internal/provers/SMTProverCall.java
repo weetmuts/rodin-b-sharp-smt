@@ -73,8 +73,6 @@ public abstract class SMTProverCall extends XProverCall2 {
 	// FIXME cannot this field be removed ? (used to check veriT pre-processing)
 	protected boolean translationPerformed = false;
 
-	protected File translationFolder = null;
-
 	/**
 	 * FOR PERFORMANCE TESTS ONLY
 	 */
@@ -317,14 +315,23 @@ public abstract class SMTProverCall extends XProverCall2 {
 			return;
 		}
 		try {
-			final BufferedReader rdr = new BufferedReader(new FileReader(file));
+			appendFileContents(builder, file);
+		} catch (IOException e) {
+			builder.append("***Exception when reading file: ");
+			builder.append(e.getMessage()).append("***\n");
+		}
+	}
+
+	private static void appendFileContents(StringBuilder builder, File file)
+			throws IOException {
+		final BufferedReader rdr = new BufferedReader(new FileReader(file));
+		try {
 			String line;
 			while ((line = rdr.readLine()) != null) {
 				builder.append(line).append("\n");
 			}
-		} catch (IOException e) {
-			builder.append("***Exception when reading file: ");
-			builder.append(e.getMessage()).append("***\n");
+		} finally {
+			rdr.close();
 		}
 	}
 

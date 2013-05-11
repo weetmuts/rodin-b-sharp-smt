@@ -73,7 +73,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			INT, "(par (t) (" + INT + " ((?INT_0 Int)) (t Bool) true))", 0,
 			false, false, EMPTY_MACROS);
 
-	public static SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
+	public static final SMTPredefinedMacro BUNION_MACRO = new SMTPredefinedMacro(
 			BUNION,
 			"(par (t) ("
 					+ BUNION
@@ -112,10 +112,10 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?FUNP_0 ((Pair s t ) Bool))) (forall ((?FUNP_1 (Pair s t)) (?FUNP_2 (Pair s t))) (=> (and (?FUNP_0 ?FUNP_1) (?FUNP_0 ?FUNP_2)) (=> (= (fst ?FUNP_1) (fst ?FUNP_2))(= (snd ?FUNP_1) (snd ?FUNP_2)))))))",
 			2, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
+	private static final SMTPredefinedMacro[] REL_AND_FUNP_AND_IN = { RELATION_MACRO,
 			FUNP_MACRO, IN_MACRO };
 
-	private static SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
+	private static final SMTPredefinedMacro[] IN_AND_RANGE_INTEGER = { IN_MACRO,
 			RANGE_INTEGER_MACRO };
 
 	public static final SMTPredefinedMacro CARD_MACRO = new SMTPredefinedMacro(
@@ -139,7 +139,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?SUBSETEQ_0 (t Bool)) (?SUBSETEQ_1 (t Bool))) (t Bool) (forall ((?SUBSETEQ_2 t)) (=> (?SUBSETEQ_0 ?SUBSETEQ_2) (?SUBSETEQ_1 ?SUBSETEQ_2)))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
+	private static final SMTPredefinedMacro[] SUBSETEQS = { SUBSETEQ_MACRO };
 
 	public static final SMTPredefinedMacro NAT1_MACRO = new SMTPredefinedMacro(
 			NAT1, NAT1 + " ((?NAT1_0 Int)) (Int Bool) (<= 1 ?NAT1_0)", 0,
@@ -159,7 +159,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?SM_0 (t Bool)) (?SM_1 (t Bool))) (t Bool) (lambda ((?SM_2 t)) (and (?SM_0 ?SM_2) (not (?SM_1 ?SM_2))))))",
 			0, false, false, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] INS = { IN_MACRO };
+	private static final SMTPredefinedMacro[] INS = { IN_MACRO };
 
 	public static final SMTPredefinedMacro BOOL_SET_MACRO = new SMTPredefinedMacro(
 			BOOLS, BOOLS + " ((?BOOL_0 BOOL)) (BOOL BOOL) true", 0, false,
@@ -180,7 +180,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?TR_0 (s Bool)) (?TR_1 ((Pair s t) Bool))) (forall (?TR_2 (Pair s t)) (= (?TR_1 ?TR_2) (?TR_0 (fst ?TR_2))))))",
 			1, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
+	private static final SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_TOTAL_RELATION_AND_IN = {
 			PARTIAL_FUNCTION_MACRO, TOTAL_RELATION_MACRO, IN_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_FUNCTION_MACRO = new SMTPredefinedMacro(
@@ -197,7 +197,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?INV_0 ((Pair s t) Bool))) (lambda ((?INV_1 (Pair s t))) (?INV_0 (pair (snd ?INV_1)(fst ?INV_1))))))",
 			1, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
+	private static final SMTPredefinedMacro[] FUNP_AND_INV = { FUNP_MACRO,
 			INVERSE_MACRO };
 
 	public static final SMTPredefinedMacro INJP_MACRO = new SMTPredefinedMacro(
@@ -205,7 +205,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?INJP_0 ((Pair s t ) Bool))) (funp (inv ?INJP_0))))",
 			2, false, false, FUNP_AND_INV);
 
-	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_INJP = {
+	private static final SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_INJP = {
 			PARTIAL_FUNCTION_MACRO, INJP_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_INJECTION_MACRO = new SMTPredefinedMacro(
@@ -215,7 +215,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?PAR_INJ (s Bool)) (?PAR_INJ_1 (s Bool))) (lambda (?PAR_INJ_2 ((Pair s t) Bool)) (and ((pfun ?PAR_INJ_0 ?PAR_INJ_1) ?PAR_INJ_2) (injp ?PAR_INJ_2)))))",
 			3, false, false, PARTIAL_FUNCTION_AND_INJP);
 
-	private static SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
+	private static final SMTPredefinedMacro[] PARTIAL_INJECTION_AND_TOTAL_RELATION = {
 			PARTIAL_INJECTION_MACRO, TOTAL_RELATION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_INJECTION_MACRO = new SMTPredefinedMacro(
@@ -233,7 +233,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?SUR_REL_0 (t Bool)) (?SUR_REL_1 ((Pair s t) Bool))) (forall ((?SUR_REL_2 (Pair s t))) (= (?SUR_REL_1 ?SUR_REL_2) (?SUR_REL_0 (snd ?SUR_REL_2))))))",
 			1, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
+	private static final SMTPredefinedMacro[] PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION = {
 			PARTIAL_FUNCTION_MACRO, SURJECTIVE_RELATION_MACRO };
 
 	public static final SMTPredefinedMacro PARTIAL_SURJECTION_MACRO = new SMTPredefinedMacro(
@@ -243,7 +243,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?PAR_SUR_0 (s Bool))(?PAR_SUR_1 (s Bool))) (lambda ((?PAR_SUR_2 ((Pair s t) Bool))) (and ((pfun ?PAR_SUR_0 ?PAR_SUR_1) ?PAR_SUR_2) (surp ?PAR_SUR_1 ?PAR_SUR_2)))))",
 			3, false, false, PARTIAL_FUNCTION_AND_SURJECTIVE_RELATION);
 
-	private static SMTPredefinedMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
+	private static final SMTPredefinedMacro[] TOTAL_RELATION_AND_PARTIAL_SURJECTION = {
 			TOTAL_RELATION_MACRO, PARTIAL_SURJECTION_MACRO };
 
 	public static final SMTPredefinedMacro TOTAL_SURJECTION_MACRO = new SMTPredefinedMacro(
@@ -285,7 +285,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 			1, true, true, EMPTY_MACROS);
 
 	// TODO: test
-	public static SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
+	public static final SMTPredefinedMacro FCOMP_MACRO = new SMTPredefinedMacro(
 			FCOMP,
 			"(par (s t) ("
 					+ FCOMP
@@ -308,7 +308,7 @@ public class SMTMacroFactoryV2_0 extends SMTMacroFactory {
 					+ " ((?T_SUR_REL_0 (t Bool)) (?T_SUR_REL_1 ((Pair s t) Bool))) (and (forall ((?T_SUR_REL_2 (Pair s t))) (= (?T_SUR_REL_1 ?T_SUR_REL_2) (?T_SUR_REL_0 (snd ?T_SUR_REL_2))))  (forall ((?T_SUR_REL_3 (Pair s t))) (= (?T_SUR_REL_1 ?T_SUR_REL_3) (?T_SUR_REL_0 (fst ?T_SUR_REL_3)))))))",
 			1, true, true, EMPTY_MACROS);
 
-	private static SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
+	private static final SMTPredefinedMacro[] FCOMPS = { FCOMP_MACRO };
 
 	// TODO: test
 	public static final SMTPredefinedMacro BCOMP_MACRO = new SMTPredefinedMacro(

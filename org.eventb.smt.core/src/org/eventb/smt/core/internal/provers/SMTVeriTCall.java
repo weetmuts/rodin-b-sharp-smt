@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.ast.Predicate;
@@ -345,13 +346,16 @@ public class SMTVeriTCall extends SMTProverCall {
 		if (macrosTranslated) {
 			final FileWriter smtBenchmarkWriter = new FileWriter(
 					smtBenchmarkFile);
-			// FIXME this bug will be fixed in veriT
-			if (config.getKind() == VERIT) {
-				veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
-				veriTResult = veriTResult.replace(":extrasorts ()", "");
+			try {
+				// FIXME this bug will be fixed in veriT
+				if (config.getKind() == VERIT) {
+					veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
+					veriTResult = veriTResult.replace(":extrasorts ()", "");
+				}
+				smtBenchmarkWriter.write(veriTResult);
+			} finally {
+				smtBenchmarkWriter.close();
 			}
-			smtBenchmarkWriter.write(veriTResult);
-			smtBenchmarkWriter.close();
 		} else {
 			throw new IllegalArgumentException(veriTResult);
 		}
@@ -399,8 +403,11 @@ public class SMTVeriTCall extends SMTProverCall {
 			if (macrosTranslated) {
 				final FileWriter smtBenchmarkWriter = new FileWriter(
 						smtBenchmarkFile);
-				smtBenchmarkWriter.write(veriTResult);
-				smtBenchmarkWriter.close();
+				try {
+					smtBenchmarkWriter.write(veriTResult);
+				} finally {
+					smtBenchmarkWriter.close();
+				}
 			} else {
 				throw new IllegalArgumentException(veriTResult);
 			}
@@ -416,9 +423,10 @@ public class SMTVeriTCall extends SMTProverCall {
 		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
-		for (final String label : labelMap.keySet()) {
+		for (final Entry<String, ITrackedPredicate> entry : labelMap.entrySet()) {
+			final String label = entry.getKey();
+			final ITrackedPredicate trPredicate = entry.getValue();
 			if (compile(label).matcher(solverResult).find()) {
-				final ITrackedPredicate trPredicate = labelMap.get(label);
 				if (trPredicate.isHypothesis()) {
 					foundNeededHypotheses.add(trPredicate.getOriginal());
 				} else {

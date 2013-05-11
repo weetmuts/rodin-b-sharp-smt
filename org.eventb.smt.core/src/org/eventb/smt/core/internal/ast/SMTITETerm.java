@@ -15,7 +15,7 @@ package org.eventb.smt.core.internal.ast;
  */
 public final class SMTITETerm extends SMTTerm {
 
-	private final String ITE = "ite";
+	private static final String ITE = "ite";
 
 	/** The formula. */
 	private final SMTFormula formula;

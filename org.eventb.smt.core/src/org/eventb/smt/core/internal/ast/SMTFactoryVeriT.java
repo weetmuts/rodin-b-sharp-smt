@@ -51,9 +51,9 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
-	public static SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol(
+	public static final SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol(
 			"(Pair 's 't)", V1_2);
-	public static SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol(
+	public static final SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol(
 			"Pair", V2_0);
 
 	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(
@@ -62,7 +62,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
 			SND_PAIR_SORT_NAME, V1_2);
 
-	public static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
+	private static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL_V1_2 = new SMTFunctionSymbol(
@@ -73,7 +73,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT_V2_0, !ASSOCIATIVE, PREDEFINED,
 			V2_0);
 
-	public final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT_V1_2 };
+	private final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT_V1_2 };
 
 	public final static SMTFunctionSymbol FST_SYMBOLV_1_2 = new SMTFunctionSymbol(
 			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);

@@ -30,19 +30,19 @@ public class VeritPredefinedTheoryV1_2 extends Theory implements
 
 	private static final String NAME = "verit_theoryV1_2";
 
-	private final static SMTSortSymbol BOOL = new SMTSortSymbol(
+	private static final SMTSortSymbol BOOL = new SMTSortSymbol(
 			SMTMacroSymbol.BOOL_SORT_VERIT, PREDEFINED, V1_2);
 
-	private final static SMTSortSymbol INT = new SMTSortSymbol(SMTSymbol.INT,
+	private static final SMTSortSymbol INT = new SMTSortSymbol(SMTSymbol.INT,
 			PREDEFINED, V1_2);
 
-	private final static SMTSortSymbol[] INT_TAB = { INT };
-	private final static SMTSortSymbol[] INT_INT_TAB = { INT, INT };
+	private static final SMTSortSymbol[] INT_TAB = { INT };
+	private static final SMTSortSymbol[] INT_INT_TAB = { INT, INT };
 
-	public static SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
+	public static final SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
 			V1_2);
-	public static SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = { POLYMORPHIC,
-			POLYMORPHIC };
+	private static final SMTPolymorphicSortSymbol[] POLYMORPHIC_PAIRS = {
+			POLYMORPHIC, POLYMORPHIC };
 
 	private static final SMTPredicateSymbol EQUAL = new SMTPredicateSymbol(
 			SMTSymbol.EQUAL, POLYMORPHIC_PAIRS, PREDEFINED, V1_2);

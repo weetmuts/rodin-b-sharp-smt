@@ -33,7 +33,8 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
  * solvers.
  */
 public class Logic {
-	public static String UNKNOWN = "UNKNOWN";
+
+	public static final String UNKNOWN = "UNKNOWN";
 
 	/** The logic name and symbols */
 	private final String name;

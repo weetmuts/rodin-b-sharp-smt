@@ -29,7 +29,7 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 
 	private static final SolverPreferences INSTANCE = new SolverPreferences();
 
-	private class SolverList extends DescriptorList<ISolverDescriptor> {
+	private static class SolverList extends DescriptorList<ISolverDescriptor> {
 
 		public SolverList() {
 			super();

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eventb.core.ast.Predicate;
@@ -126,9 +127,10 @@ public class SMTPPCall extends SMTProverCall {
 		final Set<Predicate> foundNeededHypotheses = new HashSet<Predicate>();
 		goalNeeded = false;
 		final Map<String, ITrackedPredicate> labelMap = benchmark.getLabelMap();
-		for (final String label : labelMap.keySet()) {
+		for (final Entry<String, ITrackedPredicate> entry : labelMap.entrySet()) {
+			final String label = entry.getKey();
+			final ITrackedPredicate trPredicate = entry.getValue();
 			if (compile(label).matcher(solverResult).find()) {
-				final ITrackedPredicate trPredicate = labelMap.get(label);
 				if (trPredicate.isHypothesis()) {
 					foundNeededHypotheses.add(trPredicate.getOriginal());
 				} else {

@@ -22,7 +22,7 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 
 	private static final ConfigPreferences INSTANCE = new ConfigPreferences();
 
-	private class ConfigList extends DescriptorList<IConfigDescriptor> {
+	private static class ConfigList extends DescriptorList<IConfigDescriptor> {
 
 		public ConfigList() {
 			super();

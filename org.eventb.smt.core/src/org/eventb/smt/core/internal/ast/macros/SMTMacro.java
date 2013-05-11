@@ -78,6 +78,11 @@ public abstract class SMTMacro implements Comparable<SMTMacro> {
 	}
 
 	@Override
+	public int hashCode() {
+		return getMacroName().hashCode();
+	}
+
+	@Override
 	public final int compareTo(final SMTMacro o) {
 		if (o.getPrecedence() == precedence) {
 			return getMacroName().compareTo(o.getMacroName());
