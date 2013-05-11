@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eventb.smt.feature"
+      id="org.eventb.smt"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName"
-      plugin="org.eventb.smt"
-      os="linux,macosx,win32"
-      arch="x86,x86_64">
+      plugin="org.eventb.smt">
 
    <description>
       %description
@@ -21,14 +19,14 @@
    </license>
 
    <url>
-      <discovery label="%updateSiteName" url="http://rodin-b-sharp.sourceforge.net/updates"/>
+      <update label="%updateSiteName" url="http://rodin-b-sharp.sourceforge.net/updates"/>
    </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eventb.core.seqprover"/>
       <import plugin="org.eventb.pptrans"/>
-      <import plugin="org.eventb.pp"/>
+      <import plugin="org.eventb.core"/>
       <import plugin="org.eventb.ui"/>
    </requires>
 
@@ -36,7 +34,8 @@
          id="org.eventb.smt"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eventb.smt.core"
@@ -47,6 +46,13 @@
 
    <plugin
          id="org.eventb.smt.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eventb.smt.help"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -66,7 +72,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.verit.macosx"
@@ -75,7 +81,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.verit.win32"
@@ -84,7 +90,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3"
@@ -100,7 +106,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.macosx"
@@ -109,7 +115,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.win32"
@@ -118,12 +124,6 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eventb.smt.help"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
+         unpack="true"/>
 
 </feature>
