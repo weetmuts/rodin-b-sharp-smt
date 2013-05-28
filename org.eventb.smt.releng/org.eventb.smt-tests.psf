@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <psf version="2.0">
-<provider id="org.tigris.subversion.subclipse.core.svnnature">
-<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.core.performance,org.eventb.smt.core.performance"/>
-<project reference="0.9.3,https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp/trunk/SMT/org.eventb.smt.core.tests,org.eventb.smt.core.tests"/>
+<provider id="org.eclipse.egit.core.GitProvider">
+<project reference="1.0,git://git.code.sf.net/p/rodin-b-sharp/smt,master,org.eventb.smt.core.performance"/>
+<project reference="1.0,git://git.code.sf.net/p/rodin-b-sharp/smt,master,org.eventb.smt.core.tests"/>
 </provider>
 </psf>
