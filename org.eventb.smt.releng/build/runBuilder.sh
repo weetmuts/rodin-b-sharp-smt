@@ -16,7 +16,7 @@ java -jar "$launcher" \
     -DbuildDirectory="$WORK_PATH" \
     -DbaseLocation="$ECLIPSE_HOME" \
     -DpluginPath="$TARGET_PATH" \
-    -DforceContextQualifier="r$SVNREV" \
+    -DforceContextQualifier="$GIT_COMMIT" \
     -Dconfigs="$CONFIGS" \
     -Dp2.gathering=true \
     -Dp2.repo.archive.path="$RESULT_PATH/$BUILD_FULLNAME-repo.zip"

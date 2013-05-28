@@ -10,20 +10,23 @@ BUILD_NAME=SMT_Solvers
 # version.
 BUILD_ID=1.0.0
 
-# Subversion revision to use for the build
-SVNREV=14671
+# Git commit to use for the build
+GIT_COMMIT=PUT_YOUR_GIT_COMMIT_HERE
 
-# Root URL of the Subversion repository
-SVN_ROOT=https://rodin-b-sharp.svn.sourceforge.net/svnroot/rodin-b-sharp
+# Root URL of the Git repository
+GIT_ROOT=git://git.code.sf.net/p/rodin-b-sharp/smt
 
-# Project Set containing the source project URLs
-SVN_PSF=$SVN_ROOT/trunk/SMT/org.eventb.smt.releng/org.eventb.smt-src.psf
+# Branch of the commit in the Git repository
+GIT_BRANCH=master
 
 # Release engineering project containing the build parameters
 RELENG=org.eventb.smt.releng
 
+# Project Set containing the source project URLs
+PSF_PATH=$RELENG/org.eventb.smt-src.psf
+
 # Name of archive containing the Rodin target platform in archives directory
-RODIN_TARGET=rodin-2.5-dev.zip
+RODIN_TARGET=rodin-2.7-dev.zip
 
 # Name of archive containing the Eclipse SDK in archives directory
 ECLIPSE_SDK=eclipse-SDK-3.7.2-linux-gtk.tar.gz
@@ -36,7 +39,7 @@ ECLIPSE_DELTA=eclipse-3.7.2-delta-pack.zip
 # ----------------------------------------------------------------------
 
 # Full build version
-BUILD_VERSION=$BUILD_ID.r$SVNREV
+BUILD_VERSION=$BUILD_ID.$GIT_COMMIT
 
 # Full build name
 BUILD_FULLNAME="$BUILD_NAME-$BUILD_ID"
@@ -48,7 +51,7 @@ fatal() {
 
 checkRevision() {
     val="$1"
-    if expr "$val" : '^[0-9][0-9]*$' >/dev/null; then
+    if expr "$val" : '^[0-9a-f][0-9a-f]*$' >/dev/null; then
 	: OK
     else
 	fatal "Invalid SVN revision number: $val"
@@ -65,4 +68,4 @@ createDir() {
     mkdir "$dir" || fatal "Can't create directory '$dir'."
 }
 
-checkRevision "$SVNREV"
+checkRevision "$GIT_COMMIT"

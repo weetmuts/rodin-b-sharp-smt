@@ -7,33 +7,20 @@ PATH=/bin:/usr/bin
 
 . ./config.sh
 
-LOCAL_PSF=$(basename $SVN_PSF)
-
-fetchProjectSet() {
-    wget -nv $SVN_PSF || fatal "Can't fetch project set file."
-}
+LOCAL_PSF=$(basename $PSF_PATH)
 
 fetchAllProjects() {
-    awk -F, '$1 == "<project reference=\"0.9.3" { sub("\"/>", "", $3); print $2, $3; }' $LOCAL_PSF |
-	while read url dir; do
-	    fetchProject "$url" "$dir"
-	done
-}
+    mkdir gitrepo || fatal "Some sources have already been checked out."
+    git clone --branch $GIT_BRANCH $GIT_ROOT gitrepo
+    cd gitrepo
+    git checkout $GIT_COMMIT
 
-fetchOneProject() {
-    dir="$1"
-    awk -F, '$3 == "'"$dir"'\"/>" { print $2; }' $LOCAL_PSF |
-	while read url; do
-	    fetchProject "$url" "$dir"
-	done
-}
+    cat $PSF_PATH | 
+    grep "^<project" |
+    sed -e 's/.*\,//' -e 's/\".*//' |
+    xargs -i cp -R {} ../src
 
-fetchProject() {
-    url="$1"
-    dir="$2"
-    echo "Fetching $dir"
-    rm -rf "$dir"
-    svn -q export -r $SVNREV "$url" "$dir"
+    cd ..
 }
 
 archive() {
@@ -49,11 +36,7 @@ archive() {
 createDir result
 if [ $# -eq 0 ]; then
     createDir src
-    cd src
-    fetchProjectSet
     fetchAllProjects
-else
-    cd src
-    for p; do fetchOneProject "$p"; done
 fi
+cd src
 archive "../result/$BUILD_FULLNAME-sources.zip"
