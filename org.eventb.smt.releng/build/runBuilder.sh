@@ -14,7 +14,7 @@ java -jar "$launcher" \
     -buildfile "$script" \
     -Dbuilder="$BUILDER" \
     -DbuildDirectory="$WORK_PATH" \
-    -DbaseLocation="$ECLIPSE_HOME" \
+    -DbaseLocation="$TARGET_PATH" \
     -DpluginPath="$TARGET_PATH" \
     -DforceContextQualifier="$GIT_COMMIT" \
     -Dconfigs="$CONFIGS" \

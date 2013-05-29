@@ -27,7 +27,7 @@ unpackArchives() {
     ECLIPSE_HOME="$WORK_PATH/eclipse"
 
     unzip -oq "../archives/$RODIN_TARGET"
-    TARGET_PATH="$WORK_PATH/$(basename $RODIN_TARGET .zip)"
+    TARGET_PATH="$WORK_PATH/rodin"
 }
 
 eclipseFile() {

@@ -26,7 +26,7 @@ RELENG=org.eventb.smt.releng
 PSF_PATH=$RELENG/org.eventb.smt-src.psf
 
 # Name of archive containing the Rodin target platform in archives directory
-RODIN_TARGET=rodin-2.7-dev.zip
+RODIN_TARGET=rodin-2.7-linux.gtk.x86.zip
 
 # Name of archive containing the Eclipse SDK in archives directory
 ECLIPSE_SDK=eclipse-SDK-3.7.2-linux-gtk.tar.gz
