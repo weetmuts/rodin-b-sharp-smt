@@ -14,6 +14,7 @@ import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess
 import static org.eventb.smt.core.internal.tactics.SMTTacticDescriptors.getTacticDescriptor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
@@ -34,19 +35,35 @@ import org.eventb.smt.core.internal.prefs.ConfigPreferences;
  * @author Laurent Voisin
  */
 public class SMTAutoTactic implements ITactic {
-
-	private static volatile ITactic[] tactics;
+	
+	public static boolean DEBUG = false;
 
 	/*
-	 * Force loading of preferences at class creation. The initialization of the
-	 * preferences class will call back updateTactics.
+	 * Sub-class for initializing the list of tactics in a lazy manner.
 	 */
-	static {
-		ConfigPreferences.init();
+	private static class TacticsHolder {
+		
+		/*
+		 * Force loading of preferences at sub-class creation. The
+		 * initialization of the preferences class will call back updateTactics.
+		 */
+		static {
+			if (DEBUG) {
+				trace("Loading holder class");
+			}
+			ConfigPreferences.init();
+		}
+
+		static volatile ITactic[] tactics;
+
 	}
 
 	@Override
 	public Object apply(IProofTreeNode ptNode, IProofMonitor pm) {
+		final ITactic[] tactics = TacticsHolder.tactics;
+		if (DEBUG) {
+			trace("Launching with " + Arrays.toString(tactics));
+		}
 		return composeUntilSuccess(tactics).apply(ptNode, pm);
 	}
 
@@ -55,13 +72,17 @@ public class SMTAutoTactic implements ITactic {
 	 */
 	public static void updateTactics(List<IConfigDescriptor> configs) {
 		final List<ITactic> newTactics = new ArrayList<ITactic>(configs.size());
+		if (DEBUG) {
+			trace("Updating tactic list with " + configs);
+		}
 		for (final IConfigDescriptor config : configs) {
 			if (config.isEnabled()) {
 				final ITactic tactic = makeConfigTactic(config);
 				newTactics.add(tactic);
 			}
 		}
-		tactics = newTactics.toArray(new ITactic[newTactics.size()]);
+		TacticsHolder.tactics = newTactics.toArray(new ITactic[newTactics
+				.size()]);
 	}
 
 	/*
@@ -74,4 +95,7 @@ public class SMTAutoTactic implements ITactic {
 		return tacticDesc.getTacticInstance();
 	}
 
+	static void trace(String msg) {
+		System.out.println("SMTAutoTactic: " + msg);
+	}
 }
