@@ -70,11 +70,11 @@ public class SMTAutoTactic implements ITactic {
 	/*
 	 * Must be called whenever the list of enabled SMT configurations changes.
 	 */
-	public static void updateTactics(List<IConfigDescriptor> configs) {
-		final List<ITactic> newTactics = new ArrayList<ITactic>(configs.size());
+	public static void updateTactics(IConfigDescriptor[] configs) {
 		if (DEBUG) {
-			trace("Updating tactic list with " + configs);
+			trace("Updating tactic list with " + Arrays.toString(configs));
 		}
+		final List<ITactic> newTactics = new ArrayList<ITactic>(configs.length);
 		for (final IConfigDescriptor config : configs) {
 			if (config.isEnabled()) {
 				final ITactic tactic = makeConfigTactic(config);

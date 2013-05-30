@@ -83,7 +83,7 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 	@Override
 	protected void doSetKnown(List<IConfigDescriptor> newDescs) {
 		super.doSetKnown(newDescs);
-		SMTAutoTactic.updateTactics(newDescs);
+		SMTAutoTactic.updateTactics(known.toArray());
 	}
 
 	public static IConfigDescriptor[] getBundledConfigs() {
