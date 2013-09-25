@@ -37,15 +37,32 @@ import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
 public class DefaultAutoWithSMT {
 
 	/**
-	 * @see DefaultAutoWithSMT
+	 * Returns a new tactic descriptor that integrates enabled SMT solvers and
+	 * can be used in place of "Default Auto Tactic".
+	 * 
+	 * @return a new tactic descriptor integrating the enabled SMT solvers
 	 */
 	public static ITacticDescriptor getTacticDescriptor() {
 		final ITacticDescriptor defaultAuto = getDefaultAuto();
+		return getTacticDescriptor(defaultAuto);
+	}
+
+	/**
+	 * Returns a new tactic descriptor based on the given one and integrating
+	 * the enabled SMT solvers just after {@link #BEFORE_TACTIC_ID}. In case of
+	 * error when building the new descriptor, the given one is returned.
+	 * 
+	 * @param base
+	 *            a tactic descriptor built from a loop on all pending
+	 *            combinator, typically the default Auto tactic preference
+	 * @return a new tactic descriptor integrating the enabled SMT solvers
+	 */
+	public static ITacticDescriptor getTacticDescriptor(ITacticDescriptor base) {
 		try {
-			return new DefaultAutoWithSMT(defaultAuto).compute();
+			return new DefaultAutoWithSMT(base).compute();
 		} catch (Exception exc) {
 			logError("When computing default auto tactic with SMT", exc);
-			return defaultAuto;
+			return base;
 		}
 	}
 
@@ -77,11 +94,13 @@ public class DefaultAutoWithSMT {
 	private static final ICombinatorDescriptor ATTEMPT_AFTER_LASSO = REGISTRY
 			.getCombinatorDescriptor("org.eventb.core.seqprover.attemptAfterLasso");
 
-	/*
-	 * Extracts the tactic descriptor for the "Default Auto Tactic" from the
+	/**
+	 * Returns the tactic descriptor for the "Default Auto Tactic" from the
 	 * Event-B core plug-in.
+	 * 
+	 * @return the "Default Auto Tactic" descriptor
 	 */
-	private static ITacticDescriptor getDefaultAuto() {
+	public static ITacticDescriptor getDefaultAuto() {
 		final IAutoPostTacticManager manager = getAutoPostTacticManager();
 		final IAutoTacticPreference pref = manager.getAutoTacticPreference();
 		return pref.getDefaultDescriptor();
