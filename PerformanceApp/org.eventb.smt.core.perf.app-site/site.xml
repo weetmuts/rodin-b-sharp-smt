@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="SMT Performance Test Application">
+      Update site containing only the SMT Performance Test Application.
+   </description>
+   <feature url="features/org.eventb.smt.core.perf.app_1.0.0.201310191208.jar" id="org.eventb.smt.core.perf.app" version="1.0.0.201310191208">
+      <category name="org.eventb.smt"/>
+   </feature>
+   <category-def name="org.eventb.smt" label="SMT Solvers"/>
+</site>

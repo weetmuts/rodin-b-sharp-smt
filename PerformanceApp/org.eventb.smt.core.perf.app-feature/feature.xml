@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eventb.smt.core.perf.app"
+      label="%featureName"
+      version="1.0.0.qualifier"
+      provider-name="%providerName">
+
+   <description url="http://wiki.event-b.org/index.php/SMT_Plug-in_Performance">
+      %featureDescription
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <discovery label="%updateSiteName" url="http://rodin-b-sharp.sourceforge.net/updates"/>
+   </url>
+
+   <requires>
+      <import feature="org.rodinp.platform" version="2.8.0"/>
+      <import feature="org.eventb.smt" version="1.0.0"/>
+      <import feature="com.clearsy.atelierb.provers" version="2.0.1"/>
+   </requires>
+
+   <plugin
+         id="org.eventb.smt.core.perf.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

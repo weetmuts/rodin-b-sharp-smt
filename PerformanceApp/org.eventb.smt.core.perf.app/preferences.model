@@ -1,0 +1,39 @@
+# Preferences for running SMT on real projects
+file_export_version = 3
+
+# Common time-out for all external provers (in milliseconds)
+autoTimeout = 1000
+
+# Solver descriptions.  Each solver entry must have a different number.  The
+# fields are the same as in the ISolverDescriptor interface.
+
+solver/1/name = test
+solver/1/kind = CVC3
+solver/1/path = /bin/echo
+
+# Configuration descriptions.  Each configuration entry must have a different
+# number.  The fields are the same as in the IConfigDescriptor interface.
+#
+# The first two configurations are bundled, the only significant field is
+# therefore 'enabled', all others are ignored.
+#
+config/1/name=CVC3 SMT2
+config/1/solver=CVC3 (bundled)
+config/1/args=
+config/1/approach=USING_PP
+config/1/version=V2_0
+config/1/enabled=true
+
+config/2/name=veriT SMT2
+config/2/solver=veriT (bundled)
+config/2/args=--disable-print-success --disable-banner --proof\=- --proof-version\=1 --proof-prune --disable-e
+config/2/approach=USING_PP
+config/2/version=V2_0
+config/2/enabled=true
+
+config/3/name = test SMT2
+config/3/solver = test
+config/3/args = 
+config/3/approach = USING_PP
+config/3/version = V2_0
+config/3/enabled = true
