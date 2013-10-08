@@ -28,14 +28,21 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 
 	public static boolean DEBUG = false;
 
-	private static final IEclipsePreferences root = InstanceScope.INSTANCE
+	// Root of the preferences tree for this plug-in
+	private static final IEclipsePreferences DEFAULT_ROOT = InstanceScope.INSTANCE
 			.getNode(PREF_NODE_NAME);
 
+	private final IEclipsePreferences root;
 	private final String nodeName;
 	protected final DescriptorList<T> bundled;
 	protected final DescriptorList<T> known;
 
 	protected AbstractPreferences(String nodeName) {
+		this(DEFAULT_ROOT, nodeName);
+	}
+
+	protected AbstractPreferences(IEclipsePreferences root, String nodeName) {
+		this.root = root;
 		this.nodeName = nodeName;
 		this.bundled = loadBundledDescriptors();
 		this.known = newDescriptorList();

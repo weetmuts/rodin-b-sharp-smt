@@ -18,7 +18,7 @@ Export-Package:
  org.eventb.smt.core.internal.ast.macros;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.ast.symbols;x-friends:="org.eventb.smt.core.tests",
  org.eventb.smt.core.internal.ast.theories;x-friends:="org.eventb.smt.core.tests",
- org.eventb.smt.core.internal.prefs;x-friends:="org.eventb.smt.core.tests",
+ org.eventb.smt.core.internal.prefs;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.core.perf.app",
  org.eventb.smt.core.internal.provers;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.core.performance",
  org.eventb.smt.core.internal.tactics;x-friends:="org.eventb.smt.core.tests,org.eventb.smt.core.perf.app",
  org.eventb.smt.core.internal.translation;x-friends:="org.eventb.smt.core.tests"

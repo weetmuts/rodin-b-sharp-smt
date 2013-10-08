@@ -12,6 +12,7 @@ package org.eventb.smt.core.internal.prefs;
 
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.osgi.service.prefs.Preferences;
 
@@ -57,6 +58,11 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 		super("solver");
 	}
 
+	// For testing purposes only
+	private SolverPreferences(IEclipsePreferences root) {
+		super(root, "solver");
+	}
+
 	@Override
 	protected DescriptorList<ISolverDescriptor> loadBundledDescriptors() {
 		return new BundledSolverList();
@@ -96,6 +102,18 @@ public class SolverPreferences extends AbstractPreferences<ISolverDescriptor> {
 
 	public static ISolverDescriptor get(String name) {
 		return INSTANCE.doGet(name);
+	}
+
+	/**
+	 * Returns a new instance for tests. This instance is completely decoupled
+	 * from the real instance.
+	 * 
+	 * @param root
+	 *            a preferences tree to use for initializing the test instance
+	 * @return a new instance for tests
+	 */
+	public static SolverPreferences newTestInstance(IEclipsePreferences root) {
+		return new SolverPreferences(root);
 	}
 
 }

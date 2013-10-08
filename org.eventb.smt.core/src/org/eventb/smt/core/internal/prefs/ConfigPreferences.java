@@ -14,6 +14,7 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.internal.tactics.SMTAutoTactic;
 import org.osgi.service.prefs.Preferences;
@@ -48,6 +49,11 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 	// Singleton class.
 	private ConfigPreferences() {
 		super("config");
+	}
+
+	// For testing purposes only
+	private ConfigPreferences(IEclipsePreferences root) {
+		super(root, "config");
 	}
 
 	@Override
@@ -110,6 +116,18 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		 * Actually, this method does nothing, but calling it forces loading of
 		 * this class by the JVM which does the appropriate initialization.
 		 */
+	}
+
+	/**
+	 * Returns a new instance for tests. This instance is completely decoupled
+	 * from the real instance.
+	 * 
+	 * @param root
+	 *            a preferences tree to use for initializing the test instance
+	 * @return a new instance for tests
+	 */
+	public static ConfigPreferences newTestInstance(IEclipsePreferences root) {
+		return new ConfigPreferences(root);
 	}
 
 }
