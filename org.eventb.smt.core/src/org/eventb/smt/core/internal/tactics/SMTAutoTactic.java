@@ -11,12 +11,16 @@
 package org.eventb.smt.core.internal.tactics;
 
 import static org.eventb.core.seqprover.tactics.BasicTactics.composeUntilSuccess;
+import static org.eventb.smt.core.SMTPreferences.AUTO_TIMEOUT;
+import static org.eventb.smt.core.internal.prefs.SimplePreferences.getAutoTimeout;
 import static org.eventb.smt.core.internal.tactics.SMTTacticDescriptors.getTacticDescriptor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
@@ -25,6 +29,7 @@ import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.IPreferencesChangeListener;
+import org.eventb.smt.core.internal.prefs.SimplePreferences;
 
 /**
  * An automated tactic that runs successively all enabled SMT configurations
@@ -44,13 +49,15 @@ public class SMTAutoTactic implements ITactic {
 	 * Sub-class for initializing the list of tactics in a lazy manner. This
 	 * class is also responsible for maintaining it up to date.
 	 */
-	private static class TacticsHolder implements IPreferencesChangeListener {
+	private static class TacticsHolder implements IPreferencesChangeListener,
+			IPreferenceChangeListener {
 
 		static {
 			if (DEBUG) {
 				trace("Loading holder class");
 			}
 			final TacticsHolder instance = new TacticsHolder();
+			SimplePreferences.addChangeListener(instance);
 			ConfigPreferences.addChangeLister(instance);
 			instance.preferencesChange();
 		}
@@ -60,14 +67,16 @@ public class SMTAutoTactic implements ITactic {
 		@Override
 		public void preferencesChange() {
 			final IConfigDescriptor[] configs = SMTCore.getConfigurations();
+			final long timeout = getAutoTimeout();
 			if (DEBUG) {
 				trace("Updating tactic list with " + Arrays.toString(configs));
+				trace("and timeout " + timeout);
 			}
 			final List<ITactic> newTactics = new ArrayList<ITactic>(
 					configs.length);
 			for (final IConfigDescriptor config : configs) {
 				if (config.isEnabled()) {
-					final ITactic tactic = makeConfigTactic(config);
+					final ITactic tactic = makeConfigTactic(config, timeout);
 					newTactics.add(tactic);
 				}
 			}
@@ -78,10 +87,18 @@ public class SMTAutoTactic implements ITactic {
 		 * Returns a tactic for running the given SMT solver with default
 		 * parameters (restricted and timeout).
 		 */
-		private ITactic makeConfigTactic(IConfigDescriptor config) {
+		private ITactic makeConfigTactic(IConfigDescriptor config, long timeout) {
 			final String configName = config.getName();
-			final ITacticDescriptor tacticDesc = getTacticDescriptor(configName);
+			final ITacticDescriptor tacticDesc = getTacticDescriptor(
+					configName, timeout);
 			return tacticDesc.getTacticInstance();
+		}
+
+		@Override
+		public void preferenceChange(PreferenceChangeEvent event) {
+			if (event.getKey() == AUTO_TIMEOUT) {
+				preferencesChange();
+			}
 		}
 
 	}

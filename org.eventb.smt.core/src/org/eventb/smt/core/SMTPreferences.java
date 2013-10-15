@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2013 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
  * temporary files are stored,</li>
  * <li><code>VERIT_PATH_ID</code> is the path to the veriT binary used to
  * translate macros.</li>
+ * <li><code>AUTO_TIMEOUT</code> is the timeout in ms for each configuration
+ * run by the SMT auto-tactic.</li>
  * </ul>
  * These preferences are directly accessible through the Eclipse preferences.
  * For instance, to change the translation path, use
@@ -50,5 +52,10 @@ public class SMTPreferences {
 	 * will be used to expand the macros produced by the veriT translation.
 	 */
 	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
+
+	/**
+	 * Name of the preference that contains the timeout for the SMT auto tactic.
+	 */
+	public static final String AUTO_TIMEOUT = "autoTimeout"; //$NON-NLS-1$
 
 }

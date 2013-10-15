@@ -52,8 +52,29 @@ public class SMTTacticDescriptors {
 	 * @return a tactic descriptor for running the given configuration
 	 */
 	public static ITacticDescriptor getTacticDescriptor(String configName) {
+		return getTacticDescriptor(configName, -1);
+	}
+
+	/**
+	 * Returns a tactic descriptor for running the given SMT solver
+	 * configuration. This method does not verify that the configuration has
+	 * been registered. The tactic is configured with the given timeout and
+	 * default value for the restricted parameter.
+	 * 
+	 * @param configName
+	 *            the name of an SMT configuration
+	 * @param timeout
+	 *            timeout in milliseconds or negative to use the default
+	 *            parameter value
+	 * @return a tactic descriptor for running the given configuration
+	 */
+	public static ITacticDescriptor getTacticDescriptor(String configName,
+			long timeout) {
 		final IParameterSetting params = DESC.makeParameterSetting();
 		params.setString(CONFIG_NAME_LABEL, configName);
+		if (timeout >= 0) {
+			params.setLong(TIMEOUT_DELAY_LABEL, timeout);
+		}
 
 		final String tacticID = PREFIX + configName;
 		final String tacticName = getTacticName(params);

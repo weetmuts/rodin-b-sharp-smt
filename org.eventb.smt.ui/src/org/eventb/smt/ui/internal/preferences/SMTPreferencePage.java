@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2013 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import static org.eclipse.jface.resource.JFaceResources.getString;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_autoTimeoutLabel;
+import static org.eventb.smt.ui.internal.Messages.MainPrefPage_autoTimeoutTooltip;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_description;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_missingValue;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notADirectory;
@@ -27,6 +29,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -64,6 +67,7 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	protected void createFieldEditors() {
 		addField(new TempDirectoryEditor(getFieldEditorParent()));
 		addField(new VeriTEditor(getFieldEditorParent()));
+		addField(new AutoTimeoutEditor(getFieldEditorParent()));
 	}
 
 	/*
@@ -139,6 +143,17 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 			super(SMTPreferences.VERIT_PATH_ID, MainPrefPage_veriTPathLabel,
 					MainPrefPage_veriTPathTooltip, parent);
 			setEmptyStringAllowed(true);
+		}
+
+	}
+
+	private static class AutoTimeoutEditor extends IntegerFieldEditor {
+
+		public AutoTimeoutEditor(Composite parent) {
+			super(SMTPreferences.AUTO_TIMEOUT, MainPrefPage_autoTimeoutLabel,
+					parent);
+			getLabelControl().setToolTipText(MainPrefPage_autoTimeoutTooltip);
+			setValidRange(0, Integer.MAX_VALUE);
 		}
 
 	}
