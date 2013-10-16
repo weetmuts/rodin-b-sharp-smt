@@ -22,7 +22,9 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.IProofTreeNode;
 import org.eventb.core.seqprover.ITactic;
 import org.eventb.smt.core.IConfigDescriptor;
+import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
+import org.eventb.smt.core.internal.prefs.IPreferencesChangeListener;
 
 /**
  * An automated tactic that runs successively all enabled SMT configurations
@@ -35,26 +37,52 @@ import org.eventb.smt.core.internal.prefs.ConfigPreferences;
  * @author Laurent Voisin
  */
 public class SMTAutoTactic implements ITactic {
-	
+
 	public static boolean DEBUG = false;
 
 	/*
-	 * Sub-class for initializing the list of tactics in a lazy manner.
+	 * Sub-class for initializing the list of tactics in a lazy manner. This
+	 * class is also responsible for maintaining it up to date.
 	 */
-	private static class TacticsHolder {
-		
-		/*
-		 * Force loading of preferences at sub-class creation. The
-		 * initialization of the preferences class will call back updateTactics.
-		 */
+	private static class TacticsHolder implements IPreferencesChangeListener {
+
 		static {
 			if (DEBUG) {
 				trace("Loading holder class");
 			}
-			ConfigPreferences.init();
+			final TacticsHolder instance = new TacticsHolder();
+			ConfigPreferences.addChangeLister(instance);
+			instance.preferencesChange();
 		}
 
 		static volatile ITactic[] tactics;
+
+		@Override
+		public void preferencesChange() {
+			final IConfigDescriptor[] configs = SMTCore.getConfigurations();
+			if (DEBUG) {
+				trace("Updating tactic list with " + Arrays.toString(configs));
+			}
+			final List<ITactic> newTactics = new ArrayList<ITactic>(
+					configs.length);
+			for (final IConfigDescriptor config : configs) {
+				if (config.isEnabled()) {
+					final ITactic tactic = makeConfigTactic(config);
+					newTactics.add(tactic);
+				}
+			}
+			tactics = newTactics.toArray(new ITactic[newTactics.size()]);
+		}
+
+		/*
+		 * Returns a tactic for running the given SMT solver with default
+		 * parameters (restricted and timeout).
+		 */
+		private ITactic makeConfigTactic(IConfigDescriptor config) {
+			final String configName = config.getName();
+			final ITacticDescriptor tacticDesc = getTacticDescriptor(configName);
+			return tacticDesc.getTacticInstance();
+		}
 
 	}
 
@@ -65,34 +93,6 @@ public class SMTAutoTactic implements ITactic {
 			trace("Launching with " + Arrays.toString(tactics));
 		}
 		return composeUntilSuccess(tactics).apply(ptNode, pm);
-	}
-
-	/*
-	 * Must be called whenever the list of enabled SMT configurations changes.
-	 */
-	public static void updateTactics(IConfigDescriptor[] configs) {
-		if (DEBUG) {
-			trace("Updating tactic list with " + Arrays.toString(configs));
-		}
-		final List<ITactic> newTactics = new ArrayList<ITactic>(configs.length);
-		for (final IConfigDescriptor config : configs) {
-			if (config.isEnabled()) {
-				final ITactic tactic = makeConfigTactic(config);
-				newTactics.add(tactic);
-			}
-		}
-		TacticsHolder.tactics = newTactics.toArray(new ITactic[newTactics
-				.size()]);
-	}
-
-	/*
-	 * Returns a tactic for running the given SMT solver with default parameters
-	 * (restricted and timeout).
-	 */
-	private static ITactic makeConfigTactic(IConfigDescriptor config) {
-		final String configName = config.getName();
-		final ITacticDescriptor tacticDesc = getTacticDescriptor(configName);
-		return tacticDesc.getTacticInstance();
 	}
 
 	static void trace(String msg) {

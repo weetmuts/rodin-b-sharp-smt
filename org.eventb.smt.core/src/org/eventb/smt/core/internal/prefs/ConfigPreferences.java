@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2013 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eventb.smt.core.IConfigDescriptor;
-import org.eventb.smt.core.internal.tactics.SMTAutoTactic;
 import org.osgi.service.prefs.Preferences;
 
 public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
@@ -89,7 +88,6 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 	@Override
 	protected void doSetKnown(List<IConfigDescriptor> newDescs) {
 		super.doSetKnown(newDescs);
-		SMTAutoTactic.updateTactics(known.toArray());
 	}
 
 	public static IConfigDescriptor[] getBundledConfigs() {
@@ -108,14 +106,8 @@ public class ConfigPreferences extends AbstractPreferences<IConfigDescriptor> {
 		return INSTANCE.doGet(name);
 	}
 
-	/**
-	 * Initializes configuration preferences.
-	 */
-	public static void init() {
-		/*
-		 * Actually, this method does nothing, but calling it forces loading of
-		 * this class by the JVM which does the appropriate initialization.
-		 */
+	public static void addChangeLister(IPreferencesChangeListener listener) {
+		INSTANCE.doAddChangeListener(listener);
 	}
 
 	/**

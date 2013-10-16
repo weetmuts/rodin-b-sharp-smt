@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2013 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,8 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 	private final String nodeName;
 	protected final DescriptorList<T> bundled;
 	protected final DescriptorList<T> known;
+
+	private volatile IPreferencesChangeListener listener;
 
 	protected AbstractPreferences(String nodeName) {
 		this(DEFAULT_ROOT, nodeName);
@@ -119,6 +121,10 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 			known.add(real);
 		}
 		known.addIfNotPresent(bundled);
+		final IPreferencesChangeListener local = listener;
+		if (local != null) {
+			local.preferencesChange();
+		}
 	}
 
 	/**
@@ -162,6 +168,17 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		}
 	}
 
+	/**
+	 * Registers a new listener for preferences change. There is currently
+	 * support for at most one listener.
+	 * 
+	 * @param newListener
+	 *            listener to set
+	 */
+	public void doAddChangeListener(IPreferencesChangeListener newListener) {
+		this.listener = newListener;
+	}
+
 	private void trace(final String msg) {
 		System.out.println(msg + nodeName + ":");
 		for (final T desc : this.known) {
@@ -169,6 +186,6 @@ public abstract class AbstractPreferences<T extends IDescriptor> {
 		}
 	}
 
-	// TODO Listen to preference changes
+	// TODO Listen to Eclipse preference changes
 
 }
