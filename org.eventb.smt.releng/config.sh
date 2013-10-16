@@ -8,16 +8,13 @@ BUILD_NAME=SMT_Solvers
 
 # User visible identity of the build.  Should be the same as the feature
 # version.
-BUILD_ID=1.0.0
+BUILD_ID=1.1.0
 
 # Git commit to use for the build
 GIT_COMMIT=PUT_YOUR_GIT_COMMIT_HERE
 
 # Root URL of the Git repository
 GIT_ROOT=git://git.code.sf.net/p/rodin-b-sharp/smt
-
-# Branch of the commit in the Git repository
-GIT_BRANCH=master
 
 # Release engineering project containing the build parameters
 RELENG=org.eventb.smt.releng
@@ -26,7 +23,7 @@ RELENG=org.eventb.smt.releng
 PSF_PATH=$RELENG/org.eventb.smt-src.psf
 
 # Name of archive containing the Rodin target platform in archives directory
-RODIN_TARGET=rodin-2.7-linux.gtk.x86.zip
+RODIN_TARGET=rodin-2.8-linux.gtk.x86.zip
 
 # Name of archive containing the Eclipse SDK in archives directory
 ECLIPSE_SDK=eclipse-SDK-3.7.2-linux-gtk.tar.gz
@@ -54,7 +51,7 @@ checkRevision() {
     if expr "$val" : '^[0-9a-f][0-9a-f]*$' >/dev/null; then
 	: OK
     else
-	fatal "Invalid SVN revision number: $val"
+	fatal "Invalid git commit number: $val"
     fi
 }
 

@@ -11,9 +11,9 @@ LOCAL_PSF=$(basename $PSF_PATH)
 
 fetchAllProjects() {
     mkdir gitrepo || fatal "Some sources have already been checked out."
-    git clone --branch $GIT_BRANCH $GIT_ROOT gitrepo
+    git clone $GIT_ROOT gitrepo
     cd gitrepo
-    git checkout $GIT_COMMIT
+    git checkout -q $GIT_COMMIT
 
     cat $PSF_PATH | 
     grep "^<project" |
