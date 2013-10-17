@@ -19,7 +19,7 @@
 
 <script src="http://wiki.event-b.org/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
 <script>if(window.mw){
-mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"SMT_Solvers_Plug-in","wgTitle":"SMT Solvers Plug-in","wgCurRevisionId":12934,"wgArticleId":1173,"wgIsArticle":true,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Plugin","User documentation"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgRelevantPageName":"SMT_Solvers_Plug-in","wgRestrictionEdit":[],"wgRestrictionMove":[]});
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"SMT_Solvers_Plug-in","wgTitle":"SMT Solvers Plug-in","wgCurRevisionId":13404,"wgArticleId":1173,"wgIsArticle":true,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Plugin","User documentation"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgRelevantPageName":"SMT_Solvers_Plug-in","wgRestrictionEdit":[],"wgRestrictionMove":[]});
 }</script><script>if(window.mw){
 mw.loader.implement("user.options",function($){mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":0,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"monobook","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":
 0,"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;},{},{});mw.loader.implement("user.tokens",function($){mw.user.tokens.set({"editToken":"+\\","watchToken":false});;},{},{});
@@ -87,19 +87,20 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </li>
 <li class="toclevel-1 tocsection-24"><a href="#Customizing_the_SMT-LIB_translation_settings"><span class="tocnumber">7</span> <span class="toctext">Customizing the SMT-LIB translation settings</span></a>
 <ul>
-<li class="toclevel-2 tocsection-25"><a href="#Setting_the_veriT_Path"><span class="tocnumber">7.1</span> <span class="toctext">Setting the veriT Path</span></a></li>
-<li class="toclevel-2 tocsection-26"><a href="#Setting_the_Translation_Directory_Path"><span class="tocnumber">7.2</span> <span class="toctext">Setting the Translation Directory Path</span></a></li>
-<li class="toclevel-2 tocsection-27"><a href="#Restoring_Default_Translation_Settings"><span class="tocnumber">7.3</span> <span class="toctext">Restoring Default Translation Settings</span></a></li>
+<li class="toclevel-2 tocsection-25"><a href="#Setting_the_Translation_Directory_Path"><span class="tocnumber">7.1</span> <span class="toctext">Setting the Translation Directory Path</span></a></li>
+<li class="toclevel-2 tocsection-26"><a href="#Setting_the_veriT_Path"><span class="tocnumber">7.2</span> <span class="toctext">Setting the veriT Path</span></a></li>
+<li class="toclevel-2 tocsection-27"><a href="#Setting_the_SMT_auto_tactic_timeout"><span class="tocnumber">7.3</span> <span class="toctext">Setting the SMT auto tactic timeout</span></a></li>
+<li class="toclevel-2 tocsection-28"><a href="#Restoring_Default_Translation_Settings"><span class="tocnumber">7.4</span> <span class="toctext">Restoring Default Translation Settings</span></a></li>
 </ul>
 </li>
-<li class="toclevel-1 tocsection-28"><a href="#SMT_Auto-Tactic_Profile"><span class="tocnumber">8</span> <span class="toctext">SMT Auto-Tactic Profile</span></a>
+<li class="toclevel-1 tocsection-29"><a href="#SMT_Auto-Tactic_Profile"><span class="tocnumber">8</span> <span class="toctext">SMT Auto-Tactic Profile</span></a>
 <ul>
-<li class="toclevel-2 tocsection-29"><a href="#Creating_a_New_SMT_Auto-Tactic_Profile"><span class="tocnumber">8.1</span> <span class="toctext">Creating a New SMT Auto-Tactic Profile</span></a></li>
-<li class="toclevel-2 tocsection-30"><a href="#Selecting_an_SMT_Auto-Tactic_Profile"><span class="tocnumber">8.2</span> <span class="toctext">Selecting an SMT Auto-Tactic Profile</span></a></li>
+<li class="toclevel-2 tocsection-30"><a href="#Creating_a_New_SMT_Auto-Tactic_Profile"><span class="tocnumber">8.1</span> <span class="toctext">Creating a New SMT Auto-Tactic Profile</span></a></li>
+<li class="toclevel-2 tocsection-31"><a href="#Selecting_an_SMT_Auto-Tactic_Profile"><span class="tocnumber">8.2</span> <span class="toctext">Selecting an SMT Auto-Tactic Profile</span></a></li>
 </ul>
 </li>
-<li class="toclevel-1 tocsection-31"><a href="#Bugs_and_Features_Request"><span class="tocnumber">9</span> <span class="toctext">Bugs and Features Request</span></a></li>
-<li class="toclevel-1 tocsection-32"><a href="#Releases_Notes"><span class="tocnumber">10</span> <span class="toctext">Releases Notes</span></a></li>
+<li class="toclevel-1 tocsection-32"><a href="#Bugs_and_Features_Request"><span class="tocnumber">9</span> <span class="toctext">Bugs and Features Request</span></a></li>
+<li class="toclevel-1 tocsection-33"><a href="#Releases_Notes"><span class="tocnumber">10</span> <span class="toctext">Releases Notes</span></a></li>
 </ul>
 </td></tr></table>
 </td></tr></table>
@@ -277,22 +278,27 @@ To do this, just tick or untick the checkbox corresponding to a given configurat
 </p>
 <h2> <span class="mw-headline" id="Customizing_the_SMT-LIB_translation_settings"> Customizing the SMT-LIB translation settings </span></h2>
 <p>To display the SMT translation page, open the <i>Preferences</i> window: <i>Window &gt; Preferences</i> and select the <i>SMT</i> node.
-</p><p><a class="image" href="http://wiki.event-b.org/index.php/File:SMT_TranslationConfig.png"><img alt="SMT TranslationConfig.png" height="295" src="images/450px_smt_translationconfig.png" width="450" /></a>
-</p>
-<h3> <span class="mw-headline" id="Setting_the_veriT_Path"> Setting the veriT Path </span></h3>
-<p>Since version 0.8.0, the SMT solver veriT is bundled within the plug-in and its path used by default. However, you can change the path to another veriT binary if you want to use another version of it to produce SMT-LIB benchmarks.
-This information is required if you want to use veriT instead of ppTrans to translate Event-B sequents to SMT-LIB benchmarks.
-To give a different path, click the corresponding <i>Browse</i> button, and select the veriT binary to use.
+</p><p><a class="image" href="http://wiki.event-b.org/index.php/File:SMT_TranslationConfig.png"><img alt="SMT TranslationConfig.png" height="292" src="images/450px_smt_translationconfig.png" width="450" /></a>
 </p>
 <h3> <span class="mw-headline" id="Setting_the_Translation_Directory_Path"> Setting the Translation Directory Path </span></h3>
 <p>The plug-in needs to store some temporary files to interact with the external SMT Solver.<br />
 By default, this is set to the system temporary directory path.<br />
 You can change the directory to use for this purpose, by clicking the corresponding <i>Browse</i> button, and selecting the target directory.
 </p>
+<h3> <span class="mw-headline" id="Setting_the_veriT_Path"> Setting the veriT Path </span></h3>
+<p>Since version 0.8.0, the SMT solver veriT is bundled within the plug-in and its path used by default. However, you can change the path to another veriT binary if you want to use another version of it to produce SMT-LIB benchmarks.
+This information is required if you want to use veriT instead of ppTrans to translate Event-B sequents to SMT-LIB benchmarks.
+To give a different path, click the corresponding <i>Browse</i> button, and select the veriT binary to use.
+</p>
+<h3> <span class="mw-headline" id="Setting_the_SMT_auto_tactic_timeout"> Setting the SMT auto tactic timeout </span></h3>
+<p>Since version 1.1.0, the timeout of SMT solvers within "All enabled SMT configurations" can be customized.
+The timeout (in <i>milliseconds</i>) applies to each SMT solver individually. It is used in particular in the "Default Auto Tactic with SMT" profile.
+</p>
 <h3> <span class="mw-headline" id="Restoring_Default_Translation_Settings"> Restoring Default Translation Settings </span></h3>
 <p>You can restore the default translation settings values by clicking the <i>Restore Defaults</i> button.<br />
 The default veriT path is the path of the bundled veriT solver.<br />
-The default translation directory path is the system temporary directory path.
+The default translation directory path is the system temporary directory path.<br />
+The default timeout is 1000.
 </p>
 <h2> <span class="mw-headline" id="SMT_Auto-Tactic_Profile"> SMT Auto-Tactic Profile </span></h2>
 <p>One might want to set-up one or several configurations of SMT solver to be used automatically to discharge Event-b sequents in the Rodin platform.<br />
@@ -328,6 +334,10 @@ Open the <i>Auto/Post Tactic</i> preferences page: <i>Event-B &gt; Sequent Prove
 </li><li> Full set theory support in progress
 </li></ul>
 <h2> <span class="mw-headline" id="Releases_Notes"> Releases Notes </span></h2>
+<p><b>Version 1.1.0</b>
+</p>
+<ul><li> Preference for auto tactic timeout.
+</li></ul>
 <p><b>Version 1.0.0</b>
 </p>
 <ul><li> Cvc3 SMT solver bundled with the plug-in
@@ -374,15 +384,15 @@ Open the <i>Auto/Post Tactic</i> preferences page: <i>Event-B &gt; Sequent Prove
 
 <!-- 
 NewPP limit report
-Preprocessor node count: 137/1000000
+Preprocessor node count: 141/1000000
 Post-expand include size: 164/2097152 bytes
 Template argument size: 0/2097152 bytes
 Expensive parser function count: 0/100
 -->
 
-<!-- Saved in parser cache with key mediawiki_eventb:pcache:idhash:1173-0!*!0!!en!2!* and timestamp 20130530152004 -->
+<!-- Saved in parser cache with key mediawiki_eventb:pcache:idhash:1173-0!*!0!!en!2!* and timestamp 20131017132404 -->
 </div><div class="printfooter">
-Retrieved from "<a href="http://wiki.event-b.org/index.php?title=SMT_Solvers_Plug-in&amp;oldid=12934">http://wiki.event-b.org/index.php?title=SMT_Solvers_Plug-in&amp;oldid=12934</a>"</div>
+Retrieved from "<a href="http://wiki.event-b.org/index.php?title=SMT_Solvers_Plug-in&amp;oldid=13404">http://wiki.event-b.org/index.php?title=SMT_Solvers_Plug-in&amp;oldid=13404</a>"</div>
 		<div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="http://wiki.event-b.org/index.php/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="http://wiki.event-b.org/index.php/Category:Plugin" title="Category:Plugin">Plugin</a></li><li><a href="http://wiki.event-b.org/index.php/Category:User_documentation" title="Category:User documentation">User documentation</a></li></ul></div></div>		<!-- end content --><!-- ('div', {'class': 'visualClear'}) ('/div', {}) --></div></div></div>
     <div id="column-one">
       <!-- ('div', {'id': 'p-cactions', 'class': 'portlet'}) ('/div', {}) -->
@@ -399,8 +409,8 @@ Retrieved from "<a href="http://wiki.event-b.org/index.php?title=SMT_Solvers_Plu
 <!-- ('div', {'class': 'visualClear'}) ('/div', {}) -->
 <div id="footerHacked">
 	<ul id="f-list">
-		<li id="lastmod"> This page was last modified on 30 May 2013, at 16:20.</li>
-		<li id="viewcount">This page has been accessed 8,255 times.</li>
+		<li id="lastmod"> This page was last modified on 17 October 2013, at 14:24.</li>
+		<li id="viewcount">This page has been accessed 10,278 times.</li>
 		<li id="privacy"><a href="http://wiki.event-b.org/index.php/Event-B:Privacy_policy" title="Event-B:Privacy policy">Privacy policy</a></li>
 		<li id="about"><a href="http://wiki.event-b.org/index.php/Event-B:About" title="Event-B:About">About Event-B</a></li>
 		<li id="disclaimer"><a href="http://wiki.event-b.org/index.php/Event-B:General_disclaimer" title="Event-B:General disclaimer">Disclaimers</a></li>
@@ -411,4 +421,4 @@ Retrieved from "<a href="http://wiki.event-b.org/index.php?title=SMT_Solvers_Plu
 mw.loader.load(["mediawiki.user","mediawiki.page.ready"], null, true);
 }</script>
 <script src="http://wiki.event-b.org/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=monobook&amp;*"></script>
-<!-- Served in 0.235 secs. --><br /></body></html>
+<!-- Served in 0.244 secs. --><br /></body></html>

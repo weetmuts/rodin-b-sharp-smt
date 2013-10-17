@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 <toc label="SMT Solvers Plug-in">
+ <topic label="Introduction" href="html/smt_solvers_plug_in.html#Introduction">
+ </topic>
+ <topic label="Installation" href="html/smt_solvers_plug_in.html#Installation">
+  <topic label="Installing the Rodin Platform" href="html/smt_solvers_plug_in.html#Installing_the_Rodin_Platform">
+  </topic>
+  <topic label="Installing the SMT Solvers Plug-in" href="html/smt_solvers_plug_in.html#Installing_the_SMT_Solvers_Plug-in">
+  </topic>
+ </topic>
+ <topic label="Usage" href="html/smt_solvers_plug_in.html#Usage">
+  <topic label="Discharging a Sequent" href="html/smt_solvers_plug_in.html#Discharging_a_Sequent">
+  </topic>
+ </topic>
+ <topic label="Installing additional SMT solvers" href="html/smt_solvers_plug_in.html#Installing_additional_SMT_solvers">
+  <topic label="Installing veriT" href="html/smt_solvers_plug_in.html#Installing_veriT">
+  </topic>
+  <topic label="Installing Alt-Ergo" href="html/smt_solvers_plug_in.html#Installing_Alt-Ergo">
+  </topic>
+  <topic label="Installing CVC3" href="html/smt_solvers_plug_in.html#Installing_CVC3">
+  </topic>
+  <topic label="Installing Z3" href="html/smt_solvers_plug_in.html#Installing_Z3">
+  </topic>
+ </topic>
+ <topic label="Connect added solvers to the Rodin Platform" href="html/smt_solvers_plug_in.html#Connect_added_solvers_to_the_Rodin_Platform">
+  <topic label="Adding a new solver to Rodin" href="html/smt_solvers_plug_in.html#Adding_a_new_solver_to_Rodin">
+  </topic>
+  <topic label="Editing SMT Solver information" href="html/smt_solvers_plug_in.html#Editing_SMT_Solver_information">
+  </topic>
+  <topic label="Removing an SMT Solver information" href="html/smt_solvers_plug_in.html#Removing_an_SMT_Solver_information">
+  </topic>
+  <topic label="Restoring Default Solvers" href="html/smt_solvers_plug_in.html#Restoring_Default_Solvers">
+  </topic>
+ </topic>
+ <topic label="Customizing SMT Solvers Configurations" href="html/smt_solvers_plug_in.html#Customizing_SMT_Solvers_Configurations">
+  <topic label="Adding a New Solver Configuration" href="html/smt_solvers_plug_in.html#Adding_a_New_Solver_Configuration">
+  </topic>
+  <topic label="Enabling/Disabling a Solver Configuration" href="html/smt_solvers_plug_in.html#Enabling.2FDisabling_a_Solver_Configuration">
+  </topic>
+  <topic label="Editing a Solver Configuration" href="html/smt_solvers_plug_in.html#Editing_a_Solver_Configuration">
+  </topic>
+  <topic label="Removing a Solver Configuration" href="html/smt_solvers_plug_in.html#Removing_a_Solver_Configuration">
+  </topic>
+  <topic label="Duplicating a Solver Configuration" href="html/smt_solvers_plug_in.html#Duplicating_a_Solver_Configuration">
+  </topic>
+  <topic label="Restoring Default Solvers Configurations" href="html/smt_solvers_plug_in.html#Restoring_Default_Solvers_Configurations">
+  </topic>
+ </topic>
+ <topic label="Customizing the SMT-LIB translation settings" href="html/smt_solvers_plug_in.html#Customizing_the_SMT-LIB_translation_settings">
+  <topic label="Setting the Translation Directory Path" href="html/smt_solvers_plug_in.html#Setting_the_Translation_Directory_Path">
+  </topic>
+  <topic label="Setting the veriT Path" href="html/smt_solvers_plug_in.html#Setting_the_veriT_Path">
+  </topic>
+  <topic label="Setting the SMT auto tactic timeout" href="html/smt_solvers_plug_in.html#Setting_the_SMT_auto_tactic_timeout">
+  </topic>
+  <topic label="Restoring Default Translation Settings" href="html/smt_solvers_plug_in.html#Restoring_Default_Translation_Settings">
+  </topic>
+ </topic>
+ <topic label="SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#SMT_Auto-Tactic_Profile">
+  <topic label="Creating a New SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#Creating_a_New_SMT_Auto-Tactic_Profile">
+  </topic>
+  <topic label="Selecting an SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#Selecting_an_SMT_Auto-Tactic_Profile">
+  </topic>
+ </topic>
+ <topic label="Bugs and Features Request" href="html/smt_solvers_plug_in.html#Bugs_and_Features_Request">
+ </topic>
+ <topic label="Releases Notes" href="html/smt_solvers_plug_in.html#Releases_Notes">
+ </topic>
 </toc>

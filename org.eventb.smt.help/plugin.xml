@@ -7,9 +7,5 @@
             file="html/smt_solvers_plug_in.xml"
             primary="true">
       </toc>
-      <toc
-            file="html/smt_solvers_plug_in_developer_support.xml"
-            primary="true">
-      </toc>
-   </extension>
+   </extension> 
 </plugin>
