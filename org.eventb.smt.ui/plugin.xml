@@ -17,17 +17,11 @@
    </extension>
    <extension
          point="org.eventb.ui.proofTactics">
-      <tactic
-            icon="icons/SMT.GIF"
-            id="org.eventb.smt.provers.ui.smttactic"
-            interrupt="true"
-            name="%SMTtactic.name"
-            priority="0"
-            skipPostTactic="false"
-            tacticProvider="org.eventb.smt.ui.internal.provers.SMTTacticProvider"
-            target="global"
-            toolbar="org.eventb.ui.sequentToolbar"
-            tooltip="%SMTtactic.tooltip">
-      </tactic>
+      <dynamic_dropdown
+            id="org.eventb.smt.ui.SMTDynDropdown"
+            name="%SMTdynamic_dropdown.name"
+            tacticProvider="org.eventb.smt.ui.internal.provers.SMTUIDynTacticProvider"
+            toolbar="org.eventb.ui.sequentToolbar">
+      </dynamic_dropdown>
    </extension>
 </plugin>
