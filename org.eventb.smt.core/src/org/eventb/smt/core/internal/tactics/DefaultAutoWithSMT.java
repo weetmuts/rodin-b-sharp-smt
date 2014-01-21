@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Systerel and others.
+ * Copyright (c) 2013, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eventb.core.pm.ITacticProfileContribution;
 import org.eventb.core.preferences.autotactics.IAutoPostTacticManager;
 import org.eventb.core.seqprover.IAutoTacticRegistry;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
@@ -35,6 +37,15 @@ import org.eventb.core.seqprover.autoTacticPreference.IAutoTacticPreference;
  * @author Laurent Voisin
  */
 public class DefaultAutoWithSMT {
+	
+	public static class Contribution implements ITacticProfileContribution {
+
+		@Override
+		public ITacticDescriptor create() throws CoreException {
+			return getTacticDescriptor();
+		}
+		
+	}
 
 	/**
 	 * Returns a new tactic descriptor that integrates enabled SMT solvers and

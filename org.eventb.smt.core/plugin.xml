@@ -55,4 +55,11 @@
             name="%SMTAuto.name">
       </autoTactic>
    </extension>
+   <extension
+         point="org.eventb.core.tacticProfiles">
+      <tacticProfile
+            class="org.eventb.smt.core.internal.tactics.DefaultAutoWithSMT$Contribution"
+            name="Default Auto Tactic with SMT">
+      </tacticProfile>
+   </extension>
 </plugin>
