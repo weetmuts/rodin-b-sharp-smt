@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,12 +53,12 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	private void testTranslateGoalPP(final ITypeEnvironment te,
 			final String inputGoal, final String expectedFormula) {
 
-		final Predicate goalPredicate = parse(inputGoal, te);
+		final Predicate goalPredicate = parse(inputGoal, te.makeBuilder());
 
 		assertTypeChecked(goalPredicate);
 
 		final ISimpleSequent sequent = make((List<Predicate>) null,
-				goalPredicate, ff);
+				goalPredicate, goalPredicate.getFactory());
 
 		final SMTThroughPP translator = new SMTThroughPP(V2_0);
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
@@ -70,9 +70,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	private void testContainsAssumptionsPP(final ITypeEnvironment te,
 			final String inputGoal, final List<String> expectedAssumptions) {
 
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate goal = parse(inputGoal, te.makeBuilder());
 
-		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
+		final ISimpleSequent sequent = make((List<Predicate>) null, goal,
+				goal.getFactory());
 
 		assertTypeChecked(goal);
 
@@ -120,9 +121,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	protected static SMTSignature translateTypeEnvironment(
 			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
-		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv.makeBuilder());
 
-		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred, ff);
+		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred,
+				ppPred.getFactory());
 
 		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
@@ -148,9 +150,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	 */
 	private static void testTranslationV2_0(final ITypeEnvironment iTypeEnv,
 			final String ppPredStr, final String expectedSMTNode) {
-		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv.makeBuilder());
 
-		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred, ff);
+		final ISimpleSequent sequent = make((List<Predicate>) null, ppPred,
+				ppPred.getFactory());
 
 		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
@@ -168,8 +171,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	private static void testTranslationV2_0(final Predicate ppPred,
 			final String expectedSMTNode, final String solver) {
 		final StringBuilder sb = new StringBuilder();
-		SMTThroughPP.translate(ppPred, V2_0, ff).toString(sb, -1,
-				false);
+		SMTThroughPP.translate(ppPred, V2_0, ppPred.getFactory()).toString(sb,
+				-1, false);
 		final String actualSMTNode = sb.toString();
 		if (!expectedSMTNode.equals(actualSMTNode)) {
 			System.out.println(translationMessage(ppPred, actualSMTNode));
@@ -265,7 +268,6 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	@Test
 	public void testQuantifiers() {
 		final ITypeEnvironment te = mTypeEnvironment("RR", "r ↔ s");
-		te.addAll(defaultTe);
 
 		/**
 		 * forall
@@ -413,8 +415,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testPredIn() {
-		final ITypeEnvironment te = mTypeEnvironment("A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
-		te.addAll(defaultTe);
+		final ITypeEnvironment te = mTypeEnvironment(defaultTe, //
+				"A", "ℙ(ℤ)", "AB", "ℤ ↔ ℤ");
 
 		testTranslationV2_0Default("a ∈ A", "(A a)");
 		testTranslationV2_0(te, "a↦b ∈ AB", "(AB a b)");
@@ -428,9 +430,8 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testPredInInt() {
-		final ITypeEnvironment te = mTypeEnvironment("int", "S", "SPZ",
-				"S ↔ ℙ(ℤ)", "AZ", "ℤ ↔ ℙ(ℤ)");
-		te.addAll(defaultTe);
+		final ITypeEnvironment te = mTypeEnvironment(defaultTe, //
+				"int", "S", "SPZ", "S ↔ ℙ(ℤ)", "AZ", "ℤ ↔ ℙ(ℤ)");
 
 		/**
 		 * Through these unit tests, the integer axiom is not generated. That's

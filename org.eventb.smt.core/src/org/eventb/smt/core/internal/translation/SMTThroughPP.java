@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Systerel and others.
+ * Copyright (c) 2010, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package org.eventb.smt.core.internal.translation;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.simplify;
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
-import static org.eventb.pptrans.Translator.reduceToPredicateCalulus;
+import static org.eventb.pptrans.Translator.reduceToPredicateCalculus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
@@ -285,7 +285,7 @@ public class SMTThroughPP extends Translator {
 	private static ISimpleSequent externalTransformations(
 			final ISimpleSequent sequent) {
 		ISimpleSequent simpleSequent = decomposeIdentifiers(sequent);
-		simpleSequent = reduceToPredicateCalulus(simpleSequent,
+		simpleSequent = reduceToPredicateCalculus(simpleSequent,
 				expandSetEquality);
 		return simplify(simpleSequent,
 				SimpleSequents.SimplificationOption.aggressiveSimplification);

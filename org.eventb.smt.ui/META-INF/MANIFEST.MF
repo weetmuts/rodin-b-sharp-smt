@@ -5,7 +5,13 @@ Bundle-SymbolicName: org.eventb.smt.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eventb.ui,
- org.eventb.smt.core
+ org.eventb.smt.core,
+ org.eclipse.jface,
+ org.eventb.core,
+ org.eventb.core.seqprover,
+ org.eventb.core.ast,
+ org.eclipse.core.runtime,
+ org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
 Bundle-Activator: org.eventb.smt.ui.internal.SMTProversUI

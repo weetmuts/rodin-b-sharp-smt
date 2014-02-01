@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.eventb.smt.core.tests
 Bundle-Localization: plugin
 Require-Bundle: org.junit,
  org.eventb.smt.core,
+ org.eclipse.core.runtime,
  org.eventb.core.seqprover,
+ org.eventb.core.ast,
  org.eventb.pptrans,
  org.eventb.core.seqprover.tests,
  org.eventb.smt.verit,

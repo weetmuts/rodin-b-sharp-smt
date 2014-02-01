@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel and others.
+ * Copyright (c) 2010, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests;
 
-import static org.eventb.core.ast.LanguageVersion.V2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +24,7 @@ import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.IParseResult;
 import org.eventb.core.ast.ITypeCheckResult;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -39,17 +39,27 @@ import org.eventb.smt.core.internal.translation.Translator;
 
 public abstract class AbstractTests {
 
-	protected static final FormulaFactory ff = FormulaFactory.getDefault();
-
 	/**
-	 * Builds an Event-B type environment with given combined symbols
+	 * Builds an Event-B type environment with given combined symbols, using
+	 * the default formula factory.
 	 */
 	protected static ITypeEnvironment mTypeEnvironment(final String... strs) {
+		final FormulaFactory fac = FormulaFactory.getDefault();
+		return mTypeEnvironment(fac.makeTypeEnvironment(), strs);
+	}
+
+	/**
+	 * Builds an Event-B type environment with given combined symbols, based
+	 * on the given type environment (which is not changed).
+	 */
+	protected static ITypeEnvironment mTypeEnvironment(ITypeEnvironment base,
+			String... strs) {
 		assert (strs.length & 1) == 0;
-		final ITypeEnvironment te = ff.makeTypeEnvironment();
+		final ITypeEnvironmentBuilder te = base.makeBuilder();
+		final FormulaFactory fac = base.getFormulaFactory();
 		for (int i = 0; i < strs.length; i += 2) {
 			final String name = strs[i];
-			final IParseResult parseResult = ff.parseType(strs[i + 1], V2);
+			final IParseResult parseResult = fac.parseType(strs[i + 1]);
 			assertFalse(parseResult.hasProblem());
 			final Type type = parseResult.getParsedType();
 			te.addName(name, type);
@@ -62,9 +72,9 @@ public abstract class AbstractTests {
 	 * instance
 	 */
 	public static Predicate parse(final String predicate,
-			final ITypeEnvironment te) {
+			final ITypeEnvironmentBuilder te) {
 		final IParseResult parseResult = te.getFormulaFactory().parsePredicate(
-				predicate, V2, null);
+				predicate, null);
 		assertFalse("Parse error for: " + predicate + "\nProblems: "
 				+ parseResult.getProblems(), parseResult.hasProblem());
 		final Predicate parsedPredicate = parseResult.getParsedPredicate();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -189,7 +190,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
-				parsedGoal, ff);
+				parsedGoal, parsedGoal.getFactory());
 
 		final SMTProverCall smtProverCall = callSolver(lemmaName, sequent,
 				debugBuilder);
@@ -306,7 +307,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
-				parsedGoal, ff);
+				parsedGoal, parsedGoal.getFactory());
 
 		// FIXME should not be PP because could this is used by veriT tests
 		final SMTThroughPP translator = new SMTThroughPP(
@@ -345,12 +346,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final boolean expectedTrivial, final boolean expectedSolverResult,
 			final StringBuilder debugBuilder) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
 		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, te));
+			hypotheses.add(parse(hyp, teb));
 		}
 
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate goal = parse(inputGoal, teb);
 
 		doTest(lemmaName, hypotheses, goal, expectedTrivial,
 				expectedSolverResult, debugBuilder);
@@ -383,14 +384,15 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final StringBuilder debugBuilder = new StringBuilder();
 
 		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
 		for (final String hyp : inputHyps) {
-			parsedHypotheses.add(parse(hyp, te));
+			parsedHypotheses.add(parse(hyp, teb));
 		}
-		final Predicate parsedGoal = parse(inputGoal, te);
+		final Predicate parsedGoal = parse(inputGoal, teb);
 
 		final List<Predicate> expectedHypotheses = new ArrayList<Predicate>();
 		for (final String expectedHyp : expectedUnsatCoreStr) {
-			expectedHypotheses.add(parse(expectedHyp, te));
+			expectedHypotheses.add(parse(expectedHyp, teb));
 		}
 
 		// Type check goal and hypotheses
@@ -406,7 +408,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				.getSmtlibVersion();
 
 		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
-				parsedGoal, ff);
+				parsedGoal, parsedGoal.getFactory());
 		final SMTProverCallTestResult iter2Result = smtProverCallTest(
 				"Unsat core extraction", lemmaName, sequent, te,
 				expectedSolverResult, expectedHypotheses, expectedGoalNeed,
@@ -426,12 +428,12 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final ITypeEnvironment te, final Set<String> expectedFuns,
 			final Set<String> expectedPreds, final Set<String> expectedSorts) {
 		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
 		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, te));
+			hypotheses.add(parse(hyp, teb));
 		}
 
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate goal = parse(inputGoal, teb);
 
 		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
 				expectedSorts);

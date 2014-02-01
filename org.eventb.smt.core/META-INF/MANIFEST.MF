@@ -8,6 +8,7 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eventb.core.seqprover,
+ org.eventb.core.ast,
  org.eventb.pptrans,
  org.eventb.core
 Bundle-ActivationPolicy: lazy

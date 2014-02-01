@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,13 +36,13 @@ import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0Verit;
 import org.eventb.smt.core.internal.ast.macros.SMTMacro;
-import org.eventb.smt.core.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV2_0.SMTVeriTOperatorV2_0;
+import org.eventb.smt.core.internal.ast.macros.SMTPredefinedMacro;
 import org.eventb.smt.core.internal.ast.theories.Logic;
+import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Theory;
 import org.eventb.smt.core.internal.ast.theories.TheoryV2_0;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
-import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
 import org.eventb.smt.tests.AbstractTests;
 import org.junit.Ignore;
@@ -125,7 +125,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 			final String predStr, final String expectedSMTNode,
 			final String failMessage, final String solver, final Logic logic)
 			throws AssertionError {
-		final Predicate pred = parse(predStr, iTypeEnv);
+		final Predicate pred = parse(predStr, iTypeEnv.makeBuilder());
 
 		final List<Predicate> hypothesis = new ArrayList<Predicate>();
 		hypothesis.add(pred);
@@ -136,12 +136,13 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 	private void testContainsNotPredefinedMacros(final ITypeEnvironment te,
 			final String inputGoal, final Map<String, String> expectedMacros) {
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate goal = parse(inputGoal, te.makeBuilder());
 
 		// Type check goal and hypotheses
 		assertTypeChecked(goal);
 
-		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
+		final ISimpleSequent sequent = make((List<Predicate>) null, goal,
+				goal.getFactory());
 
 		final SMTThroughVeriT translator = new SMTThroughVeriT(V2_0);
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
@@ -184,8 +185,8 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, V2_0, ff).toString(
-				actualSMTNode, -1, false);
+		SMTThroughVeriT.translate(logic, ppred, V2_0, ppred.getFactory())
+				.toString(actualSMTNode, -1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
 
@@ -200,11 +201,12 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	private void testContainsAssumptionsVeriT(final ITypeEnvironment te,
 			final String inputGoal, final List<String> expectedAssumptions) {
 
-		final Predicate goal = parse(inputGoal, te);
+		final Predicate goal = parse(inputGoal, te.makeBuilder());
 
 		assertTypeChecked(goal);
 
-		final ISimpleSequent sequent = make((List<Predicate>) null, goal, ff);
+		final ISimpleSequent sequent = make((List<Predicate>) null, goal,
+				goal.getFactory());
 
 		final SMTThroughVeriT translator = new SMTThroughVeriT(V2_0);
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
@@ -237,9 +239,9 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 	protected static SMTSignatureV2_0 translateTypeEnvironment(
 			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
-		final Predicate ppPred = parse(ppPredStr, iTypeEnv);
+		final Predicate ppPred = parse(ppPredStr, iTypeEnv.makeBuilder());
 		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
-				V2_0, ff);
+				V2_0, ppPred.getFactory());
 	}
 
 	@Test
@@ -701,11 +703,11 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		 * forall (multiple identifiers)
 		 */
 		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
-				"∀x,y·x∈s ∧ y∈s", defaultTe);
+				"∀x,y·x∈s ∧ y∈s", defaultTe.makeBuilder());
 		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
 		bids[1] = bids[0];
-		final Predicate p = ff.makeQuantifiedPredicate(FORALL, bids,
-				base.getPredicate(), null);
+		final Predicate p = base.getFactory().makeQuantifiedPredicate(FORALL,
+				bids, base.getPredicate(), null);
 		testTranslationV2_0Verit(p,
 				"(forall ((x R) (x0 R)) (and (in x s) (in x0 s)))",
 				"twice same decl", VERIT.toString());

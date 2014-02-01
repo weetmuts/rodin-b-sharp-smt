@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,9 +42,9 @@ public class LogicTestsWithPPV1_2 extends AbstractTests {
 
 	private static void testLogic(final ITypeEnvironment iTypeEnv,
 			final String ppPredStr, final Logic expectedSMTLogic) {
-		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv);
+		final Predicate goalPredicate = parse(ppPredStr, iTypeEnv.makeBuilder());
 		final ISimpleSequent sequent = make((List<Predicate>) null,
-				goalPredicate, ff);
+				goalPredicate, goalPredicate.getFactory());
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(sequent));
 

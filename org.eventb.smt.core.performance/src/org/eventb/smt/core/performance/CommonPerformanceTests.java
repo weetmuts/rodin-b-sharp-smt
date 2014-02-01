@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 Systerel and others.
+ * Copyright (c) 2012, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
@@ -102,16 +104,17 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			final boolean expectedSolverResult,
 			final List<String> expectedUnsatCoreStr,
 			final boolean expectedGoalNeed, final StringBuilder debugBuilder) {
-
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
+		final FormulaFactory fac = te.getFormulaFactory();
 		final List<Predicate> parsedHypotheses = new ArrayList<Predicate>();
 		for (final String hyp : inputHyps) {
-			parsedHypotheses.add(parse(hyp, te));
+			parsedHypotheses.add(parse(hyp, teb));
 		}
-		final Predicate parsedGoal = parse(inputGoal, te);
+		final Predicate parsedGoal = parse(inputGoal, teb);
 
 		final List<Predicate> expectedHypotheses = new ArrayList<Predicate>();
 		for (final String expectedHyp : expectedUnsatCoreStr) {
-			expectedHypotheses.add(parse(expectedHyp, te));
+			expectedHypotheses.add(parse(expectedHyp, teb));
 		}
 
 		// Type check goal and hypotheses
@@ -132,12 +135,12 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		 */
 		debugBuilder.append("Iter 1\n");
 		final Predicate goalXML = (expectedGoalNeed ? parsedGoal : parse("⊥",
-				te));
+				teb));
 
 		ISimpleSequent sequent = SimpleSequents.make(expectedHypotheses,
-				goalXML, ff);
+				goalXML, fac);
 		final SMTProverCallTestResult iter1Result = smtProverCallTest("Iter 1",
-				lemmaName, sequent, te, expectedSolverResult,
+				lemmaName, sequent, teb, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter1ErrorBuffer = iter1Result.getErrorBuffer().toString();
 		if (!iter1ErrorBuffer.isEmpty()) {
@@ -154,9 +157,9 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		 * one
 		 */
 		debugBuilder.append("Iter 2\n");
-		sequent = SimpleSequents.make(parsedHypotheses, parsedGoal, ff);
+		sequent = SimpleSequents.make(parsedHypotheses, parsedGoal, fac);
 		final SMTProverCallTestResult iter2Result = smtProverCallTest("Iter 2",
-				lemmaName, sequent, te, expectedSolverResult,
+				lemmaName, sequent, teb, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter2ErrorBuffer = iter2Result.getErrorBuffer().toString();
 		if (!iter2ErrorBuffer.isEmpty()) {
@@ -182,10 +185,10 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			neededHypotheses = new ArrayList<Predicate>();
 		}
 		final Predicate goalSolver = (iter2Result.getSmtProverCall()
-				.isGoalNeeded() ? parsedGoal : parse("⊥", te));
-		sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
+				.isGoalNeeded() ? parsedGoal : parse("⊥", teb));
+		sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 		final SMTProverCallTestResult iter3Result = smtProverCallTest("Iter 3",
-				lemmaName, sequent, te, expectedSolverResult,
+				lemmaName, sequent, teb, expectedSolverResult,
 				expectedHypotheses, expectedGoalNeed, debugBuilder);
 		final String iter3ErrorBuffer = iter3Result.getErrorBuffer().toString();
 		if (!iter3ErrorBuffer.isEmpty()) {
@@ -212,7 +215,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		final String solverName = configuration.getSolverName();
 		if (!solverName.equals(LAST_Z3.solverName())) {
 			configuration = LAST_Z3.config(testedTranslationApproach, V2_0);
-			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
 					"z3 unsat-core checking", lemmaName, sequent,
 					expectedSolverResult, debugBuilder);
@@ -232,7 +235,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		}
 		if (!solverName.equals(LAST_CVC3.solverName())) {
 			configuration = LAST_CVC3.config(testedTranslationApproach, V2_0);
-			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
 					"cvc3 unsat-core checking", lemmaName, sequent,
 					expectedSolverResult, debugBuilder);
@@ -252,7 +255,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		}
 		if (!solverName.equals(LAST_ALTERGO.solverName())) {
 			configuration = LAST_ALTERGO.config(testedTranslationApproach, V2_0);
-			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
 					"alt-ergo unsat-core checking", lemmaName, sequent,
 					expectedSolverResult, debugBuilder);
@@ -272,7 +275,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		}
 		if (!solverName.equals(LAST_VERIT.solverName())) {
 			configuration = LAST_VERIT.config(testedTranslationApproach, V2_0);
-			sequent = SimpleSequents.make(neededHypotheses, goalSolver, ff);
+			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
 					"veriT unsat-core checking", lemmaName, sequent,
 					expectedSolverResult, debugBuilder);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.FreeIdentifier;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.Type;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
@@ -196,19 +197,20 @@ public class GathererTests extends AbstractTests {
 			final String[] hypotheses, final String goal) {
 
 		final List<Predicate> preds = new ArrayList<Predicate>();
+		final ITypeEnvironmentBuilder teb = typenv.makeBuilder();
 		for (final String hypothesis : hypotheses) {
-			final Predicate h = parse(hypothesis, typenv);
+			final Predicate h = parse(hypothesis, teb);
 			preds.add(h);
 		}
-		final Predicate goalP = parse(goal, typenv);
+		final Predicate goalP = parse(goal, teb);
 
-		final ISimpleSequent sequent = make(preds, goalP, ff);
+		final ISimpleSequent sequent = make(preds, goalP, goalP.getFactory());
 
 		assertTrue("Sequent is not in the PP sub-language.",
 				Translator.isInGoal(sequent));
 
 		final Set<FreeIdentifier> expectedSpecialMSPreds = getExpectedIdents(
-				typenv, expectedSpecialMSPredImages);
+				teb, expectedSpecialMSPredImages);
 
 		final Gatherer actual = Gatherer.gatherFrom(sequent);
 		checkResult(atomicBoolExp, atomicIntegerExp, boolTheory, truePredicate,

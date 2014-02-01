@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,9 @@ import java.util.Set;
 
 import org.eventb.core.ast.BoundIdentDecl;
 import org.eventb.core.ast.Formula;
+import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
 import org.eventb.smt.core.SMTLIBVersion;
@@ -459,14 +461,16 @@ public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
 				"∀x·x∈s", //
 				"∀x,y·x∈s∧y∈s");
 
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
+		final FormulaFactory fac = te.getFormulaFactory();
 		final QuantifiedPredicate base = (QuantifiedPredicate) parse(
-				"∀x,y·x∈s ∧ y∈s", te);
+				"∀x,y·x∈s ∧ y∈s", teb);
 		final BoundIdentDecl[] bids = base.getBoundIdentDecls();
 		bids[1] = bids[0];
-		final Predicate p = ff.makeQuantifiedPredicate(Formula.FORALL, bids,
+		final Predicate p = fac.makeQuantifiedPredicate(Formula.FORALL, bids,
 				base.getPredicate(), null);
 
-		doTest("rule17_forall", hyps, p.toString(), te, VALID);
+		doTest("rule17_forall", hyps, p.toString(), teb, VALID);
 
 	}
 

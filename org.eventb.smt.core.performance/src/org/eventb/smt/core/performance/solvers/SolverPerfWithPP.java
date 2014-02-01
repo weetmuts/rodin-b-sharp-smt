@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -400,13 +400,12 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 */
 	@Test(timeout = 3000)
 	public void testSets5() {
-		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ ↔ ℙ(ℤ)");
-		te.addAll(arith_te);
+		final ITypeEnvironment te = mTypeEnvironment(arith_te, "a", "ℤ ↔ ℙ(ℤ)");
 
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("a = {x ↦ {y}}");
 
-		doTest("sets5", hyps, "a ∈ {x} → {{y}}", arith_te, VALID);
+		doTest("sets5", hyps, "a ∈ {x} → {{y}}", te, VALID);
 	}
 
 	/**

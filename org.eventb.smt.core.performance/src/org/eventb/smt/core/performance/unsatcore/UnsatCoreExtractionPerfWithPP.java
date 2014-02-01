@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,15 +41,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 			throws IllegalArgumentException {
 		doTest(lemmaName, inputHyps, inputGoal, te, expectedTrivial,
 				expectedSolverResult);
-	}
-
-	protected void doTest(final String lemmaName, final List<String> inputHyps,
-			final String inputGoal, final ITypeEnvironment te,
-			final boolean expectedSolverResult,
-			final List<String> expectedUnsatCore, final boolean expectedGoalNeed)
-			throws IllegalArgumentException {
-		doTest(lemmaName, inputHyps, inputGoal, te, expectedSolverResult,
-				expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
 	}
 
 	@Test(timeout = 3000)
@@ -384,9 +375,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	@Test(timeout = 3000)
 	// z3 fails (mbqi is disabled)
 	public void testSets5UnsatCore() {
-		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ ↔ ℙ(ℤ)");
-		te.addAll(arith_te);
-
 		final List<String> hyps = Arrays.asList("a = {x ↦ {y}}");
 
 		doTest("sets5UnsatCore", hyps, "a ∈ {x} → {{y}}", arith_te, VALID,
