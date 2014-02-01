@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,9 +48,13 @@ public class WriterTests extends AbstractSMTTests {
 			StringWriter writer1 = new StringWriter();
 			InputStreamReader streamReader1 = new InputStreamReader(fis1);
 			BufferedReader buffer1 = new BufferedReader(streamReader1);
-			String line = "";
-			while ((line = buffer1.readLine()) != null)
-				writer1.write(line + "\n");
+			try {
+				String line = "";
+				while ((line = buffer1.readLine()) != null)
+					writer1.write(line + "\n");
+			} finally {
+				buffer1.close();
+			}
 
 			// Read the expected file
 			URL expected = BenchmarkTests.class.getResource("linear_arith/"
@@ -59,9 +63,13 @@ public class WriterTests extends AbstractSMTTests {
 			InputStreamReader streamReader2 = new InputStreamReader(expected
 					.openStream());
 			BufferedReader buffer2 = new BufferedReader(streamReader2);
-			line = "";
-			while ((line = buffer2.readLine()) != null)
-				writer2.write(line + "\n");
+			try {
+				String line = "";
+				while ((line = buffer2.readLine()) != null)
+					writer2.write(line + "\n");
+			} finally {
+				buffer1.close();
+			}
 
 			assertEquals(writer1.toString(), writer2.toString());
 		}

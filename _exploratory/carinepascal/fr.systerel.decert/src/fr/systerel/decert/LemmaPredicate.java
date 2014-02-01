@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package fr.systerel.decert;
 
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.IParseResult;
-import org.eventb.core.ast.LanguageVersion;
 import org.eventb.core.ast.Predicate;
 
 /**
@@ -49,8 +48,7 @@ public class LemmaPredicate {
 	public LemmaPredicate(final FormulaFactory ff, final String content,
 			final boolean required) throws ParseException {
 
-		IParseResult result = ff.parsePredicate(content,
-				LanguageVersion.V2, null);
+		IParseResult result = ff.parsePredicate(content, null);
 		if (!result.hasProblem())
 			this.content = result.getParsedPredicate();
 		else {

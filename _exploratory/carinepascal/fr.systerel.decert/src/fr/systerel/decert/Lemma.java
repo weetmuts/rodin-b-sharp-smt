@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.ITypeCheckResult;
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 
 /**
  * This class is the entry-point for the construction of lemmas.
@@ -45,7 +46,7 @@ public final class Lemma {
 	private final List<Theory> theories;
 
 	/** The type environment for this lemma. */
-	private final ITypeEnvironment environment;
+	private final ITypeEnvironmentBuilder environment;
 
 	/** The hypotheses introduced in this lemma. */
 	private final List<LemmaPredicate> hypotheses;

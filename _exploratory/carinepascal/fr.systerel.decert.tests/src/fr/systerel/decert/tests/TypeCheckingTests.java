@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public class TypeCheckingTests extends AbstractTests {
 		File dir = new File(XMLFolder);
 		if (dir.isDirectory()) {
 			File[] files = dir.listFiles(new FilenameFilter() {
+				@Override
 				public boolean accept(File file, String name) {
 					return (name.endsWith(".xml"));
 				}
@@ -50,9 +51,9 @@ public class TypeCheckingTests extends AbstractTests {
 
 			for (int i = 0; i < files.length; i++) {
 				String message = "File " + files[i].getAbsolutePath() + "\n";
-				URL XMLFile = LemmaParser.setDoctype(files[i].toURL(), DTDFile
-						.toURL());
-				Document document = LemmaParser.load(XMLFile, DTDFile.toURL());
+				URL XMLFile = LemmaParser.setDoctype(files[i].toURI().toURL(), DTDFile
+						.toURI().toURL());
+				Document document = LemmaParser.load(XMLFile, DTDFile.toURI().toURL());
 				List<Lemma> lemmas = LemmaParser.parse(document);
 				for (Lemma lemma : lemmas) {
 					List<Result> results = lemma.typeCheck();

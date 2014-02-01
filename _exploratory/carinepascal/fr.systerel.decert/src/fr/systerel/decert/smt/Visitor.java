@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,6 +112,7 @@ public class Visitor implements ISimpleVisitor {
 		return nodes.toArray(new SMTFormula[nodes.size()]);
 	}
 
+	@Override
 	public void visitAssociativeExpression(AssociativeExpression expression) {
 		SMTTerm[] children = toTermArray(convert(expression.getChildren()));
 		switch (expression.getTag()) {
@@ -127,6 +128,7 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitAssociativePredicate(AssociativePredicate predicate) {
 		SMTFormula[] children = toFormulaArray(convert(predicate.getChildren()));
 		switch (predicate.getTag()) {
@@ -142,6 +144,7 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitAtomicExpression(AtomicExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.TRUE:
@@ -163,18 +166,22 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBecomesEqualTo(BecomesEqualTo assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBecomesMemberOf(BecomesMemberOf assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBecomesSuchThat(BecomesSuchThat assignment) {
 		assert false;
 	}
 
+	@Override
 	public void visitBinaryExpression(BinaryExpression expression) {
 		SMTTerm[] children = toTermArray(convert(expression.getLeft(),
 				expression.getRight()));
@@ -197,6 +204,7 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBinaryPredicate(BinaryPredicate predicate) {
 		SMTFormula[] children = toFormulaArray(convert(predicate.getLeft(),
 				predicate.getRight()));
@@ -213,6 +221,7 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBoolExpression(BoolExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.KBOOL:
@@ -226,22 +235,27 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitBoundIdentDecl(BoundIdentDecl boundIdentDecl) {
 		assert false;
 	}
 
+	@Override
 	public void visitBoundIdentifier(BoundIdentifier expression) {
 		assert false;
 	}
 
+	@Override
 	public void visitFreeIdentifier(FreeIdentifier expression) {
 		stack.push(sf.makeIdentifier(expression.getName()));
 	}
 
+	@Override
 	public void visitIntegerLiteral(IntegerLiteral expression) {
 		stack.push(sf.makeNumeral(expression.getValue()));
 	}
 
+	@Override
 	public void visitLiteralPredicate(LiteralPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.BTRUE:
@@ -256,14 +270,17 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitQuantifiedExpression(QuantifiedExpression expression) {
 		assert false;
 	}
 
+	@Override
 	public void visitQuantifiedPredicate(QuantifiedPredicate predicate) {
 		assert false;
 	}
 
+	@Override
 	public void visitRelationalPredicate(RelationalPredicate predicate) {
 		SMTTerm[] children = null;
 		if (predicate.getTag() != Formula.IN)
@@ -341,14 +358,17 @@ public class Visitor implements ISimpleVisitor {
 					new SMTFormula[] { (SMTFormula) stack.pop() }));
 	}
 
+	@Override
 	public void visitSetExtension(SetExtension expression) {
 		// do nothing
 	}
 
+	@Override
 	public void visitSimplePredicate(SimplePredicate predicate) {
 		assert false;
 	}
 
+	@Override
 	public void visitUnaryExpression(UnaryExpression expression) {
 		switch (expression.getTag()) {
 		case Formula.UNMINUS:
@@ -361,6 +381,7 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitUnaryPredicate(UnaryPredicate predicate) {
 		switch (predicate.getTag()) {
 		case Formula.NOT:
@@ -373,14 +394,17 @@ public class Visitor implements ISimpleVisitor {
 		}
 	}
 
+	@Override
 	public void visitMultiplePredicate(MultiplePredicate predicate) {
 		assert false;
 	}
 	
+	@Override
 	public void visitExtendedExpression(ExtendedExpression expression) {
 		// Do nothing.
 	}
 	
+	@Override
 	public void visitExtendedPredicate(ExtendedPredicate perdicate) {
 		// Do nothing.
 	}

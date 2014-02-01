@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,20 +88,24 @@ public class LemmaParser {
 		try {
 			builder = factory.newDocumentBuilder();
 			builder.setErrorHandler(new ErrorHandler() {
+				@Override
 				public void fatalError(SAXParseException spe)
 						throws SAXException {
 					throw new SAXException(spe);
 				}
 
+				@Override
 				public void error(SAXParseException spe) throws SAXException {
 					throw new SAXException(spe);
 				}
 
+				@Override
 				public void warning(SAXParseException spe) throws SAXException {
 					throw new SAXException(spe);
 				}
 			});
 			builder.setEntityResolver(new EntityResolver() {
+				@Override
 				public InputSource resolveEntity(String publicId,
 						String systemId) throws SAXException {
 					try {
@@ -245,7 +249,7 @@ public class LemmaParser {
 		output.flush();
 		output.close();
 
-		return tmp.toURL();
+		return tmp.toURI().toURL();
 	}
 
 	/**
@@ -290,7 +294,7 @@ public class LemmaParser {
 		// Patches the XML file
 		URL XMLFile = null;
 		try {
-			XMLFile = resources.getXMLFile().toURL();
+			XMLFile = resources.getXMLFile().toURI().toURL();
 		} catch (MalformedURLException e) {
 			System.err
 					.println("A problem occurred when trying to load the XML file!");
@@ -299,7 +303,7 @@ public class LemmaParser {
 		}
 		URL DTDFile = null;
 		try {
-			DTDFile = resources.getDTDFile().toURL();
+			DTDFile = resources.getDTDFile().toURI().toURL();
 		} catch (MalformedURLException e) {
 			System.err
 					.println("A problem occurred when trying to load the DTD file!");

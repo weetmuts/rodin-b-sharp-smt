@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.net.URL;
 
-import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Type;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -100,7 +100,7 @@ public class ParserTests extends AbstractTests {
 		assertElements(lemma.getTheories(), Theory.NONLINEAR_ARITH);
 
 		Type type = ff.makeIntegerType();
-		ITypeEnvironment expTypenv = ff.makeTypeEnvironment();
+		ITypeEnvironmentBuilder expTypenv = ff.makeTypeEnvironment();
 		expTypenv.addName("n", type);
 		expTypenv.addName("x", type);
 		expTypenv.addName("y", type);

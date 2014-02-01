@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Systerel and others.
+ * Copyright (c) 2009, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.math.BigInteger;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.FreeIdentifier;
-import org.eventb.core.ast.LanguageVersion;
 import org.eventb.core.ast.Predicate;
 import org.junit.Test;
 
@@ -150,8 +149,8 @@ public class VisitorTests extends AbstractSMTTests {
 	@Test
 	public void testUnaryExpression() {
 		assertVisit(ff.makeUnaryExpression(Formula.UNMINUS, x, null), "(~ x)");
-		assertVisit(ff.parsePredicate("¬ a = −1",
-				LanguageVersion.V2, null).getParsedPredicate(), "(not (= a (~ 1)))");
+		assertVisit(ff.parsePredicate("¬ a = −1", null).getParsedPredicate(),
+				"(not (= a (~ 1)))");
 		
 	}
 
