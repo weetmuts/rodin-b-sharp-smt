@@ -13,7 +13,7 @@ package org.eventb.smt.core.perf.app.tactics;
 import static org.eventb.core.seqprover.SequentProver.getAutoTacticRegistry;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
+import org.eventb.core.seqprover.ITacticDescriptor;
 
 /**
  * Builds tactics for running some external prover. There is one sub-class for

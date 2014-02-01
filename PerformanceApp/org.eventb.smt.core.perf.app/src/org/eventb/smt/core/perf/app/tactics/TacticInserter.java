@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eventb.core.seqprover.IAutoTacticRegistry;
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
 import org.eventb.core.seqprover.ICombinedTacticDescriptor;
+import org.eventb.core.seqprover.ITacticDescriptor;
 
 /**
  * Inserts tactics for running an external prover within an auto-tactic.

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eventb.smt.core.perf.app.tactics;
 
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.IParameterSetting;
 import org.eventb.core.seqprover.IParameterizerDescriptor;
+import org.eventb.core.seqprover.ITacticDescriptor;
 
 /**
  * Builds simple tactics for running some external prover which is accessible

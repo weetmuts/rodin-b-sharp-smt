@@ -19,8 +19,8 @@ import org.eventb.core.IPSStatus;
 import org.eventb.core.pm.IProofAttempt;
 import org.eventb.core.pm.IProofComponent;
 import org.eventb.core.pm.IProofManager;
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ITactic;
+import org.eventb.core.seqprover.ITacticDescriptor;
 import org.rodinp.core.IRodinProject;
 import org.rodinp.core.RodinDBException;
 

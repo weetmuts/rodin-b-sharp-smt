@@ -10,7 +10,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eventb.smt.core,
  org.eventb.core.seqprover,
  org.eventb.core,
- com.clearsy.atelierb.provers.core
+ com.clearsy.atelierb.provers.core,
+ org.rodinp.core,
+ org.eclipse.core.resources
 Bundle-Localization: plugin
 Bundle-Activator: org.eventb.smt.core.perf.app.AppPlugin
 Bundle-ActivationPolicy: lazy

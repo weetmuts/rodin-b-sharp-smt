@@ -12,8 +12,8 @@ package org.eventb.smt.core.perf.app.tactics;
 
 import static java.util.Arrays.asList;
 
-import org.eventb.core.seqprover.IAutoTacticRegistry.ITacticDescriptor;
 import org.eventb.core.seqprover.ICombinatorDescriptor;
+import org.eventb.core.seqprover.ITacticDescriptor;
 
 /**
  * For running several external provers, one after the other.
