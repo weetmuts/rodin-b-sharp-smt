@@ -241,7 +241,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv.makeBuilder());
 		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
-				V2_0, ppPred.getFactory());
+				V2_0);
 	}
 
 	@Test

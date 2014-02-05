@@ -1340,11 +1340,11 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Predicate predicate,
-			final SMTLIBVersion smtlibVersion, final FormulaFactory ff) {
+			final SMTLIBVersion smtlibVersion) {
 		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, ff);
+				predicate, predicate.getFactory());
 		final Logic logic = translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.translate(predicate, IN_GOAL);
@@ -1408,8 +1408,7 @@ public class SMTThroughPP extends Translator {
 		case Formula.INTEGER:
 			SMTFunctionSymbol integerSet = signature.getLogic().getIntsSet();
 			if (integerSet == null) {
-				final String integerStr = FormulaFactory.getDefault()
-						.makeAtomicExpression(Formula.INTEGER, null).toString();
+				final String integerStr = expression.toString();
 				integerSet = (SMTFunctionSymbol) varMap.get(integerStr);
 				if (integerSet == null) {
 					// TODO throw exception

@@ -171,8 +171,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	private static void testTranslationV2_0(final Predicate ppPred,
 			final String expectedSMTNode, final String solver) {
 		final StringBuilder sb = new StringBuilder();
-		SMTThroughPP.translate(ppPred, V2_0, ppPred.getFactory()).toString(sb,
-				-1, false);
+		SMTThroughPP.translate(ppPred, V2_0).toString(sb, -1, false);
 		final String actualSMTNode = sb.toString();
 		if (!expectedSMTNode.equals(actualSMTNode)) {
 			System.out.println(translationMessage(ppPred, actualSMTNode));

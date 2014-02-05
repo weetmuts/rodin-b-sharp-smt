@@ -167,12 +167,11 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final Logic logic,
-			final Predicate predicate, final SMTLIBVersion smtlibVersion,
-			final FormulaFactory ff) {
+			final Predicate predicate, final SMTLIBVersion smtlibVersion) {
 		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
-				predicate, ff);
+				predicate, predicate.getFactory());
 		translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.getSignature();
