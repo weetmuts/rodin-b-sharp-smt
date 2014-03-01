@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.eventb.smt</groupId>
+	<artifactId>root</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tycho-version>0.19.0</tycho-version>
+		<maven-resources-plugin-version>2.6</maven-resources-plugin-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- TO BE CONFIGURED WHEN CALLING MAVEN USING OPTION -D -->
+		<rodinTargetSiteUrl>file://to/be/defined</rodinTargetSiteUrl>
+		<rodinSiteMirror>/to/be/defined</rodinSiteMirror>
+	</properties>
+
+	<modules>
+		<module>org.eventb.smt.core</module>
+
+		<module>org.eventb.smt.cvc3</module>
+		<module>org.eventb.smt.cvc3.linux</module>
+		<module>org.eventb.smt.cvc3.macosx</module>
+		<module>org.eventb.smt.cvc3.win32</module>
+
+		<module>org.eventb.smt.verit</module>
+		<module>org.eventb.smt.verit.linux</module>
+		<module>org.eventb.smt.verit.macosx</module>
+		<module>org.eventb.smt.verit.win32</module>
+
+		<module>org.eventb.smt.core.tests</module>
+
+		<module>org.eventb.smt.help</module>
+		<module>org.eventb.smt.ui</module>
+		<module>org.eventb.smt</module>
+		<module>org.eventb.smt-feature</module>
+		<module>org.eventb.smt.site</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- Define version of plugins used in other poms. -->
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-p2-extras-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+
+				<!-- Disable the resources and testResources goals -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-plugin-version}</version>
+					<executions>
+						<execution>
+							<id>default-resources</id>
+							<phase/>
+						</execution>
+						<execution>
+							<id>default-testResources</id>
+							<phase/>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>Rodin-platform</id>
+			<layout>p2</layout>
+			<url>${rodinTargetSiteUrl}</url>
+		</repository>
+	</repositories>
+
+</project>

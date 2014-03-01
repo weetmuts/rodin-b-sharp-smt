@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.eventb.smt">
+      <category name="Prover_Extensions"/>
+   </feature>
+   <category-def name="Prover_Extensions" label="Prover Extensions">
+      <description>
+         Tools for theorem proving.
+      </description>
+   </category-def>
+</site>
