@@ -59,7 +59,7 @@ public class SMTDynTacticProviderTests {
 	 */
 	private List<String> getDynamicTacticIds() {
 		final IAutoTacticRegistry registry = getAutoTacticRegistry();
-		final ITacticDescriptor[] descs = registry.getDynTactics();
+		final ITacticDescriptor[] descs = registry.getDynTacticRefs();
 		final List<String> result = new ArrayList<String>(descs.length);
 		for (ITacticDescriptor desc : descs) {
 			result.add(desc.getTacticID());
