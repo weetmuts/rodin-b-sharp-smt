@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Systerel and others.
+ * Copyright (c) 2010, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Systerel - initial API and implementation
  *     UFRN - code refactoring
+ *     Systerel - wrap SMT call
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
@@ -16,6 +17,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
+import static org.eventb.core.seqprover.xprover.ProcessMonitor.wrapCommand;
 import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.ALT_ERGO;
@@ -179,7 +181,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	/**
 	 * Sets up input arguments for solver.
 	 */
-	private List<String> solverCommandLine() {
+	private String[] solverCommandLine() {
 		final List<String> commandLine = new ArrayList<String>();
 
 		// Selected solver binary path
@@ -206,8 +208,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 		} else {
 			commandLine.add(smtBenchmarkFile.getAbsolutePath());
 		}
-
-		return commandLine;
+		final int size = commandLine.size();
+		final String[] cmd = commandLine.toArray(new String[size]);
+		return wrapCommand(cmd);
 	}
 
 	/**
@@ -218,7 +221,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            benchmark
 	 * @throws IOException
 	 */
-	private void callProver(final List<String> commandLine) throws IOException,
+	private void callProver(String[] commandLine) throws IOException,
 			IllegalArgumentException {
 
 		if (DEBUG_DETAILS) {
