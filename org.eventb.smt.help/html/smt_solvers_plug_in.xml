@@ -58,9 +58,9 @@
   </topic>
  </topic>
  <topic label="SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#SMT_Auto-Tactic_Profile">
-  <topic label="Creating a New SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#Creating_a_New_SMT_Auto-Tactic_Profile">
-  </topic>
   <topic label="Selecting an SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#Selecting_an_SMT_Auto-Tactic_Profile">
+  </topic>
+  <topic label="Creating a New SMT Auto-Tactic Profile" href="html/smt_solvers_plug_in.html#Creating_a_New_SMT_Auto-Tactic_Profile">
   </topic>
  </topic>
  <topic label="Bugs and Features Request" href="html/smt_solvers_plug_in.html#Bugs_and_Features_Request">

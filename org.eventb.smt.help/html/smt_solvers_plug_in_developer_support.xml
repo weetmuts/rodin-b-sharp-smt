@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="SMT Solvers Plug-in Developer Support">
+ <topic label="Installation from the sources" href="html/smt_solvers_plug_in_developer_support.html#Installation_from_the_sources">
+ </topic>
+ <topic label="Installing the Eclipse Platform" href="html/smt_solvers_plug_in_developer_support.html#Installing_the_Eclipse_Platform">
+ </topic>
+ <topic label="Get a Rodin host plaform" href="html/smt_solvers_plug_in_developer_support.html#Get_a_Rodin_host_plaform">
+  <topic label="Use a Rodin platform running from the Rodin sources" href="html/smt_solvers_plug_in_developer_support.html#Use_a_Rodin_platform_running_from_the_Rodin_sources">
+  </topic>
+  <topic label="Use a Rodin target platfom" href="html/smt_solvers_plug_in_developer_support.html#Use_a_Rodin_target_platfom">
+  </topic>
+  <topic label="Downloading the SMT Plug-in Sources" href="html/smt_solvers_plug_in_developer_support.html#Downloading_the_SMT_Plug-in_Sources">
+  </topic>
+ </topic>
+ <topic label="Launch configuration" href="html/smt_solvers_plug_in_developer_support.html#Launch_configuration">
+  <topic label="Launching the Rodin Platform" href="html/smt_solvers_plug_in_developer_support.html#Launching_the_Rodin_Platform">
+  </topic>
+  <topic label="Adding the SMT plug-ins to the Run Configuration" href="html/smt_solvers_plug_in_developer_support.html#Adding_the_SMT_plug-ins_to_the_Run_Configuration">
+  </topic>
+  <topic label="SMT solvers settings" href="html/smt_solvers_plug_in_developer_support.html#SMT_solvers_settings">
+  </topic>
+ </topic>
+</toc>
