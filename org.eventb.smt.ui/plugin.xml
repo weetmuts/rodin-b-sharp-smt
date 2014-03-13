@@ -18,6 +18,7 @@
    <extension
          point="org.eventb.ui.proofTactics">
       <dynamic_dropdown
+            icon="icons/SMT.GIF"
             id="org.eventb.smt.ui.SMTDynDropdown"
             name="%SMTdynamic_dropdown.name"
             tacticProvider="org.eventb.smt.ui.internal.provers.SMTUIDynTacticProvider"
