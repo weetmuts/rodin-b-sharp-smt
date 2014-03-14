@@ -22,6 +22,7 @@ Procedure for building the SMT Plug-in with Maven
      mvn -Dtycho.localArtifacts=ignore \
          -DrodinTargetSiteUrl=file://tmp/rodin \
 	 -DrodinSiteMirror=/tmp/org.rodinp.updateSite \
+	 -DforceContextQualifier="$(git log -1 --format='%h')" \
 	 clean install
 
 4. Upload to Source Forge all new jar files of features and plug-ins that have
