@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,8 @@ public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, 
 	private static final String EDIT_LABEL = "Edit...";
 	private static final String DUPLICATE_LABEL = "Duplicate...";
 	private static final String REMOVE_LABEL = "Remove";
+	protected static final String UP_LABEL = "Up";
+	protected static final String DOWN_LABEL = "Down";
 
 	/**
 	 * Column descriptors
@@ -195,6 +197,7 @@ public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, 
 			@Override
 			public void perform() {
 				doAdd();
+				updateSelection();
 			}
 		};
 		final TableButtonController<T> edit = new TableButtonController<T>(
@@ -222,6 +225,7 @@ public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, 
 				@Override
 				public void perform() {
 					doDuplicate(selectedElement);
+					updateSelection();
 				}
 			};
 		}
@@ -236,9 +240,37 @@ public abstract class AbstractTableFieldEditor<U, T extends AbstractElement<U>, 
 				doRemove(selectedElement);
 			}
 		};
+		if (canMove()) {
+			new TableButtonController<T>(buttonsGroup, UP_LABEL, tableViewer) {
+				@Override
+				protected boolean isEnabled() {
+					return model != null && model.canMoveUp(selectedIndex);
+				}
+
+				@Override
+				public void perform() {
+					model.moveUp(selectedIndex);
+					updateSelection();
+				}
+			};
+			new TableButtonController<T>(buttonsGroup, DOWN_LABEL, tableViewer) {
+				@Override
+				protected boolean isEnabled() {
+					return model != null && model.canMoveDown(selectedIndex);
+				}
+
+				@Override
+				public void perform() {
+					model.moveDown(selectedIndex);
+					updateSelection();
+				}
+			};
+		}
 	}
 
 	protected abstract boolean canDuplicate();
+
+	protected abstract boolean canMove();
 
 	protected final boolean isEditable(T element) {
 		return element != null && element.editable;

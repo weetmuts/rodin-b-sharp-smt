@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,14 +35,20 @@ public abstract class TableButtonController<T extends AbstractElement<?>>
 	// The associated control
 	private final Button button;
 
+	private final TableViewer tableViewer;
+
 	// Currently selected element in the table
 	protected T selectedElement;
+	
+	// Index of the currently selected element in the table
+	protected int selectedIndex = -1;
 
 	public TableButtonController(Composite parent, String label,
 			TableViewer tableViewer) {
 		button = new Button(parent, SWT.PUSH);
 		button.setText(label);
 		button.addSelectionListener(this);
+		this.tableViewer = tableViewer;
 		tableViewer.addSelectionChangedListener(this);
 		button.setEnabled(isEnabled());
 	}
@@ -55,8 +61,10 @@ public abstract class TableButtonController<T extends AbstractElement<?>>
 		ssel = (IStructuredSelection) event.getSelection();
 		if (ssel == null) {
 			selectedElement = null;
+			selectedIndex = -1;
 		} else {
 			selectedElement = (T) ssel.getFirstElement();
+			selectedIndex = tableViewer.getTable().getSelectionIndex();
 		}
 		button.setEnabled(isEnabled());
 	}
@@ -90,6 +98,13 @@ public abstract class TableButtonController<T extends AbstractElement<?>>
 		if (isEnabled()) {
 			perform();
 		}
+	}
+
+	/*
+	 * Refresh the selection to compute the new index and reveal it.
+	 */
+	protected void updateSelection() {
+		tableViewer.setSelection(tableViewer.getSelection(), true);
 	}
 
 }
