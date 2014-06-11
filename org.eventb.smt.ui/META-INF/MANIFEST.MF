@@ -16,5 +16,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
 Bundle-Activator: org.eventb.smt.ui.internal.SMTProversUI
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eventb.smt.ui.internal.preferences.configurations;x-friends:="org.eventb.smt.ui.tests",
+Export-Package: org.eventb.smt.ui.internal.preferences;x-friends:="org.eventb.smt.ui.tests",
  org.eventb.smt.ui.internal.provers;x-friends:="org.eventb.smt.core.performance"

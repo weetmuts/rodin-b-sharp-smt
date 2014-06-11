@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eventb.smt.ui.internal.preferences;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -88,6 +89,67 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	@SuppressWarnings("unchecked")
 	public final T clone(T element) {
 		return (T) element.clone();
+	}
+
+	/**
+	 * Tells whether the element with the given index can be moved up in the
+	 * element list. Returns false if the given index is invalid.
+	 * 
+	 * @param elementIndex
+	 *            the index of the element to be moved up
+	 */
+	public boolean canMoveUp(int elementIndex) {
+		return elementIndex > 0 && elementIndex < elements.size();
+	}
+
+	/**
+	 * Tells whether the element with the given index can be moved down in the
+	 * element list. Returns false if the given index is invalid.
+	 * 
+	 * @param elementIndex
+	 *            the index of the element to be moved down
+	 */
+	public boolean canMoveDown(int elementIndex) {
+		return elementIndex >= 0 && elementIndex < elements.size() - 1;
+	}
+
+	/**
+	 * Moves up the element with the given index in the element list if
+	 * possible, does nothing otherwise.
+	 * 
+	 * @param from
+	 *            the index of the element to move up
+	 * @return the new index of the moved element
+	 */
+	public final int moveUp(int from) {
+		if (!canMoveUp(from)) {
+			return from;
+		}
+		final int to = from - 1;
+		moveElement(from, to);
+		return to;
+	}
+
+	/**
+	 * Moves down the element with the given index in the element list if
+	 * possible, does nothing otherwise.
+	 * 
+	 * @param from
+	 *            the index of the element to move down
+	 * @return the new index of the moved element
+	 */
+	public final int moveDown(int from) {
+		if (!canMoveDown(from)) {
+			return from;
+		}
+		final int to = from + 1;
+		moveElement(from, to);
+		return to;
+	}
+
+	private void moveElement(int from, int to) {
+		Collections.swap(elements, from, to);
+		viewer.refresh(false);
 	}
 
 	/**

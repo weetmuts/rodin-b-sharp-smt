@@ -34,6 +34,9 @@
 
 		<module>org.eventb.smt.help</module>
 		<module>org.eventb.smt.ui</module>
+
+		<module>org.eventb.smt.ui.tests</module>
+
 		<module>org.eventb.smt</module>
 		<module>org.eventb.smt-feature</module>
 		<module>org.eventb.smt.site</module>

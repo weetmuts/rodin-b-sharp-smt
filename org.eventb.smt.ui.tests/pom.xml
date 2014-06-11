@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eventb.smt</groupId>
+		<artifactId>root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.eventb.smt.ui.tests</artifactId>
+	<version>1.2.1-SNAPSHOT</version>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<properties>
+		<os-jvm-flags/> <!-- No specific flag by default -->
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<configuration>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>true</useUIThread>
+					<argLine>${os-jvm-flags}</argLine>
+					<includes>
+						<include>**/*Test*.java</include>
+					</includes>
+					<dependencies>
+						<!-- Depend on full Rodin platform in order to -->
+						<!-- install platform specific fragments of Eclipse -->
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eventb.ide</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>Mac OS X</name>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>
