@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Systerel and others.
+ * Copyright (c) 2012, 2014 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,9 +42,21 @@ public class SolverElement extends AbstractElement<ISolverDescriptor> {
 		this.path = origin.getPath();
 	}
 
+	// Editable copy constructor
+	private SolverElement(SolverElement solverElement) {
+		super(true, solverElement.name);
+		this.kind = solverElement.kind;
+		this.path = solverElement.path;
+	}
+	
 	@Override
 	public ISolverDescriptor toCore() {
 		return SMTCore.newSolverDescriptor(name, kind, path);
+	}
+
+	@Override
+	public AbstractElement<ISolverDescriptor> duplicate() {
+		return new SolverElement(this);
 	}
 
 }

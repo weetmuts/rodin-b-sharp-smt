@@ -193,6 +193,11 @@ public class AbstractModelTests {
 		}
 
 		@Override
+		public AbstractElement<String> duplicate() {
+			return new TestElement(name);
+		}
+
+		@Override
 		public String toCore() {
 			return name;
 		}

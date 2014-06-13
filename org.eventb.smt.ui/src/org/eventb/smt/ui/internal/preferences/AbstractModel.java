@@ -88,7 +88,7 @@ public abstract class AbstractModel<U, T extends AbstractElement<U>> {
 	 */
 	@SuppressWarnings("unchecked")
 	public final T clone(T element) {
-		return (T) element.clone();
+		return (T) element.duplicate();
 	}
 
 	/**
