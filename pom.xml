@@ -25,6 +25,11 @@
 		<module>org.eventb.smt.cvc3.macosx</module>
 		<module>org.eventb.smt.cvc3.win32</module>
 
+		<module>org.eventb.smt.cvc4</module>
+		<module>org.eventb.smt.cvc4.linux</module>
+		<module>org.eventb.smt.cvc4.macosx</module>
+		<module>org.eventb.smt.cvc4.win32</module>
+
 		<module>org.eventb.smt.verit</module>
 		<module>org.eventb.smt.verit.linux</module>
 		<module>org.eventb.smt.verit.macosx</module>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eventb.smt.core.bundles">
+      <solver
+            name="CVC4 1.4 (bundled)"
+            kind="cvc4"
+            localpath="$os$/cvc4">
+      </solver>
+      <configuration
+            args="--finite-model-find --fmf-inst-engine"
+            name="CVC4 SMT2"
+            smt-lib="V2.0"
+            solverName="CVC4 1.4 (bundled)"
+            translator="PP">
+      </configuration>
+   </extension>
+</plugin>
