@@ -11,6 +11,7 @@
 package org.eventb.smt.core.internal.translation;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.simplify;
+import static org.eventb.core.seqprover.transformer.SimpleSequents.translateExtensions;
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
 import static org.eventb.pptrans.Translator.reduceToPredicateCalculus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
@@ -281,7 +282,8 @@ public class SMTThroughPP extends Translator {
 
 	private static ISimpleSequent externalTransformations(
 			final ISimpleSequent sequent) {
-		ISimpleSequent simpleSequent = decomposeIdentifiers(sequent);
+		final ISimpleSequent transSequent = translateExtensions(sequent);
+		ISimpleSequent simpleSequent = decomposeIdentifiers(transSequent);
 		simpleSequent = reduceToPredicateCalculus(simpleSequent,
 				expandSetEquality);
 		return simplify(simpleSequent,
