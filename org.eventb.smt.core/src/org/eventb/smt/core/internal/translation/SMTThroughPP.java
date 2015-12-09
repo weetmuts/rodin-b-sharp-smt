@@ -111,9 +111,6 @@ import org.eventb.smt.core.internal.ast.theories.TheoryV1_2.Booleans;
  * is done.
  */
 public class SMTThroughPP extends Translator {
-	public static boolean MS_OPTIMIZATION_ON = true;
-	public static boolean GATHER_SPECIAL_MS_PREDS = true;
-	public static boolean SET_THEORY_AXIOMS_ON = true;
 
 	/**
 	 * The SMT factory used by the translator to make SMT symbols
@@ -342,15 +339,11 @@ public class SMTThroughPP extends Translator {
 			 * Checks if the the set expects a specialized membership predicate.
 			 * If so, translates the base type of it.
 			 */
-			if (MS_OPTIMIZATION_ON) {
-				for (final FreeIdentifier setForSpecialMSPred : gatherer
-						.getSetsForSpecialMSPreds()) {
-					if (setForSpecialMSPred.getName().equals(varName)
-							&& setForSpecialMSPred.getType().equals(varType)) {
-						varType = iter.getType().getBaseType();
-						parseConstant = false;
-						break;
-					}
+			for (final FreeIdentifier setForSpecialMSPred : gatherer.getSetsForSpecialMSPreds()) {
+				if (setForSpecialMSPred.getName().equals(varName) && setForSpecialMSPred.getType().equals(varType)) {
+					varType = iter.getType().getBaseType();
+					parseConstant = false;
+					break;
 				}
 			}
 
@@ -481,7 +474,7 @@ public class SMTThroughPP extends Translator {
 		final Type leftType = left.getType();
 
 		// Translate setsForSpecialMSPreds (special case)
-		if (MS_OPTIMIZATION_ON && right instanceof FreeIdentifier) {
+		if (right instanceof FreeIdentifier) {
 			final FreeIdentifier rightSet = (FreeIdentifier) right;
 			if (gatherer.getSetsForSpecialMSPreds().contains(rightSet)) {
 				return translateInSpecializedMembershipPredicate(leftTerm,
@@ -717,8 +710,7 @@ public class SMTThroughPP extends Translator {
 		// creates the membership of the created bounded variable into the left
 		// set
 		final SMTFormula leftMembership;
-		if (MS_OPTIMIZATION_ON
-				&& gatherer.getSetsForSpecialMSPreds().contains(leftSet)) {
+		if (gatherer.getSetsForSpecialMSPreds().contains(leftSet)) {
 			leftMembership = translateInSpecializedMembershipPredicate(smtVar,
 					baseType, false, (FreeIdentifier) leftSet);
 		} else {
@@ -729,8 +721,7 @@ public class SMTThroughPP extends Translator {
 		// creates the membership of the created bounded variable into the right
 		// set
 		final SMTFormula rightMembership;
-		if (MS_OPTIMIZATION_ON
-				&& gatherer.getSetsForSpecialMSPreds().contains(rightSet)) {
+		if (gatherer.getSetsForSpecialMSPreds().contains(rightSet)) {
 			rightMembership = translateInSpecializedMembershipPredicate(smtVar,
 					baseType, false, (FreeIdentifier) rightSet);
 		} else {
@@ -1237,14 +1228,10 @@ public class SMTThroughPP extends Translator {
 		 * The translator adds some set theory axioms for each defined
 		 * membership predicate
 		 */
-		if (SET_THEORY_AXIOMS_ON) {
-			int i = 0;
-			for (final Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap
-					.entrySet()) {
-				translatedAssumptions.add(i,
-						generateSingletonAxiom(entry.getValue()));
-				i++;
-			}
+		int i = 0;
+		for (final Map.Entry<Type, SMTPredicateSymbol> entry : msTypeMap.entrySet()) {
+			translatedAssumptions.add(i, generateSingletonAxiom(entry.getValue()));
+			i++;
 		}
 
 		final SMTBenchmarkPP benchmark = new SMTBenchmarkPP(lemmaName,
