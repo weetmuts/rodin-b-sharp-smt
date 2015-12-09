@@ -604,7 +604,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		testTranslateGoalPP(
 				te,
 				"∀z⦂A×B,c⦂A×B·z=c",
-				"(not (and (forall ((z A) (z0 B) (c A) (c0 B)) (= z c)) (forall ((z1 A) (z2 B) (c1 A) (c2 B)) (= z2 c2))))");
+				"(not (and (forall ((z_1 A) (z_10 B) (c_1 A) (c_10 B)) (= z_1 c_1)) (forall ((z_11 A) (z_12 B) (c_11 A) (c_12 B)) (= z_12 c_12))))");
 	}
 
 	@Test
@@ -618,7 +618,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	public void testBoundBaseType4() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		testTranslateGoalPP(te, "∃ x ⦂ ℤ×ℤ×ℤ, X ⦂ ℙ(ℤ×ℤ×ℤ) · x ∈ X",
-				"(not (exists ((x Int) (x0 Int) (x1 Int) (X PZZZ)) (MS x x0 x1 X)))");
+				"(not (exists ((x_1 Int) (x_10 Int) (x_11 Int) (X PZZZ)) (MS x_1 x_10 x_11 X)))");
 	}
 
 	@Test
