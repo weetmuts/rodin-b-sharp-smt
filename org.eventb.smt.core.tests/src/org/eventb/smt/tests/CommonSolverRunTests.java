@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -232,6 +233,16 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
+	private void appendError(StringBuilder sb, String callMessage, String lemmaName, String message) {
+		sb.append(callMessage);
+		sb.append(" (");
+		sb.append(lemmaName);
+		sb.append(") ");
+		sb.append(configuration.getName());
+		sb.append(": ");
+		sb.append(message);
+	}
+
 	protected SMTProverCallTestResult smtProverCallTest(
 			final String callMessage, final String lemmaName,
 			final ISimpleSequent sequent, final ITypeEnvironment te,
@@ -243,54 +254,36 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				debugBuilder);
 
 		if (smtProverCall.isValid() != expectedSolverResult) {
-			errorBuilder.append(callMessage).append(" (");
-			errorBuilder.append(lemmaName);
-			errorBuilder
-					.append(") The result of the SMT prover wasn't the expected one.");
+			appendError(errorBuilder, callMessage, lemmaName,
+					"SMT prover result: expected " + expectedSolverResult + " but was " + smtProverCall.isValid());
 			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
 
-		final Set<Predicate> neededHypotheses = smtProverCall
-				.neededHypotheses();
-		final boolean extractedContainsExpected = neededHypotheses == null
-				|| (expectedUnsatCore != null && neededHypotheses
-						.containsAll(expectedUnsatCore));
-		final boolean expectedContainsExtracted = expectedUnsatCore == null
-				|| (neededHypotheses != null && expectedUnsatCore
-						.containsAll(neededHypotheses));
-		if (extractedContainsExpected) {
-			if (!expectedContainsExtracted) {
-				/*
-				 * errorBuilder.append(callMessage);
-				 * errorBuilder.append(" (").append(lemmaName); errorBuilder .
-				 * append(") The expected unsat-core is smaller than the ");
-				 * errorBuilder .append(solverConfig.getId()).append(" one.");
-				 * return new SMTProverCallTestResult(smtProverCall,
-				 * errorBuilder);
-				 */
+		if (expectedUnsatCore != null) {
+			final Set<Predicate> actualNeededHyps = smtProverCall.neededHypotheses();
+			if (actualNeededHyps == null) {
+				appendError(errorBuilder, callMessage, lemmaName,
+						"The SMT prover did not extract needed hypotheses.");
+				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
+			} else {
+				final Set<Predicate> expectedNeededHyps = new HashSet<Predicate>(expectedUnsatCore);
+				if (!expectedNeededHyps.equals(actualNeededHyps)) {
+					final Set<Predicate> missingHyps = new HashSet<Predicate>(expectedNeededHyps);
+					missingHyps.removeAll(actualNeededHyps);
+					final Set<Predicate> unwantedHyps = new HashSet<Predicate>(actualNeededHyps);
+					unwantedHyps.removeAll(expectedNeededHyps);
+					appendError(errorBuilder, callMessage, lemmaName, "Wrong UNSAT Core:");
+					if (!missingHyps.isEmpty())
+						errorBuilder.append("\nmissing: " + missingHyps);
+					if (!unwantedHyps.isEmpty())
+						errorBuilder.append("\nunwanted: " + unwantedHyps);
+					errorBuilder.append("\n");
+				}
 			}
-		} else if (expectedContainsExtracted) {
-			errorBuilder.append(callMessage);
-			errorBuilder.append(" (").append(lemmaName).append(") ");
-			errorBuilder.append(configuration.getName());
-			errorBuilder
-					.append(" unsat-core is smaller than the expected one.");
-			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
-		} else {
-			/*
-			 * errorBuilder.append(callMessage);
-			 * errorBuilder.append(" (").append(lemmaName).append(") ");
-			 * errorBuilder.append(solverConfig.getId()); errorBuilder.append(
-			 * " unsat-core and the expected one are different and mutualy not included."
-			 * ); return new SMTProverCallTestResult(smtProverCall,
-			 * errorBuilder);
-			 */
 		}
 		if (smtProverCall.isGoalNeeded() != expectedGoalNeed) {
-			errorBuilder.append(callMessage);
-			errorBuilder.append(" (").append(lemmaName);
-			errorBuilder
-					.append(") The extracted goal need wasn't the expected one.");
+			appendError(errorBuilder, callMessage, lemmaName,
+					"SMT goal needed: expected " + expectedGoalNeed + " but was " + smtProverCall.isGoalNeeded());
 			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
 		return new SMTProverCallTestResult(smtProverCall, errorBuilder);
