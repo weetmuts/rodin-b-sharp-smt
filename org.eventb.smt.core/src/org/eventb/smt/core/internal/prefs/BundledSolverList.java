@@ -37,6 +37,7 @@ public class BundledSolverList extends BundledDescriptorList<ISolverDescriptor> 
 		final String name = loader.getName();
 		final SolverKind kind = loader.getKind();
 		final IPath path = loader.getPath();
+		loader.extractLibraries();
 		return new SolverDescriptor(name, true, kind, path);
 	}
 

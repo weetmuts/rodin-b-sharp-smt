@@ -24,6 +24,7 @@
             <choice minOccurs="1" maxOccurs="unbounded">
                <element ref="configuration"/>
                <element ref="solver"/>
+               <element ref="library"/>
             </choice>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -170,6 +171,19 @@ Default value: &quot;V2.0&quot;.
                <documentation>
                   The path of the binary of the solver contributed by the plug-in.
 Example: &quot;$os$/binary&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="library">
+      <complexType>
+         <attribute name="localpath" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The path of the library.
+Example: &quot;$os$/lib.dll&quot;.
                </documentation>
             </annotation>
          </attribute>
