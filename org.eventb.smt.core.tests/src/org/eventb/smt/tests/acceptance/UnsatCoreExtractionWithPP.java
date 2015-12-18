@@ -22,7 +22,7 @@ import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
 
 public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
-	private static boolean GOAL_NEEDED = true;
+	protected static boolean GOAL_NEEDED = true;
 	static ITypeEnvironment arith_te = mTypeEnvironment(//
 			"x", "ℤ", "y", "ℤ", "z", "ℤ");
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
@@ -57,7 +57,14 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				GOAL_NEEDED);
 	}
 
-	// @Test(timeout = 3000)
+	protected List<String> someHypsGoalReqHyps() {
+		return Arrays.asList(//
+				"p ∈ ℙ({1})", //
+				"p ≠ ∅", //
+				"q ∈ ℙ({1})", //
+				"q ≠ ∅");
+	}
+
 	@Test
 	public void someHypothesesNeededGoalNeeded() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -73,18 +80,13 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 				"q ≠ ∅", //
 				"m ∈ q");
 
-		final List<String> unsat = Arrays.asList(//
-				"p ∈ ℙ({1})", //
-				"p ≠ ∅", //
-				"q ∈ ℙ({1})", //
-				"q ≠ ∅");
+		final List<String> unsat = someHypsGoalReqHyps();
 
 		doTest("someHypothesesNeededGoalNeeded", hyps, "p = q", te, VALID,
 				unsat, GOAL_NEEDED);
 	}
 
-	@Test
-	// (timeout = 3000)
+	@Test(timeout = 3000)
 	public void hypothesesNeededGoalNotNeeded() {
 		final List<String> hyps = Arrays.asList(//
 				"x < y", //
