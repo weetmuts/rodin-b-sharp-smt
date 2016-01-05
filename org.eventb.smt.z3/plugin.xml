@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eventb.smt.core.bundles">
+      <solver
+            kind="z3"
+            localpath="$os$/z3"
+            name="Z3 (bundled)">
+      </solver>
+      <configuration
+            name="Z3"
+            smt-lib="V2.0"
+            solverName="Z3 (bundled)"
+            translator="PP">
+      </configuration>
+   </extension>
+
+</plugin>

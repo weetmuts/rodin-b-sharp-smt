@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eventb.smt.core.bundles">
+      <!-- Note: using explicit local paths rather than $os$ as it would become faulty
+                 if this fragment were accidentally installed on a non win32 OS. -->
+      <library
+            localpath="os/win32/msvcp110.dll">
+      </library>
+      <library
+            localpath="os/win32/msvcr110.dll">
+      </library>
+      <library
+            localpath="os/win32/vcomp110.dll">
+      </library>
+   </extension>
+</fragment>

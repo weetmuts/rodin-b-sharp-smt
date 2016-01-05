@@ -132,6 +132,7 @@
    <plugin
          id="org.eventb.smt.cvc4.linux"
          os="linux"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -149,6 +150,40 @@
 
    <plugin
          id="org.eventb.smt.cvc4.win32"
+         os="win32"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+   <plugin
+         id="org.eventb.smt.z3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eventb.smt.z3.linux"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+   <plugin
+         id="org.eventb.smt.z3.macosx"
+         os="macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+   <plugin
+         id="org.eventb.smt.z3.win32"
          os="win32"
          download-size="0"
          install-size="0"

@@ -35,6 +35,11 @@
 		<module>org.eventb.smt.verit.macosx</module>
 		<module>org.eventb.smt.verit.win32</module>
 
+		<module>org.eventb.smt.z3</module>
+		<module>org.eventb.smt.z3.linux</module>
+		<module>org.eventb.smt.z3.macosx</module>
+		<module>org.eventb.smt.z3.win32</module>
+
 		<module>org.eventb.smt.core.tests</module>
 
 		<module>org.eventb.smt.help</module>
