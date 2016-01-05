@@ -40,6 +40,21 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.linux</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.macosx</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.win32</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
 							<artifactId>org.eventb.smt.verit.linux</artifactId>
 							<version>0.0.0</version>
 						</dependency>
@@ -51,6 +66,21 @@
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eventb.smt.verit.win32</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.linux</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.macosx</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.win32</artifactId>
 							<version>0.0.0</version>
 						</dependency>
 						<!-- Depend on full Rodin platform in order to -->
