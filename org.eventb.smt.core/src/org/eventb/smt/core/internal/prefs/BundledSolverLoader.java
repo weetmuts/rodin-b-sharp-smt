@@ -11,6 +11,7 @@
 package org.eventb.smt.core.internal.prefs;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eclipse.core.runtime.Platform.getExtensionRegistry;
 import static org.eventb.core.seqprover.xprover.BundledFileExtractor.extractFile;
 import static org.eventb.smt.core.SolverKind.UNKNOWN;
 
@@ -27,6 +28,8 @@ import org.osgi.framework.Bundle;
  */
 public class BundledSolverLoader extends AbstractLoader {
 
+	private static final String LIBRARY_ELEMENT = "library";
+
 	public BundledSolverLoader(IConfigurationElement configurationElement) {
 		super(configurationElement);
 	}
@@ -36,16 +39,30 @@ public class BundledSolverLoader extends AbstractLoader {
 	}
 
 	public IPath getPath() {
-		final String localPathStr = ce.getAttribute("localpath");
+		final String bundleName = ce.getContributor().getName();
+		return extractLocalPath(ce, bundleName, true);
+	}
+
+	public void extractLibraries() {
+		final String bundleName = ce.getContributor().getName();
+		final String extPoint = ce.getDeclaringExtension().getExtensionPointUniqueIdentifier();
+		for (IConfigurationElement lib : getExtensionRegistry().getConfigurationElementsFor(extPoint)) {
+			if (LIBRARY_ELEMENT.equals(lib.getName()) && lib.getContributor().getName().equals(bundleName)) {
+				extractLocalPath(lib, bundleName, false);
+			}
+		}
+	}
+	
+	private IPath extractLocalPath(IConfigurationElement c, String bundleName, boolean exec) {
+		final String localPathStr = c.getAttribute("localpath");
 		if (localPathStr == null) {
 			throw error("Missing path in extension named " + getName());
 		}
-		final String bundleName = ce.getContributor().getName();
 		final Bundle bundle = getBundle(bundleName);
 		if (bundle == null) {
 			throw error("Unknown bundle " + bundleName);
 		}
-		final IPath path = extractFile(bundle, new Path(localPathStr), true);
+		final IPath path = extractFile(bundle, new Path(localPathStr), exec);
 		if (path == null) {
 			throw error("Invalid local path " + localPathStr);
 		}

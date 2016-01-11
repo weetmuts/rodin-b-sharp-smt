@@ -42,6 +42,12 @@ public class ConfigProvider {
 	public static final ConfigProvider BUNDLED_CVC3 = new ConfigProvider(
 			findSolverByName("CVC3 (bundled)"));
 
+	public static final ConfigProvider BUNDLED_CVC4 = new ConfigProvider(
+			findSolverByName("CVC4 (bundled)"));
+
+	public static final ConfigProvider BUNDLED_Z3 = new ConfigProvider(
+			findSolverByName("Z3 (bundled)"));
+
 	public static final ConfigProvider BUNDLED_VERIT = new VeriTConfigProvider(
 			findSolverByName("veriT (bundled)"));
 

@@ -22,6 +22,16 @@
       <update label="%updateSiteName" url="http://rodin-b-sharp.sourceforge.net/updates"/>
    </url>
 
+   <includes
+         id="org.eventb.smt.z3"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
+         id="org.eventb.smt.cvc4"
+         version="0.0.0"
+         optional="true"/>
+
    <requires>
       <import feature="org.eventb.ide" version="3.1" match="compatible"/>
    </requires>
@@ -67,8 +77,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.verit.macosx"
@@ -76,8 +85,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.verit.win32"
@@ -85,8 +93,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3"
@@ -101,8 +108,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.macosx"
@@ -110,8 +116,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.win32"
@@ -119,7 +124,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
 </feature>

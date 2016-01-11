@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eventb.smt.cvc4"
+      label="SMT CVC4 Feature"
+      version="1.4.0.qualifier"
+      provider-name="Systerel">
+
+   <plugin
+         id="org.eventb.smt.cvc4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eventb.smt.cvc4.linux"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+   <plugin
+         id="org.eventb.smt.cvc4.macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+   <plugin
+         id="org.eventb.smt.cvc4.win32"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="true"/>
+
+</feature>

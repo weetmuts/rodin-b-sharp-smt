@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>org.eventb.smt.core.tests</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>
@@ -40,6 +40,21 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.linux</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.macosx</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.cvc4.win32</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
 							<artifactId>org.eventb.smt.verit.linux</artifactId>
 							<version>0.0.0</version>
 						</dependency>
@@ -53,6 +68,21 @@
 							<artifactId>org.eventb.smt.verit.win32</artifactId>
 							<version>0.0.0</version>
 						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.linux</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.macosx</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eventb.smt.z3.win32</artifactId>
+							<version>0.0.0</version>
+						</dependency>
 						<!-- Depend on full Rodin platform in order to -->
 						<!-- install platform specific fragments of Eclipse -->
 						<dependency>
@@ -61,6 +91,35 @@
 							<version>0.0.0</version>
 						</dependency>
 					</dependencies>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
 				</configuration>
 			</plugin>
 		</plugins>

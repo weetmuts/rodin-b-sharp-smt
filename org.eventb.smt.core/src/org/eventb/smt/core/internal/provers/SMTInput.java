@@ -111,6 +111,17 @@ public class SMTInput extends XProverInput {
 		if (validator == null) {
 			final String knownErrors = super.hasError() ? super.getError() : "";
 			validator = new Validator(configName, knownErrors);
+			if (validator.configuration == null && configName != null) {
+				// try without " STM2"
+				final String suffix = " SMT2";
+				if (configName.endsWith(suffix)) {
+					final String newConfig = configName.substring(0, configName.length() - suffix.length());
+					final Validator newValidator = new Validator(newConfig, knownErrors);
+					if (newValidator.configuration != null) {
+						validator = newValidator;
+					}
+				}
+			}
 		}
 	}
 

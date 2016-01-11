@@ -1,5 +1,5 @@
 The cvc3 binary has been compiled with XCode 4.6.2 under Mac OS X Lion
-(10.7.3).  In addition, the GMP librery 5.1.1 was installed with homebrew.
+(10.7.3).  In addition, the GMP library 5.1.1 was installed with homebrew.
 
 To make sure that the GMP dynamic library will not be used, disable it :
 
@@ -15,7 +15,7 @@ The following commands have been used:
 	./configure --disable-zchaff --build=x86_64-apple-darwin
 	make
 
-Nota: The build option passed to configure has been copied from the build
+Note: The build option passed to configure has been copied from the build
 option devised by homebrew when configuring the GMP library.
 
 The binary has been tested by issuing the following additional commands:
