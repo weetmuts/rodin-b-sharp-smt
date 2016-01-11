@@ -47,6 +47,8 @@
 
 		<module>org.eventb.smt.ui.tests</module>
 
+		<module>org.eventb.smt.cvc4-feature</module>
+		<module>org.eventb.smt.z3-feature</module>
 		<module>org.eventb.smt</module>
 		<module>org.eventb.smt-feature</module>
 		<module>org.eventb.smt.site</module>

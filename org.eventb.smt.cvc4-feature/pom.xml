@@ -8,9 +8,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eventb.smt.z3.linux</artifactId>
-	<version>4.4.1-SNAPSHOT</version>
-	<packaging>eclipse-plugin</packaging>
+	<artifactId>org.eventb.smt.cvc4</artifactId>
+	<version>1.4.0-SNAPSHOT</version>
+	<packaging>eclipse-feature</packaging>
+
+	<groupId>org.eventb.smt.cvc4.feature</groupId>
 
 	<build>
 		<plugins>
@@ -25,10 +27,24 @@
 							<ws>gtk</ws>
 							<arch>x86_64</arch>
 						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
 					</environments>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
