@@ -657,4 +657,10 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 				"(not (forall ((x S)) (= (or (A x) (= x a)) (A x))))");
 	}
 
+	@Test
+	public void testExtensions() throws Exception {
+		final ITypeEnvironment te = org.eventb.core.ast.tests.AbstractTests.LIST_FAC.makeTypeEnvironment();
+		testTranslateGoalPP(te, "head(cons(1, nil)) = 2",
+				"(not (exists ((x57 List_Type) (x58 Int)) (and (exists ((x59 Int)) (and (= x59 1) (cons x59 nil x57))) (= x58 2) (head x57 x58))))");
+	}
 }
