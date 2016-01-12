@@ -404,8 +404,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
 		if (configuration.getSmtlibVersion() == V2_0) {
-			assertTrue("SMT-LIB 2.0 is not handled by the veriT approach yet",
-					false);
+			fail("SMT-LIB 2.0 is not handled by the veriT approach yet");
 		} else {
 			String name = data.getLemmaName();
 			if (name.isEmpty()) {
