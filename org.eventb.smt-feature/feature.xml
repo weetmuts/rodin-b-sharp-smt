@@ -77,7 +77,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.verit.macosx"
@@ -85,7 +86,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.verit.win32"
@@ -93,7 +95,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3"
@@ -108,7 +111,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.macosx"
@@ -116,7 +120,8 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
    <plugin
          id="org.eventb.smt.cvc3.win32"
@@ -124,6 +129,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="true"/>
 
 </feature>
