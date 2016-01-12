@@ -74,7 +74,11 @@ public class TestRunner {
 	 */
 	public void testProjects() throws Exception {
 		for (final IRodinProject project : projects) {
+		    try {
 			testProject(project);
+		    } catch(Exception e) {
+			e.printStackTrace();
+		    }
 		}
 	}
 
