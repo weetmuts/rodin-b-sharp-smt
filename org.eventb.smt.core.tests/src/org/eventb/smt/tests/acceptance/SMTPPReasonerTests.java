@@ -24,8 +24,8 @@ import org.eventb.smt.core.internal.provers.SMTInput;
  */
 public class SMTPPReasonerTests extends AbstractReasonerTests {
 
-	public static final String BUNDLED_VERIT_PP_SMT2_ID = "veriT SMT2";
-	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3 SMT2";
+	public static final String BUNDLED_VERIT_PP_SMT2_ID = "veriT";
+	public static final String BUNDLED_CVC3_PP_SMT2_ID = "CVC3";
 
 	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
 	private static final long DEFAULT_TIMEOUT_DELAY = 1000;

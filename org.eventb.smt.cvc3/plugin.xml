@@ -10,7 +10,7 @@
       </solver>
       <configuration
             args=""
-            name="CVC3 SMT2"
+            name="CVC3"
             smt-lib="V2.0"
             solverName="CVC3 (bundled)"
             translator="PP">

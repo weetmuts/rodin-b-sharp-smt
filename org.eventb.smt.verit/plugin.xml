@@ -10,7 +10,7 @@
       </solver>
       <configuration
             args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e"
-            name="veriT SMT2"
+            name="veriT"
             smt-lib="V2.0"
             solverName="veriT (bundled)"
             translator="PP">
