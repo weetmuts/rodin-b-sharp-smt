@@ -35,7 +35,6 @@ import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
-import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.utils.Theory;
 import org.junit.After;
@@ -208,19 +207,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 
 	private SMTProverCall getCall(String lemmaName, ISimpleSequent sequent,
 			StringBuilder debugBuilder) {
-		final TranslationApproach approach = configuration
-				.getTranslationApproach();
-		switch (approach) {
-		case USING_VERIT:
-			return new SMTVeriTCall(sequent, MONITOR, debugBuilder,
-					configuration, lemmaName);
-		case USING_PP:
-			return new SMTPPCall(sequent, MONITOR, debugBuilder, configuration,
-					lemmaName);
-		default:
-			fail("unknown translation approach: " + approach);
-			return null;
-		}
+		return new SMTPPCall(sequent, MONITOR, debugBuilder, configuration, lemmaName);
 	}
 
 	private void appendError(StringBuilder sb, String callMessage, String lemmaName, String message) {

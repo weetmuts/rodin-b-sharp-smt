@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.provers;
 
-import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.PLUGIN_ID;
 
 import org.eventb.core.seqprover.IProofMonitor;
@@ -44,9 +43,6 @@ public class ExternalSMT extends XProverReasoner2 {
 			final ISimpleSequent sequent, final IProofMonitor pm) {
 		final SMTInput smtInput = (SMTInput) input;
 		final SMTConfiguration config = smtInput.getConfiguration();
-		if (config.getTranslationApproach() == USING_VERIT) {
-			return new SMTVeriTCall(sequent, pm, config);
-		}
 		return new SMTPPCall(sequent, pm, config);
 	}
 

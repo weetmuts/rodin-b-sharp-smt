@@ -150,14 +150,7 @@ public class ConfigProvider {
 	}
 
 	private String getArgs(TranslationApproach approach) {
-		switch (approach) {
-		case USING_VERIT:
-			return veritV2Args();
-		case USING_PP:
-			return ppV2Args();
-		}
-		assert false;
-		return null;
+		return ppV2Args();
 	}
 
 	protected String veritV1Args() {

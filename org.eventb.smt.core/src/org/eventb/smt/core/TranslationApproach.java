@@ -15,12 +15,12 @@ package org.eventb.smt.core;
  */
 public enum TranslationApproach {
 
-	USING_PP("PP"), USING_VERIT("veriT");
+	USING_PP("PP"),
+	
+	@Deprecated
+	USING_VERIT("veriT");
 
 	public static TranslationApproach parseApproach(final String value) {
-		if (USING_VERIT.name.equals(value)) {
-			return USING_VERIT;
-		}
 		return USING_PP;
 	}
 

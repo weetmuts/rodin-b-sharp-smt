@@ -30,7 +30,6 @@ import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
-import org.eventb.smt.core.internal.provers.SMTVeriTCall;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.tests.ConfigProvider;
 import org.eventb.smt.utils.Theory;
@@ -54,17 +53,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		final StringBuilder errorBuilder = new StringBuilder("");
 
 		try {
-			switch (configuration.getTranslationApproach()) {
-			case USING_VERIT:
-				smtProverCall = new SMTVeriTCall(sequent, MONITOR,
-						debugBuilder, configuration, lemmaName);
-				break;
-
-			default: // USING_PP
-				smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder,
-						configuration, lemmaName);
-				break;
-			}
+			smtProverCall = new SMTPPCall(sequent, MONITOR, debugBuilder, configuration, lemmaName);
 
 			smtProverCalls.add(smtProverCall);
 			smtProverCall.run();

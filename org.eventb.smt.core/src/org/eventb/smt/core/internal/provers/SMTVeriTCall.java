@@ -38,7 +38,6 @@ import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTPrintOptions;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
 import org.eventb.smt.core.internal.translation.SMTThroughPP;
-import org.eventb.smt.core.internal.translation.SMTThroughVeriT;
 
 /**
  * This class represents a call to an SMT solver using the veriT approach. More
@@ -79,18 +78,6 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * error happened during the macros processing.
 	 */
 	private boolean macrosTranslated = false;
-
-	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final SMTConfiguration config) {
-		this(sequent, pm, new StringBuilder(), config);
-	}
-
-	protected SMTVeriTCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final StringBuilder debugBuilder,
-			final SMTConfiguration config) {
-		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT());
-		setVeriTPath();
-	}
 
 	/**
 	 * FOR TESTS ONLY

@@ -11,7 +11,6 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
-import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
 
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
@@ -62,8 +61,8 @@ public class BundledConfigLoaderTests {
 
 	@Test
 	public void validApproach() {
-		ce.add("translator", "veriT");
-		assertEquals(USING_VERIT, loader.getTranslationApproach());
+		ce.add("translator", "PP");
+		assertEquals(USING_PP, loader.getTranslationApproach());
 	}
 
 	@Test(expected = LoadingException.class)
