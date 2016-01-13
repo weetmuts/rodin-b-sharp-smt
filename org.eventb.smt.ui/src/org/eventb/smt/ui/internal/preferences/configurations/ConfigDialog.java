@@ -45,7 +45,6 @@ public class ConfigDialog extends Dialog {
 	private static final String CONFIG_NAME_LABEL = "Name";
 	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
-	private static final String TRANSLATOR_LABEL = "Translator";
 	private static final String ENABLE_LABEL = "Enable";
 
 	public static final boolean SHOW_ERRORS = true;
@@ -125,22 +124,6 @@ public class ConfigDialog extends Dialog {
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		argsText.setLayoutData(data);
-
-		/**
-		 * Translation approach
-		 */
-		final Label translatorLabel = new Label(shell, SWT.NONE);
-		translatorLabel.setText(TRANSLATOR_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		translatorLabel.setLayoutData(data);
-
-		final Combo translatorCombo = new Combo(shell, getStyle() | DROP_DOWN
-				| READ_ONLY);
-		translatorCombo.setText("");
-		data = new GridData(FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		translatorCombo.setLayoutData(data);
 
 		/**
 		 * OK Button
