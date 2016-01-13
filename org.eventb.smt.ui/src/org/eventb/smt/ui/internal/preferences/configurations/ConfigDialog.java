@@ -48,7 +48,6 @@ public class ConfigDialog extends Dialog {
 	private static final String SOLVER_NAME_LABEL = "Solver Name";
 	private static final String SOLVER_ARGS_LABEL = "Arguments";
 	private static final String TRANSLATOR_LABEL = "Translator";
-	private static final String SMT_LIB_LABEL = "SMT-LIB";
 	private static final String ENABLE_LABEL = "Enable";
 
 	public static final boolean SHOW_ERRORS = true;
@@ -148,22 +147,6 @@ public class ConfigDialog extends Dialog {
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		translatorCombo.setLayoutData(data);
-
-		/**
-		 * SMT-LIB version
-		 */
-		final Label smtlibLabel = new Label(shell, SWT.NONE);
-		smtlibLabel.setText(SMT_LIB_LABEL);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		smtlibLabel.setLayoutData(data);
-
-		final Combo smtlibCombo = new Combo(shell, getStyle() | DROP_DOWN
-				| READ_ONLY);
-		smtlibCombo.setText("");
-		data = new GridData(FILL_HORIZONTAL);
-		data.horizontalSpan = 3;
-		smtlibCombo.setLayoutData(data);
 
 		/**
 		 * OK Button
