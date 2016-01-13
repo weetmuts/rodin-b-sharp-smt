@@ -16,8 +16,6 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
 import java.util.Arrays;
 
-import org.eventb.smt.core.SMTLIBVersion;
-
 /**
  * This class represents SMT Predicate Symbols. *
  */
@@ -46,15 +44,14 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * 
 	 * @param symbolName
 	 *            The name of the symbol
-	 * @param predefined
-	 *            true if it's predefined, false otherwise
 	 * @param argSorts
 	 *            the expected sorts of the arguments.
+	 * @param predefined
+	 *            true if it's predefined, false otherwise
 	 */
 	public SMTPredicateSymbol(final String symbolName,
-			final SMTSortSymbol[] argSorts, final boolean predefined,
-			final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+			final SMTSortSymbol[] argSorts, final boolean predefined) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		isAssociative = false;
 	}
@@ -91,8 +88,8 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 */
 	public SMTPredicateSymbol(final String symbolName,
 			final SMTSortSymbol argSorts[], final boolean isAssociative,
-			final boolean predefined, final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+			final boolean predefined) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		this.isAssociative = isAssociative;
 	}
@@ -172,9 +169,8 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 	 * This class represents the predicate symbol equals (=)
 	 */
 	public static class SMTEqual extends SMTPredicateSymbol {
-		public SMTEqual(final SMTSortSymbol[] sort,
-				final SMTLIBVersion smtlibVersion) {
-			super(EQUAL, sort, PREDEFINED, smtlibVersion);
+		public SMTEqual(final SMTSortSymbol[] sort) {
+			super(EQUAL, sort, PREDEFINED);
 		}
 	}
 }

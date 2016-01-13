@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.translation;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeEqual;
 import static org.eventb.smt.core.internal.ast.SMTFactoryVeriT.makeITE;
 
@@ -50,7 +49,6 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmarkVeriT;
 import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFactoryPP;
@@ -103,8 +101,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final Logic logic,
-			final Predicate predicate, final SMTLIBVersion smtlibVersion) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
+			final Predicate predicate) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, predicate.getFactory());
@@ -118,8 +116,7 @@ public class SMTThroughVeriT extends Translator {
 	 */
 	final private SMTFactoryVeriT sf;
 
-	public SMTThroughVeriT(SMTLIBVersion smtlibVersion) {
-		super(smtlibVersion);
+	public SMTThroughVeriT() {
 		sf = SMTFactoryVeriT.getInstance();
 	}
 
@@ -138,9 +135,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Logic logic,
-			final Predicate predicate, SMTLIBVersion smtlibVersion,
-			final FormulaFactory ff) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
+			final Predicate predicate, final FormulaFactory ff) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, ff);
@@ -421,15 +417,13 @@ public class SMTThroughVeriT extends Translator {
 			else {
 				falseGoalNeeded = false;
 				smtFormula = SMTFactory.makeNot(
-						new SMTFormula[] { translate(predicate, IN_GOAL) },
-						smtlibVersion);
+						new SMTFormula[] { translate(predicate, IN_GOAL) });
 				translatedAssumptions.addAll(getAdditionalAssumptions());
 			}
 		}
 		if (falseGoalNeeded) {
 			smtFormula = SMTFactory
-					.makeNot(new SMTFormula[] { SMTFactory.makePFalse() },
-							smtlibVersion);
+					.makeNot(new SMTFormula[] { SMTFactory.makePFalse() });
 		}
 
 		final SMTBenchmarkVeriT benchmark = new SMTBenchmarkVeriT(lemmaName,
@@ -442,8 +436,8 @@ public class SMTThroughVeriT extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTFormula translate(final Predicate predicate,
-			final SMTLIBVersion smtlibVersion, final FormulaFactory ff) {
-		final SMTThroughVeriT translator = new SMTThroughVeriT(smtlibVersion);
+			final FormulaFactory ff) {
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, ff);
@@ -540,7 +534,7 @@ public class SMTThroughVeriT extends Translator {
 		checkIfIsSetOfSet(type);
 		final SMTSortSymbol left = translateTypeName(type.getLeft());
 		final SMTSortSymbol right = translateTypeName(type.getRight());
-		return SMTFactoryVeriT.makePairSortSymbol(smtlibVersion, left, right);
+		return SMTFactoryVeriT.makePairSortSymbol(left, right);
 	}
 
 	/**
@@ -642,7 +636,7 @@ public class SMTThroughVeriT extends Translator {
 		final String smtVarName = ((SMTSignatureV2_0Verit) signature)
 				.freshQVarName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, V2_0);
+		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);
@@ -679,7 +673,7 @@ public class SMTThroughVeriT extends Translator {
 	private SMTFormula translateEqual(final RelationalPredicate predicate) {
 		final SMTTerm[] children = smtTerms(predicate.getLeft(),
 				predicate.getRight());
-		return makeEqual(children, smtlibVersion);
+		return makeEqual(children);
 	}
 
 	/**
@@ -694,7 +688,7 @@ public class SMTThroughVeriT extends Translator {
 			break;
 
 		case Formula.NOTEQUAL:
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { translateEqual(predicate) }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { translateEqual(predicate) });
 			break;
 
 		case Formula.LT: {
@@ -735,13 +729,13 @@ public class SMTThroughVeriT extends Translator {
 		}
 		case Formula.NOTSUBSET: {
 			final SMTFormula subset = translateRelationalPredicateMacroV2_0(SMTVeriTOperatorV2_0.SUBSET_OP, predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subset });
 			break;
 		}
 		case Formula.NOTSUBSETEQ: {
 			final SMTFormula subseteq = translateRelationalPredicateMacroV2_0(SMTVeriTOperatorV2_0.SUBSETEQ_OP,
 					predicate);
-			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq }, smtlibVersion);
+			smtNode = SMTFactory.makeNot(new SMTFormula[] { subseteq });
 			break;
 		}
 		default:

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import java.util.Arrays;
@@ -33,7 +32,7 @@ import org.junit.Test;
 public abstract class SolverRunWithPPV2_0Tests extends SolverRunTests {
 
 	public SolverRunWithPPV2_0Tests(ConfigProvider provider) {
-		super(provider, USING_PP, V2_0);
+		super(provider, USING_PP);
 	}
 
 	@Test

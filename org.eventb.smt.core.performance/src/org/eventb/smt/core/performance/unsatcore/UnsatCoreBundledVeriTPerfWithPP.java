@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.unsatcore;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_VERIT;
 
 public class UnsatCoreBundledVeriTPerfWithPP extends
 		UnsatCoreExtractionPerfWithPP {
 
 	public UnsatCoreBundledVeriTPerfWithPP() {
-		super(LAST_VERIT, V2_0);
+		super(LAST_VERIT);
 	}
 
 }

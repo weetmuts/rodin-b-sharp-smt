@@ -49,7 +49,9 @@ public interface IConfigDescriptor extends IDescriptor {
 	 * Returns the version of the SMT-LIB to use with the solver.
 	 *
 	 * @return the version of the SMT-LIB to use with the solver
+	 * @deprecated SMT-LIB 2 is assumed everywhere
 	 */
+	@Deprecated
 	SMTLIBVersion getSmtlibVersion();
 
 	/**

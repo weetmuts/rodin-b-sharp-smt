@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
@@ -28,9 +27,8 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public UnsatCoreExtractionWithPP(ConfigProvider provider,
-			SMTLIBVersion smtlibVersion) {
-		super(provider, null, USING_PP, smtlibVersion, GET_UNSAT_CORE);
+	public UnsatCoreExtractionWithPP(ConfigProvider provider) {
+		super(provider, null, USING_PP, GET_UNSAT_CORE);
 	}
 
 	@Test(timeout = 3000)

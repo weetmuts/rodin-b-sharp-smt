@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Ignore;
@@ -31,8 +30,8 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithPP(ConfigProvider provider, SMTLIBVersion version) {
-		super(provider, null, USING_PP, version, !GET_UNSAT_CORE);
+	public SolverPerfWithPP(ConfigProvider provider) {
+		super(provider, null, USING_PP, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

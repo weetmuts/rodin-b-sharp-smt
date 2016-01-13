@@ -12,13 +12,15 @@ package org.eventb.smt.core;
 
 /**
  * Known SMT-LIB language versions.
+ * 
+ * @deprecated SMT-LIB 2 is assumed everywhere
  */
+@Deprecated
 public enum SMTLIBVersion {
 
 	/**
 	 * The original SMT-LIB language used by the SMT Plug-in
 	 */
-	@Deprecated
 	V1_2("V1.2"),
 	/**
 	 * The current SMT-LIB language used by the SMT Plug-in

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.cvc4;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_CVC4;
 
 import java.util.Arrays;
@@ -22,7 +21,7 @@ import org.junit.Test;
 
 public class Cvc4PerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 	public Cvc4PerfWithVeriTV2_0() {
-		super(LAST_CVC4, V2_0);
+		super(LAST_CVC4);
 	}
 
 	@Test

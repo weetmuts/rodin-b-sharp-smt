@@ -11,12 +11,10 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.math.BigInteger;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
@@ -52,9 +50,9 @@ public abstract class SMTFactory {
 	 * Propositional atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", new SMTSortSymbol[] {}, PREDEFINED, V2_0);
+			"true", new SMTSortSymbol[] {}, PREDEFINED);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", new SMTSortSymbol[] {}, PREDEFINED, V2_0);
+			"false", new SMTSortSymbol[] {}, PREDEFINED);
 
 	/**
 	 * Quantifier symbols
@@ -66,12 +64,11 @@ public abstract class SMTFactory {
 	 * Creates a new atomic formula from a relation expression. {EQUAL, LT, LE,
 	 * GT, GE}
 	 */
-	public static SMTFormula makeEqual(final SMTTerm[] args,
-			final SMTLIBVersion smtlibVersion) {
+	public static SMTFormula makeEqual(final SMTTerm[] args) {
 		final SMTSortSymbol sort0 = args[0].getSort();
 		final SMTSortSymbol sort[] = { sort0, sort0 };
 		return new SMTAtom(
-				new SMTPredicateSymbol.SMTEqual(sort, smtlibVersion), args);
+				new SMTPredicateSymbol.SMTEqual(sort), args);
 	}
 
 	public SMTFormula makeLessThan(final SMTPredicateSymbol lt,
@@ -147,29 +144,24 @@ public abstract class SMTFactory {
 	 * Creates a new connective formula. {NOT, IMPLIES, IF_THEN_ELSE, AND, OR,
 	 * XOR, IFF}
 	 */
-	public static SMTFormula makeNot(final SMTFormula[] formula,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTConnectiveFormula(NOT, smtlibVersion, formula);
+	public static SMTFormula makeNot(final SMTFormula[] formula) {
+		return new SMTConnectiveFormula(NOT, formula);
 	}
 
-	public static SMTFormula makeImplies(final SMTFormula[] formulas,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTConnectiveFormula(IMPLIES, smtlibVersion, formulas);
+	public static SMTFormula makeImplies(final SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(IMPLIES, formulas);
 	}
 
-	public static SMTFormula makeAnd(final SMTFormula[] formulas,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTConnectiveFormula(AND, smtlibVersion, formulas);
+	public static SMTFormula makeAnd(final SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(AND, formulas);
 	}
 
-	public static SMTFormula makeOr(final SMTFormula[] formulas,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTConnectiveFormula(OR, smtlibVersion, formulas);
+	public static SMTFormula makeOr(final SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(OR, formulas);
 	}
 
-	public static SMTFormula makeIff(final SMTFormula[] formulas,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTConnectiveFormula(IFF, smtlibVersion, formulas);
+	public static SMTFormula makeIff(final SMTFormula[] formulas) {
+		return new SMTConnectiveFormula(IFF, formulas);
 	}
 
 	/**
@@ -204,20 +196,16 @@ public abstract class SMTFactory {
 		return makeConstant(booleanCste, signature);
 	}
 
-	public static SMTTerm makeVar(final String name, final SMTSortSymbol sort,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED,
-				smtlibVersion), smtlibVersion);
+	public static SMTTerm makeVar(final String name, final SMTSortSymbol sort) {
+		return new SMTVar(new SMTVarSymbol(name, sort, !SMTSymbol.PREDEFINED));
 	}
 
-	public static SMTFormula makeForAll(final SMTTerm[] terms,
-			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
-		return makeSMTQuantifiedFormula(FORALL, terms, formula, smtlibVersion);
+	public static SMTFormula makeForAll(final SMTTerm[] terms, final SMTFormula formula) {
+		return makeSMTQuantifiedFormula(FORALL, terms, formula);
 	}
 
-	public static SMTFormula makeExists(final SMTTerm[] terms,
-			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
-		return makeSMTQuantifiedFormula(EXISTS, terms, formula, smtlibVersion);
+	public static SMTFormula makeExists(final SMTTerm[] terms, final SMTFormula formula) {
+		return makeSMTQuantifiedFormula(EXISTS, terms, formula);
 	}
 
 	/**
@@ -225,15 +213,15 @@ public abstract class SMTFactory {
 	 * 
 	 * @param qSymbol
 	 *            the quantifier symbol
-	 * @param formula
-	 *            the subformula of the quantifier formula
 	 * @param terms
 	 *            the terms that contains the bound identifier symbols
+	 * @param formula
+	 *            the subformula of the quantifier formula
 	 * @return the SMT quantified formula
 	 */
 	public static SMTFormula makeSMTQuantifiedFormula(
 			final SMTQuantifierSymbol qSymbol, final SMTTerm[] terms,
-			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
+			final SMTFormula formula) {
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {
 			final SMTTerm term = terms[i];
@@ -245,7 +233,7 @@ public abstract class SMTFactory {
 						"The term should be an SMTVar");
 			}
 		}
-		return makeSMTQuantifiedFormula(qSymbol, qVars, formula, smtlibVersion);
+		return makeSMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
 	/**
@@ -259,10 +247,9 @@ public abstract class SMTFactory {
 	 *            the subformula of the quantifier formula
 	 * @return a new SMT quantified formula
 	 */
-	public static SMTFormula makeSMTQuantifiedFormula(
-			final SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
-			final SMTFormula formula, final SMTLIBVersion smtlibVersion) {
-		return new SMTQuantifiedFormula(qSymbol, qVars, formula, smtlibVersion);
+	public static SMTFormula makeSMTQuantifiedFormula(final SMTQuantifierSymbol qSymbol, final SMTVarSymbol[] qVars,
+			final SMTFormula formula) {
+		return new SMTQuantifiedFormula(qSymbol, qVars, formula);
 	}
 
 	/**

@@ -18,7 +18,6 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
-import static org.eventb.smt.core.SMTLIBVersion.parseVersion;
 import static org.eventb.smt.core.TranslationApproach.parseApproach;
 
 import org.eclipse.swt.SWT;
@@ -33,7 +32,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.ui.internal.UIUtils;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
@@ -162,10 +160,7 @@ public class ConfigDialog extends Dialog {
 
 		final Combo smtlibCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
-		for (final SMTLIBVersion smtlibVersion : SMTLIBVersion.values()) {
-			smtlibCombo.add(smtlibVersion.toString());
-		}
-		smtlibCombo.setText(config.version.toString());
+		smtlibCombo.setText("");
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		smtlibCombo.setLayoutData(data);
@@ -198,7 +193,6 @@ public class ConfigDialog extends Dialog {
 					config.solverName = solverCombo.getText();
 					config.args = argsText.getText();
 					config.approach = parseApproach(translatorCombo.getText());
-					config.version = parseVersion(smtlibCombo.getText());
 					model.update(config);
 					returnCode = OK;
 					shell.close();

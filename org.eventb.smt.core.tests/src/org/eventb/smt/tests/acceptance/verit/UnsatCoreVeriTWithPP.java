@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.acceptance.verit;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.BUNDLED_VERIT;
 
 import org.eventb.smt.tests.acceptance.UnsatCoreExtractionWithPP;
@@ -18,7 +17,7 @@ import org.eventb.smt.tests.acceptance.UnsatCoreExtractionWithPP;
 public class UnsatCoreVeriTWithPP extends UnsatCoreExtractionWithPP {
 
 	public UnsatCoreVeriTWithPP() {
-		super(BUNDLED_VERIT, V2_0);
+		super(BUNDLED_VERIT);
 	}
 
 }

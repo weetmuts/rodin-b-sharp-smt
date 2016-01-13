@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_GOAL_LABEL;
 import static org.eventb.smt.core.internal.ast.attributes.Label.DEFAULT_HYPOTHESIS_LABEL;
 
@@ -46,7 +45,7 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	 *            the logic used in the SMTSignature
 	 */
 	public SMTSignatureV2_0(final Logic logic) {
-		super(logic, V2_0);
+		super(logic);
 	}
 
 	/**
@@ -72,7 +71,7 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 				&& reservedSymbolsAndKeywords.addAll(SMTCommandName
 						.getCommandNames())
 				&& reservedSymbolsAndKeywords.addAll(SMTConnective
-						.getConnectiveSymbols(V2_0));
+						.getConnectiveSymbols());
 		assert successfullyAddedReservedSymbolsAndKeywords;
 		return new HashSet<String>(reservedSymbolsAndKeywords);
 	}

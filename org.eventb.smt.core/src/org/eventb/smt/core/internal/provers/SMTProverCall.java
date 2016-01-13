@@ -18,7 +18,6 @@ import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.core.seqprover.xprover.ProcessMonitor.wrapCommand;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.SolverKind.OPENSMT;
@@ -361,11 +360,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 * @return the file extension
 	 */
 	private String getFileExtension() {
-		if (config.getSmtlibVersion() == V2_0) {
-			final SolverKind solverKind = config.getKind();
-			if (solverKind == ALT_ERGO || solverKind == OPENSMT) {
-				return NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
-			}
+		final SolverKind solverKind = config.getKind();
+		if (solverKind == ALT_ERGO || solverKind == OPENSMT) {
+			return NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
 		}
 		return SMT_LIB_FILE_EXTENSION;
 	}
@@ -485,7 +482,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		case VERIT:
 			return config.getArgs().contains("--proof=");
 		case Z3:
-			return config.getSmtlibVersion() == V2_0;
+			return true;
 		default:
 			return false;
 		}

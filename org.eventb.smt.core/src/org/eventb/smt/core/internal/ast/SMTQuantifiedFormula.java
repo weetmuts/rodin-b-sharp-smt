@@ -14,7 +14,6 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
 
@@ -38,9 +37,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	 * @param formula
 	 *            the bound formula
 	 */
-	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
-			final SMTVarSymbol[] qVars, final SMTFormula formula,
-			final SMTLIBVersion smtlibVersion) {//TODO remove last parameter
+	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier, final SMTVarSymbol[] qVars, final SMTFormula formula) {
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;

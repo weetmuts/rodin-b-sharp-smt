@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
 
@@ -21,7 +20,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * @author Yoann Guyot
  **/
 public class SMTVar extends SMTTerm {
-	final SMTLIBVersion smtlibVersion;
 	final SMTVarSymbol symbol;
 
 	/**
@@ -30,8 +28,7 @@ public class SMTVar extends SMTTerm {
 	 * @param symbol
 	 *            the symbol of the constructor
 	 */
-	public SMTVar(final SMTVarSymbol symbol, final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
+	public SMTVar(final SMTVarSymbol symbol) {
 		this.symbol = symbol;
 	}
 

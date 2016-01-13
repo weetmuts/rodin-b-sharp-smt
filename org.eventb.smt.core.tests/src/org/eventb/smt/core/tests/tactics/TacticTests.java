@@ -65,9 +65,8 @@ public abstract class TacticTests {
 	 */
 	private static IConfigDescriptor makeEnabled(IConfigDescriptor desc,
 			boolean enabled) {
-		return newConfigDescriptor(desc.getName(), desc.getSolverName(),
-				desc.getArgs(), desc.getTranslationApproach(),
-				desc.getSmtlibVersion(), enabled);
+		return newConfigDescriptor(desc.getName(), desc.getSolverName(), desc.getArgs(), desc.getTranslationApproach(),
+				enabled);
 	}
 
 	/**

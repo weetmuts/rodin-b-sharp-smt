@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
+
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 import org.osgi.service.prefs.Preferences;
 
+@SuppressWarnings("deprecation")
 public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 
 	private static final StringSerializer SOLVER_NAME = new StringSerializer(
@@ -22,27 +25,23 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 	private static final StringSerializer ARGS = new StringSerializer("args"); //$NON-NLS-1$
 	private static final TranslationApproachSerializer APPROACH = new TranslationApproachSerializer(
 			"approach"); //$NON-NLS-1$
-	private static final SMTLIBVersionSerializer VERSION = new SMTLIBVersionSerializer(
-			"version"); //$NON-NLS-1$
 	private static final BooleanSerializer ENABLED = new BooleanSerializer(
 			"enabled"); //$NON-NLS-1$
 
 	private final String solverName;
 	private final String args;
 	private final TranslationApproach approach;
-	private final SMTLIBVersion version;
 	
 	// This field is the only one that can mutate
 	private boolean enabled;
 
 	public ConfigDescriptor(String name, boolean bundled, String solverName,
-			String args, TranslationApproach approach, SMTLIBVersion version,
+			String args, TranslationApproach approach,
 			boolean enabled) {
 		super(name, bundled);
 		this.solverName = solverName;
 		this.args = args;
 		this.approach = approach;
-		this.version = version;
 		this.enabled = enabled;
 	}
 
@@ -51,7 +50,6 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		this.solverName = SOLVER_NAME.load(node);
 		this.args = ARGS.load(node);
 		this.approach = APPROACH.load(node);
-		this.version = VERSION.load(node);
 		this.enabled = ENABLED.load(node);
 	}
 
@@ -61,7 +59,6 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		SOLVER_NAME.store(node, solverName);
 		ARGS.store(node, args);
 		APPROACH.store(node, approach);
-		VERSION.store(node, version);
 		ENABLED.store(node, enabled);
 	}
 
@@ -82,7 +79,7 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 
 	@Override
 	public SMTLIBVersion getSmtlibVersion() {
-		return version;
+		return V2_0;
 	}
 
 	@Override
@@ -102,8 +99,6 @@ public class ConfigDescriptor extends Descriptor implements IConfigDescriptor {
 		toStringQuoted(sb, args);
 		toStringSep(sb);
 		sb.append(approach);
-		toStringSep(sb);
-		sb.append(version);
 		toStringSep(sb);
 		sb.append(enabled ? "enabled" : "disabled");
 	}

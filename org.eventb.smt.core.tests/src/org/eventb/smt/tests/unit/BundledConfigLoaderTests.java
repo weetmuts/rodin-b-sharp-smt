@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
 import static org.junit.Assert.assertEquals;
@@ -71,23 +70,6 @@ public class BundledConfigLoaderTests {
 	public void invalidApproach() {
 		ce.add("translator", "unknown approach");
 		loader.getTranslationApproach();
-	}
-
-	@Test
-	public void missingVersion() {
-		assertEquals(V2_0, loader.getVersion());
-	}
-
-	@Test
-	public void validVersion() {
-		ce.add("smt-lib", "V2.0");
-		assertEquals(V2_0, loader.getVersion());
-	}
-
-	@Test(expected = LoadingException.class)
-	public void invalidVersion() {
-		ce.add("smt-lib", "unknown version");
-		loader.getVersion();
 	}
 
 }

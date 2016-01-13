@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
-import org.eventb.smt.core.SMTLIBVersion;
-
 /**
  * This class stores predefined SMT Symbols
  */
 public abstract class SMTSymbol {
-	protected final SMTLIBVersion smtlibVersion;
 
 	protected final String name;
 	protected final boolean predefined;
@@ -56,12 +53,10 @@ public abstract class SMTSymbol {
 	 * @param predefined
 	 *            true if it's predefined, false otherwise
 	 */
-	protected SMTSymbol(final String symbolName, final boolean predefined,
-			final SMTLIBVersion smtlibVersion) {
+	protected SMTSymbol(final String symbolName, final boolean predefined) {
 		assert symbolName != null;
 		this.name = symbolName;
 		this.predefined = predefined;
-		this.smtlibVersion = smtlibVersion;
 	}
 
 	/**

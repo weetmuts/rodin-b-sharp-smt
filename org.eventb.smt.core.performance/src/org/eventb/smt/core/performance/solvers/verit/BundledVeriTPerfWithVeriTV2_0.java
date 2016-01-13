@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.verit;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
-
 import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 import org.eventb.smt.tests.ConfigProvider;
 
 public class BundledVeriTPerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 
 	public BundledVeriTPerfWithVeriTV2_0() {
-		super(ConfigProvider.BUNDLED_VERIT, V2_0);
+		super(ConfigProvider.BUNDLED_VERIT);
 	}
 
 }

@@ -16,8 +16,6 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
 import java.util.Arrays;
 
-import org.eventb.smt.core.SMTLIBVersion;
-
 /**
  * This class represents SMT function symbols.
  */
@@ -62,9 +60,8 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 	 */
 	public SMTFunctionSymbol(final String symbolName,
 			final SMTSortSymbol[] argSorts, final SMTSortSymbol resultSort,
-			final boolean associative, final boolean predefined,
-			final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+			final boolean associative, final boolean predefined) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts.clone();
 		// Must not be null
 		this.resultSort = resultSort;

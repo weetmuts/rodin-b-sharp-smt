@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.SolverKind.Z3;
 import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
@@ -38,7 +37,6 @@ import org.eclipse.core.runtime.Path;
 import org.eventb.core.ast.Formula;
 import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.Predicate;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.core.performance.xml.utils.LemmaData;
@@ -92,9 +90,9 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 *            the parameter of one test.
 	 */
 	public XMLtoSMTTests(LemmaData data, ConfigProvider provider,
-			SMTLIBVersion version, boolean getUnsatCore) {
+			boolean getUnsatCore) {
 		super(provider, Theory.fromNames(data.getTheories()), USING_VERIT,
-				version, getUnsatCore);
+				getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");
@@ -107,9 +105,8 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 * @param data
 	 *            the parameter of one test.
 	 */
-	public XMLtoSMTTests(LemmaData data, ConfigProvider provider,
-			SMTLIBVersion version) {
-		this(data, provider, version, !GET_UNSAT_CORE);
+	public XMLtoSMTTests(LemmaData data, ConfigProvider provider) {
+		this(data, provider, !GET_UNSAT_CORE);
 	}
 
 	public static List<LemmaData[]> getDocumentDatas(
@@ -402,22 +399,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	@Test(timeout = 3000)
 	public void testTranslateWithVerit() {
-		if (configuration.getSmtlibVersion() == V2_0) {
-			fail("SMT-LIB 2.0 is not handled by the veriT approach yet");
-		} else {
-			String name = data.getLemmaName();
-			if (name.isEmpty()) {
-				name = data.getOrigin();
-			}
-
-			debugBuilder.append("Testing lemma (veriT approach): ")
-					.append(name);
-			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
-
-			name = name + "vt";
-			doTest(name, data.getHypotheses(), data.getGoal(), data.getTe(),
-					!TRIVIAL, VALID, debugBuilder);
-		}
+		fail("SMT-LIB 2.0 is not handled by the veriT approach yet");
 	}
 
 	/**

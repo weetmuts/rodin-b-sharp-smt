@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.altergo;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_ALTERGO;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import org.junit.Test;
 
 public class AltErgoPerfWithPPV2_0 extends SolverPerfWithPP {
 	public AltErgoPerfWithPPV2_0() {
-		super(LAST_ALTERGO, V2_0);
+		super(LAST_ALTERGO);
 	}
 
 	@Test

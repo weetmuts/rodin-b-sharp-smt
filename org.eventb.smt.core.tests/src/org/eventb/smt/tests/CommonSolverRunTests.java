@@ -29,7 +29,6 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTSignature;
@@ -100,31 +99,25 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 	}
 
 	public CommonSolverRunTests(ConfigProvider provider, Set<Theory> theories,
-			TranslationApproach approach, SMTLIBVersion version,
-			boolean getUnsatCore) {
+			TranslationApproach approach, boolean getUnsatCore) {
 		this.theories = theories;
-		this.configuration = provider.config(approach, version);
+		this.configuration = provider.config(approach);
 	}
 
 	public static IConfigDescriptor makeConfig(final ISolverDescriptor solver,
-			final String args, final TranslationApproach translationApproach,
-			final SMTLIBVersion smtlibVersion) {
-		return makeConfig(solver.getName(), solver, args, translationApproach,
-				smtlibVersion);
+			final String args, final TranslationApproach translationApproach) {
+		return makeConfig(solver.getName(), solver, args, translationApproach);
 	}
 
 	public static IConfigDescriptor makeConfig(final String id,
 			final ISolverDescriptor solver, final String args,
-			final TranslationApproach translationApproach,
-			final SMTLIBVersion smtlibVersion) {
+			final TranslationApproach translationApproach) {
 		final String newID = id + "_" + translationApproach.toString();
-		return newConfigDescriptor(newID, solver.getName(), args,
-				translationApproach, smtlibVersion, true);
+		return newConfigDescriptor(newID, solver.getName(), args, translationApproach, true);
 	}
 
 	protected void printPerf(final StringBuilder debugBuilder,
 			final String lemmaName, final String solverId,
-			final SMTLIBVersion smtlibVersion,
 			final TranslationApproach translationApproach,
 			final SMTProverCall smtProverCall) {
 		debugBuilder.append("<PERF_ENTRY>\n");
@@ -141,7 +134,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 			debugBuilder.append("\n");
 		}
-		debugBuilder.append("SMTLIB ").append(smtlibVersion).append("\n");
 		debugBuilder.append("Approach ").append(translationApproach)
 				.append("\n");
 		debugBuilder.append("Status ");
@@ -195,8 +187,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				debugBuilder);
 
 		printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
-				configuration.getSmtlibVersion(),
-				configuration.getTranslationApproach(), smtProverCall);
+				configuration.getTranslationApproach(),
+				smtProverCall);
 
 		assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
 		assertEquals("The result of the SMT prover wasn't the expected one.",
@@ -301,8 +293,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				parsedGoal, parsedGoal.getFactory());
 
 		// FIXME should not be PP because could this is used by veriT tests
-		final SMTThroughPP translator = new SMTThroughPP(
-				configuration.getSmtlibVersion());
+		final SMTThroughPP translator = new SMTThroughPP();
 		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
 
 		final SMTSignature signature = benchmark.getSignature();
@@ -395,8 +386,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		final String testedSolverName = configuration.getSolverName();
 		final TranslationApproach testedTranslationApproach = configuration
 				.getTranslationApproach();
-		final SMTLIBVersion testedSmtlibVersion = configuration
-				.getSmtlibVersion();
 
 		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, parsedGoal.getFactory());
@@ -408,8 +397,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		if (!iter2ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter2ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverName,
-					testedSmtlibVersion, testedTranslationApproach,
-					iter2Result.getSmtProverCall());
+					testedTranslationApproach, iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
 	}

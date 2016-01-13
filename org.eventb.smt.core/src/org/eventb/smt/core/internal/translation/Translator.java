@@ -34,7 +34,6 @@ import org.eventb.core.ast.Type;
 import org.eventb.core.ast.UnaryPredicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTNode;
@@ -90,8 +89,6 @@ public abstract class Translator implements ISimpleVisitor {
 	public static boolean DEBUG_DETAILS = false;
 	protected static final boolean IN_GOAL = true;
 
-	protected SMTLIBVersion smtlibVersion;
-
 	protected SMTNode<?> smtNode;
 
 	/**
@@ -125,10 +122,6 @@ public abstract class Translator implements ISimpleVisitor {
 	 * This variable maps names to SMT bound variables.
 	 */
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
-
-	public Translator(final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
-	}
 
 	/**
 	 * Translates the given event-B sequent to SMT-LIB.
@@ -251,10 +244,10 @@ public abstract class Translator implements ISimpleVisitor {
 		final SMTFormula[] children = smtFormulas(predicate.getChildren());
 		switch (predicate.getTag()) {
 		case Formula.LAND:
-			smtNode = SMTFactory.makeAnd(children, smtlibVersion);
+			smtNode = SMTFactory.makeAnd(children);
 			break;
 		case Formula.LOR:
-			smtNode = SMTFactory.makeOr(children, smtlibVersion);
+			smtNode = SMTFactory.makeOr(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -300,10 +293,10 @@ public abstract class Translator implements ISimpleVisitor {
 				predicate.getRight());
 		switch (predicate.getTag()) {
 		case Formula.LIMP:
-			smtNode = SMTFactory.makeImplies(children, smtlibVersion);
+			smtNode = SMTFactory.makeImplies(children);
 			break;
 		case Formula.LEQV:
-			smtNode = SMTFactory.makeIff(children, smtlibVersion);
+			smtNode = SMTFactory.makeIff(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -320,12 +313,10 @@ public abstract class Translator implements ISimpleVisitor {
 
 		switch (predicate.getTag()) {
 		case Formula.FORALL:
-			smtNode = SMTFactory.makeForAll(termChildren, formulaChild,
-					smtlibVersion);
+			smtNode = SMTFactory.makeForAll(termChildren, formulaChild);
 			break;
 		case Formula.EXISTS:
-			smtNode = SMTFactory.makeExists(termChildren, formulaChild,
-					smtlibVersion);
+			smtNode = SMTFactory.makeExists(termChildren, formulaChild);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());
@@ -343,7 +334,7 @@ public abstract class Translator implements ISimpleVisitor {
 				.getChild()) };
 		switch (predicate.getTag()) {
 		case Formula.NOT:
-			smtNode = SMTFactory.makeNot(children, smtlibVersion);
+			smtNode = SMTFactory.makeNot(children);
 			break;
 		default:
 			throw new IllegalTagException(predicate.getTag());

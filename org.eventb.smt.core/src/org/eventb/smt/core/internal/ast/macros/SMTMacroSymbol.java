@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.macros;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 
@@ -97,17 +96,16 @@ public class SMTMacroSymbol extends SMTSymbol {
 	 * 
 	 * @param symbolName
 	 *            The string representation of the symbol
+	 * @param argSorts
+	 *            The expected sorts of the arguments
 	 * @param returnSort
 	 *            The return sort of the macro symbol
 	 * @param predefined
 	 *            If it's predefined
-	 * @param argSorts
-	 *            The expected sorts of the arguments
 	 */
 	SMTMacroSymbol(final String symbolName, final SMTSortSymbol[] argSorts,
-			final SMTSortSymbol returnSort, final boolean predefined,
-			final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+			final SMTSortSymbol returnSort, final boolean predefined) {
+		super(symbolName, predefined);
 		this.argSorts = argSorts;
 		this.returnSort = returnSort;
 	}

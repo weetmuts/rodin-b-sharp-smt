@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.MAPSTO;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.util.Set;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroTerm;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
@@ -39,9 +37,8 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private static final String FST_PAIR_SORT_NAME = "'s";
 	private static final String SND_PAIR_SORT_NAME = "'t";
 
-	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
-			final String symbolName, SMTLIBVersion smtlibVersion) {
-		return new SMTPolymorphicSortSymbol(symbolName, smtlibVersion);
+	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(final String symbolName) {
+		return new SMTPolymorphicSortSymbol(symbolName);
 	}
 
 	/**
@@ -50,28 +47,27 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
 	public static final SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol(
-			"Pair", V2_0);
+			"Pair");
 
 	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(
-			FST_PAIR_SORT_NAME, V2_0);
+			FST_PAIR_SORT_NAME);
 
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
-			SND_PAIR_SORT_NAME, V2_0);
+			SND_PAIR_SORT_NAME);
 
 	private static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL_V2_0 = new SMTFunctionSymbol(
-			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT_V2_0, !ASSOCIATIVE, PREDEFINED,
-			V2_0);
+			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT_V2_0, !ASSOCIATIVE, PREDEFINED);
 
 	private final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT_V2_0 };
 
 	public final static SMTFunctionSymbol FST_SYMBOLV_2_0 = new SMTFunctionSymbol(
-			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, PREDEFINED);
 
 	public final static SMTFunctionSymbol SND_SYMBOL_V2_0 = new SMTFunctionSymbol(
-			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
+			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, PREDEFINED);
 
 	private boolean pairAxiomAdded = false;
 
@@ -126,15 +122,15 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	public SMTFormula createPairEqualityAxiom() {
 
 		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT_V2_0,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT_V2_0,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 
-		final SMTVar pairVar1 = new SMTVar(pSymbol1, V2_0);
-		final SMTVar pairVar2 = new SMTVar(pSymbol2, V2_0);
+		final SMTVar pairVar1 = new SMTVar(pSymbol1);
+		final SMTVar pairVar2 = new SMTVar(pSymbol2);
 
 		final SMTFormula equalsFormula = SMTFactory.makeEqual(new SMTTerm[] {
-				pairVar1, pairVar2 }, V2_0);
+				pairVar1, pairVar2 });
 
 		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(
 				FST_SYMBOLV_2_0, pairVar1);
@@ -143,7 +139,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 				FST_SYMBOLV_2_0, pairVar2);
 
 		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(
-				new SMTTerm[] { fstFunAppl1, fstFunAppl2 }, V2_0);
+				new SMTTerm[] { fstFunAppl1, fstFunAppl2 });
 
 		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(
 				SND_SYMBOL_V2_0, pairVar1);
@@ -152,18 +148,17 @@ final public class SMTFactoryVeriT extends SMTFactory {
 				SND_SYMBOL_V2_0, pairVar2);
 
 		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(
-				new SMTTerm[] { sndFunAppl1, sndFunAppl2 }, V2_0);
+				new SMTTerm[] { sndFunAppl1, sndFunAppl2 });
 
 		final SMTFormula andFormula = SMTFactory.makeAnd(new SMTFormula[] {
-				subEqualsFormula1, subEqualsFormula2 }, V2_0);
+				subEqualsFormula1, subEqualsFormula2 });
 
 		final SMTFormula impliesFormula = SMTFactory.makeImplies(
-				new SMTFormula[] { andFormula, equalsFormula }, V2_0);
+				new SMTFormula[] { andFormula, equalsFormula });
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
-						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula,
-						V2_0);
+						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula);
 
 		return quantifiedFormula;
 	}
@@ -178,24 +173,23 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		final SMTTerm falseTerm = new SMTFunApplication(falseSymbol,
 				new SMTTerm[] {});
 		final SMTVarSymbol boolvarSymbol = new SMTVarSymbol(boolVarName,
-				boolSort, false, V2_0);
-		final SMTVar boolVar = new SMTVar(boolvarSymbol, V2_0);
+				boolSort, false);
+		final SMTVar boolVar = new SMTVar(boolvarSymbol);
 
 		final SMTFormula or = makeOr(
 				new SMTFormula[] {
-						makeEqual(new SMTTerm[] { boolVar, trueTerm }, V2_0),
-						makeEqual(new SMTTerm[] { boolVar, falseTerm }, V2_0) },
-				V2_0);
+						makeEqual(new SMTTerm[] { boolVar, trueTerm }),
+						makeEqual(new SMTTerm[] { boolVar, falseTerm }) });
 
 		final SMTFormula forall = makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL,
-				new SMTVarSymbol[] { boolvarSymbol }, or, V2_0);
+				new SMTVarSymbol[] { boolvarSymbol }, or);
 
 		final SMTFormula not = makeNot(
 				new SMTFormula[] { makeEqual(new SMTTerm[] { trueTerm,
-						falseTerm }, V2_0) }, V2_0);
+						falseTerm }) });
 
-		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not }, V2_0);
+		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not });
 
 		return and;
 	}
@@ -207,29 +201,21 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 * (Pair A B)
 	 * <p>
 	 * where A and B are two SMT sort symbols
-	 * 
 	 * @param sourceSymbol
 	 *            The first sort symbol
 	 * @param targetSymbol
 	 *            The second sort symbol
+	 * 
 	 * @return A pair sort symbol
 	 */
-	public static SMTSortSymbol makePairSortSymbol(SMTLIBVersion smtlibVersion,
-			final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
-		// if (smtlibVersion == V1_2) {
+	public static SMTSortSymbol makePairSortSymbol(final SMTSortSymbol sourceSymbol, final SMTSortSymbol targetSymbol) {
 		final StringBuffer sb = new StringBuffer();
 		sb.append("(Pair ");
 		sb.append(sourceSymbol.toString());
 		sb.append(" ");
 		sb.append(targetSymbol.toString());
 		sb.append(")");
-		return new SMTSortSymbol(sb.toString(), false, V2_0);
-		// } else {
-		// final StringBuffer sb = new StringBuffer();
-		// sb.append("Pair");
-		// return new SMTSortSymbol(sb.toString(), false, V2_0);
-		// }
-
+		return new SMTSortSymbol(sb.toString(), false);
 	}
 
 	/**

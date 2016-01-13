@@ -12,7 +12,6 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.pptrans.Translator.isInGoal;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.internal.translation.SMTThroughPP.translateTE;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +59,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ISimpleSequent sequent = make((List<Predicate>) null,
 				goalPredicate, goalPredicate.getFactory());
 
-		final SMTThroughPP translator = new SMTThroughPP(V2_0);
+		final SMTThroughPP translator = new SMTThroughPP();
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final SMTFormula formula = benchmark.getFormula();
@@ -77,7 +76,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		assertTypeChecked(goal);
 
-		final SMTThroughPP translator = new SMTThroughPP(V2_0);
+		final SMTThroughPP translator = new SMTThroughPP();
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
@@ -128,7 +127,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 
 		assertTrue(producePPTargetSubLanguageError(ppPred), isInGoal(sequent));
 
-		return translateTE(logic, sequent, V2_0);
+		return translateTE(logic, sequent);
 	}
 
 	private static String producePPTargetSubLanguageError(
@@ -171,7 +170,7 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 	private static void testTranslationV2_0(final Predicate ppPred,
 			final String expectedSMTNode, final String solver) {
 		final StringBuilder sb = new StringBuilder();
-		SMTThroughPP.translate(ppPred, V2_0).toString(sb, -1, false);
+		SMTThroughPP.translate(ppPred).toString(sb, -1, false);
 		final String actualSMTNode = sb.toString();
 		if (!expectedSMTNode.equals(actualSMTNode)) {
 			System.out.println(translationMessage(ppPred, actualSMTNode));

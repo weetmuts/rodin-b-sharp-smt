@@ -65,12 +65,6 @@ public class ConfigFieldEditor extends
 			public String getLabel(ConfigElement element) {
 				return element.approach.toString();
 			}
-		},
-		SMTLIB("SMT-LIB", 43) {
-			@Override
-			public String getLabel(ConfigElement element) {
-				return element.version.toString();
-			}
 		};
 
 		private final String title;

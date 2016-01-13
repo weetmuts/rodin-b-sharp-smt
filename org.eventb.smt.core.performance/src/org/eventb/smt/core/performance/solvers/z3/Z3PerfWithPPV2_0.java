@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.z3;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_Z3;
 
 import java.util.Arrays;
@@ -24,7 +23,7 @@ import org.junit.Test;
 public class Z3PerfWithPPV2_0 extends SolverPerfWithPP {
 
 	public Z3PerfWithPPV2_0() {
-		super(LAST_Z3, V2_0);
+		super(LAST_Z3);
 	}
 
 	@Test

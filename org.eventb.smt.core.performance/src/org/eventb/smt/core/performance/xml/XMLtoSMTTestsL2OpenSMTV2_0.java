@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_OPENSMT;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L2;
 
@@ -25,7 +24,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class XMLtoSMTTestsL2OpenSMTV2_0 extends XMLtoSMTTests {
 	public XMLtoSMTTestsL2OpenSMTV2_0(final LemmaData data) {
-		super(data, LAST_OPENSMT, V2_0);
+		super(data, LAST_OPENSMT);
 	}
 
 	@Parameters

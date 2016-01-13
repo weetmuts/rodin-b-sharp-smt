@@ -15,7 +15,6 @@ import static org.eventb.core.seqprover.transformer.SimpleSequents.translateExte
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
 import static org.eventb.pptrans.Translator.reduceToPredicateCalculus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeBool;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeInteger;
 import static org.eventb.smt.core.internal.ast.attributes.Label.GOAL_LABEL;
@@ -73,7 +72,6 @@ import org.eventb.core.ast.UnaryExpression;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTBenchmarkPP;
 import org.eventb.smt.core.internal.ast.SMTFactory;
@@ -150,8 +148,7 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * Constructor of a PP approach translator of Event-B to SMT-LIB
 	 */
-	public SMTThroughPP(final SMTLIBVersion smtlibVersion) {
-		super(smtlibVersion);
+	public SMTThroughPP() {
 		sf = SMTFactoryPP.getInstance();
 	}
 
@@ -618,7 +615,7 @@ public class SMTThroughPP extends Translator {
 		final SMTFormula rightFormula = translateTruePred(right);
 
 		return SMTFactory.makeIff(
-				new SMTFormula[] { leftFormula, rightFormula }, smtlibVersion);
+				new SMTFormula[] { leftFormula, rightFormula });
 	}
 
 	/**
@@ -678,8 +675,7 @@ public class SMTThroughPP extends Translator {
 		} else {
 			varSort = typeMap.get(baseType);
 		}
-		final SMTTerm smtVar = SMTFactory.makeVar(varName, varSort,
-				smtlibVersion);
+		final SMTTerm smtVar = SMTFactory.makeVar(varName, varSort);
 
 		// creates the membership of the created bounded variable into the left
 		// set
@@ -705,11 +701,10 @@ public class SMTThroughPP extends Translator {
 
 		// creates the equivalence between the two memberships
 		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
-				leftMembership, rightMembership }, smtlibVersion);
+				leftMembership, rightMembership });
 
 		// returns the quantified formula
-		return SMTFactory.makeForAll(new SMTTerm[] { smtVar }, equivalence,
-				smtlibVersion);
+		return SMTFactory.makeForAll(new SMTTerm[] { smtVar }, equivalence);
 	}
 
 	/**
@@ -729,8 +724,7 @@ public class SMTThroughPP extends Translator {
 		// creates the quantified variable with a fresh name
 		final String varName = signature.freshSymbolName("x");
 		final SMTSortSymbol intSort = typeMap.get(integerType);
-		final SMTTerm smtVar = SMTFactory.makeVar(varName, intSort,
-				smtlibVersion);
+		final SMTTerm smtVar = SMTFactory.makeVar(varName, intSort);
 
 		// creates the integer constant
 		SMTFunctionSymbol integerSet = signature.getLogic().getIntsSet();
@@ -760,7 +754,7 @@ public class SMTThroughPP extends Translator {
 
 		// creates the axiom
 		final SMTFormula axiom = SMTFactory.makeForAll(
-				new SMTTerm[] { smtVar }, membershipFormula, smtlibVersion);
+				new SMTTerm[] { smtVar }, membershipFormula);
 
 		axiom.setComment("Integer axiom");
 		return axiom;
@@ -781,7 +775,7 @@ public class SMTThroughPP extends Translator {
 		final SMTSortSymbol setSort = membershipArgSorts[leftMembersNumber];
 		// creates the quantified set variable with fresh name
 		final String setX = signature.freshSymbolName("X");
-		final SMTTerm termX = SMTFactory.makeVar(setX, setSort, smtlibVersion);
+		final SMTTerm termX = SMTFactory.makeVar(setX, setSort);
 
 		// creates the quantified element variables with fresh names
 		// and the equalities
@@ -793,18 +787,18 @@ public class SMTThroughPP extends Translator {
 		for (int i = 0; i < leftMembersNumber; i++) {
 			final String xVar = signature.freshSymbolName("x");
 			final SMTTerm xTerm = SMTFactory.makeVar(xVar,
-					membershipArgSorts[i], smtlibVersion);
+					membershipArgSorts[i]);
 			xTerms[i] = xTerm;
 			xMembershipArgs[i] = xTerm;
 
 			final String yVar = signature.freshSymbolName("y");
 			final SMTTerm yTerm = SMTFactory.makeVar(yVar,
-					membershipArgSorts[i], smtlibVersion);
+					membershipArgSorts[i]);
 			yTerms[i] = yTerm;
 			yMembershipArgs[i] = yTerm;
 
 			equalities[i] = SMTFactory.makeEqual(
-					new SMTTerm[] { yTerm, xTerm }, V2_0);
+					new SMTTerm[] { yTerm, xTerm });
 		}
 		xMembershipArgs[leftMembersNumber] = termX;
 		yMembershipArgs[leftMembersNumber] = termX;
@@ -818,30 +812,28 @@ public class SMTThroughPP extends Translator {
 		// creates the conjunction of equalities
 		final SMTFormula eqConjunction;
 		if (equalities.length > 1) {
-			eqConjunction = SMTFactory.makeAnd(equalities, smtlibVersion);
+			eqConjunction = SMTFactory.makeAnd(equalities);
 		} else {
 			eqConjunction = equalities[0];
 		}
 
 		// creates the implication
 		final SMTFormula implies = SMTFactory.makeImplies(new SMTFormula[] {
-				yMembershipFormula, eqConjunction }, smtlibVersion);
+				yMembershipFormula, eqConjunction });
 
 		// creates the quantified formula
-		final SMTFormula yForall = SMTFactory.makeForAll(yTerms, implies,
-				smtlibVersion);
+		final SMTFormula yForall = SMTFactory.makeForAll(yTerms, implies);
 
 		// creates the first conjunction
 		final SMTFormula conjonction = SMTFactory.makeAnd(new SMTFormula[] {
-				xMembershipFormula, yForall }, smtlibVersion);
+				xMembershipFormula, yForall });
 
 		// creates the set existential
 		final SMTFormula existsX = SMTFactory.makeExists(
-				new SMTTerm[] { termX }, conjonction, smtlibVersion);
+				new SMTTerm[] { termX }, conjonction);
 
 		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeForAll(xTerms, existsX,
-				smtlibVersion);
+		final SMTFormula axiom = SMTFactory.makeForAll(xTerms, existsX);
 
 		axiom.setComment("Elementary Sets axiom (Singleton part)");
 		return axiom;
@@ -1012,12 +1004,9 @@ public class SMTThroughPP extends Translator {
 			if (trackedPredicate.isHypothesis()) {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
-					if (smtlibVersion == V2_0) {
-						final Label label = ((SMTSignatureV2_0) signature)
-								.freshLabel(!GOAL_LABEL);
-						assumption.addAnnotation(label);
-						labelMap.put(label.getName(), trackedPredicate);
-					}
+					final Label label = ((SMTSignatureV2_0) signature).freshLabel(!GOAL_LABEL);
+					assumption.addAnnotation(label);
+					labelMap.put(label.getName(), trackedPredicate);
 					translatedAssumptions.add(assumption);
 				}
 			}
@@ -1027,20 +1016,16 @@ public class SMTThroughPP extends Translator {
 			else {
 				falseGoalNeeded = false;
 				smtFormula = SMTFactory.makeNot(
-						new SMTFormula[] { translate(predicate, IN_GOAL) },
-						smtlibVersion);
-				if (smtlibVersion == V2_0) {
-					final Label label = ((SMTSignatureV2_0) signature)
-							.freshLabel(GOAL_LABEL);
-					smtFormula.addAnnotation(label);
-					labelMap.put(label.getName(), trackedPredicate);
-				}
+						new SMTFormula[] { translate(predicate, IN_GOAL) });
+				final Label label = ((SMTSignatureV2_0) signature)
+						.freshLabel(GOAL_LABEL);
+				smtFormula.addAnnotation(label);
+				labelMap.put(label.getName(), trackedPredicate);
 			}
 		}
 		if (falseGoalNeeded) {
 			smtFormula = SMTFactory
-					.makeNot(new SMTFormula[] { SMTFactory.makePFalse() },
-							smtlibVersion);
+					.makeNot(new SMTFormula[] { SMTFactory.makePFalse() });
 		}
 
 		/**
@@ -1141,9 +1126,8 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method is used only to test the SMT translation
 	 */
-	public static SMTFormula translate(final Predicate predicate,
-			final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
+	public static SMTFormula translate(final Predicate predicate) {
+		final SMTThroughPP translator = new SMTThroughPP();
 		final List<Predicate> noHypothesis = new ArrayList<Predicate>(0);
 		final ISimpleSequent sequent = SimpleSequents.make(noHypothesis,
 				predicate, predicate.getFactory());
@@ -1156,8 +1140,8 @@ public class SMTThroughPP extends Translator {
 	 * This method is used only to test the SMT translation
 	 */
 	public static SMTSignature translateTE(final Logic logic,
-			final ISimpleSequent sequent, final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
+			final ISimpleSequent sequent) {
+		final SMTThroughPP translator = new SMTThroughPP();
 		translator.determineLogic(sequent);
 		translator.translateSignature(logic, sequent);
 		return translator.getSignature();
@@ -1166,9 +1150,8 @@ public class SMTThroughPP extends Translator {
 	/**
 	 * This method is used only to test the logic determination
 	 */
-	public static Logic determineLogic(final ISimpleSequent sequent,
-			final SMTLIBVersion smtlibVersion) {
-		final SMTThroughPP translator = new SMTThroughPP(smtlibVersion);
+	public static Logic testDetermineLogic(final ISimpleSequent sequent) {
+		final SMTThroughPP translator = new SMTThroughPP();
 		return translator.determineLogic(sequent);
 	}
 
@@ -1325,7 +1308,7 @@ public class SMTThroughPP extends Translator {
 						(Identifier) right);
 			} else {
 				final SMTTerm[] children = smtTerms(left, right);
-				smtNode = SMTFactory.makeEqual(children, smtlibVersion);
+				smtNode = SMTFactory.makeEqual(children);
 			}
 			break;
 		}
@@ -1412,7 +1395,7 @@ public class SMTThroughPP extends Translator {
 
 		final String smtVarName = signature.freshSymbolName(varName);
 		final SMTSortSymbol sort = typeMap.get(boundIdentDecl.getType());
-		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort, smtlibVersion);
+		smtVar = (SMTVar) SMTFactory.makeVar(smtVarName, sort);
 		if (!qVarMap.containsKey(varName)) {
 			qVarMap.put(varName, smtVar);
 			boundIdentifiers.add(varName);

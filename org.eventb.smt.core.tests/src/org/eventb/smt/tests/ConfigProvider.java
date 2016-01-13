@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
@@ -118,12 +117,11 @@ public class ConfigProvider {
 		this.solver = solver;
 	}
 
-	public SMTConfiguration config(TranslationApproach approach,
-			SMTLIBVersion version) {
-		IConfigDescriptor config = findBundledConfiguration(approach, version);
+	public SMTConfiguration config(TranslationApproach approach) {
+		IConfigDescriptor config = findBundledConfiguration(approach);
 		if (config == null) {
-			final String args = getArgs(approach, version);
-			config = makeConfig(solver, args, approach, version);
+			final String args = getArgs(approach);
+			config = makeConfig(solver, args, approach);
 		}
 		return new SMTConfiguration(config, solver);
 	}
@@ -133,14 +131,12 @@ public class ConfigProvider {
 	 * options, if any.
 	 */
 	private IConfigDescriptor findBundledConfiguration(
-			TranslationApproach approach, SMTLIBVersion version) {
+			TranslationApproach approach) {
 		final String solverName = solverName();
 		for (final IConfigDescriptor config : getConfigurations()) {
 			if (!config.isBundled())
 				continue;
 			if (config.getTranslationApproach() != approach)
-				continue;
-			if (config.getSmtlibVersion() != version)
 				continue;
 			if (!config.getSolverName().equals(solverName))
 				continue;
@@ -153,7 +149,7 @@ public class ConfigProvider {
 		return solver.getName();
 	}
 
-	private String getArgs(TranslationApproach approach, SMTLIBVersion version) {
+	private String getArgs(TranslationApproach approach) {
 		switch (approach) {
 		case USING_VERIT:
 			return veritV2Args();

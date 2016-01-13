@@ -12,7 +12,6 @@ package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.ast.Formula.FORALL;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -144,7 +143,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final ISimpleSequent sequent = make((List<Predicate>) null, goal,
 				goal.getFactory());
 
-		final SMTThroughVeriT translator = new SMTThroughVeriT(V2_0);
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final SMTSignatureV2_0 signature = (SMTSignatureV2_0) benchmark
@@ -185,7 +184,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 
 		final StringBuilder actualSMTNode = new StringBuilder();
 
-		SMTThroughVeriT.translate(logic, ppred, V2_0, ppred.getFactory())
+		SMTThroughVeriT.translate(logic, ppred, ppred.getFactory())
 				.toString(actualSMTNode, -1, false);
 		assertEquals(failMessage, expectedSMTNode, actualSMTNode.toString());
 	}
@@ -208,7 +207,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 		final ISimpleSequent sequent = make((List<Predicate>) null, goal,
 				goal.getFactory());
 
-		final SMTThroughVeriT translator = new SMTThroughVeriT(V2_0);
+		final SMTThroughVeriT translator = new SMTThroughVeriT();
 		final SMTBenchmark benchmark = translate(translator, "lemma", sequent);
 
 		final List<SMTFormula> assumptions = benchmark.getAssumptions();
@@ -240,8 +239,7 @@ public class TranslationTestsWithVeriTV2_0 extends AbstractTests {
 			final Logic logic, final ITypeEnvironment iTypeEnv,
 			final String ppPredStr) throws AssertionError {
 		final Predicate ppPred = parse(ppPredStr, iTypeEnv.makeBuilder());
-		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred,
-				V2_0);
+		return (SMTSignatureV2_0) SMTThroughVeriT.translateTE(logic, ppPred);
 	}
 
 	@Test

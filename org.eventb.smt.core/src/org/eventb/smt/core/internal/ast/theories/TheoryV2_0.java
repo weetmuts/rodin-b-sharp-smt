@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.theories;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.BOOLS;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.INTS;
@@ -39,9 +38,9 @@ public class TheoryV2_0 extends Theory {
 		 * Sorts of the core theory
 		 */
 		private final static SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-				SMTSymbol.BOOL_V2, PREDEFINED, V2_0);
+				SMTSymbol.BOOL_V2, PREDEFINED);
 		private final static SMTSortSymbol POW_BOOL_SORT = new SMTSortSymbol(
-				POW_BOOL, !PREDEFINED, V2_0);
+				POW_BOOL, !PREDEFINED);
 		private static final SMTSortSymbol[] SORTS = { BOOL_SORT, POW_BOOL_SORT };
 
 		private static final SMTSortSymbol[] BOOL_TAB = { BOOL_SORT };
@@ -49,13 +48,13 @@ public class TheoryV2_0 extends Theory {
 				BOOL_SORT };
 
 		private final static SMTPredicateSymbol TRUE = new SMTPredicateSymbol(
-				"TRUE", BOOL_TAB, PREDEFINED, V2_0);
+				"TRUE", BOOL_TAB, PREDEFINED);
 
 		private final static SMTPredicateSymbol[] PREDICATES = { TRUE };
 
 		private static final SMTFunctionSymbol BOOLS_SET = new SMTFunctionSymbol(
 				BOOLS, new SMTSortSymbol[] {}, POW_BOOL_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 
 		private static final SMTFunctionSymbol[] FUNCTIONS = { BOOLS_SET };
 
@@ -100,13 +99,13 @@ public class TheoryV2_0 extends Theory {
 		 * Sorts of the integer theory
 		 */
 		private static final SMTSortSymbol INT_SORT = new SMTSortSymbol(
-				SMTSymbol.INT, PREDEFINED, V2_0);
+				SMTSymbol.INT, PREDEFINED);
 		public static final SMTSortSymbol POW_INT_SORT = new SMTSortSymbol(
-				POW_INT, !PREDEFINED, V2_0);
+				POW_INT, !PREDEFINED);
 
 		private static final SMTFunctionSymbol INTS_SET = new SMTFunctionSymbol(
 				INTS, new SMTSortSymbol[] {}, POW_INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 
 		private static final SMTSortSymbol[] SORTS = { INT_SORT, POW_INT_SORT };
 
@@ -121,33 +120,31 @@ public class TheoryV2_0 extends Theory {
 		 * Predicates and functions of the integer theory
 		 */
 		private static final SMTFunctionSymbol UMINUS = new SMTFunctionSymbol(
-				SMTSymbol.MINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED,
-				V2_0);
+				SMTSymbol.MINUS, INT_TAB, INT_SORT, !ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MINUS = new SMTFunctionSymbol(
 				SMTSymbol.MINUS, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				PREDEFINED, V2_0);
+				PREDEFINED);
 		private static final SMTFunctionSymbol PLUS = new SMTFunctionSymbol(
-				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED,
-				V2_0);
+				SMTSymbol.PLUS, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol MUL = new SMTFunctionSymbol(
-				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED, V2_0);
+				SMTSymbol.MUL, INT_TAB, INT_SORT, ASSOCIATIVE, PREDEFINED);
 		private static final SMTFunctionSymbol DIV = new SMTFunctionSymbol(
 				SMTSymbol.DIV, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 		private static final SMTFunctionSymbol EXPN = new SMTFunctionSymbol(
 				SMTSymbol.EXPN, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 		private static final SMTFunctionSymbol MOD = new SMTFunctionSymbol(
 				SMTSymbol.MOD, INT_INT_TAB, INT_SORT, !ASSOCIATIVE,
-				!PREDEFINED, V2_0);
+				!PREDEFINED);
 		private static final SMTPredicateSymbol LE = new SMTPredicateSymbol(
-				SMTSymbol.LE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
+				SMTSymbol.LE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE);
 		private static final SMTPredicateSymbol LT = new SMTPredicateSymbol(
-				SMTSymbol.LT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
+				SMTSymbol.LT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE);
 		private static final SMTPredicateSymbol GE = new SMTPredicateSymbol(
-				SMTSymbol.GE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
+				SMTSymbol.GE, INT_INT_TAB, PREDEFINED, ASSOCIATIVE);
 		private static final SMTPredicateSymbol GT = new SMTPredicateSymbol(
-				SMTSymbol.GT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE, V2_0);
+				SMTSymbol.GT, INT_INT_TAB, PREDEFINED, ASSOCIATIVE);
 		private static final SMTPredicateSymbol[] PREDICATES = { LE, LT, GE, GT };
 		private static final SMTFunctionSymbol[] FUNCTIONS = { INTS_SET,
 				UMINUS, MINUS, PLUS, MUL };

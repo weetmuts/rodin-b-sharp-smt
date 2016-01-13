@@ -13,7 +13,6 @@ package org.eventb.smt.core.internal.ast.macros;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0Verit;
@@ -41,9 +40,8 @@ public abstract class SMTMacroFactory {
 	public static final String SND_PAIR_ARG_NAME = "sndArg";
 	public static final String FST_PAIR_ARG_NAME = "fstArg";
 
-	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(
-			final String symbolName, SMTLIBVersion smtlibVersion) {
-		return new SMTPolymorphicSortSymbol(symbolName, smtlibVersion);
+	public static SMTPolymorphicSortSymbol makePolymorphicSortSymbol(final String symbolName) {
+		return new SMTPolymorphicSortSymbol(symbolName);
 	}
 
 	/**
@@ -90,10 +88,9 @@ public abstract class SMTMacroFactory {
 		return new SMTPairEnumMacro(macroName, varName1, terms, 1);
 	}
 
-	public static SMTEnumMacro makeEnumMacro(final SMTLIBVersion version,
-			final String macroName, final SMTVarSymbol varName,
-			final SMTTerm... terms) {
-		return new SMTEnumMacro(version, macroName, varName, terms, 0);
+	public static SMTEnumMacro makeEnumMacro(final String macroName,
+			final SMTVarSymbol varName, final SMTTerm... terms) {
+		return new SMTEnumMacro(macroName, varName, terms, 0);
 	}
 
 	/**
@@ -104,7 +101,6 @@ public abstract class SMTMacroFactory {
 	 * 
 	 * (macroName (lambda (?y s) . (exists (?x1 s1) ... (?xn sn) (and (= ?y
 	 * (E(?x1 ... ?xn))) P(?x1..?xn)))))
-	 * 
 	 * @param macroName
 	 *            The name of the macro
 	 * @param terms
@@ -116,13 +112,13 @@ public abstract class SMTMacroFactory {
 	 * @param formula
 	 * @param expression
 	 * @param signature
+	 * 
 	 * @return a new set comprehension macro
 	 */
 	public static SMTSetComprehensionMacro makeSetComprehensionMacro(
-			final SMTLIBVersion smtLibVersion, final String macroName,
-			final SMTTerm[] terms, final SMTVarSymbol lambdaVar,
-			final SMTFormula formula, final SMTTerm expression,
-			final SMTSignature signature) {
+			final String macroName, final SMTTerm[] terms,
+			final SMTVarSymbol lambdaVar, final SMTFormula formula,
+			final SMTTerm expression, final SMTSignature signature) {
 		((SMTSignatureV2_0Verit) signature).addPairSortAndFunction();
 		final SMTVarSymbol[] qVars = new SMTVarSymbol[terms.length];
 		for (int i = 0; i < terms.length; i++) {

@@ -13,7 +13,6 @@ package org.eventb.smt.core.internal.provers;
 import org.eclipse.core.runtime.IPath;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
@@ -61,8 +60,6 @@ public class SMTConfiguration {
 
 	private final TranslationApproach translationApproach;
 
-	private final SMTLIBVersion smtlibVersion;
-
 	/**
 	 * Constructs a new configuration from a configuration and a solver
 	 * descriptor.
@@ -81,7 +78,6 @@ public class SMTConfiguration {
 		this.solverPath = solver.getPath();
 		this.args = config.getArgs();
 		this.translationApproach = config.getTranslationApproach();
-		this.smtlibVersion = config.getSmtlibVersion();
 	}
 
 	public String getName() {
@@ -106,10 +102,6 @@ public class SMTConfiguration {
 
 	public TranslationApproach getTranslationApproach() {
 		return translationApproach;
-	}
-
-	public SMTLIBVersion getSmtlibVersion() {
-		return smtlibVersion;
 	}
 
 }

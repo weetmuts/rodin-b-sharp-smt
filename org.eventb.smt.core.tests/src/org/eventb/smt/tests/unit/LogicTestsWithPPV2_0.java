@@ -11,8 +11,7 @@
 package org.eventb.smt.tests.unit;
 
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
-import static org.eventb.smt.core.internal.translation.SMTThroughPP.determineLogic;
+import static org.eventb.smt.core.internal.translation.SMTThroughPP.testDetermineLogic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -46,7 +45,7 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 		assertTrue("\'" + ppPredStr + "\' isn't a valid input.",
 				Translator.isInGoal(sequent));
 
-		final Logic logic = determineLogic(sequent, V2_0);
+		final Logic logic = testDetermineLogic(sequent);
 
 		assertEquals("", expectedSMTLogic.toString(), logic.toString());
 	}

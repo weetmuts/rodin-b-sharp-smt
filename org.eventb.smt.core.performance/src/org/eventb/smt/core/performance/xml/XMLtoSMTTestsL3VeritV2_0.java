@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_VERIT;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L3;
 
@@ -26,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class XMLtoSMTTestsL3VeritV2_0 extends XMLtoSMTTests {
 
 	public XMLtoSMTTestsL3VeritV2_0(final LemmaData data) {
-		super(data, LAST_VERIT, V2_0, GET_UNSAT_CORE);
+		super(data, LAST_VERIT, GET_UNSAT_CORE);
 	}
 
 	@Parameters

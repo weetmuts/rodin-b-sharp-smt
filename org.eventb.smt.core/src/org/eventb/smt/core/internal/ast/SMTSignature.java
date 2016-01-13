@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
@@ -26,7 +25,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.theories.Logic;
 
 public abstract class SMTSignature {
-	protected final SMTLIBVersion smtlibVersion;
 
 	/**
 	 * The logic of the signature
@@ -64,8 +62,7 @@ public abstract class SMTSignature {
 	 * @param logic
 	 *            the logic used in the SMTSignature
 	 */
-	public SMTSignature(final Logic logic, final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
+	public SMTSignature(final Logic logic) {
 		this.logic = logic;
 		loadReservedAndPredefinedSymbols();
 		loadLogicSymbols();
@@ -341,15 +338,6 @@ public abstract class SMTSignature {
 	}
 
 	/**
-	 * Returns the version of SMTLIB used by the signature
-	 * 
-	 * @return the version of SMTLIB
-	 */
-	public SMTLIBVersion getSMTLIBVersion() {
-		return smtlibVersion;
-	}
-
-	/**
 	 * Returns the logic used by the signature
 	 * 
 	 * @return the logic of the signature
@@ -459,7 +447,7 @@ public abstract class SMTSignature {
 			final boolean associative) {
 		final String freshName = freshFunctionName(name);
 		final SMTFunctionSymbol freshSymbol = new SMTFunctionSymbol(freshName,
-				argSorts, returnSort, associative, !PREDEFINED, smtlibVersion);
+				argSorts, returnSort, associative, !PREDEFINED);
 		final boolean successfullyAdded = funs.add(freshSymbol);
 		assert successfullyAdded;
 		return freshSymbol;
@@ -488,7 +476,7 @@ public abstract class SMTSignature {
 	public SMTSortSymbol freshSort(final String name) {
 		final String freshName = freshSortName(name);
 		final SMTSortSymbol freshSort = new SMTSortSymbol(freshName,
-				!SMTSymbol.PREDEFINED, smtlibVersion);
+				!SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = sorts.add(freshSort);
 		assert successfullyAdded;
 		return freshSort;
@@ -507,7 +495,7 @@ public abstract class SMTSignature {
 			final SMTSortSymbol... argSorts) {
 		final String freshName = freshPredicateName(name);
 		final SMTPredicateSymbol freshPredicate = new SMTPredicateSymbol(
-				freshName, argSorts, !SMTSymbol.PREDEFINED, smtlibVersion);
+				freshName, argSorts, !SMTSymbol.PREDEFINED);
 		final boolean successfullyAdded = preds.add(freshPredicate);
 		assert successfullyAdded;
 		return freshPredicate;

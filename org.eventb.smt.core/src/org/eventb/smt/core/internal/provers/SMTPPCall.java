@@ -42,7 +42,7 @@ public class SMTPPCall extends SMTProverCall {
 	protected SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final SMTConfiguration config) {
 		super(sequent, pm, debugBuilder, config,
-				new SMTThroughPP(config.getSmtlibVersion()));
+				new SMTThroughPP());
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class SMTPPCall extends SMTProverCall {
 	public SMTPPCall(final ISimpleSequent sequent, final IProofMonitor pm,
 			final StringBuilder debugBuilder, final SMTConfiguration config, final String poName) {
 		super(sequent, pm, debugBuilder, config, poName,
-				new SMTThroughPP(config.getSmtlibVersion()));
+				new SMTThroughPP());
 	}
 
 	@Override

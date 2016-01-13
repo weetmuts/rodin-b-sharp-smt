@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 
 /**
@@ -38,10 +36,6 @@ public class BundledConfigLoader extends AbstractLoader {
 
 	public TranslationApproach getTranslationApproach() {
 		return getEnumAttribute("translator", USING_PP);
-	}
-
-	public SMTLIBVersion getVersion() {
-		return getEnumAttribute("smt-lib", V2_0);
 	}
 
 }

@@ -13,8 +13,6 @@ package org.eventb.smt.core.internal.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eventb.smt.core.SMTLIBVersion;
-
 /**
  * This class represents SMT Connectives.
  * 
@@ -42,7 +40,8 @@ public enum SMTConnective {
 		this.symbolV2_0 = symbolV2_0;
 	}
 
-	public String toString(final SMTLIBVersion smtlibVersion) {
+	@Override
+	public String toString() {
 		return symbolV2_0;
 	}
 
@@ -51,13 +50,12 @@ public enum SMTConnective {
 	 * 
 	 * @return the list with all the connective symbols.
 	 */
-	public static final List<String> getConnectiveSymbols(
-			final SMTLIBVersion smtlibVersion) {
+	public static final List<String> getConnectiveSymbols() {
 		final SMTConnective[] smtConnectives = SMTConnective.values();
 		final List<String> connectives = new ArrayList<String>(
 				smtConnectives.length);
 		for (final SMTConnective connective : smtConnectives) {
-			connectives.add(connective.toString(smtlibVersion));
+			connectives.add(connective.toString());
 		}
 		return connectives;
 	}

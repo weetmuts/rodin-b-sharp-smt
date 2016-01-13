@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
-
-import org.eventb.smt.core.SMTLIBVersion;
 
 /**
  * The SMT sorts.
@@ -23,14 +20,13 @@ public class SMTSortSymbol extends SMTSymbol implements
 	private final int arity;
 
 	public SMTSortSymbol(final String symbolName, final int arity,
-			final boolean predefined, final SMTLIBVersion smtlibVersion) {
-		super(symbolName, predefined, smtlibVersion);
+			final boolean predefined) {
+		super(symbolName, predefined);
 		this.arity = arity;
 	}
 
-	public SMTSortSymbol(final String symbolName, final boolean predefined,
-			final SMTLIBVersion smtlibVersion) {
-		this(symbolName, 0, predefined, smtlibVersion);
+	public SMTSortSymbol(final String symbolName, final boolean predefined) {
+		this(symbolName, 0, predefined);
 	}
 
 	@Override
@@ -58,9 +54,7 @@ public class SMTSortSymbol extends SMTSymbol implements
 	@Override
 	public void toString(final StringBuilder builder) {
 		builder.append(this.toString());
-		if (smtlibVersion == V2_0) {
-			builder.append(SPACE);
-			builder.append(arity);
-		}
+		builder.append(SPACE);
+		builder.append(arity);
 	}
 }

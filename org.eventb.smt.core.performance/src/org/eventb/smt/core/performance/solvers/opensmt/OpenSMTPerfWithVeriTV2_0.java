@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.opensmt;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_OPENSMT;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import org.junit.Test;
 public class OpenSMTPerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 
 	public OpenSMTPerfWithVeriTV2_0() {
-		super(LAST_OPENSMT, V2_0);
+		super(LAST_OPENSMT);
 	}
 
 	@Test

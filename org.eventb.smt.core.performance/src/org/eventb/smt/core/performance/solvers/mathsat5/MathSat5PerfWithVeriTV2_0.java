@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.mathsat5;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_MATHSAT5;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import org.junit.Test;
 public class MathSat5PerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 
 	public MathSat5PerfWithVeriTV2_0() {
-		super(LAST_MATHSAT5, V2_0);
+		super(LAST_MATHSAT5);
 	}
 
 	@Test

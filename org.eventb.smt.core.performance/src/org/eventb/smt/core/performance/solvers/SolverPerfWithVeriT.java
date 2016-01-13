@@ -24,7 +24,6 @@ import org.eventb.core.ast.ITypeEnvironment;
 import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.ast.QuantifiedPredicate;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.performance.CommonPerformanceTests;
 import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Test;
@@ -35,8 +34,8 @@ public abstract class SolverPerfWithVeriT extends CommonPerformanceTests {
 	static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverPerfWithVeriT(ConfigProvider provider, SMTLIBVersion version) {
-		super(provider, null, USING_VERIT, version, !GET_UNSAT_CORE);
+	public SolverPerfWithVeriT(ConfigProvider provider) {
+		super(provider, null, USING_VERIT, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

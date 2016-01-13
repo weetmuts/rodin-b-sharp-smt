@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.verit;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.tests.ConfigProvider.LAST_VERIT;
 
 import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
@@ -18,7 +17,7 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithVeriT;
 public class VeriTPerfWithVeriTV2_0 extends SolverPerfWithVeriT {
 
 	public VeriTPerfWithVeriTV2_0() {
-		super(LAST_VERIT, V2_0);
+		super(LAST_VERIT);
 	}
 
 }

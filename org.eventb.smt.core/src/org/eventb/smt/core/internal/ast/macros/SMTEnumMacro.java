@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.macros;
 
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
 
@@ -26,8 +25,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  */
 public class SMTEnumMacro extends SMTMacro {
 
-	final SMTLIBVersion version;
-
 	/**
 	 * The assigned variable of the enumeration macro.
 	 */
@@ -41,7 +38,6 @@ public class SMTEnumMacro extends SMTMacro {
 	/**
 	 * Constructs a new macro with the name, the assigned variable, the terms of
 	 * the enumeration and the precedence.
-	 * 
 	 * @param macroName
 	 *            the name of the macro
 	 * @param assignedVar
@@ -52,11 +48,9 @@ public class SMTEnumMacro extends SMTMacro {
 	 *            the precedence of the macro. See {@link SMTMacro} for more
 	 *            details.
 	 */
-	SMTEnumMacro(final SMTLIBVersion version, final String macroName,
-			final SMTVarSymbol assignedVar, final SMTTerm[] terms,
-			final int precedence) {
+	SMTEnumMacro(final String macroName, final SMTVarSymbol assignedVar,
+			final SMTTerm[] terms, final int precedence) {
 		super(macroName, precedence);
-		this.version = version;
 		this.assignedVar = assignedVar;
 		this.terms = terms;
 	}

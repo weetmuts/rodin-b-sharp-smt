@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.theories;
 
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
 
@@ -26,18 +25,17 @@ public class VeriTBooleansV2_0 extends Theory implements IBoolSort {
 
 	private static final String BOOLS_THEORY_NAME = "Bools";
 
-	public static final SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol(
-			V2_0);
+	public static final SMTPolymorphicSortSymbol POLYMORPHIC = new SMTPolymorphicSortSymbol();
 
 	private static final SMTSortSymbol BOOL_SORT = new SMTSortSymbol(
-			SMTSymbol.BOOL, !PREDEFINED, V2_0);
+			SMTSymbol.BOOL, !PREDEFINED);
 	private static final SMTSortSymbol[] SORTS = { BOOL_SORT };
 
 	private static final SMTFunctionSymbol TRUE = new SMTFunctionSymbol("TRUE",
-			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
+			EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static final SMTFunctionSymbol FALSE = new SMTFunctionSymbol(
-			"FALSE", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED, V2_0);
+			"FALSE", EMPTY_SORT, BOOL_SORT, !ASSOCIATIVE, !PREDEFINED);
 
 	private static final SMTPredicateSymbol[] PREDICATES = {};
 

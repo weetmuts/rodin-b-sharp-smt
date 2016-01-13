@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.prefs;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eventb.smt.core.IConfigDescriptor;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.TranslationApproach;
 
 /**
@@ -33,10 +32,8 @@ public class BundledConfigList extends BundledDescriptorList<IConfigDescriptor> 
 		final String solverName = loader.getSolverName();
 		final String args = loader.getArgs();
 		final TranslationApproach approach = loader.getTranslationApproach();
-		final SMTLIBVersion version = loader.getVersion();
 		final boolean enabled = true; // hard-coded default
-		return new ConfigDescriptor(name, true, solverName, args, approach,
-				version, enabled);
+		return new ConfigDescriptor(name, true, solverName, args, approach, enabled);
 	}
 
 	@Override

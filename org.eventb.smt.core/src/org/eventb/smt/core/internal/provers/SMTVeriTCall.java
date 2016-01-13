@@ -12,7 +12,6 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
@@ -35,7 +34,6 @@ import org.eventb.core.seqprover.IProofMonitor;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.ITrackedPredicate;
 import org.eventb.core.seqprover.xprover.ProcessMonitor;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTPrintOptions;
 import org.eventb.smt.core.internal.prefs.SimplePreferences;
@@ -59,9 +57,6 @@ public class SMTVeriTCall extends SMTProverCall {
 	private static final String OUTPUTSMT2 = "--output=smtlib2";
 
 	private IPath veritPath;
-
-	// FIXME: This is a mock.
-	private SMTLIBVersion sv;
 
 	/**
 	 * FOR DEBUG ONLY: this is the temporary SMT benchmark produced by the
@@ -93,8 +88,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	protected SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTConfiguration config) {
-		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT(
-				config.getSmtlibVersion()));
+		super(sequent, pm, debugBuilder, config, new SMTThroughVeriT());
 		setVeriTPath();
 	}
 
@@ -104,8 +98,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	public SMTVeriTCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTConfiguration config, final String poName) {
-		super(sequent, pm, debugBuilder, config, poName, new SMTThroughPP(
-				config.getSmtlibVersion()));
+		super(sequent, pm, debugBuilder, config, poName, new SMTThroughPP());
 		setVeriTPath();
 	}
 
@@ -210,10 +203,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	@Override
 	public void makeTempFiles() throws IOException {
 		super.makeTempFiles();
-		String fileExtension = SMT_LIB_FILE_EXTENSION;
-		if (sv == V2_0) {
-			fileExtension = NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
-		}
+		String fileExtension = NON_STANDARD_SMT_LIB2_FILE_EXTENSION;
 
 		veriTBenchmarkFile = tempFiles.create("smt_mac", fileExtension);
 		if (DEBUG) {
@@ -226,19 +216,11 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	@Override
 	public void makeSMTBenchmarkFile() throws IOException {
-		switch (config.getSmtlibVersion()) {
-		case V2_0:
-			makeSMTBenchmarkFileV2_0();
-			break;
-		default:
-			assert false;
-			break;
-		}
+		makeSMTBenchmarkFileV2_0();
 	}
 
 	private void makeSMTBenchmarkFileV2_0() throws IOException {
 		if (DEBUG) {
-			sv = V2_0;
 
 			/**
 			 * Updates the name of the benchmark (the name originally given

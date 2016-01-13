@@ -14,22 +14,17 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.core.SMTLIBVersion;
-
 /**
  * Common class for SMT-LIB formulas built from connectives.
  */
 public class SMTConnectiveFormula extends SMTFormula {
-	private final SMTLIBVersion smtlibVersion;
 	private final SMTConnective connective;
 	private final SMTFormula[] formulas;
 
 	/**
 	 * Creates a new connective formula with the specified connective.
 	 */
-	SMTConnectiveFormula(final SMTConnective connective,
-			final SMTLIBVersion smtlibVersion, final SMTFormula... formulas) {
-		this.smtlibVersion = smtlibVersion;
+	SMTConnectiveFormula(final SMTConnective connective, final SMTFormula... formulas) {
 		this.connective = connective;
 		this.formulas = formulas.clone();
 	}
@@ -56,7 +51,7 @@ public class SMTConnectiveFormula extends SMTFormula {
 			newLine = "";
 		}
 		builder.append(OPAR);
-		builder.append(connective.toString(smtlibVersion));
+		builder.append(connective.toString());
 		for (final SMTFormula formula : formulas) {
 			builder.append(SPACE);
 			builder.append(newLine);

@@ -13,7 +13,6 @@ package org.eventb.smt.tests.prefs;
 import static java.util.Arrays.asList;
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
-import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.SolverKind.Z3;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
@@ -30,7 +29,6 @@ import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.IDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTCore;
-import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.SolverKind;
 import org.eventb.smt.core.TranslationApproach;
 import org.junit.Test;
@@ -68,15 +66,12 @@ public class DescriptorTests {
 		final String solverName = "bar";
 		final String args = "-some -args";
 		final TranslationApproach approach = USING_PP;
-		final SMTLIBVersion version = V2_0;
-		final IConfigDescriptor desc = newConfigDescriptor(name, solverName,
-				args, approach, version, true);
+		final IConfigDescriptor desc = newConfigDescriptor(name, solverName, args, approach, true);
 		assertSame(name, desc.getName());
 		assertFalse(desc.isBundled());
 		assertSame(solverName, desc.getSolverName());
 		assertSame(args, desc.getArgs());
 		assertSame(approach, desc.getTranslationApproach());
-		assertSame(version, desc.getSmtlibVersion());
 		assertTrue(desc.isEnabled());
 	}
 
