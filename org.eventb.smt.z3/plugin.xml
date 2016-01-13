@@ -10,8 +10,7 @@
       </solver>
       <configuration
             name="Z3"
-            solverName="Z3 (bundled)"
-            translator="PP">
+            solverName="Z3 (bundled)">
       </configuration>
    </extension>
 

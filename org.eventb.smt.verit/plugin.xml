@@ -11,8 +11,7 @@
       <configuration
             args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e"
             name="veriT"
-            solverName="veriT (bundled)"
-            translator="PP">
+            solverName="veriT (bundled)">
       </configuration>
    </extension>
 </plugin>

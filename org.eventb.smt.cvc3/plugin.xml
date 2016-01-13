@@ -11,8 +11,7 @@
       <configuration
             args=""
             name="CVC3"
-            solverName="CVC3 (bundled)"
-            translator="PP">
+            solverName="CVC3 (bundled)">
       </configuration>
    </extension>
 </plugin>

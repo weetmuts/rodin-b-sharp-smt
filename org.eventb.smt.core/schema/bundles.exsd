@@ -89,22 +89,6 @@ Default value: &quot;&quot;.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="translator">
-            <annotation>
-               <documentation>
-                  The &quot;translator&quot; which will be used by this configuration to translate the event-B sequents into SMT-LIB benchmarks. This field is called &quot;translator&quot; for convenience, but it is a shortcut of &quot;translation approach built on [a specified] translator&quot;.
-Default value: &quot;PP&quot;.
-               </documentation>
-            </annotation>
-            <simpleType>
-               <restriction base="string">
-                  <enumeration value="PP">
-                  </enumeration>
-                  <enumeration value="veriT">
-                  </enumeration>
-               </restriction>
-            </simpleType>
-         </attribute>
       </complexType>
    </element>
 

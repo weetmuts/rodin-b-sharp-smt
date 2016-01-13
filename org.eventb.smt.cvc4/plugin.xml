@@ -11,8 +11,7 @@
       <configuration
             args="--finite-model-find --fmf-inst-engine"
             name="CVC4"
-            solverName="CVC4 (bundled)"
-            translator="PP">
+            solverName="CVC4 (bundled)">
       </configuration>
    </extension>
 </plugin>
