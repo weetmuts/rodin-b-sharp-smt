@@ -434,46 +434,6 @@ public class Logic {
 	}
 
 	/**
-	 * This class represents the SMT underlying logic used by veriT. It differs
-	 * from the standard underlying logic.
-	 */
-	public static class AUFLIAV2_0VeriT extends SMTLogicVeriT {
-		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
-		private static final Theory[] THEORIES = {
-				TheoryV2_0.Core.getInstance(),
-				TheoryV2_0.Ints.getInstance(), };
-		// VeriTBooleansV2_0.getInstance() };
-
-		private static final AUFLIAV2_0VeriT INSTANCE = new AUFLIAV2_0VeriT();
-
-		private AUFLIAV2_0VeriT() {
-			super(AUFLIA_LOGIC_NAME, THEORIES);
-		}
-
-		public static AUFLIAV2_0VeriT getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	public static class QF_AUFLIAv2_0VeriT extends SMTLogicPP {
-		private static final String QF_AUFLIA_LOGIC_NAME = "QF_AUFLIA";
-		private static final Theory[] THEORIES = {
-				TheoryV2_0.Core.getInstance(),
-				TheoryV2_0.Ints.getInstance() };
-		// VeriTBooleansV2_0.getInstance() };
-
-		private static final QF_AUFLIAv2_0VeriT INSTANCE = new QF_AUFLIAv2_0VeriT();
-
-		private QF_AUFLIAv2_0VeriT() {
-			super(QF_AUFLIA_LOGIC_NAME, THEORIES);
-		}
-
-		public static QF_AUFLIAv2_0VeriT getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
 	 * returns the integer sort constant symbol.
 	 * 
 	 * @return the integer sort constant symbol.
