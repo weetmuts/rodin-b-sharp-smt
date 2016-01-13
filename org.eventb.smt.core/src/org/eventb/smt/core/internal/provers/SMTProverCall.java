@@ -18,12 +18,10 @@ import static java.util.Collections.singleton;
 import static java.util.regex.Pattern.MULTILINE;
 import static java.util.regex.Pattern.compile;
 import static org.eventb.core.seqprover.xprover.ProcessMonitor.wrapCommand;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.SolverKind.OPENSMT;
-import static org.eventb.smt.core.SolverKind.Z3;
 import static org.eventb.smt.core.internal.prefs.SimplePreferences.getTranslationPath;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG;
 import static org.eventb.smt.core.internal.translation.Translator.DEBUG_DETAILS;
@@ -189,12 +187,6 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 		// Add special arguments specifying benchmark language version
 		commandLine.addAll(SMTVersionArgs.getArgs(config));
-
-		// Patch to deactivate the z3 MBQI module which is buggy.
-		if (config.getSmtlibVersion() == V1_2 && config.getKind() == Z3) {
-			commandLine.add("AUTO_CONFIG=false");
-			commandLine.add("MBQI=false");
-		}
 
 		// Selected solver arguments
 		final String args = config.getArgs();

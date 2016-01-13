@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
@@ -116,31 +115,21 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder builder) {
-		if (smtlibVersion == V1_2) {
-			builder.append(OPAR);
-			builder.append(name);
-			for (final SMTSortSymbol sort : argSorts) {
-				builder.append(SPACE);
-				builder.append(sort);
-			}
-			builder.append(CPAR);
-		} else {
-			/**
-			 * smtlibVersion == V2_0
-			 */
-			String separator = "";
-			builder.append(name);
-			builder.append(SPACE);
-			builder.append(OPAR);
-			for (final SMTSortSymbol sort : argSorts) {
-				builder.append(separator);
-				builder.append(sort);
-				separator = SPACE;
-			}
-			builder.append(CPAR);
-			builder.append(SPACE);
-			builder.append(BOOL_V2);
+		/**
+		 * smtlibVersion == V2_0
+		 */
+		String separator = "";
+		builder.append(name);
+		builder.append(SPACE);
+		builder.append(OPAR);
+		for (final SMTSortSymbol sort : argSorts) {
+			builder.append(separator);
+			builder.append(sort);
+			separator = SPACE;
 		}
+		builder.append(CPAR);
+		builder.append(SPACE);
+		builder.append(BOOL_V2);
 	}
 
 	@Override

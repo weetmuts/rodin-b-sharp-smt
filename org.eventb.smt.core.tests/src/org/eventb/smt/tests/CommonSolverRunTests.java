@@ -11,7 +11,6 @@
 package org.eventb.smt.tests;
 
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.utils.Theory.getComboLevel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -118,8 +117,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final ISolverDescriptor solver, final String args,
 			final TranslationApproach translationApproach,
 			final SMTLIBVersion smtlibVersion) {
-		final String newID = id + "_" + translationApproach.toString()
-				+ (smtlibVersion == V1_2 ? "_SMT1" : "_SMT2");
+		final String newID = id + "_" + translationApproach.toString();
 		return newConfigDescriptor(newID, solver.getName(), args,
 				translationApproach, smtlibVersion, true);
 	}

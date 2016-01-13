@@ -156,19 +156,9 @@ public class ConfigProvider {
 	private String getArgs(TranslationApproach approach, SMTLIBVersion version) {
 		switch (approach) {
 		case USING_VERIT:
-			switch (version) {
-			case V1_2:
-				return veritV1Args();
-			case V2_0:
-				return veritV2Args();
-			}
+			return veritV2Args();
 		case USING_PP:
-			switch (version) {
-			case V1_2:
-				return ppV1Args();
-			case V2_0:
-				return ppV2Args();
-			}
+			return ppV2Args();
 		}
 		assert false;
 		return null;

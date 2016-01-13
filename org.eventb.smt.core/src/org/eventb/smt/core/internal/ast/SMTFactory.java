@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.internal.ast.macros.SMTMacroFactory.POLYMORPHICS;
+import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.PREDEFINED;
 
 import java.math.BigInteger;
@@ -50,15 +49,12 @@ public abstract class SMTFactory {
 	public final static SMTConnective IFF = SMTConnective.IFF;
 
 	/**
-	 * Propositionnal atoms
+	 * Propositional atoms
 	 */
 	public final static SMTPredicateSymbol PTRUE = new SMTPredicateSymbol(
-			"true", new SMTSortSymbol[] {}, PREDEFINED, V1_2);
+			"true", new SMTSortSymbol[] {}, PREDEFINED, V2_0);
 	public final static SMTPredicateSymbol PFALSE = new SMTPredicateSymbol(
-			"false", new SMTSortSymbol[] {}, PREDEFINED, V1_2);
-
-	public final static SMTPredicateSymbol DISTINCT = new SMTPredicateSymbol(
-			SMTSymbol.DISTINCT, POLYMORPHICS, true, PREDEFINED, V1_2);
+			"false", new SMTSortSymbol[] {}, PREDEFINED, V2_0);
 
 	/**
 	 * Quantifier symbols
@@ -183,9 +179,8 @@ public abstract class SMTFactory {
 	 *            the value for this numeral
 	 * @return the newly created numeral
 	 */
-	public static SMTNumeral makeNumeral(final BigInteger value,
-			final SMTLIBVersion smtlibVersion) {
-		return new SMTNumeral(value, smtlibVersion);
+	public static SMTNumeral makeNumeral(final BigInteger value) {
+		return new SMTNumeral(value);
 	}
 
 	/**

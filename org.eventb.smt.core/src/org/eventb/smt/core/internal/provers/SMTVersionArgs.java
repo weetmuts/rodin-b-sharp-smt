@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.provers;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.ALT_ERGO;
 import static org.eventb.smt.core.SolverKind.CVC3;
@@ -63,7 +62,6 @@ public class SMTVersionArgs {
 
 		public ArgsPerVersion(List<String> v1Args, List<String> v2Args) {
 			super(SMTLIBVersion.class);
-			put(V1_2, v1Args);
 			put(V2_0, v2Args);
 		}
 

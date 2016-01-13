@@ -18,6 +18,7 @@ public enum SMTLIBVersion {
 	/**
 	 * The original SMT-LIB language used by the SMT Plug-in
 	 */
+	@Deprecated
 	V1_2("V1.2"),
 	/**
 	 * The current SMT-LIB language used by the SMT Plug-in
@@ -25,9 +26,6 @@ public enum SMTLIBVersion {
 	V2_0("V2.0");
 
 	public static SMTLIBVersion parseVersion(String name) {
-		if (V1_2.name.equals(name)) {
-			return V1_2;
-		}
 		return V2_0;
 	}
 

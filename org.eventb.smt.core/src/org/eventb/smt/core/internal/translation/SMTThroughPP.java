@@ -15,7 +15,6 @@ import static org.eventb.core.seqprover.transformer.SimpleSequents.translateExte
 import static org.eventb.pptrans.Translator.decomposeIdentifiers;
 import static org.eventb.pptrans.Translator.reduceToPredicateCalculus;
 import static org.eventb.pptrans.Translator.Option.expandSetEquality;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeBool;
 import static org.eventb.smt.core.internal.ast.SMTFactory.makeInteger;
@@ -81,7 +80,6 @@ import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFactoryPP;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
-import org.eventb.smt.core.internal.ast.SMTSignatureV1_2PP;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.core.internal.ast.SMTTerm;
@@ -99,12 +97,9 @@ import org.eventb.smt.core.internal.ast.theories.Logic;
 import org.eventb.smt.core.internal.ast.theories.Logic.AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.QF_AUFLIAv2_0;
 import org.eventb.smt.core.internal.ast.theories.Logic.QF_UFv2_0;
-import org.eventb.smt.core.internal.ast.theories.Logic.SMTLIBUnderlyingLogicV1_2;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTLogicPP;
 import org.eventb.smt.core.internal.ast.theories.Logic.SMTOperator;
 import org.eventb.smt.core.internal.ast.theories.Theory;
-import org.eventb.smt.core.internal.ast.theories.TheoryV1_2;
-import org.eventb.smt.core.internal.ast.theories.TheoryV1_2.Booleans;
 
 /**
  * This class does the SMT translation through ppTrans. ppTrans is called first,
@@ -306,22 +301,13 @@ public class SMTThroughPP extends Translator {
 	protected Logic determineLogic(final ISimpleSequent sequent) {
 		gatherer = Gatherer.gatherFrom(sequent);
 
-		if (smtlibVersion == V1_2) {
-			if (gatherer.usesBoolTheory()) {
-				return new Logic.SMTLogicPP(Logic.UNKNOWN,
-						TheoryV1_2.Ints.getInstance(),
-						TheoryV1_2.Booleans.getInstance());
-			}
-			return SMTLIBUnderlyingLogicV1_2.getInstance();
+		if (gatherer.foundQuantifier()) {
+			return AUFLIAv2_0.getInstance();
 		} else {
-			if (gatherer.foundQuantifier()) {
-				return AUFLIAv2_0.getInstance();
+			if (gatherer.usesIntTheory()) {
+				return QF_AUFLIAv2_0.getInstance();
 			} else {
-				if (gatherer.usesIntTheory()) {
-					return QF_AUFLIAv2_0.getInstance();
-				} else {
-					return QF_UFv2_0.getInstance();
-				}
+				return QF_UFv2_0.getInstance();
 			}
 		}
 	}
@@ -600,16 +586,7 @@ public class SMTThroughPP extends Translator {
 	private boolean isBoolTheoryAndDoesNotUseTruePred(final Type type) {
 		if (!gatherer.usesTruePredicate()) {
 			if (type instanceof BooleanType) {
-				if (smtlibVersion == V1_2) {
-					for (final Theory theories : signature.getLogic()
-							.getTheories()) {
-						if (theories instanceof Booleans) {
-							return true;
-						}
-					}
-				} else {
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -671,13 +648,8 @@ public class SMTThroughPP extends Translator {
 		} else {
 			if (gatherer.usesTruePredicate()) {
 				final SMTTerm term = smtTerm(expr);
-				if (smtlibVersion == V1_2) {
-					return SMTFactory.makeAtom(signature.getLogic().getTrue(),
-							new SMTTerm[] { term }, signature);
-				} else {
-					return SMTFactory.makeAtom2(signature.getLogic().getTrue(),
-							new SMTTerm[] { term }, signature);
-				}
+				return SMTFactory.makeAtom2(signature.getLogic().getTrue(),
+						new SMTTerm[] { term }, signature);
 			}
 		}
 		return smtFormula(expr);
@@ -795,130 +767,6 @@ public class SMTThroughPP extends Translator {
 	}
 
 	/**
-	 * Generates the translated SMT-LIB formula for this Event-B predicate:
-	 * 
-	 * <code>∀x·x ∈ BOOL</code>
-	 * 
-	 * @return The SMTFormula corresponding to the translation of the Event-B
-	 *         predicate shown above
-	 */
-	private SMTFormula generateBoolAxiom() {
-		final FormulaFactory ff = FormulaFactory.getDefault();
-
-		// gets the event-B boolean type
-		final Type booleanType = ff.makeBooleanType();
-
-		// creates the quantified variable with a fresh name
-		final String varName = signature.freshSymbolName("x");
-		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
-		final SMTTerm smtVar = SMTFactory.makeVar(varName, boolSort,
-				smtlibVersion);
-
-		// creates the boolean constant
-		final SMTTerm boolConstant = SMTFactory.makeConstant(signature
-				.getLogic().getBoolsSet(), signature);
-
-		// creates the sort POW(BOOL)
-		final Type powerSetBooleanType = ff.makePowerSetType(booleanType);
-		final SMTSortSymbol powerSetBoolSort = typeMap.get(powerSetBooleanType);
-
-		// gets the membership symbol
-		final SMTPredicateSymbol membershipPredSymbol = getMembershipPredicateSymbol(
-				booleanType, boolSort, powerSetBoolSort);
-
-		// creates the membership formula
-		final SMTFormula membershipFormula = SMTFactory.makeAtom(
-				membershipPredSymbol, new SMTTerm[] { smtVar, boolConstant },
-				signature);
-
-		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeForAll(
-				new SMTTerm[] { smtVar }, membershipFormula, smtlibVersion);
-
-		axiom.setComment("Bool axiom");
-		return axiom;
-	}
-
-	/**
-	 * Generates the SMT-LIB formula for this event-B formula:
-	 * <code>∀x, y·(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
-	 * 
-	 * @return the SMTFormula representing the translated axiom
-	 */
-	private SMTFormula generateTrueEqualityAxiom() {
-		// creates the quantified boolean variables with fresh names
-		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
-		final String xName = signature.freshSymbolName("x");
-		final String yName = signature.freshSymbolName("y");
-		final SMTTerm xTerm = SMTFactory
-				.makeVar(xName, boolSort, smtlibVersion);
-		final SMTTerm yTerm = SMTFactory
-				.makeVar(yName, boolSort, smtlibVersion);
-
-		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
-		final SMTPredicateSymbol truePredSymbol = signature.getLogic()
-				.getTrue();
-		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol,
-				new SMTTerm[] { xTerm }, signature);
-		final SMTFormula trueY = SMTFactory.makeAtom(truePredSymbol,
-				new SMTTerm[] { yTerm }, signature);
-		final SMTFormula trueXEqvTrueY = SMTFactory.makeIff(new SMTFormula[] {
-				trueX, trueY }, smtlibVersion);
-
-		// creates the formula <code>x = y</code>
-		final SMTFormula xEqualY = SMTFactory.makeEqual(new SMTTerm[] { xTerm,
-				yTerm }, V1_2);
-
-		// creates the formula <code>(x = TRUE ⇔ y = TRUE) ⇔ x = y</code>
-		final SMTFormula equivalence = SMTFactory.makeIff(new SMTFormula[] {
-				trueXEqvTrueY, xEqualY }, smtlibVersion);
-
-		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeForAll(new SMTTerm[] { xTerm,
-				yTerm }, equivalence, smtlibVersion);
-
-		axiom.setComment("True equality axiom");
-		return axiom;
-	}
-
-	/**
-	 * Generates the SMT-LIB formula for this event-B formula:
-	 * <code>∃ x ⦂ BOOL, y ⦂ BOOL · x = TRUE ∧ y ≠ TRUE</code>
-	 * 
-	 * @return the SMTFormula representing the translated axiom
-	 */
-	private SMTFormula generateTrueExistenceAxiom() {
-		// creates the quantified boolean variables with fresh names
-		final SMTSortSymbol boolSort = signature.getLogic().getBooleanSort();
-		final String xName = signature.freshSymbolName("x");
-		final String yName = signature.freshSymbolName("y");
-		final SMTTerm xTerm = SMTFactory
-				.makeVar(xName, boolSort, smtlibVersion);
-		final SMTTerm yTerm = SMTFactory
-				.makeVar(yName, boolSort, smtlibVersion);
-
-		// creates the formula <code>x = TRUE ⇔ y = TRUE</code>
-		final SMTPredicateSymbol truePredSymbol = signature.getLogic()
-				.getTrue();
-		final SMTFormula trueX = SMTFactory.makeAtom(truePredSymbol,
-				new SMTTerm[] { xTerm }, signature);
-		final SMTFormula notTrueY = SMTFactory.makeNot(
-				new SMTFormula[] { SMTFactory.makeAtom(truePredSymbol,
-						new SMTTerm[] { yTerm }, signature) }, smtlibVersion);
-
-		// creates the conjunction <code>x = TRUE ∧ y ≠ TRUE</code>
-		final SMTFormula trueXAndNotTrueY = SMTFactory.makeAnd(
-				new SMTFormula[] { trueX, notTrueY }, smtlibVersion);
-
-		// creates the axiom
-		final SMTFormula axiom = SMTFactory.makeExists(new SMTTerm[] { xTerm,
-				yTerm }, trueXAndNotTrueY, smtlibVersion);
-
-		axiom.setComment("True existence axiom");
-		return axiom;
-	}
-
-	/**
 	 * Generates the SMT-LIB formula for the singleton part of elementary sets
 	 * axiom event-B formula:
 	 * <code>∀ x ⦂ ℤ · (∃ X ⦂ ℙ(ℤ) · (x ∈ X ∧ (∀ y ⦂ ℤ · (y ∈ X ⇒ x = y))))</code>
@@ -956,7 +804,7 @@ public class SMTThroughPP extends Translator {
 			yMembershipArgs[i] = yTerm;
 
 			equalities[i] = SMTFactory.makeEqual(
-					new SMTTerm[] { yTerm, xTerm }, V1_2);
+					new SMTTerm[] { yTerm, xTerm }, V2_0);
 		}
 		xMembershipArgs[leftMembersNumber] = termX;
 		yMembershipArgs[leftMembersNumber] = termX;
@@ -1003,12 +851,7 @@ public class SMTThroughPP extends Translator {
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
 	private void linkLogicSymbols(final FormulaFactory ff) {
-		final SMTLogicPP logic;
-		if (smtlibVersion == V1_2) {
-			logic = ((SMTSignatureV1_2PP) signature).getLogic();
-		} else {
-			logic = ((SMTSignatureV2_0PP) signature).getLogic();
-		}
+		final SMTLogicPP logic = ((SMTSignatureV2_0PP) signature).getLogic();
 
 		final Type integerType = ff.makeIntegerType();
 		final Type booleanType = ff.makeBooleanType();
@@ -1158,32 +1001,6 @@ public class SMTThroughPP extends Translator {
 			translatedAssumptions.add(generateIntegerAxiom());
 		}
 
-		/**
-		 * If the gatherer found that the boolean theory was needed to discharge
-		 * the sequent,
-		 */
-		for (final Theory t : signature.getLogic().getTheories()) {
-			if (t instanceof Booleans) {
-				/**
-				 * If the gatherer found an occurrence of the atomic expression
-				 * <code>BOOL</code>, the translator adds the bool axiom to
-				 * handle it.
-				 */
-				if (gatherer.foundAtomicBoolExp()) {
-					translatedAssumptions.add(generateBoolAxiom());
-				}
-				/**
-				 * If the gatherer found that the identifiers couldn't be
-				 * translated themselves in boolean equalities, the translator
-				 * adds the true axiom to handle them.
-				 */
-				if (gatherer.usesTruePredicate()) {
-					translatedAssumptions.add(generateTrueEqualityAxiom());
-					translatedAssumptions.add(generateTrueExistenceAxiom());
-				}
-			}
-		}
-
 		boolean falseGoalNeeded = true;
 		final HashMap<String, ITrackedPredicate> labelMap = new HashMap<String, ITrackedPredicate>();
 		for (final ITrackedPredicate trackedPredicate : sequent.getPredicates()) {
@@ -1280,11 +1097,7 @@ public class SMTThroughPP extends Translator {
 	protected void translateSignature(final Logic logic,
 			final ISimpleSequent sequent) {
 		if (logic instanceof SMTLogicPP) {
-			if (smtlibVersion == V1_2) {
-				signature = new SMTSignatureV1_2PP((SMTLogicPP) logic);
-			} else {
-				signature = new SMTSignatureV2_0PP(logic);
-			}
+			signature = new SMTSignatureV2_0PP(logic);
 		} else {
 			throw new IllegalArgumentException("Wrong logic.");
 		}

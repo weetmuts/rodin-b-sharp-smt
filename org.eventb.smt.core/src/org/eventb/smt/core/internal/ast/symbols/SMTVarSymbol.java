@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.QVAR;
@@ -72,9 +71,6 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 	@Override
 	public void toString(final StringBuilder buffer) {
 		buffer.append(OPAR);
-		if (smtlibVersion == V1_2) {
-			buffer.append(QVAR);
-		}
 		buffer.append(name);
 		buffer.append(SPACE);
 		buffer.append(sort);

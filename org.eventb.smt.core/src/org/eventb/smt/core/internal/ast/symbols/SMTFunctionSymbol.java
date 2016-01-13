@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.symbols;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
@@ -107,30 +106,18 @@ public class SMTFunctionSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder buffer) {
-		if (smtlibVersion == V1_2) {
-			buffer.append(OPAR);
-			buffer.append(name);
-			for (final SMTSortSymbol sort : argSorts) {
-				buffer.append(SPACE);
-				buffer.append(sort);
-			}
-			buffer.append(SPACE);
-			buffer.append(resultSort);
-			buffer.append(CPAR);
-		} else {
-			String separator = "";
-			buffer.append(name);
-			buffer.append(SPACE);
-			buffer.append(OPAR);
-			for (final SMTSortSymbol sort : argSorts) {
-				buffer.append(separator);
-				buffer.append(sort);
-				separator = SPACE;
-			}
-			buffer.append(CPAR);
-			buffer.append(SPACE);
-			buffer.append(resultSort);
+		String separator = "";
+		buffer.append(name);
+		buffer.append(SPACE);
+		buffer.append(OPAR);
+		for (final SMTSortSymbol sort : argSorts) {
+			buffer.append(separator);
+			buffer.append(sort);
+			separator = SPACE;
 		}
+		buffer.append(CPAR);
+		buffer.append(SPACE);
+		buffer.append(resultSort);
 	}
 
 	/**

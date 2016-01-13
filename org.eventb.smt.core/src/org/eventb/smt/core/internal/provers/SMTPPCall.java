@@ -11,7 +11,6 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -79,10 +78,6 @@ public class SMTPPCall extends SMTProverCall {
 
 	private SMTPrintOptions getPrintingOptions() {
 		final SMTPrintOptions options = new SMTPrintOptions();
-		if (config.getSmtlibVersion() == V1_2) {
-			// No option to set
-			return options;
-		}
 		switch (config.getKind()) {
 		case Z3:
 			// FIXME Add Z3 version checking

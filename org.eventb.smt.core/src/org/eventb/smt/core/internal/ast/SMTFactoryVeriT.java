@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol.MAPSTO;
 import static org.eventb.smt.core.internal.ast.symbols.SMTFunctionSymbol.ASSOCIATIVE;
@@ -28,7 +27,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTQuantifierSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
-import org.eventb.smt.core.internal.ast.theories.VeritPredefinedTheoryV1_2;
 
 /**
  * This class stores methods used to make extended SMT-LIB elements. This class
@@ -51,35 +49,23 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	private final static SMTFactoryVeriT DEFAULT_INSTANCE = new SMTFactoryVeriT();
 
-	public static final SMTSortSymbol PAIR_SORT_V1_2 = makePolymorphicSortSymbol(
-			"(Pair 's 't)", V1_2);
 	public static final SMTSortSymbol PAIR_SORT_V2_0 = makePolymorphicSortSymbol(
 			"Pair", V2_0);
 
 	public static final SMTPolymorphicSortSymbol FST_RETURN_SORT = makePolymorphicSortSymbol(
-			FST_PAIR_SORT_NAME, V1_2);
+			FST_PAIR_SORT_NAME, V2_0);
 
 	private static final SMTPolymorphicSortSymbol SND_RETURN_SORT = makePolymorphicSortSymbol(
-			SND_PAIR_SORT_NAME, V1_2);
+			SND_PAIR_SORT_NAME, V2_0);
 
 	private static SMTSortSymbol[] PAIR_ARG_SORTS = { FST_RETURN_SORT,
 			SND_RETURN_SORT };
-
-	public static final SMTFunctionSymbol PAIR_SYMBOL_V1_2 = new SMTFunctionSymbol(
-			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT_V1_2, !ASSOCIATIVE, !PREDEFINED,
-			V1_2);
 
 	public static final SMTFunctionSymbol PAIR_SYMBOL_V2_0 = new SMTFunctionSymbol(
 			MAPSTO, PAIR_ARG_SORTS, PAIR_SORT_V2_0, !ASSOCIATIVE, PREDEFINED,
 			V2_0);
 
-	private final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT_V1_2 };
-
-	public final static SMTFunctionSymbol FST_SYMBOLV_1_2 = new SMTFunctionSymbol(
-			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);
-
-	public final static SMTFunctionSymbol SND_SYMBOL_V1_2 = new SMTFunctionSymbol(
-			"snd", PAIR_SORTS, SND_RETURN_SORT, !ASSOCIATIVE, !PREDEFINED, V1_2);
+	private final static SMTSortSymbol[] PAIR_SORTS = { PAIR_SORT_V2_0 };
 
 	public final static SMTFunctionSymbol FST_SYMBOLV_2_0 = new SMTFunctionSymbol(
 			"fst", PAIR_SORTS, FST_RETURN_SORT, !ASSOCIATIVE, PREDEFINED, V2_0);
@@ -95,19 +81,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 
 	public SMTTerm makeFalseConstant(final SMTFunctionSymbol falseSymbol) {
 		return new SMTFunApplication(falseSymbol, new SMTTerm[] {});
-	}
-
-	/**
-	 * Adds the pair equality axiom. It is added only once.
-	 */
-	public void addPairEqualityAxiomV1_2(
-			final Set<SMTFormula> additionalAssumptions,
-			final SMTSignatureV1_2Verit signature) {
-		signature.addFstAndSndAuxiliarFunctions();
-		if (!pairAxiomAdded) {
-			additionalAssumptions.add(createPairEqualityAxiom());
-			pairAxiomAdded = true;
-		}
 	}
 
 	/**
@@ -137,17 +110,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		return new SMTMacroTerm(macro, args);
 	}
 
-	/**
-	 * makes and returns a SMT formula which the operator is distinct.
-	 * 
-	 * @param args
-	 *            The arguments of the formula
-	 * @return a new SMT formula
-	 */
-	public static SMTFormula makeDistinct(final SMTTerm[] args) {
-		return new SMTAtom(DISTINCT, args);
-	}
-
 	public static SMTTerm makeITE(final SMTFormula arg1, final SMTTerm arg2,
 			final SMTTerm arg3) {
 		return new SMTITETerm(arg1, arg2, arg3);
@@ -163,79 +125,47 @@ final public class SMTFactoryVeriT extends SMTFactory {
 	 */
 	public SMTFormula createPairEqualityAxiom() {
 
-		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT_V1_2,
-				!PREDEFINED, V1_2);
-		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT_V1_2,
-				!PREDEFINED, V1_2);
+		final SMTVarSymbol pSymbol1 = new SMTVarSymbol("t8", PAIR_SORT_V2_0,
+				!PREDEFINED, V2_0);
+		final SMTVarSymbol pSymbol2 = new SMTVarSymbol("t9", PAIR_SORT_V2_0,
+				!PREDEFINED, V2_0);
 
-		final SMTVar pairVar1 = new SMTVar(pSymbol1, V1_2);
-		final SMTVar pairVar2 = new SMTVar(pSymbol2, V1_2);
+		final SMTVar pairVar1 = new SMTVar(pSymbol1, V2_0);
+		final SMTVar pairVar2 = new SMTVar(pSymbol2, V2_0);
 
 		final SMTFormula equalsFormula = SMTFactory.makeEqual(new SMTTerm[] {
-				pairVar1, pairVar2 }, V1_2);
+				pairVar1, pairVar2 }, V2_0);
 
 		final SMTFunApplication fstFunAppl1 = new SMTFunApplication(
-				FST_SYMBOLV_1_2, pairVar1);
+				FST_SYMBOLV_2_0, pairVar1);
 
 		final SMTFunApplication fstFunAppl2 = new SMTFunApplication(
-				FST_SYMBOLV_1_2, pairVar2);
+				FST_SYMBOLV_2_0, pairVar2);
 
 		final SMTFormula subEqualsFormula1 = SMTFactory.makeEqual(
-				new SMTTerm[] { fstFunAppl1, fstFunAppl2 }, V1_2);
+				new SMTTerm[] { fstFunAppl1, fstFunAppl2 }, V2_0);
 
 		final SMTFunApplication sndFunAppl1 = new SMTFunApplication(
-				SND_SYMBOL_V1_2, pairVar1);
+				SND_SYMBOL_V2_0, pairVar1);
 
 		final SMTFunApplication sndFunAppl2 = new SMTFunApplication(
-				SND_SYMBOL_V1_2, pairVar2);
+				SND_SYMBOL_V2_0, pairVar2);
 
 		final SMTFormula subEqualsFormula2 = SMTFactory.makeEqual(
-				new SMTTerm[] { sndFunAppl1, sndFunAppl2 }, V1_2);
+				new SMTTerm[] { sndFunAppl1, sndFunAppl2 }, V2_0);
 
 		final SMTFormula andFormula = SMTFactory.makeAnd(new SMTFormula[] {
-				subEqualsFormula1, subEqualsFormula2 }, V1_2);
+				subEqualsFormula1, subEqualsFormula2 }, V2_0);
 
 		final SMTFormula impliesFormula = SMTFactory.makeImplies(
-				new SMTFormula[] { andFormula, equalsFormula }, V1_2);
+				new SMTFormula[] { andFormula, equalsFormula }, V2_0);
 
 		final SMTFormula quantifiedFormula = SMTFactory
 				.makeSMTQuantifiedFormula(SMTQuantifierSymbol.FORALL,
 						new SMTTerm[] { pairVar1, pairVar2 }, impliesFormula,
-						V1_2);
+						V2_0);
 
 		return quantifiedFormula;
-	}
-
-	public SMTFormula makeDefinitionOfElementsOfBooleanFormula_V1_2(
-			final String boolVarName, final SMTSortSymbol boolSort,
-			final SMTFunctionSymbol trueSymbol,
-			final SMTFunctionSymbol falseSymbol) {
-
-		final SMTTerm trueTerm = new SMTFunApplication(trueSymbol,
-				new SMTTerm[] {});
-		final SMTTerm falseTerm = new SMTFunApplication(falseSymbol,
-				new SMTTerm[] {});
-		final SMTVarSymbol boolvarSymbol = new SMTVarSymbol(boolVarName,
-				boolSort, false, V1_2);
-		final SMTVar boolVar = new SMTVar(boolvarSymbol, V1_2);
-
-		final SMTFormula or = makeOr(
-				new SMTFormula[] {
-						makeEqual(new SMTTerm[] { boolVar, trueTerm }, V1_2),
-						makeEqual(new SMTTerm[] { boolVar, falseTerm }, V1_2) },
-				V1_2);
-
-		final SMTFormula forall = makeSMTQuantifiedFormula(
-				SMTQuantifierSymbol.FORALL,
-				new SMTVarSymbol[] { boolvarSymbol }, or, V1_2);
-
-		final SMTFormula not = makeNot(
-				new SMTFormula[] { makeEqual(new SMTTerm[] { trueTerm,
-						falseTerm }, V1_2) }, V1_2);
-
-		final SMTFormula and = makeAnd(new SMTFormula[] { forall, not }, V1_2);
-
-		return and;
 	}
 
 	public SMTFormula makeDefinitionOfElementsOfBooleanFormula_V2_0(
@@ -255,7 +185,7 @@ final public class SMTFactoryVeriT extends SMTFactory {
 				new SMTFormula[] {
 						makeEqual(new SMTTerm[] { boolVar, trueTerm }, V2_0),
 						makeEqual(new SMTTerm[] { boolVar, falseTerm }, V2_0) },
-				V1_2);
+				V2_0);
 
 		final SMTFormula forall = makeSMTQuantifiedFormula(
 				SMTQuantifierSymbol.FORALL,
@@ -293,27 +223,13 @@ final public class SMTFactoryVeriT extends SMTFactory {
 		sb.append(" ");
 		sb.append(targetSymbol.toString());
 		sb.append(")");
-		return new SMTSortSymbol(sb.toString(), false, V1_2);
+		return new SMTSortSymbol(sb.toString(), false, V2_0);
 		// } else {
 		// final StringBuffer sb = new StringBuffer();
 		// sb.append("Pair");
 		// return new SMTSortSymbol(sb.toString(), false, V2_0);
 		// }
 
-	}
-
-	/**
-	 * This method creates and returns a macro atom.
-	 * 
-	 * @param macroSymbol
-	 *            the symbol of the atom
-	 * @param args
-	 *            the args of the atom
-	 * @return a macro atom
-	 */
-	public static SMTFormula makeMacroAtom(final SMTMacroSymbol macroSymbol,
-			final SMTTerm[] args, final SMTSignatureV1_2Verit signature) {
-		return new SMTVeriTAtom(macroSymbol, args, signature);
 	}
 
 	/**
@@ -340,56 +256,6 @@ final public class SMTFactoryVeriT extends SMTFactory {
 			throw new IllegalArgumentException(
 					"In the translation for veriT extended SMT-LIB, the Symbol should be a function or a verit pred symbol");
 		}
-	}
-
-	/**
-	 * This method converts verit SMT-TERM into formulas. These terms must be of
-	 * sort Bool.
-	 * 
-	 * This method is used when the terms being compared are of Bool type. Then,
-	 * the "=" operator is substituted by "iff" operator and the terms are
-	 * converted into "veriT formulas".
-	 * 
-	 * @param terms
-	 *            the terms
-	 * @return the formulas from the terms
-	 */
-	public SMTFormula[] convertVeritTermsIntoFormulas(final SMTTerm... terms) {
-		final SMTFormula[] formulas = new SMTFormula[terms.length];
-		int i = 0;
-		for (final SMTTerm term : terms) {
-			if (!term
-					.getSort()
-					.toString()
-					.equals(VeritPredefinedTheoryV1_2.getInstance()
-							.getBooleanSort().toString())) {
-				throw new IllegalArgumentException(
-						"VeriT translation does not accept equal operator under terms with different types");
-			} else {
-				if (term instanceof SMTFunApplication) {
-					final SMTFunApplication function = (SMTFunApplication) term;
-					final SMTSortSymbol[] sortSymbols = new SMTSortSymbol[function.args.length];
-					for (int j = 0; j < function.args.length; j++) {
-						// This code is not reachable because the terms that are
-						// passed to formulas have no arguments in veriT
-						// approach
-						sortSymbols[j] = function.args[j].getSort();
-					}
-					final SMTPredicateSymbol predicateSymbol = new SMTPredicateSymbol(
-							function.symbol.getName(), sortSymbols,
-							!PREDEFINED, V1_2);
-					final SMTAtom atom = new SMTAtom(predicateSymbol,
-							new SMTTerm[] {});
-					formulas[i] = atom;
-				} else {
-					throw new IllegalArgumentException(
-							"Conversion from terms to formula in VeriT shall happen only if all arguments of the terms are functions and their return types are boolean");
-				}
-			}
-			++i;
-		}
-		return formulas;
-
 	}
 
 	public static SMTFormula makeMacroAtom(SMTMacroSymbol macroSymbol,

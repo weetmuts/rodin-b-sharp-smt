@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.SolverKind.Z3;
@@ -443,25 +442,20 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	// @Test(timeout = 3000)
 	public void testTranslateWithPPandGetUnsatCore() {
-		if (configuration.getSmtlibVersion() == V1_2) {
-			fail("Unsat core extraction in SMT-LIB v1.2 is not handled yet");
+		String name = data.getLemmaName();
+		if (name.isEmpty()) {
+			name = data.getOrigin();
+		}
+
+		debugBuilder.append("Testing lemma (PP approach): ").append(name);
+		debugBuilder.append(data.getTheories().toString()).append(".\n\n");
+
+		final SolverKind kind = configuration.getKind();
+		if (kind == VERIT || kind == Z3) {
+			doTest(name, data.getHypotheses(), data.getGoal(), data.getTe(), VALID, data.getNeededHypotheses(),
+					data.isGoalNeeded(), debugBuilder);
 		} else {
-			String name = data.getLemmaName();
-			if (name.isEmpty()) {
-				name = data.getOrigin();
-			}
-
-			debugBuilder.append("Testing lemma (PP approach): ").append(name);
-			debugBuilder.append(data.getTheories().toString()).append(".\n\n");
-
-			final SolverKind kind = configuration.getKind();
-			if (kind == VERIT || kind == Z3) {
-				doTest(name, data.getHypotheses(), data.getGoal(),
-						data.getTe(), VALID, data.getNeededHypotheses(),
-						data.isGoalNeeded(), debugBuilder);
-			} else {
-				fail("Unsat core extraction is not handled with " + configuration.getSolverName() + " yet");
-			}
+			fail("Unsat core extraction is not handled with " + configuration.getSolverName() + " yet");
 		}
 	}
 }

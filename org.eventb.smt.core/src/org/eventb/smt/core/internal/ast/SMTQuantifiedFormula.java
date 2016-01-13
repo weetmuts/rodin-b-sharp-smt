@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
-import static org.eventb.smt.core.internal.ast.SMTFactory.POINT;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
 import org.eventb.smt.core.SMTLIBVersion;
@@ -25,7 +23,6 @@ import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
  * or {@code EXISTS}.
  */
 public class SMTQuantifiedFormula extends SMTFormula {
-	private final SMTLIBVersion smtlibVersion;
 
 	private final SMTQuantifierSymbol quantifier;
 	private final SMTVarSymbol[] qVars;
@@ -43,8 +40,7 @@ public class SMTQuantifiedFormula extends SMTFormula {
 	 */
 	SMTQuantifiedFormula(final SMTQuantifierSymbol quantifier,
 			final SMTVarSymbol[] qVars, final SMTFormula formula,
-			final SMTLIBVersion smtlibVersion) {
-		this.smtlibVersion = smtlibVersion;
+			final SMTLIBVersion smtlibVersion) {//TODO remove last parameter
 		this.quantifier = quantifier;
 		this.qVars = qVars.clone();
 		this.formula = formula;
@@ -69,28 +65,16 @@ public class SMTQuantifiedFormula extends SMTFormula {
 		builder.append(OPAR);
 		builder.append(quantifier);
 
-		if (smtlibVersion == V1_2) {
-			for (final SMTVarSymbol qVar : qVars) {
-				builder.append(SPACE);
-				qVar.toString(builder);
-			}
-			if (printPoint) {
-				builder.append(SPACE);
-				builder.append(POINT);
-				builder.append(SPACE);
-			}
-		} else {
-			String separator = "";
+		String separator = "";
 
-			builder.append(SPACE);
-			builder.append(OPAR);
-			for (final SMTVarSymbol qVar : qVars) {
-				builder.append(separator);
-				qVar.toString(builder);
-				separator = SPACE;
-			}
-			builder.append(CPAR);
+		builder.append(SPACE);
+		builder.append(OPAR);
+		for (final SMTVarSymbol qVar : qVars) {
+			builder.append(separator);
+			qVar.toString(builder);
+			separator = SPACE;
 		}
+		builder.append(CPAR);
 
 		builder.append(SPACE);
 		builder.append(newLine);

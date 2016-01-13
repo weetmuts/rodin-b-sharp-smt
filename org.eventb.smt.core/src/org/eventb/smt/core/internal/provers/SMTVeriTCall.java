@@ -12,7 +12,6 @@
 package org.eventb.smt.core.internal.provers;
 
 import static java.util.regex.Pattern.compile;
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.internal.provers.Messages.SMTVeriTCall_SMTLIBV2_0_deactivated;
@@ -27,8 +26,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eventb.core.ast.Predicate;
@@ -130,11 +129,7 @@ public class SMTVeriTCall extends SMTProverCall {
 	 * @throws IOException
 	 */
 	private void callVeriT(SMTBenchmark smtBenchmark) throws IOException {
-		if (sv == V1_2) {
-			callVeriT1_2();
-		} else {
-			callVeriT2_0();
-		}
+		callVeriT2_0();
 	}
 
 	private void callVeriT2_0() throws IOException {
@@ -191,56 +186,6 @@ public class SMTVeriTCall extends SMTProverCall {
 
 	}
 
-	private void callVeriT1_2() throws IOException {
-		final List<String> cmd = new ArrayList<String>();
-
-		if (veritPath == null || veritPath.isEmpty()) {
-			throw new IllegalArgumentException(
-					Messages.SmtProversCall_veriT_path_not_defined);
-		}
-
-		cmd.add(veritPath.toOSString());
-		cmd.add(SIMPLIFY_ARGUMENT_STRING);
-		cmd.add(PRINT_FLAT);
-		cmd.add(DISABLE_BANNER);
-		cmd.add(DISABLE_ACKERMANN);
-		cmd.add(veriTBenchmarkFile.getPath());
-
-		if (DEBUG_DETAILS) {
-			debugBuilder.append("About to launch veriT command:\n   ");
-			for (String arg : cmd) {
-				debugBuilder.append(' ').append(arg);
-			}
-			debugBuilder.append("\n");
-		}
-
-		try {
-			final ProcessBuilder builder = new ProcessBuilder(cmd);
-			builder.redirectErrorStream(true);
-			final Process process = builder.start();
-			activeProcesses.add(process);
-			final ProcessMonitor monitor = new ProcessMonitor(null, process,
-					this);
-
-			if (DEBUG_DETAILS)
-				showProcessOutcome(debugBuilder, monitor);
-
-			veriTResult = new String(monitor.output());
-			macrosTranslated = checkVeriTResult();
-
-			if (DEBUG_DETAILS) {
-				debugBuilder.append("veriT ");
-				debugBuilder.append(macrosTranslated ? "succeeded\n"
-						: "failed:\n");
-				debugBuilder.append(veriTResult).append("\n");
-			}
-
-		} finally {
-			if (DEBUG_DETAILS)
-				debugBuilder.append("veriT command finished.\n");
-		}
-	}
-
 	/**
 	 * This method checks if the response of veriT, after it processed the
 	 * macros contained in the benchmark produced by the plug-in, contains
@@ -253,19 +198,10 @@ public class SMTVeriTCall extends SMTProverCall {
 	 *             folders
 	 */
 	private boolean checkVeriTResult() throws IOException {
-		if (sv == V1_2) {
-			if (veriTResult.contains("(benchmark")) {
-				veriTResult = veriTResult.substring(veriTResult
-						.indexOf("(benchmark"));
-				return true;
-			}
-			return false;
-		} else {
-			if (veriTResult.contains("(set-logic")) {
-				return true;
-			}
-			return false;
+		if (veriTResult.contains("(set-logic")) {
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -291,73 +227,12 @@ public class SMTVeriTCall extends SMTProverCall {
 	@Override
 	public void makeSMTBenchmarkFile() throws IOException {
 		switch (config.getSmtlibVersion()) {
-		case V1_2:
-			makeSMTBenchmarkFileV1_2();
-			break;
 		case V2_0:
 			makeSMTBenchmarkFileV2_0();
 			break;
 		default:
 			assert false;
 			break;
-		}
-	}
-
-	private void makeSMTBenchmarkFileV1_2() throws IOException {
-		sv = V1_2;
-
-		/**
-		 * Updates the name of the benchmark (the name originally given could
-		 * have been changed by the translator if it was a reserved symbol)
-		 */
-		lemmaName = benchmark.getName();
-
-		/**
-		 * Makes temporary files
-		 */
-		makeTempFiles();
-
-		/**
-		 * Prints the benchmark with macros in a file
-		 */
-		final PrintWriter veriTBenchmarkWriter = openSMTFileWriter(veriTBenchmarkFile);
-		benchmark.print(veriTBenchmarkWriter, new SMTPrintOptions());
-		veriTBenchmarkWriter.close();
-
-		/**
-		 * Calls veriT to process the macros of the benchmark
-		 */
-		if (DEBUG_DETAILS) {
-			debugBuilder.append("Launching ").append(VERIT)
-					.append(" with input:\n\n");
-			showVeriTBenchmarkFile();
-		}
-
-		callVeriT(benchmark);
-
-		// FIXME this bug will be fixed in veriT
-		if (veriTResult.contains("proof_context_get")) {
-			System.out.println("PROOF_CONTEXT_GET");
-		}
-
-		/**
-		 * Prints the SMT-LIB benchmark in a file
-		 */
-		if (macrosTranslated) {
-			final FileWriter smtBenchmarkWriter = new FileWriter(
-					smtBenchmarkFile);
-			try {
-				// FIXME this bug will be fixed in veriT
-				if (config.getKind() == VERIT) {
-					veriTResult = veriTResult.replaceFirst("veriT__TPTP", "");
-					veriTResult = veriTResult.replace(":extrasorts ()", "");
-				}
-				smtBenchmarkWriter.write(veriTResult);
-			} finally {
-				smtBenchmarkWriter.close();
-			}
-		} else {
-			throw new IllegalArgumentException(veriTResult);
 		}
 	}
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast.macros;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-
 import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
@@ -85,51 +83,26 @@ public class SMTEnumMacro extends SMTMacro {
 
 	@Override
 	public void toString(final StringBuilder sb, final int offset) {
-		if (version == V1_2) {
-			sb.append("(");
-			sb.append(super.getMacroName());
-			sb.append(" (lambda ");
-			assignedVar.toString(sb);
-			sb.append(" . ");
-			if (terms.length == 1) {
-				sb.append("(= ");
-				assignedVar.getNameWithQMark(sb);
-				sb.append(" ");
-				terms[0].toString(sb, offset);
-				sb.append(")))");
-			} else {
-				sb.append("(or");
-				for (final SMTTerm term : terms) {
-					sb.append("\n\t\t(= ");
-					assignedVar.getNameWithQMark(sb);
-					sb.append(" ");
-					term.toString(sb, offset);
-					sb.append(")");
-				}
-				sb.append("\n )))");
-			}
+		sb.append(super.getMacroName());
+		sb.append(" (");
+		assignedVar.toString(sb);
+		sb.append(") (Int Bool) ");
+		if (terms.length == 1) {
+			sb.append(" (= ");
+			sb.append(assignedVar.getName());
+			sb.append(" ");
+			terms[0].toString(sb, offset);
+			sb.append(")");
 		} else {
-			sb.append(super.getMacroName());
-			sb.append(" (");
-			assignedVar.toString(sb);
-			sb.append(") (Int Bool) ");
-			if (terms.length == 1) {
-				sb.append(" (= ");
+			sb.append(" (or");
+			for (final SMTTerm term : terms) {
+				sb.append("\n\t\t(= ");
 				sb.append(assignedVar.getName());
 				sb.append(" ");
-				terms[0].toString(sb, offset);
+				term.toString(sb, offset);
 				sb.append(")");
-			} else {
-				sb.append(" (or");
-				for (final SMTTerm term : terms) {
-					sb.append("\n\t\t(= ");
-					sb.append(assignedVar.getName());
-					sb.append(" ");
-					term.toString(sb, offset);
-					sb.append(")");
-				}
-				sb.append("\n )");
 			}
+			sb.append("\n )");
 		}
 	}
 }

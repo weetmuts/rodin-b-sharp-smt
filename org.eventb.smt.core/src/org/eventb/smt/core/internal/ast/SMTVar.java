@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-
 import org.eventb.smt.core.SMTLIBVersion;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 import org.eventb.smt.core.internal.ast.symbols.SMTVarSymbol;
@@ -53,9 +51,6 @@ public class SMTVar extends SMTTerm {
 
 	@Override
 	public void toString(final StringBuilder builder, final int offset) {
-		if (smtlibVersion == V1_2) {
-			builder.append(SMTFactory.QVAR);
-		}
 		builder.append(symbol.getName());
 	}
 

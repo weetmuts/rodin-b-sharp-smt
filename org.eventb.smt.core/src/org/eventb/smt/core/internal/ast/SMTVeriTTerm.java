@@ -13,7 +13,6 @@ package org.eventb.smt.core.internal.ast;
 import java.util.Set;
 
 import org.eventb.smt.core.internal.ast.symbols.SMTPredicateSymbol;
-import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV1_2;
 import org.eventb.smt.core.internal.ast.theories.VeriTBooleansV2_0;
 
 /**
@@ -65,12 +64,7 @@ public class SMTVeriTTerm extends SMTTerm {
 	SMTVeriTTerm(final SMTPredicateSymbol symbol, final SMTSignature signature) {
 		checkIfPredIsDefinedInSignature(symbol, signature);
 		this.symbol = symbol;
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			sort = VeriTBooleansV1_2.getInstance().getBooleanSort();
-		} else {
-			sort = VeriTBooleansV2_0.getInstance().getBooleanSort();
-		}
-
+		sort = VeriTBooleansV2_0.getInstance().getBooleanSort();
 	}
 
 	@Override

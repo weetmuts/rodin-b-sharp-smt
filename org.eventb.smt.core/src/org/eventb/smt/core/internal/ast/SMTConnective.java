@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,34 +22,28 @@ import org.eventb.smt.core.SMTLIBVersion;
  * 
  */
 public enum SMTConnective {
-	NOT("not", "not"), //
-	IMPLIES("implies", "=>"), //
-	ITE("if_then_else", "ite"), //
-	AND("and", "and"), //
-	OR("or", "or"), //
-	XOR("xor", "xor"), //
-	IFF("iff", "=");
+	NOT("not"), //
+	IMPLIES("=>"), //
+	ITE("ite"), //
+	AND("and"), //
+	OR("or"), //
+	XOR("xor"), //
+	IFF("=");
 
 	/**
 	 * The symbol of the connective
 	 */
-	private String symbolV1_2;
 	private String symbolV2_0;
 
 	/**
 	 * Constructs a new SMT connective with a symbol.
 	 */
-	SMTConnective(final String symbolV1_2, final String symbolV2_0) {
-		this.symbolV1_2 = symbolV1_2;
+	SMTConnective(final String symbolV2_0) {
 		this.symbolV2_0 = symbolV2_0;
 	}
 
 	public String toString(final SMTLIBVersion smtlibVersion) {
-		if (smtlibVersion == V1_2) {
-			return symbolV1_2;
-		} else {
-			return symbolV2_0;
-		}
+		return symbolV2_0;
 	}
 
 	/**

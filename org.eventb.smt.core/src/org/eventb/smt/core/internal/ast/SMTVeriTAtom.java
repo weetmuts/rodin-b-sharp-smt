@@ -14,7 +14,6 @@ import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
-import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV1_2;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroFactoryV2_0;
 import org.eventb.smt.core.internal.ast.macros.SMTMacroSymbol;
 
@@ -67,10 +66,7 @@ class SMTVeriTAtom extends SMTFormula {
 	 */
 	SMTVeriTAtom(final SMTMacroSymbol symbol, final SMTTerm terms[],
 			final SMTSignature signature) {
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			SMTMacroFactoryV1_2.checkIfMacroIsDefinedInTheSignature(symbol,
-					(SMTSignatureV1_2Verit) signature);
-		} else if (signature instanceof SMTSignatureV2_0Verit) {
+		if (signature instanceof SMTSignatureV2_0Verit) {
 			SMTMacroFactoryV2_0.checkIfMacroIsDefinedInTheSignature(symbol,
 					(SMTSignatureV2_0Verit) signature);
 		} else {

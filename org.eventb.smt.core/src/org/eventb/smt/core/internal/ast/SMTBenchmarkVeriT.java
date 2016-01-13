@@ -125,12 +125,8 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 		getUsedSymbols(formula, symbols);
 		final Set<SMTMacro> macros;
 
-		if (signature instanceof SMTSignatureV1_2Verit) {
-			macros = ((SMTSignatureV1_2Verit) signature).getMacros();
-		} else {
-			// FIXME It is not in accordance with SMT 2.0
-			macros = ((SMTSignatureV2_0Verit) signature).getMacros();
-		}
+		// FIXME It is not in accordance with SMT 2.0
+		macros = ((SMTSignatureV2_0Verit) signature).getMacros();
 
 		for (final SMTMacro macro : macros) {
 			getUsedSymbols(macro, symbols);
@@ -176,24 +172,6 @@ public class SMTBenchmarkVeriT extends SMTBenchmark {
 			final Set<SMTSymbol> symbols) {
 		for (final SMTTerm term : macro.getTerms()) {
 			getUsedSymbols(term, symbols);
-		}
-	}
-
-	/**
-	 * Adds to the parameter {@code symbols} the smt symbols from {@code macro}.
-	 * 
-	 * @param macro
-	 * @param symbols
-	 */
-	private void getUsedSymbols(final SMTPredefinedMacro macro,
-			final Set<SMTSymbol> symbols) {
-		if (macro.usesPairFunctionAndSort()) {
-			symbols.add(SMTFactoryVeriT.PAIR_SORT_V1_2);
-			symbols.add(SMTFactoryVeriT.PAIR_SYMBOL_V1_2);
-		}
-		if (macro.usesFstAndSndFunctions()) {
-			symbols.add(SMTFactoryVeriT.FST_SYMBOLV_1_2);
-			symbols.add(SMTFactoryVeriT.SND_SYMBOL_V1_2);
 		}
 	}
 

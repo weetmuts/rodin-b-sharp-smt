@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
 import static org.eventb.smt.core.SMTLIBVersion.V2_0;
 import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.TranslationApproach.USING_VERIT;
@@ -81,8 +80,8 @@ public class BundledConfigLoaderTests {
 
 	@Test
 	public void validVersion() {
-		ce.add("smt-lib", "V1.2");
-		assertEquals(V1_2, loader.getVersion());
+		ce.add("smt-lib", "V2.0");
+		assertEquals(V2_0, loader.getVersion());
 	}
 
 	@Test(expected = LoadingException.class)

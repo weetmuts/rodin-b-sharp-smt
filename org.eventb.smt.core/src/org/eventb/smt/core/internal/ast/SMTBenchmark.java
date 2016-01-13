@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.ast;
 
-import static org.eventb.smt.core.SMTLIBVersion.V1_2;
-import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
@@ -23,7 +21,6 @@ import static org.eventb.smt.core.internal.ast.commands.GetUnsatCoreCommand.getG
 import static org.eventb.smt.core.internal.ast.commands.SetInfoCommand.setStatusUnsat;
 import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setFalse;
 import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setTrue;
-import static org.eventb.smt.core.internal.ast.symbols.SMTSymbol.BENCHMARK;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -132,14 +129,9 @@ public class SMTBenchmark {
 			final boolean printAnnotations) {
 		for (final SMTFormula assumption : assumptions) {
 			assumption.printComment(builder);
-			if (signature.getSMTLIBVersion() == V1_2) {
-				builder.append(" :assumption ");
-				assumption.toString(builder, 13, false);
-			} else {
-				final AssertCommand assertCommand = new AssertCommand(
-						assumption);
-				assertCommand.toString(builder, printAnnotations);
-			}
+			final AssertCommand assertCommand = new AssertCommand(
+					assumption);
+			assertCommand.toString(builder, printAnnotations);
 			builder.append("\n");
 		}
 	}
@@ -152,16 +144,10 @@ public class SMTBenchmark {
 	 *            the builder that will receive the representation
 	 */
 	protected void formulaSection(final StringBuilder builder,
-			final boolean printAnnotations) {
-		if (signature.getSMTLIBVersion() == V1_2) {
-			builder.append(" :formula ");
-			formula.toString(builder, 15, false);
-			builder.append("\n");
-		} else {
-			final AssertCommand assertCommand = new AssertCommand(formula);
-			assertCommand.toString(builder, printAnnotations);
-			builder.append("\n");
-		}
+		final boolean printAnnotations) {
+		final AssertCommand assertCommand = new AssertCommand(formula);
+		assertCommand.toString(builder, printAnnotations);
+		builder.append("\n");
 	}
 
 	/**
@@ -252,32 +238,26 @@ public class SMTBenchmark {
 	 */
 	public void print(final PrintWriter pw, final SMTPrintOptions options) {
 		final StringBuilder builder = new StringBuilder();
-		if (signature.getSMTLIBVersion() == V1_2) {
-			smtCmdOpening(builder, BENCHMARK, name);
-			benchmarkContent(builder, options.printAnnotations);
-			builder.append(CPAR);
-		} else {
-			appendComments(builder);
+		appendComments(builder);
+		builder.append("\n");
+		if (options.printZ3SpecificCommands) {
+			setFalse(Z3_AUTO_CONFIG).toString(builder);
 			builder.append("\n");
-			if (options.printZ3SpecificCommands) {
-				setFalse(Z3_AUTO_CONFIG).toString(builder);
-				builder.append("\n");
-				setFalse(Z3_MBQI).toString(builder);
-				builder.append("\n");
-			}
-			if (options.printGetUnsatCoreCommands) {
-				setTrue(PRODUCE_UNSAT_CORE).toString(builder);
-				builder.append("\n");
-			}
-			setStatusUnsat().toString(builder);
+			setFalse(Z3_MBQI).toString(builder);
 			builder.append("\n");
-			benchmarkContent(builder, options.printAnnotations);
-			getCheckSatCommand().toString(builder);
+		}
+		if (options.printGetUnsatCoreCommands) {
+			setTrue(PRODUCE_UNSAT_CORE).toString(builder);
 			builder.append("\n");
-			if (options.printGetUnsatCoreCommands) {
-				getGetUnsatCoreCommand().toString(builder);
-				builder.append("\n");
-			}
+		}
+		setStatusUnsat().toString(builder);
+		builder.append("\n");
+		benchmarkContent(builder, options.printAnnotations);
+		getCheckSatCommand().toString(builder);
+		builder.append("\n");
+		if (options.printGetUnsatCoreCommands) {
+			getGetUnsatCoreCommand().toString(builder);
+			builder.append("\n");
 		}
 		pw.println(builder.toString());
 	}

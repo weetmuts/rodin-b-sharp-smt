@@ -304,10 +304,7 @@ public class Logic {
 
 		public SMTSortSymbol getPowerSetIntegerSort() {
 			for (final Theory theory : theories) {
-				if (theory instanceof TheoryV1_2.Ints) {
-					return ((TheoryV1_2.Ints) theory)
-							.getPowerSetIntegerSort();
-				} else if (theory instanceof TheoryV2_0.Ints) {
+				if (theory instanceof TheoryV2_0.Ints) {
 					return ((TheoryV2_0.Ints) theory)
 							.getPowerSetIntegerSort();
 				}
@@ -317,41 +314,12 @@ public class Logic {
 
 		public SMTSortSymbol getPowerSetBooleanSort() {
 			for (final Theory theory : theories) {
-				if (theory instanceof TheoryV1_2.Booleans) {
-					return ((TheoryV1_2.Booleans) theory)
-							.getPowerSetBooleanSort();
-				} else if (theory instanceof TheoryV2_0.Core) {
+				if (theory instanceof TheoryV2_0.Core) {
 					return ((TheoryV2_0.Core) theory)
 							.getPowerSetBooleanSort();
 				}
 			}
 			return null;
-		}
-	}
-
-	/**
-	 * "Version 1.2 of the SMT-LIB format adopts as its underlying logic a basic
-	 * many-sorted version of first-order logic with equality. This logic allows
-	 * the definition of sorts and of sorted symbols but does not allow more
-	 * sophisticated constructs such as subsorts, sort constructors, explicit
-	 * sort declarations for terms, and so on."
-	 */
-	public static class SMTLIBUnderlyingLogicV1_2 extends SMTLogicPP {
-		private static final Theory[] THEORIES = { TheoryV1_2.Ints
-				.getInstance() };
-
-		private static final SMTLIBUnderlyingLogicV1_2 INSTANCE = new SMTLIBUnderlyingLogicV1_2();
-
-		protected SMTLIBUnderlyingLogicV1_2() {
-			super(UNKNOWN, THEORIES);
-		}
-
-		protected SMTLIBUnderlyingLogicV1_2(final String name) {
-			super(name, THEORIES);
-		}
-
-		public static SMTLIBUnderlyingLogicV1_2 getInstance() {
-			return INSTANCE;
 		}
 	}
 
@@ -469,40 +437,6 @@ public class Logic {
 	 * This class represents the SMT underlying logic used by veriT. It differs
 	 * from the standard underlying logic.
 	 */
-	public static class VeriTSMTLIBUnderlyingLogicV1_2 extends SMTLogicVeriT {
-
-		/**
-		 * The theories used by the veriT logic.
-		 */
-		private static final Theory[] THEORIES = { VeritPredefinedTheoryV1_2
-				.getInstance() };
-
-		/**
-		 * The instance of the underlying logic.
-		 */
-		private static final VeriTSMTLIBUnderlyingLogicV1_2 INSTANCE = new VeriTSMTLIBUnderlyingLogicV1_2();
-
-		/**
-		 * The constructor of the logic.
-		 */
-		private VeriTSMTLIBUnderlyingLogicV1_2() {
-			super(UNKNOWN, THEORIES);
-		}
-
-		/**
-		 * returns an instance of the VeriT logic.
-		 * 
-		 * @return an instance of the VeriT logic.
-		 */
-		public static VeriTSMTLIBUnderlyingLogicV1_2 getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
-	 * This class represents the SMT underlying logic used by veriT. It differs
-	 * from the standard underlying logic.
-	 */
 	public static class AUFLIAV2_0VeriT extends SMTLogicVeriT {
 		private static final String AUFLIA_LOGIC_NAME = "AUFLIA";
 		private static final Theory[] THEORIES = {
@@ -546,9 +480,7 @@ public class Logic {
 	 */
 	public SMTFunctionSymbol getIntsSet() {
 		for (final Theory theory : theories) {
-			if (theory instanceof TheoryV1_2.Ints) {
-				return TheoryV1_2.Ints.getIntsSet();
-			} else if (theory instanceof TheoryV2_0.Ints) {
+			if (theory instanceof TheoryV2_0.Ints) {
 				return TheoryV2_0.Ints.getIntsSet();
 			}
 		}
@@ -562,9 +494,7 @@ public class Logic {
 	 */
 	public SMTFunctionSymbol getBoolsSet() {
 		for (final Theory theory : theories) {
-			if (theory instanceof TheoryV1_2.Booleans) {
-				return TheoryV1_2.Booleans.getBoolsSet();
-			} else if (theory instanceof TheoryV2_0.Core) {
+			if (theory instanceof TheoryV2_0.Core) {
 				return TheoryV2_0.Core.getBoolsSet();
 			}
 		}
@@ -578,9 +508,7 @@ public class Logic {
 	 */
 	public SMTPredicateSymbol getTrue() {
 		for (final Theory theory : theories) {
-			if (theory instanceof TheoryV1_2.Booleans) {
-				return TheoryV1_2.Booleans.getTrue();
-			} else if (theory instanceof TheoryV2_0.Core) {
+			if (theory instanceof TheoryV2_0.Core) {
 				return TheoryV2_0.Core.getTrue();
 			}
 		}
@@ -589,9 +517,6 @@ public class Logic {
 
 	public SMTFunctionSymbol getTrueConstant() {
 		for (final Theory theory : theories) {
-			if (theory instanceof VeriTBooleansV1_2) {
-				return VeriTBooleansV1_2.getInstance().getTrueConstant();
-			}
 			if (theory instanceof VeriTBooleansV2_0) {
 				return VeriTBooleansV2_0.getInstance().getTrueConstant();
 			}
@@ -601,9 +526,6 @@ public class Logic {
 
 	public SMTFunctionSymbol getFalseConstant() {
 		for (final Theory theory : theories) {
-			if (theory instanceof VeriTBooleansV1_2) {
-				return VeriTBooleansV1_2.getInstance().getFalseConstant();
-			}
 			if (theory instanceof VeriTBooleansV2_0) {
 				return VeriTBooleansV2_0.getInstance().getFalseConstant();
 			}
