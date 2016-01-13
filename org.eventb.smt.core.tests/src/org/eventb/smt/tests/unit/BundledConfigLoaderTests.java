@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.junit.Assert.assertEquals;
 
 import org.eventb.smt.core.internal.prefs.AbstractLoader.LoadingException;
@@ -52,23 +51,6 @@ public class BundledConfigLoaderTests {
 		final String value = "some arguments";
 		ce.add("args", value);
 		assertEquals(value, loader.getArgs());
-	}
-
-	@Test
-	public void missingApproach() {
-		assertEquals(USING_PP, loader.getTranslationApproach());
-	}
-
-	@Test
-	public void validApproach() {
-		ce.add("translator", "PP");
-		assertEquals(USING_PP, loader.getTranslationApproach());
-	}
-
-	@Test(expected = LoadingException.class)
-	public void invalidApproach() {
-		ce.add("translator", "unknown approach");
-		loader.getTranslationApproach();
 	}
 
 }

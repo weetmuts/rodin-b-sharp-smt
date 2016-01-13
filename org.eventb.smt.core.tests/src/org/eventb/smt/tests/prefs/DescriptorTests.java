@@ -15,7 +15,6 @@ import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.SolverKind.Z3;
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.eventb.smt.core.internal.prefs.ConfigPreferences.getBundledConfigs;
 import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
 import static org.junit.Assert.assertFalse;
@@ -30,7 +29,6 @@ import org.eventb.smt.core.IDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SMTCore;
 import org.eventb.smt.core.SolverKind;
-import org.eventb.smt.core.TranslationApproach;
 import org.junit.Test;
 
 /**
@@ -65,13 +63,11 @@ public class DescriptorTests {
 		final String name = "foo";
 		final String solverName = "bar";
 		final String args = "-some -args";
-		final TranslationApproach approach = USING_PP;
-		final IConfigDescriptor desc = newConfigDescriptor(name, solverName, args, approach, true);
+		final IConfigDescriptor desc = newConfigDescriptor(name, solverName, args, true);
 		assertSame(name, desc.getName());
 		assertFalse(desc.isBundled());
 		assertSame(solverName, desc.getSolverName());
 		assertSame(args, desc.getArgs());
-		assertSame(approach, desc.getTranslationApproach());
 		assertTrue(desc.isEnabled());
 	}
 

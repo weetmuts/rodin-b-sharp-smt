@@ -18,7 +18,6 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import static org.eclipse.swt.SWT.RESIZE;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
-import static org.eventb.smt.core.TranslationApproach.parseApproach;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,7 +31,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.ui.internal.UIUtils;
 import org.eventb.smt.ui.internal.preferences.solvers.SolverElement;
 
@@ -139,11 +137,7 @@ public class ConfigDialog extends Dialog {
 
 		final Combo translatorCombo = new Combo(shell, getStyle() | DROP_DOWN
 				| READ_ONLY);
-		for (final TranslationApproach translationApproach : TranslationApproach
-				.values()) {
-			translatorCombo.add(translationApproach.toString());
-		}
-		translatorCombo.setText(config.approach.toString());
+		translatorCombo.setText("");
 		data = new GridData(FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
 		translatorCombo.setLayoutData(data);
@@ -175,7 +169,6 @@ public class ConfigDialog extends Dialog {
 					config.enabled = executionCheckButton.getSelection();
 					config.solverName = solverCombo.getText();
 					config.args = argsText.getText();
-					config.approach = parseApproach(translatorCombo.getText());
 					model.update(config);
 					returnCode = OK;
 					shell.close();

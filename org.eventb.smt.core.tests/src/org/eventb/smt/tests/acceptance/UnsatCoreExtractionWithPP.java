@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public abstract class UnsatCoreExtractionWithPP extends CommonSolverRunTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public UnsatCoreExtractionWithPP(ConfigProvider provider) {
-		super(provider, null, USING_PP, GET_UNSAT_CORE);
+		super(provider, null, GET_UNSAT_CORE);
 	}
 
 	@Test(timeout = 3000)

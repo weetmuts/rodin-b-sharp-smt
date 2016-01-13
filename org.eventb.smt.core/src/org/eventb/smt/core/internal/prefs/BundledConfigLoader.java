@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.internal.prefs;
 
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
-
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eventb.smt.core.TranslationApproach;
 
 /**
  * Implements loading configuration details from a "configuration" element.
@@ -32,10 +29,6 @@ public class BundledConfigLoader extends AbstractLoader {
 
 	public String getArgs() {
 		return getOptionalAttribute("args");
-	}
-
-	public TranslationApproach getTranslationApproach() {
-		return getEnumAttribute("translator", USING_PP);
 	}
 
 }

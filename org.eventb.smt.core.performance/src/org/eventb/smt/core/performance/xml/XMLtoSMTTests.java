@@ -12,7 +12,6 @@ package org.eventb.smt.core.performance.xml;
 
 import static org.eventb.smt.core.SolverKind.VERIT;
 import static org.eventb.smt.core.SolverKind.Z3;
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -91,7 +90,7 @@ public abstract class XMLtoSMTTests extends CommonPerformanceTests {
 	 */
 	public XMLtoSMTTests(LemmaData data, ConfigProvider provider,
 			boolean getUnsatCore) {
-		super(provider, Theory.fromNames(data.getTheories()), USING_PP, getUnsatCore);
+		super(provider, Theory.fromNames(data.getTheories()), getUnsatCore);
 		this.data = data;
 		debugBuilder = new StringBuilder();
 		debugBuilder.append("\n\n----------------------------\n\nLoop: ");

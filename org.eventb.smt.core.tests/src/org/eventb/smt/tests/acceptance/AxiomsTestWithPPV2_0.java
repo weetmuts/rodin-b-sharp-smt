@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public abstract class AxiomsTestWithPPV2_0 extends CommonSolverRunTests {
 			"PS", "ℙ(ℙ(ℤ))", "S", "ℙ(ℤ)", "x", "ℤ");
 
 	public AxiomsTestWithPPV2_0(ConfigProvider provider) {
-		super(provider, null, USING_PP, !GET_UNSAT_CORE);
+		super(provider, null, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

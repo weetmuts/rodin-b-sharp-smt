@@ -12,12 +12,14 @@ package org.eventb.smt.core;
 
 /**
  * Enumeration describing which translation approach to use.
+ * 
+ * @deprecated Translation using PP is assumed everywhere
  */
+@Deprecated
 public enum TranslationApproach {
 
 	USING_PP("PP"),
 	
-	@Deprecated
 	USING_VERIT("veriT");
 
 	public static TranslationApproach parseApproach(final String value) {

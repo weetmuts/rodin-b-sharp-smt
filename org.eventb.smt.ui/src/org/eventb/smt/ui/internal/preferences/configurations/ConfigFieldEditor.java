@@ -59,12 +59,6 @@ public class ConfigFieldEditor extends
 			public String getLabel(ConfigElement element) {
 				return element.args;
 			}
-		},
-		APPROACH("Translator", 74) {
-			@Override
-			public String getLabel(ConfigElement element) {
-				return element.approach.toString();
-			}
 		};
 
 		private final String title;

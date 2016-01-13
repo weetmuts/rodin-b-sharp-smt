@@ -11,10 +11,8 @@
 package org.eventb.smt.ui.internal.preferences.configurations;
 
 import static org.eventb.smt.core.SMTCore.newConfigDescriptor;
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
 
 import org.eventb.smt.core.IConfigDescriptor;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.ui.internal.preferences.AbstractElement;
 
 /**
@@ -28,14 +26,12 @@ public class ConfigElement extends AbstractElement<IConfigDescriptor> {
 
 	String solverName;
 	String args;
-	TranslationApproach approach;
 	boolean enabled;
 
 	public ConfigElement() {
 		super(true, "");
 		this.solverName = "";
 		this.args = "";
-		this.approach = USING_PP;
 		this.enabled = true;
 	}
 
@@ -43,7 +39,6 @@ public class ConfigElement extends AbstractElement<IConfigDescriptor> {
 		super(!origin.isBundled(), origin.getName());
 		this.solverName = origin.getSolverName();
 		this.args = origin.getArgs();
-		this.approach = origin.getTranslationApproach();
 		this.enabled = origin.isEnabled();
 	}
 
@@ -52,13 +47,12 @@ public class ConfigElement extends AbstractElement<IConfigDescriptor> {
 		super(true, configElement.name);
 		this.solverName = configElement.solverName;
 		this.args = configElement.args;
-		this.approach = configElement.approach;
 		this.enabled = configElement.enabled;
 	}
 	
 	@Override
 	public IConfigDescriptor toCore() {
-		return newConfigDescriptor(name, solverName, args, approach, enabled);
+		return newConfigDescriptor(name, solverName, args, enabled);
 	}
 
 	@Override

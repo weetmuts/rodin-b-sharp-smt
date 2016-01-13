@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers;
 
-import static org.eventb.smt.core.TranslationApproach.USING_PP;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,7 +29,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
 	public SolverPerfWithPP(ConfigProvider provider) {
-		super(provider, null, USING_PP, !GET_UNSAT_CORE);
+		super(provider, null, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

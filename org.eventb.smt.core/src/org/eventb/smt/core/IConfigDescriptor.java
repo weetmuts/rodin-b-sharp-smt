@@ -42,7 +42,9 @@ public interface IConfigDescriptor extends IDescriptor {
 	 * Returns the approach to use for translating to SMT-LIB.
 	 *
 	 * @return the translation approach of this configuration
+	 * @deprecated PP translation approach is assumed everywhere
 	 */
+	@Deprecated
 	TranslationApproach getTranslationApproach();
 
 	/**

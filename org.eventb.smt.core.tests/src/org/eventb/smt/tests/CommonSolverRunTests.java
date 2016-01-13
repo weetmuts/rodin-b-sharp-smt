@@ -29,7 +29,6 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
@@ -97,27 +96,24 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 	}
 
-	public CommonSolverRunTests(ConfigProvider provider, Set<Theory> theories,
-			TranslationApproach approach, boolean getUnsatCore) {
+	public CommonSolverRunTests(ConfigProvider provider, Set<Theory> theories, boolean getUnsatCore) {
 		this.theories = theories;
-		this.configuration = provider.config(approach);
+		this.configuration = provider.config();
 	}
 
 	public static IConfigDescriptor makeConfig(final ISolverDescriptor solver,
-			final String args, final TranslationApproach translationApproach) {
-		return makeConfig(solver.getName(), solver, args, translationApproach);
+			final String args) {
+		return makeConfig(solver.getName(), solver, args);
 	}
 
 	public static IConfigDescriptor makeConfig(final String id,
-			final ISolverDescriptor solver, final String args,
-			final TranslationApproach translationApproach) {
-		final String newID = id + "_" + translationApproach.toString();
-		return newConfigDescriptor(newID, solver.getName(), args, translationApproach, true);
+			final ISolverDescriptor solver, final String args) {
+		final String newID = id + "_test";
+		return newConfigDescriptor(newID, solver.getName(), args, true);
 	}
 
 	protected void printPerf(final StringBuilder debugBuilder,
 			final String lemmaName, final String solverId,
-			final TranslationApproach translationApproach,
 			final SMTProverCall smtProverCall) {
 		debugBuilder.append("<PERF_ENTRY>\n");
 		debugBuilder.append("Lemma ").append(lemmaName).append("\n");
@@ -133,8 +129,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			}
 			debugBuilder.append("\n");
 		}
-		debugBuilder.append("Approach ").append(translationApproach)
-				.append("\n");
 		debugBuilder.append("Status ");
 		if (smtProverCall.isTranslationPerformed()) {
 			if (!smtProverCall.isExceptionRaised()) {
@@ -186,7 +180,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 				debugBuilder);
 
 		printPerf(debugBuilder, lemmaName, configuration.getSolverName(),
-				configuration.getTranslationApproach(),
 				smtProverCall);
 
 		assertEquals(expectedTrivial, smtProverCall.benchmarkIsNull());
@@ -371,8 +364,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		}
 
 		final String testedSolverName = configuration.getSolverName();
-		final TranslationApproach testedTranslationApproach = configuration
-				.getTranslationApproach();
 
 		ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, parsedGoal.getFactory());
@@ -384,7 +375,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		if (!iter2ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter2ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverName,
-					testedTranslationApproach, iter2Result.getSmtProverCall());
+					iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
 	}

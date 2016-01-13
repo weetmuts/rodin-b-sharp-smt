@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eventb.core.ast.ITypeEnvironment;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.tests.CommonSolverRunTests;
 import org.eventb.smt.tests.ConfigProvider;
 import org.junit.Ignore;
@@ -39,9 +38,8 @@ public abstract class SolverRunTests extends CommonSolverRunTests {
 	protected static ITypeEnvironment pow_te = mTypeEnvironment(//
 			"e", "ℙ(S)", "f", "ℙ(S)", "g", "S");
 
-	public SolverRunTests(ConfigProvider provider,
-			final TranslationApproach translationApproach) {
-		super(provider, null, translationApproach, !GET_UNSAT_CORE);
+	public SolverRunTests(ConfigProvider provider) {
+		super(provider, null, !GET_UNSAT_CORE);
 	}
 
 	protected void doTest(final String lemmaName, final List<String> inputHyps,

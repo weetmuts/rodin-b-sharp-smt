@@ -96,13 +96,13 @@ public class SMTCore {
 	 *            auto-tactic
 	 * @return a configuration descriptor
 	 * @deprecated call
-	 *             {@link #newConfigDescriptor(String, String, String, TranslationApproach, boolean)}
+	 *             {@link #newConfigDescriptor(String, String, String, boolean)}
 	 *             instead
 	 */
 	@Deprecated
 	public static IConfigDescriptor newConfigDescriptor(String name, String solverName, String args,
 			TranslationApproach approach, SMTLIBVersion version, boolean enabled) {
-		return newConfigDescriptor(name, solverName, args, approach, enabled);
+		return newConfigDescriptor(name, solverName, args, enabled);
 	}
 
 	/**
@@ -114,16 +114,13 @@ public class SMTCore {
 	 *            name of the solver
 	 * @param args
 	 *            arguments to pass to the solver
-	 * @param approach
-	 *            translation approach
 	 * @param enabled
 	 *            whether this configuration shall be part of the default SMT
 	 *            auto-tactic
 	 * @return a configuration descriptor
 	 */
-	public static IConfigDescriptor newConfigDescriptor(String name, String solverName, String args,
-			TranslationApproach approach, boolean enabled) {
-		return new ConfigDescriptor(name, false, solverName, args, approach, enabled);
+	public static IConfigDescriptor newConfigDescriptor(String name, String solverName, String args, boolean enabled) {
+		return new ConfigDescriptor(name, false, solverName, args, enabled);
 	}
 
 	/**

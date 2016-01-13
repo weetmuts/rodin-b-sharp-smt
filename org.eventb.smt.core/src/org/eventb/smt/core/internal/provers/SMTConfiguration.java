@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
 import org.eventb.smt.core.SolverKind;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.prefs.ConfigPreferences;
 import org.eventb.smt.core.internal.prefs.SolverPreferences;
 
@@ -58,8 +57,6 @@ public class SMTConfiguration {
 
 	private final String args;
 
-	private final TranslationApproach translationApproach;
-
 	/**
 	 * Constructs a new configuration from a configuration and a solver
 	 * descriptor.
@@ -77,7 +74,6 @@ public class SMTConfiguration {
 		this.kind = solver.getKind();
 		this.solverPath = solver.getPath();
 		this.args = config.getArgs();
-		this.translationApproach = config.getTranslationApproach();
 	}
 
 	public String getName() {
@@ -98,10 +94,6 @@ public class SMTConfiguration {
 
 	public String getArgs() {
 		return args;
-	}
-
-	public TranslationApproach getTranslationApproach() {
-		return translationApproach;
 	}
 
 }

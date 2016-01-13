@@ -27,7 +27,6 @@ import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
-import org.eventb.smt.core.TranslationApproach;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
 import org.eventb.smt.tests.CommonSolverRunTests;
@@ -40,9 +39,8 @@ import org.eventb.smt.utils.Theory;
  */
 public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 
-	public CommonPerformanceTests(ConfigProvider provider, Set<Theory> theories, TranslationApproach approach,
-			boolean getUnsatCore) {
-		super(provider, theories, approach, getUnsatCore);
+	public CommonPerformanceTests(ConfigProvider provider, Set<Theory> theories, boolean getUnsatCore) {
+		super(provider, theories, getUnsatCore);
 		assumeTrue(configuration.getSolverPath().toFile().canExecute());
 	}
 
@@ -110,8 +108,6 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		}
 
 		final String testedSolverName = configuration.getSolverName();
-		final TranslationApproach testedTranslationApproach = configuration
-				.getTranslationApproach();
 
 		/**
 		 * Iter 1 : calls the prover with the expected unsat-core, to check if
@@ -130,7 +126,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		if (!iter1ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter1ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverName,
-					testedTranslationApproach, iter1Result.getSmtProverCall());
+					iter1Result.getSmtProverCall());
 			fail(iter1ErrorBuffer);
 		}
 		debugBuilder.append("\n");
@@ -148,7 +144,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		if (!iter2ErrorBuffer.isEmpty()) {
 			debugBuilder.append(iter2ErrorBuffer).append("\n");
 			printPerf(debugBuilder, lemmaName, testedSolverName,
-					testedTranslationApproach, iter2Result.getSmtProverCall());
+					iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
 		debugBuilder.append("\n");
@@ -180,7 +176,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 			 * we just want the unsat core to be refused
 			 */
 			printPerf(debugBuilder, lemmaName, testedSolverName,
-					testedTranslationApproach, iter2Result.getSmtProverCall());
+					iter2Result.getSmtProverCall());
 			fail(iter3ErrorBuffer);
 		}
 		debugBuilder.append("\n");
@@ -195,7 +191,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 
 		final String solverName = configuration.getSolverName();
 		if (!solverName.equals(LAST_Z3.solverName())) {
-			configuration = LAST_Z3.config(testedTranslationApproach);
+			configuration = LAST_Z3.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
 					"z3 unsat-core checking", lemmaName, sequent,
@@ -209,12 +205,12 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverName,
-						testedTranslationApproach, iter3Result.getSmtProverCall());
+						iter3Result.getSmtProverCall());
 				fail(z3UCCheckErrorBuffer);
 			}
 		}
 		if (!solverName.equals(LAST_CVC3.solverName())) {
-			configuration = LAST_CVC3.config(testedTranslationApproach);
+			configuration = LAST_CVC3.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
 					"cvc3 unsat-core checking", lemmaName, sequent,
@@ -228,12 +224,12 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverName,
-						testedTranslationApproach, iter3Result.getSmtProverCall());
+						iter3Result.getSmtProverCall());
 				fail(cvc3UCCheckErrorBuffer);
 			}
 		}
 		if (!solverName.equals(LAST_ALTERGO.solverName())) {
-			configuration = LAST_ALTERGO.config(testedTranslationApproach);
+			configuration = LAST_ALTERGO.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult altergoUCCheckResult = smtProverCallTest(
 					"alt-ergo unsat-core checking", lemmaName, sequent,
@@ -247,12 +243,12 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverName,
-						testedTranslationApproach, iter3Result.getSmtProverCall());
+						iter3Result.getSmtProverCall());
 				fail(altergoUCCheckErrorBuffer);
 			}
 		}
 		if (!solverName.equals(LAST_VERIT.solverName())) {
-			configuration = LAST_VERIT.config(testedTranslationApproach);
+			configuration = LAST_VERIT.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
 					"veriT unsat-core checking", lemmaName, sequent,
@@ -266,7 +262,7 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				 * because we just want the unsat core checking to be refused
 				 */
 				printPerf(debugBuilder, lemmaName, testedSolverName,
-						testedTranslationApproach, iter3Result.getSmtProverCall());
+						iter3Result.getSmtProverCall());
 				fail(veritUCCheckErrorBuffer);
 			}
 		}
@@ -274,6 +270,6 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		unsatCoreChecked = true;
 
 		printPerf(debugBuilder, lemmaName, testedSolverName,
-				testedTranslationApproach, iter3Result.getSmtProverCall());
+				iter3Result.getSmtProverCall());
 	}
 }
