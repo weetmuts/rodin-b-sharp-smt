@@ -10,7 +10,6 @@
       </solver>
       <configuration
             name="Z3"
-            smt-lib="V2.0"
             solverName="Z3 (bundled)"
             translator="PP">
       </configuration>

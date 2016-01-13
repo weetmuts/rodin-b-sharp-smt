@@ -105,22 +105,6 @@ Default value: &quot;PP&quot;.
                </restriction>
             </simpleType>
          </attribute>
-         <attribute name="smt-lib">
-            <annotation>
-               <documentation>
-                  The version of the SMT-LIB language which must be used as the target of the translation.
-Default value: &quot;V2.0&quot;.
-               </documentation>
-            </annotation>
-            <simpleType>
-               <restriction base="string">
-                  <enumeration value="V1.2">
-                  </enumeration>
-                  <enumeration value="V2.0">
-                  </enumeration>
-               </restriction>
-            </simpleType>
-         </attribute>
       </complexType>
    </element>
 

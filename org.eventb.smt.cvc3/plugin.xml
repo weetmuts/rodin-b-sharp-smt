@@ -11,7 +11,6 @@
       <configuration
             args=""
             name="CVC3"
-            smt-lib="V2.0"
             solverName="CVC3 (bundled)"
             translator="PP">
       </configuration>
