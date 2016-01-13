@@ -14,9 +14,9 @@ import static org.eventb.smt.tests.ConfigProvider.BUNDLED_VERIT;
 
 import org.eventb.smt.tests.acceptance.AxiomsTestWithPPV2_0;
 
-public class AxiomsTestWithVeriTPPV2_0 extends AxiomsTestWithPPV2_0 {
+public class AxiomsTestWithPP extends AxiomsTestWithPPV2_0 {
 
-	public AxiomsTestWithVeriTPPV2_0() {
+	public AxiomsTestWithPP() {
 		super(BUNDLED_VERIT);
 	}
 
