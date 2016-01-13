@@ -26,8 +26,6 @@ public class Messages extends NLS {
 	public static String MainPrefPage_notWritableDir;
 	public static String MainPrefPage_tmpDirLabel;
 	public static String MainPrefPage_tmpDirTooltip;
-	public static String MainPrefPage_veriTPathLabel;
-	public static String MainPrefPage_veriTPathTooltip;
 	public static String MainPrefPage_autoTimeoutLabel;
 	public static String MainPrefPage_autoTimeoutTooltip;
 

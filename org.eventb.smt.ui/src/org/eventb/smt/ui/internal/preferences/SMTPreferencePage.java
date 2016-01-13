@@ -20,8 +20,6 @@ import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notAbsolute;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_notWritableDir;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_tmpDirLabel;
 import static org.eventb.smt.ui.internal.Messages.MainPrefPage_tmpDirTooltip;
-import static org.eventb.smt.ui.internal.Messages.MainPrefPage_veriTPathLabel;
-import static org.eventb.smt.ui.internal.Messages.MainPrefPage_veriTPathTooltip;
 
 import java.io.File;
 
@@ -66,7 +64,6 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected void createFieldEditors() {
 		addField(new TempDirectoryEditor(getFieldEditorParent()));
-		addField(new VeriTEditor(getFieldEditorParent()));
 		addField(new AutoTimeoutEditor(getFieldEditorParent()));
 	}
 
@@ -133,16 +130,6 @@ public class SMTPreferencePage extends FieldEditorPreferencePage implements
 		protected void doStore() {
 			getPreferenceStore().setValue(getPreferenceName(),
 					getTextControl().getText().trim());
-		}
-
-	}
-
-	private static class VeriTEditor extends ExecutableFileEditor {
-
-		public VeriTEditor(Composite parent) {
-			super(SMTPreferences.VERIT_PATH_ID, MainPrefPage_veriTPathLabel,
-					MainPrefPage_veriTPathTooltip, parent);
-			setEmptyStringAllowed(true);
 		}
 
 	}

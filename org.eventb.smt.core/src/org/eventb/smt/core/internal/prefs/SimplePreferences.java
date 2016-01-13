@@ -14,9 +14,6 @@ import static java.lang.System.getProperty;
 import static org.eventb.smt.core.SMTPreferences.AUTO_TIMEOUT;
 import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.SMTPreferences.VERIT_PATH_ID;
-import static org.eventb.smt.core.SolverKind.VERIT;
-import static org.eventb.smt.core.internal.prefs.SolverPreferences.getBundledSolvers;
 import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import org.eclipse.core.runtime.IPath;
@@ -29,7 +26,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eventb.smt.core.ISolverDescriptor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -61,17 +57,7 @@ public class SimplePreferences {
 			final IScopeContext scope = DefaultScope.INSTANCE;
 			final Preferences node = scope.getNode(PREF_NODE_NAME);
 			node.put(TRANSLATION_PATH_ID, getProperty("java.io.tmpdir"));
-			node.put(VERIT_PATH_ID, bundledVeriTPath());
 			node.putInt(AUTO_TIMEOUT, DEFAULT_AUTO_TIMEOUT);
-		}
-
-		private String bundledVeriTPath() {
-			for (final ISolverDescriptor desc : getBundledSolvers()) {
-				if (VERIT == desc.getKind()) {
-					return desc.getPath().toString();
-				}
-			}
-			return ""; // No real default
 		}
 
 	}
@@ -86,11 +72,6 @@ public class SimplePreferences {
 
 	public static final IPath getTranslationPath() {
 		final String value = getPreference(TRANSLATION_PATH_ID);
-		return new Path(value);
-	}
-
-	public static final IPath getVeriTPath() {
-		final String value = getPreference(VERIT_PATH_ID);
 		return new Path(value);
 	}
 

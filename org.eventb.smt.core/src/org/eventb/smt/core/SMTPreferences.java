@@ -50,7 +50,10 @@ public class SMTPreferences {
 	/**
 	 * Name of the preference that contains the path to a veriT binary which
 	 * will be used to expand the macros produced by the veriT translation.
+	 * 
+	 * @deprecated veriT translation has been removed
 	 */
+	@Deprecated
 	public static final String VERIT_PATH_ID = "veriTPath"; //$NON-NLS-1$
 
 	/**
