@@ -20,34 +20,24 @@ solver/1/path = /bin/echo
 config/1/name=CVC3
 config/1/solver=CVC3 (bundled)
 config/1/args=
-config/1/approach=USING_PP
-config/1/version=V2_0
 config/1/enabled=true
 
 config/2/name=veriT
 config/2/solver=veriT (bundled)
 config/2/args=--disable-print-success --disable-banner --proof\=- --proof-version\=1 --proof-prune --disable-e
-config/2/approach=USING_PP
-config/2/version=V2_0
 config/2/enabled=true
 
 config/3/name=CVC4
 config/3/solver=CVC4 (bundled)
 config/3/args=
-config/3/approach=USING_PP
-config/3/version=V2_0
 config/3/enabled=true
 
 config/4/name=Z3
 config/4/solver=Z3 (bundled)
 config/4/args=
-config/4/approach=USING_PP
-config/4/version=V2_0
 config/4/enabled=true
 
 config/5/name = test
 config/5/solver = test
 config/5/args = 
-config/5/approach = USING_PP
-config/5/version = V2_0
 config/5/enabled = true
