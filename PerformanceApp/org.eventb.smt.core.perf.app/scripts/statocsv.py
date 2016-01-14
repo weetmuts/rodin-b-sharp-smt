@@ -19,8 +19,7 @@ from xml.dom import minidom
 # - combien de PO (proof objective) Rodin a genere pour ce projet
 # - combien de PO ont ete dechargees par les prouveurs de l'atelier-B
 # - combien de PO ont ete dechargees par les solveurs SMT
-# - combien de PO ont ete dechargees par chaque solveur SMT et en fonction
-#   de l'approche de traduction
+# - combien de PO ont ete dechargees par chaque solveur SMT
 ###
 
 # Ensemble des projets academiques
@@ -130,12 +129,13 @@ def b_proof_files_loop(origin, project, config):
 # les dossiers (configurations) contenus dans ceux-ci, stocke chaque
 # configuration dans la liste des configurations et appelle b_proof_files_loop
 def main_loop():
-    for project in os.listdir('.'):
+    for project in sorted(os.listdir('.')):
         if os.path.isdir(project):
             origin = project_origin(project)
-            for config in os.listdir(project):
+            for config in sorted(os.listdir(project)):
                 if os.path.isdir(project + "/" + config):
-                    configs.append(config)
+                    if config not in configs:
+                        configs.append(config)
                     b_proof_files_loop(origin, project, config)
 
 # affiche les pos au format csv avec une ligne d'en-tete
