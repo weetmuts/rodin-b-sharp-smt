@@ -78,7 +78,6 @@ import org.eventb.smt.core.internal.ast.SMTFactory;
 import org.eventb.smt.core.internal.ast.SMTFactoryPP;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
-import org.eventb.smt.core.internal.ast.SMTSignatureV2_0;
 import org.eventb.smt.core.internal.ast.SMTSignatureV2_0PP;
 import org.eventb.smt.core.internal.ast.SMTTerm;
 import org.eventb.smt.core.internal.ast.SMTVar;
@@ -121,7 +120,7 @@ public class SMTThroughPP extends Translator {
 	 * An instance of <code>SMTThroughPP</code> is associated to a signature
 	 * that is completed during the translation process.
 	 */
-	private SMTSignature signature;
+	private SMTSignatureV2_0PP signature;
 
 	private final Map<SMTOperator, SMTSymbol> operatorMap = new HashMap<Logic.SMTOperator, SMTSymbol>();
 
@@ -843,7 +842,7 @@ public class SMTThroughPP extends Translator {
 	 * This method links some symbols of the logic to the main Event-B symbols.
 	 */
 	private void linkLogicSymbols(final FormulaFactory ff) {
-		final SMTLogicPP logic = ((SMTSignatureV2_0PP) signature).getLogic();
+		final SMTLogicPP logic = signature.getLogic();
 
 		final Type integerType = ff.makeIntegerType();
 		final Type booleanType = ff.makeBooleanType();
@@ -1004,7 +1003,7 @@ public class SMTThroughPP extends Translator {
 			if (trackedPredicate.isHypothesis()) {
 				if (predicate.getTag() != Formula.BTRUE) {
 					final SMTFormula assumption = translate(predicate, !IN_GOAL);
-					final Label label = ((SMTSignatureV2_0) signature).freshLabel(!GOAL_LABEL);
+					final Label label = signature.freshLabel(!GOAL_LABEL);
 					assumption.addAnnotation(label);
 					labelMap.put(label.getName(), trackedPredicate);
 					translatedAssumptions.add(assumption);
@@ -1017,8 +1016,7 @@ public class SMTThroughPP extends Translator {
 				falseGoalNeeded = false;
 				smtFormula = SMTFactory.makeNot(
 						new SMTFormula[] { translate(predicate, IN_GOAL) });
-				final Label label = ((SMTSignatureV2_0) signature)
-						.freshLabel(GOAL_LABEL);
+				final Label label = signature.freshLabel(GOAL_LABEL);
 				smtFormula.addAnnotation(label);
 				labelMap.put(label.getName(), trackedPredicate);
 			}

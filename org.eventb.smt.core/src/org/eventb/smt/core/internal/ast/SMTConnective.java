@@ -31,18 +31,18 @@ public enum SMTConnective {
 	/**
 	 * The symbol of the connective
 	 */
-	private String symbolV2_0;
+	private String symbol;
 
 	/**
 	 * Constructs a new SMT connective with a symbol.
 	 */
-	SMTConnective(final String symbolV2_0) {
-		this.symbolV2_0 = symbolV2_0;
+	SMTConnective(final String symbol) {
+		this.symbol = symbol;
 	}
 
 	@Override
 	public String toString() {
-		return symbolV2_0;
+		return symbol;
 	}
 
 	/**

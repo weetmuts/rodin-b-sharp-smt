@@ -324,38 +324,6 @@ public class Logic {
 	}
 
 	/**
-	 * "Version 2.0 of the SMT-LIB format adopts as its underlying logic a
-	 * version of many-sorted first-order logic with equality. Like traditional
-	 * many-sorted logic, it has sorts and sorted terms. Unlike that logic,
-	 * however, it does not have a syntactic category of formulas distinct from
-	 * terms. Formulas are just sorted terms of a distinguished Boolean sort,
-	 * which is interpreted as a two-element set in every SMT-LIB theory.
-	 * Furthermore, the SMT-LIB logic uses a language of sort terms, as opposed
-	 * to just sort constants, to denote sorts. Finally, in addition to the
-	 * usual existential and universal quantifiers, the logic includes a let
-	 * binder analogous to the local variable binders found in many programming
-	 * languages."
-	 */
-	public static class SMTLIBUnderlyingLogicV2_0 extends SMTLogicPP {
-		private static final Theory[] THEORIES = { TheoryV2_0.Core
-				.getInstance() };
-
-		private static final SMTLIBUnderlyingLogicV2_0 INSTANCE = new SMTLIBUnderlyingLogicV2_0();
-
-		protected SMTLIBUnderlyingLogicV2_0() {
-			super(UNKNOWN, THEORIES);
-		}
-
-		protected SMTLIBUnderlyingLogicV2_0(final String name) {
-			super(name, THEORIES);
-		}
-
-		public static SMTLIBUnderlyingLogicV2_0 getInstance() {
-			return INSTANCE;
-		}
-	}
-
-	/**
 	 * Unquantified formulas built over a signature of uninterpreted (i.e.,
 	 * free) sort and function symbols.
 	 * 
@@ -427,12 +395,6 @@ public class Logic {
 		}
 	}
 
-	public static class SMTLogicVeriT extends Logic {
-		public SMTLogicVeriT(final String name, final Theory... theories) {
-			super(name, theories);
-		}
-	}
-
 	/**
 	 * returns the integer sort constant symbol.
 	 * 
@@ -475,21 +437,4 @@ public class Logic {
 		return null;
 	}
 
-	public SMTFunctionSymbol getTrueConstant() {
-		for (final Theory theory : theories) {
-			if (theory instanceof VeriTBooleansV2_0) {
-				return VeriTBooleansV2_0.getInstance().getTrueConstant();
-			}
-		}
-		return null;
-	}
-
-	public SMTFunctionSymbol getFalseConstant() {
-		for (final Theory theory : theories) {
-			if (theory instanceof VeriTBooleansV2_0) {
-				return VeriTBooleansV2_0.getInstance().getFalseConstant();
-			}
-		}
-		return null;
-	}
 }

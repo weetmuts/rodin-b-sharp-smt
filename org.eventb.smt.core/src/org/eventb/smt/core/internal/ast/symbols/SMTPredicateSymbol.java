@@ -112,9 +112,6 @@ public class SMTPredicateSymbol extends SMTSymbol implements
 
 	@Override
 	public void toString(final StringBuilder builder) {
-		/**
-		 * smtlibVersion == V2_0
-		 */
 		String separator = "";
 		builder.append(name);
 		builder.append(SPACE);

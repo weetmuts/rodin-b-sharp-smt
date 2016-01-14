@@ -162,10 +162,6 @@ public class TheoryV2_0 extends Theory {
 			return INSTANCE;
 		}
 
-		public static SMTSortSymbol getInt() {
-			return INT_SORT;
-		}
-
 		public SMTSortSymbol getPowerSetIntegerSort() {
 			return POW_INT_SORT;
 		}

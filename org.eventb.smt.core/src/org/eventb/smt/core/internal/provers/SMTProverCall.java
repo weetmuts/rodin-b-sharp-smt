@@ -115,13 +115,13 @@ public abstract class SMTProverCall extends XProverCall2 {
 	 *            the sequent to discharge
 	 * @param pm
 	 *            proof monitor used for cancellation
+	 * @param debugBuilder
+	 *            the string builder for tracing
+	 * @param config
+	 *            the SMT configuration for this call
+	 * @param translator
+	 *            the translator for this call
 	 */
-	protected SMTProverCall(final ISimpleSequent sequent,
-			final IProofMonitor pm, final SMTConfiguration config,
-			final Translator translator) {
-		this(sequent, pm, new StringBuilder(), config, translator);
-	}
-
 	protected SMTProverCall(final ISimpleSequent sequent,
 			final IProofMonitor pm, final StringBuilder debugBuilder,
 			final SMTConfiguration config, final Translator translator) {

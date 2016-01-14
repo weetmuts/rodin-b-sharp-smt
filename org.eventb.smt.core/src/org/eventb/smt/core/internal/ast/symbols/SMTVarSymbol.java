@@ -12,7 +12,6 @@ package org.eventb.smt.core.internal.ast.symbols;
 
 import static org.eventb.smt.core.internal.ast.SMTFactory.CPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
-import static org.eventb.smt.core.internal.ast.SMTFactory.QVAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 
 /**
@@ -46,17 +45,6 @@ public class SMTVarSymbol extends SMTSymbol implements Comparable<SMTVarSymbol> 
 	 */
 	public SMTSortSymbol getSort() {
 		return sort;
-	}
-
-	/**
-	 * appends in the string builder the string representation of the var symbol
-	 * with a "?" before. For example: if the name is "a", it returns, "?a"
-	 * 
-	 * @param sb
-	 *            the StringBuilder that will append the var symbol.
-	 */
-	public void getNameWithQMark(final StringBuilder sb) {
-		sb.append(QVAR + name);
 	}
 
 	@Override

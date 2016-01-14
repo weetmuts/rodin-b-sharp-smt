@@ -17,8 +17,6 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eventb.smt.core.internal.provers.messages"; //$NON-NLS-1$
 
 	public static String nullSMTConfigurationError;
-	public static String SmtProversCall_veriT_path_not_defined;
-	public static String SMTVeriTCall_SMTLIBV2_0_deactivated;
 
 	// Pattern for messages with argument (see corresponding method below)
 	public static String unknownSMTConfigurationError_pattern;

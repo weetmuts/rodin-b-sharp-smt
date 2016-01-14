@@ -14,7 +14,6 @@ import static java.lang.System.getProperty;
 import static org.eventb.smt.core.SMTPreferences.AUTO_TIMEOUT;
 import static org.eventb.smt.core.SMTPreferences.PREF_NODE_NAME;
 import static org.eventb.smt.core.SMTPreferences.TRANSLATION_PATH_ID;
-import static org.eventb.smt.core.internal.provers.SMTProversCore.logError;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -26,7 +25,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /**
@@ -85,15 +83,6 @@ public class SimplePreferences {
 		final IPreferencesService svc = Platform.getPreferencesService();
 		final String value = svc.getString(PREF_NODE_NAME, key, "", null);
 		return value;
-	}
-
-	public static void setTranslationPath(IPath path) {
-		NODE.put(TRANSLATION_PATH_ID, path.toPortableString());
-		try {
-			NODE.flush();
-		} catch (BackingStoreException e) {
-			logError("Flushing preferences", e);
-		}
 	}
 
 	public static void addChangeListener(IPreferenceChangeListener listener) {

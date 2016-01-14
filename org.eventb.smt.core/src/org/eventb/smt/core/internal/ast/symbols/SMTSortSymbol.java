@@ -44,10 +44,6 @@ public class SMTSortSymbol extends SMTSymbol implements
 	 * @return whether this sort is compatible with the given sort
 	 */
 	public boolean isCompatibleWith(final SMTSortSymbol other) {
-		if (this instanceof SMTPolymorphicSortSymbol
-				|| other instanceof SMTPolymorphicSortSymbol) {
-			return true;
-		}
 		return equals(other);
 	}
 

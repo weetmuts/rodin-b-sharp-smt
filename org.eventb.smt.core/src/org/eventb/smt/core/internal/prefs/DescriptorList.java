@@ -11,7 +11,6 @@
 package org.eventb.smt.core.internal.prefs;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,12 +34,6 @@ public abstract class DescriptorList<T extends IDescriptor> implements
 		this.descs = new ArrayList<T>();
 	}
 
-	public void addAll(T[] newDescs) {
-		for (final T newDesc : newDescs) {
-			add(newDesc);
-		}
-	}
-
 	/*
 	 * Adds all descriptors of the given list which name is not already present
 	 * in this list.
@@ -51,12 +44,6 @@ public abstract class DescriptorList<T extends IDescriptor> implements
 			if (get(name) == null) {
 				add(newDesc);
 			}
-		}
-	}
-
-	public void addAll(Collection<T> newDescs) {
-		for (final T newDesc : newDescs) {
-			add(newDesc);
 		}
 	}
 
