@@ -405,14 +405,11 @@ public class SMTThroughPP extends Translator {
 
 			/**
 			 * translates the type into an SMT-LIB sort, adds it to the types
-			 * mapping (and adds it to the signature sort symbols set)
+			 * mapping
 			 */
-			final SMTSortSymbol smtSortSymbol;
 			if (!typeMap.containsKey(varType)) {
-				smtSortSymbol = translateTypeName(varType);
+				final SMTSortSymbol smtSortSymbol = translateTypeName(varType);
 				typeMap.put(varType, smtSortSymbol);
-			} else {
-				smtSortSymbol = typeMap.get(varType);
 			}
 
 			/**
