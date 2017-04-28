@@ -96,7 +96,7 @@ public class SMTAutoTactic implements ITactic {
 
 		@Override
 		public void preferenceChange(PreferenceChangeEvent event) {
-			if (event.getKey() == AUTO_TIMEOUT) {
+			if (event.getKey().equals(AUTO_TIMEOUT)) {
 				preferencesChange();
 			}
 		}
