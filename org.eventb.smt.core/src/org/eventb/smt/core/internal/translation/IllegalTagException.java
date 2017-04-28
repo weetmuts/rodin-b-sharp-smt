@@ -16,9 +16,6 @@ package org.eventb.smt.core.internal.translation;
  */
 public class IllegalTagException extends IllegalArgumentException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -33129241139929218L;
 
 	private final int cause;

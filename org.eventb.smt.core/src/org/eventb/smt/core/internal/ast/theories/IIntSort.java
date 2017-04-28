@@ -13,7 +13,7 @@ package org.eventb.smt.core.internal.ast.theories;
 import org.eventb.smt.core.internal.ast.symbols.SMTSortSymbol;
 
 /**
- * This is the interface for boolean sort
+ * This is the interface for integer sort
  */
 public interface IIntSort {
 

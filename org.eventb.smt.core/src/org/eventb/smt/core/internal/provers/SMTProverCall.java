@@ -257,7 +257,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	/**
 	 * Checks if the result provided by the solver contains the "unsat" string.
 	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
-	 * So is set and returned "valid" attribut.
+	 * So is set and returned "valid" attribute.
 	 */
 	private boolean checkResult() {
 		if (compile("^unsat$", MULTILINE).matcher(solverResult).find()) {
@@ -457,7 +457,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				if (isValid()) {
 					if (canExtractUnsatCore()) {
 						// FIXME it is not possible to check z3 version, so make
-						// errors be catched if not a version capable of manage
+						// errors be caught if not a version capable of managing
 						// unsat-cores.
 						extractUnsatCore();
 					}

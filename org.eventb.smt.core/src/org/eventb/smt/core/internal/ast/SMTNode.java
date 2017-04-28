@@ -58,7 +58,7 @@ public abstract class SMTNode<T extends SMTNode<T>> {
 	 * if each sort corresponds with each argument.
 	 * 
 	 * @param expectedSortArgs
-	 *            the sexpected sorts
+	 *            the expected sorts
 	 * @param terms
 	 *            the arguments
 	 * @return true if, for each argument, its sort is the same of the expected

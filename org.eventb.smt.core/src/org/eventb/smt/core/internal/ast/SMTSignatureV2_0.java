@@ -39,7 +39,7 @@ public abstract class SMTSignatureV2_0 extends SMTSignature {
 	private final static Set<String> reservedSymbols = getReservedSymbolsAndKeywordsV2_0();
 
 	/**
-	 * Construts a new Signature given the SMT Logic
+	 * Constructs a new Signature given the SMT Logic
 	 * 
 	 * @param logic
 	 *            the logic used in the SMTSignature

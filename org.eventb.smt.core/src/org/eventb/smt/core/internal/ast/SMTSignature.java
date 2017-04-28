@@ -57,7 +57,7 @@ public abstract class SMTSignature {
 	protected Set<String> names = new HashSet<String>();
 
 	/**
-	 * Construts a new Signature given the SMT Logic
+	 * Constructs a new Signature given the SMT Logic
 	 * 
 	 * @param logic
 	 *            the logic used in the SMTSignature

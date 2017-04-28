@@ -14,7 +14,7 @@ import org.eventb.smt.core.internal.ast.theories.Logic;
 
 public class SMTSignatureV2_0PP extends SMTSignatureV2_0 {
 	/**
-	 * Construts a new Signature given the SMT Logic
+	 * Constructs a new Signature given the SMT Logic
 	 * 
 	 * @param logic
 	 *            the logic used in the SMTSignature
