@@ -288,11 +288,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 		} catch (final IOException ioe) {
 			ioe.printStackTrace();
-			ioe.getMessage();
 			return null;
 		} catch (final SecurityException se) {
 			se.printStackTrace();
-			se.getMessage();
 			return null;
 		}
 	}
