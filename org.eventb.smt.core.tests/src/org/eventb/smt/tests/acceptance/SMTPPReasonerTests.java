@@ -13,7 +13,7 @@ package org.eventb.smt.tests.acceptance;
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
 
-import org.eventb.core.seqprover.reasonerExtentionTests.AbstractReasonerTests;
+import org.eventb.core.seqprover.reasonerExtensionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
 
 /**
