@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eventb.smt.tests.acceptance;
 
-import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
 
 import org.eventb.core.seqprover.reasonerExtensionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
+import org.junit.Test;
 
 /**
  * Acceptance tests for the SMT reasoner. We use the bundled configurations to
@@ -43,24 +43,16 @@ public class SMTPPReasonerTests extends AbstractReasonerTests {
 		return REASONER_ID;
 	}
 
-	@Override
-	public SuccessfullReasonerApplication[] getSuccessfulReasonerApplications() {
-		return new SuccessfullReasonerApplication[] {
-				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), VERIT_INPUT),
-				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; z = x + y ;; y < z |- x < z "),
-						VERIT_INPUT), //
-				new SuccessfullReasonerApplication(
-						genSeq(" x < y ;; y < z |- x < z "), CVC3_INPUT) };
+	@Test
+	public void testSuccess() throws Exception {
+		assertReasonerSuccess(" x < y ;; y < z |- x < z ", VERIT_INPUT);
+		assertReasonerSuccess(" x < y ;; z = x + y ;; y < z |- x < z ",	VERIT_INPUT);
+		assertReasonerSuccess(" x < y ;; y < z |- x < z ", CVC3_INPUT);
 	}
 
-	@Override
-	public UnsuccessfullReasonerApplication[] getUnsuccessfullReasonerApplications() {
-		return new UnsuccessfullReasonerApplication[] {
-				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						VERIT_INPUT, "Failed"),
-				new UnsuccessfullReasonerApplication(genSeq(" x = 1 |- x = 2"),
-						CVC3_INPUT, "Failed") };
+	@Test
+	public void testFailure() throws Exception {
+		assertReasonerFailure(" x = 1 |- x = 2", VERIT_INPUT, "Failed");
+		assertReasonerFailure(" x = 1 |- x = 2", CVC3_INPUT, "Failed");
 	}
 }
