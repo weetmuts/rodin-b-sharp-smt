@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -257,7 +257,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 	/**
 	 * Checks if the result provided by the solver contains the "unsat" string.
 	 * "A formula is valid in a theory exactly when its negation is not satisfiable in this theory"
-	 * So is set and returned "valid" attribut.
+	 * So is set and returned "valid" attribute.
 	 */
 	private boolean checkResult() {
 		if (compile("^unsat$", MULTILINE).matcher(solverResult).find()) {
@@ -288,11 +288,9 @@ public abstract class SMTProverCall extends XProverCall2 {
 
 		} catch (final IOException ioe) {
 			ioe.printStackTrace();
-			ioe.getMessage();
 			return null;
 		} catch (final SecurityException se) {
 			se.printStackTrace();
-			se.getMessage();
 			return null;
 		}
 	}
@@ -457,7 +455,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 				if (isValid()) {
 					if (canExtractUnsatCore()) {
 						// FIXME it is not possible to check z3 version, so make
-						// errors be catched if not a version capable of manage
+						// errors be caught if not a version capable of managing
 						// unsat-cores.
 						extractUnsatCore();
 					}

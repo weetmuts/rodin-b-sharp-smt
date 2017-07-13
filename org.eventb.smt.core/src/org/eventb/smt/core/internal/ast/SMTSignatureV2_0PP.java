@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import org.eventb.smt.core.internal.ast.theories.Logic;
 
 public class SMTSignatureV2_0PP extends SMTSignatureV2_0 {
 	/**
-	 * Construts a new Signature given the SMT Logic
+	 * Constructs a new Signature given the SMT Logic
 	 * 
 	 * @param logic
 	 *            the logic used in the SMTSignature

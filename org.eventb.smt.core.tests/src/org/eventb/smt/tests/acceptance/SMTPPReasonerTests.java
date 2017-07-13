@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eventb.smt.tests.acceptance;
 import static org.eventb.core.seqprover.tests.TestLib.genSeq;
 import static org.eventb.smt.core.internal.provers.ExternalSMT.REASONER_ID;
 
-import org.eventb.core.seqprover.reasonerExtentionTests.AbstractReasonerTests;
+import org.eventb.core.seqprover.reasonerExtensionTests.AbstractReasonerTests;
 import org.eventb.smt.core.internal.provers.SMTInput;
 
 /**

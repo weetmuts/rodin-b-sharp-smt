@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,14 +405,11 @@ public class SMTThroughPP extends Translator {
 
 			/**
 			 * translates the type into an SMT-LIB sort, adds it to the types
-			 * mapping (and adds it to the signature sort symbols set)
+			 * mapping
 			 */
-			final SMTSortSymbol smtSortSymbol;
 			if (!typeMap.containsKey(varType)) {
-				smtSortSymbol = translateTypeName(varType);
+				final SMTSortSymbol smtSortSymbol = translateTypeName(varType);
 				typeMap.put(varType, smtSortSymbol);
-			} else {
-				smtSortSymbol = typeMap.get(varType);
 			}
 
 			/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,6 @@ package org.eventb.smt.core.internal.translation;
  */
 public class IllegalTagException extends IllegalArgumentException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -33129241139929218L;
 
 	private final int cause;

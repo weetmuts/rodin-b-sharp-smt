@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ public abstract class SMTSignature {
 	protected Set<String> names = new HashSet<String>();
 
 	/**
-	 * Construts a new Signature given the SMT Logic
+	 * Constructs a new Signature given the SMT Logic
 	 * 
 	 * @param logic
 	 *            the logic used in the SMTSignature

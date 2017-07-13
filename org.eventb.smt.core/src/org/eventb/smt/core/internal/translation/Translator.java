@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 Systerel and others.
+ * Copyright (c) 2010, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public abstract class Translator implements ISimpleVisitor {
 		}
 
 		/**
-		 * This method stores in the accumlator the type of the given
+		 * This method stores in the accumulator the type of the given
 		 * BoundIdentDecl
 		 */
 		@Override
@@ -124,7 +124,7 @@ public abstract class Translator implements ISimpleVisitor {
 	protected final Map<String, SMTVar> qVarMap = new HashMap<String, SMTVar>();
 
 	/**
-	 * Translates the given event-B sequent to SMT-LIB.
+	 * Translates the given Event-B sequent to SMT-LIB.
 	 */
 	public abstract TranslationResult translate(final String lemmaName,
 			final ISimpleSequent sequent);
