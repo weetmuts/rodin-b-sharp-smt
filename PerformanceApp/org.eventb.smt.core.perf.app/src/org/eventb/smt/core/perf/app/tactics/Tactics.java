@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Systerel and others.
+ * Copyright (c) 2013, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import org.eventb.smt.core.internal.tactics.DefaultAutoWithSMT;
  */
 public abstract class Tactics {
 
+	private static final String INSERT_BEFORE_TACTIC = "org.eventb.core.seqprover.dtDestrWDTac";
+
 	/**
 	 * Returns a tactic running just provers embedded within the core Rodin
 	 * platform.
@@ -48,7 +50,7 @@ public abstract class Tactics {
 	 */
 	public static ITacticDescriptor atelierBTactic() {
 		return new TacticInserter(RODIN_AUTO, atbBuilder(),
-				"org.eventb.core.seqprover.dtDestrWDTac").insert();
+				INSERT_BEFORE_TACTIC).insert();
 	}
 
 	/**
@@ -61,7 +63,7 @@ public abstract class Tactics {
 	public static ITacticDescriptor smtTactic(String configName) {
 		final TacticBuilder builder = new SMTTacticBuilder(configName);
 		return new TacticInserter(RODIN_AUTO, builder,
-				"org.eventb.core.seqprover.partitionRewriteTac").insert();
+				INSERT_BEFORE_TACTIC).insert();
 	}
 
 	/**
@@ -73,7 +75,7 @@ public abstract class Tactics {
 	 */
 	public static ITacticDescriptor smtTactic(IConfigDescriptor[] configs) {
 		return new TacticInserter(RODIN_AUTO, smtBuilder(configs),
-				"org.eventb.core.seqprover.partitionRewriteTac").insert();
+				INSERT_BEFORE_TACTIC).insert();
 	}
 
 	/**
@@ -89,7 +91,7 @@ public abstract class Tactics {
 		final ITacticDescriptor withAtB = atelierBTactic();
 		return new TacticInserter((ICombinedTacticDescriptor) withAtB,
 				smtBuilder(configs),
-				"org.eventb.core.seqprover.partitionRewriteTac").insert();
+				INSERT_BEFORE_TACTIC).insert();
 	}
 
 	private static TacticBuilder atbBuilder() {
