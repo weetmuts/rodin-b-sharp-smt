@@ -2,8 +2,9 @@
 <feature
       id="org.eventb.smt.z3"
       label="SMT Z3 Feature"
-      version="4.4.1.qualifier"
-      provider-name="Systerel">
+      version="4.5.0.qualifier"
+      provider-name="Systerel"
+      arch="x86_64">
 
    <plugin
          id="org.eventb.smt.z3"
@@ -18,24 +19,24 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.z3.macosx"
          os="macosx"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
 
    <plugin
          id="org.eventb.smt.z3.win32"
          os="win32"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
-         unpack="true"/>
+         fragment="true"/>
+
 </feature>
