@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eventb.smt.core.bundles">
+      <library
+            localpath="os/macosx/x86_64/libantlr3c.dylib">
+      </library>
+      <library
+            localpath="os/macosx/x86_64/libgmp.10.dylib">
+      </library>
+      <library
+            localpath="os/macosx/x86_64/libcvc4parser.4.dylib">
+      </library>
+      <library
+            localpath="os/macosx/x86_64/libcvc4.4.dylib">
+      </library>
+   </extension>
+
+</fragment>

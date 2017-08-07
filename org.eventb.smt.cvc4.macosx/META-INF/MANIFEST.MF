@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %CVC4MacosxFragmentName
-Bundle-SymbolicName: org.eventb.smt.cvc4.macosx
+Bundle-SymbolicName: org.eventb.smt.cvc4.macosx;singleton:=true
 Bundle-Version: 1.4.0.qualifier
 Eclipse-BundleShape: dir
 Bundle-Vendor: %providerName
