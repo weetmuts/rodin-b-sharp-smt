@@ -6,10 +6,10 @@
       <solver
             name="veriT (bundled)"
             kind="verit"
-            localpath="$os$/verit">
+            localpath="$os$/veriT">
       </solver>
       <configuration
-            args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune --disable-e"
+            args="--disable-print-success --disable-banner --proof=- --proof-version=1 --proof-prune"
             name="veriT"
             solverName="veriT (bundled)">
       </configuration>

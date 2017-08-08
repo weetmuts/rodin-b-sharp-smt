@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eventb.smt.core.bundles">
+      <library
+            localpath="os/win32/cyggcc_s-seh-1.dll">
+      </library>
+      <library
+            localpath="os/win32/cygwin1.dll">
+      </library>
+   </extension>
+
+</fragment>

@@ -1,0 +1,15 @@
+
+Prevent running memset with a negative size.
+
+diff -ru a/src/instantiation/inst-index.c b/src/instantiation/inst-index.c
+--- a/src/instantiation/inst-index.c	2016-10-27 17:55:56.000000000 +0200
++++ b/src/instantiation/inst-index.c	2017-09-05 15:41:54.000000000 +0200
+@@ -247,7 +247,7 @@
+   MY_REALLOC(inst_var_lvl, new_alloc * sizeof(Tinst_lvl));
+   /* HB necessary because DAG_done sends new_alloc with size 0 */
+   assert(!inst_var_lvl || (new_alloc > old_alloc));
+-  if (inst_var_lvl)
++  if (inst_var_lvl && new_alloc > old_alloc)
+     memset(inst_var_lvl + old_alloc, 0,
+            (new_alloc - old_alloc) * sizeof(Tinst_lvl));
+ }

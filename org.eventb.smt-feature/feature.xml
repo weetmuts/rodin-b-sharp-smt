@@ -69,11 +69,13 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         arch="x86_64"
          unpack="false"/>
 
    <plugin
          id="org.eventb.smt.verit.linux"
          os="linux"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -83,6 +85,7 @@
    <plugin
          id="org.eventb.smt.verit.macosx"
          os="macosx"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -92,6 +95,7 @@
    <plugin
          id="org.eventb.smt.verit.win32"
          os="win32"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
