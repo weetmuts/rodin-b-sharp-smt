@@ -83,7 +83,6 @@ public class SMTPPCall extends SMTProverCall {
 			// FIXME Add Z3 version checking
 			options.printAnnotations = true;
 			options.printGetUnsatCoreCommands = true;
-			options.printZ3SpecificCommands = true;
 			break;
 		case ALT_ERGO:
 		case VERIT:

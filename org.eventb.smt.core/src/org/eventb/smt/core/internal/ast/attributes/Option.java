@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,7 @@ public class Option extends Attribute<String> {
 		REGULAR_OUTPUT_CHANNEL("regular-output-channel"), //
 		DIAGNOSTIC_OUTPUT_CHANNEL("diagnostic-output-channel"), //
 		RANDOM_SEED("random-seed"), //
-		VERBOSITY("verbosity"), //
-		// z3 specific option keywords
-		Z3_AUTO_CONFIG("auto-config"), //
-		Z3_MBQI("mbqi");
+		VERBOSITY("verbosity");
 
 		private String name;
 

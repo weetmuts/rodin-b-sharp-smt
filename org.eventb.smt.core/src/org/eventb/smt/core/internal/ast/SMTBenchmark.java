@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 UFRN and others.
+ * Copyright (c) 2010, 2017 UFRN and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,9 @@ package org.eventb.smt.core.internal.ast;
 import static org.eventb.smt.core.internal.ast.SMTFactory.OPAR;
 import static org.eventb.smt.core.internal.ast.SMTFactory.SPACE;
 import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.PRODUCE_UNSAT_CORE;
-import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.Z3_AUTO_CONFIG;
-import static org.eventb.smt.core.internal.ast.attributes.Option.SMTOptionKeyword.Z3_MBQI;
 import static org.eventb.smt.core.internal.ast.commands.CheckSatCommand.getCheckSatCommand;
 import static org.eventb.smt.core.internal.ast.commands.GetUnsatCoreCommand.getGetUnsatCoreCommand;
 import static org.eventb.smt.core.internal.ast.commands.SetInfoCommand.setStatusUnsat;
-import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setFalse;
 import static org.eventb.smt.core.internal.ast.commands.SetOptionCommand.setTrue;
 
 import java.io.PrintWriter;
@@ -240,12 +237,6 @@ public class SMTBenchmark {
 		final StringBuilder builder = new StringBuilder();
 		appendComments(builder);
 		builder.append("\n");
-		if (options.printZ3SpecificCommands) {
-			setFalse(Z3_AUTO_CONFIG).toString(builder);
-			builder.append("\n");
-			setFalse(Z3_MBQI).toString(builder);
-			builder.append("\n");
-		}
 		if (options.printGetUnsatCoreCommands) {
 			setTrue(PRODUCE_UNSAT_CORE).toString(builder);
 			builder.append("\n");
