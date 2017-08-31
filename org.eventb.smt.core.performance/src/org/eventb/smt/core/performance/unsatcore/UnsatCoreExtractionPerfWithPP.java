@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDFPSBoolUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -150,7 +149,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimpleUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -180,7 +178,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple00UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -194,7 +191,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple01UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -208,7 +204,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple11UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -222,7 +217,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple12UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -236,7 +230,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple32UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -250,7 +243,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple30UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -264,7 +256,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple1yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -276,7 +267,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimple3yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -288,7 +278,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplex1UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -300,7 +289,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplex2UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -312,7 +300,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testDifferentForallPlusSimplexyUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -346,7 +333,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testSets3UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -369,7 +355,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	/**
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testSets5UnsatCore() {
 		final List<String> hyps = Arrays.asList("a = {x ↦ {y}}");
 
@@ -381,7 +366,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testSets6UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -412,7 +396,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testRule20MacroInsideMacroUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
@@ -423,7 +406,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	@Ignore("fail")
 	public void testRule20ManyForallsUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
@@ -621,7 +603,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	@Ignore("fail")
 	public void testDifferentForallUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -639,7 +620,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 'full_set_theory' theory
 	 */
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	@Ignore("timeout")
 	public void testCh7Conc29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -681,7 +661,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	// z3 succeeds (mbqi is disabled)
 	@Ignore("timeout")
 	public void testBepiColombo3Medium2UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -750,7 +729,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	// z3 fails (mbqi is disabled)
 	public void testLinearSort29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment( //
 				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //
