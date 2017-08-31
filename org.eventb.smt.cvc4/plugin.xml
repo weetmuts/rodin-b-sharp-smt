@@ -8,6 +8,13 @@
             kind="cvc4"
             localpath="$os$/cvc4">
       </solver>
+      <!--
+Notes:
+  dump-unsat-cores      produces an empty set
+  dump-unsat-cores-full works but prints the formulas instead of the labels, so the extraction
+                        returns an empty hyp set
+=> Unsat Core triggered by the get-unsat-core command inside the SMT file (SMTPPCall.getPrintingOptions)
+      -->
       <configuration
             args="--finite-model-find --fmf-inst-engine"
             name="CVC4"

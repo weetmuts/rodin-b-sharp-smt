@@ -480,6 +480,7 @@ public abstract class SMTProverCall extends XProverCall2 {
 		case VERIT:
 			return config.getArgs().contains("--proof=");
 		case Z3:
+		case CVC4:
 			return true;
 		default:
 			return false;
