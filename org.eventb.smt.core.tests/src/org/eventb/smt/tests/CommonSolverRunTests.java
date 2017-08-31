@@ -229,7 +229,7 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 		}
 
-		if (expectedUnsatCore != null) {
+		if (!expectedUnsatCore.isEmpty()) {
 			final Set<Predicate> actualNeededHyps = smtProverCall.neededHypotheses();
 			if (actualNeededHyps == null) {
 				appendError(errorBuilder, callMessage, lemmaName,
