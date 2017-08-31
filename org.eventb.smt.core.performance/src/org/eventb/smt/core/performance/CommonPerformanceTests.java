@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 Systerel and others.
+ * Copyright (c) 2012, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 package org.eventb.smt.core.performance;
 
 import static org.eventb.smt.tests.ConfigProvider.LAST_ALTERGO;
-import static org.eventb.smt.tests.ConfigProvider.LAST_CVC3;
-import static org.eventb.smt.tests.ConfigProvider.LAST_VERIT;
-import static org.eventb.smt.tests.ConfigProvider.LAST_Z3;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_CVC3;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_VERIT;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_Z3;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
@@ -190,8 +190,8 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 		debugBuilder.append("unsat-core checking\n");
 
 		final String solverName = configuration.getSolverName();
-		if (!solverName.equals(LAST_Z3.solverName())) {
-			configuration = LAST_Z3.config();
+		if (!solverName.equals(BUNDLED_Z3.solverName())) {
+			configuration = BUNDLED_Z3.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult z3UCCheckResult = smtProverCallTest(
 					"z3 unsat-core checking", lemmaName, sequent,
@@ -209,8 +209,8 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				fail(z3UCCheckErrorBuffer);
 			}
 		}
-		if (!solverName.equals(LAST_CVC3.solverName())) {
-			configuration = LAST_CVC3.config();
+		if (!solverName.equals(BUNDLED_CVC3.solverName())) {
+			configuration = BUNDLED_CVC3.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult cvc3UCCheckResult = smtProverCallTest(
 					"cvc3 unsat-core checking", lemmaName, sequent,
@@ -247,8 +247,8 @@ public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 				fail(altergoUCCheckErrorBuffer);
 			}
 		}
-		if (!solverName.equals(LAST_VERIT.solverName())) {
-			configuration = LAST_VERIT.config();
+		if (!solverName.equals(BUNDLED_VERIT.solverName())) {
+			configuration = BUNDLED_VERIT.config();
 			sequent = SimpleSequents.make(neededHypotheses, goalSolver, fac);
 			final SMTProverCallTestResult veritUCCheckResult = smtProverCallTest(
 					"veriT unsat-core checking", lemmaName, sequent,

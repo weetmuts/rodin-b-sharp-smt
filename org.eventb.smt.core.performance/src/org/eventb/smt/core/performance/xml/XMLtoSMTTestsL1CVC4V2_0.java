@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.xml;
 
-import static org.eventb.smt.tests.ConfigProvider.LAST_CVC4;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_CVC4;
 import static org.eventb.smt.utils.Theory.TheoryLevel.L1;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class XMLtoSMTTestsL1CVC4V2_0 extends XMLtoSMTTests {
 	public XMLtoSMTTestsL1CVC4V2_0(final LemmaData data) {
-		super(data, LAST_CVC4);
+		super(data, BUNDLED_CVC4);
 	}
 
 	@Parameters

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Systerel and others.
+ * Copyright (c) 2013, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,8 @@ import static org.eventb.smt.core.SMTCore.getConfigurations;
 import static org.eventb.smt.core.SMTCore.getSolvers;
 import static org.eventb.smt.core.SMTCore.newSolverDescriptor;
 import static org.eventb.smt.core.SolverKind.ALT_ERGO;
-import static org.eventb.smt.core.SolverKind.CVC3;
-import static org.eventb.smt.core.SolverKind.CVC4;
 import static org.eventb.smt.core.SolverKind.MATHSAT5;
 import static org.eventb.smt.core.SolverKind.OPENSMT;
-import static org.eventb.smt.core.SolverKind.VERIT;
-import static org.eventb.smt.core.SolverKind.Z3;
 import static org.eventb.smt.tests.CommonSolverRunTests.makeConfig;
 
 import org.eclipse.core.runtime.IPath;
@@ -52,23 +48,11 @@ public class ConfigProvider {
 	public static final ConfigProvider LAST_ALTERGO = new ConfigProvider(
 			ALT_ERGO, "alt-ergo-nightly-r217");
 
-	public static final ConfigProvider LAST_CVC3 = new ConfigProvider(CVC3,
-			"cvc3-2011-10-05");
-
-	public static final ConfigProvider LAST_CVC4 = new ConfigProvider(CVC4,
-			"cvc4-2011-12-11");
-
 	public static final ConfigProvider LAST_MATHSAT5 = new ConfigProvider(
 			MATHSAT5, "mathsat5-smtcomp2011");
 
 	public static final ConfigProvider LAST_OPENSMT = new ConfigProvider(
 			OPENSMT, "opensmt-20101017");
-
-	public static final ConfigProvider LAST_VERIT = new VeriTConfigProvider(
-			VERIT, "veriT-dev-r2863");
-
-	public static final ConfigProvider LAST_Z3 = new ConfigProvider(Z3,
-			"z3-3.2");
 
 	private static class VeriTConfigProvider extends ConfigProvider {
 
