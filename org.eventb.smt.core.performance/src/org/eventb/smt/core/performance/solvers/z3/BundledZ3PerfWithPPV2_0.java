@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.core.performance.solvers.z3;
 
-import static org.eventb.smt.tests.ConfigProvider.LAST_Z3;
+import static org.eventb.smt.tests.ConfigProvider.BUNDLED_Z3;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +20,10 @@ import org.eventb.smt.core.performance.solvers.SolverPerfWithPP;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class Z3PerfWithPPV2_0 extends SolverPerfWithPP {
+public class BundledZ3PerfWithPPV2_0 extends SolverPerfWithPP {
 
-	public Z3PerfWithPPV2_0() {
-		super(LAST_Z3);
+	public BundledZ3PerfWithPPV2_0() {
+		super(BUNDLED_Z3);
 	}
 
 	@Test
@@ -118,8 +118,10 @@ public class Z3PerfWithPPV2_0 extends SolverPerfWithPP {
 		doTest("mod", hyps, "3 mod 2 = 1", te, VALID);
 	}
 
+	/**
+	 * It was successful because of a bug in the mbqi
+	 */
 	@Test
-	@Ignore("Fail (It was successfull because of a bug in the mbqi)")
 	public void testIntegerSetZ3Call() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"n", "ℤ", "x", "ℤ");
