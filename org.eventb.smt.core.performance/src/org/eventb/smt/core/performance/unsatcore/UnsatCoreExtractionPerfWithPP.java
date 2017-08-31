@@ -88,6 +88,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
+	// success veriT; z3 and CVC4 choose m=1 & m:q instead of q/={}
 	public void testSetsEqualityUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"p", "ℙ(ℤ)", "q", "ℙ(ℤ)", "n", "ℤ", "m", "ℤ");
@@ -149,6 +150,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimpleUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -163,7 +165,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * predicate is unsuccessful without its refinement (axioms to add).
 	 */
 	@Test(timeout = 3000)
-	@Ignore("fail")
+	@Ignore("timeout veriT, Z3, CVC4")
 	public void testDifferentForallPlusSimpleMonadicUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -191,6 +193,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimple01UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -217,6 +220,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimple12UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -230,6 +234,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimple32UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -243,6 +248,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimple30UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -256,6 +262,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT; timeout Z3, CVC4
 	public void testDifferentForallPlusSimple1yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -267,6 +274,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT; timeout Z3, CVC4
 	public void testDifferentForallPlusSimple3yUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -278,6 +286,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimplex1UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -289,6 +298,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT, CVC4; timeout Z3
 	public void testDifferentForallPlusSimplex2UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -300,6 +310,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
+	// success veriT; timeout Z3, CVC4
 	public void testDifferentForallPlusSimplexyUnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -344,7 +355,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("fail")
+	// failure veriT; timeout Z3; success CVC4
 	public void testSets4UnsatCore() {
 		final List<String> hyps = Arrays.asList();
 
@@ -355,6 +366,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	/**
 	 */
 	@Test(timeout = 3000)
+	// success veriT, Z3; timeout CVC4
 	public void testSets5UnsatCore() {
 		final List<String> hyps = Arrays.asList("a = {x ↦ {y}}");
 
@@ -378,7 +390,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("fail")
+	// failure veriT, Z3, CVC4: expected true but was false
 	public void testSets7UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
@@ -388,6 +400,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
+	// failure veriT, Z3, CVC4: The SMT prover did not extract needed hypotheses
 	public void testSolverCallBelong1UnsatCore() {
 		final List<String> hyps = Arrays.asList("g ∈ e");
 
@@ -406,7 +419,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("fail")
+	// failure veriT; success Z3, CVC4
 	public void testRule20ManyForallsUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
@@ -603,7 +616,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("fail")
+	// success veriT; timeout Z3, CVC4
 	public void testDifferentForallUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -620,7 +633,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 'full_set_theory' theory
 	 */
 	@Test(timeout = 3000)
-	@Ignore("timeout")
+	@Ignore("timeout veriT, Z3, CVC4")
 	public void testCh7Conc29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -646,7 +659,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("timeout")
+	// success veriT, CVC4; timeout Z3
 	public void testBepiColombo3MediumUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -661,7 +674,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("timeout")
 	public void testBepiColombo3Medium2UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -687,7 +699,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	 * 
 	 */
 	@Test(timeout = 3000)
-	@Ignore("timeout")
+	// success veriT, Z3; timeout CVC4
 	public void testBepiColombo3UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -702,7 +714,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
-	@Ignore("timeout")
+	@Ignore("timeout veriT, Z3, CVC4")
 	public void testDynamicStableLSR_081014_15UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "h", "ℙ(S × ℙ(S × S × ℤ))", "m", "S", "n", "S");
@@ -729,6 +741,7 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test(timeout = 3000)
+	// success veriT; failure Z3: unsat core is missing 'j+1:dom(f)'; timeout CVC4
 	public void testLinearSort29UnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment( //
 				"f", "ℙ(ℤ × ℤ)", "r", "ℙ(ℤ × BOOL)", //
