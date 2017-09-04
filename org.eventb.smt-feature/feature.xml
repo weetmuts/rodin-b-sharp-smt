@@ -28,6 +28,11 @@
          optional="true"/>
 
    <includes
+         id="org.eventb.smt.cvc3"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
          id="org.eventb.smt.cvc4"
          version="0.0.0"
          optional="true"/>
@@ -68,39 +73,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eventb.smt.cvc3"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eventb.smt.cvc3.linux"
-         os="linux"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="true"/>
-
-   <plugin
-         id="org.eventb.smt.cvc3.macosx"
-         os="macosx"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="true"/>
-
-   <plugin
-         id="org.eventb.smt.cvc3.win32"
-         os="win32"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="true"/>
 
 </feature>
