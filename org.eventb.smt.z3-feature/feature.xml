@@ -6,6 +6,22 @@
       provider-name="Systerel"
       arch="x86_64">
 
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="">
+      %license
+   </license>
+
+   <url>
+      <discovery label="Z3 prover" url="https://github.com/Z3Prover/z3"/>
+   </url>
+
    <plugin
          id="org.eventb.smt.z3"
          download-size="0"
