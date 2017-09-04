@@ -5,6 +5,22 @@
       version="1.5.0.qualifier"
       provider-name="Systerel">
 
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="">
+      %license
+   </license>
+
+   <url>
+      <discovery label="CVC4 prover" url="http://cvc4.cs.stanford.edu/web/"/>
+   </url>
+
    <plugin
          id="org.eventb.smt.cvc4"
          download-size="0"
