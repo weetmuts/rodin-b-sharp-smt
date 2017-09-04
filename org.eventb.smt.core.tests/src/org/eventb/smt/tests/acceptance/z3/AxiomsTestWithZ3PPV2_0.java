@@ -8,7 +8,7 @@
  * Contributors:
  *     Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.performance.solvers.z3;
+package org.eventb.smt.tests.acceptance.z3;
 
 import static org.eventb.smt.tests.ConfigProvider.BUNDLED_Z3;
 

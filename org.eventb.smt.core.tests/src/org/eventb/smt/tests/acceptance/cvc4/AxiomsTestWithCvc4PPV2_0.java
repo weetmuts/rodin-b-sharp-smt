@@ -8,7 +8,7 @@
  * Contributors:
  *     Systerel - initial API and implementation
  *******************************************************************************/
-package org.eventb.smt.core.performance.solvers.cvc4;
+package org.eventb.smt.tests.acceptance.cvc4;
 
 import static org.eventb.smt.tests.ConfigProvider.BUNDLED_CVC4;
 
