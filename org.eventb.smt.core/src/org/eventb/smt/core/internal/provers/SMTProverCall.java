@@ -553,4 +553,8 @@ public abstract class SMTProverCall extends XProverCall2 {
 		}
 		tempFiles.cleanup();
 	}
+	
+	public String getSolverResult() {
+		return solverResult;
+	}
 }

@@ -230,7 +230,8 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 			final Set<Predicate> actualNeededHyps = smtProverCall.neededHypotheses();
 			if (actualNeededHyps == null) {
 				appendError(errorBuilder, callMessage, lemmaName,
-						"The SMT prover did not extract needed hypotheses.");
+						"The SMT prover did not extract needed hypotheses."
+								+ "\nSolver output:\n" + smtProverCall.getSolverResult());
 				return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 			} else {
 				final Set<Predicate> expectedNeededHyps = new HashSet<Predicate>(expectedUnsatCore);
