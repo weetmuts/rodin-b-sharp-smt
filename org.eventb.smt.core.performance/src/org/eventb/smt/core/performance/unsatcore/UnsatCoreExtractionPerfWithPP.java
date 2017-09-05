@@ -712,9 +712,13 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 
 		final List<String> hyps = Arrays.asList(//
 				"r ∈ 1 ‥ m → BOOL", //
-				"x ∈ 1 ‥ m", "j+1 ∈ dom(f)");
-
+				"x ∈ 1 ‥ m", "x ∈ dom(f)");
+		
+		final List<String> unsat = Arrays.asList(//
+				"r ∈ 1 ‥ m → BOOL", //
+				"x ∈ 1 ‥ m");
+		
 		doTest("linear_sort_29UnsatCore", hyps, "x ∈ dom(r{f(j+1) ↦ TRUE})",
-				te, VALID, hyps, GOAL_NEEDED);
+				te, VALID, unsat, GOAL_NEEDED);
 	}
 }
