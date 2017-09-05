@@ -20,6 +20,11 @@ import static org.junit.Assume.assumeTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eventb.core.ast.FormulaFactory;
 import org.eventb.core.ast.ITypeEnvironment;
@@ -39,11 +44,39 @@ import org.eventb.smt.utils.Theory;
  */
 public abstract class CommonPerformanceTests extends CommonSolverRunTests {
 
+	// timeout (in seconds) used by expectTimeout within tests when calling solvers
+	private static final int EXPECT_TIMEOUT_SECONDS = 2;
+
+	// timeout (in milliseconds) used by @Test
+	// it must be greater than EXPECT_TIMEOUT_SECONDS
+	// so as to avoid interrupting tests that call expectTimeout
+	public static final int TEST_TIMEOUT = (1 + EXPECT_TIMEOUT_SECONDS) * 1000;
+
 	public CommonPerformanceTests(ConfigProvider provider, Set<Theory> theories, boolean getUnsatCore) {
 		super(provider, theories, getUnsatCore);
 		assumeTrue(configuration.getSolverPath().toFile().canExecute());
 	}
 
+
+	public static void expectTimeout(Runnable r) {
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final Future<?> future = executor.submit(r);
+
+        try {
+            future.get(EXPECT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        	future.cancel(true);
+            // as expected
+        	return;
+		} catch (Exception e) {
+			fail("An exception has been thrown: " + e);
+		} finally {
+			executor.shutdownNow();
+		}
+        
+        fail("This test used to timeout, but now it completes differently: remove the timeout.");
+	}
+	
 	private SMTProverCallTestResult smtProverCallTest(final String callMessage,
 			final String lemmaName, final ISimpleSequent sequent,
 			final boolean expectedSolverResult, final StringBuilder debugBuilder) {
