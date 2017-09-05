@@ -136,6 +136,13 @@ public class SMTPPCall extends SMTProverCall {
 			}
 		}
 
+		if (!goalNeeded && foundNeededHypotheses.isEmpty())
+		{
+			// The unsat core is empty, reset as before.
+			goalNeeded = true;
+			return;
+		}
+
 		neededHypotheses = foundNeededHypotheses;
 	}
 }
