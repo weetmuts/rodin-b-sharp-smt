@@ -23,17 +23,18 @@ from xml.dom import minidom
 ###
 
 # Ensemble des projets academiques
-academic = Set(['ch2_car_new', 'ch4_other_file', 'ch6_other_brp', 'ch7_conc',
+academic = Set(['ch2_car', 'ch4_file_2', 'ch6_brp', 'ch7_conc',
                 'ch8_circ_arbiter', 'ch8_circ_light', 'ch8_circ_pulser',
-                'ch8_circ_road', 'ch910_ring', 'ch912_mobile', 'ch913_ieee_new',
+                'ch8_circ_road', 'ch910_ring', 'ch911_tree', 'ch912_mobile', 'ch913_ieee',
                 'ch915_bin', 'ch915_gcd', 'ch915_inv', 'ch915_maxi',
                 'ch915_mini', 'ch915_part', 'ch915_rev', 'ch915_search',
-                'ch915_sort_other', 'ch915_sqrt', 'ch916_doors', 'ch917_train',
+                'ch915_sort', 'ch915_sqrt', 'ch916_doors', 'ch917_train',
                 'gen_hotel_new', 'library_new', 'linear_sort', 'routing_new',
-                'DynamicStableLSR_081014', 'Quick', 'TreeFileSystem'])
+                'DynamicStableLSR_081014', 'Quick', 'TreeFileSystem',
+                '2_well-foundedness_with correction', '6_connectivity', 'Schorr-Waite'])
 
 # Ensemble des projets industriels
-industrial = Set(['BepiColombo_Models_v3.3', 'BoschSwitch', 'CDIS', 'New_pilot',
+industrial = Set(['BepiColombo_Models_v6.4', 'BoschSwitch', 'CDIS', 'New_pilot',
                   'SimpleLyra', 'SSF1.eventB', 'SSF_minipilot', 'SSF_pilot',
                   'ssf'])
 
