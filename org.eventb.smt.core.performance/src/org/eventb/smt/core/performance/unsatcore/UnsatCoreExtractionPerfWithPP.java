@@ -401,15 +401,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 	}
 
 	@Test
-	// failure veriT, Z3, CVC4: The SMT prover did not extract needed hypotheses
-	public void testSolverCallBelong1UnsatCore() {
-		final List<String> hyps = Arrays.asList("g ∈ e");
-
-		doTest("belong_1UnsatCore", hyps, "g ∈ f", pow_te, !VALID, hyps,
-				GOAL_NEEDED);
-	}
-
-	@Test
 	public void testRule20MacroInsideMacroUnsatCore() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = Arrays.asList();
@@ -580,37 +571,6 @@ public abstract class UnsatCoreExtractionPerfWithPP extends CommonPerformanceTes
 
 		doTest("ch915_bin10UnsatCore", hyps, "1 ≤ (n+1) ÷ 2", te, VALID, hyps,
 				GOAL_NEEDED);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 * 
-	 */
-	@Test
-	public void testCh7LikeEvenSimplerUnsatCore() {
-		final ITypeEnvironment te = mTypeEnvironment();
-
-		final List<String> hyps = Arrays.asList();
-
-		doTest("ch7_likeEvenSimplerUnsatCore", hyps, "A×B ⊆ ℕ×ℕ", te, !VALID,
-				hyps, GOAL_NEEDED);
-	}
-
-	/**
-	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
-	 * 'full_set_theory' theory
-	 * 
-	 */
-	@Test
-	public void testCh7LikeMoreSimpleYetUnsatCore() {
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"D", "ℙ(D)", "d", "D");
-
-		final List<String> hyps = Arrays.asList();
-
-		doTest("ch7_likeMoreSimpleYetUnsatCore", hyps,
-				"{0 ↦ d} ∈ ({0,1} →  D)", te, !VALID, hyps, GOAL_NEEDED);
 	}
 
 	/**
