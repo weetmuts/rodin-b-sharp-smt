@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eventb.smt.tests.unit;
 
+import static java.util.Collections.singleton;
 import static org.eventb.core.seqprover.transformer.SimpleSequents.make;
 import static org.eventb.pptrans.Translator.isInGoal;
 import static org.eventb.smt.core.SolverKind.VERIT;
@@ -205,15 +206,14 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
 				parsedGoal, parsedGoal.getFactory());
 
-		// FIXME should not be PP because could this is used by veriT tests
 		final SMTThroughPP translator = new SMTThroughPP();
 		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
 
 		final SMTSignature signature = benchmark.getSignature();
 
-		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
-		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
-		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
+		testTypeEnvironmentSorts(signature, expectedSorts, "");
+		testTypeEnvironmentFuns(signature, expectedFuns, "");
+		testTypeEnvironmentPreds(signature, expectedPreds, "");
 	}
 	
 	protected void doTTeTest(final String lemmaName,
@@ -714,15 +714,13 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
 
-		final Set<String> expectedSorts = new HashSet<String>();
-		expectedSorts.add("S");
+		final Set<String> expectedSorts = singleton("S");
 
-		final Set<String> expectedFuns = new HashSet<String>();
-		expectedFuns.add("g () S");
+		final Set<String> expectedFuns = singleton("g () S");
 
-		final Set<String> expectedPreds = new HashSet<String>();
-		expectedPreds.add("e (S) Bool");
-		expectedPreds.add("f (S) Bool");
+		final Set<String> expectedPreds = new HashSet<String>(Arrays.asList( //
+				"e (S) Bool", //
+				"f (S) Bool"));
 
 		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
 				expectedPreds, expectedSorts);
