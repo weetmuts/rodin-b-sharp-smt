@@ -445,11 +445,11 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		expectedSorts.add("S");
 
 		final Set<String> expectedFuns = new HashSet<String>();
-		expectedFuns.add("(g S)");
+		expectedFuns.add("g () S");
 
 		final Set<String> expectedPreds = new HashSet<String>();
-		expectedPreds.add("(e S)");
-		expectedPreds.add("(f S)");
+		expectedPreds.add("e (S) Bool");
+		expectedPreds.add("f (S) Bool");
 
 		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
 				expectedPreds, expectedSorts);
