@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Systerel and others.
+ * Copyright (c) 2011, 2017 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				expectedUnsatCore, expectedGoalNeed, PERFORMANCE);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testExample() {
 		final ITypeEnvironment te = mTypeEnvironment("n", "ℤ");
 
@@ -56,7 +56,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("Example", hyps, "0 < n + 1", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm1() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -65,7 +65,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				"∀m· ((m ∈ {0, 2, 4}) ⇒ (m ∉ {5, 6, 8, 9}))", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm2() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -76,7 +76,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				"∀n· ((n ∈ {0, 2, 4, 5}) ⇒ (n ∉ {6, 8, 9}))", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm3() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -87,7 +87,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm4() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -97,7 +97,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm5() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -122,7 +122,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("Bug2105507Thm5", hyps, goalBuilder.toString(), te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBug2105507Thm6() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -141,7 +141,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("Bug2105507Thm6", hyps, goalBuilder.toString(), te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSetsEquality() {
 		final ITypeEnvironment te = mTypeEnvironment("p", "ℙ(ℤ)", "q", "ℙ(ℤ)");
 
@@ -154,7 +154,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("SetsEquality", hyps, "p = q", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("(one-point rule needed)")
 	public void testIntsSetEquality() {
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(ℤ)");
@@ -164,7 +164,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("IntsSetEquality", hyps, "S = ℤ", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBoolsSetEquality() {
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(BOOL)", "non",
 				"BOOL ↔ BOOL");
@@ -179,7 +179,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDFPSBool() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -192,7 +192,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -206,7 +206,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * This is an example where, I think, the monadic optimization of membership
 	 * predicate is unsuccessful without its refinement (axioms to add).
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimpleMonadic() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -221,7 +221,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple00() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -234,7 +234,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple01() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -247,7 +247,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple11() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -260,7 +260,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple12() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -273,7 +273,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple32() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -286,7 +286,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple30() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -299,7 +299,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple1y() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -310,7 +310,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimple3y() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -321,7 +321,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimplex1() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -332,7 +332,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimplex2() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -343,7 +343,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testDifferentForallPlusSimplexy() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -354,7 +354,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets1() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -364,7 +364,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets2() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -375,7 +375,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets3() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -385,7 +385,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets4() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -395,7 +395,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 
 	/**
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets5() {
 		final ITypeEnvironment te = mTypeEnvironment(arith_te, "a", "ℤ ↔ ℙ(ℤ)");
 
@@ -408,7 +408,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets6() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -419,7 +419,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSets7() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -427,7 +427,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("sets7", hyps, "∀ x · x ∈ ℙ(ℙ(ℤ)) ⇒ (∃ y · y ≠ x)", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSolverCallBelong1() {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("g ∈ e");
@@ -435,7 +435,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("belong_1", hyps, "g ∈ f", pow_te, !VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testRule20MacroInsideMacro() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -444,7 +444,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		"(λx· (x > 0 ∧ ((λy·y > 0 ∣ y+y) = ∅)) ∣ x+x) = ∅", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testRule20ManyForalls() {
 		final ITypeEnvironment te = mTypeEnvironment();
 		final List<String> hyps = new ArrayList<String>();
@@ -454,7 +454,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testCallBelong1XtraSortXtraFun() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "a", "A", "c", "BOOL");
@@ -480,7 +480,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSolverCallSimpleU() {
 		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
 
@@ -494,7 +494,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * This test is related to the 'Empty' problem, which declares the sort U.
 	 * This problem belongs to SMT-Solvers.
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSolverCallBelong3() {
 		final ITypeEnvironment te = mTypeEnvironment(
 				//
@@ -509,7 +509,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("belong_3", hyps, "⊤", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testSolverCall() {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");
@@ -522,7 +522,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * ch8_circ_arbiter.1 from task 1 (Requirement Analysis) 's Rodin benchmarks
 	 * on 'integer' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testCh8CircArbiter1() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"a1", "ℤ", "r1", "ℤ");
@@ -541,7 +541,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * quick_sort.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'linear_arith' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testQuickSort1() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"k", "ℤ", "n", "ℤ", "x", "ℤ");
@@ -561,7 +561,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * bosch_switch.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'linear_order_int' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBoschSwitch1() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"i", "ℤ", "t", "ℤ", "t0", "ℤ");
@@ -581,7 +581,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * bepi_colombo.1 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'basic_set' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBepiColombo1() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"S", "ℙ(S)", "a", "S", "b", "S", "c", "S");
@@ -599,7 +599,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * ch915_bin.10 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'nonlinear_arith' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("AltErgo MESSAGE: unknown (sat)")
 	@Ignore("Implementation canceled")
 	public void testCh915Bin10() {
@@ -617,7 +617,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testCh7LikeEvenSimpler() {
 		final ITypeEnvironment te = mTypeEnvironment();
 
@@ -631,7 +631,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * 'full_set_theory' theory
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testCh7LikeMoreSimpleYet() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"D", "ℙ(D)", "d", "D");
@@ -645,7 +645,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	/**
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("(sets equality)")
 	public void testDifferentForall() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -661,7 +661,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * ch7_conc.29 from task 1 (Requirement Analysis) 's Rodin benchmarks on
 	 * 'full_set_theory' theory
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("(sets equality)")
 	public void testCh7Conc29() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -674,7 +674,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBepiColombo3Mini() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -686,7 +686,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("bepi_colombo3Mini", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBepiColombo3Medium() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -698,7 +698,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("bepi_colombo3Medium", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("Takes more than 30 seconds to return a result")
 	public void testBepiColombo3Medium2() {
 		final ITypeEnvironment te = mTypeEnvironment(//
@@ -720,7 +720,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * fast, and the other solvers prove this problem in a much shorter time.
 	 * 
 	 */
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testBepiColombo3() {
 		final ITypeEnvironment te = mTypeEnvironment(//
 				"TC", "ℤ↔ℤ", "TM", "ℤ↔ℤ");
@@ -732,7 +732,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("bepi_colombo3", hyps, "TC ∩ TM = ∅", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testDynamicStableLSR_081014_15() {
 		final ITypeEnvironment te = mTypeEnvironment("S", "ℙ(S)", "h",
@@ -749,7 +749,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 				te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("division is uninterpreted, so the verit returned sat")
 	// @Ignore("z3 uses the symbol div as division. And it does not have the same properties as in Event-B")
 	// @Ignore("division is uninterpreted, so the cvc3 returned sat")
@@ -766,7 +766,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest(smtFileName + "_4", hyps, "4 ÷ −2 = −2", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("Division in veriT does not have the same properties as in Event-B")
 	// @Ignore("Division in z3 does not have the same properties as in Event-B")
 	// @Ignore("Division in cvc3 does not have the same properties as in Event-B")
@@ -783,7 +783,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest(smtFileName + "_4", hyps, "3 ÷ −2 = −1", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	// @Ignore("Re-add when ppTrans updated (sets equality)")
 	public void testch910_ring_6() {
 		final ITypeEnvironment te = mTypeEnvironment("P", "ℙ(ℤ)", "itv",
@@ -793,7 +793,7 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 		doTest("ch910_ring_6", hyps, "itv∼;({f} ◁ itv) ⊆ id", te, VALID);
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = TEST_TIMEOUT)
 	public void testLinearSort29() {
 		final ITypeEnvironment te = mTypeEnvironment("f", "ℙ(ℤ × ℤ)", "r",
 				"ℙ(ℤ × BOOL)", "m", "ℤ", "x", "ℤ", "j", "ℤ");
