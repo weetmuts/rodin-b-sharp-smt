@@ -434,28 +434,6 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	}
 
 	@Test(timeout = TEST_TIMEOUT)
-	public void testCallBelong1XtraSortXtraFun() {
-		final ITypeEnvironment te = mTypeEnvironment(//
-				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "a", "A", "c", "BOOL");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("g ∈ e");
-
-		final Set<String> expectedSorts = new HashSet<String>();
-		expectedSorts.add("S");
-
-		final Set<String> expectedFuns = new HashSet<String>();
-		expectedFuns.add("g () S");
-
-		final Set<String> expectedPreds = new HashSet<String>();
-		expectedPreds.add("e (S) Bool");
-		expectedPreds.add("f (S) Bool");
-
-		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
-				expectedPreds, expectedSorts);
-	}
-
-	@Test(timeout = TEST_TIMEOUT)
 	public void testSolverCall() {
 		final List<String> hyps = new ArrayList<String>();
 		hyps.add("x < y");

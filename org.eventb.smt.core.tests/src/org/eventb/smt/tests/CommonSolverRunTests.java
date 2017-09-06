@@ -29,12 +29,9 @@ import org.eventb.core.seqprover.transformer.ISimpleSequent;
 import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.IConfigDescriptor;
 import org.eventb.smt.core.ISolverDescriptor;
-import org.eventb.smt.core.internal.ast.SMTBenchmark;
-import org.eventb.smt.core.internal.ast.SMTSignature;
 import org.eventb.smt.core.internal.provers.SMTConfiguration;
 import org.eventb.smt.core.internal.provers.SMTPPCall;
 import org.eventb.smt.core.internal.provers.SMTProverCall;
-import org.eventb.smt.core.internal.translation.SMTThroughPP;
 import org.eventb.smt.utils.Theory;
 import org.junit.After;
 
@@ -259,30 +256,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 		return new SMTProverCallTestResult(smtProverCall, errorBuilder);
 	}
 
-	private void doTeTest(final String lemmaName,
-			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
-			final Set<String> expectedFuns, final Set<String> expectedPreds,
-			final Set<String> expectedSorts) throws IllegalArgumentException {
-		// Type check goal and hypotheses
-		assertTypeChecked(parsedGoal);
-		for (final Predicate parsedHypothesis : parsedHypotheses) {
-			assertTypeChecked(parsedHypothesis);
-		}
-
-		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
-				parsedGoal, parsedGoal.getFactory());
-
-		// FIXME should not be PP because could this is used by veriT tests
-		final SMTThroughPP translator = new SMTThroughPP();
-		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
-
-		final SMTSignature signature = benchmark.getSignature();
-
-		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
-		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
-		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
-	}
-
 	protected void doTest(final String lemmaName, final List<String> inputHyps,
 			final String inputGoal, final ITypeEnvironment te,
 			final boolean expectedTrivial, final boolean expectedSolverResult) {
@@ -378,22 +351,6 @@ public abstract class CommonSolverRunTests extends AbstractTests {
 					iter2Result.getSmtProverCall());
 			fail(iter2ErrorBuffer);
 		}
-	}
-
-	protected void doTTeTest(final String lemmaName,
-			final List<String> inputHyps, final String inputGoal,
-			final ITypeEnvironment te, final Set<String> expectedFuns,
-			final Set<String> expectedPreds, final Set<String> expectedSorts) {
-		final List<Predicate> hypotheses = new ArrayList<Predicate>();
-		final ITypeEnvironmentBuilder teb = te.makeBuilder();
-		for (final String hyp : inputHyps) {
-			hypotheses.add(parse(hyp, teb));
-		}
-
-		final Predicate goal = parse(inputGoal, teb);
-
-		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
-				expectedSorts);
 	}
 
 	@After

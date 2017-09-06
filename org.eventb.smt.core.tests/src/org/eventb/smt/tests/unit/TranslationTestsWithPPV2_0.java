@@ -17,14 +17,17 @@ import static org.eventb.smt.core.internal.translation.SMTThroughPP.translateTE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eventb.core.ast.ITypeEnvironment;
+import org.eventb.core.ast.ITypeEnvironmentBuilder;
 import org.eventb.core.ast.Predicate;
 import org.eventb.core.seqprover.transformer.ISimpleSequent;
+import org.eventb.core.seqprover.transformer.SimpleSequents;
 import org.eventb.smt.core.internal.ast.SMTBenchmark;
 import org.eventb.smt.core.internal.ast.SMTFormula;
 import org.eventb.smt.core.internal.ast.SMTSignature;
@@ -187,6 +190,46 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		sb.append(smtNode);
 		sb.append("\'");
 		return sb.toString();
+	}
+
+	private void doTeTest(final String lemmaName,
+			final List<Predicate> parsedHypotheses, final Predicate parsedGoal,
+			final Set<String> expectedFuns, final Set<String> expectedPreds,
+			final Set<String> expectedSorts) throws IllegalArgumentException {
+		// Type check goal and hypotheses
+		assertTypeChecked(parsedGoal);
+		for (final Predicate parsedHypothesis : parsedHypotheses) {
+			assertTypeChecked(parsedHypothesis);
+		}
+
+		final ISimpleSequent sequent = SimpleSequents.make(parsedHypotheses,
+				parsedGoal, parsedGoal.getFactory());
+
+		// FIXME should not be PP because could this is used by veriT tests
+		final SMTThroughPP translator = new SMTThroughPP();
+		final SMTBenchmark benchmark = translate(translator, lemmaName, sequent);
+
+		final SMTSignature signature = benchmark.getSignature();
+
+		AbstractTests.testTypeEnvironmentSorts(signature, expectedSorts, "");
+		AbstractTests.testTypeEnvironmentFuns(signature, expectedFuns, "");
+		AbstractTests.testTypeEnvironmentPreds(signature, expectedPreds, "");
+	}
+	
+	protected void doTTeTest(final String lemmaName,
+			final List<String> inputHyps, final String inputGoal,
+			final ITypeEnvironment te, final Set<String> expectedFuns,
+			final Set<String> expectedPreds, final Set<String> expectedSorts) {
+		final List<Predicate> hypotheses = new ArrayList<Predicate>();
+		final ITypeEnvironmentBuilder teb = te.makeBuilder();
+		for (final String hyp : inputHyps) {
+			hypotheses.add(parse(hyp, teb));
+		}
+
+		final Predicate goal = parse(inputGoal, teb);
+
+		doTeTest(lemmaName, hypotheses, goal, expectedFuns, expectedPreds,
+				expectedSorts);
 	}
 
 	/**
@@ -662,4 +705,27 @@ public class TranslationTestsWithPPV2_0 extends AbstractTests {
 		testTranslateGoalPP(te, "head(cons(1, nil)) = 2",
 				"(not (exists ((x57 List_Type) (x58 Int)) (and (exists ((x59 Int)) (and (= x59 1) (cons x59 nil x57))) (= x58 2) (head x57 x58))))");
 	}
+
+	@Test
+	public void testCallBelong1XtraSortXtraFun() {
+		final ITypeEnvironment te = mTypeEnvironment(//
+				"e", "ℙ(S)", "f", "ℙ(S)", "g", "S", "a", "A", "c", "BOOL");
+
+		final List<String> hyps = new ArrayList<String>();
+		hyps.add("g ∈ e");
+
+		final Set<String> expectedSorts = new HashSet<String>();
+		expectedSorts.add("S");
+
+		final Set<String> expectedFuns = new HashSet<String>();
+		expectedFuns.add("g () S");
+
+		final Set<String> expectedPreds = new HashSet<String>();
+		expectedPreds.add("e (S) Bool");
+		expectedPreds.add("f (S) Bool");
+
+		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
+				expectedPreds, expectedSorts);
+	}
+
 }
