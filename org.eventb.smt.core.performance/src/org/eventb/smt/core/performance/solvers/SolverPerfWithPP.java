@@ -355,27 +355,6 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 	 * 
 	 */
 	@Test(timeout = TEST_TIMEOUT)
-	public void testSets1() {
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("sets1", hyps, "{x} ∈ {{x}, {y}}", arith_te, VALID);
-	}
-
-	/**
-	 * 
-	 */
-	@Test(timeout = TEST_TIMEOUT)
-	public void testSets2() {
-		final List<String> hyps = new ArrayList<String>();
-
-		doTest("sets2", hyps, "{{x},{y}} ∈ {{{x}, {y}}, {{x}}}", arith_te,
-				VALID);
-	}
-
-	/**
-	 * 
-	 */
-	@Test(timeout = TEST_TIMEOUT)
 	public void testSets3() {
 		final List<String> hyps = new ArrayList<String>();
 
@@ -474,39 +453,6 @@ public abstract class SolverPerfWithPP extends CommonPerformanceTests {
 
 		doTTeTest("belong_1_type_environment", hyps, "g ∈ f", te, expectedFuns,
 				expectedPreds, expectedSorts);
-	}
-
-	/**
-	 * This test is related to the 'Empty' problem, which declares the sort U.
-	 * This problem belongs to SMT-Solvers.
-	 */
-	@Test(timeout = TEST_TIMEOUT)
-	public void testSolverCallSimpleU() {
-		final ITypeEnvironment te = mTypeEnvironment("a", "U", "A", "ℙ(U)");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
-
-		doTest("simpleU", hyps, "⊤", te, VALID);
-	}
-
-	/**
-	 * This test is related to the 'Empty' problem, which declares the sort U.
-	 * This problem belongs to SMT-Solvers.
-	 */
-	@Test(timeout = TEST_TIMEOUT)
-	public void testSolverCallBelong3() {
-		final ITypeEnvironment te = mTypeEnvironment(
-				//
-				"a", "S", "b", "T", "d", "U", "A", "ℙ(S)", "r", "S ↔ T", "s",
-				"(S × T) ↔ U");
-
-		final List<String> hyps = new ArrayList<String>();
-		hyps.add("a ∈ A");
-		hyps.add("a↦b ∈ r");
-		hyps.add("a↦b↦d ∈ s");
-
-		doTest("belong_3", hyps, "⊤", te, VALID);
 	}
 
 	@Test(timeout = TEST_TIMEOUT)
