@@ -153,6 +153,9 @@ Example: &quot;$os$/binary&quot;.
                   The path of the library.
 Example: &quot;$os$/lib.dll&quot;.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
