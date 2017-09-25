@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.eventb.smt">
+   <feature id="org.eventb.smt.feature">
       <category name="Prover_Extensions"/>
    </feature>
    <category-def name="Prover_Extensions" label="Prover Extensions">
