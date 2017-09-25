@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %veriTMacosxFragmentName
 Bundle-SymbolicName: org.eventb.smt.verit.macosx
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: %providerName
 Fragment-Host: org.eventb.smt.verit;bundle-version="1.0.0"
 Bundle-Localization: plugin
