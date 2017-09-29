@@ -23,7 +23,7 @@
 
    <requires>
       <import feature="org.rodinp.platform" version="2.8.0"/>
-      <import feature="org.eventb.smt.feature" version="1.0.0"/>
+      <import feature="org.eventb.smt" version="1.0.0"/>
       <import feature="com.clearsy.atelierb.provers" version="2.0.1"/>
    </requires>
 

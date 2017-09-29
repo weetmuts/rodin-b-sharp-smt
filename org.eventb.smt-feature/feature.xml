@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eventb.smt.feature"
+      id="org.eventb.smt"
       label="%featureName"
       version="1.4.0.qualifier"
       provider-name="%providerName"
@@ -23,22 +23,22 @@
    </url>
 
    <includes
-         id="org.eventb.smt.z3.feature"
+         id="org.eventb.smt.z3"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.eventb.smt.cvc3.feature"
+         id="org.eventb.smt.cvc3"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.eventb.smt.cvc4.feature"
+         id="org.eventb.smt.cvc4"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.eventb.smt.verit.feature"
+         id="org.eventb.smt.verit"
          version="0.0.0"
          optional="true"/>
 
