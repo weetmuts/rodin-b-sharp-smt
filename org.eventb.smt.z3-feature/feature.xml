@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eventb.smt.z3"
-      label="SMT Z3 Feature"
+      label="%featureName"
       version="4.5.0.qualifier"
-      provider-name="Systerel"
+      provider-name="%providerName"
       arch="x86_64">
 
    <description>

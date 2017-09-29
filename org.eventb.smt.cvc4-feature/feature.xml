@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eventb.smt.cvc4"
-      label="SMT CVC4 Feature"
+      label="%featureName"
       version="1.5.0.qualifier"
-      provider-name="Systerel">
+      provider-name="%providerName">
 
    <description>
       %description
