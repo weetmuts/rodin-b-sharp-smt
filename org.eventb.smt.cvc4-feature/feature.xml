@@ -22,7 +22,7 @@
    </url>
 
    <plugin
-         id="org.eventb.smt.cvc4"
+         id="org.eventb.smt.cvc4.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

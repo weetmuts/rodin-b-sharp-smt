@@ -23,7 +23,7 @@
    </url>
 
    <plugin
-         id="org.eventb.smt.verit"
+         id="org.eventb.smt.verit.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

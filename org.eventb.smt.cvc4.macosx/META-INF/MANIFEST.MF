@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.eventb.smt.cvc4.macosx;singleton:=true
 Bundle-Version: 1.5.0.qualifier
 Eclipse-BundleShape: dir
 Bundle-Vendor: %providerName
-Fragment-Host: org.eventb.smt.cvc4;bundle-version="1.0.0"
+Fragment-Host: org.eventb.smt.cvc4.plugin;bundle-version="1.0.0"
 Bundle-Localization: plugin

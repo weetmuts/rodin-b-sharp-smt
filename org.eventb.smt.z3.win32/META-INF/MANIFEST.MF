@@ -4,5 +4,5 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eventb.smt.z3.win32;singleton:=true
 Bundle-Version: 4.5.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
-Fragment-Host: org.eventb.smt.z3;bundle-version="4.0.0"
+Fragment-Host: org.eventb.smt.z3.plugin;bundle-version="4.0.0"
 Bundle-Localization: plugin

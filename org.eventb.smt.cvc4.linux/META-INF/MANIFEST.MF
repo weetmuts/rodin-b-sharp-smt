@@ -4,5 +4,5 @@ Bundle-Name: %CVC4LinuxFragmentName
 Bundle-SymbolicName: org.eventb.smt.cvc4.linux
 Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: %providerName
-Fragment-Host: org.eventb.smt.cvc4;bundle-version="1.0.0"
+Fragment-Host: org.eventb.smt.cvc4.plugin;bundle-version="1.0.0"
 Bundle-Localization: plugin
