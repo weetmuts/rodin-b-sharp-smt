@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Systerel and others.
+ * Copyright (c) 2011, 2021 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eventb.core.ast.BoundIdentifier;
 import org.eventb.core.ast.DefaultVisitor;
 import org.eventb.core.ast.Expression;
 import org.eventb.core.ast.FreeIdentifier;
+import org.eventb.core.ast.IntegerLiteral;
 import org.eventb.core.ast.ProductType;
 import org.eventb.core.ast.RelationalPredicate;
 import org.eventb.core.ast.Type;
@@ -216,6 +217,10 @@ public class Gatherer extends DefaultVisitor {
 	 * SMT-LIB Ints theory appears (div, mod and abs are currently translated in
 	 * uninterpreted symbols).
 	 * 
+	 * In addition, if the PO contains any integer literal, then we also need
+	 * a theory with integers (i.e., in order to know that two distinct literals
+	 * denote distinct values).
+	 * 
 	 * @return true if the theory of integers is used in the PO.
 	 */
 	public boolean usesIntTheory() {
@@ -378,6 +383,12 @@ public class Gatherer extends DefaultVisitor {
 	@Override
 	public boolean visitTRUE(final AtomicExpression expr) {
 		boolTheory = true;
+		return true;
+	}
+
+	@Override
+	public boolean visitINTLIT(IntegerLiteral lit) {
+		intTheory = true;
 		return true;
 	}
 }

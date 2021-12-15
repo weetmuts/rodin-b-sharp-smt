@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Systerel and others.
+ * Copyright (c) 2011, 2021 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,10 @@ public class LogicTestsWithPPV2_0 extends AbstractTests {
 
 	@Test
 	public void testInt() {
-		testLogic(defaultTe, "a = 1", qfufLogic);
-		testLogic(defaultTe, "a = 4 mod 2", qfufLogic);
+		testLogic(defaultTe, "a = b", qfufLogic);
+		testLogic(defaultTe, "a = b mod c", qfufLogic);
+		testLogic(defaultTe, "a = 1", qfAufliaLogic);
+		testLogic(defaultTe, "a = 4 mod 2", qfAufliaLogic);
 		testLogic(defaultTe, "a = 2 + 3", qfAufliaLogic);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Systerel and others.
+ * Copyright (c) 2011, 2021 Systerel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,5 +71,20 @@ public abstract class SolverRunWithPPV2_0Tests extends SolverRunTests {
 				"q ≠ ∅");
 
 		doTest("sets_equality", hyps, "p = q", te, VALID);
+	}
+
+	/**
+	 * Regression test for bug #798. We expect all SMT solvers to prove this very
+	 * simple example.
+	 */
+	@Test
+	public void modusTollens() {
+		final ITypeEnvironment te = mTypeEnvironment("a", "ℤ");
+
+		final List<String> hyps = Arrays.asList( //
+				"a = 0 ∨ a = 1", //
+				"a ≠ 0");
+
+		doTest("modus_tollens", hyps, "a = 1", te, VALID);
 	}
 }
