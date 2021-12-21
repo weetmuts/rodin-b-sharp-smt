@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- TO BE CONFIGURED WHEN CALLING MAVEN USING OPTION -D -->
-		<rodinTargetSiteUrl>file://to/be/defined</rodinTargetSiteUrl>
+		<rodinTargetSiteUrl>jar:file:/var/tmp/org.rodinp.dev-3.5.0-9f39f1653.zip!/</rodinTargetSiteUrl>
 	</properties>
 
 	<modules>
