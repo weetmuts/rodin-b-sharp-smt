@@ -22,74 +22,6 @@
 						<include>**/*Test*.java</include>
 					</includes>
 					<dependencies>
-						<!-- Binary plug-in fragments are not installed by default -->
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc3.linux</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc3.macosx</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc3.win32</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc4.linux</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc4.macosx</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.cvc4.win32</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.verit.linux</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.verit.macosx</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.verit.win32</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.z3.linux</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.z3.macosx</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eventb.smt.z3.win32</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<!-- Depend on full Rodin platform in order to -->
-						<!-- install platform specific fragments of Eclipse -->
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eventb.ide</artifactId>
-							<version>0.0.0</version>
-						</dependency>
 					</dependencies>
 				</configuration>
 			</plugin>
@@ -120,6 +52,78 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
+					<dependency-resolution>
+						<extraRequirements>
+							<!-- Binary plug-in fragments are not installed by default -->
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc3.linux</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc3.macosx</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc3.win32</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc4.linux</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc4.macosx</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.cvc4.win32</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.verit.linux</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.verit.macosx</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.verit.win32</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.z3.linux</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.z3.macosx</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eventb.smt.z3.win32</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<!-- Depend on full Rodin platform in order to -->
+							<!-- install platform specific fragments of Eclipse -->
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eventb.ide</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>
