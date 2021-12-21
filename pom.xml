@@ -14,7 +14,6 @@
 
 		<!-- TO BE CONFIGURED WHEN CALLING MAVEN USING OPTION -D -->
 		<rodinTargetSiteUrl>file://to/be/defined</rodinTargetSiteUrl>
-		<rodinSiteMirror>/to/be/defined</rodinSiteMirror>
 	</properties>
 
 	<modules>

@@ -10,20 +10,15 @@ Procedure for building the SMT Plug-in with Maven
      cd rodin
      unzip ../org.rodinp.dev-VERSION.zip
 
-
-2. Checkout the update site from Subversion:
-
-     cd /tmp
-     svn checkout svn+ssh://svn.code.sf.net/p/rodin-b-sharp/svn/trunk/RodinUpdateSite/org.rodinp.updateSite
-
-
-3. Go to the directory containing this README file and type the command
+2. Go to the directory containing this README file and type the command
 
      mvn -Dtycho.localArtifacts=ignore \
          -DrodinTargetSiteUrl=file://tmp/rodin \
-	 -DrodinSiteMirror=/tmp/org.rodinp.updateSite \
 	 -DforceContextQualifier="$(git log -1 --format='%h')" \
-	 clean install
+	 clean package
 
-4. Upload to Source Forge all new jar files of features and plug-ins that have
-   been added to /tmp/org.rodinp.updateSite and commit the new p2 files in Subversion.
+3. Upload to a new folder in Sourceforge all files of org.eventb.smt.site/target/repository,
+   add a link to this folder in RodinUpdateSite/org.rodinp.updateSite/composite/compSite.xml
+   (in the Subversion repository), regenerate the composite update site and
+   upload the generated files to /home/project-web/rodin-b-sharp/htdocs/updates
+   through Sourceforge's SFTP.
