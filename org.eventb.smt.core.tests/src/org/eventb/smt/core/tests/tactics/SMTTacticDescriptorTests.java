@@ -67,7 +67,7 @@ public class SMTTacticDescriptorTests extends TacticTests {
 	 * Ensure that a tactic descriptor returned by the core plug-in can be used
 	 * to discharge a sequent.
 	 */
-	@Test
+	@Test(timeout = 3000)
 	public void descriptorIsUsable() {
 		assertDischarges(getTacticDescriptorForBundledConfig());
 	}

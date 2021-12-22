@@ -30,7 +30,7 @@ public class SMTPPReasonerTests extends AbstractReasonerTests {
 	public static final String BUNDLED_Z3_PP_SMT2_ID = "Z3";
 
 	private static final boolean DEFAULT_RESTRICTED_VALUE = true;
-	private static final long DEFAULT_TIMEOUT_DELAY = 1000;
+	private static final long DEFAULT_TIMEOUT_DELAY = 3000;
 
 	private static final SMTInput VERIT_INPUT = new SMTInput(
 			BUNDLED_VERIT_PP_SMT2_ID, DEFAULT_RESTRICTED_VALUE,
